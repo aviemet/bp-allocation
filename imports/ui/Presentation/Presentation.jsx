@@ -121,12 +121,14 @@ export default withTracker(({id}) => {
 			orgs.map((org) => {
 				image = _.find(images, (img) => ( img._id === org.image));
 
-				imageObject = {
-					_id: image._id,
-					path: `/uploads/${image._id}.${image.extension}`
-				};
+				if(image){
+					imageObject = {
+						_id: image._id,
+						path: `/uploads/${image._id}.${image.extension}`
+					};
 
-				org.image = imageObject
+					org.image = imageObject
+				}
 			});
 		}
 	}

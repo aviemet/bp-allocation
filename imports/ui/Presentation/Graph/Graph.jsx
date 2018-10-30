@@ -134,8 +134,12 @@ export default class Graph extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState){
-		if(prevProps.theme.leverage_used !== this.props.theme.leverage_used){
+		console.log({prevProps: prevProps, prevState: prevState});
+		if(prevProps.theme.leverage_used !== this.props.theme.leverage_used ||
+			 prevProps.theme.leverage_total !== this.props.theme.leverage_total){
 			this.setState({leverage: this.props.theme.leverage_total - this.props.theme.leverage_used});
+
+			console.log(this.state);
 		}
 	}
 
