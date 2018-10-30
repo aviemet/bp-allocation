@@ -1,0 +1,73 @@
+@font-face {
+  font-family: 'BentonMod';
+  src: url('/fonts/BentonModDisp-Regular.otf');
+}
+@font-face {
+  font-family: 'TradeGothic';
+  src: url('/fonts/TradeGothic-Cn18.otf');
+}
+@font-face {
+  font-family: 'TradeGothic20';
+  src: url('/fonts/TradeGothicLTStd-BdCn20.otf');
+}
+
+html, body, #app{
+	width: 100%;
+	height: 100vh;
+}
+
+.bold{
+	font-weight: 700;
+}
+
+/**************
+ * ANIMATIONS *
+ **************/
+
+@-webkit-keyframes animate-bar {
+	0% { height: 0%; }
+}
+
+@keyframes animate-bar {
+	0% { height: 0%; }
+}
+
+@-webkit-keyframes reduce-bar {
+	100% { height: 0%; }
+}
+
+
+
+@-webkit-keyframes fade-bar {
+	100% { opacity: .3; }
+}
+
+@keyframes fade-bar {
+	100% { opacity: .3; }
+}
+
+
+@-webkit-keyframes reveal-winner-logo {
+	100% { opacity: 1; margin-top: 0; }
+}
+
+
+@-webkit-keyframes reveal-amount {
+	100% { opacity: 1; margin-top: -47px; }
+}
+
+@-webkit-keyframes reveal-amount-white {
+	100% { opacity: 1; margin-top: -90px; }
+}
+
+@-webkit-keyframes hide-amount {
+	100% { opacity: 0; }
+}
+
+@keyframes reveal-amount {
+	100% { opacity: 1; margin-top: -47px; background:none;}
+}
+
+@-webkit-keyframes change-color {
+	100% { background-color: #00853f; }
+}

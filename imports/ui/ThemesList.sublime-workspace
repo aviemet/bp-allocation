@@ -1,0 +1,633 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"we",
+				"weightedChitVotes"
+			],
+			[
+				"num",
+				"numTopOrgs"
+			],
+			[
+				"nu",
+				"numberOfTopOrgs"
+			],
+			[
+				"org",
+				"organizations"
+			],
+			[
+				"Org",
+				"Organizations"
+			],
+			[
+				"ac",
+				"activeItem"
+			],
+			[
+				"Or",
+				"Organizations"
+			],
+			[
+				"hand",
+				"handleImageDropdown"
+			],
+			[
+				"Them",
+				"ThemeProvider"
+			],
+			[
+				"The",
+				"ThemeProvider"
+			],
+			[
+				"de",
+				"defaultValue"
+			],
+			[
+				"S",
+				"SimpleSchema"
+			],
+			[
+				"redirec",
+				"redirectToReferrer"
+			],
+			[
+				"redire",
+				"redirectToReferrer"
+			],
+			[
+				"quest",
+				"question_id"
+			],
+			[
+				"question",
+				"question"
+			],
+			[
+				"Login",
+				"LoginMutation"
+			],
+			[
+				"Log",
+				"LoginMutation"
+			],
+			[
+				"star",
+				"startAt"
+			],
+			[
+				"current",
+				"current_user"
+			],
+			[
+				"EVENT_",
+				"EVENT_USERS"
+			],
+			[
+				"EVENT",
+				"EVENT_TITLES"
+			],
+			[
+				"f_d",
+				"f_date_time"
+			],
+			[
+				"f_",
+				"f_date_time"
+			],
+			[
+				"dup",
+				"duplicateStartTime"
+			],
+			[
+				"all",
+				"allDayWords"
+			],
+			[
+				"spec",
+				"specialOffDay"
+			],
+			[
+				"prot",
+				"prototype"
+			],
+			[
+				"exclud",
+				"excludedTimes"
+			],
+			[
+				"Admin",
+				"AdminSideBar"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/Volumes/Transcend/Development/Local/bpallocation/server/main.js",
+			"settings":
+			{
+				"buffer_size": 473,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Theme/Panes/OrganizationPane.jsx",
+			"settings":
+			{
+				"buffer_size": 2681,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Theme/Panes/ChitVotingPane.jsx",
+			"settings":
+			{
+				"buffer_size": 1602,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Theme/Panes/ChitInputs.jsx",
+			"settings":
+			{
+				"buffer_size": 1245,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Theme/Panes/SettingsPane.jsx",
+			"settings":
+			{
+				"buffer_size": 3519,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 119.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"package",
+				"Package Control: List Packages"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 540.0
+	},
+	"console":
+	{
+		"height": 178.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Theme/Panes/TopOrgsByChitVote.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Theme/Panes/ChitInputs.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Theme/Panes/OrganizationPane.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/utils.js",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Theme/Panes/SettingsPane.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Theme/Panes/OrgInputs.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/client/main.less",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Theme/Panes/PresentationPane.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Theme/Panes/DollarVotingPane.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/api/methods/OrganizationMethods.js",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Theme/Theme.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Theme/Panes/ChitVotingPane.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/ThemesList.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/App.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Components/FileUpload.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/client/main.js",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Routes.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/api/Themes.js",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Components/NewThemeModal.jsx",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/api/Organizations.js",
+		"/Volumes/Transcend/Development/Local/bpallocation/client/semantic-ui/custom.semantic.json",
+		"/Volumes/Transcend/Development/Local/bpallocation/package.json",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/ThemesList.js",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Routes.js",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/App.js",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/ui/Components/NewThemeModal.js",
+		"/Volumes/Transcend/Development/Local/bpallocation/client/semantic-ui/.custom.semantic.json",
+		"/Volumes/Transcend/Development/Local/bpallocation/imports/db/Themes.js",
+		"/Volumes/Transcend/Development/Local/bpallocation/client/main.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/urls/urls_admin.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/thebatterysf/settings.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/thebatterysf/urls.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/models.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/views/admin.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/forms.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/bpallocation/.env",
+		"/Volumes/Transcend/Development/Local/thebatterysf/bpallocation/.gitignore",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/templates/giving/giving_join.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/bpallocation/views/__init__.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/bpallocation/urls/__init__.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/bpallocation/templates/bpallocation/admin/base.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/bpallocation/templates/bpallocation/include/bpallocation_top_menu.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/manage.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/.env",
+		"/Volumes/Transcend/Development/Local/thebatterysf/thebatterysf/__init__.py",
+		"/Volumes/Transcend/Development/it.thebatterysf.com/html/snipe-it/.htaccess",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/db/schema.rb",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/application.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/semantic/semantic.less",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/config/webpack/environment.js",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/config/webpacker.yml",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/public/packs/manifest.json",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/app/views/layouts/application.html.erb",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/packs/semantic-bundle.less",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/semantic/theme.config",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/components/Content/Events/EventTile.jsx",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/components/Content/Events.jsx",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/db/seeds.rb",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/components/Content/AddEvent.jsx",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/app/views/layouts/floyst.html.erb",
+		"/Volumes/Transcend/Development/Web Projects/rails/floyst/db/schema.rb",
+		"/Volumes/Transcend/Development/Local/thebatterysf/thebatterysf/routing.py",
+		"/private/etc/cups/snmp.conf",
+		"/private/etc/cups/printers.conf",
+		"/private/etc/cups/cupsd.conf",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/_styles.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/_foundation_settings.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/components/Sidebar/Links.jsx",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/components/Sidebar/Logo.jsx",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/components/Sidebar.jsx",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/Floyst.jsx",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/components/Content.jsx",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/_global.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/theme.js",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/scss/main/_variables.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/scss/layout/_slider.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/scss/layout/_single_view.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/scss/layout/_navbar.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/scss/layout/_modal.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/scss/layout/_content.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/scss/events/_tile_view.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/scss/events/_map_view.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/scss/events/_add_view.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/scss/main/_styles.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/styles/scss/main/_foundation_settings.scss",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/Context/AppProvider.jsx",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/Context/UserContext.jsx",
+		"/Volumes/Transcend/Development/Web Projects/floyst/rails-api/client/js/Context/ThemeContext.jsx",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/templates/giving/admin/allocation_night_presentation.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/templates/giving/admin/allocation_night_admin.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/templates/giving/admin/base.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/ui/templates/admin_v2/base.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/templates/giving/admin/allocation_night_presentation_base.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/consumers.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/routing.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/templates/giving/admin/article_form.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/ui/widgets.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/requirements.txt",
+		"/Volumes/Transcend/Development/Local/thebatterysf/_client/node_modules/babylon/lib/index.js",
+		"/Volumes/Transcend/Development/Local/thebatterysf/_client/admin/styles/components/_allocation-night.scss",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/templates/giving/admin/theme_detail.html",
+		"/Users/avram/Desktop/WirelessNumbers_20180702114536.csv",
+		"/Users/avram/Desktop/dump.csv",
+		"/Users/avram/Dropbox/sToken for apple.vpp@thebatterysf.com.vpptoken",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/templates/giving/admin/theme_form.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/_client/admin/styles/admin.scss",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/templates/giving/admin/book_form.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/templates/giving/admin/organization_form.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/batterypowered/models.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/batterypowered/forms.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/batterypowered/templates/batterypowered/bptheme_form.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/batterypowered/templates/batterypowered/bptheme_list.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/batterypowered/navigation.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/batterypowered/views.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/batterypowered/urls.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/spa/migrations/0061_auto_20171214_0130.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/thebatterysf/maintenance_settings.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/payments/migrations/0057_auto_20180213_0436.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/payments/migrations/0055_auto_20180205_0656.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/membership/migrations/0040_auto_20180108_1416.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/membership/migrations/0030_auto_20171121_0457.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/finance/migrations/0018_auto_20171206_0606.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/migrations/0067_auto_20171214_0558.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/giving/migrations/0066_auto_20171123_0320.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/finance/migrations/0019_auto_20171211_0225.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/finance/migrations/0015_fix-powered-refunds-gfk.py",
+		"/Volumes/Transcend/Development/Local/thebatterysf/jobs/templates/jobs/job_list.html",
+		"/Volumes/Transcend/Development/Local/thebatterysf/jobs/urls.py"
+	],
+	"find":
+	{
+		"height": 33.0
+	},
+	"find_in_files":
+	{
+		"height": 107.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"weightedChitVotes",
+			"chitweight"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/Volumes/Transcend/Development/Local/bpallocation/server/main.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 473,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								324,
+								324
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Naomi/syntaxes/naomi.fjsx15.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "Theme/Panes/OrganizationPane.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2681,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2532,
+								2532
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 859.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "Theme/Panes/ChitVotingPane.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1602,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1281,
+								1281
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "Theme/Panes/ChitInputs.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1245,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "Theme/Panes/SettingsPane.jsx",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 3519,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								779,
+								820
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 33.0
+	},
+	"input":
+	{
+		"height": 71.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "ThemesList.sublime-project",
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 354.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 894.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 266.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
