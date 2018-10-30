@@ -40,7 +40,7 @@ const ThemeMethods = {
 	}),
 
 	/**
-	 * Update Theme
+	 * Remove a Theme
 	 */
 	remove: new ValidatedMethod({
 		name: 'themes.remove',
@@ -78,89 +78,6 @@ const ThemeMethods = {
 	/**
 	 * Get Top Orgs Sorted by chit votes
 	 */
-	getTopOrgs: new ValidatedMethod({
-		name: 'organizations.getTopOrgs',
-
-		validate: null,
-
-		run(id) {
-
-
-			let p = new Promise((resolve, reject) => {
-				setTimeout(() => {
-					resolve();
-				}, 1000);
-			});
-			console.log(p);
-			p.then(() => {console.log("got it")});
-			console.log({id: id});
-			let theme; // = MeteorPromise.await(Themes.find({_id: id})).fetch();
-			let orgs; // = MeteorPromise.await(Organizations.find({theme: id})).fetch();
-
-			if(!_.isEmpty(theme) && !_.isEmpty(orgs)){
-
-				console.log({theme: theme, orgs: orgs});
-				/*
-				// Save manual top orgs as key/value true/false pairs for reference
-				let manualTopOrgs = {};
-				theme.topOrgsManual.map((org) => {
-					manualTopOrgs[org] = true;
-				});
-
-				// First sort orgs by weight and vote count
-				let sortedOrgs = _.sortBy(orgs, (org) => {
-					// Calculate the votes for each org (weight/chit_weight unless there's a manual count)
-					let votes = org.chitVotes.count ? org.chitVotes.count :
-												org.chitVotes.weight ? org.chitVotes.weight / theme.chit_weight : 0;
-
-					// Save the votes count for later
-					org.votes = votes;
-
-					// Sort in descending order
-					return -(votes)
-				});
-
-				let slice = theme.topOrgsManual.length;
-
-				//Then bubble up the manual top orgs
-				// No need to proceed if manual orgs is >= numTopOrgs
-				if(theme.numTopOrgs > theme.topOrgsManual.length){
-					slice = theme.numTopOrgs;
-
-					// climb up the bottom of the list looking for manually selected orgs
-					for(let i = sortedOrgs.length-1; i >= theme.numTopOrgs; i--){
-						// console.log({i: i, num: theme.numTopOrgs});
-						// console.log({id: sortedOrgs[i]._id, index: i});
-						// Check if the org has been manually selected
-						if(manualTopOrgs[sortedOrgs[i]._id]){
-							// Find the closest automatically selected top org
-							let j = i-1;
-							while(j > 0 && manualTopOrgs[sortedOrgs[j]._id]){
-								j--;
-							}
-
-							// Start swapping the auto top org down the list
-							while(j < i){
-								let tmp = sortedOrgs[i];
-								sortedOrgs[i] = sortedOrgs[j];
-								sortedOrgs[j] = tmp;
-
-								j++;
-							}
-
-							// Send the index back one in case we swapped another match into previous place
-							i++;
-						}
-					}
-				}
-
-				return sortedOrgs.slice(0, slice);
-				*/
-			}
-			return[];
-		}
-	}),
-
 	filterTopOrgs: (theme, orgs) => {
 		if(!theme){
 			throw new Meteor.Error("No theme provided to ThemeMethods.filterTopOrgs");

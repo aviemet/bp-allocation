@@ -57,6 +57,12 @@ const ThemeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: 600
 	},
+	animate_orgs: {
+		type: Boolean,
+		label: 'Wether to animate the Top Orgs',
+		required: false,
+		defaultValue: true
+	},
 	match_ratio: {
 		type: SimpleSchema.Integer,
 		label: 'Multiplicant of dollar match values in pledge round',

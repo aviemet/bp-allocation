@@ -34,60 +34,48 @@ class PresentationPane extends React.Component {
 		super(props);
 
 		this.state = {
-			resultsOffset: this.props.theme.results_offset,
-			timerSeconds: this.props.theme.timer_length
+			results_offset: this.props.theme.results_offset,
+			timer_length: this.props.theme.timer_length
 		};
 
-		this.toggleParticipatingOrgsAnimation = this.toggleParticipatingOrgsAnimation.bind(this);
-		this.toggleTopOrgsAnimation = this.toggleTopOrgsAnimation.bind(this);
-		this.toggleShowLeverage = this.toggleShowLeverage.bind(this);
-		this.updateTimerSeconds = this.updateTimerSeconds.bind(this);
-		this.updateResultsOffset = this.updateResultsOffset.bind(this);
+		this.toggleThemeValue = this.toggleThemeValue.bind(this);
+		this.updateThemeValue = this.updateThemeValue.bind(this);
 		this.resetPresentation = this.resetPresentation.bind(this);
 	}
 
-	componentDidUpdate(prevProps, prevState){
-		// var newState = {};
-		// if(this.props.theme.timer_length !== prevState.timerSeconds){
-		// 	newState.timerSeconds = this.props.theme.timer_length;
-		// }
-		// if(this.props.theme.results_offset !== prevState.resultsOffset){
-		// 	newState.resultsOffset = this.props.theme.results_offset;
-		// }
-		// if(!_.isEmpty(newState)){
-		// 	this.setState(newState);
-		// }
+	/**
+	 * Togle boolean values on the Theme model
+	 */
+	toggleThemeValue(e, data){
+		let tempData = {};
+		tempData[data.index] = data.checked;
+
+		ThemeMethods.update.call({id: this.props.themeId, data: tempData});
 	}
 
-	toggleParticipatingOrgsAnimation(){
-
-	}
-
-	toggleTopOrgsAnimation(){
-
-	}
-
-	toggleShowLeverage(e, data){
-		ThemeMethods.update.call({id: this.props.themeId, data: { leverage_visible: data.checked } });
-	}
-
-	updateTimerSeconds(e, data){
-		this.setState({timerSeconds: data.value});
+	/**
+	 * Update non-boolean values on the Theme model
+	 */
+	updateThemeValue(e, data){
+		let tempData = {}
+		tempData[data.index] = data.value;
+		this.setState(tempData);
+		// Wait a second in case there's multiple inputs
+		// TODO: create queue to avoid multiple updates
 		setTimeout(() => {
-			ThemeMethods.update.call({id: this.props.themeId, data: { timer_length: data.value}});
+			ThemeMethods.update.call({id: this.props.themeId, data: tempData});
 		}, 1000);
 	}
 
-	updateResultsOffset(e, data){
-		this.setState({resultsOffset: data.value});
-		setTimeout(() => {
-			ThemeMethods.update.call({id: this.props.themeId, data: { results_offset: data.value}});
-		}, 1000);
-	}
-
+	/**
+	 * Reset the values for the presentation
+	 */
 	resetPresentation(){
 		console.log('reset');
-		ThemeMethods.update.call({id: this.props.themeId, data: { leverage_visible: false } });
+		ThemeMethods.update.call({id: this.props.themeId, data: {
+			leverage_visible: false,
+			animate_orgs: true,
+		}});
 	}
 
 	render() {
@@ -115,6 +103,9 @@ class PresentationPane extends React.Component {
 					<Grid.Row stretched>
 						<Grid.Column>
 
+							{/************
+							  * Intro/Title Page
+							  ************/}
 							<Segment>
 								<PresentationNavButton page='intro'>
 									<Icon name='address card' size='huge' /><br/>
@@ -122,52 +113,66 @@ class PresentationPane extends React.Component {
 								</PresentationNavButton>
 							</Segment>
 
+							{/************
+							  * Top Organizations
+							  ************/}
 							<Segment>
 								<PresentationNavButton page='toporgs'>
 									<Icon name='winner' size='huge' /><br/>
 									<Label>Top Organizations</Label>
 								</PresentationNavButton>
-								<Checkbox label='Animate' toggle onClick={this.toggleTopOrgsAnimation} />
+								<Checkbox label='Animate' toggle index='animate_orgs' onClick={this.toggleThemeValue} checked={this.props.theme.animate_orgs || false} />
 							</Segment>
 
 						</Grid.Column>
 
 						<Grid.Column>
 
+							{/************
+							  * Participating Organizations
+							  ************/}
 							<Segment>
 								<PresentationNavButton page='orgs'>
 									<Icon name='table' size='huge' /><br/>
 									<Label>Participating Organizations</Label>
 								</PresentationNavButton>
-								{/*<Checkbox label='Animate' toggle onClick={this.toggleParticipatingOrgsAnimation} />*/}
 							</Segment>
 
+							{/************
+							  * Allocation/Evaluation
+							  ************/}
 							<Segment>
 								<PresentationNavButton page='allocation'>
 									<Icon name='chart bar' size='huge' /><br/>
 									<Label>Allocation</Label>
 								</PresentationNavButton>
-								<Checkbox label='Show Leverage' toggle onClick={this.toggleShowLeverage} checked={this.props.theme.leverage_visible || false} />
+								<Checkbox label='Show Leverage' toggle index='leverage_visible' onClick={this.toggleThemeValue} checked={this.props.theme.leverage_visible || false} />
 							</Segment>
 
 						</Grid.Column>
 
 						<Grid.Column>
 
+							{/************
+							  * Timer
+							  ************/}
 							<Segment>
 								<PresentationNavButton page='timer' icon>
 									<Icon name='hourglass' size='huge' /><br/>
 									<Label>Timer</Label>
 								</PresentationNavButton>
-								<Input type='number' label='Seconds' onChange={this.updateTimerSeconds} value={this.state.timerSeconds} />
+								<Input type='number' label='Seconds' index='timer_length' onChange={this.updateThemeValue} value={this.state.timer_length} />
 							</Segment>
 
+							{/************
+							  * Results Page
+							  ************/}
 							<Segment>
 								<PresentationNavButton page='results'>
 									<Icon name='check' size='huge' /><br/>
 									<Label>Result</Label>
 								</PresentationNavButton>
-								<Input type='number' icon='dollar sign' iconPosition='left' label='Offset' labelPosition='right' value={this.state.resultsOffset} onChange={this.updateResultsOffset} />
+								<Input type='number' icon='dollar sign' iconPosition='left' label='Offset' labelPosition='right' index='results_offset' value={this.state.results_offset} onChange={this.updateThemeValue} />
 							</Segment>
 
 						</Grid.Column>

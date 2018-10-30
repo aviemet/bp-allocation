@@ -28,17 +28,16 @@ export default class Intro extends React.Component {
 	constructor(props) {
 		super(props);
 		this.topOrgs = ThemeMethods.filterTopOrgs(this.props.theme, this.props.orgs);
-		console.log({props: this.props, toporgs: this.topOrgs});
 	}
 
 	render() {
 		return (
 			<TopOrgsContainer>
-				<PageTitle>Participating Organizations</PageTitle>
+				<PageTitle>Top {this.topOrgs.length} Organizations</PageTitle>
 				<Container>
 					<Card.Group centered itemsPerRow={3}>
 					{this.topOrgs.map((org) => (
-						<OrgCard org={org} key={org._id} />
+						<OrgCard org={org} key={org._id} animateClass={this.props.theme.animate_orgs}  />
 					))}
 					</Card.Group>
 				</Container>

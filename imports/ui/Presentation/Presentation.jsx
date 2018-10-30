@@ -79,7 +79,7 @@ class PresentationLayout extends React.Component {
 							<Timer seconds={this.props.theme.timer_length} />
 						)} />
 
-						{/* Top ORgs */}
+						{/* Top Orgs */}
 						<Route exact path={`/presentation/${this.props.id}/toporgs`} render={(props) => (
 							<TopOrgs orgs={this.props.organizations} theme={this.props.theme} />
 						)} />
