@@ -1,8 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
+import _ from 'underscore';
 
-import { Themes, Organizations } from '/imports/api';
+import { Themes, Organizations, Images } from '/imports/api';
 import { OrganizationMethods } from '/imports/api/methods';
 
 import { ThemeContext } from '/imports/ui/Contexts';
@@ -23,12 +24,17 @@ class OrganizationPane extends React.Component {
 			themeId: this.props.themeId,
 			orgTitle: '',
 			orgAsk: '',
-			orgImage: ''
+			orgImage: '',
+			addButtonDisabled: false
 		};
 
 		this.updateValue = this.updateValue.bind(this);
 		this.handleNewOrgSubmit = this.handleNewOrgSubmit.bind(this);
 		this.updateImageValue = this.updateImageValue.bind(this);
+
+		this.enableAddButton = this.enableAddButton.bind(this);
+		this.disableAddButton = this.disableAddButton.bind(this);
+		this.fileError = this.fileError.bind(this);
 	}
 
 	updateValue(e, data) {
@@ -39,6 +45,13 @@ class OrganizationPane extends React.Component {
 
 	updateImageValue({file}) {
 		this.setState({orgImage: file._id});
+	}
+
+	enableAddButton()  { this.setState({addButtonDisabled: false});	}
+	disableAddButton() { this.setState({addButtonDisabled: true});	}
+
+	fileError(error, file){
+		console.log({error: error, file: file});
 	}
 
 	handleNewOrgSubmit(e) {
@@ -78,8 +91,8 @@ class OrganizationPane extends React.Component {
 					<Form.Group>
 						<Form.Input width={6} type='text' placeholder='Organization Name' name='orgTitle' onChange={this.updateValue} value={this.state.orgTitle} />
 						<Form.Input width={2} type='text' placeholder='Ask' iconPosition='left' icon='dollar sign' name='orgAsk' onChange={this.updateValue} value={this.state.orgAsk} />
-						<FileUpload width={4} name='orgImage' onEnd={this.updateImageValue} />
-						<Form.Button width={2} type='submit'>Add</Form.Button>
+						<FileUpload width={4} name='orgImage' onEnd={this.updateImageValue} onStart={this.disableAddButton} onUploaded={this.enableAddButton} onError={this.fileError} />
+						<Form.Button width={2} type='submit' disabled={this.state.addButtonDisabled}>Add</Form.Button>
 					</Form.Group>
 				</Form>
 			</React.Fragment>
@@ -89,12 +102,40 @@ class OrganizationPane extends React.Component {
 
 export default withTracker(({themeId}) => {
 	let orgsHandle = Meteor.subscribe('organizations', themeId);
+	let imagesHandle = Meteor.subscribe('images', themeId);
+	let orgs = Organizations.find({theme: themeId}).fetch();
+	let images;
 
-	if(orgsHandle.ready()){
-		return {
-			organizations: Organizations.find({theme: themeId}).fetch(),
-			loading: false
+	// Get the image info into the orgs
+	let imgIds = orgs.map((org) => ( org.image ));
+	if(!_.isEmpty(imgIds)){
+		// Fetch the images
+		images = Images.find({_id: {$in: imgIds}}).fetch();
+
+		// Map fields from each image object to its respective org
+		if(!_.isEmpty(images)){
+			orgs.map((org) => {
+				image = _.find(images, (img) => ( img._id === org.image));
+
+				if(image){
+					imageObject = {
+						_id: image._id,
+						path: `/uploads/${image._id}.${image.extension}`,
+						name: image.name
+					};
+
+					org.image = imageObject
+				}
+			});
 		}
 	}
-	return { loading: true }
+
+	if(orgsHandle.ready()){
+		 console.log(orgs);
+	}
+
+	return {
+		organizations: orgs,
+		loading: !orgsHandle.ready()
+	}
 })(OrganizationPane);

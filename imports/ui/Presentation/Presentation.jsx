@@ -132,6 +132,7 @@ export default withTracker(({id}) => {
 			});
 		}
 	}
+
 	return {
 		loading: !themesHandle.ready() && !orgsHandle.ready() && !imagesHandle.ready(),
 		theme: theme,

@@ -1,10 +1,28 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
+import styled from 'styled-components';
 
 import { Images } from '/imports/api';
 
-import { Loader, Form } from 'semantic-ui-react';
+import { Loader, Form, Progress, Input, Segment } from 'semantic-ui-react';
+
+const FileUploadContainer = styled(Segment)`
+  &&{
+    padding: 0;
+    margin: 0;
+
+    input{
+      margin-top: 6px;
+      margin-bottom: 6px;
+      border: none !important;
+    }
+
+    .progress .bar{
+      min-width: 2px !important;
+    }
+  }
+`;
 
 class FileUpload extends React.Component {
   constructor(props) {
@@ -13,7 +31,8 @@ class FileUpload extends React.Component {
     this.state = {
       uploading: [],
       progress: 0,
-      inProgress: false
+      inProgress: false,
+      color: 'orange'
     };
 
     this.handleUpload = this.handleUpload.bind(this);
@@ -66,7 +85,8 @@ class FileUpload extends React.Component {
           that.setState({
             uploading: [],
             progress: 0,
-            inProgress: false
+            inProgress: false,
+            color: 'green'
           });
 
         }).on('end', function (error, fileObj) {
@@ -90,9 +110,10 @@ class FileUpload extends React.Component {
       let file = Images.findOne({_id: this.props.image});
 
       return (
-        <React.Fragment>
-          <Form.Input type='file' disabled={this.state.inProgress} onChange={this.handleUpload} width={this.props.width} />
-        </React.Fragment>
+        <FileUploadContainer>
+          <Input type='file' disabled={this.state.inProgress} onChange={this.handleUpload} width={this.props.width} />
+          <Progress attached='bottom' percent={this.state.progress} color={this.state.color} />
+        </FileUploadContainer>
       );
 
     } else {

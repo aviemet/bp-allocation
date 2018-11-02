@@ -93,8 +93,18 @@ Meteor.startup(() => {
 		// TODO: return error
 	});
 
-  Meteor.publish('images', () => {
-    return Images.find({}).cursor;
+  Meteor.publish('images', (themeId) => {
+  	if(themeId){
+	  	let orgs = Organizations.find({theme: themeId}, {_id: true, image: true, title: false, ask: false, theme: false, chitVotes: false, value: false}).fetch();
+
+	  	let imgIds = [];
+	  	orgs.map((org, i) => {
+	  		imgIds.push(org._id);
+	  	});
+
+	    return Images.find({_id: {$in: imgIds}}).cursor;
+	  }
+	  return Images.find({}).cursor;
   });
 
 });
