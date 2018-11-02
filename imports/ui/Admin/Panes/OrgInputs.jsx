@@ -3,7 +3,7 @@ import React from 'react';
 import { Themes, Organizations } from '/imports/api';
 import { OrganizationMethods } from '/imports/api/methods';
 
-import { Button, Form, Input, Icon, Popup, Modal, Header, Image } from 'semantic-ui-react';
+import { Button, Form, Input, Icon, Popup, Modal, Header, Image, Label, Loader } from 'semantic-ui-react';
 
 import FileUpload from '/imports/ui/Components/FileUpload';
 
@@ -20,7 +20,9 @@ export default class OrgInputs extends React.Component {
 			orgAsk: this.props.organization.ask,
 
 			replaceModalOpen: false,
-			viewModalOpen: false
+			viewModalOpen: false,
+
+			loading: true
 		};
 
 		this.updateValue = this.updateValue.bind(this);
@@ -38,8 +40,8 @@ export default class OrgInputs extends React.Component {
 	// Need to wait for the Images to fetch from props
 	componentDidUpdate(prevProps, prevState) {
 		console.log({image: this.props.organization.image});
-		if(this.props.organization.image && prevState.orgImage !== this.props.organization.image){
-
+		if(this.props.organization.image && prevProps.organization.image !== this.props.organization.image){
+			this.setState({loading: false});
 		}
 	}
 
@@ -107,12 +109,21 @@ export default class OrgInputs extends React.Component {
 			{ key: 'replace', text: 'Replace', value: 'replace' },
 		];
 
+		if(this.state.loading){
+			return ( <Loader /> );
+		}
 		return(
 			<Form organization={this.props.organization._id} onSubmit={this.handleOrgUpdate} encType="multipart/form-data" onBlur={this.handleOrgUpdate}>
 				<Form.Group>
 					<Form.Input width={6} type='text' placeholder='Organization Name' value={this.state.orgTitle} onChange={this.updateValue} name='orgTitle' />
+
 					<Form.Input width={2} type='text' placeholder='Ask' iconPosition='left' icon='dollar sign' value={this.state.orgAsk} onChange={this.updateValue} name='orgAsk' />
-						<Form.Dropdown text='Image' floating button options={imageOptions} onChange={this.handleImageDropdown} />
+
+					<Form.Dropdown width={2} style={{width: '100%'}} text='Image' floating button options={imageOptions} onChange={this.handleImageDropdown} />
+
+					<Form.Field width={5}>
+						<Label style={{width: '100%', height: '100%'}}>{this.props.organization.image.name || ''}</Label>
+					</Form.Field>
 
 					<Modal
 						centered={false}
@@ -131,7 +142,7 @@ export default class OrgInputs extends React.Component {
 				<Modal
 					open={this.state.viewModalOpen}
 					onClose={this.closeViewModal}>
-					<Image src={this.props.organization.image.path} />
+					<Image src={this.props.organization.image.path || '/public/img/notfound.png'} />
 				</Modal>
 
 				<Modal

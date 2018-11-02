@@ -125,6 +125,8 @@ export default withTracker(({themeId}) => {
 					};
 
 					org.image = imageObject
+				} else {
+					org.image = {}
 				}
 			});
 		}
