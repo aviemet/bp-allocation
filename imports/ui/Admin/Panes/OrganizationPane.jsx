@@ -133,7 +133,7 @@ export default withTracker(({themeId}) => {
 	}
 
 	if(orgsHandle.ready()){
-		 console.log(orgs);
+		 // console.log(orgs);
 	}
 
 	return {

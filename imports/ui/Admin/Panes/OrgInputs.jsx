@@ -18,6 +18,7 @@ export default class OrgInputs extends React.Component {
 			themeId: this.props.theme,
 			orgTitle: this.props.organization.title,
 			orgAsk: this.props.organization.ask,
+			orgImage: typeof this.props.organization.image === "object" ? this.props.organization.image._id : this.props.organization.image,
 
 			replaceModalOpen: false,
 			viewModalOpen: false,
@@ -25,7 +26,10 @@ export default class OrgInputs extends React.Component {
 			loading: true
 		};
 
+		this.imageReplaced = false;
+
 		this.updateValue = this.updateValue.bind(this);
+		this.updateImageValue = this.updateImageValue.bind(this);
 		this.handleOrgUpdate = this.handleOrgUpdate.bind(this);
 		this.handleImageDropdown = this.handleImageDropdown.bind(this);
 		this.removeOrg = this.removeOrg.bind(this);
@@ -35,36 +39,51 @@ export default class OrgInputs extends React.Component {
 
 		this.openViewModal = this.openViewModal.bind(this);
 		this.closeViewModal = this.closeViewModal.bind(this);
+
+		this.cancelReplaceModal = this.cancelReplaceModal.bind(this);
+		this.saveReplaceModal = this.saveReplaceModal.bind(this);
 	}
 
 	// Need to wait for the Images to fetch from props
 	componentDidUpdate(prevProps, prevState) {
-		console.log({image: this.props.organization.image});
 		if(this.props.organization.image && prevProps.organization.image !== this.props.organization.image){
-			this.setState({loading: false});
+			this.setState({
+				loading: false,
+				orgImage: this.props.organization.image._id
+			});
 		}
 	}
 
 	// State updater for all inputs
 	updateValue(e) {
-		console.log({name: e.target.name, value: e.target.value});
 		let newState = {};
 		newState[e.target.name] = e.target.value;
 		this.setState(newState);
-		console.log(newState);
+	}
+
+	updateImageValue({file}) {
+		this.imageReplaced = true;
+		this.setState({orgImage: file._id});
 	}
 
 	// Write to DB for all inputs
 	handleOrgUpdate(e) {
-		e.preventDefault();
+		if(e)	e.preventDefault();
 
 		// Only update the document if data has changed
 		if(this.state.orgTitle !== this.props.organization.title ||
-			 this.state.orgAsk   !== this.props.organization.ask) {
+			 this.state.orgAsk   !== this.props.organization.ask ||
+			 this.state.orgImage   !== this.props.organization.image._id) {
 
+			console.log({
+				title: this.state.orgTitle,
+				ask: this.state.orgAsk,
+				image: this.state.orgImage
+			});
 			OrganizationMethods.update.call({id: this.props.organization._id, data: {
 				title: this.state.orgTitle,
-				ask: this.state.orgAsk
+				ask: this.state.orgAsk,
+				image: this.state.orgImage
 			}}, (err, res) => {
 				if(err){
 					console.log(err);
@@ -78,7 +97,6 @@ export default class OrgInputs extends React.Component {
 
 	handleImageDropdown(e, data) {
 		e.persist();
-		console.log({dropdownData: data});
 		switch(data.value){
 			case 'view':
 				this.openViewModal();
@@ -89,15 +107,28 @@ export default class OrgInputs extends React.Component {
 		}
 	}
 
-	openReplaceModal(){ this.setState({replaceModalOpen: true})}
-	closeReplaceModal(){ this.setState({replaceModalOpen: false})}
+	openReplaceModal()  { this.setState({replaceModalOpen: true});  }
+	closeReplaceModal() { this.setState({replaceModalOpen: false}); }
 
-	openViewModal(){ this.setState({viewModalOpen: true})}
-	closeViewModal(){ this.setState({viewModalOpen: false})}
+	openViewModal()  { this.setState({viewModalOpen: true});  }
+	closeViewModal() { this.setState({viewModalOpen: false}); }
+
+	cancelReplaceModal() {
+		if(this.imageReplaced){
+			ImageMethods.remove.call(this.state.orgImage);
+		}
+		this.imageReplaced = false;
+		this.setState({orgImage: this.props.organization.image._id});
+		this.closeReplaceModal();
+	}
+
+	saveReplaceModal() {
+		this.handleOrgUpdate();
+		this.closeReplaceModal();
+	}
 
 	removeOrg(e){
 		e.preventDefault();
-		console.log({removing: this.props.organization._id});
 		OrganizationMethods.remove.call(this.props.organization._id, (err, res) => {
 			if(err) console.log(err);
 		});
@@ -139,12 +170,15 @@ export default class OrgInputs extends React.Component {
 				{/**
 				 * Dropdown triggered modals
 				 **/ }
+
+				{/* View Image */}
 				<Modal
 					open={this.state.viewModalOpen}
 					onClose={this.closeViewModal}>
 					<Image src={this.props.organization.image.path || '/public/img/notfound.png'} />
 				</Modal>
 
+				{/* Replace Image */}
 				<Modal
 					open={this.state.replaceModalOpen}
 					onClose={this.closeReplaceModal}>
@@ -156,8 +190,8 @@ export default class OrgInputs extends React.Component {
 					</Modal.Content>
 
 	        <Modal.Actions>
-	          <Button color='green' onClick={this.closeReplaceModal}><Icon name='checkmark' />Save</Button>
-	          <Button color='red' onClick={this.closeReplaceModal}><Icon name='cancel' />Cancel</Button>
+	          <Button color='green' onClick={this.saveReplaceModal} value='cancel'><Icon name='checkmark' />Save</Button>
+	          <Button color='red' onClick={this.cancelReplaceModal}><Icon name='cancel' />Cancel</Button>
 	        </Modal.Actions>
 
 				</Modal>
