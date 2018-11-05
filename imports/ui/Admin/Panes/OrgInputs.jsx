@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Themes, Organizations } from '/imports/api';
-import { OrganizationMethods } from '/imports/api/methods';
+import { OrganizationMethods, ImageMethods } from '/imports/api/methods';
 
 import { Button, Form, Input, Icon, Popup, Modal, Header, Image, Label, Loader } from 'semantic-ui-react';
 

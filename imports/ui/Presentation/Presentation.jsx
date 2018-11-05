@@ -122,12 +122,7 @@ export default withTracker(({id}) => {
 				image = _.find(images, (img) => ( img._id === org.image));
 
 				if(image){
-					imageObject = {
-						_id: image._id,
-						path: `/uploads/${image._id}.${image.extension}`
-					};
-
-					org.image = imageObject
+					org.image = image;
 				}
 			});
 		}

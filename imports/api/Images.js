@@ -3,7 +3,9 @@ import { FilesCollection } from 'meteor/ostrio:files';
 
 let config = {
   collectionName: 'images',
-  allowClientCode: false, // Disallow remove files from Client
+  allowClientCode: true, // Disallow remove files from Client
+  downloadRoute: '/uploads/',
+  storagePath: 'assets/uploads',
   onBeforeUpload(file) {
     // Allow upload files under 10MB, and only in png/jpg/jpeg/gif formats
     if (file.size <= 20971520 && /png|jpg|jpeg|gif/i.test(file.extension)) {
@@ -13,9 +15,9 @@ let config = {
   }
 }
 
-if(Meteor.isServer){
-  config.storagePath = process.env.PWD+'/public/uploads';
-}
+// if(Meteor.isServer){
+//   config.storagePath = process.env.PWD+'/public/.uploads';
+// }
 
 const Images = new FilesCollection(config);
 

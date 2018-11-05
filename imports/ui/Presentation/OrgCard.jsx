@@ -5,7 +5,7 @@ import numeral from 'numeral';
 import { Card, Image } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { Organizations } from '/imports/api';
+import { Organizations, Images } from '/imports/api';
 import { OrganizationsSchema } from '/imports/api/schema';
 
 const OrgTitle = styled.p`
@@ -89,6 +89,10 @@ export default class OrgCard extends React.Component {
 		super(props);
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		// console.log({prevProps: prevProps, props: this.props});
+	}
+
 	render() {
 		// Add animation class if toggled
 		var animateClass = '';
@@ -97,7 +101,7 @@ export default class OrgCard extends React.Component {
 		}
 		let imagePath = '';
 		if(this.props.org.image && this.props.org.image.path){
-			imagePath = this.props.org.image.path;
+			imagePath = Images.link(this.props.org.image);
 		}
 		return (
 			<Card className={animateClass}>
