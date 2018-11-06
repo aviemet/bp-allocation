@@ -22,7 +22,7 @@ const InfoContainer = styled(Grid.Column)`
 `;
 
 const Title = styled.div`
-
+	min-height: 60px;
 `;
 
 const Ask = styled.div`
@@ -62,9 +62,9 @@ class OrgInfo extends React.Component {
 		return (
 			<InfoContainer className='orginfo'>
 				<Title>{this.props.org.title}</Title>
-				<Ask>Ask: {numeral(this.props.org.ask).format('0.0a')}</Ask>
-				<MatchNeed>Match Need: {numeral(this.state.need/2).format('0.0a')}</MatchNeed>
-				<TotalNeed>Total Need: {numeral(this.state.need).format('0.0a')}</TotalNeed>
+				<Ask>Ask: ${numeral(this.props.org.ask).format('0.0a')}</Ask>
+				<MatchNeed>Match Need: {this.state.need > 0 ? `$${numeral(this.state.need/2).format('0.0a')}` : '--'}</MatchNeed>
+				<TotalNeed>Total Need: {this.state.need > 0 ? `$${numeral(this.state.need).format('0.0a')}` : '--'}</TotalNeed>
 			</InfoContainer>
 		);
 	}
