@@ -28,7 +28,7 @@ const PresentationContainer = styled.div`
 		letter-spacing: 1px;
 		color: white;
 		text-transform: uppercase;
-		font-size: 3.5em;
+		font-size: 3.75em;
 		font-family: 'TradeGothic';
 	}
 `;

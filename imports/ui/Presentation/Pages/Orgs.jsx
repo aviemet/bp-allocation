@@ -9,7 +9,7 @@ import numeral from 'numeral';
 import OrgCard from '/imports/ui/Presentation/OrgCard';
 
 const OrgsContainer = styled.div`
-	padding-top: 60px;
+	padding-top: 20px;
 
 	.ui.card .content{
 		color: #002B45;
@@ -22,7 +22,7 @@ const OrgsContainer = styled.div`
 `;
 
 const PageTitle = styled.h2`
-	margin-bottom: 46px;
+	margin-bottom: 20px;
 `;
 
 const ThemeConsumer = ThemeContext.Consumer;

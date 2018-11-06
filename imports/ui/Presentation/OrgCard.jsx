@@ -12,6 +12,7 @@ const OrgTitle = styled.p`
 	font-family: TradeGothic;
 	font-size: 1.5em;
 	margin: 5px;
+	font-weight: 600;
 `;
 
 const OrgAsk = styled.p`
@@ -22,7 +23,7 @@ const OrgAsk = styled.p`
 
 const CardImage = styled.div`
 	width: 100%;
-	height: 225px;
+	height: 205px;
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center center;

@@ -15,17 +15,37 @@ import { COLORS } from '/imports/utils';
 const ResultsPageContainer = styled.div`
 	color: #FFF;
 
-	&& h1{
-		color: #FFF;
-		text-transform: uppercase;
-    letter-spacing: 1px;
-		font-family: TradeGothic;
-		font-size: 3em;
+	&& {
+		h1 {
+			color: #FFF;
+			text-transform: uppercase;
+	    letter-spacing: 1px;
+			font-family: TradeGothic;
+			font-size: 3.8em;
+			margin: 0 0 0.5em 0;
+		}
+
+		h2{
+			color: #FFF;
+			text-transform: uppercase;
+	    letter-spacing: 1px;
+			font-family: TradeGothic;
+			font-size: 2.75em;
+		}
+	}
+
+	.ui.cards .card .content {
+		padding: 5px;
+
+		p{
+			margin: 0;
+			font-size: 1.75em;
+		}
 	}
 `;
 
 const AwardsImage = styled.img`
-	width: 12%;
+	width: 10%;
 `;
 
 export default class Intro extends React.Component {
@@ -80,7 +100,7 @@ export default class Intro extends React.Component {
 
 				<Header as='h1'>Total amount given: {numeral(this.state.total + this.state.offset).format(this.state.format)}</Header>
 
-				<Header as='h1'>Battery Powered Awardees</Header>
+				<Header as='h2'>Battery Powered Awardees</Header>
 
 				<Container>
 					<Card.Group centered >
@@ -93,7 +113,7 @@ export default class Intro extends React.Component {
 					</Card.Group>
 				</Container>
 
-				<Header as='h1'>Other winners</Header>
+				<Header as='h2'>Other winners</Header>
 
 				<Container>
 					<Card.Group centered >
