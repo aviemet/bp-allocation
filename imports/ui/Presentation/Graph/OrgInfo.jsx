@@ -10,13 +10,15 @@ import { Loader, Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const InfoContainer = styled(Grid.Column)`
-	margin: 0 1.5em;
-	padding: 0;
-	margin-bottom: -6px;
-	bottom: 0;
-	text-align: center;
-	font-size: 1.5em;
-	line-height: 1em;
+	&&{
+		margin: 0 1.5em;
+		padding: 0 !important;
+		margin-bottom: -6px;
+		bottom: 0;
+		text-align: center;
+		font-size: 1.5em;
+		line-height: 1em;
+	}
 `;
 
 const Title = styled.div`

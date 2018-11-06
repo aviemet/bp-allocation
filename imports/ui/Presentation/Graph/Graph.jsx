@@ -21,7 +21,7 @@ const GraphContainer = styled.div`
 	width: 90%;
 	height: 55vh;
 	position: relative;
-	margin: 12.5em auto 0 7em;
+	margin: 10em auto 0 7em;
 `;
 
 const XAxis = styled.div`
