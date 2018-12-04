@@ -8,12 +8,27 @@ import { Themes } from '/imports/api';
 import { ThemeContext } from '/imports/ui/Contexts';
 
 import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react'
+import styled from 'styled-components';
 
 import OrganizationPane from '/imports/ui/Admin/Panes/OrganizationPane';
 import ChitVotingPane from '/imports/ui/Admin/Panes/ChitVotingPane';
 import DollarVotingPane from '/imports/ui/Admin/Panes/DollarVotingPane';
 import SettingsPane from '/imports/ui/Admin/Panes/SettingsPane';
 import PresentationPane from '/imports/ui/Admin/Panes/PresentationPane';
+
+const Title = styled(Header)`
+	&& {
+		color: #FFF;
+	}
+`;
+
+const TabMenu = styled(Menu)`
+	&&& {
+		a.item{
+			color: #FFF;
+		}
+	}
+`;
 
 const TABS = {
 	orgs:{
@@ -26,7 +41,7 @@ const TABS = {
 	},
 	money: {
 		slug: 'money',
-		heading: 'Dollar Voting'
+		heading: 'Allocation'
 	},
 	settings: {
 		slug: 'settings',
@@ -45,7 +60,7 @@ class Theme extends React.Component {
 		super(props);
 
 		this.state = {
-			activeItem: TABS.orgs.slug
+			activeItem: TABS.settings.slug
 		}
 	}
 
@@ -61,19 +76,19 @@ class Theme extends React.Component {
 			<React.Fragment>
 
 				<Grid.Row>
-					<Header as='h1'>Settings for the theme</Header>
+					<Title as='h1'>Allocation Night for {this.props.theme.title}</Title>
 				</Grid.Row>
 
 				<Grid.Row>
-					<Menu attached='top' tabular>
-						<Menu.Item name={TABS.orgs.heading} slug={TABS.orgs.slug} active={activeItem === TABS.orgs.slug} onClick={this.handleItemClick} />
-						<Menu.Item name={TABS.chits.heading} slug={TABS.chits.slug} active={activeItem === TABS.chits.slug} onClick={this.handleItemClick} />
-						<Menu.Item name={TABS.money.heading} slug={TABS.money.slug} active={activeItem === TABS.money.slug} onClick={this.handleItemClick} />
-						<Menu.Item name={TABS.settings.heading} slug={TABS.settings.slug} active={activeItem === TABS.settings.slug} onClick={this.handleItemClick} />
+					<TabMenu attached='top' tabular>
+						<Menu.Item name={TABS.settings.heading} slug={TABS.settings.slug} active={activeItem === TABS.settings.slug} onClick={this.handleItemClick} color='blue' />
+						<Menu.Item name={TABS.orgs.heading} slug={TABS.orgs.slug} active={activeItem === TABS.orgs.slug} onClick={this.handleItemClick} color='green' />
+						<Menu.Item name={TABS.chits.heading} slug={TABS.chits.slug} active={activeItem === TABS.chits.slug} onClick={this.handleItemClick} color='brown' />
+						<Menu.Item name={TABS.money.heading} slug={TABS.money.slug} active={activeItem === TABS.money.slug} onClick={this.handleItemClick} color='orange' />
 						<Menu.Menu position='right'>
-							<Menu.Item name={TABS.presentation.heading} slug={TABS.presentation.slug} active={activeItem === TABS.presentation.slug} onClick={this.handleItemClick} />
+							<Menu.Item name={TABS.presentation.heading} slug={TABS.presentation.slug} active={activeItem === TABS.presentation.slug} onClick={this.handleItemClick} color='pink' />
 						</Menu.Menu>
-					</Menu>
+					</TabMenu>
 					<ThemeContext.Provider value={this.props.theme}>
 						<Segment attached="bottom">
 							<Switch location={{pathname: this.state.activeItem}}>

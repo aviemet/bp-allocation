@@ -26,7 +26,7 @@ const GraphBar = styled.div`
 	-webkit-transition: all 1.5s ease-out;
 `;
 
-const Ask = styled.span`
+const Pledged = styled.span`
 	position: relative;
   display: block;
   top: 54%;
@@ -78,12 +78,13 @@ class Bar extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		let height = 0;
-		if(this.props.org.value > 0)
-			height = Math.round((this.props.org.value / this.props.org.ask) * 100);
+		let org = this.props.org;
 
-		if(height > 100)
-			height = 100;
+		let height = 0;
+		if(org.pledges > 0 || org.amount_from_votes > 0)
+			height = Math.round(( ((org.pledges || 0) + (org.amount_from_votes || 0) + (org.topoff || 0)) / org.ask) * 100);
+
+		if(height > 100) height = 100;
 
 		if(prevState.height !== height){
 			this.setState({
@@ -107,7 +108,7 @@ class Bar extends Component {
 			<BarContainer>
 				<AwardImg show={this.state.height === 100} />
 				<GraphBar style={{height: `${this.state.height}%`, backgroundColor: this.props.color }}>
-					<Ask>${numeral(this.props.org.value).format('0.0a')}</Ask>
+					<Pledged>${numeral(this.props.org.pledges + this.props.org.amount_from_votes).format('0.0a')}</Pledged>
 				</GraphBar>
 			</BarContainer>
 		);

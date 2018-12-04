@@ -18,7 +18,8 @@ class SettingsPane extends React.Component {
 			question: this.props.theme.question,
 			timer_length: this.props.theme.timer_length,
 			chit_weight: this.props.theme.chit_weight,
-			match_ratio: this.props.theme.match_ratio
+			match_ratio: this.props.theme.match_ratio,
+			leverage_total: this.props.theme.leverage_total
 		}
 
 		this.updateValue = this.updateValue.bind(this);
@@ -34,7 +35,8 @@ class SettingsPane extends React.Component {
 				question: this.props.theme.question,
 				timer_length: this.props.theme.timer_length,
 				chit_weight: this.props.theme.chit_weight,
-				match_ratio: this.props.theme.match_ratio
+				match_ratio: this.props.theme.match_ratio,
+				leverage_total: this.props.theme.leverage_total
 			});
 		}
 	}
@@ -53,14 +55,16 @@ class SettingsPane extends React.Component {
 			 this.state.question     !== this.props.theme.question ||
 			 this.state.timer_length !== this.props.theme.timer_length ||
 			 this.state.chit_weight  !== this.props.theme.chit_weight ||
-			 this.state.match_ratio  !== this.props.theme.match_ratio) {
+			 this.state.match_ratio  !== this.props.theme.match_ratio ||
+			 this.state.leverage_total  !== this.props.theme.leverage_total) {
 
 			ThemeMethods.update.call({id: this.state.themeId, data: {
 				title: this.state.title,
 				question: this.state.question,
 				timer_length: this.state.timer_length,
 				chit_weight: this.state.chit_weight,
-				match_ratio: this.state.match_ratio
+				match_ratio: this.state.match_ratio,
+				leverage_total: this.state.leverage_total
 			}}, (err, res) => {
 				if(err){
 					console.log(err);
@@ -86,6 +90,10 @@ class SettingsPane extends React.Component {
 				</Form.Field>
 
 				<Form.Group>
+			 		<Form.Input icon='dollar sign' iconPosition='left' label='Total Pot' name='leverage_total' placeholder='Total Pot' value={this.state.leverage_total} onChange={this.updateValue} />
+				</Form.Group>
+
+				<Form.Group>
 					<Form.Input type='number' placeholder='Timer Length' label='Length of Timers' name='timer_length' value={this.state.timer_length} onChange={this.updateValue} />
 					<Form.Input type='number' placeholder='Chit Weight' label='Chit weight in ounces' name='chit_weight' value={this.state.chit_weight} onChange={this.updateValue} />
 					<Form.Input type='number' placeholder='Match Ratio' label='Multiplier for matched funds' name='match_ratio' value={this.state.match_ratio} onChange={this.updateValue} />
@@ -98,12 +106,10 @@ class SettingsPane extends React.Component {
 export default withTracker(({themeId}) => {
 	let themesHandle = Meteor.subscribe('themes');
 
-	const data = {
-		theme: themesHandle.ready() ? Themes.findOne({_id: themeId}) : {
-			title: '', question: '', timer_length: '', chit_weight: '', match_ratio: ''
-		},
+	let theme = Themes.find({_id: themeId}).fetch()[0];
+
+	return {
+		theme: theme,
 		loading: !themesHandle.ready()
 	};
-
-	return data;
 })(SettingsPane);

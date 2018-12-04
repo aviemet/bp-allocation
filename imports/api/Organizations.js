@@ -36,7 +36,17 @@ const OrganizationSchema = new SimpleSchema({
 		required: false,
 		defaultValue: { weight: undefined, count: undefined }
 	},
-	value: {
+	amount_from_votes: {
+		type: Number,
+		required: false,
+		defaultValue: 0
+	},
+	topoff: {
+		type: Number,
+		required: false,
+		defaultValue: 0
+	},
+	pledges: {
 		type: Number,
 		required: false,
 		defaultValue: 0

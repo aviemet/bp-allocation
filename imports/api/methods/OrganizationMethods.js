@@ -108,16 +108,63 @@ const OrganizationMethods = {
 		validate: null,
 
 		run({id, amount, match, themeId}) {
-			console.log({id: id, amount: amount, match: match});
 			amount = parseInt(amount);
-			if(match){
-				let theme = Themes.find({_id: themeId}).fetch()[0];
-				ThemeMethods.update.call({id: themeId, data: {leverage_used: parseInt(theme.leverage_used) + amount}});
-				amount *= parseInt(theme.match_ratio);
-			}
-			return Organizations.update({_id: id}, {$inc: {value: amount}});
+			let theme = Themes.find({_id: themeId}).fetch()[0];
+
+			// Pledge should increment org.pledged by twice the amount
+			// increment theme.leverage_used by the amount
+
+			Themes.update({_id: themeId}, {$inc: {leverage_used: amount}});
+
+			// if(match){
+			// 	let theme = Themes.find({_id: themeId}).fetch()[0];
+			// 	ThemeMethods.update.call({id: themeId, data: {leverage_used: parseInt(theme.leverage_used) + amount}});
+			// 	amount *= parseInt(theme.match_ratio);
+			// }
+
+			return Organizations.update({_id: id}, {$inc: {pledges: (amount * parseInt(theme.match_ratio))}});
 		}
-	})
+	}),
+
+	/**
+	 * Top-off organization
+	 */
+	topoff: new ValidatedMethod({
+		name: 'organizations.topoff',
+
+		validate: null,
+
+		run({id}) {
+			let org = Organizations.find({_id: id}).fetch()[0];
+			// let theme = Themes.find({_id: org.theme}).fetch()[0];
+
+			let topoffAmount = org.ask - org.amount_from_votes - org.pledges;
+
+			// ThemeMethods.update.call({id: org.theme, data: {leverage_used: parseInt(theme.leverage_used) + topoffAmount}});
+
+			return Organizations.update({_id: id}, {$set: {topoff: topoffAmount}});
+		}
+	}),
+
+	/**
+	 * Reset organization
+	 */
+	reset: new ValidatedMethod({
+		name: 'organizations.reset',
+
+		validate: null,
+
+		run({id}) {
+			let org = Organizations.find({_id: id}).fetch()[0];
+			let theme = Themes.find({_id: org.theme}).fetch()[0];
+
+			let resetAmount = org.ask - org.amount_from_votes - org.pledges;
+
+			ThemeMethods.update.call({id: org.theme, data: {leverage_used: parseInt(theme.leverage_used) - (org.pledges/2)}});
+
+			return Organizations.update({_id: id}, {$set: {pledges: 0, amount_from_votes: 0, topoff: 0}});
+		}
+	}),
 
 }
 

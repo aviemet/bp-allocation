@@ -34,6 +34,7 @@ const ThemeMethods = {
 		validate: null,
 
 		run({id, data}) {
+			console.log({themeUpdate: data});
 			return Themes.update({_id: id}, {$set: data});
 		}
 	}),

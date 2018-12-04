@@ -1,5 +1,6 @@
 import React from 'react';
 import numeral from 'numeral';
+import _ from 'underscore';
 
 import styled from 'styled-components';
 import { Grid, Progress } from 'semantic-ui-react';
@@ -129,18 +130,35 @@ export default class Graph extends React.Component {
 		super(props);
 
 		this.state = {
-			leverage: (this.props.theme.leverage_total - this.props.theme.leverage_used) || 0
+			leverage: this._calcStartingLeverage(),
+			orgCount: this.props.orgs.length
 		}
+
+		this._calcStartingLeverage = this._calcStartingLeverage.bind(this);
+	}
+
+	_calcStartingLeverage(){
+		let leverage = this.props.theme.leverage_total;
+		this.props.orgs.map((org) => {
+			leverage -= org.amount_from_votes || 0;
+			leverage -= org.topoff || 0;
+		});
+		return leverage;
 	}
 
 	componentDidUpdate(prevProps, prevState){
-		console.log({prevProps: prevProps, prevState: prevState});
-		if(prevProps.theme.leverage_used !== this.props.theme.leverage_used ||
-			 prevProps.theme.leverage_total !== this.props.theme.leverage_total){
-			this.setState({leverage: this.props.theme.leverage_total - this.props.theme.leverage_used});
+		let newState = {};
 
-			console.log(this.state);
-		}
+		let leverage = this._calcStartingLeverage();
+		if(this.state.leverage !== leverage)
+			newState.leverage = leverage;
+
+		if(this.state.orgCount !== this.props.orgs.length)
+			newState.orgCount = this.props.orgs.length;
+
+
+		if(!_.isEmpty(newState))
+			this.setState(newState);
 	}
 
 	render() {
@@ -177,7 +195,7 @@ export default class Graph extends React.Component {
 
 						<Grid.Row style={{visibility: visibility}}>
 							<Grid.Column>
-								<ProgressBar value={this.state.leverage} total={this.props.theme.leverage_total} inverted color='green' size='large' />
+								<ProgressBar value={this.state.leverage - this.props.theme.leverage_used} total={this.state.leverage} inverted color='green' size='large' />
 								<LeverageCount>${numeral(this.state.leverage).format('0.0a')}</LeverageCount>
 							</Grid.Column>
 						</Grid.Row>
