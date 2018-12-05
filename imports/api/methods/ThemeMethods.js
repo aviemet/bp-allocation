@@ -106,7 +106,7 @@ const ThemeMethods = {
 
 		//Then bubble up the manual top orgs
 		// No need to proceed if manual orgs is >= numTopOrgs
-		if(theme.numTopOrgs > theme.topOrgsManual.length){
+		if(theme.numTopOrgs >= theme.topOrgsManual.length){
 			slice = theme.numTopOrgs;
 
 			// climb up the bottom of the list looking for manually selected orgs

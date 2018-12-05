@@ -111,7 +111,7 @@ export default class TopOrgsByChitVote extends React.Component {
 		});
 
 		//Then bubble up the manual top orgs
-		if(this.state.calcNumTopOrgs > this.props.theme.topOrgsManual.length){
+		if(this.state.calcNumTopOrgs >= this.props.theme.topOrgsManual.length){
 			for(let i = sortedOrgs.length-1; i >= this.state.calcNumTopOrgs; i--){
 				console.log({i: i, num: this.state.calcNumTopOrgs});
 				// console.log({id: sortedOrgs[i]._id, index: i});
