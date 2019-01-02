@@ -36,13 +36,15 @@ class DollarVotingPane extends React.Component {
 		this.state = {
 			leverage: this.props.theme.leverage_total,
 			match: true,
-			voteAllocated: 0
+			voteAllocated: 0,
+			crowdFavorite: 0
 		};
 
-		this.toggleMatch = this.toggleMatch.bind(this);
+// 		this.toggleMatch = this.toggleMatch.bind(this);
 		this.handleLeverageChange = this.handleLeverageChange.bind(this);
 		this.updateThemeLeverage = this.updateThemeLeverage.bind(this);
 		this.toggleShowLeverage = this.toggleShowLeverage.bind(this);
+		this.calculateCrowdFavorite = this.calculateCrowdFavorite.bind(this);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -56,11 +58,16 @@ class DollarVotingPane extends React.Component {
 		if(this.state.voteAllocated !== voteAllocated){
 			this.setState({voteAllocated: voteAllocated});
 		}
+
+		let crowdFavorite = this.calculateCrowdFavorite();
+		if(crowdFavorite !== false && this.state.crowdFavorite !== crowdFavorite){
+			this.setState({crowdFavorite: crowdFavorite});
+		}
 	}
 
-	toggleMatch() {
-		this.setState({ match: !this.state.match });
-	}
+	// toggleMatch() {
+	// 	this.setState({ match: !this.state.match });
+	// }
 
 	handleLeverageChange(e, data) {
 		this.setState({leverage: data.value});
@@ -72,6 +79,18 @@ class DollarVotingPane extends React.Component {
 
 	toggleShowLeverage(e, data) {
 		ThemeMethods.update.call({id: this.props.theme._id, data: { leverage_visible: data.checked } });
+	}
+
+	calculateCrowdFavorite() {
+		let allEntered = true;
+		let favorite = 0;
+		this.props.organizations.map((org, i) => {
+			if(org.amount_from_votes == 0)
+				allEntered = false;
+			if(org.amount_from_votes > this.props.organizations[favorite].amount_from_votes)
+				favorite = i;
+		});
+		return allEntered ? favorite : false;
 	}
 
 	render() {
@@ -162,7 +181,7 @@ class DollarVotingPane extends React.Component {
 
 							<Table.Body>
 							{this.props.organizations.map((org, i) => (
-								<DollarVotingInputs org={org} key={i} match={this.state.match} />
+								<DollarVotingInputs org={org} key={i} match={this.state.match} crowdFavorite={(i === this.state.crowdFavorite)} />
 							))}
 							</Table.Body>
 						</Table>

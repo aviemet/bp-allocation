@@ -4,14 +4,20 @@ import numeral from 'numeral';
 
 import { OrganizationMethods, ThemeMethods } from '/imports/api/methods';
 
-
-import { Table, Checkbox, Button, Form, Dropdown, Input } from 'semantic-ui-react';
+import { Table, Checkbox, Button, Form, Dropdown, Input, Label } from 'semantic-ui-react';
 
 const actionOptions = [
 	{ key: 'actions', text: 'Actions', value: 'actions' },
 	{ key: 'topoff', text: 'Top Off', value: 'topff' },
 	{ key: 'reset', text: 'Reset', value: 'reset' }
 ];
+
+const CrowdFavoriteRibbon = (props) => {
+	if(props.crowdFavorite === false){
+		return <React.Fragment>{props.children}</React.Fragment>
+	}
+	return <Label ribbon color='green'>{props.children} - (Fav)</Label>
+}
 
 export default class DollarVotingInputs extends React.Component {
 	constructor(props) {
@@ -79,12 +85,8 @@ export default class DollarVotingInputs extends React.Component {
 	pledge(e, data) {
 		e.preventDefault();
 
-		// Get the amount to pledge, positive or negative
+		// Get the amount to pledge
 		let amount = e.target.elements.valueInput.value;
-		if(this.state.subtract){
-			amount *= -1;
-			this.setState({subtract: false});
-		}
 
 		OrganizationMethods.pledge.call({
 			id: this.props.org._id,
@@ -113,24 +115,19 @@ export default class DollarVotingInputs extends React.Component {
 
 		return (
 			<Table.Row positive={reachedGoal}>
-				<Table.Cell>{this.props.org.title}</Table.Cell>
+				<Table.Cell>
+					<CrowdFavoriteRibbon crowdFavorite={this.props.crowdFavorite || false}>{this.props.org.title}</CrowdFavoriteRibbon>
+				</Table.Cell>
 				<Table.Cell>
 					<Input type='number' value={this.state.amount_from_votes} onChange={this.enterAmountFromVotes} />
 				</Table.Cell>
 				<Table.Cell>
 					<Form onSubmit={this.pledge}>
 						<Form.Group>
-							{/*<Form.Button onClick={this.toggleSubtract}>-</Form.Button>*/}
-							<Form.Input type='text' name='valueInput' labelPosition='right'>
-								<input />
-								<Form.Button>+</Form.Button>
-							</Form.Input>
+							<Form.Input type='text' name='valueInput' action='+' />
 						</Form.Group>
 					</Form>
 				</Table.Cell>
-				{/*<Table.Cell>
-					<Checkbox toggle checked={this.state.match} onClick={this.toggleMatch} />
-				</Table.Cell>*/}
 				<Table.Cell className={reachedGoal ? 'bold' : ''}>${numeral(this.state.funded).format('0,0')}</Table.Cell>
 				<Table.Cell className={reachedGoal ? 'bold' : ''}>${numeral(this.props.org.ask).format('0,0')}</Table.Cell>
 				<Table.Cell>{numeral(this.state.percent).format('0.00%')}</Table.Cell>
