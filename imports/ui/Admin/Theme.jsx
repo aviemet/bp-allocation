@@ -15,6 +15,7 @@ import ChitVotingPane from '/imports/ui/Admin/Panes/ChitVotingPane';
 import DollarVotingPane from '/imports/ui/Admin/Panes/DollarVotingPane';
 import SettingsPane from '/imports/ui/Admin/Panes/SettingsPane';
 import PresentationPane from '/imports/ui/Admin/Panes/PresentationPane';
+import KioskPane from '/imports/ui/Admin/Panes/KioskPane';
 
 const Title = styled(Header)`
 	&& {
@@ -46,6 +47,10 @@ const TABS = {
 	settings: {
 		slug: 'settings',
 		heading: 'Theme Settings'
+	},
+	kiosk: {
+		slug: 'kiosk',
+		heading: 'Kiosk'
 	},
 	presentation: {
 		slug: 'presentation',
@@ -86,6 +91,9 @@ class Theme extends React.Component {
 						<Menu.Item name={TABS.chits.heading} slug={TABS.chits.slug} active={activeItem === TABS.chits.slug} onClick={this.handleItemClick} color='brown' />
 						<Menu.Item name={TABS.money.heading} slug={TABS.money.slug} active={activeItem === TABS.money.slug} onClick={this.handleItemClick} color='orange' />
 						<Menu.Menu position='right'>
+							<Menu.Item name={TABS.kiosk.heading} slug={TABS.kiosk.slug} active={activeItem === TABS.kiosk.slug} onClick={this.handleItemClick} color='red' />
+						</Menu.Menu>
+						<Menu.Menu position='right'>
 							<Menu.Item name={TABS.presentation.heading} slug={TABS.presentation.slug} active={activeItem === TABS.presentation.slug} onClick={this.handleItemClick} color='pink' />
 						</Menu.Menu>
 					</TabMenu>
@@ -111,6 +119,11 @@ class Theme extends React.Component {
 								{/* Dollar Voting */}
 								<Route exact path={TABS.money.slug} render={props => (
 									<DollarVotingPane theme={this.props.theme} />
+								)} />
+
+								{/* Kiosk */}
+								<Route exact path={TABS.kiosk.slug} render={props => (
+									<KioskPane theme={this.props.theme} />
 								)} />
 
 								{/* Presentation Controls */}

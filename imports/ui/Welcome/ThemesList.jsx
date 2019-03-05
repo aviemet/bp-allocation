@@ -8,7 +8,7 @@ import { ThemeMethods } from '/imports/api/methods';
 
 import { Button, Table, Header, Grid, Icon } from 'semantic-ui-react';
 
-import NewThemeModal from '/imports/ui/Admin/NewThemeModal';
+import NewThemeModal from '/imports/ui/Welcome/NewThemeModal';
 
 class ThemesList extends React.Component {
 
@@ -27,26 +27,12 @@ class ThemesList extends React.Component {
 		return (
 			<React.Fragment>
 
-				<Grid.Row>
-					<Header as='h1'>Battery Powered Allocation Night</Header>
-				</Grid.Row>
-
-				<Grid.Row>
-					<Grid.Column floated='left' width={13}>
-						<Header as='h2'>Themes</Header>
-					</Grid.Column>
-
-					<Grid.Column floated='right' width={3}>
-						<NewThemeModal />
-					</Grid.Column>
-				</Grid.Row>
-
 				<Table celled striped>
 					<Table.Header>
 						<Table.Row>
 								<Table.HeaderCell>Title</Table.HeaderCell>
 								<Table.HeaderCell>Allocation Night Date</Table.HeaderCell>
-								<Table.HeaderCell></Table.HeaderCell>
+								<Table.HeaderCell><NewThemeModal /></Table.HeaderCell>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>

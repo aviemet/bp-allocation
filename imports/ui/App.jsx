@@ -7,12 +7,13 @@ import styled from 'styled-components';
 
 import { ThemeMethods } from '/imports/api/methods';
 
-import ThemesList from '/imports/ui/Admin/ThemesList';
+import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from '/imports/ui/Layouts';
+import ThemesList from '/imports/ui/Welcome/ThemesList';
 import Theme from '/imports/ui/Admin/Theme';
-import PresentationLayout from '/imports/ui/Presentation/PresentationLayout';
 import Presentation from '/imports/ui/Presentation/Presentation';
-import AdminLayout from '/imports/ui/Admin/AdminLayout';
 import Simulation from '/imports/ui/Admin/Simulation';
+import WelcomePage from '/imports/ui/Welcome/WelcomePage';
+import Kiosk from '/imports/ui/Kiosk/Kiosk';
 
 const browserHistory = createBrowserHistory();
 
@@ -26,11 +27,16 @@ export default class App extends React.Component {
 			<Router history={browserHistory}>
 				<Switch>
 					<Route exact path="/" render={ (props ) => (
-						<AdminLayout>
+						<WelcomeLayout title="Allocation Night Themes">
 							<ThemesList />
-						</AdminLayout>)
+						</WelcomeLayout>)
 					} />
-					<Route path="/theme/:id" render={ (props) => (
+					<Route exact path="/theme/:id" render={ (props) => (
+						<WelcomeLayout title="How will this screen be used?">
+							<WelcomePage id={props.match.params.id} />
+						</WelcomeLayout>
+					) } />
+					<Route path="/admin/:id" render={ (props) => (
 						<AdminLayout>
 							<Theme id={props.match.params.id} />
 						</AdminLayout>
@@ -44,6 +50,11 @@ export default class App extends React.Component {
 						<PresentationLayout>
 							<Simulation id={props.match.params.id} />
 						</PresentationLayout>
+					) } />
+					<Route path="/kiosk/:id" render= { (props) => (
+						<KioskLayout>
+							<Kiosk id={props.match.params.id} />
+						</KioskLayout>
 					) } />
 				</Switch>
 			</Router>
