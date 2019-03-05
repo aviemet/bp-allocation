@@ -48,10 +48,6 @@ const TABS = {
 		slug: 'settings',
 		heading: 'Theme Settings'
 	},
-	kiosk: {
-		slug: 'kiosk',
-		heading: 'Kiosk'
-	},
 	presentation: {
 		slug: 'presentation',
 		heading: 'presentation'
@@ -65,11 +61,14 @@ class Theme extends React.Component {
 		super(props);
 
 		this.state = {
-			activeItem: TABS.settings.slug
+			activeItem: location.hash.replace(/#/, '') || TABS.settings.slug
 		}
 	}
 
-	handleItemClick = (e, {slug}) => this.setState({ activeItem: slug })
+	handleItemClick = (e, {slug}) => {
+		location.hash = slug;
+		this.setState({ activeItem: slug });
+	}
 
 	render() {
 		const { activeItem } = this.state;
@@ -90,9 +89,7 @@ class Theme extends React.Component {
 						<Menu.Item name={TABS.orgs.heading} slug={TABS.orgs.slug} active={activeItem === TABS.orgs.slug} onClick={this.handleItemClick} color='green' />
 						<Menu.Item name={TABS.chits.heading} slug={TABS.chits.slug} active={activeItem === TABS.chits.slug} onClick={this.handleItemClick} color='brown' />
 						<Menu.Item name={TABS.money.heading} slug={TABS.money.slug} active={activeItem === TABS.money.slug} onClick={this.handleItemClick} color='orange' />
-						<Menu.Menu position='right'>
-							<Menu.Item name={TABS.kiosk.heading} slug={TABS.kiosk.slug} active={activeItem === TABS.kiosk.slug} onClick={this.handleItemClick} color='red' />
-						</Menu.Menu>
+
 						<Menu.Menu position='right'>
 							<Menu.Item name={TABS.presentation.heading} slug={TABS.presentation.slug} active={activeItem === TABS.presentation.slug} onClick={this.handleItemClick} color='pink' />
 						</Menu.Menu>
@@ -121,11 +118,6 @@ class Theme extends React.Component {
 									<DollarVotingPane theme={this.props.theme} />
 								)} />
 
-								{/* Kiosk */}
-								<Route exact path={TABS.kiosk.slug} render={props => (
-									<KioskPane theme={this.props.theme} />
-								)} />
-
 								{/* Presentation Controls */}
 								<Route exact path={TABS.presentation.slug} render={props => (
 									<PresentationPane themeId={this.props.theme._id} {...props} />
@@ -150,3 +142,12 @@ export default withTracker(({id}) => {
 	};
 })(Theme);
 
+/*
+<Menu.Menu position='right'>
+	<Menu.Item name={TABS.kiosk.heading} slug={TABS.kiosk.slug} active={activeItem === TABS.kiosk.slug} onClick={this.handleItemClick} color='red' />
+</Menu.Menu>
+
+<Route exact path={TABS.kiosk.slug} render={props => (
+	<KioskPane theme={this.props.theme} />
+)} />
+*/

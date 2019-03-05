@@ -53,6 +53,7 @@ class PresentationPane extends React.Component {
 		ThemeMethods.update.call({id: this.props.themeId, data: tempData});
 	}
 
+
 	/**
 	 * Update non-boolean values on the Theme model
 	 */
@@ -87,18 +88,6 @@ class PresentationPane extends React.Component {
 		return (
 			<ButtonPanel>
 				<Grid columns='equal'>
-
-					<Grid.Row>
-						<Grid.Column>
-
-							<Link to={`/presentation/${this.props.themeId}`} target='_blank'>
-								<PresentationNavButton page='intro'>
-									<Label>Launch Presentaion</Label>
-								</PresentationNavButton>
-							</Link>
-
-						</Grid.Column>
-					</Grid.Row>
 
 					<Grid.Row stretched>
 						<Grid.Column>
@@ -161,7 +150,9 @@ class PresentationPane extends React.Component {
 									<Icon name='hourglass' size='huge' /><br/>
 									<Label>Timer</Label>
 								</PresentationNavButton>
-								<Input type='number' label='Seconds' index='timer_length' onChange={this.updateThemeValue} value={this.state.timer_length} />
+								<Input type='number' label='Seconds' index='timer_length' onChange={this.updateThemeValue} value={this.state.timer_length} /><br/>
+								<Checkbox label='Chit Voting Active' toggle index='chit_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.chit_voting_active || false} /><br/>
+								<Checkbox label='Funds Voting Active' toggle index='funds_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.funds_voting_active || false} />
 							</Segment>
 
 							{/************
@@ -174,6 +165,18 @@ class PresentationPane extends React.Component {
 								</PresentationNavButton>
 								<Input type='number' icon='dollar sign' iconPosition='left' label='Offset' labelPosition='right' index='results_offset' value={this.state.results_offset} onChange={this.updateThemeValue} />
 							</Segment>
+
+						</Grid.Column>
+					</Grid.Row>
+
+					<Grid.Row>
+						<Grid.Column>
+
+							<Link to={`/presentation/${this.props.themeId}`} target='_blank'>
+								<PresentationNavButton page='intro'>
+									<Label>Launch Presentaion</Label>
+								</PresentationNavButton>
+							</Link>
 
 						</Grid.Column>
 					</Grid.Row>

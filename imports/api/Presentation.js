@@ -5,6 +5,11 @@ import SimpleSchema from 'simpl-schema';
 const Presentation = new Mongo.Collection('presentation');
 
 const PresentationSchema = new SimpleSchema({
+	topOrgsManual: {
+		type: Array,
+		defaultValue: [],
+		required: false
+	},
 	'topOrgsManual.$': SimpleSchema.RegEx.Id,
 	currentPage: {
 		type: String,
@@ -12,7 +17,6 @@ const PresentationSchema = new SimpleSchema({
 		required: false,
 		defaultValue: 'intro'
 	},
-	// Theme settings
 	numTopOrgs: {
 		type: Number,
 		defaultValue: 5,
@@ -42,11 +46,6 @@ const PresentationSchema = new SimpleSchema({
 		required: false,
 		defaultValue: 2
 	},
-	leverage_total: {
-		type: Number,
-		label: 'Total amount to allocate for this theme',
-		required: false
-	},
 	leverage_used: {
 		type: Number,
 		label: 'Amount of leverage allocated',
@@ -59,6 +58,8 @@ const PresentationSchema = new SimpleSchema({
 		required: false,
 		defaultValue: false
 	},
+	chit_voting_active: Boolean,
+	funds_voting_active: Boolean,
 	results_offset: {
 		type: Number,
 		label: 'Amount to offset total displayed on the results page',
