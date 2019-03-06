@@ -93,7 +93,7 @@ const ThemeMethods = {
 		let sortedOrgs = _.sortBy(orgs, (org) => {
 			// Calculate the votes for each org (weight/chit_weight unless there's a manual count)
 			let votes = org.chitVotes.count ? org.chitVotes.count :
-										org.chitVotes.weight ? org.chitVotes.weight / theme.chit_weight : 0;
+									org.chitVotes.weight ? org.chitVotes.weight / theme.chit_weight : 0;
 
 			// Save the votes count for later
 			org.votes = votes;

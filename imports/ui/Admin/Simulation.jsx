@@ -35,25 +35,25 @@ class Presentation extends React.Component {
 			return(<Loader />);
 		}
 		return (
-			<ThemeContext.Provider value={this.props.theme}>
+			<ThemeContext.Consumer>{context => (
 				<SimulationContainer>
-					<Allocation orgs={ThemeMethods.filterTopOrgs(this.props.theme, this.props.organizations)} theme={this.props.theme} />
+					<Allocation orgs={ThemeMethods.filterTopOrgs(context.theme._id, context.orgs)} theme={context.theme._id} />
 				</SimulationContainer>
-			</ThemeContext.Provider>
+			)}</ThemeContext.Consumer>
 		);
 	}
 }
 
-export default withTracker(({id}) => {
-	themesHandle = Meteor.subscribe('themes', id);
-	orgsHandle = Meteor.subscribe('organizations', id);
-
-	let theme = Themes.find({_id: id}).fetch()[0];
-	let orgs = Organizations.find({theme: id}).fetch();
-
-	return {
-		loading: !themesHandle.ready() && !orgsHandle.ready(),
-		theme: theme,
-		organizations: orgs
-	};
-})(withRouter(Presentation));
+// export default withTracker(({id}) => {
+// 	themesHandle = Meteor.subscribe('themes', id);
+// 	orgsHandle = Meteor.subscribe('organizations', id);
+//
+// 	let theme = Themes.find({_id: id}).fetch()[0];
+// 	let orgs = Organizations.find({theme: id}).fetch();
+//
+// 	return {
+// 		loading: !themesHandle.ready() && !orgsHandle.ready(),
+// 		theme: theme,
+// 		organizations: orgs
+// 	};
+// })(withRouter(Presentation));

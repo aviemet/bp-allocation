@@ -1,6 +1,7 @@
 import Meter from 'meteor/meteor';
 import React from 'react';
 import { Link } from 'react-router-dom'
+import _ from 'underscore';
 
 import { withTracker } from 'meteor/react-meteor-data';
 import numeral from 'numeral';
@@ -8,14 +9,12 @@ import numeral from 'numeral';
 import { ThemeMethods } from '/imports/api/methods';
 import { Themes, Organizations } from '/imports/api';
 
-import { ThemeContext } from '/imports/ui/Contexts';
+import { withContext } from '/imports/ui/Contexts';
 
 import { Loader, Grid, Table, Checkbox, Button, Statistic, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import _ from 'underscore';
-
-import DollarVotingInputs from '/imports/ui/Admin/Panes/DollarVotingInputs';
+import AllocationInputs from './AllocationInputs';
 
 const Arithmetic = styled.span`
 	font-size: 2rem;
@@ -29,7 +28,7 @@ const Arithmetic = styled.span`
   text-align: center;
 `;
 
-class DollarVotingPane extends React.Component {
+class AllocationPane extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -49,7 +48,7 @@ class DollarVotingPane extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		let voteAllocated = 0;
-		this.props.organizations.map((org) => {
+		this.props.orgs.map((org) => {
 			voteAllocated += parseInt(org.amount_from_votes || 0);
 			if(org.topoff > 0){
 				voteAllocated += org.topoff;
@@ -84,10 +83,10 @@ class DollarVotingPane extends React.Component {
 	calculateCrowdFavorite() {
 		let allEntered = true;
 		let favorite = 0;
-		this.props.organizations.map((org, i) => {
+		this.props.orgs.map((org, i) => {
 			if(org.amount_from_votes == 0)
 				allEntered = false;
-			if(org.amount_from_votes > this.props.organizations[favorite].amount_from_votes)
+			if(org.amount_from_votes > this.props.orgs[favorite].amount_from_votes)
 				favorite = i;
 		});
 		return allEntered ? favorite : false;
@@ -99,22 +98,10 @@ class DollarVotingPane extends React.Component {
 		}
 		return (
 			<Grid>
-				<Grid.Row columns='equal'>
 
-					<Grid.Column width={3}>
-
-						<Checkbox label='Show Leverage' toggle onClick={this.toggleShowLeverage} checked={this.props.theme.leverage_visible || false} />
-
-						<br/><br/>
-
-						<Link to={`/simulation/${this.props.theme._id}`} target='_blank'>
-							<Button>Simulate</Button>
-						</Link>
-
-					</Grid.Column>
-
-					<Grid.Column textAlign='right'>
-
+				{/* Breakdown Segment */}
+				<Grid.Row>
+					<Grid.Column>
 						<Segment>
 							<Statistic.Group size='tiny'>
 
@@ -155,9 +142,24 @@ class DollarVotingPane extends React.Component {
 						</Segment>
 
 				 	</Grid.Column>
-
 				</Grid.Row>
 
+				<Grid.Row>
+					<Grid.Column>
+
+						<Checkbox label='Show Leverage' toggle onClick={this.toggleShowLeverage} checked={this.props.theme.leverage_visible || false} />
+
+					</Grid.Column>
+
+					<Grid.Column>
+
+						<Link to={`${this.props.url}/simulation/`} target='_blank'>
+							<Button>Simulate</Button>
+						</Link>
+
+					</Grid.Column>
+
+				</Grid.Row>
 				<Grid.Row>
 					<Grid.Column>
 
@@ -180,8 +182,8 @@ class DollarVotingPane extends React.Component {
 							</Table.Header>
 
 							<Table.Body>
-							{this.props.organizations.map((org, i) => (
-								<DollarVotingInputs org={org} key={i} match={this.state.match} crowdFavorite={(i === this.state.crowdFavorite)} />
+							{this.props.orgs.map((org, i) => (
+								<AllocationInputs org={org} key={i} match={this.state.match} crowdFavorite={(i === this.state.crowdFavorite)} />
 							))}
 							</Table.Body>
 						</Table>
@@ -194,18 +196,20 @@ class DollarVotingPane extends React.Component {
 
 }
 
-export default withTracker(({theme}) => {
-	let orgs = [];
-	let orgsHandle = Meteor.subscribe('organizations', theme._id);
+export default withContext(AllocationPane);
 
-	orgs = Organizations.find({theme: theme._id}).fetch();
-
-	if(orgsHandle.ready() && !_.isEmpty(orgs) && !_.isEmpty(theme) && "topOrgsManual" in theme){
-		orgs = ThemeMethods.filterTopOrgs(theme, orgs);
-	}
-
-	return {
-		loading: !orgsHandle.ready(),
-		organizations: orgs
-	}
-})(DollarVotingPane);
+// export default withTracker(({theme}) => {
+// 	let orgs = [];
+// 	let orgsHandle = Meteor.subscribe('organizations', theme._id);
+//
+// 	orgs = Organizations.find({theme: theme._id}).fetch();
+//
+// 	if(orgsHandle.ready() && !_.isEmpty(orgs) && !_.isEmpty(theme) && "topOrgsManual" in theme){
+// 		orgs = ThemeMethods.filterTopOrgs(theme, orgs);
+// 	}
+//
+// 	return {
+// 		loading: !orgsHandle.ready(),
+// 		organizations: orgs
+// 	}
+// })(AllocationPane);

@@ -1,19 +1,25 @@
 import React from 'react';
-import { Router, Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import createBrowserHistory from 'history/createBrowserHistory';
 
 import { Grid, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
+import { ThemeProvider } from '/imports/ui/Contexts';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from '/imports/ui/Layouts';
 import ThemesList from '/imports/ui/Welcome/ThemesList';
-import Theme from '/imports/ui/Admin/Theme';
-import Presentation from '/imports/ui/Presentation/Presentation';
+import Admin from '/imports/ui/Admin';
+import Presentation from '/imports/ui/Presentation';
 import Simulation from '/imports/ui/Admin/Simulation';
 import WelcomePage from '/imports/ui/Welcome/WelcomePage';
 import Kiosk from '/imports/ui/Kiosk/Kiosk';
+
+const GlobalContainer = styled.div`
+	width: 100%;
+	height: 100vh;
+`;
 
 const browserHistory = createBrowserHistory();
 
@@ -24,40 +30,54 @@ export default class App extends React.Component {
 
 	render() {
 		return (
-			<Router history={browserHistory}>
-				<Switch>
-					<Route exact path="/" render={ (props ) => (
-						<WelcomeLayout title="Allocation Night Themes">
-							<ThemesList />
-						</WelcomeLayout>)
-					} />
-					<Route exact path="/theme/:id" render={ (props) => (
-						<WelcomeLayout title="How will this screen be used?">
-							<WelcomePage id={props.match.params.id} />
-						</WelcomeLayout>
-					) } />
-					<Route path="/admin/:id" render={ (props) => (
-						<AdminLayout>
-							<Theme id={props.match.params.id} />
-						</AdminLayout>
-					) } />
-					<Route path="/presentation/:id" render={ (props) => (
-						<PresentationLayout>
-							<Presentation id={props.match.params.id} />
-						</PresentationLayout>
-					) } />
-					<Route path="/simulation/:id" render= { (props) => (
-						<PresentationLayout>
-							<Simulation id={props.match.params.id} />
-						</PresentationLayout>
-					) } />
-					<Route path="/kiosk/:id" render= { (props) => (
-						<KioskLayout>
-							<Kiosk id={props.match.params.id} />
-						</KioskLayout>
-					) } />
-				</Switch>
-			</Router>
+		  <GlobalContainer>
+				<Router history={browserHistory}>
+					<Switch>
+
+						<Route exact path="/" render={() => (
+							<Redirect to="/themes" />
+						)} />
+
+						<Route path="/themes" render={ (props) => (
+							<WelcomeLayout>
+								<Route exact path='/themes' component={ThemesList} />
+
+								<Route exact path='/themes/:id' component={WelcomePage} />
+							</WelcomeLayout>
+						)} />
+
+						<Route path="/admin/:id" render={ (props) => (
+		    			<ThemeProvider id={props.match.params.id}>
+								<AdminLayout>
+									<Admin />
+								</AdminLayout>
+							</ThemeProvider>
+						) } />
+						<Route path="/presentation/:id" render={ (props) => (
+		    			<ThemeProvider id={props.match.params.id}>
+								<PresentationLayout>
+									<Presentation />
+								</PresentationLayout>
+							</ThemeProvider>
+						) } />
+						<Route path="/simulation/:id" render= { (props) => (
+		    			<ThemeProvider id={props.match.params.id}>
+								<PresentationLayout>
+									<Simulation />
+								</PresentationLayout>
+							</ThemeProvider>
+						) } />
+						<Route path="/kiosk/:id" render= { (props) => (
+		    			<ThemeProvider id={props.match.params.id}>
+								<KioskLayout>
+									<Kiosk />
+								</KioskLayout>
+							</ThemeProvider>
+						) } />
+
+					</Switch>
+				</Router>
+			</GlobalContainer>
 		);
 	}
 }

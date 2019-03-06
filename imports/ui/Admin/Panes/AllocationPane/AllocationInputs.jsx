@@ -19,7 +19,7 @@ const CrowdFavoriteRibbon = (props) => {
 	return <Label ribbon color='green'>{props.children} - (Fav)</Label>
 }
 
-export default class DollarVotingInputs extends React.Component {
+export default class AllocationInputs extends React.Component {
 	constructor(props) {
 		super(props);
 

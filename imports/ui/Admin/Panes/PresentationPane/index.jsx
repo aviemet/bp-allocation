@@ -5,13 +5,15 @@ import _ from 'underscore';
 
 import { Link } from 'react-router-dom';
 
+import { withContext } from '/imports/ui/Contexts';
+
 import { Themes } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { Loader, Grid, Button, Icon, Label, Segment, Input, Checkbox } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import PresentationNavButton from '/imports/ui/Admin/Panes/PresentationNavButton';
+import PresentationNavButton from './PresentationNavButton';
 
 const ButtonPanel = styled.div`
 	&& button{
@@ -150,8 +152,10 @@ class PresentationPane extends React.Component {
 									<Icon name='hourglass' size='huge' /><br/>
 									<Label>Timer</Label>
 								</PresentationNavButton>
-								<Input type='number' label='Seconds' index='timer_length' onChange={this.updateThemeValue} value={this.state.timer_length} /><br/>
-								<Checkbox label='Chit Voting Active' toggle index='chit_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.chit_voting_active || false} /><br/>
+								<Input type='number' label='Seconds' index='timer_length' onChange={this.updateThemeValue} value={this.state.timer_length} />
+								<br/>
+								<Checkbox label='Chit Voting Active' toggle index='chit_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.chit_voting_active || false} />
+								<br/>
 								<Checkbox label='Funds Voting Active' toggle index='funds_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.funds_voting_active || false} />
 							</Segment>
 
@@ -172,7 +176,7 @@ class PresentationPane extends React.Component {
 					<Grid.Row>
 						<Grid.Column>
 
-							<Link to={`/presentation/${this.props.themeId}`} target='_blank'>
+							<Link to={`/presentation/${this.props.theme._id}`} target='_blank'>
 								<PresentationNavButton page='intro'>
 									<Label>Launch Presentaion</Label>
 								</PresentationNavButton>
@@ -187,14 +191,16 @@ class PresentationPane extends React.Component {
 	}
 }
 
-export default withTracker(({themeId}) => {
-	let themesHandle = Meteor.subscribe('themes', themeId);
+export default withContext(PresentationPane);
 
-	theme = Themes.find({_id: themeId}).fetch()[0];
-
-	return {
-		loading: !themesHandle.ready(),
-		theme: theme
-	}
-})(PresentationPane);
-
+// export default withTracker(({themeId}) => {
+// 	let themesHandle = Meteor.subscribe('themes', themeId);
+//
+// 	theme = Themes.find({_id: themeId}).fetch()[0];
+//
+// 	return {
+// 		loading: !themesHandle.ready(),
+// 		theme: theme
+// 	}
+// })(PresentationPane);
+//

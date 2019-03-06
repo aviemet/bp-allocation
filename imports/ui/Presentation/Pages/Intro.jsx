@@ -56,15 +56,16 @@ const ThemeConsumer = ThemeContext.Consumer;
 export default class Intro extends React.Component {
 	constructor(props) {
 		super(props);
+		console.log('hi');
 	}
 
 	render() {
 		return (
-			<ThemeConsumer>{(theme) => (
+			<ThemeConsumer>{(context) => (
 				<TitlePage>
 					<MainHeading>Allocation Night</MainHeading>
-					<ThemeTitle>{theme.title}</ThemeTitle>
-					<ThemeQuestion>{theme.question}</ThemeQuestion>
+					<ThemeTitle>{context.theme.title}</ThemeTitle>
+					<ThemeQuestion>{context.theme.question}</ThemeQuestion>
 					<LogoContainer>
 						<Image src='/img/BPLogoBlue.svg' />
 					</LogoContainer>

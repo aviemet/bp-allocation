@@ -27,17 +27,20 @@ const PageTitle = styled.h2`
 export default class Intro extends React.Component {
 	constructor(props) {
 		super(props);
-		this.topOrgs = ThemeMethods.filterTopOrgs(this.props.theme, this.props.orgs);
+	}
+
+	componentDidMount() {
+		// this.topOrgs = ThemeMethods.filterTopOrgs(props.theme, props.orgs);
 	}
 
 	render() {
 		return (
 			<TopOrgsContainer>
-				<PageTitle>Top {this.topOrgs.length} Organizations</PageTitle>
+				<PageTitle>Top {this.props.orgs.length} Organizations</PageTitle>
 				<Container>
 					<Card.Group centered itemsPerRow={3}>
-					{this.topOrgs.map((org) => (
-						<OrgCard org={org} key={org._id} animateClass={this.props.theme.animate_orgs}  />
+					{this.props.orgs.map((org) => (
+						<OrgCard org={org} key={org._id} animateClass={this.props.animate}  />
 					))}
 					</Card.Group>
 				</Container>

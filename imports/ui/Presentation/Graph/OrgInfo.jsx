@@ -42,14 +42,15 @@ class OrgInfo extends React.Component {
 		super(props);
 
 		this.state = {
-			need: 0
+			need: this.props.org.ask - this.props.org.pledges || 0
 		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		let need = this.props.org.ask - this.props.org.value;
+		let need = this.props.org.ask - this.props.org.pledges;
 
 		if(prevState.need !== need){
+			console.log({prevStateNeed: prevState.need, need});
 			this.setState({ need: need });
 		}
 
@@ -70,10 +71,12 @@ class OrgInfo extends React.Component {
 	}
 }
 
-export default withTracker(({org_id}) => {
-	let orgsHandle = Meteor.subscribe('organization', org_id);
-	return {
-		loading: !orgsHandle.ready(),
-		org: Organizations.find({_id: org_id}).fetch()[0]
-	}
-})(OrgInfo);
+export default OrgInfo;
+
+// withTracker(({org_id}) => {
+// 	let orgsHandle = Meteor.subscribe('organization', org_id);
+// 	return {
+// 		loading: !orgsHandle.ready(),
+// 		org: Organizations.find({_id: org_id}).fetch()[0]
+// 	}
+// })(OrgInfo);

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import Graph from '/imports/ui/Presentation/Graph/Graph';
 
-export default class Intro extends React.Component {
+export default class Allocation extends React.Component {
 	constructor(props) {
 		super(props);
 	}

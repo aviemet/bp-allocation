@@ -1,28 +1,22 @@
 import React from 'react';
 
 import { Grid, Card } from 'semantic-ui-react';
-import styled from 'styled-components';
 
-export default class WelcomePage extends React.Component {
-	constructor(props) {
-		super(props);
-	}
+import { WelcomeLayout } from '/imports/ui/Layouts';
 
-	render() {
-		return (
-				<Grid.Row>
+const WelcomePage = ({match}) => (
+		<Grid.Row>
+			<Card.Group centered>
+				<Card	href={`/admin/${match.params.id}`} header="Mission Control" />
+				<Card	href={`/presentation/${match.params.id}`} header="Live Presentation" />
+			</Card.Group>
 
-					<Card.Group centered>
-						<Card	href={`/admin/${this.props.id}`} header="Mission Control" />
-						<Card	href={`/presentation/${this.props.id}`} header="Live Presentation" />
-					</Card.Group>
+			<Card.Group centered>
+				<Card	href={`/kiosk/${match.params.id}`} header="Voting Kiosk" />
+				<Card	href={`/feedback/${match.params.id}`} header="Real Time Updates" />
+			</Card.Group>
 
-					<Card.Group centered>
-						<Card	href={`/kiosk/${this.props.id}`} header="Voting Kiosk" />
-						<Card	href={`/feedback/${this.props.id}`} header="Real Time Updates" />
-					</Card.Group>
+		</Grid.Row>
+);
 
-				</Grid.Row>
-		);
-	}
-}
+export default WelcomePage;

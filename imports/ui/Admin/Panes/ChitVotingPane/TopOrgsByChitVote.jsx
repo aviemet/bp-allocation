@@ -4,7 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Organizations } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 
-import { Loader, Grid, Table, Checkbox, Icon, Input } from 'semantic-ui-react';
+import { Loader, Grid, Table, Checkbox, Icon, Input, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import _ from 'underscore';
@@ -36,6 +36,7 @@ export default class TopOrgsByChitVote extends React.Component {
 		this.topOrgToggle = this.topOrgToggle.bind(this);
 		this.sortTopOrgs = this.sortTopOrgs.bind(this);
 		this.updateNumTopOrgs = this.updateNumTopOrgs.bind(this);
+		this.toggleThemeValue = this.toggleThemeValue.bind(this);
 	}
 
 	updateNumTopOrgs(e, data) {
@@ -63,13 +64,28 @@ export default class TopOrgsByChitVote extends React.Component {
 		});
 	}
 
+	/**
+	 * Togle boolean values on the Theme model
+	 */
+	toggleThemeValue(e, data){
+		let tempData = {};
+		tempData[data.index] = data.checked;
+
+		ThemeMethods.update.call({id: this.props.themeId, data: tempData});
+	}
+
 	render() {
 		let orgs = this.sortTopOrgs();
 
 		return (
 			<React.Fragment>
 
-				<h1>Top <NumTopOrgsInput size='mini' type='number' value={this.state.numTopOrgs} onChange={this.updateNumTopOrgs} width={1} /> Organizations</h1>
+				<Header as="h3" floated="right">
+					<Checkbox label='Chit Voting Active' toggle index='chit_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.chit_voting_active || false} />
+				</Header>
+				<Header as="h1" floated="left">
+					Top <NumTopOrgsInput size='mini' type='number' value={this.state.numTopOrgs} onChange={this.updateNumTopOrgs} width={1} /> Organizations
+				</Header>
 
 				<Table celled>
 					<Table.Header>

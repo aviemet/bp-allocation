@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { Themes, Organizations } from '/imports/api';
+import { withContext } from '/imports/ui/Contexts';
+
+import { Organizations } from '/imports/api';
 import { OrganizationMethods, ImageMethods } from '/imports/api/methods';
 
 import { Button, Form, Input, Icon, Popup, Modal, Header, Image, Label, Loader } from 'semantic-ui-react';
@@ -15,15 +17,12 @@ export default class OrgInputs extends React.Component {
 
 		// Initial state of bound inputs
 		this.state = {
-			themeId: this.props.theme,
 			orgTitle: this.props.organization.title,
 			orgAsk: this.props.organization.ask,
 			orgImage: typeof this.props.organization.image === "object" ? this.props.organization.image._id : this.props.organization.image,
 
 			replaceModalOpen: false,
 			viewModalOpen: false,
-
-			loading: true
 		};
 
 		this.imageReplaced = false;
@@ -42,16 +41,6 @@ export default class OrgInputs extends React.Component {
 
 		this.cancelReplaceModal = this.cancelReplaceModal.bind(this);
 		this.saveReplaceModal = this.saveReplaceModal.bind(this);
-	}
-
-	// Need to wait for the Images to fetch from props
-	componentDidUpdate(prevProps, prevState) {
-		if(this.props.organization.image && prevProps.organization.image !== this.props.organization.image){
-			this.setState({
-				loading: false,
-				orgImage: this.props.organization.image._id
-			});
-		}
 	}
 
 	// State updater for all inputs
@@ -75,11 +64,6 @@ export default class OrgInputs extends React.Component {
 			 this.state.orgAsk   !== this.props.organization.ask ||
 			 this.state.orgImage   !== this.props.organization.image._id) {
 
-			console.log({
-				title: this.state.orgTitle,
-				ask: this.state.orgAsk,
-				image: this.state.orgImage
-			});
 			OrganizationMethods.update.call({id: this.props.organization._id, data: {
 				title: this.state.orgTitle,
 				ask: this.state.orgAsk,
@@ -140,9 +124,6 @@ export default class OrgInputs extends React.Component {
 			{ key: 'replace', text: 'Replace', value: 'replace' },
 		];
 
-		if(this.state.loading){
-			return ( <Loader /> );
-		}
 		return(
 			<Form organization={this.props.organization._id} onSubmit={this.handleOrgUpdate} encType="multipart/form-data" onBlur={this.handleOrgUpdate}>
 				<Form.Group>
@@ -201,6 +182,8 @@ export default class OrgInputs extends React.Component {
 	}
 
 }
+
+// export default withContext(OrgInputs);
 
 /*
 

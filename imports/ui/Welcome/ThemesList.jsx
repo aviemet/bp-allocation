@@ -39,7 +39,7 @@ class ThemesList extends React.Component {
 						{this.props.themes.map((theme) => {
 							return (
 								<Table.Row key={theme._id}>
-									<Table.Cell><Link to={`/theme/${theme._id}`}>{theme.title}</Link></Table.Cell>
+									<Table.Cell><Link to={`/themes/${theme._id}`}>{theme.title}</Link></Table.Cell>
 									<Table.Cell>{theme.quarter}</Table.Cell>
 									<Table.Cell><Button onClick={this.deleteTheme} value={theme._id}><Icon name='trash' /></Button></Table.Cell>
 								</Table.Row>

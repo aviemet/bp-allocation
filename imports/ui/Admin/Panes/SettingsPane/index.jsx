@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 
+import { withContext } from '/imports/ui/Contexts';
+
 import { Themes } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 
@@ -12,7 +14,7 @@ class SettingsPane extends React.Component {
 		super(props);
 
 		this.state = {
-			loading: this.props.loading,
+			// loading: this.props.loading,
 			themeId: this.props.themeId,
 			title: this.props.theme.title,
 			question: this.props.theme.question,
@@ -26,20 +28,19 @@ class SettingsPane extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	componentDidUpdate(prevProps, prevState){
-		// Prevent infinite update loop
-		if(!this.props.loading && this.state.loading){
-			this.setState({
-				loading: false,
-				title: this.props.theme.title,
-				question: this.props.theme.question,
-				timer_length: this.props.theme.timer_length,
-				chit_weight: this.props.theme.chit_weight,
-				match_ratio: this.props.theme.match_ratio,
-				leverage_total: this.props.theme.leverage_total
-			});
-		}
-	}
+	// componentDidUpdate(prevProps, prevState){
+	// 	if(!this.props.loading && this.state.loading){
+	// 		this.setState({
+	// 			loading: false,
+	// 			title: this.props.theme.title,
+	// 			question: this.props.theme.question,
+	// 			timer_length: this.props.theme.timer_length,
+	// 			chit_weight: this.props.theme.chit_weight,
+	// 			match_ratio: this.props.theme.match_ratio,
+	// 			leverage_total: this.props.theme.leverage_total
+	// 		});
+	// 	}
+	// }
 
 	updateValue(e) {
 		let newState = {};
@@ -51,12 +52,12 @@ class SettingsPane extends React.Component {
 		e.preventDefault();
 
 		// Only update if data has changed
-		if(this.state.title        !== this.props.theme.title ||
-			 this.state.question     !== this.props.theme.question ||
-			 this.state.timer_length !== this.props.theme.timer_length ||
-			 this.state.chit_weight  !== this.props.theme.chit_weight ||
-			 this.state.match_ratio  !== this.props.theme.match_ratio ||
-			 this.state.leverage_total  !== this.props.theme.leverage_total) {
+		if(this.state.title          !== this.props.theme.title ||
+			 this.state.question       !== this.props.theme.question ||
+			 this.state.timer_length   !== this.props.theme.timer_length ||
+			 this.state.chit_weight    !== this.props.theme.chit_weight ||
+			 this.state.match_ratio    !== this.props.theme.match_ratio ||
+			 this.state.leverage_total !== this.props.theme.leverage_total) {
 
 			ThemeMethods.update.call({id: this.state.themeId, data: {
 				title: this.state.title,
@@ -103,13 +104,15 @@ class SettingsPane extends React.Component {
 	}
 }
 
-export default withTracker(({themeId}) => {
-	let themesHandle = Meteor.subscribe('themes');
+export default withContext(SettingsPane);
 
-	let theme = Themes.find({_id: themeId}).fetch()[0];
-
-	return {
-		theme: theme,
-		loading: !themesHandle.ready()
-	};
-})(SettingsPane);
+// export default withTracker(({themeId}) => {
+// 	let themesHandle = Meteor.subscribe('themes');
+//
+// 	let theme = Themes.find({_id: themeId}).fetch()[0];
+//
+// 	return {
+// 		theme: theme,
+// 		loading: !themesHandle.ready()
+// 	};
+// })(SettingsPane);

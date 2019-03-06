@@ -3,6 +3,8 @@ import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'underscore';
 
+import { withContext } from '/imports/ui/Contexts';
+
 import { Themes, Organizations, Images } from '/imports/api';
 import { OrganizationMethods } from '/imports/api/methods';
 
@@ -10,18 +12,17 @@ import { ThemeContext } from '/imports/ui/Contexts';
 
 import { Button, Table, Header, Grid, Form, Input, Label, Loader } from 'semantic-ui-react';
 
-import OrgInputs from '/imports/ui/Admin/Panes/OrgInputs';
+import OrgInputs from './OrgInputs';
 import FileUpload from '/imports/ui/Components/FileUpload';
 
 const ThemeConsumer = ThemeContext.Consumer;
 
-class OrganizationPane extends React.Component {
+class OrganizationsPane extends React.Component {
 
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			themeId: this.props.themeId,
 			orgTitle: '',
 			orgAsk: '',
 			orgImage: '',
@@ -63,7 +64,7 @@ class OrganizationPane extends React.Component {
 			title: this.state.orgTitle,
 			ask: this.state.orgAsk,
 			image: this.state.orgImage,
-			theme: this.state.themeId
+			theme: this.props.theme._id
 		}, (err, res) => {
 			if(err){
 				console.log(err);
@@ -74,19 +75,14 @@ class OrganizationPane extends React.Component {
 	}
 
 	render() {
-		if(this.props.loading){
-			return(<Loader />)
-		}
 		return (
 			<React.Fragment>
 				<Grid.Row>
-					<Header as="h1">Organizations for Theme</Header>
+					<Header as="h1">Organizations for Theme: {this.props.theme.title}</Header>
 				</Grid.Row>
-				<ThemeConsumer>{({_id}) => (
-					this.props.organizations.map((org, i) => (
-						<OrgInputs organization={org} theme={_id} key={i} />
-					))
-				)}</ThemeConsumer>
+
+				{this.props.orgs.map((org, i) => (<OrgInputs organization={org} key={i} />))}
+
 				<Form onSubmit={this.handleNewOrgSubmit}>
 					<Form.Group>
 						<Form.Input width={6} type='text' placeholder='Organization Name' name='orgTitle' onChange={this.updateValue} value={this.state.orgTitle} />
@@ -100,44 +96,46 @@ class OrganizationPane extends React.Component {
 	}
 }
 
-export default withTracker(({themeId}) => {
-	let orgsHandle = Meteor.subscribe('organizations', themeId);
-	let imagesHandle = Meteor.subscribe('images', themeId);
-	let orgs = Organizations.find({theme: themeId}).fetch();
-	let images;
+export default withContext(OrganizationsPane);
 
-	// Get the image info into the orgs
-	let imgIds = orgs.map((org) => ( org.image ));
-	if(!_.isEmpty(imgIds)){
-		// Fetch the images
-		images = Images.find({_id: {$in: imgIds}}).fetch();
-
-		// Map fields from each image object to its respective org
-		if(!_.isEmpty(images)){
-			orgs.map((org) => {
-				image = _.find(images, (img) => ( img._id === org.image));
-
-				if(image){
-					imageObject = {
-						_id: image._id,
-						path: `/uploads/${image._id}.${image.extension}`,
-						name: image.name
-					};
-
-					org.image = imageObject
-				} else {
-					org.image = {}
-				}
-			});
-		}
-	}
-
-	if(orgsHandle.ready()){
-		 // console.log(orgs);
-	}
-
-	return {
-		organizations: orgs,
-		loading: !orgsHandle.ready()
-	}
-})(OrganizationPane);
+// export default withTracker(({themeId}) => {
+// 	let orgsHandle = Meteor.subscribe('organizations', themeId);
+// 	let imagesHandle = Meteor.subscribe('images', themeId);
+// 	let orgs = Organizations.find({theme: themeId}).fetch();
+// 	let images;
+//
+// 	// Get the image info into the orgs
+// 	let imgIds = orgs.map((org) => ( org.image ));
+// 	if(!_.isEmpty(imgIds)){
+// 		// Fetch the images
+// 		images = Images.find({_id: {$in: imgIds}}).fetch();
+//
+// 		// Map fields from each image object to its respective org
+// 		if(!_.isEmpty(images)){
+// 			orgs.map((org) => {
+// 				image = _.find(images, (img) => ( img._id === org.image));
+//
+// 				if(image){
+// 					imageObject = {
+// 						_id: image._id,
+// 						path: `/uploads/${image._id}.${image.extension}`,
+// 						name: image.name
+// 					};
+//
+// 					org.image = imageObject
+// 				} else {
+// 					org.image = {}
+// 				}
+// 			});
+// 		}
+// 	}
+//
+// 	if(orgsHandle.ready()){
+// 		 // console.log(orgs);
+// 	}
+//
+// 	return {
+// 		organizations: orgs,
+// 		loading: !orgsHandle.ready()
+// 	}
+// })(OrganizationPane);

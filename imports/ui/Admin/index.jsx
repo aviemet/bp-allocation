@@ -5,17 +5,18 @@ import { Route, Switch } from 'react-router-dom';
 
 import { Themes } from '/imports/api';
 
-import { ThemeContext } from '/imports/ui/Contexts';
+import { ThemeContext, withContext } from '/imports/ui/Contexts';
 
 import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react'
 import styled from 'styled-components';
 
-import OrganizationPane from '/imports/ui/Admin/Panes/OrganizationPane';
-import ChitVotingPane from '/imports/ui/Admin/Panes/ChitVotingPane';
-import DollarVotingPane from '/imports/ui/Admin/Panes/DollarVotingPane';
 import SettingsPane from '/imports/ui/Admin/Panes/SettingsPane';
+import OrganizationsPane from '/imports/ui/Admin/Panes/OrganizationsPane';
+import ChitVotingPane from '/imports/ui/Admin/Panes/ChitVotingPane';
+import AllocationPane from '/imports/ui/Admin/Panes/AllocationPane';
 import PresentationPane from '/imports/ui/Admin/Panes/PresentationPane';
-import KioskPane from '/imports/ui/Admin/Panes/KioskPane';
+
+// import KioskPane from '/imports/ui/Admin/Panes/KioskPane';
 
 const Title = styled(Header)`
 	&& {
@@ -55,7 +56,7 @@ const TABS = {
 };
 
 // Main class for the Theme page
-class Theme extends React.Component {
+class Admin extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -63,6 +64,8 @@ class Theme extends React.Component {
 		this.state = {
 			activeItem: location.hash.replace(/#/, '') || TABS.settings.slug
 		}
+
+		console.log(this);
 	}
 
 	handleItemClick = (e, {slug}) => {
@@ -94,38 +97,38 @@ class Theme extends React.Component {
 							<Menu.Item name={TABS.presentation.heading} slug={TABS.presentation.slug} active={activeItem === TABS.presentation.slug} onClick={this.handleItemClick} color='pink' />
 						</Menu.Menu>
 					</TabMenu>
-					<ThemeContext.Provider value={this.props.theme}>
-						<Segment attached="bottom">
-							<Switch location={{pathname: this.state.activeItem}}>
 
-								{/* Theme Settings */}
-								<Route exact path={TABS.settings.slug} render={props => (
-									<SettingsPane themeId={this.props.theme._id} {...props} />
-								)} />
+					<Segment attached="bottom">
+						<Switch location={{pathname: this.state.activeItem}}>
 
-								{/* Organizations */}
-								<Route exact path={TABS.orgs.slug} render={props => (
-									<OrganizationPane themeId={this.props.theme._id} {...props} />
-								)} />
+							{/* Theme Settings */}
+							<Route exact path={TABS.settings.slug} render={props => (
+								<SettingsPane themeId={this.props.theme._id} {...props} />
+							)} />
 
-								{/* Chit Voting */}
-								<Route exact path={TABS.chits.slug} render={props => (
-									<ChitVotingPane themeId={this.props.theme._id} {...props} />
-								)} />
+							{/* Organizations */}
+							<Route exact path={TABS.orgs.slug} render={props => (
+								<OrganizationsPane themeId={this.props.theme._id} {...props} />
+							)} />
 
-								{/* Dollar Voting */}
-								<Route exact path={TABS.money.slug} render={props => (
-									<DollarVotingPane theme={this.props.theme} />
-								)} />
+							{/* Chit Voting */}
+							<Route exact path={TABS.chits.slug} render={props => (
+								<ChitVotingPane themeId={this.props.theme._id} {...props} />
+							)} />
 
-								{/* Presentation Controls */}
-								<Route exact path={TABS.presentation.slug} render={props => (
-									<PresentationPane themeId={this.props.theme._id} {...props} />
-								)} />
+							{/* Allocation Voting */}
+							<Route exact path={TABS.money.slug} render={props => (
+								<AllocationPane theme={this.props.theme} />
+							)} />
 
-							</Switch>
-						</Segment>
-					</ThemeContext.Provider>
+							{/* Presentation Controls */}
+							<Route exact path={TABS.presentation.slug} render={props => (
+								<PresentationPane themeId={this.props.theme._id} {...props} />
+							)} />
+
+						</Switch>
+					</Segment>
+
 				</Grid.Row>
 
 			</React.Fragment>
@@ -133,14 +136,16 @@ class Theme extends React.Component {
 	}
 }
 
-export default withTracker(({id}) => {
-	themesHandle = Meteor.subscribe('themes', id);
+export default withContext(Admin);
 
-	return {
-		loading: !themesHandle.ready(),
-		theme: Themes.find({_id: id}).fetch()[0]
-	};
-})(Theme);
+// export default withTracker(({id}) => {
+// 	themesHandle = Meteor.subscribe('themes', id);
+//
+// 	return {
+// 		loading: !themesHandle.ready(),
+// 		theme: Themes.find({_id: id}).fetch()[0]
+// 	};
+// })(withContext(Admin));
 
 /*
 <Menu.Menu position='right'>

@@ -139,6 +139,7 @@ export default class Graph extends React.Component {
 
 	_calcStartingLeverage(){
 		let leverage = this.props.theme.leverage_total;
+
 		this.props.orgs.map((org) => {
 			leverage -= org.amount_from_votes || 0;
 			leverage -= org.topoff || 0;
@@ -150,12 +151,11 @@ export default class Graph extends React.Component {
 		let newState = {};
 
 		let leverage = this._calcStartingLeverage();
+
 		if(this.state.leverage !== leverage)
 			newState.leverage = leverage;
-
 		if(this.state.orgCount !== this.props.orgs.length)
 			newState.orgCount = this.props.orgs.length;
-
 
 		if(!_.isEmpty(newState))
 			this.setState(newState);
@@ -189,7 +189,7 @@ export default class Graph extends React.Component {
 					<InfoGrid columns='equal'>
 						<Grid.Row>
 						{this.props.orgs.map((org) => (
-							<OrgInfo org_id={org._id} key={org._id} />
+							<OrgInfo org={org} key={org._id} />
 						))}
 						</Grid.Row>
 
