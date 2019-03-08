@@ -18,7 +18,7 @@ export default class ChitVotingPane extends React.Component {
 
 	render() {
 		return (
-			<ThemeContext.Consumer>{(context) => (
+			// <ThemeContext.Consumer>{(context) => (
 				<Grid columns={2} divided>
 					<Grid.Row>
 
@@ -34,7 +34,7 @@ export default class ChitVotingPane extends React.Component {
 								</Table.Header>
 
 								<Table.Body>
-								{context.orgs.map((org, i) => (
+								{this.props.orgs.map((org, i) => (
 									<ChitInputs organization={org} key={i} />
 								))}
 								</Table.Body>
@@ -43,12 +43,12 @@ export default class ChitVotingPane extends React.Component {
 						</Grid.Column>
 
 						<Grid.Column>
-								<TopOrgsByChitVote organizations={context.orgs} theme={context.theme} />
+								<TopOrgsByChitVote organizations={this.props.orgs} theme={this.props.theme} />
 						</Grid.Column>
 
 					</Grid.Row>
 				</Grid>
-			)}</ThemeContext.Consumer>
+			// )}</ThemeContext.Consumer>
 		);
 	}
 }

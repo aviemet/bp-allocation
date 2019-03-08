@@ -1,14 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { Router, Route, Switch, withRouter } from 'react-router-dom';
-import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'underscore';
 import numeral from 'numeral';
+
+import { withTracker } from 'meteor/react-meteor-data';
 
 import { Loader, Header, Container, Grid, Card } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import OrgCard from '/imports/ui/Presentation/OrgCard';
+import OrgCard from '/imports/ui/Components/OrgCard';
 
 import { COLORS } from '/imports/utils';
 

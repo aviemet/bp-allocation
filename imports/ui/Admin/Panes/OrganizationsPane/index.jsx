@@ -81,7 +81,7 @@ class OrganizationsPane extends React.Component {
 					<Header as="h1">Organizations for Theme: {this.props.theme.title}</Header>
 				</Grid.Row>
 
-				{this.props.orgs.map((org, i) => (<OrgInputs organization={org} key={i} />))}
+				{this.props.orgs.map((org, i) => <OrgInputs org={org} key={i} /> )}
 
 				<Form onSubmit={this.handleNewOrgSubmit}>
 					<Form.Group>

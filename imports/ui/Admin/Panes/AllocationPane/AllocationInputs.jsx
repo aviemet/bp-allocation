@@ -25,10 +25,10 @@ export default class AllocationInputs extends React.Component {
 
 		this.state ={
 			subtract: false,
-			match: this.props.match,
-			amount_from_votes: this.props.org.amount_from_votes,
+			match: props.match,
+			amount_from_votes: props.org.amount_from_votes,
 			percent: 0,
-			funded: this.props.org.pledges
+			funded: props.org.pledges
 		}
 
 		this.toggleMatch = this.toggleMatch.bind(this);
@@ -119,19 +119,17 @@ export default class AllocationInputs extends React.Component {
 					<CrowdFavoriteRibbon crowdFavorite={this.props.crowdFavorite || false}>{this.props.org.title}</CrowdFavoriteRibbon>
 				</Table.Cell>
 				<Table.Cell>
-					<Input type='number' value={this.state.amount_from_votes} onChange={this.enterAmountFromVotes} />
+					<Input type='number' value={this.state.amount_from_votes} onChange={this.enterAmountFromVotes} fluid />
 				</Table.Cell>
 				<Table.Cell>
 					<Form onSubmit={this.pledge}>
-						<Form.Group>
-							<Form.Input type='text' name='valueInput' action='+' />
-						</Form.Group>
+						<Form.Input type='text' name='valueInput' action='+' fluid />
 					</Form>
 				</Table.Cell>
 				<Table.Cell className={reachedGoal ? 'bold' : ''}>${numeral(this.state.funded).format('0,0')}</Table.Cell>
 				<Table.Cell className={reachedGoal ? 'bold' : ''}>${numeral(this.props.org.ask).format('0,0')}</Table.Cell>
 				<Table.Cell>{numeral(this.state.percent).format('0.00%')}</Table.Cell>
-				<Table.Cell>
+				<Table.Cell singleLine>
 					<Dropdown text='Actions' floating button options={actionOptions} onChange={this.handleActionSelection} />
 				</Table.Cell>
 			</Table.Row>

@@ -14,7 +14,7 @@ import Admin from '/imports/ui/Admin';
 import Presentation from '/imports/ui/Presentation';
 import Simulation from '/imports/ui/Admin/Simulation';
 import WelcomePage from '/imports/ui/Welcome/WelcomePage';
-import Kiosk from '/imports/ui/Kiosk/Kiosk';
+import Kiosk from '/imports/ui/Kiosk';
 
 const GlobalContainer = styled.div`
 	width: 100%;

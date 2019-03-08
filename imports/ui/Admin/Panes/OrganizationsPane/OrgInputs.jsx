@@ -5,22 +5,20 @@ import { withContext } from '/imports/ui/Contexts';
 import { Organizations } from '/imports/api';
 import { OrganizationMethods, ImageMethods } from '/imports/api/methods';
 
-import { Button, Form, Input, Icon, Popup, Modal, Header, Image, Label, Loader } from 'semantic-ui-react';
+import { Button, Form, Input, Icon, Popup, Modal, Header, Image, Label, Loader, Dropdown } from 'semantic-ui-react';
 
 import FileUpload from '/imports/ui/Components/FileUpload';
 
-// Updateable Inputs, iterable each with own state
 export default class OrgInputs extends React.Component {
-	// Image objects not loaded at constructor
 	constructor(props) {
 		super(props);
 
 		// Initial state of bound inputs
 		this.state = {
-			orgTitle: this.props.organization.title,
-			orgAsk: this.props.organization.ask,
-			orgImage: typeof this.props.organization.image === "object" ? this.props.organization.image._id : this.props.organization.image,
-
+			orgTitle: props.org.title,
+			orgAsk: props.org.ask,
+			// Image objects not loaded at constructor
+			orgImage: typeof props.org.image === "object" ? props.org.image._id : props.org.image,
 			replaceModalOpen: false,
 			viewModalOpen: false,
 		};
@@ -60,11 +58,11 @@ export default class OrgInputs extends React.Component {
 		if(e)	e.preventDefault();
 
 		// Only update the document if data has changed
-		if(this.state.orgTitle !== this.props.organization.title ||
-			 this.state.orgAsk   !== this.props.organization.ask ||
-			 this.state.orgImage   !== this.props.organization.image._id) {
+		if(this.state.orgTitle !== this.props.org.title ||
+			 this.state.orgAsk   !== this.props.org.ask ||
+			 this.state.orgImage   !== this.props.org.image._id) {
 
-			OrganizationMethods.update.call({id: this.props.organization._id, data: {
+			OrganizationMethods.update.call({id: this.props.org._id, data: {
 				title: this.state.orgTitle,
 				ask: this.state.orgAsk,
 				image: this.state.orgImage
@@ -102,7 +100,7 @@ export default class OrgInputs extends React.Component {
 			ImageMethods.remove.call(this.state.orgImage);
 		}
 		this.imageReplaced = false;
-		this.setState({orgImage: this.props.organization.image._id});
+		this.setState({orgImage: this.props.org.image._id});
 		this.closeReplaceModal();
 	}
 
@@ -113,7 +111,7 @@ export default class OrgInputs extends React.Component {
 
 	removeOrg(e){
 		e.preventDefault();
-		OrganizationMethods.remove.call(this.props.organization._id, (err, res) => {
+		OrganizationMethods.remove.call(this.props.org._id, (err, res) => {
 			if(err) console.log(err);
 		});
 	}
@@ -125,23 +123,23 @@ export default class OrgInputs extends React.Component {
 		];
 
 		return(
-			<Form organization={this.props.organization._id} onSubmit={this.handleOrgUpdate} encType="multipart/form-data" onBlur={this.handleOrgUpdate}>
+			<Form organization={this.props.org._id} onSubmit={this.handleOrgUpdate} encType="multipart/form-data" onBlur={this.handleOrgUpdate}>
 				<Form.Group>
 					<Form.Input width={6} type='text' placeholder='Organization Name' value={this.state.orgTitle} onChange={this.updateValue} name='orgTitle' />
 
 					<Form.Input width={2} type='text' placeholder='Ask' iconPosition='left' icon='dollar sign' value={this.state.orgAsk} onChange={this.updateValue} name='orgAsk' />
 
-					<Form.Dropdown width={2} style={{width: '100%'}} text='Image' floating button options={imageOptions} onChange={this.handleImageDropdown} />
+					<Form.Dropdown width={2} text='Image' simple fluid button options={imageOptions} onChange={this.handleImageDropdown} />
 
 					<Form.Field width={5}>
-						<Label style={{width: '100%', height: '100%'}}>{this.props.organization.image.name || ''}</Label>
+						<Label style={{width: '100%', height: '100%'}}>{this.props.org.image.name || ''}</Label>
 					</Form.Field>
 
 					<Modal
 						centered={false}
 						trigger={<Button icon><Icon name='trash' /></Button>}
 						header={`Confirm Delete`}
-						content={`Are you sure you want to permanently delete the organization: ${this.props.organization.title}?`}
+						content={`Are you sure you want to permanently delete the organization: ${this.props.org.title}?`}
 						actions={[
 							{key: 'cancel', content: 'Cancel', color: 'green', icon: 'ban'},
 							{key: 'delete', content: 'Delete', color: 'red', icon: 'trash', onClick: this.removeOrg}]}
@@ -156,7 +154,7 @@ export default class OrgInputs extends React.Component {
 				<Modal
 					open={this.state.viewModalOpen}
 					onClose={this.closeViewModal}>
-					<Image src={this.props.organization.image.path || '/public/img/notfound.png'} />
+					<Image src={this.props.org.image.path || '/public/img/notfound.png'} />
 				</Modal>
 
 				{/* Replace Image */}
@@ -187,8 +185,8 @@ export default class OrgInputs extends React.Component {
 
 /*
 
-this.props.organization.image._id ||
+this.props.org.image._id ||
 <Popup trigger={ }>
-<Popup.Content>{this.props.organization.image.name || ''}</Popup.Content>
+<Popup.Content>{this.props.org.image.name || ''}</Popup.Content>
 </Popup>
 */

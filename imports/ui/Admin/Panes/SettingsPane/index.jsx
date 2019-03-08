@@ -15,7 +15,6 @@ class SettingsPane extends React.Component {
 
 		this.state = {
 			// loading: this.props.loading,
-			themeId: this.props.themeId,
 			title: this.props.theme.title,
 			question: this.props.theme.question,
 			timer_length: this.props.theme.timer_length,
@@ -59,7 +58,7 @@ class SettingsPane extends React.Component {
 			 this.state.match_ratio    !== this.props.theme.match_ratio ||
 			 this.state.leverage_total !== this.props.theme.leverage_total) {
 
-			ThemeMethods.update.call({id: this.state.themeId, data: {
+			ThemeMethods.update.call({id: this.props.theme._id, data: {
 				title: this.state.title,
 				question: this.state.question,
 				timer_length: this.state.timer_length,

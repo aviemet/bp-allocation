@@ -11,7 +11,7 @@ import { Themes, Organizations } from '/imports/api';
 
 import { withContext } from '/imports/ui/Contexts';
 
-import { Loader, Grid, Table, Checkbox, Button, Statistic, Segment } from 'semantic-ui-react';
+import { Loader, Grid, Table, Checkbox, Button, Statistic, Segment, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import AllocationInputs from './AllocationInputs';
@@ -33,7 +33,7 @@ class AllocationPane extends React.Component {
 		super(props);
 
 		this.state = {
-			leverage: this.props.theme.leverage_total,
+			leverage: props.theme.leverage_total,
 			match: true,
 			voteAllocated: 0,
 			crowdFavorite: 0
@@ -44,6 +44,13 @@ class AllocationPane extends React.Component {
 		this.updateThemeLeverage = this.updateThemeLeverage.bind(this);
 		this.toggleShowLeverage = this.toggleShowLeverage.bind(this);
 		this.calculateCrowdFavorite = this.calculateCrowdFavorite.bind(this);
+	}
+
+	componentDidMount() {
+		let crowdFavorite = this.calculateCrowdFavorite();
+		if(crowdFavorite !== false && this.state.crowdFavorite !== crowdFavorite){
+			this.setState({crowdFavorite: crowdFavorite});
+		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -84,10 +91,12 @@ class AllocationPane extends React.Component {
 		let allEntered = true;
 		let favorite = 0;
 		this.props.orgs.map((org, i) => {
-			if(org.amount_from_votes == 0)
+			if(org.amount_from_votes == 0){
 				allEntered = false;
-			if(org.amount_from_votes > this.props.orgs[favorite].amount_from_votes)
+			}
+			if(org.amount_from_votes > this.props.orgs[favorite].amount_from_votes){
 				favorite = i;
+			}
 		});
 		return allEntered ? favorite : false;
 	}
@@ -145,18 +154,18 @@ class AllocationPane extends React.Component {
 				</Grid.Row>
 
 				<Grid.Row>
-					<Grid.Column>
-
-						<Checkbox label='Show Leverage' toggle onClick={this.toggleShowLeverage} checked={this.props.theme.leverage_visible || false} />
-
+					<Grid.Column width={10}>
+						<Header as="h2">Top 5 Funds Allocation</Header>
 					</Grid.Column>
 
-					<Grid.Column>
-
+					<Grid.Column width={2} align="right">
 						<Link to={`${this.props.url}/simulation/`} target='_blank'>
 							<Button>Simulate</Button>
 						</Link>
+					</Grid.Column>
 
+					<Grid.Column width={4}>
+						<Checkbox label='Show Leverage' toggle onClick={this.toggleShowLeverage} checked={this.props.theme.leverage_visible || false} />
 					</Grid.Column>
 
 				</Grid.Row>
@@ -196,7 +205,7 @@ class AllocationPane extends React.Component {
 
 }
 
-export default withContext(AllocationPane);
+export default AllocationPane;
 
 // export default withTracker(({theme}) => {
 // 	let orgs = [];

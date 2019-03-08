@@ -56,7 +56,6 @@ const ThemeConsumer = ThemeContext.Consumer;
 export default class Intro extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log('hi');
 	}
 
 	render() {

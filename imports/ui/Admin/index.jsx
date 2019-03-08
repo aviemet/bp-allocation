@@ -5,6 +5,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import { Themes } from '/imports/api';
 
+import { ThemeMethods } from '/imports/api/methods';
 import { ThemeContext, withContext } from '/imports/ui/Contexts';
 
 import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react'
@@ -64,8 +65,6 @@ class Admin extends React.Component {
 		this.state = {
 			activeItem: location.hash.replace(/#/, '') || TABS.settings.slug
 		}
-
-		console.log(this);
 	}
 
 	handleItemClick = (e, {slug}) => {
@@ -103,22 +102,22 @@ class Admin extends React.Component {
 
 							{/* Theme Settings */}
 							<Route exact path={TABS.settings.slug} render={props => (
-								<SettingsPane themeId={this.props.theme._id} {...props} />
+								<SettingsPane {...this.props} />
 							)} />
 
 							{/* Organizations */}
 							<Route exact path={TABS.orgs.slug} render={props => (
-								<OrganizationsPane themeId={this.props.theme._id} {...props} />
+								<OrganizationsPane {...this.props} />
 							)} />
 
 							{/* Chit Voting */}
 							<Route exact path={TABS.chits.slug} render={props => (
-								<ChitVotingPane themeId={this.props.theme._id} {...props} />
+								<ChitVotingPane {...this.props} />
 							)} />
 
 							{/* Allocation Voting */}
 							<Route exact path={TABS.money.slug} render={props => (
-								<AllocationPane theme={this.props.theme} />
+								<AllocationPane theme={this.props.theme} orgs={ThemeMethods.filterTopOrgs(this.props.theme, this.props.orgs)} />
 							)} />
 
 							{/* Presentation Controls */}

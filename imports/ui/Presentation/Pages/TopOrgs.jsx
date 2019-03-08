@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { ThemeMethods } from '/imports/api/methods';
 
-import OrgCard from '/imports/ui/Presentation/OrgCard';
+import OrgCard from '/imports/ui/Components/OrgCard';
 
 const TopOrgsContainer = styled.div`
 	padding-top: 60px;
