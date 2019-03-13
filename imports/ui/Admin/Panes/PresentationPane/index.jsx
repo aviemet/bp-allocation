@@ -89,65 +89,35 @@ class PresentationPane extends React.Component {
 		}
 		return (
 			<ButtonPanel>
-				<Grid columns='equal'>
-
-					<Grid.Row stretched>
-						<Grid.Column>
+					<Grid celled columns={3}>
+						<Grid.Row>
+							<Grid.Column>
 
 							{/************
 							  * Intro/Title Page
 							  ************/}
-							<Segment>
 								<PresentationNavButton page='intro'>
 									<Icon name='address card' size='huge' /><br/>
 									<Label>Title Page</Label>
 								</PresentationNavButton>
-							</Segment>
 
-							{/************
-							  * Top Organizations
-							  ************/}
-							<Segment>
-								<PresentationNavButton page='toporgs'>
-									<Icon name='winner' size='huge' /><br/>
-									<Label>Top Organizations</Label>
-								</PresentationNavButton>
-								<Checkbox label='Animate' toggle index='animate_orgs' onClick={this.toggleThemeValue} checked={this.props.theme.animate_orgs || false} />
-							</Segment>
-
-						</Grid.Column>
-
-						<Grid.Column>
+							</Grid.Column>
+							<Grid.Column>
 
 							{/************
 							  * Participating Organizations
 							  ************/}
-							<Segment>
 								<PresentationNavButton page='orgs'>
 									<Icon name='table' size='huge' /><br/>
 									<Label>Participating Organizations</Label>
 								</PresentationNavButton>
-							</Segment>
 
-							{/************
-							  * Allocation/Evaluation
-							  ************/}
-							<Segment>
-								<PresentationNavButton page='allocation'>
-									<Icon name='chart bar' size='huge' /><br/>
-									<Label>Allocation</Label>
-								</PresentationNavButton>
-								<Checkbox label='Show Leverage' toggle index='leverage_visible' onClick={this.toggleThemeValue} checked={this.props.theme.leverage_visible || false} />
-							</Segment>
-
-						</Grid.Column>
-
-						<Grid.Column>
+							</Grid.Column>
+							<Grid.Column>
 
 							{/************
 							  * Timer
 							  ************/}
-							<Segment>
 								<PresentationNavButton page='timer' icon>
 									<Icon name='hourglass' size='huge' /><br/>
 									<Label>Timer</Label>
@@ -157,50 +127,69 @@ class PresentationPane extends React.Component {
 								<Checkbox label='Chit Voting Active' toggle index='chit_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.chit_voting_active || false} />
 								<br/>
 								<Checkbox label='Funds Voting Active' toggle index='funds_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.funds_voting_active || false} />
-							</Segment>
+
+							</Grid.Column>
+
+						</Grid.Row>
+						<Grid.Row>
+							<Grid.Column>
+
+							{/************
+							  * Top Organizations
+							  ************/}
+								<PresentationNavButton page='toporgs'>
+									<Icon name='winner' size='huge' /><br/>
+									<Label>Top Organizations</Label>
+								</PresentationNavButton>
+								<Checkbox label='Animate' toggle index='animate_orgs' onClick={this.toggleThemeValue} checked={this.props.theme.animate_orgs || false} />
+
+							</Grid.Column>
+							<Grid.Column>
+
+							{/************
+							  * Allocation/Evaluation
+							  ************/}
+								<PresentationNavButton page='allocation'>
+									<Icon name='chart bar' size='huge' /><br/>
+									<Label>Allocation</Label>
+								</PresentationNavButton>
+								<Checkbox label='Show Leverage' toggle index='leverage_visible' onClick={this.toggleThemeValue} checked={this.props.theme.leverage_visible || false} />
+
+							</Grid.Column>
+							<Grid.Column>
 
 							{/************
 							  * Results Page
 							  ************/}
-							<Segment>
 								<PresentationNavButton page='results'>
 									<Icon name='check' size='huge' /><br/>
 									<Label>Result</Label>
 								</PresentationNavButton>
 								<Input type='number' icon='dollar sign' iconPosition='left' label='Offset' labelPosition='right' index='results_offset' value={this.state.results_offset} onChange={this.updateThemeValue} />
-							</Segment>
 
-						</Grid.Column>
-					</Grid.Row>
+							</Grid.Column>
+						</Grid.Row>
+					</Grid>
 
-					<Grid.Row>
-						<Grid.Column>
+				<Segment>
+					<Grid columns={1}>
+						<Grid.Row>
+							<Grid.Column>
 
-							<Link to={`/presentation/${this.props.theme._id}`} target='_blank'>
-								<PresentationNavButton page='intro'>
-									<Label>Launch Presentaion</Label>
-								</PresentationNavButton>
-							</Link>
+								<Link to={`/presentation/${this.props.theme._id}`} target='_blank'>
+									<PresentationNavButton page='intro'>
+										<Label>Launch Presentaion</Label>
+									</PresentationNavButton>
+								</Link>
 
-						</Grid.Column>
-					</Grid.Row>
+							</Grid.Column>
+						</Grid.Row>
+					</Grid>
+				</Segment>
 
-				</Grid>
 			</ButtonPanel>
 		);
 	}
 }
 
 export default withContext(PresentationPane);
-
-// export default withTracker(({themeId}) => {
-// 	let themesHandle = Meteor.subscribe('themes', themeId);
-//
-// 	theme = Themes.find({_id: themeId}).fetch()[0];
-//
-// 	return {
-// 		loading: !themesHandle.ready(),
-// 		theme: theme
-// 	}
-// })(PresentationPane);
-//
