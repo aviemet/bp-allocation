@@ -132,11 +132,11 @@ export default class Leverage extends React.Component {
 			  {rounds.map((round, i) => (
 			  	<Segment key={i}>
 						<Grid>
-							<Grid.Row columns={2}>
-								<Grid.Column>
+							<Grid.Row>
+								<Grid.Column width={6}>
 									<Header as="h2">Round {i+1}</Header>
 								</Grid.Column>
-								<Grid.Column>
+								<Grid.Column width={10}>
 									<span>Leverage Remaining: {numeral(round.leverageRemaining).format('$0,0.00')}</span><br/>
 									<span>Remaining Orgs Sum: {numeral(round.sumRemainingOrgs).format('$0,0.00')}</span>
 								</Grid.Column>
@@ -152,12 +152,14 @@ export default class Leverage extends React.Component {
 		  	))}
 		  	<Segment color='violet'>
 					<Grid>
-						<Grid.Row columns={2}>
-							<Grid.Column>
+						<Grid.Row>
+							<Grid.Column width={6}>
 	  						<Header as="h2">Final Distribution</Header>
 							</Grid.Column>
-							<Grid.Column>
+							<Grid.Column width={4}>
 								<span>Leverage Remaining: {numeral(this.finalRoundAllcoation(rounds)).format('$0,0.00')}</span><br/>
+							</Grid.Column>
+							<Grid.Column width={6}>
 								<Button color='green'>Submit Final Values</Button>
 							</Grid.Column>
 						</Grid.Row>

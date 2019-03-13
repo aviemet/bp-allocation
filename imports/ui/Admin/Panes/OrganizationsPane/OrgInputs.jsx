@@ -180,13 +180,3 @@ export default class OrgInputs extends React.Component {
 	}
 
 }
-
-// export default withContext(OrgInputs);
-
-/*
-
-this.props.org.image._id ||
-<Popup trigger={ }>
-<Popup.Content>{this.props.org.image.name || ''}</Popup.Content>
-</Popup>
-*/
