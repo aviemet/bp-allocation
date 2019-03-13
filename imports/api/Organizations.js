@@ -51,7 +51,11 @@ const OrganizationSchema = new SimpleSchema({
 		required: false,
 		defaultValue: 0
 	},
-
+	leverage_funds: {
+		type: Number,
+		required: false,
+		defaultValue: 0
+	},
 	theme: SimpleSchema.RegEx.Id
 });
 

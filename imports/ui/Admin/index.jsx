@@ -11,13 +11,7 @@ import { ThemeContext, withContext } from '/imports/ui/Contexts';
 import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react'
 import styled from 'styled-components';
 
-import SettingsPane from '/imports/ui/Admin/Panes/SettingsPane';
-import OrganizationsPane from '/imports/ui/Admin/Panes/OrganizationsPane';
-import ChitVotingPane from '/imports/ui/Admin/Panes/ChitVotingPane';
-import AllocationPane from '/imports/ui/Admin/Panes/AllocationPane';
-import PresentationPane from '/imports/ui/Admin/Panes/PresentationPane';
-
-// import KioskPane from '/imports/ui/Admin/Panes/KioskPane';
+import { SettingsPane, OrganizationsPane, ChitVotingPane, AllocationPane, LeveragePane, PresentationPane } from '/imports/ui/Admin/Panes';
 
 const Title = styled(Header)`
 	&& {
@@ -52,7 +46,11 @@ const TABS = {
 	},
 	presentation: {
 		slug: 'presentation',
-		heading: 'presentation'
+		heading: 'Presentation'
+	},
+	leverage: {
+		slug: 'leverage',
+		heading: 'Leverage'
 	}
 };
 
@@ -91,6 +89,7 @@ class Admin extends React.Component {
 						<Menu.Item name={TABS.orgs.heading} slug={TABS.orgs.slug} active={activeItem === TABS.orgs.slug} onClick={this.handleItemClick} color='green' />
 						<Menu.Item name={TABS.chits.heading} slug={TABS.chits.slug} active={activeItem === TABS.chits.slug} onClick={this.handleItemClick} color='brown' />
 						<Menu.Item name={TABS.money.heading} slug={TABS.money.slug} active={activeItem === TABS.money.slug} onClick={this.handleItemClick} color='orange' />
+						<Menu.Item name={TABS.leverage.heading} slug={TABS.leverage.slug} active={activeItem === TABS.leverage.slug} onClick={this.handleItemClick} color='violet' />
 
 						<Menu.Menu position='right'>
 							<Menu.Item name={TABS.presentation.heading} slug={TABS.presentation.slug} active={activeItem === TABS.presentation.slug} onClick={this.handleItemClick} color='pink' />
@@ -117,7 +116,12 @@ class Admin extends React.Component {
 
 							{/* Allocation Voting */}
 							<Route exact path={TABS.money.slug} render={props => (
-								<AllocationPane theme={this.props.theme} orgs={ThemeMethods.filterTopOrgs(this.props.theme, this.props.orgs)} />
+								<AllocationPane theme={this.props.theme} orgs={this.props.topOrgs} />
+							)} />
+
+							{/* Remaining Leverage Distribution */}
+							<Route exact path={TABS.leverage.slug} render={props => (
+								<LeveragePane {...this.props} />
 							)} />
 
 							{/* Presentation Controls */}

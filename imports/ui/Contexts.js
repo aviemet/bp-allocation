@@ -24,8 +24,10 @@ class ThemeProviderTemplate extends React.Component {
 		this.state = {
 			themeId: this.props.id
 		}
+	}
 
-		this.getTopOrgs = this.getTopOrgs.bind(this);
+	componentDidMount() {
+		if(this.props.loading) return;
 	}
 
 	/**
@@ -39,24 +41,17 @@ class ThemeProviderTemplate extends React.Component {
 		console.log({context: data});
 	}
 
-	/**
-	 *
-	 */
-	getTopOrgs() {
-		return ThemeMethods.filterTopOrgs(this.props.theme, this.props.orgs);
-	}
-
 	render() {
 		if(this.props.loading){
 			return(<Loader/>);
 		}
-		// console.log({provider: this.props});
+
 		return (
 			<ThemeContext.Provider value={{
 				toggleThemeValue: this.toggleThemeValue,
-				getTopOrgs: this.getTopOrgs,
 				theme: this.props.theme,
 				orgs: this.props.orgs,
+				topOrgs: this.props.topOrgs,
 				loading: this.props.loading,
 			}}>
 				{this.props.children}
@@ -97,10 +92,50 @@ const ThemeProvider = withTracker((props) => {
 		}
 	}
 
+	// Pre-filter the top orgs, add to loading condition
+	let topOrgs = [];
+	let topOrgsReady = false;
+	if(themesHandle.ready() && orgsHandle.ready()) {
+		topOrgs = ThemeMethods.filterTopOrgs(theme, orgs);
+		topOrgsReady = theme.organizations.length > 0 && topOrgs.length <= 0;
+	}
+
+	// Calculate the remaining leverage
+	let remainingLeverage = 0;
+	if(!_.isEmpty(theme) && !_.isEmpty(topOrgs)) {
+		remainingLeverage = theme.leverage_total - theme.leverage_used - (theme.organizations.length - topOrgs.length) * 10000;
+
+		topOrgs.map((org) => {
+			remainingLeverage -= parseInt(org.amount_from_votes || 0);
+			if(org.topoff > 0){
+				remainingLeverage -= org.topoff;
+			}
+		});
+		theme.leverage_remaining = parseFloat((remainingLeverage).toFixed(2));
+	}
+
+	let loading = !themesHandle.ready() && _.isUndefined(theme) &&
+								!orgsHandle.ready() && _.isEmpty(orgs) &&
+								!imagesHandle.ready() && _.isUndefined(images) &&
+								!topOrgsReady;
+
+	// console.log({
+	// 	loading: loading,
+	// 	theme:!themesHandle.ready() && _.isUndefined(theme),
+	// 	themeObj: theme,
+	// 	orgs:!orgsHandle.ready() && _.isEmpty(orgs),
+	// 	orgsObj: orgs,
+	// 	images:!imagesHandle.ready() && _.isUndefined(images),
+	// 	imagesObj: images,
+	// 	topOrgs:!topOrgsReady,
+	// 	topOrgsObj: topOrgs
+	// });
+
 	return {
-		loading: !themesHandle.ready() && !orgsHandle.ready() && !imagesHandle.ready(),
+		loading: loading,
 		theme: theme,
-		orgs: orgs
+		orgs: orgs,
+		topOrgs: topOrgs
 	};
 })(ThemeProviderTemplate);
 

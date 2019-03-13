@@ -35,11 +35,11 @@ class AllocationPane extends React.Component {
 		this.state = {
 			leverage: props.theme.leverage_total,
 			match: true,
+			fundsOthers: 0,
 			voteAllocated: 0,
 			crowdFavorite: 0
 		};
 
-// 		this.toggleMatch = this.toggleMatch.bind(this);
 		this.handleLeverageChange = this.handleLeverageChange.bind(this);
 		this.updateThemeLeverage = this.updateThemeLeverage.bind(this);
 		this.toggleShowLeverage = this.toggleShowLeverage.bind(this);
@@ -47,13 +47,21 @@ class AllocationPane extends React.Component {
 	}
 
 	componentDidMount() {
+		let newState = {
+			fundsOthers: (this.props.theme.organizations.length - this.props.orgs.length) * 10000
+		};
+
 		let crowdFavorite = this.calculateCrowdFavorite();
 		if(crowdFavorite !== false && this.state.crowdFavorite !== crowdFavorite){
-			this.setState({crowdFavorite: crowdFavorite});
+			newState.crowdFavorite = crowdFavorite;
 		}
+
+		this.setState(newState);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+		let newState = _.clone(this.state);
+
 		let voteAllocated = 0;
 		this.props.orgs.map((org) => {
 			voteAllocated += parseInt(org.amount_from_votes || 0);
@@ -62,18 +70,23 @@ class AllocationPane extends React.Component {
 			}
 		});
 		if(this.state.voteAllocated !== voteAllocated){
-			this.setState({voteAllocated: voteAllocated});
+			newState.voteAllocated = voteAllocated;
 		}
 
 		let crowdFavorite = this.calculateCrowdFavorite();
 		if(crowdFavorite !== false && this.state.crowdFavorite !== crowdFavorite){
-			this.setState({crowdFavorite: crowdFavorite});
+			newState.crowdFavorite = crowdFavorite;
+		}
+
+		let fundsOthers = (this.props.theme.organizations.length - this.props.orgs.length) * 10000;
+		if(this.state.fundsOthers !== fundsOthers) {
+			newState.fundsOthers = fundsOthers;
+		}
+
+		if(!_.isEqual(this.state, newState)) {
+			this.setState(newState);
 		}
 	}
-
-	// toggleMatch() {
-	// 	this.setState({ match: !this.state.match });
-	// }
 
 	handleLeverageChange(e, data) {
 		this.setState({leverage: data.value});
@@ -114,6 +127,7 @@ class AllocationPane extends React.Component {
 						<Segment>
 							<Statistic.Group size='tiny'>
 
+								{/* Total amount to allocate */}
 								<Statistic>
 									<Statistic.Value>{numeral(this.props.theme.leverage_total).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Total Pot</Statistic.Label>
@@ -121,6 +135,15 @@ class AllocationPane extends React.Component {
 
 								<Arithmetic>-</Arithmetic>
 
+								{/* Subtract 10k for each unchosen organization */}
+								<Statistic>
+									<Statistic.Value>{numeral(this.state.fundsOthers).format('$0,0')}</Statistic.Value>
+									<Statistic.Label>Pulled/Others</Statistic.Label>
+								</Statistic>
+
+								<Arithmetic>-</Arithmetic>
+
+								{/* Subtract funds from votes and topoff */}
 								<Statistic>
 									<Statistic.Value>{numeral(this.state.voteAllocated).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Votes + Topoff</Statistic.Label>
@@ -128,13 +151,15 @@ class AllocationPane extends React.Component {
 
 								<Arithmetic>=</Arithmetic>
 
+								{/* Leverage amount to begin pledge round */}
 								<Statistic>
-									<Statistic.Value>{numeral(this.props.theme.leverage_total - this.state.voteAllocated).format('$0,0')}</Statistic.Value>
+									<Statistic.Value>{numeral(this.props.theme.leverage_total - this.state.voteAllocated - this.state.fundsOthers).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Starting Leverage</Statistic.Label>
 								</Statistic>
 
 								<Arithmetic>-</Arithmetic>
 
+								{/* Subtract funds from pledge round */}
 								<Statistic>
 									<Statistic.Value>{numeral(this.props.theme.leverage_used).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Pledges</Statistic.Label>
@@ -142,8 +167,9 @@ class AllocationPane extends React.Component {
 
 								<Arithmetic>=</Arithmetic>
 
+								{/* Amount remaining to spread to winners */}
 								<Statistic>
-									<Statistic.Value>{numeral(this.props.theme.leverage_total - this.state.voteAllocated - this.props.theme.leverage_used).format('$0,0')}</Statistic.Value>
+									<Statistic.Value>{numeral(this.props.theme.leverage_remaining).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Remaining</Statistic.Label>
 								</Statistic>
 
@@ -222,3 +248,11 @@ export default AllocationPane;
 // 		organizations: orgs
 // 	}
 // })(AllocationPane);
+//
+//
+//
+// {/* Amount remaining to spread to winners */}
+								// <Statistic>
+								// 	<Statistic.Value>{numeral(this.props.theme.leverage_total - this.state.voteAllocated - this.state.fundsOthers - this.props.theme.leverage_used).format('$0,0')}</Statistic.Value>
+								// 	<Statistic.Label>Remaining</Statistic.Label>
+								// </Statistic>
