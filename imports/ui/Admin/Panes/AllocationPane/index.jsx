@@ -35,10 +35,12 @@ class AllocationPane extends React.Component {
 		this.state = {
 			leverage: props.theme.leverage_total,
 			match: true,
-			fundsOthers: 0,
 			voteAllocated: 0,
-			crowdFavorite: 0
+			crowdFavorite: 0,
+			fundsOthers: this.props.theme.consolation_active ? (this.props.theme.organizations.length - this.props.orgs.length) * (this.props.theme.consolation_amount || 10000) : 0
 		};
+
+		console.log(this.state.fundsOthers);
 
 		this.handleLeverageChange = this.handleLeverageChange.bind(this);
 		this.updateThemeLeverage = this.updateThemeLeverage.bind(this);
@@ -47,9 +49,7 @@ class AllocationPane extends React.Component {
 	}
 
 	componentDidMount() {
-		let newState = {
-			fundsOthers: (this.props.theme.organizations.length - this.props.orgs.length) * 10000
-		};
+		let newState = {};
 
 		let crowdFavorite = this.calculateCrowdFavorite();
 		if(crowdFavorite !== false && this.state.crowdFavorite !== crowdFavorite){
@@ -78,7 +78,7 @@ class AllocationPane extends React.Component {
 			newState.crowdFavorite = crowdFavorite;
 		}
 
-		let fundsOthers = (this.props.theme.organizations.length - this.props.orgs.length) * 10000;
+		let fundsOthers = this.props.theme.consolation_active ? (this.props.theme.organizations.length - this.props.orgs.length) * (this.props.theme.consolation_amount || 10000) : 0;
 		if(this.state.fundsOthers !== fundsOthers) {
 			newState.fundsOthers = fundsOthers;
 		}
@@ -204,11 +204,6 @@ class AllocationPane extends React.Component {
 									<Table.HeaderCell>Organization</Table.HeaderCell>
 									<Table.HeaderCell>Voted Amount</Table.HeaderCell>
 									<Table.HeaderCell>Matched Pledges</Table.HeaderCell>
-									{/*<Table.HeaderCell>
-										<Checkbox fitted toggle onClick={this.toggleMatch} checked={this.state.match} />
-										<br/>
-										Match
-									</Table.HeaderCell>*/}
 									<Table.HeaderCell>Funded</Table.HeaderCell>
 									<Table.HeaderCell>Ask</Table.HeaderCell>
 									<Table.HeaderCell>%</Table.HeaderCell>
@@ -232,27 +227,3 @@ class AllocationPane extends React.Component {
 }
 
 export default AllocationPane;
-
-// export default withTracker(({theme}) => {
-// 	let orgs = [];
-// 	let orgsHandle = Meteor.subscribe('organizations', theme._id);
-//
-// 	orgs = Organizations.find({theme: theme._id}).fetch();
-//
-// 	if(orgsHandle.ready() && !_.isEmpty(orgs) && !_.isEmpty(theme) && "topOrgsManual" in theme){
-// 		orgs = ThemeMethods.filterTopOrgs(theme, orgs);
-// 	}
-//
-// 	return {
-// 		loading: !orgsHandle.ready(),
-// 		organizations: orgs
-// 	}
-// })(AllocationPane);
-//
-//
-//
-// {/* Amount remaining to spread to winners */}
-								// <Statistic>
-								// 	<Statistic.Value>{numeral(this.props.theme.leverage_total - this.state.voteAllocated - this.state.fundsOthers - this.props.theme.leverage_used).format('$0,0')}</Statistic.Value>
-								// 	<Statistic.Label>Remaining</Statistic.Label>
-								// </Statistic>

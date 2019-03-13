@@ -69,6 +69,18 @@ const ThemeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: 2
 	},
+	consolation_amount: {
+		type: Number,
+		label: 'Amount to allocate for not top 5',
+		required: false,
+		defaultValue: 10000
+	},
+	consolation_active: {
+		type: Boolean,
+		label: 'Will the bottom orgs receive consolation funds?',
+		required: false,
+		defaultValue: true
+	},
 	leverage_total: {
 		type: Number,
 		label: 'Total amount to allocate for this theme',

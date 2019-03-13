@@ -13,59 +13,42 @@ class SettingsPane extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			// loading: this.props.loading,
-			title: this.props.theme.title,
-			question: this.props.theme.question,
-			timer_length: this.props.theme.timer_length,
-			chit_weight: this.props.theme.chit_weight,
-			match_ratio: this.props.theme.match_ratio,
-			leverage_total: this.props.theme.leverage_total
-		}
+		this.usingFields = ['title', 'question', 'timer_length', 'chit_weight', 'match_ratio', 'leverage_total', 'consolation_amount', 'consolation_active'];
+
+		let buildState = {};
+
+		this.usingFields.map(field => buildState[field] = this.props.theme[field]);
+
+		this.state = buildState;
 
 		this.updateValue = this.updateValue.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	// componentDidUpdate(prevProps, prevState){
-	// 	if(!this.props.loading && this.state.loading){
-	// 		this.setState({
-	// 			loading: false,
-	// 			title: this.props.theme.title,
-	// 			question: this.props.theme.question,
-	// 			timer_length: this.props.theme.timer_length,
-	// 			chit_weight: this.props.theme.chit_weight,
-	// 			match_ratio: this.props.theme.match_ratio,
-	// 			leverage_total: this.props.theme.leverage_total
-	// 		});
-	// 	}
-	// }
-
-	updateValue(e) {
+	updateValue(e, el) {
 		let newState = {};
-		newState[e.target.name] = e.target.value;
+		newState[el.name] = el.value || el.checked;
 		this.setState(newState);
 	}
 
 	handleSubmit(e) {
 		e.preventDefault();
 
-		// Only update if data has changed
-		if(this.state.title          !== this.props.theme.title ||
-			 this.state.question       !== this.props.theme.question ||
-			 this.state.timer_length   !== this.props.theme.timer_length ||
-			 this.state.chit_weight    !== this.props.theme.chit_weight ||
-			 this.state.match_ratio    !== this.props.theme.match_ratio ||
-			 this.state.leverage_total !== this.props.theme.leverage_total) {
+		let dataChanged = false;
+		for(var i = 0; i < this.usingFields.length && !dataChanged; i++){
+			let field = this.usingFields[i];
+			if(this.state[field] !== this.props.theme[field]) {
+				dataChanged = true;
+			}
+		}
 
-			ThemeMethods.update.call({id: this.props.theme._id, data: {
-				title: this.state.title,
-				question: this.state.question,
-				timer_length: this.state.timer_length,
-				chit_weight: this.state.chit_weight,
-				match_ratio: this.state.match_ratio,
-				leverage_total: this.state.leverage_total
-			}}, (err, res) => {
+		// Only update if data has changed
+		if(dataChanged) {
+
+			ThemeMethods.update.call({
+				id: this.props.theme._id,
+				data: this.state
+			}, (err, res) => {
 				if(err){
 					console.log(err);
 				} else {
@@ -98,20 +81,14 @@ class SettingsPane extends React.Component {
 					<Form.Input type='number' placeholder='Chit Weight' label='Chit weight in ounces' name='chit_weight' value={this.state.chit_weight} onChange={this.updateValue} />
 					<Form.Input type='number' placeholder='Match Ratio' label='Multiplier for matched funds' name='match_ratio' value={this.state.match_ratio} onChange={this.updateValue} />
 				</Form.Group>
+
+				<Form.Group>
+					<Form.Input type="number" placeholder='Consolation' label='Amount for bottom orgs' name='consolation_amount' value={this.state.consolation_amount} onChange={this.updateValue} />
+					<Form.Checkbox toggle label='Use Consolation?' checked={this.state.consolation_active} name='consolation_active' onChange={this.updateValue} />
+				</Form.Group>
 			</Form>
 		);
 	}
 }
 
 export default withContext(SettingsPane);
-
-// export default withTracker(({themeId}) => {
-// 	let themesHandle = Meteor.subscribe('themes');
-//
-// 	let theme = Themes.find({_id: themeId}).fetch()[0];
-//
-// 	return {
-// 		theme: theme,
-// 		loading: !themesHandle.ready()
-// 	};
-// })(SettingsPane);
