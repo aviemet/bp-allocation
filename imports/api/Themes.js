@@ -98,8 +98,18 @@ const ThemeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: false
 	},
-	chit_voting_active: Boolean,
-	funds_voting_active: Boolean,
+	chit_voting_active: {
+		type: Boolean,
+		label: 'Activate chit voting',
+		required: false,
+		defaultValue: false
+	},
+	funds_voting_active: {
+		type: Boolean,
+		label: 'Activate funds voting',
+		required: false,
+		defaultValue: false
+	},
 	results_offset: {
 		type: Number,
 		label: 'Amount to offset total displayed on the results page',

@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import SimpleSchema from 'simpl-schema';
 
+import { roundFloat } from '/imports/utils';
+
 import { Themes, Organizations, Images } from '/imports/api';
 import { OrganizationsSchema }  from '/imports/api/schema';
 import ImageMethods from './ImageMethods';
@@ -98,6 +100,30 @@ const OrganizationMethods = {
 
 		}
 	}),
+
+
+	/**
+	 * Add matched pledge
+	 */
+	/*pledge: new ValidatedMethod({
+		name: 'organizations.pledge',
+
+		validate: null,
+
+		run({id, amount, name}) {
+			amount = roundFloat(amount);
+
+			return Organizations.update({_id: id}, {
+				$push: {
+					pledges: {
+						amount: roundFloat(amount),
+						name: name || ''
+					}
+				}
+			});
+		}
+	}),*/
+
 
 	/**
 	 * Adjust Pledged Value

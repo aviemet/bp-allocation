@@ -140,22 +140,3 @@ class Admin extends React.Component {
 }
 
 export default withContext(Admin);
-
-// export default withTracker(({id}) => {
-// 	themesHandle = Meteor.subscribe('themes', id);
-//
-// 	return {
-// 		loading: !themesHandle.ready(),
-// 		theme: Themes.find({_id: id}).fetch()[0]
-// 	};
-// })(withContext(Admin));
-
-/*
-<Menu.Menu position='right'>
-	<Menu.Item name={TABS.kiosk.heading} slug={TABS.kiosk.slug} active={activeItem === TABS.kiosk.slug} onClick={this.handleItemClick} color='red' />
-</Menu.Menu>
-
-<Route exact path={TABS.kiosk.slug} render={props => (
-	<KioskPane theme={this.props.theme} />
-)} />
-*/

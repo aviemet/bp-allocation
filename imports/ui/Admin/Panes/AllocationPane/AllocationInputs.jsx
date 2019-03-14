@@ -119,16 +119,16 @@ export default class AllocationInputs extends React.Component {
 					<CrowdFavoriteRibbon crowdFavorite={this.props.crowdFavorite || false}>{this.props.org.title}</CrowdFavoriteRibbon>
 				</Table.Cell>
 				<Table.Cell>
-					<Input type='number' value={this.state.amount_from_votes} onChange={this.enterAmountFromVotes} fluid />
+					<Input type='number' value={this.state.amount_from_votes} onChange={this.enterAmountFromVotes} fluid tabIndex={this.props.tabInfo ? this.props.tabInfo.index : false} />
 				</Table.Cell>
 				<Table.Cell>
 					<Form onSubmit={this.pledge}>
-						<Form.Input type='text' name='valueInput' action='+' fluid />
+						<Form.Input type='text' name='valueInput' action='+' fluid tabIndex={this.props.tabInfo ? this.props.tabInfo.index + this.props.tabInfo.length : false} />
 					</Form>
 				</Table.Cell>
 				<Table.Cell className={reachedGoal ? 'bold' : ''}>${numeral(this.state.funded).format('0,0')}</Table.Cell>
 				<Table.Cell className={reachedGoal ? 'bold' : ''}>${numeral(this.props.org.ask).format('0,0')}</Table.Cell>
-				<Table.Cell>{numeral(this.state.percent).format('0.00%')}</Table.Cell>
+				<Table.Cell>{numeral(this.props.org.ask - this.props.org.amount_from_votes - this.props.org.pledges).format('$0,0.00')}</Table.Cell>
 				<Table.Cell singleLine>
 					<Dropdown text='Actions' floating button options={actionOptions} onChange={this.handleActionSelection} />
 				</Table.Cell>

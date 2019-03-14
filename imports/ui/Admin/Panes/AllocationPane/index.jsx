@@ -40,7 +40,7 @@ class AllocationPane extends React.Component {
 			fundsOthers: this.props.theme.consolation_active ? (this.props.theme.organizations.length - this.props.orgs.length) * (this.props.theme.consolation_amount || 10000) : 0
 		};
 
-		console.log(this.state.fundsOthers);
+		console.log(props);
 
 		this.handleLeverageChange = this.handleLeverageChange.bind(this);
 		this.updateThemeLeverage = this.updateThemeLeverage.bind(this);
@@ -181,7 +181,7 @@ class AllocationPane extends React.Component {
 
 				<Grid.Row>
 					<Grid.Column width={10}>
-						<Header as="h2">Top 5 Funds Allocation</Header>
+						<Header as="h2">Top {this.props.orgs.length} Funds Allocation</Header>
 					</Grid.Column>
 
 					<Grid.Column width={2} align="right">
@@ -206,19 +206,25 @@ class AllocationPane extends React.Component {
 									<Table.HeaderCell>Matched Pledges</Table.HeaderCell>
 									<Table.HeaderCell>Funded</Table.HeaderCell>
 									<Table.HeaderCell>Ask</Table.HeaderCell>
-									<Table.HeaderCell>%</Table.HeaderCell>
+									<Table.HeaderCell>Need</Table.HeaderCell>
 									<Table.HeaderCell>Actions</Table.HeaderCell>
 								</Table.Row>
 							</Table.Header>
 
 							<Table.Body>
 							{this.props.orgs.map((org, i) => (
-								<AllocationInputs org={org} key={i} match={this.state.match} crowdFavorite={(i === this.state.crowdFavorite)} />
+								<AllocationInputs org={org} key={i} match={this.state.match} crowdFavorite={(i === this.state.crowdFavorite)} tabInfo={{index: i+1, length: this.props.orgs.length}} />
 							))}
 							</Table.Body>
 						</Table>
 
 				 	</Grid.Column>
+				</Grid.Row>
+
+				<Grid.Row columns={1}>
+					<Grid.Column>
+						<Header as="h2">Matched Pledges</Header>
+					</Grid.Column>
 				</Grid.Row>
 			</Grid>
 		);

@@ -34,7 +34,6 @@ const ThemeMethods = {
 		validate: null,
 
 		run({id, data}) {
-			console.log({themeUpdate: data});
 			return Themes.update({_id: id}, {$set: data});
 		}
 	}),
@@ -92,8 +91,8 @@ const ThemeMethods = {
 		// First sort orgs by weight and vote count
 		let sortedOrgs = _.sortBy(orgs, (org) => {
 			// Calculate the votes for each org (weight/chit_weight unless there's a manual count)
-			let votes = org.chitVotes.count ? org.chitVotes.count :
-									org.chitVotes.weight ? org.chitVotes.weight / theme.chit_weight : 0;
+			let votes = org.chitVotes && org.chitVotes.count ? org.chitVotes.count :
+									org.chitVotes && org.chitVotes.weight ? org.chitVotes.weight / theme.chit_weight : 0;
 
 			// Save the votes count for later
 			org.votes = votes;

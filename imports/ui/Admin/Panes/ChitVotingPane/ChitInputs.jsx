@@ -44,11 +44,11 @@ export default class ChitInputs extends React.Component {
 				</Table.Cell>
 
 				<Table.Cell collapsing>
-					<Input type='number' name='weightVotes' value={this.state.weightVotes} onChange={this.updateChitVotes} fluid />
+					<Input type='number' name='weightVotes' value={this.state.weightVotes} onChange={this.updateChitVotes} fluid tabIndex={this.props.tabInfo.index} />
 				</Table.Cell>
 
 				<Table.Cell collapsing>
-					<Input type='number' name='countVotes' value={this.state.countVotes} onChange={this.updateChitVotes} fluid />
+					<Input type='number' name='countVotes' value={this.state.countVotes} onChange={this.updateChitVotes} fluid tabIndex={this.props.tabInfo.index + this.props.tabInfo.length} />
 				</Table.Cell>
 
 			</Table.Row>

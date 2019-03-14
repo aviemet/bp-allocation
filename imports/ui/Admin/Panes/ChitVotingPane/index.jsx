@@ -18,7 +18,6 @@ export default class ChitVotingPane extends React.Component {
 
 	render() {
 		return (
-			// <ThemeContext.Consumer>{(context) => (
 				<Grid columns={2} divided>
 					<Grid.Row>
 
@@ -35,7 +34,7 @@ export default class ChitVotingPane extends React.Component {
 
 								<Table.Body>
 								{this.props.orgs.map((org, i) => (
-									<ChitInputs organization={org} key={i} />
+									<ChitInputs organization={org} key={i} tabInfo={{index: i+1, length: this.props.orgs.length}} />
 								))}
 								</Table.Body>
 							</Table>
@@ -48,16 +47,6 @@ export default class ChitVotingPane extends React.Component {
 
 					</Grid.Row>
 				</Grid>
-			// )}</ThemeContext.Consumer>
 		);
 	}
 }
-
-// export default withTracker(({themeId}) => {
-// 	let orgsHandle = Meteor.subscribe('organizations');
-//
-// 	return {
-// 		loading: !orgsHandle.ready(),
-// 		organizations: Organizations.find({theme: themeId}).fetch()
-// 	}
-// })(ChitVotingPane);

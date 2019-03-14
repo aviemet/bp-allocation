@@ -103,7 +103,8 @@ const ThemeProvider = withTracker((props) => {
 	// Calculate the remaining leverage
 	let remainingLeverage = 0;
 	if(!_.isEmpty(theme) && !_.isEmpty(topOrgs)) {
-		remainingLeverage = theme.leverage_total - theme.leverage_used - (theme.organizations.length - topOrgs.length) * 10000;
+		let consolation = theme.consolation_active ? (theme.organizations.length - topOrgs.length) * theme.consolation_amount : 0;
+		remainingLeverage = theme.leverage_total - theme.leverage_used - consolation;
 
 		topOrgs.map((org) => {
 			remainingLeverage -= parseInt(org.amount_from_votes || 0);

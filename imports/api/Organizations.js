@@ -14,6 +14,15 @@ const ChitVoteSchema = new SimpleSchema({
 	}
 });
 
+const MatchPledgeSchema = new SimpleSchema({
+	member: String,
+	amount: Number,
+	createdAt: {
+		type: Date,
+		autoValue: () => (new Date())
+	}
+});
+
 // Define Collection
 const Organizations = new Mongo.Collection('organizations');
 
@@ -51,12 +60,22 @@ const OrganizationSchema = new SimpleSchema({
 		required: false,
 		defaultValue: 0
 	},
+	// pledges: {
+	// 	type: Array,
+	// 	defaultValue: [],
+	// 	required: false
+	// },
+	// 'pledges.$': MatchPledgeSchema,
 	leverage_funds: {
 		type: Number,
 		required: false,
 		defaultValue: 0
 	},
-	theme: SimpleSchema.RegEx.Id
+	theme: SimpleSchema.RegEx.Id,
+	createdAt: {
+		type: Date,
+		autoValue: () => (new Date())
+	}
 });
 
 Organizations.attachSchema(OrganizationSchema);

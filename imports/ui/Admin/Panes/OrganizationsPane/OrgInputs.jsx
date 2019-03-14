@@ -60,7 +60,7 @@ export default class OrgInputs extends React.Component {
 		// Only update the document if data has changed
 		if(this.state.orgTitle !== this.props.org.title ||
 			 this.state.orgAsk   !== this.props.org.ask ||
-			 this.state.orgImage   !== this.props.org.image._id) {
+			 this.state.orgImage !== this.props.org.image._id) {
 
 			OrganizationMethods.update.call({id: this.props.org._id, data: {
 				title: this.state.orgTitle,
@@ -122,8 +122,10 @@ export default class OrgInputs extends React.Component {
 			{ key: 'replace', text: 'Replace', value: 'replace' },
 		];
 
+		let org = this.props.org;
+
 		return(
-			<Form organization={this.props.org._id} onSubmit={this.handleOrgUpdate} encType="multipart/form-data" onBlur={this.handleOrgUpdate}>
+			<Form organization={org._id} onSubmit={this.handleOrgUpdate} encType="multipart/form-data" onBlur={this.handleOrgUpdate}>
 				<Form.Group>
 					<Form.Input width={6} type='text' placeholder='Organization Name' value={this.state.orgTitle} onChange={this.updateValue} name='orgTitle' />
 
@@ -132,14 +134,14 @@ export default class OrgInputs extends React.Component {
 					<Form.Dropdown width={2} text='Image' simple fluid button options={imageOptions} onChange={this.handleImageDropdown} />
 
 					<Form.Field width={5}>
-						<Label style={{width: '100%', height: '100%'}}>{this.props.org.image.name || ''}</Label>
+						<Label style={{width: '100%', height: '100%'}}>{org.image && org.image.name ? org.image.name : ''}</Label>
 					</Form.Field>
 
 					<Modal
 						centered={false}
 						trigger={<Button icon><Icon name='trash' /></Button>}
 						header={`Confirm Delete`}
-						content={`Are you sure you want to permanently delete the organization: ${this.props.org.title}?`}
+						content={`Are you sure you want to permanently delete the organization: ${org.title}?`}
 						actions={[
 							{key: 'cancel', content: 'Cancel', color: 'green', icon: 'ban'},
 							{key: 'delete', content: 'Delete', color: 'red', icon: 'trash', onClick: this.removeOrg}]}
@@ -154,7 +156,7 @@ export default class OrgInputs extends React.Component {
 				<Modal
 					open={this.state.viewModalOpen}
 					onClose={this.closeViewModal}>
-					<Image src={this.props.org.image.path || '/public/img/notfound.png'} />
+					<Image src={org.image && org.image.path ? org.image.path : '/img/default.jpg'} />
 				</Modal>
 
 				{/* Replace Image */}

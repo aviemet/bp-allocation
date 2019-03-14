@@ -45,7 +45,7 @@ class OrganizationsPane extends React.Component {
 	}
 
 	updateImageValue({file}) {
-		this.setState({orgImage: file._id});
+		this.setState({orgImage: file._id || false});
 	}
 
 	enableAddButton()  { this.setState({addButtonDisabled: false});	}
@@ -60,12 +60,15 @@ class OrganizationsPane extends React.Component {
 
 		e.target.reset();
 
-		OrganizationMethods.create.call({
+		let data = {
 			title: this.state.orgTitle,
 			ask: this.state.orgAsk,
 			image: this.state.orgImage,
 			theme: this.props.theme._id
-		}, (err, res) => {
+		};
+		console.log({data});
+
+		OrganizationMethods.create.call(data, (err, res) => {
 			if(err){
 				console.log(err);
 			} else {
@@ -97,45 +100,3 @@ class OrganizationsPane extends React.Component {
 }
 
 export default withContext(OrganizationsPane);
-
-// export default withTracker(({themeId}) => {
-// 	let orgsHandle = Meteor.subscribe('organizations', themeId);
-// 	let imagesHandle = Meteor.subscribe('images', themeId);
-// 	let orgs = Organizations.find({theme: themeId}).fetch();
-// 	let images;
-//
-// 	// Get the image info into the orgs
-// 	let imgIds = orgs.map((org) => ( org.image ));
-// 	if(!_.isEmpty(imgIds)){
-// 		// Fetch the images
-// 		images = Images.find({_id: {$in: imgIds}}).fetch();
-//
-// 		// Map fields from each image object to its respective org
-// 		if(!_.isEmpty(images)){
-// 			orgs.map((org) => {
-// 				image = _.find(images, (img) => ( img._id === org.image));
-//
-// 				if(image){
-// 					imageObject = {
-// 						_id: image._id,
-// 						path: `/uploads/${image._id}.${image.extension}`,
-// 						name: image.name
-// 					};
-//
-// 					org.image = imageObject
-// 				} else {
-// 					org.image = {}
-// 				}
-// 			});
-// 		}
-// 	}
-//
-// 	if(orgsHandle.ready()){
-// 		 // console.log(orgs);
-// 	}
-//
-// 	return {
-// 		organizations: orgs,
-// 		loading: !orgsHandle.ready()
-// 	}
-// })(OrganizationPane);
