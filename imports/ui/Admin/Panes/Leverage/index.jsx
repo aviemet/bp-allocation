@@ -24,7 +24,8 @@ export default class Leverage extends React.Component {
 		let rounds = [];
 
 		let nRounds = 1;
-		while(leverageRemaining > 0 || this._numFullyFundedOrgs(orgs) === orgs.length && nRounds < 10) {
+		while((leverageRemaining >= 1 || this._numFullyFundedOrgs(orgs) === orgs.length) && nRounds < 10) {
+			console.log("Round " + nRounds);
 			let round = {
 				leverageRemaining: leverageRemaining,
 				sumRemainingOrgs: sumRemainingOrgs
