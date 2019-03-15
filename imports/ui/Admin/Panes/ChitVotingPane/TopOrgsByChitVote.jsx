@@ -66,7 +66,6 @@ export default class TopOrgsByChitVote extends React.Component {
 
 	render() {
 		let orgs = sortTopOrgs(this.props.theme, this.props.organizations);
-		console.log('ChitVote rendered');
 
 		return (
 			<React.Fragment>
