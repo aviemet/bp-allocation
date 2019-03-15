@@ -8,7 +8,7 @@ import { Themes, Organizations } from '/imports/api';
 import { ThemesSchema }  from '/imports/api/schema';
 import OrganizationMethods from './OrganizationMethods';
 
-import _ from 'underscore';
+import _ from 'lodash';
 
 
 const ThemeMethods = {
@@ -57,7 +57,7 @@ const ThemeMethods = {
 	}),
 
 	/**
-	 * Manually lock an organization to "Top Orgs"
+	 * Manually toggle an organization in to "Top Orgs"
 	 */
 	topOrgToggle: new ValidatedMethod({
 		name: 'themes.lockTopOrg',
@@ -67,16 +67,89 @@ const ThemeMethods = {
 		run({theme_id, org_id}) {
 			let theme = Themes.findOne({_id: theme_id}, {topOrgsManual: true});
 
+			// Remove if exists
 			if(theme.topOrgsManual.includes(org_id)){
-				return Themes.update({_id: theme_id}, {$pull: {topOrgsManual: org_id}});
+				return Themes.update({_id: theme_id}, {
+					$pull: {topOrgsManual: org_id}
+				});
 			}
-			return Themes.update({_id: theme_id}, {$addToSet: {topOrgsManual: org_id}});
+			// Add if not exists
+			return Themes.update({_id: theme_id}, {
+				$addToSet: {topOrgsManual: org_id}
+			});
 		}
 	}),
 
 	/**
-	 * Get Top Orgs Sorted by chit votes
+	 * Save an organization by funding 1/2 the ask
 	 */
+	saveOrg: new ValidatedMethod({
+		name: 'themes.saveOrg',
+
+		validate: null,
+
+		run({id, amount, name}) {
+			if(!id || !amount) return false;
+
+			let org = Organizations.findOne({_id: id});
+			let theme = Themes.findOne({_id: org.theme});
+
+			console.log({theme});
+
+			let data = {org: id, amount: amount}
+			if(name) {
+				data.name = name;
+			}
+			console.log({data});
+			let result = Themes.update({_id: theme._id}, {
+				$push: {
+					saves: {
+						$each: [data]
+					}
+				},
+				$inc: {numTopOrgs: 1},
+				$addToSet: {topOrgsManual: id}
+			});
+			console.log(result);
+			return result;
+		}
+	}),
+
+	/**
+	 * Undo a saved Org
+	 */
+	unSaveOrg: new ValidatedMethod({
+		name: 'themes.unSaveOrg',
+
+		validate: null,
+
+		run({theme_id, org_id}) {
+			if(!theme_id || !org_id) return false;
+
+			return Themes.update({_id: theme_id}, {
+				$pull: {
+					saves: {org: org_id},
+					topOrgsManual: org_id
+				},
+				$inc: {numTopOrgs: -1}
+			});
+		}
+	})
+}
+
+export default ThemeMethods;
+
+
+
+
+
+
+
+
+/*
+/**
+	 * Get Top Orgs Sorted by chit votes
+	 *
 	filterTopOrgs: (theme, orgs) => {
 		if(!theme){
 			throw new Meteor.Error("No theme provided to ThemeMethods.filterTopOrgs");
@@ -137,6 +210,4 @@ const ThemeMethods = {
 
 		return sortedOrgs.slice(0, slice);
 	}
-}
-
-export default ThemeMethods;
+ */

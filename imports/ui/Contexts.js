@@ -4,6 +4,8 @@ import _ from 'underscore';
 
 import { withTracker } from 'meteor/react-meteor-data';
 
+import { filterTopOrgs } from '/imports/utils';
+
 import { Themes, Organizations, Images } from '/imports/api';
 import { ThemeMethods, OrganizationMethods, ImageMethods } from '/imports/api/methods';
 
@@ -95,8 +97,9 @@ const ThemeProvider = withTracker((props) => {
 	// Pre-filter the top orgs, add to loading condition
 	let topOrgs = [];
 	let topOrgsReady = false;
-	if(themesHandle.ready() && orgsHandle.ready()) {
-		topOrgs = ThemeMethods.filterTopOrgs(theme, orgs);
+	// console.log({themeReady: themesHandle.ready(), orgsReady: orgsHandle.ready(), theme, orgs});
+	if(themesHandle.ready() && orgsHandle.ready() && theme && orgs) {
+		topOrgs = filterTopOrgs(theme, orgs);
 		topOrgsReady = theme.organizations.length > 0 && topOrgs.length <= 0;
 	}
 
@@ -119,18 +122,6 @@ const ThemeProvider = withTracker((props) => {
 								!orgsHandle.ready() && _.isEmpty(orgs) &&
 								!imagesHandle.ready() && _.isUndefined(images) &&
 								!topOrgsReady;
-
-	// console.log({
-	// 	loading: loading,
-	// 	theme:!themesHandle.ready() && _.isUndefined(theme),
-	// 	themeObj: theme,
-	// 	orgs:!orgsHandle.ready() && _.isEmpty(orgs),
-	// 	orgsObj: orgs,
-	// 	images:!imagesHandle.ready() && _.isUndefined(images),
-	// 	imagesObj: images,
-	// 	topOrgs:!topOrgsReady,
-	// 	topOrgsObj: topOrgs
-	// });
 
 	return {
 		loading: loading,

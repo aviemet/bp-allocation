@@ -6,119 +6,81 @@ const KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds' };
 
 const roundFloat = (value, decimal) => {
 	decimal = decimal || 2;
-	return parseFloat((value).toFixed(decimal));
-}
+	return parseFloat(parseFloat(value).toFixed(decimal));
+};
 
-const _initLeverageVars = orgsOriginal => {
-	let sumRemainingOrgs = 0;
-	let orgs = _.cloneDeep(orgsOriginal).map(org => {
-		// Set up some variables
-		org.allocatedFunds = roundFloat(org.amount_from_votes + org.pledges + org.topoff);
-		org.leverageFunds = 0; // Accumulator for funds recieved from leverage spread
-		org.need = roundFloat(org.ask - org.allocatedFunds); // Amount needed to be fully funded
+/**
+ * Return all orgs sorted by votes
+ */
+sortTopOrgs = (theme, orgs) => {
+	if(!theme){
+		throw new Meteor.Error("No theme provided to ThemeMethods.filterTopOrgs");
+		return;
+	}
 
-		// Use the loop to calculate the funding total of orgs not fully funded
-		sumRemainingOrgs = roundFloat(sumRemainingOrgs + org.allocatedFunds);
-		return org;
+	// Save manual top orgs as key/value true/false pairs for reference
+	let manualTopOrgs = {};
+	theme.topOrgsManual.map((org) => {
+		manualTopOrgs[org] = true;
 	});
 
-	return { orgs, sumRemainingOrgs };
-}
+	// First sort orgs by weight and vote count
+	let sortedOrgs = _.sortBy(orgs, (org) => {
+		// Calculate the votes for each org (weight/chit_weight unless there's a manual count)
+		let votes = org.chitVotes && org.chitVotes.count ? org.chitVotes.count :
+								org.chitVotes && org.chitVotes.weight ? org.chitVotes.weight / theme.chit_weight : 0;
 
-const getLeverageSpreadRounds = (topOrgs, leverageRemaining) => {
-	let { orgs, sumRemainingOrgs } = _initLeverageVars(topOrgs);
+		// Save the votes count for later
+		org.votes = votes;
 
-	/////////////////////////
-	// Loop through rounds //
-	/////////////////////////
-	let rounds = [];
-	let nRounds = 1;
-	while(leverageRemaining > 0 && nRounds < 10) {
-		console.log("Round "+nRounds);
-		let round = {
-			leverageRemaining: leverageRemaining,
-			sumRemainingOrgs: sumRemainingOrgs
-		};
+		// Sort in descending order
+		return -(votes)
+	});
 
-		let trackers = {
-			fullyFundedOrgs: orgs.reduce((sum, org) => {
-				return sum + (org.need <= 0 ? 1 : 0);
-			}, 0),
-			newSumRemainingOrgs: 0,
-			givenThisRound: 0
-		};
+	//Then bubble up the manual top orgs
+	// No need to proceed if manual orgs is >= numTopOrgs
+	if(theme.numTopOrgs >= theme.topOrgsManual.length){
+		slice = theme.numTopOrgs;
 
-		///////////////////////
-		// Iterate over orgs //
-		///////////////////////
- 		let roundOrgs = orgs.map(org => {
- 			/** DEFAULTS **/
- 			org.roundFunds = 0; // Amount allocated to org this round
- 			org.percent = 0; // Percentage of remaining pot used for allocation
+		// climb up the bottom of the list looking for manually selected orgs
+		for(let i = sortedOrgs.length-1; i >= theme.numTopOrgs; i--){
+			// console.log({i: i, num: theme.numTopOrgs});
+			// console.log({id: sortedOrgs[i]._id, index: i});
+			// Check if the org has been manually selected
+			if(manualTopOrgs[sortedOrgs[i]._id]){
+				// Find the closest automatically selected top org
+				let j = i-1;
+				while(j > 0 && manualTopOrgs[sortedOrgs[j]._id]){
+					j--;
+				}
 
- 			// Calculate all percentage on 1st, subsequently
- 			// only calculate percentage if not fully funded
- 			if(nRounds === 1 || org.need > 0 && sumRemainingOrgs !== 0) {
-	 			// Percent: (funding amount from voting/pledges) / (sum of that amount for orgs not yet fully funded)
-	 			org.percent = org.allocatedFunds / sumRemainingOrgs;
- 			}
+				// Start swapping the auto top org down the list
+				while(j < i){
+					let tmp = sortedOrgs[i];
+					sortedOrgs[i] = sortedOrgs[j];
+					sortedOrgs[j] = tmp;
 
- 			// Give funds for this round
-		  org.roundFunds = roundFloat(Math.min(
-		    org.percent * leverageRemaining,
-		    org.need
-		  ));
+					j++;
+				}
 
- 			// Accumulate the running total of all accrued funds during leverage rounds
- 			org.leverageFunds = roundFloat(org.leverageFunds + org.roundFunds);
-
-			// Amount needed to be fully funded
- 			org.need = roundFloat(org.ask - org.allocatedFunds - org.leverageFunds);
-
- 			// Decrease remaining leverage by amount awarded
- 			trackers.givenThisRound = roundFloat(trackers.givenThisRound + org.roundFunds);
-
- 			// Only orgs not yet funded are counted in the percentage ratio for next round
- 			if(org.need > 0){
- 				trackers.newSumRemainingOrgs = roundFloat(trackers.newSumRemainingOrgs + org.allocatedFunds);
- 			} else {
- 				trackers.fullyFundedOrgs++;
- 			}
-
- 			return org;
- 		});
-		//////////////////
-		// End orgs.map //
-		//////////////////
-
- 		sumRemainingOrgs = trackers.newSumRemainingOrgs;
- 		leverageRemaining = roundFloat(leverageRemaining - trackers.givenThisRound);
-
- 		// If only 1 org is unfunded, we grant the rest to that org and finish
- 		if(topOrgs.length - trackers.fullyFundedOrgs <= 1) {
- 			roundOrgs = roundOrgs.map(org => {
- 				if(org.need > 0) {
- 					// console.log(org.title);
- 					org.leverageFunds = roundFloat(org.leverageFunds + leverageRemaining);
- 					// leverageRemaining = 0; // To escape the loop
- 				}
- 				return org;
- 			});
- 		}
-
- 		round.orgs = _.cloneDeep(roundOrgs);
-
- 		rounds.push(round);
-
- 		nRounds++;
+				// Send the index back one in case we swapped another match into previous place
+				i++;
+			}
+		}
 	}
-	///////////////
-	// End while //
-	///////////////
 
-	// console.log({rounds});
+	return sortedOrgs;
+};
 
-	return rounds;
-}
+/**
+ * Get Top Orgs Sorted by chit votes
+ */
+filterTopOrgs = (theme, orgs) => {
+	slice = theme.numTopOrgs >= theme.topOrgsManual.length ? theme.numTopOrgs : theme.topOrgsManual.length;
 
-export { COLORS, KIOSK_PAGES, roundFloat, getLeverageSpreadRounds };
+	let sortedOrgs = this.sortTopOrgs(theme, orgs);
+
+	return sortedOrgs.slice(0, slice);
+};
+
+export { COLORS, KIOSK_PAGES, roundFloat, sortTopOrgs, filterTopOrgs };

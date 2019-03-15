@@ -1,6 +1,16 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
+const OrgSaveSchema = new SimpleSchema({
+	org: SimpleSchema.RegEx.Id,
+	amount: Number,
+	name: {
+		type: String,
+		label: 'Identity of person(s) who saved this org',
+		required: false
+	}
+})
+
 // Define Collection
 const Themes = new Mongo.Collection('themes');
 
@@ -116,6 +126,12 @@ const ThemeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: 0
 	},
+	saves: {
+		type: Array,
+		defaultValue: [],
+		required: false
+	},
+	'saves.$': OrgSaveSchema,
 	createdAt: {
 		type: Date,
 		autoValue: () => (new Date())
