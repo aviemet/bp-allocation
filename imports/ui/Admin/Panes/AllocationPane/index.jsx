@@ -35,7 +35,6 @@ class AllocationPane extends React.Component {
 		this.state = {
 			leverage: props.theme.leverage_total,
 			saves: props.theme.saves.reduce((sum, save) => {return sum + save.amount}, 0),
-			match: true,
 			voteAllocated: 0,
 			crowdFavorite: 0,
 			fundsOthers: this.props.theme.consolation_active ? (this.props.theme.organizations.length - this.props.orgs.length) * (this.props.theme.consolation_amount || 10000) : 0
@@ -222,7 +221,13 @@ class AllocationPane extends React.Component {
 
 							<Table.Body>
 							{this.props.orgs.map((org, i) => (
-								<AllocationInputs org={org} key={i} match={this.state.match} crowdFavorite={(i === this.state.crowdFavorite)} tabInfo={{index: i+1, length: this.props.orgs.length}} />
+								<AllocationInputs
+									key={i}
+									org={org}
+									theme={this.props.theme}
+									crowdFavorite={(i === this.state.crowdFavorite)}
+									tabInfo={{index: i+1, length: this.props.orgs.length}}
+								/>
 							))}
 							</Table.Body>
 						</Table>

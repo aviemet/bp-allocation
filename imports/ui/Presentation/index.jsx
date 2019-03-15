@@ -64,6 +64,9 @@ class Presentation extends React.Component {
 	}
 
 	render() {
+		if(this.props.loading) {
+			return <Loader/>
+		}
 		const { show } = this.state;
 		const path = this.props.match.path;
 		return (
@@ -85,17 +88,17 @@ class Presentation extends React.Component {
 
 					{/* Top Orgs */}
 					<Route exact path={`${path}/toporgs`} render={(props) => (
-						<TopOrgs orgs={this.props.getTopOrgs()} animate={this.props.theme.animate_orgs} />
+						<TopOrgs orgs={this.props.topOrgs} animate={this.props.theme.animate_orgs} />
 					)} />
 
 					{/* Allocation */}
 					<Route exact path={`${path}/allocation`} render={(props) => (
-						<Allocation orgs={this.props.getTopOrgs()} theme={this.props.theme} />
+						<Allocation orgs={this.props.topOrgs} theme={this.props.theme} />
 					)} />
 
 					{/* Results */}
 					<Route exact path={`${path}/results`} render={(props) => (
-						<Results orgs={this.props.getTopOrgs()} theme={this.props.theme} />
+						<Results orgs={this.props.topOrgs} theme={this.props.theme} />
 					)} />
 				</PageFader>
 				)}
@@ -105,39 +108,3 @@ class Presentation extends React.Component {
 }
 
 export default withContext(withRouter(Presentation));
-
-// <TopOrgs orgs={this.props.orgs} theme={this.props.theme._id} test={props} />
-//
-// export default withTracker(({id}) => {
-// 	themesHandle = Meteor.subscribe('themes', id);
-// 	orgsHandle = Meteor.subscribe('organizations', id);
-// 	imagesHandle = Meteor.subscribe('images');
-//
-// 	let theme = Themes.find({_id: id}).fetch()[0];
-// 	let orgs = Organizations.find({theme: id}).fetch();
-// 	let images;
-//
-// 	// Get the image info into the orgs
-// 	let imgIds = orgs.map((org) => ( org.image ));
-// 	if(!_.isEmpty(imgIds)){
-// 		// Fetch the images
-// 		images = Images.find({_id: {$in: imgIds}}).fetch();
-//
-// 		// Map fields from each image object to its respective org
-// 		if(!_.isEmpty(images)){
-// 			orgs.map((org) => {
-// 				image = _.find(images, (img) => ( img._id === org.image));
-//
-// 				if(image){
-// 					org.image = image;
-// 				}
-// 			});
-// 		}
-// 	}
-//
-// 	return {
-// 		loading: !themesHandle.ready() && !orgsHandle.ready() && !imagesHandle.ready(),
-// 		theme: theme,
-// 		organizations: orgs
-// 	};
-// })(withRouter(PresentationLayout));

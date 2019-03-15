@@ -13,13 +13,9 @@ import ResultsTable from './ResultsTable';
 export default class Leverage extends React.Component {
 	constructor(props) {
 		super(props);
-
-		this.getLeverageSpreadRounds = this.getLeverageSpreadRounds.bind(this);
-		this._initLeverageVars = this._initLeverageVars.bind(this);
-		this._orgRoundValues = this._orgRoundValues.bind(this);
 	}
 
-	getLeverageSpreadRounds(topOrgs, leverageRemaining) {
+	getLeverageSpreadRounds = (topOrgs, leverageRemaining) => {
 		let { orgs, sumRemainingOrgs } = this._initLeverageVars(topOrgs);
 		let rounds = [];
 
@@ -63,7 +59,7 @@ export default class Leverage extends React.Component {
 		return rounds;
 	}
 
-	_orgRoundValues(org, nRounds, leverageRemaining, sumRemainingOrgs) {
+	_orgRoundValues = (org, nRounds, leverageRemaining, sumRemainingOrgs) => {
 		/** DEFAULTS **/
 		org.roundFunds = 0; // Amount allocated to org this round
 		org.percent = 0; // Percentage of remaining pot used for allocation
@@ -90,11 +86,12 @@ export default class Leverage extends React.Component {
 		return org;
 	}
 
-	_initLeverageVars(orgsOriginal) {
+	_initLeverageVars = (orgsOriginal) => {
 		let sumRemainingOrgs = 0;
 		let orgs = _.cloneDeep(orgsOriginal).map(org => {
 			// Set up some variables
-			org.allocatedFunds = roundFloat(org.amount_from_votes + org.pledges + org.topoff);
+			let save = this.props.theme.saves.find( save => save.org === org._id);
+			org.allocatedFunds = roundFloat(org.amount_from_votes + org.pledges + org.topoff + (save ? save.amount : 0));
 			org.leverageFunds = 0; // Accumulator for funds recieved from leverage spread
 			org.need = roundFloat(org.ask - org.allocatedFunds); // Amount needed to be fully funded
 
@@ -106,13 +103,13 @@ export default class Leverage extends React.Component {
 		return { orgs, sumRemainingOrgs };
 	}
 
-	_numFullyFundedOrgs(orgs) {
+	_numFullyFundedOrgs = (orgs) => {
 		return orgs.reduce((sum, org) => {
 			return sum + (org.need <= 0 ? 1 : 0);
 		}, 0);
 	}
 
-	finalRoundAllcoation(rounds) {
+	finalRoundAllcoation = (rounds) => {
 		let lastRound = rounds[rounds.length-1]
 		let leverageRemaining = lastRound.leverageRemaining;
 		let funds = lastRound.orgs.reduce((sum, org) => {

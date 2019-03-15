@@ -23,57 +23,41 @@ export default class AllocationInputs extends React.Component {
 	constructor(props) {
 		super(props);
 
+		let save = props.theme.saves.find( save => save.org === props.org._id);
+
 		this.state ={
-			subtract: false,
-			match: props.match,
 			amount_from_votes: props.org.amount_from_votes,
+			save: save ? save.amount : 0,
 			percent: 0,
 			funded: props.org.pledges
 		}
-
-		this.toggleMatch = this.toggleMatch.bind(this);
-		this.toggleSubtract = this.toggleSubtract.bind(this);
-		this.enterAmountFromVotes = this.enterAmountFromVotes.bind(this);
-		this.pledge = this.pledge.bind(this);
-		this.handleActionSelection = this.handleActionSelection.bind(this);
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		let newState = {};
+	componentDidUpdate = (prevProps, prevState) => {
 		let org = this.props.org;
+		let funded = parseInt(org.pledges || 0) + (org.amount_from_votes || 0) + (org.topoff || 0);
+		let save = this.props.theme.saves.find( save => save.org === org._id);
 
-		let funded = parseInt(org.pledges || 0) + (org.amount_from_votes || 0) + (org.topoff || 0)
-		let percent = funded / org.ask;
+		let newState = {
+			amount_from_votes: org.amount_from_votes,
+			funded: funded,
+			percent: funded / org.ask,
+			save: save ? save.amount : 0
+		};
 
-		// Listen for parent toggle switch for matching funds
-		if(prevProps.match !== this.props.match)
-			newState.match = this.props.match;
+		let stateChange = false;
+		Object.entries(newState).forEach(([key, val]) => {
+			if(this.state.hasOwnProperty(key) && this.state[key] !== val) {
+				stateChange = true;
+			}
+		});
 
-		if(prevState.amount_from_votes !== org.amount_from_votes)
-			newState.amount_from_votes = org.amount_from_votes;
-
-		if(this.state.percent !== percent)
-			newState.percent = percent;
-
-		if(this.state.funded !== funded)
-			newState.funded = funded;
-
-
-		// Update state if anything changed
-		if(!_.isEmpty(newState))
+		if(stateChange) {
 			this.setState(newState);
-
+		}
 	}
 
-	toggleMatch() {
-		this.setState({ match: !this.state.match });
-	}
-
-	toggleSubtract() {
-		this.setState({subtract: true});
-	}
-
-	enterAmountFromVotes(e, data) {
+	enterAmountFromVotes = (e, data) => {
 		if(data.value !== this.state.amount_from_votes){
 			OrganizationMethods.update.call({id: this.props.org._id, data: {
 				amount_from_votes: data.value
@@ -82,7 +66,7 @@ export default class AllocationInputs extends React.Component {
 		}
 	}
 
-	pledge(e, data) {
+	pledge = (e, data) => {
 		e.preventDefault();
 
 		// Get the amount to pledge
@@ -99,7 +83,7 @@ export default class AllocationInputs extends React.Component {
 		e.target.elements.valueInput.value = '';
 	}
 
-	handleActionSelection(e, data) {
+	handleActionSelection = (e, data) => {
 		switch(data.value){
 			case actionOptions[1].value: // topoff
 				OrganizationMethods.topoff.call({id: this.props.org._id});
@@ -115,22 +99,64 @@ export default class AllocationInputs extends React.Component {
 
 		return (
 			<Table.Row positive={reachedGoal}>
+
+				{/* Org Title */}
 				<Table.Cell>
-					<CrowdFavoriteRibbon crowdFavorite={this.props.crowdFavorite || false}>{this.props.org.title}</CrowdFavoriteRibbon>
+					<CrowdFavoriteRibbon
+						crowdFavorite={this.props.crowdFavorite || false}
+					>
+						{this.props.org.title}
+					</CrowdFavoriteRibbon>
 				</Table.Cell>
+
+				{/* Voted Amount Input */}
 				<Table.Cell>
-					<Input type='number' value={this.state.amount_from_votes} onChange={this.enterAmountFromVotes} fluid tabIndex={this.props.tabInfo ? this.props.tabInfo.index : false} />
+					<Input
+						fluid
+						type='number'
+						value={this.state.amount_from_votes}
+						onChange={this.enterAmountFromVotes}
+						tabIndex={this.props.tabInfo ? this.props.tabInfo.index : false}
+					/>
 				</Table.Cell>
+
+				{/* Matched Pledges Input */}
 				<Table.Cell>
 					<Form onSubmit={this.pledge}>
-						<Form.Input type='text' name='valueInput' action='+' fluid tabIndex={this.props.tabInfo ? this.props.tabInfo.index + this.props.tabInfo.length : false} />
+						<Form.Input
+							fluid
+							type='text'
+							name='valueInput'
+							action='+'
+							tabIndex={this.props.tabInfo ? this.props.tabInfo.index + this.props.tabInfo.length : false}
+						/>
 					</Form>
 				</Table.Cell>
-				<Table.Cell className={reachedGoal ? 'bold' : ''}>${numeral(this.state.funded).format('0,0')}</Table.Cell>
-				<Table.Cell className={reachedGoal ? 'bold' : ''}>${numeral(this.props.org.ask).format('0,0')}</Table.Cell>
-				<Table.Cell>{numeral(this.props.org.ask - this.props.org.amount_from_votes - this.props.org.pledges).format('$0,0.00')}</Table.Cell>
+
+				{/* Funded */}
+				<Table.Cell className={reachedGoal ? 'bold' : ''}>
+					${numeral(this.state.funded + this.state.save).format('0,0')}
+				</Table.Cell>
+
+				{/* Ask */}
+				<Table.Cell className={reachedGoal ? 'bold' : ''}>
+					${numeral(this.props.org.ask).format('0,0')}
+				</Table.Cell>
+
+				{/* Need */}
+				<Table.Cell>
+					{numeral(this.props.org.ask - this.props.org.amount_from_votes - this.props.org.pledges - this.state.save).format('$0,0.00')}
+				</Table.Cell>
+
+				{/* Actions */}
 				<Table.Cell singleLine>
-					<Dropdown text='Actions' floating button options={actionOptions} onChange={this.handleActionSelection} />
+					<Dropdown
+						floating
+						button
+						text='Actions'
+						options={actionOptions}
+						onChange={this.handleActionSelection}
+					/>
 				</Table.Cell>
 			</Table.Row>
 		);
