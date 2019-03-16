@@ -79,19 +79,8 @@ const Award = ({show, type, amount}) => {
 }
 
 export default class OrgCard extends React.Component {
-	static propTypes = {
-		org: PropTypes.object.isRequired,
-		bgcolor: PropTypes.string,
-		award: PropTypes.bool,
-		awardtype: PropTypes.oneOf(['awardee', 'other'])
-	};
-
 	constructor(props) {
 		super(props);
-	}
-
-	componentDidUpdate(prevProps, prevState) {
-		// console.log({prevProps: prevProps, props: this.props});
 	}
 
 	render() {
@@ -104,7 +93,7 @@ export default class OrgCard extends React.Component {
 		return (
 			<Card className={animateClass}>
 				<CardImage style={{ backgroundImage: `url(${imagePath})` }}>
-					<Award show={this.props.award} type={this.props.awardtype} amount={this.props.org.value} />
+					<Award show={this.props.award} type={this.props.awardtype} amount={this.props.org.totalFunds} />
 				</CardImage>
 				<CardContent bgcolor={this.props.bgcolor || '#FFF'}>
 					<OrgTitle>{this.props.org.title}</OrgTitle>

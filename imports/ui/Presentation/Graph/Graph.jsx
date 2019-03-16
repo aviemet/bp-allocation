@@ -128,16 +128,9 @@ const LeverageCount = styled.div`
 export default class Graph extends React.Component {
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			leverage: this._calcStartingLeverage(),
-			orgCount: this.props.orgs.length
-		}
-
-		this._calcStartingLeverage = this._calcStartingLeverage.bind(this);
 	}
 
-	_calcStartingLeverage(){
+	_calcStartingLeverage = () => {
 		let leverage = this.props.theme.leverage_total;
 
 		this.props.orgs.map((org) => {
@@ -147,22 +140,9 @@ export default class Graph extends React.Component {
 		return leverage;
 	}
 
-	componentDidUpdate(prevProps, prevState){
-		let newState = {};
-
-		let leverage = this._calcStartingLeverage();
-
-		if(this.state.leverage !== leverage)
-			newState.leverage = leverage;
-		if(this.state.orgCount !== this.props.orgs.length)
-			newState.orgCount = this.props.orgs.length;
-
-		if(!_.isEmpty(newState))
-			this.setState(newState);
-	}
-
 	render() {
 		const visibility = this.props.theme.leverage_visible ? 'visible' : 'hidden';
+		const startingLeverage = this._calcStartingLeverage();
 		return (
 			<GraphPageContainer>
 				<GraphContainer id='graph'>
@@ -179,7 +159,7 @@ export default class Graph extends React.Component {
 
 						<BarsContainer columns='equal'>
 						{this.props.orgs.map((org, i) => (
-							<Bar org_id={org._id} key={org._id} color={COLORS[i%COLORS.length]} />
+							<Bar org={org} theme={this.props.theme} key={org._id} color={COLORS[i%COLORS.length]} />
 						))}
 						</BarsContainer>
 
@@ -195,8 +175,8 @@ export default class Graph extends React.Component {
 
 						<Grid.Row style={{visibility: visibility}}>
 							<Grid.Column>
-								<ProgressBar value={this.state.leverage - this.props.theme.leverage_used} total={this.state.leverage} inverted color='green' size='large' />
-								<LeverageCount>${numeral(this.state.leverage).format('0.0a')}</LeverageCount>
+								<ProgressBar value={startingLeverage - this.props.theme.leverage_used} total={startingLeverage} inverted color='green' size='large' />
+								<LeverageCount>${numeral(startingLeverage).format('0.0a')}</LeverageCount>
 							</Grid.Column>
 						</Grid.Row>
 					</InfoGrid>

@@ -5,6 +5,8 @@ import numeral from 'numeral';
  // import { getLeverageSpreadRounds } from '/imports/utils';
 import { roundFloat } from '/imports/utils';
 
+import { ThemeMethods } from '/imports/api/methods';
+
 import { Header, Loader, Segment, Grid, Button } from 'semantic-ui-react';
 
 import RoundTable from './RoundTable';
@@ -21,7 +23,7 @@ export default class Leverage extends React.Component {
 
 		let nRounds = 1;
 		while((leverageRemaining >= 1 || this._numFullyFundedOrgs(orgs) === orgs.length) && nRounds < 10) {
-			console.log("Round " + nRounds);
+
 			let round = {
 				leverageRemaining: leverageRemaining,
 				sumRemainingOrgs: sumRemainingOrgs
@@ -54,8 +56,6 @@ export default class Leverage extends React.Component {
 			nRounds++;
 		}
 
-		console.log(rounds);
-
 		return rounds;
 	}
 
@@ -78,10 +78,10 @@ export default class Leverage extends React.Component {
 	  ));
 
 		// Accumulate the running total of all accrued funds during leverage rounds
-		org.leverageFunds = roundFloat(org.leverageFunds + org.roundFunds);
+		org.leverage_funds = roundFloat(org.leverage_funds + org.roundFunds);
 
 		// Amount needed to be fully funded
-		org.need = roundFloat(org.ask - org.allocatedFunds - org.leverageFunds);
+		org.need = roundFloat(org.ask - org.allocatedFunds - org.leverage_funds);
 
 		return org;
 	}
@@ -92,7 +92,7 @@ export default class Leverage extends React.Component {
 			// Set up some variables
 			let save = this.props.theme.saves.find( save => save.org === org._id);
 			org.allocatedFunds = roundFloat(org.amount_from_votes + org.pledges + org.topoff + (save ? save.amount : 0));
-			org.leverageFunds = 0; // Accumulator for funds recieved from leverage spread
+			org.leverage_funds = 0; // Accumulator for funds recieved from leverage spread
 			org.need = roundFloat(org.ask - org.allocatedFunds); // Amount needed to be fully funded
 
 			// Use the loop to calculate the funding total of orgs not fully funded
@@ -113,9 +113,17 @@ export default class Leverage extends React.Component {
 		let lastRound = rounds[rounds.length-1]
 		let leverageRemaining = lastRound.leverageRemaining;
 		let funds = lastRound.orgs.reduce((sum, org) => {
-			return sum + (org.leverageFunds > 0 ? org.roundFunds : 0);
+			return sum + (org.leverage_funds > 0 ? org.roundFunds : 0);
 		}, 0);
 		return leverageRemaining - funds;
+	}
+
+	saveLeverageSpread = (lastRound) => {
+		ThemeMethods.saveLeverageSpread.call(lastRound.orgs);
+	}
+
+	resetLeverage = () => {
+		ThemeMethods.resetLeverage.call(this.props.topOrgs);
 	}
 
 	render() {
@@ -124,6 +132,11 @@ export default class Leverage extends React.Component {
 		}
 
 		const rounds = this.getLeverageSpreadRounds(this.props.topOrgs, this.props.theme.leverage_remaining);
+
+		const orgSpreadSum = this.props.topOrgs.reduce((sum, org) => {return sum + org.leverage_funds}, 0);
+		const roundSpreadSum = rounds[rounds.length-1].orgs.reduce((sum, org) => {return sum + org.leverage_funds}, 0);
+
+		const leverageDistributed = orgSpreadSum === roundSpreadSum;
 
 		return (
 		  <React.Fragment>
@@ -158,7 +171,11 @@ export default class Leverage extends React.Component {
 								<span>Leverage Remaining: {numeral(this.finalRoundAllcoation(rounds)).format('$0,0.00')}</span><br/>
 							</Grid.Column>
 							<Grid.Column width={6}>
-								<Button color='green'>Submit Final Values</Button>
+								{!leverageDistributed ?
+								<Button color='green' onClick={() => this.saveLeverageSpread(rounds[rounds.length-1])}>Submit Final Values</Button>
+								:
+								<Button color='red' onClick={this.resetLeverage}>Reset Leverage Distribution</Button>
+								}
 							</Grid.Column>
 						</Grid.Row>
 

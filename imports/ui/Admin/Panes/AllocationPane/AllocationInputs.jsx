@@ -96,6 +96,7 @@ export default class AllocationInputs extends React.Component {
 
 	render() {
 		const reachedGoal = this.state.funded >= this.props.org.ask;
+		let topoff = this.props.org.topoff || 0;
 
 		return (
 			<Table.Row positive={reachedGoal}>
@@ -145,7 +146,7 @@ export default class AllocationInputs extends React.Component {
 
 				{/* Need */}
 				<Table.Cell>
-					{numeral(this.props.org.ask - this.props.org.amount_from_votes - this.props.org.pledges - this.state.save).format('$0,0.00')}
+					{numeral(this.props.org.ask - this.props.org.amount_from_votes - this.props.org.pledges - topoff - this.state.save).format('$0,0.00')}
 				</Table.Cell>
 
 				{/* Actions */}

@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { Router, Route, Switch, withRouter } from 'react-router-dom';
-import _ from 'underscore';
+import _ from 'lodash';
 import numeral from 'numeral';
 
 import { withTracker } from 'meteor/react-meteor-data';
@@ -52,63 +52,51 @@ const AwardsImage = styled.img`
 export default class Intro extends React.Component {
 	constructor(props) {
 		super(props);
-
-		this.orgDisplays = {
-			awardees: [],
-			others: []
-		};
-		var total = 0;
-
-		// Run one loop through the orgs for the info we'll need
-		this.props.orgs.map((org) => {
-			// Calculate the total allocated
-			total += org.value;
-
-			// Separate orgs into 'Awardees' and 'Other Winners'
-			if(org.value >= org.ask){
-				this.orgDisplays.awardees.push(org);
-			} else {
-				this.orgDisplays.others.push(org);
-			}
-		});
-
-		let offset = 0;
-		if(this.props.theme.results_offset && this.props.theme.results_offset !== 0){
-			offset = this.props.theme.results_offset;
-		}
-
-		var format = total > 999999 ? '$0.0a' : '$0.[00]a';
-
-		this.state = {
-			total: total,
-			offset: offset,
-			format: format
-		}
-	}
-
-	componentDidUpdate(prevProps, prevState){
-		let offset = this.props.theme.results_offset || 0;
-		if(offset !== this.state.offset){
-			this.setState({offset: offset});
-		}
 	}
 
 	render() {
+		let awardees = [];
+		let others = [];
+		let saves = this.props.theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
+		let total = this.props.theme.leverage_total + saves;
+
+		let orgs = _.cloneDeep(this.props.orgs).map(org => {
+			total += org.pledges / 2;
+
+			org.save = this.props.theme.saves.find(save => save.org === org._id);
+			org.totalFunds = org.amount_from_votes + org.leverage_funds + org.pledges + org.topoff + (org.save ? org.save.amount : 0);
+
+			if(org.totalFunds >= org.ask){
+				awardees.push(org);
+			} else {
+				others.push(org);
+			}
+			return org
+		});
+
 		let i = -1;
 		return (
 			<ResultsPageContainer>
 				<AwardsImage src="/img/BAT_awards.png" />
 
-				<Header as='h1'>Total amount given: {numeral(this.state.total + this.state.offset).format(this.state.format)}</Header>
+				<Header as='h1'>
+					Total amount given: {numeral(total + (this.props.theme.results_offset || 0)).format('$0.[00]a')}
+				</Header>
 
 				<Header as='h2'>Battery Powered Awardees</Header>
 
 				<Container>
 					<Card.Group centered >
-					{this.orgDisplays.awardees.map((org) => {
+					{awardees.map((org) => {
 						i++;
 						return(
-							<OrgCard org={org} bgcolor={COLORS[i]} award={true} awardtype={'awardee'} key={org._id} />
+							<OrgCard
+								org={org}
+								bgcolor={COLORS[i]}
+								award={true}
+								awardtype={'awardee'}
+								key={org._id}
+							/>
 						);
 					})}
 					</Card.Group>
@@ -118,10 +106,16 @@ export default class Intro extends React.Component {
 
 				<Container>
 					<Card.Group centered >
-					{this.orgDisplays.others.map((org) => {
+					{others.map((org) => {
 						i++;
 						return(
-							<OrgCard org={org} bgcolor={COLORS[i]} award={true} awardtype={'other'} key={org._id} />
+							<OrgCard
+								org={org}
+								bgcolor={COLORS[i]}
+								award={true}
+								awardtype={'other'}
+								key={org._id}
+							/>
 						);
 					})}
 					</Card.Group>

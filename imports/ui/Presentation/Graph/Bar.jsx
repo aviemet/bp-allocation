@@ -28,19 +28,19 @@ const GraphBar = styled.div`
 
 const Pledged = styled.span`
 	position: relative;
-  display: block;
-  top: 54%;
-  width: 100%;
-  text-align: center;
-  color: #fff;
-  line-height: 1;
-  text-shadow: none;
-  opacity: 0;
-  font-size: 3em;
+	display: block;
+	top: 54%;
+	width: 100%;
+	text-align: center;
+	color: #fff;
+	line-height: 1;
+	text-shadow: none;
+	opacity: 0;
+	font-size: 3em;
 
-  -webkit-animation: reveal-amount .5s ease 4s;
-  animation: reveal-amount .8s ease 4s;
-  -webkit-animation-fill-mode: forwards;
+	-webkit-animation: reveal-amount .5s ease 4s;
+	animation: reveal-amount .8s ease 4s;
+	-webkit-animation-fill-mode: forwards;
 `;
 
 const Award = styled.img`
@@ -53,8 +53,8 @@ const Award = styled.img`
 	margin-top: 55px;
 
 	-webkit-animation: reveal-winner-logo .5s ease 4s;
-  animation: reveal-winner-logo .8s ease 4s;
-  -webkit-animation-fill-mode: forwards;
+	animation: reveal-winner-logo .8s ease 4s;
+	-webkit-animation-fill-mode: forwards;
 `;
 
 const AwardImg = ({show}) => {
@@ -71,26 +71,6 @@ const AwardImg = ({show}) => {
 class Bar extends Component {
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			height: 0
-		}
-	}
-
-	componentDidUpdate(prevProps, prevState) {
-		let org = this.props.org;
-
-		let height = 0;
-		if(org.pledges > 0 || org.amount_from_votes > 0)
-			height = Math.round(( ((org.pledges || 0) + (org.amount_from_votes || 0) + (org.topoff || 0)) / org.ask) * 100);
-
-		if(height > 100) height = 100;
-
-		if(prevState.height !== height){
-			this.setState({
-				height: height
-			});
-		}
 	}
 
 	render() {
@@ -98,7 +78,18 @@ class Bar extends Component {
 			return ( <Loader /> )
 		}
 
-		if(this.state.height === 0){
+		let save = this.props.theme.saves.find( save => save.org === this.props.org._id );
+
+		let funded =
+			(this.props.org.pledges || 0) +
+			(this.props.org.amount_from_votes || 0) +
+			(this.props.org.topoff || 0) +
+			(this.props.org.leverage_funds || 0) +
+			(save ? save.amount : 0);
+
+		let height = Math.min(Math.round((funded / this.props.org.ask) * 100), 100);
+
+		if(height === 0){
 			return (
 			<Grid.Column>
 				<BarContainer />
@@ -106,9 +97,9 @@ class Bar extends Component {
 		}
 		return (
 			<BarContainer>
-				<AwardImg show={this.state.height === 100} />
-				<GraphBar style={{height: `${this.state.height}%`, backgroundColor: this.props.color }}>
-					<Pledged>${numeral(this.props.org.pledges + this.props.org.amount_from_votes).format('0.0a')}</Pledged>
+				<AwardImg show={height === 100} />
+				<GraphBar style={{height: `${height}%`, backgroundColor: this.props.color }}>
+					<Pledged>${numeral(funded).format('0.0a')}</Pledged>
 				</GraphBar>
 			</BarContainer>
 		);
@@ -116,11 +107,4 @@ class Bar extends Component {
 	}
 }
 
-export default withTracker(({org_id}) => {
-	let orgsHandle = Meteor.subscribe('organization', org_id);
-
-	return {
-		loading: !orgsHandle.ready(),
-		org: Organizations.find({_id: org_id}).fetch()[0]
-	}
-})(Bar);
+export default Bar;

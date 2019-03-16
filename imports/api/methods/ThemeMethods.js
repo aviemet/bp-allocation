@@ -134,6 +134,44 @@ const ThemeMethods = {
 				$inc: {numTopOrgs: -1}
 			});
 		}
+	}),
+
+	/**
+	 * Assign Leverage Funds to Orgs
+	 */
+	saveLeverageSpread: new ValidatedMethod({
+		name: 'organizations.saveLeverageSpread',
+
+		validate: null,
+
+		run(orgs) {
+			orgs.map(org => {
+				Organizations.update({_id: org._id}, {
+					$set: {
+						leverage_funds: org.leverage_funds
+					}
+				});
+			});
+		}
+	}),
+
+	/**
+	 * Assign Leverage Funds to Orgs
+	 */
+	resetLeverage: new ValidatedMethod({
+		name: 'organizations.resetLeverage',
+
+		validate: null,
+
+		run(orgs) {
+			orgs.map(org => {
+				Organizations.update({_id: org._id}, {
+					$set: {
+						leverage_funds: 0
+					}
+				});
+			});
+		}
 	})
 }
 
