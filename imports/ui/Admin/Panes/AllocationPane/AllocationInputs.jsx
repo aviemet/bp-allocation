@@ -23,11 +23,8 @@ export default class AllocationInputs extends React.Component {
 	constructor(props) {
 		super(props);
 
-		let save = props.theme.saves.find( save => save.org === props.org._id);
 
 		this.state ={
-			amount_from_votes: props.org.amount_from_votes,
-			save: save ? save.amount : 0,
 			percent: 0,
 			funded: props.org.pledges
 		}
@@ -36,13 +33,10 @@ export default class AllocationInputs extends React.Component {
 	componentDidUpdate = (prevProps, prevState) => {
 		let org = this.props.org;
 		let funded = parseInt(org.pledges || 0) + (org.amount_from_votes || 0) + (org.topoff || 0);
-		let save = this.props.theme.saves.find( save => save.org === org._id);
 
 		let newState = {
-			amount_from_votes: org.amount_from_votes,
 			funded: funded,
 			percent: funded / org.ask,
-			save: save ? save.amount : 0
 		};
 
 		let stateChange = false;
@@ -58,7 +52,7 @@ export default class AllocationInputs extends React.Component {
 	}
 
 	enterAmountFromVotes = (e, data) => {
-		if(data.value !== this.state.amount_from_votes){
+		if(data.value !== this.props.org.amount_from_votes){
 			OrganizationMethods.update.call({id: this.props.org._id, data: {
 				amount_from_votes: data.value
 			}});
@@ -94,9 +88,15 @@ export default class AllocationInputs extends React.Component {
 		}
 	}
 
+	_getSaveAmount = () => {
+		let save = this.props.theme.saves.find( save => save.org === props.org._id);
+		return save ? save.amount : 0;
+	}
+
 	render() {
 		const reachedGoal = this.state.funded >= this.props.org.ask;
 		let topoff = this.props.org.topoff || 0;
+		let save = this._getSaveAmount();
 
 		return (
 			<Table.Row positive={reachedGoal}>
@@ -115,7 +115,7 @@ export default class AllocationInputs extends React.Component {
 					<Input
 						fluid
 						type='number'
-						value={this.state.amount_from_votes}
+						value={this.props.org.amount_from_votes}
 						onChange={this.enterAmountFromVotes}
 						tabIndex={this.props.tabInfo ? this.props.tabInfo.index : false}
 					/>
@@ -136,7 +136,7 @@ export default class AllocationInputs extends React.Component {
 
 				{/* Funded */}
 				<Table.Cell className={reachedGoal ? 'bold' : ''}>
-					${numeral(this.state.funded + this.state.save).format('0,0')}
+					${numeral(this.state.funded + save).format('0,0')}
 				</Table.Cell>
 
 				{/* Ask */}
