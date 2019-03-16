@@ -38,11 +38,7 @@ const FinishedContainer = styled.div`
 	}
 `;
 
-export default class Intro extends React.Component {
-	static propTypes = {
-		seconds: PropTypes.number,
-	};
-
+export default class Timer extends React.Component {
 	constructor(props) {
 		super(props);
 

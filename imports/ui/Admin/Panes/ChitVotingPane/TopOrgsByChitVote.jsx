@@ -23,34 +23,11 @@ const NumTopOrgsInput = styled(Input)`
 export default class TopOrgsByChitVote extends React.Component {
 	constructor(props) {
 		super(props);
-
-		var preState = {
-			numTopOrgs: this.props.theme.numTopOrgs,
-			calcNumTopOrgs: Math.max(this.props.theme.numTopOrgs, this.props.theme.topOrgsManual.length)
-		};
-
-		this.state = preState;
-	}
-
-	componentDidUpdate = (prevProps, prevState) => {
-		let newState = {};
-
-		if(this.state.numTopOrgs !== this.props.theme.numTopOrgs) {
-			newState.numTopOrgs = this.props.theme.numTopOrgs;
-		}
-
-		if(!_.isEmpty(newState)) {
-			this.setState(newState);
-		}
 	}
 
 	updateNumTopOrgs = (e, data) => {
 		if(data.value !== this.props.theme.numTopOrgs){
 			ThemeMethods.update.call({id: this.props.theme._id, data: {numTopOrgs: data.value}});
-			this.setState({
-				numTopOrgs: data.value,
-				calcNumTopOrgs: Math.max(data.value, this.props.theme.topOrgsManual.length)
-			});
 		}
 	}
 
@@ -74,7 +51,7 @@ export default class TopOrgsByChitVote extends React.Component {
 					<Checkbox label='Chit Voting Active' toggle index='chit_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.chit_voting_active || false} />
 				</Header>
 				<Header as="h1" floated="left">
-					Top <NumTopOrgsInput size='mini' type='number' value={this.state.numTopOrgs} onChange={this.updateNumTopOrgs} width={1} /> Organizations
+					Top <NumTopOrgsInput size='mini' type='number' value={this.props.theme.numTopOrgs} onChange={this.updateNumTopOrgs} width={1} /> Organizations
 				</Header>
 
 				<Table celled>
@@ -88,7 +65,7 @@ export default class TopOrgsByChitVote extends React.Component {
 
 					<Table.Body>
 					{orgs.map((org, i) => {
-						let inTopOrgs = i < this.state.numTopOrgs;
+						let inTopOrgs = i < this.props.theme.numTopOrgs;
 						return(<TopOrgsRow inTopOrgs={inTopOrgs} key={i} theme={this.props.theme} org={org} />);
 
 					})}

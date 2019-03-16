@@ -24,27 +24,19 @@ const PageTitle = styled.h2`
 	margin-bottom: 46px;
 `;
 
-export default class Intro extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
-	componentDidMount() {
-		// this.topOrgs = ThemeMethods.filterTopOrgs(props.theme, props.orgs);
-	}
-
-	render() {
-		return (
-			<TopOrgsContainer>
-				<PageTitle>Top {this.props.orgs.length} Organizations</PageTitle>
-				<Container>
-					<Card.Group centered itemsPerRow={3}>
-					{this.props.orgs.map((org) => (
-						<OrgCard org={org} key={org._id} animateClass={this.props.animate}  />
-					))}
-					</Card.Group>
-				</Container>
-			</TopOrgsContainer>
-		);
-	}
+const TopOrgs = (props) => {
+	return (
+		<TopOrgsContainer>
+			<PageTitle>Top {props.orgs.length} Organizations</PageTitle>
+			<Container>
+				<Card.Group centered itemsPerRow={3}>
+				{props.orgs.map((org) => (
+					<OrgCard org={org} key={org._id} animateClass={props.animate}  />
+				))}
+				</Card.Group>
+			</Container>
+		</TopOrgsContainer>
+	);
 }
+
+export default TopOrgs;

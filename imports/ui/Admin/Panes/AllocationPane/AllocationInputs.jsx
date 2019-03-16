@@ -2,6 +2,8 @@ import React from 'react';
 import _ from 'underscore';
 import numeral from 'numeral';
 
+import { getSaveAmount } from '/imports/utils';
+
 import { OrganizationMethods, ThemeMethods } from '/imports/api/methods';
 
 import { Table, Checkbox, Button, Form, Dropdown, Input, Label } from 'semantic-ui-react';
@@ -22,33 +24,6 @@ const CrowdFavoriteRibbon = (props) => {
 export default class AllocationInputs extends React.Component {
 	constructor(props) {
 		super(props);
-
-
-		this.state ={
-			percent: 0,
-			funded: props.org.pledges
-		}
-	}
-
-	componentDidUpdate = (prevProps, prevState) => {
-		let org = this.props.org;
-		let funded = parseInt(org.pledges || 0) + (org.amount_from_votes || 0) + (org.topoff || 0);
-
-		let newState = {
-			funded: funded,
-			percent: funded / org.ask,
-		};
-
-		let stateChange = false;
-		Object.entries(newState).forEach(([key, val]) => {
-			if(this.state.hasOwnProperty(key) && this.state[key] !== val) {
-				stateChange = true;
-			}
-		});
-
-		if(stateChange) {
-			this.setState(newState);
-		}
 	}
 
 	enterAmountFromVotes = (e, data) => {
@@ -88,15 +63,12 @@ export default class AllocationInputs extends React.Component {
 		}
 	}
 
-	_getSaveAmount = () => {
-		let save = this.props.theme.saves.find( save => save.org === props.org._id);
-		return save ? save.amount : 0;
-	}
-
 	render() {
-		const reachedGoal = this.state.funded >= this.props.org.ask;
-		let topoff = this.props.org.topoff || 0;
-		let save = this._getSaveAmount();
+		const topoff = this.props.org.topoff || 0;
+		const save = getSaveAmount(this.props.theme.saves, this.props.org._id);
+		const funded = parseInt(this.props.org.pledges || 0) + (this.props.org.amount_from_votes || 0) + (this.props.org.topoff || 0);
+		const percent = funded / this.props.org.ask;
+		const reachedGoal = funded >= this.props.org.ask;
 
 		return (
 			<Table.Row positive={reachedGoal}>
@@ -136,7 +108,7 @@ export default class AllocationInputs extends React.Component {
 
 				{/* Funded */}
 				<Table.Cell className={reachedGoal ? 'bold' : ''}>
-					${numeral(this.state.funded + save).format('0,0')}
+					${numeral(funded + save).format('0,0')}
 				</Table.Cell>
 
 				{/* Ask */}
@@ -146,7 +118,7 @@ export default class AllocationInputs extends React.Component {
 
 				{/* Need */}
 				<Table.Cell>
-					{numeral(this.props.org.ask - this.props.org.amount_from_votes - this.props.org.pledges - topoff - this.state.save).format('$0,0.00')}
+					{numeral(this.props.org.ask - this.props.org.amount_from_votes - this.props.org.pledges - topoff - save).format('$0,0.00')}
 				</Table.Cell>
 
 				{/* Actions */}

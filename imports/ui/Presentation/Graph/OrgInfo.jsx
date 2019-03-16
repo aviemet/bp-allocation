@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import React, { Component } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 
+import { getSaveAmount } from '/imports/utils';
+
 import { Organizations } from '/imports/api';
 
 import numeral from 'numeral';
@@ -37,46 +39,21 @@ const TotalNeed = styled.div`
 	color: #c31a1a;
 `;
 
-class OrgInfo extends React.Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			need: this.props.org.ask - this.props.org.pledges || 0
-		}
+const OrgInfo = (props)  => {
+	if(props.loading){
+		return ( <Loader /> );
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		let need = this.props.org.ask - this.props.org.pledges;
+	const need = props.org.ask - props.org.amount_from_votes - props.org.leverage_funds - props.org.pledges - props.org.topoff - getSaveAmount(props.theme.saves, props.org._id) || 0;
 
-		if(prevState.need !== need){
-			console.log({prevStateNeed: prevState.need, need});
-			this.setState({ need: need });
-		}
-
-	}
-
-	render() {
-		if(this.props.loading){
-			return ( <Loader /> );
-		}
-		return (
-			<InfoContainer className='orginfo'>
-				<Title>{this.props.org.title}</Title>
-				<Ask>Ask: ${numeral(this.props.org.ask).format('0.0a')}</Ask>
-				<MatchNeed>Match Need: {this.state.need > 0 ? `$${numeral(this.state.need/2).format('0.0a')}` : '--'}</MatchNeed>
-				<TotalNeed>Total Need: {this.state.need > 0 ? `$${numeral(this.state.need).format('0.0a')}` : '--'}</TotalNeed>
-			</InfoContainer>
-		);
-	}
+	return (
+		<InfoContainer className='orginfo'>
+			<Title>{props.org.title}</Title>
+			<Ask>Ask: ${numeral(props.org.ask).format('0.0a')}</Ask>
+			<MatchNeed>Match Need: {need > 0 ? `$${numeral(need / 2).format('0.0a')}` : '--'}</MatchNeed>
+			<TotalNeed>Total Need: {need > 0 ? `$${numeral(need).format('0.0a')}` : '--'}</TotalNeed>
+		</InfoContainer>
+	);
 }
 
 export default OrgInfo;
-
-// withTracker(({org_id}) => {
-// 	let orgsHandle = Meteor.subscribe('organization', org_id);
-// 	return {
-// 		loading: !orgsHandle.ready(),
-// 		org: Organizations.find({_id: org_id}).fetch()[0]
-// 	}
-// })(OrgInfo);

@@ -28,24 +28,19 @@ const PageTitle = styled.h1`
 	color: white;
 	text-align: center;
 `;
-
-export default class WelcomeLayout extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		return (
-			<WelcomeContainer>
-				<Container>
-					<Centered>
-						<PageTitle>{this.props.title}</PageTitle>
-						<Hr/>
-							{this.props.children}
-						<Hr/>
-					</Centered>
-				</Container>
-			</WelcomeContainer>
-		);
-	}
+const WelcomeLayout = (props) => {
+	return (
+		<WelcomeContainer>
+			<Container>
+				<Centered>
+					<PageTitle>{props.title}</PageTitle>
+					<Hr/>
+						{props.children}
+					<Hr/>
+				</Centered>
+			</Container>
+		</WelcomeContainer>
+	);
 }
+
+export default WelcomeLayout;

@@ -31,75 +31,13 @@ const Arithmetic = styled.span`
 class AllocationPane extends React.Component {
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			leverage: props.theme.leverage_total,
-			saves: props.theme.saves.reduce((sum, save) => {return sum + save.amount}, 0),
-			voteAllocated: 0,
-			crowdFavorite: 0,
-			fundsOthers: this.props.theme.consolation_active ? (this.props.theme.organizations.length - this.props.orgs.length) * (this.props.theme.consolation_amount || 10000) : 0
-		};
-
-	}
-
-	componentDidMount = () => {
-		let newState = {};
-
-		let crowdFavorite = this.calculateCrowdFavorite();
-		if(crowdFavorite !== false && this.state.crowdFavorite !== crowdFavorite){
-			newState.crowdFavorite = crowdFavorite;
-		}
-
-		this.setState(newState);
-	}
-
-	componentDidUpdate = (prevProps, prevState) => {
-		let newState = _.clone(this.state);
-
-		let saves = this.props.theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
-		if(this.state.saves !== saves) {
-			newState.saves = saves;
-		}
-
-		let voteAllocated = 0;
-		this.props.orgs.map((org) => {
-			voteAllocated += parseInt(org.amount_from_votes || 0);
-			if(org.topoff > 0){
-				voteAllocated += org.topoff;
-			}
-		});
-		if(this.state.voteAllocated !== voteAllocated){
-			newState.voteAllocated = voteAllocated;
-		}
-
-		let crowdFavorite = this.calculateCrowdFavorite();
-		if(crowdFavorite !== false && this.state.crowdFavorite !== crowdFavorite){
-			newState.crowdFavorite = crowdFavorite;
-		}
-
-		let fundsOthers = this.props.theme.consolation_active ? (this.props.theme.organizations.length - this.props.orgs.length) * (this.props.theme.consolation_amount || 10000) : 0;
-		if(this.state.fundsOthers !== fundsOthers) {
-			newState.fundsOthers = fundsOthers;
-		}
-
-		if(!_.isEqual(this.state, newState)) {
-			this.setState(newState);
-		}
-	}
-
-	handleLeverageChange = (e, data) => {
-		this.setState({leverage: data.value});
-	}
-
-	updateThemeLeverage = () => {
-		ThemeMethods.update.call({id: this.props.theme._id, data: { leverage_total: this.state.leverage }});
 	}
 
 	toggleShowLeverage = (e, data) => {
 		ThemeMethods.update.call({id: this.props.theme._id, data: { leverage_visible: data.checked } });
 	}
 
-	calculateCrowdFavorite = () => {
+	_calculateCrowdFavorite = () => {
 		let allEntered = true;
 		let favorite = 0;
 		this.props.orgs.map((org, i) => {
@@ -113,19 +51,32 @@ class AllocationPane extends React.Component {
 		return allEntered ? favorite : false;
 	}
 
+	_calculateVoteAllocated = () => {
+		let voteAllocated = 0;
+ 		this.props.orgs.map((org) => {
+ 			voteAllocated += parseInt(org.amount_from_votes || 0);
+ 			if(org.topoff > 0){
+ 				voteAllocated += org.topoff;
+ 			}
+ 		});
+ 		return voteAllocated;
+	}
+
 	render() {
 		if(this.props.loading){
 			return(<Loader />);
 		}
-		// TODO: Get these values correct!
-		let values = {
-			totalPot: this.props.theme.leverage_total + this.state.saves,
-			consolation: this.state.fundsOthers,
-			votedFunds: this.state.voteAllocated,
-			leverage: this.props.theme.leverage_total - this.state.voteAllocated - this.state.fundsOthers + this.state.saves,
-			pledges: this.props.theme.leverage_used,
-			leverageRemaining: this.props.theme.leverage_remaining
-		};
+
+		const saves = this.props.theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
+		const voteAllocated = this._calculateVoteAllocated();
+		const totalPot = this.props.theme.leverage_total + saves;
+		const consolation = this.props.theme.consolation_active ?
+			(this.props.theme.organizations.length - this.props.orgs.length) *
+			(this.props.theme.consolation_amount || 10000) : 0;
+		const votedFunds = voteAllocated;
+		const leverage = this.props.theme.leverage_total - voteAllocated - consolation + saves;
+		const pledges = this.props.theme.leverage_used;
+
 		return (
 			<Grid>
 
@@ -137,7 +88,7 @@ class AllocationPane extends React.Component {
 
 								{/* Total amount to allocate */}
 								<Statistic>
-									<Statistic.Value>{numeral(values.totalPot).format('$0,0')}</Statistic.Value>
+									<Statistic.Value>{numeral(totalPot).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Total Pot + Saves</Statistic.Label>
 								</Statistic>
 
@@ -145,7 +96,7 @@ class AllocationPane extends React.Component {
 
 								{/* Subtract 10k for each unchosen organization */}
 								<Statistic>
-									<Statistic.Value>{numeral(values.consolation).format('$0,0')}</Statistic.Value>
+									<Statistic.Value>{numeral(consolation).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Pulled/Others</Statistic.Label>
 								</Statistic>
 
@@ -153,7 +104,7 @@ class AllocationPane extends React.Component {
 
 								{/* Subtract funds from votes and topoff */}
 								<Statistic>
-									<Statistic.Value>{numeral(values.votedFunds).format('$0,0')}</Statistic.Value>
+									<Statistic.Value>{numeral(votedFunds).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Votes + Topoff + Saves</Statistic.Label>
 								</Statistic>
 
@@ -161,7 +112,7 @@ class AllocationPane extends React.Component {
 
 								{/* Leverage amount to begin pledge round */}
 								<Statistic>
-									<Statistic.Value>{numeral(values.leverage).format('$0,0')}</Statistic.Value>
+									<Statistic.Value>{numeral(leverage).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Starting Leverage</Statistic.Label>
 								</Statistic>
 
@@ -169,7 +120,7 @@ class AllocationPane extends React.Component {
 
 								{/* Subtract funds from pledge round */}
 								<Statistic>
-									<Statistic.Value>{numeral(values.pledges).format('$0,0')}</Statistic.Value>
+									<Statistic.Value>{numeral(pledges).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Pledges</Statistic.Label>
 								</Statistic>
 
@@ -177,7 +128,7 @@ class AllocationPane extends React.Component {
 
 								{/* Amount remaining to spread to winners */}
 								<Statistic>
-									<Statistic.Value>{numeral(values.leverageRemaining).format('$0,0')}</Statistic.Value>
+									<Statistic.Value>{numeral(this.props.theme.leverage_remaining).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Remaining</Statistic.Label>
 								</Statistic>
 
@@ -225,7 +176,7 @@ class AllocationPane extends React.Component {
 									key={i}
 									org={org}
 									theme={this.props.theme}
-									crowdFavorite={(i === this.state.crowdFavorite)}
+									crowdFavorite={(i === this._calculateCrowdFavorite())}
 									tabInfo={{index: i+1, length: this.props.orgs.length}}
 								/>
 							))}

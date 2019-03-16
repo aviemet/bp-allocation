@@ -53,23 +53,19 @@ const ThemeQuestion = styled.h2`
 
 const ThemeConsumer = ThemeContext.Consumer;
 
-export default class Intro extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		return (
-			<ThemeConsumer>{(context) => (
-				<TitlePage>
-					<MainHeading>Allocation Night</MainHeading>
-					<ThemeTitle>{context.theme.title}</ThemeTitle>
-					<ThemeQuestion>{context.theme.question}</ThemeQuestion>
-					<LogoContainer>
-						<Image src='/img/BPLogoBlue.svg' />
-					</LogoContainer>
-				</TitlePage>
-			)}</ThemeConsumer>
-		);
-	}
+const Intro = (props) => {
+	return (
+		<ThemeConsumer>{(context) => (
+			<TitlePage>
+				<MainHeading>Allocation Night</MainHeading>
+				<ThemeTitle>{context.theme.title}</ThemeTitle>
+				<ThemeQuestion>{context.theme.question}</ThemeQuestion>
+				<LogoContainer>
+					<Image src='/img/BPLogoBlue.svg' />
+				</LogoContainer>
+			</TitlePage>
+		)}</ThemeConsumer>
+	);
 }
+
+export default Intro;

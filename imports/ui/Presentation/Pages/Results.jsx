@@ -49,79 +49,74 @@ const AwardsImage = styled.img`
 	width: 10%;
 `;
 
-export default class Intro extends React.Component {
-	constructor(props) {
-		super(props);
-	}
+const Results = (props) => {
+	let awardees = [];
+	let others = [];
+	let saves = props.theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
+	let total = props.theme.leverage_total + saves;
 
-	render() {
-		let awardees = [];
-		let others = [];
-		let saves = this.props.theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
-		let total = this.props.theme.leverage_total + saves;
+	let orgs = _.cloneDeep(props.orgs).map(org => {
+		total += org.pledges / 2;
 
-		let orgs = _.cloneDeep(this.props.orgs).map(org => {
-			total += org.pledges / 2;
+		org.save = props.theme.saves.find(save => save.org === org._id);
+		org.totalFunds = org.amount_from_votes + org.leverage_funds + org.pledges + org.topoff + (org.save ? org.save.amount : 0);
 
-			org.save = this.props.theme.saves.find(save => save.org === org._id);
-			org.totalFunds = org.amount_from_votes + org.leverage_funds + org.pledges + org.topoff + (org.save ? org.save.amount : 0);
+		if(org.totalFunds >= org.ask){
+			awardees.push(org);
+		} else {
+			others.push(org);
+		}
+		return org
+	});
 
-			if(org.totalFunds >= org.ask){
-				awardees.push(org);
-			} else {
-				others.push(org);
-			}
-			return org
-		});
+	let i = -1;
+	return (
+		<ResultsPageContainer>
+			<AwardsImage src="/img/BAT_awards.png" />
 
-		let i = -1;
-		return (
-			<ResultsPageContainer>
-				<AwardsImage src="/img/BAT_awards.png" />
+			<Header as='h1'>
+				Total amount given: {numeral(total + (props.theme.results_offset || 0)).format('$0.[00]a')}
+			</Header>
 
-				<Header as='h1'>
-					Total amount given: {numeral(total + (this.props.theme.results_offset || 0)).format('$0.[00]a')}
-				</Header>
+			<Header as='h2'>Battery Powered Awardees</Header>
 
-				<Header as='h2'>Battery Powered Awardees</Header>
+			<Container>
+				<Card.Group centered >
+				{awardees.map((org) => {
+					i++;
+					return(
+						<OrgCard
+							org={org}
+							bgcolor={COLORS[i]}
+							award={true}
+							awardtype={'awardee'}
+							key={org._id}
+						/>
+					);
+				})}
+				</Card.Group>
+			</Container>
 
-				<Container>
-					<Card.Group centered >
-					{awardees.map((org) => {
-						i++;
-						return(
-							<OrgCard
-								org={org}
-								bgcolor={COLORS[i]}
-								award={true}
-								awardtype={'awardee'}
-								key={org._id}
-							/>
-						);
-					})}
-					</Card.Group>
-				</Container>
+			<Header as='h2'>Other winners</Header>
 
-				<Header as='h2'>Other winners</Header>
-
-				<Container>
-					<Card.Group centered >
-					{others.map((org) => {
-						i++;
-						return(
-							<OrgCard
-								org={org}
-								bgcolor={COLORS[i]}
-								award={true}
-								awardtype={'other'}
-								key={org._id}
-							/>
-						);
-					})}
-					</Card.Group>
-				</Container>
-			</ResultsPageContainer>
-		);
-	}
+			<Container>
+				<Card.Group centered >
+				{others.map((org) => {
+					i++;
+					return(
+						<OrgCard
+							org={org}
+							bgcolor={COLORS[i]}
+							award={true}
+							awardtype={'other'}
+							key={org._id}
+						/>
+					);
+				})}
+				</Card.Group>
+			</Container>
+		</ResultsPageContainer>
+	);
 }
 
+export default Results;

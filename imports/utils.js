@@ -9,6 +9,11 @@ const roundFloat = (value, decimal) => {
 	return parseFloat(parseFloat(value).toFixed(decimal));
 };
 
+const getSaveAmount = (saves, org_id) => {
+	let save = saves.find( save => save.org === org_id);
+	return save ? save.amount : 0;
+}
+
 /**
  * Return all orgs sorted by votes
  */
@@ -83,4 +88,4 @@ filterTopOrgs = (theme, orgs) => {
 	return sortedOrgs.slice(0, slice);
 };
 
-export { COLORS, KIOSK_PAGES, roundFloat, sortTopOrgs, filterTopOrgs };
+export { COLORS, KIOSK_PAGES, roundFloat, getSaveAmount, sortTopOrgs, filterTopOrgs };

@@ -24,37 +24,22 @@ export default class OrgInputs extends React.Component {
 		};
 
 		this.imageReplaced = false;
-
-		this.updateValue = this.updateValue.bind(this);
-		this.updateImageValue = this.updateImageValue.bind(this);
-		this.handleOrgUpdate = this.handleOrgUpdate.bind(this);
-		this.handleImageDropdown = this.handleImageDropdown.bind(this);
-		this.removeOrg = this.removeOrg.bind(this);
-
-		this.openReplaceModal = this.openReplaceModal.bind(this);
-		this.closeReplaceModal = this.closeReplaceModal.bind(this);
-
-		this.openViewModal = this.openViewModal.bind(this);
-		this.closeViewModal = this.closeViewModal.bind(this);
-
-		this.cancelReplaceModal = this.cancelReplaceModal.bind(this);
-		this.saveReplaceModal = this.saveReplaceModal.bind(this);
 	}
 
 	// State updater for all inputs
-	updateValue(e) {
+	updateValue = (e) => {
 		let newState = {};
 		newState[e.target.name] = e.target.value;
 		this.setState(newState);
 	}
 
-	updateImageValue({file}) {
+	updateImageValue = ({file}) => {
 		this.imageReplaced = true;
 		this.setState({orgImage: file._id});
 	}
 
 	// Write to DB for all inputs
-	handleOrgUpdate(e) {
+	handleOrgUpdate = (e) => {
 		if(e)	e.preventDefault();
 
 		// Only update the document if data has changed
@@ -77,7 +62,7 @@ export default class OrgInputs extends React.Component {
 
 	}
 
-	handleImageDropdown(e, data) {
+	handleImageDropdown = (e, data) => {
 		e.persist();
 		switch(data.value){
 			case 'view':
@@ -89,13 +74,13 @@ export default class OrgInputs extends React.Component {
 		}
 	}
 
-	openReplaceModal()  { this.setState({replaceModalOpen: true});  }
-	closeReplaceModal() { this.setState({replaceModalOpen: false}); }
+	openReplaceModal = ()  => { this.setState({replaceModalOpen: true});  }
+	closeReplaceModal = () => { this.setState({replaceModalOpen: false}); }
 
-	openViewModal()  { this.setState({viewModalOpen: true});  }
-	closeViewModal() { this.setState({viewModalOpen: false}); }
+	openViewModal = ()  => { this.setState({viewModalOpen: true});  }
+	closeViewModal = () => { this.setState({viewModalOpen: false}); }
 
-	cancelReplaceModal() {
+	cancelReplaceModal = () => {
 		if(this.imageReplaced){
 			ImageMethods.remove.call(this.state.orgImage);
 		}
@@ -104,12 +89,12 @@ export default class OrgInputs extends React.Component {
 		this.closeReplaceModal();
 	}
 
-	saveReplaceModal() {
+	saveReplaceModal = () => {
 		this.handleOrgUpdate();
 		this.closeReplaceModal();
 	}
 
-	removeOrg(e){
+	removeOrg = (e) => {
 		e.preventDefault();
 		OrganizationMethods.remove.call(this.props.org._id, (err, res) => {
 			if(err) console.log(err);

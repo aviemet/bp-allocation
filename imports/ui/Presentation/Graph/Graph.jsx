@@ -125,63 +125,60 @@ const LeverageCount = styled.div`
   padding-right: .2em;
 `;
 
-export default class Graph extends React.Component {
-	constructor(props) {
-		super(props);
-	}
+const Graph = (props) => {
+	const _calcStartingLeverage = () => {
+		let leverage = props.theme.leverage_total;
 
-	_calcStartingLeverage = () => {
-		let leverage = this.props.theme.leverage_total;
-
-		this.props.orgs.map((org) => {
+		props.orgs.map((org) => {
 			leverage -= org.amount_from_votes || 0;
 			leverage -= org.topoff || 0;
 		});
 		return leverage;
 	}
 
-	render() {
-		const visibility = this.props.theme.leverage_visible ? 'visible' : 'hidden';
-		const startingLeverage = this._calcStartingLeverage();
-		return (
-			<GraphPageContainer>
-				<GraphContainer id='graph'>
-					<XAxis>
-						<span style={{top: "0%"}}>100%</span>
-						<span style={{top: "50%"}}>50%</span>
-						<span style={{top: "100%"}}>0%</span>
-					</XAxis>
+	const visibility = props.theme.leverage_visible ? 'visible' : 'hidden';
+	const startingLeverage = _calcStartingLeverage();
 
-					<YAxis />
+	return (
+		<GraphPageContainer>
+			<GraphContainer id='graph'>
+				<XAxis>
+					<span style={{top: "0%"}}>100%</span>
+					<span style={{top: "50%"}}>50%</span>
+					<span style={{top: "100%"}}>0%</span>
+				</XAxis>
 
-					<Goal style={{top: 0}} />
-					<Goal style={{top: "50%"}} />
+				<YAxis />
 
-						<BarsContainer columns='equal'>
-						{this.props.orgs.map((org, i) => (
-							<Bar org={org} theme={this.props.theme} key={org._id} color={COLORS[i%COLORS.length]} />
-						))}
-						</BarsContainer>
+				<Goal style={{top: 0}} />
+				<Goal style={{top: "50%"}} />
 
-				</GraphContainer>
+					<BarsContainer columns='equal'>
+					{props.orgs.map((org, i) => (
+						<Bar org={org} theme={props.theme} key={org._id} color={COLORS[i%COLORS.length]} />
+					))}
+					</BarsContainer>
 
-				<InfoContainer>
-					<InfoGrid columns='equal'>
-						<Grid.Row>
-						{this.props.orgs.map((org) => (
-							<OrgInfo org={org} key={org._id} />
-						))}
-						</Grid.Row>
+			</GraphContainer>
 
-						<Grid.Row style={{visibility: visibility}}>
-							<Grid.Column>
-								<ProgressBar value={startingLeverage - this.props.theme.leverage_used} total={startingLeverage} inverted color='green' size='large' />
-								<LeverageCount>${numeral(startingLeverage).format('0.0a')}</LeverageCount>
-							</Grid.Column>
-						</Grid.Row>
-					</InfoGrid>
-				</InfoContainer>
-			</GraphPageContainer>
-		);
-	}
+			<InfoContainer>
+				<InfoGrid columns='equal'>
+					<Grid.Row>
+					{props.orgs.map((org) => (
+						<OrgInfo org={org} theme={props.theme} key={org._id} />
+					))}
+					</Grid.Row>
+
+					<Grid.Row style={{visibility: visibility}}>
+						<Grid.Column>
+							<ProgressBar value={startingLeverage - props.theme.leverage_used} total={startingLeverage} inverted color='green' size='large' />
+							<LeverageCount>${numeral(startingLeverage).format('0.0a')}</LeverageCount>
+						</Grid.Column>
+					</Grid.Row>
+				</InfoGrid>
+			</InfoContainer>
+		</GraphPageContainer>
+	);
 }
+
+export default Graph;

@@ -25,35 +25,17 @@ const SimulationContainer = styled.div`
 	}
 `;
 
-class Presentation extends React.Component {
-	constructor(props) {
-		super(props);
+const Presentation = (props) => {
+	if(props.loading){
+		return(<Loader />);
 	}
-
-	render() {
-		if(this.props.loading){
-			return(<Loader />);
-		}
-		return (
-			<ThemeContext.Consumer>{context => (
-				<SimulationContainer>
-					<Allocation orgs={ThemeMethods.filterTopOrgs(context.theme._id, context.orgs)} theme={context.theme._id} />
-				</SimulationContainer>
-			)}</ThemeContext.Consumer>
-		);
-	}
+	return (
+		<ThemeContext.Consumer>{context => (
+			<SimulationContainer>
+				<Allocation orgs={ThemeMethods.filterTopOrgs(context.theme._id, context.orgs)} theme={context.theme._id} />
+			</SimulationContainer>
+		)}</ThemeContext.Consumer>
+	);
 }
 
-// export default withTracker(({id}) => {
-// 	themesHandle = Meteor.subscribe('themes', id);
-// 	orgsHandle = Meteor.subscribe('organizations', id);
-//
-// 	let theme = Themes.find({_id: id}).fetch()[0];
-// 	let orgs = Organizations.find({theme: id}).fetch();
-//
-// 	return {
-// 		loading: !themesHandle.ready() && !orgsHandle.ready(),
-// 		theme: theme,
-// 		organizations: orgs
-// 	};
-// })(withRouter(Presentation));
+export default Presentation;

@@ -68,43 +68,36 @@ const AwardImg = ({show}) => {
 	)
 }
 
-class Bar extends Component {
-	constructor(props) {
-		super(props);
+const Bar = (props) => {
+	if(props.loading){
+		return ( <Loader /> )
 	}
 
-	render() {
-		if(this.props.loading){
-			return ( <Loader /> )
-		}
+	let save = props.theme.saves.find( save => save.org === props.org._id );
 
-		let save = this.props.theme.saves.find( save => save.org === this.props.org._id );
+	let funded =
+		(props.org.pledges || 0) +
+		(props.org.amount_from_votes || 0) +
+		(props.org.topoff || 0) +
+		(props.org.leverage_funds || 0) +
+		(save ? save.amount : 0);
 
-		let funded =
-			(this.props.org.pledges || 0) +
-			(this.props.org.amount_from_votes || 0) +
-			(this.props.org.topoff || 0) +
-			(this.props.org.leverage_funds || 0) +
-			(save ? save.amount : 0);
+	let height = Math.min(Math.round((funded / props.org.ask) * 100), 100);
 
-		let height = Math.min(Math.round((funded / this.props.org.ask) * 100), 100);
-
-		if(height === 0){
-			return (
-			<Grid.Column>
-				<BarContainer />
-			</Grid.Column> );
-		}
+	if(height === 0){
 		return (
-			<BarContainer>
-				<AwardImg show={height === 100} />
-				<GraphBar style={{height: `${height}%`, backgroundColor: this.props.color }}>
-					<Pledged>${numeral(funded).format('0.0a')}</Pledged>
-				</GraphBar>
-			</BarContainer>
-		);
-
+		<Grid.Column>
+			<BarContainer />
+		</Grid.Column> );
 	}
+	return (
+		<BarContainer>
+			<AwardImg show={height === 100} />
+			<GraphBar style={{height: `${height}%`, backgroundColor: props.color }}>
+				<Pledged>${numeral(funded).format('0.0a')}</Pledged>
+			</GraphBar>
+		</BarContainer>
+	);
 }
 
 export default Bar;

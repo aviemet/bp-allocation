@@ -20,18 +20,15 @@ class SettingsPane extends React.Component {
 		this.usingFields.map(field => buildState[field] = this.props.theme[field]);
 
 		this.state = buildState;
-
-		this.updateValue = this.updateValue.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	updateValue(e, el) {
+	updateValue = (e, el) => {
 		let newState = {};
 		newState[el.name] = el.value || el.checked;
 		this.setState(newState);
 	}
 
-	handleSubmit(e) {
+	handleSubmit = (e) => {
 		e.preventDefault();
 
 		let dataChanged = false;

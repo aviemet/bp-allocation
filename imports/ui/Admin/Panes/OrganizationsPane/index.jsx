@@ -28,34 +28,26 @@ class OrganizationsPane extends React.Component {
 			orgImage: '',
 			addButtonDisabled: false
 		};
-
-		this.updateValue = this.updateValue.bind(this);
-		this.handleNewOrgSubmit = this.handleNewOrgSubmit.bind(this);
-		this.updateImageValue = this.updateImageValue.bind(this);
-
-		this.enableAddButton = this.enableAddButton.bind(this);
-		this.disableAddButton = this.disableAddButton.bind(this);
-		this.fileError = this.fileError.bind(this);
 	}
 
-	updateValue(e, data) {
+	updateValue = (e, data) => {
 		let newState = {};
 		newState[data.name] = data.value;
 		this.setState(newState);
 	}
 
-	updateImageValue({file}) {
+	updateImageValue = ({file}) => {
 		this.setState({orgImage: file._id || false});
 	}
 
-	enableAddButton()  { this.setState({addButtonDisabled: false});	}
-	disableAddButton() { this.setState({addButtonDisabled: true});	}
+	enableAddButton = () =>  { this.setState({addButtonDisabled: false});	}
+	disableAddButton = () => { this.setState({addButtonDisabled: true});	}
 
-	fileError(error, file){
+	fileError = (error, file) => {
 		console.log({error: error, file: file});
 	}
 
-	handleNewOrgSubmit(e) {
+	handleNewOrgSubmit = (e) => {
 		e.preventDefault();
 
 		e.target.reset();

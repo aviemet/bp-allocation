@@ -39,16 +39,12 @@ class PresentationPane extends React.Component {
 			results_offset: this.props.theme.results_offset,
 			timer_length: this.props.theme.timer_length
 		};
-
-		this.toggleThemeValue = this.toggleThemeValue.bind(this);
-		this.updateThemeValue = this.updateThemeValue.bind(this);
-		this.resetPresentation = this.resetPresentation.bind(this);
 	}
 
 	/**
 	 * Togle boolean values on the Theme model
 	 */
-	toggleThemeValue(e, data){
+	toggleThemeValue = (e, data) => {
 		let tempData = {};
 		tempData[data.index] = data.checked;
 
@@ -59,7 +55,7 @@ class PresentationPane extends React.Component {
 	/**
 	 * Update non-boolean values on the Theme model
 	 */
-	updateThemeValue(e, data){
+	updateThemeValue = (e, data) => {
 		let tempData = {}
 		tempData[data.index] = data.value;
 		this.setState(tempData);
@@ -73,7 +69,7 @@ class PresentationPane extends React.Component {
 	/**
 	 * Reset the values for the presentation
 	 */
-	resetPresentation(){
+	resetPresentation = () => {
 		console.log('reset');
 		ThemeMethods.update.call({id: this.props.themeId, data: {
 			leverage_visible: false,
