@@ -23,7 +23,7 @@ const GraphBar = styled.div`
 	transform: translateX(-50%);
 
 	-webkit-animation: animate-bar 4s 1 ease-out;
-	-webkit-transition: all 1.5s ease-out;
+	-webkit-transition: all 4s ease-out;
 `;
 
 const Pledged = styled.span`

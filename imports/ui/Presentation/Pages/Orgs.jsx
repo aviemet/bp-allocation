@@ -8,9 +8,15 @@ import OrgCard from '/imports/ui/Components/OrgCard';
 const OrgsContainer = styled.div`
 	padding-top: 20px;
 
-	.ui.card .content{
-		color: #002B45;
-		padding-bottom: 0.2em;
+	.ui.card {
+		.orgsImage{
+			height: 181px;
+		}
+
+		.content{
+			color: #002B45;
+			padding-bottom: 0.2em;
+		}
 	}
 
 	p{

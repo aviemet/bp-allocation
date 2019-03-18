@@ -17,21 +17,21 @@ const ResultsPageContainer = styled.div`
 	color: #FFF;
 
 	&& {
-		h1 {
+		h1, h2{
+			line-height: 1em;
 			color: #FFF;
 			text-transform: uppercase;
 	    letter-spacing: 1px;
 			font-family: TradeGothic;
+		}
+		h1 {
 			font-size: 3.8em;
-			margin: 0 0 0.5em 0;
+			margin: 0;
 		}
 
 		h2{
-			color: #FFF;
-			text-transform: uppercase;
-	    letter-spacing: 1px;
-			font-family: TradeGothic;
 			font-size: 2.75em;
+			margin: 2px 0 0 0;
 		}
 	}
 
@@ -69,6 +69,8 @@ const Results = (props) => {
 		return org
 	});
 
+	let awardeesColumns = awardees.length > 3 ? parseInt(awardees.length / 2) + awardees.length % 2 : false ;
+
 	let i = -1;
 	return (
 		<ResultsPageContainer>
@@ -80,41 +82,38 @@ const Results = (props) => {
 
 			<Header as='h2'>Battery Powered Awardees</Header>
 
-			<Container>
-				<Card.Group centered >
-				{awardees.map((org) => {
-					i++;
-					return(
-						<OrgCard
-							org={org}
-							bgcolor={COLORS[i]}
-							award={true}
-							awardtype={'awardee'}
-							key={org._id}
-						/>
-					);
-				})}
-				</Card.Group>
-			</Container>
-
+			<Card.Group centered>
+			{awardees.map((org) => {
+				i++;
+				return(
+					<OrgCard
+						org={org}
+						bgcolor={COLORS[i]}
+						award={true}
+						awardtype={'awardee'}
+						key={org._id}
+					/>
+				);
+			})}
+			</Card.Group>
+			<br/>
 			<Header as='h2'>Other winners</Header>
 
-			<Container>
-				<Card.Group centered >
-				{others.map((org) => {
-					i++;
-					return(
-						<OrgCard
-							org={org}
-							bgcolor={COLORS[i]}
-							award={true}
-							awardtype={'other'}
-							key={org._id}
-						/>
-					);
-				})}
-				</Card.Group>
-			</Container>
+			<Card.Group centered >
+			{others.map((org) => {
+				i++;
+				return(
+					<OrgCard
+						org={org}
+						bgcolor={COLORS[i]}
+						award={true}
+						awardtype={'other'}
+						key={org._id}
+					/>
+				);
+			})}
+			</Card.Group>
+
 		</ResultsPageContainer>
 	);
 }

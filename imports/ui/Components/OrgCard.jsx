@@ -17,7 +17,7 @@ const OrgTitle = styled.p`
 
 const OrgAsk = styled.p`
 	font-family: TradeGothic20;
-	font-size: 2em;
+	font-size: 2.1em;
 	font-weight: 700;
 `;
 
@@ -40,7 +40,7 @@ const AwardEmblem = styled.div`
 	text-align: center;
 `;
 
-const AwardImage = styled.div`
+const AwardImage = styled(Image)`
 	width: 100%;
 	height: 100%;
 	background-position: center center;
@@ -68,7 +68,7 @@ const Award = ({show, type, amount}) => {
 
 		return (
 			<AwardEmblem>
-				<AwardImage style={{backgroundImage: `url(${awardImgSrc[type || 'awardee']})`,
+				<AwardImage className='ui.card.image' style={{backgroundImage: `url(${awardImgSrc[type || 'awardee']})`,
 	backgroundSize: type === 'awardee' ? '120%' : '100%'}}>
 					<AwardAmount style={{fontSize: type === 'awardee' ? '3.3em' : '2.9em'}}>{numeral(amount).format('$0.0a')}</AwardAmount>
 				</AwardImage>
@@ -92,7 +92,7 @@ export default class OrgCard extends React.Component {
 		}
 		return (
 			<Card className={animateClass}>
-				<CardImage style={{ backgroundImage: `url(${imagePath})` }}>
+				<CardImage style={{ backgroundImage: `url(${imagePath})` }} className='orgsImage'>
 					<Award show={this.props.award} type={this.props.awardtype} amount={this.props.org.totalFunds} />
 				</CardImage>
 				<CardContent bgcolor={this.props.bgcolor || '#FFF'}>

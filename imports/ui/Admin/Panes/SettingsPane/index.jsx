@@ -45,12 +45,6 @@ class SettingsPane extends React.Component {
 			ThemeMethods.update.call({
 				id: this.props.theme._id,
 				data: this.state
-			}, (err, res) => {
-				if(err){
-					console.log(err);
-				} else {
-					console.log(res);
-				}
 			});
 		}
 	}

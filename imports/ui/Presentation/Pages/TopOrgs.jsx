@@ -10,9 +10,16 @@ import OrgCard from '/imports/ui/Components/OrgCard';
 const TopOrgsContainer = styled.div`
 	padding-top: 60px;
 
-	.ui.card .content{
-		color: #002B45;
-		padding-bottom: 0.2em;
+	.ui.card{
+
+		.content{
+			color: #002B45;
+			padding-bottom: 0.2em;
+		}
+
+		.orgsImage{
+			height: 245px;
+		}
 	}
 
 	p{
