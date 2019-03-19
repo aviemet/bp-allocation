@@ -88,7 +88,7 @@ const Results = (props) => {
 				return(
 					<OrgCard
 						org={org}
-						bgcolor={COLORS[i]}
+						bgcolor={COLORS[i % COLORS.length]}
 						award={true}
 						awardtype={'awardee'}
 						key={org._id}
@@ -105,7 +105,7 @@ const Results = (props) => {
 				return(
 					<OrgCard
 						org={org}
-						bgcolor={COLORS[i]}
+						bgcolor={COLORS[i % COLORS.length]}
 						award={true}
 						awardtype={'other'}
 						key={org._id}

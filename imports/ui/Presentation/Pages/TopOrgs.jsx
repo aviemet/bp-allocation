@@ -7,6 +7,8 @@ import { ThemeMethods } from '/imports/api/methods';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
+import { COLORS } from '/imports/utils';
+
 const TopOrgsContainer = styled.div`
 	padding-top: 60px;
 
@@ -17,7 +19,7 @@ const TopOrgsContainer = styled.div`
 			padding-bottom: 0.2em;
 		}
 
-		.orgsImage{
+		.orgsImageDisabled{
 			height: 245px;
 		}
 	}
@@ -31,17 +33,32 @@ const PageTitle = styled.h2`
 	margin-bottom: 46px;
 `;
 
+const CardsContainer = styled.div`
+	width: 100%;
+	max-width: 1600px;
+	margin: 0 auto;
+
+	.ui.card div.content p{
+		color: #FFF;
+	}
+`
+
 const TopOrgs = (props) => {
 	return (
 		<TopOrgsContainer>
 			<PageTitle>Top {props.orgs.length} Organizations</PageTitle>
-			<Container>
-				<Card.Group centered itemsPerRow={3}>
-				{props.orgs.map((org) => (
-					<OrgCard org={org} key={org._id} animateClass={props.animate}  />
+			<CardsContainer>
+				<Card.Group centered itemsPerRow={Math.ceil(props.orgs.length / 2)}>
+				{props.orgs.map((org, i) => (
+					<OrgCard
+						org={org}
+						key={org._id}
+						animateClass={props.animate}
+						bgcolor={COLORS[i % COLORS.length]}
+					/>
 				))}
 				</Card.Group>
-			</Container>
+			</CardsContainer>
 		</TopOrgsContainer>
 	);
 }

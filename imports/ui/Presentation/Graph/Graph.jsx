@@ -20,9 +20,9 @@ const GraphPageContainer = styled.div`
 
 const GraphContainer = styled.div`
 	width: 90%;
-	height: 53vh;
+	height: 48vh;
 	position: relative;
-	margin: 12em auto 0 7em;
+	margin: 10em auto 0 7em;
 `;
 
 const XAxis = styled.div`
@@ -106,7 +106,7 @@ const ProgressBar = styled(Progress)`
 	color: #FFF;
 
 	&& .bar{
-		background: #AAA;
+		background: #CCCCCC;
 	}
 
 	&& .label{
@@ -138,6 +138,9 @@ const Graph = (props) => {
 
 	const visibility = props.theme.leverage_visible ? 'visible' : 'hidden';
 	const startingLeverage = _calcStartingLeverage();
+
+
+	// const pledges = props.orgs.reduce((sum, org) => {return sum + org.pledges}, 0);
 
 	return (
 		<GraphPageContainer>
@@ -172,7 +175,7 @@ const Graph = (props) => {
 					<Grid.Row style={{visibility: visibility}}>
 						<Grid.Column>
 							<ProgressBar value={startingLeverage - props.theme.leverage_used} total={startingLeverage} inverted color='green' size='large' />
-							<LeverageCount>${numeral(startingLeverage).format('0.0a')}</LeverageCount>
+							<LeverageCount>${numeral(startingLeverage - props.theme.leverage_used).format('0.0a')}</LeverageCount>
 						</Grid.Column>
 					</Grid.Row>
 				</InfoGrid>

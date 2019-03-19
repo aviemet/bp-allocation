@@ -150,6 +150,8 @@ class PresentationPane extends React.Component {
 									<Label>Allocation</Label>
 								</PresentationNavButton>
 								<Checkbox label='Show Leverage' toggle index='leverage_visible' onClick={this.toggleThemeValue} checked={this.props.theme.leverage_visible || false} />
+								<br/>
+								<Checkbox label='Show Save Vales' toggle index='saves_visible' onClick={this.toggleThemeValue} checked={this.props.theme.saves_visible || false} />
 
 							</Grid.Column>
 							<Grid.Column>

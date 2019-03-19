@@ -108,6 +108,12 @@ const ThemeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: false
 	},
+	saves_visible: {
+		type: Boolean,
+		label: 'Show saves on presentation',
+		required: false,
+		defaultValue: false
+	},
 	chit_voting_active: {
 		type: Boolean,
 		label: 'Activate chit voting',

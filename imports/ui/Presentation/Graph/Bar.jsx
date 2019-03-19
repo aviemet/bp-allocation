@@ -73,6 +73,8 @@ const Bar = (props) => {
 		return ( <Loader /> )
 	}
 
+	console.log({barProps: props});
+
 	let save = props.theme.saves.find( save => save.org === props.org._id );
 
 	let funded =
@@ -80,7 +82,7 @@ const Bar = (props) => {
 		(props.org.amount_from_votes || 0) +
 		(props.org.topoff || 0) +
 		(props.org.leverage_funds || 0) +
-		(save ? save.amount : 0);
+		(props.theme.saves_visible && save ? save.amount : 0);
 
 	let height = Math.min(Math.round((funded / props.org.ask) * 100), 100);
 
