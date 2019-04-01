@@ -114,6 +114,12 @@ const ThemeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: false
 	},
+	colorize_orgs: {
+		type: Boolean,
+		label: 'Top Org cards ahve color on all orgs page',
+		required: false,
+		defaultValue: false
+	},
 	chit_voting_active: {
 		type: Boolean,
 		label: 'Activate chit voting',

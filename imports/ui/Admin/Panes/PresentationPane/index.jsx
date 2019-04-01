@@ -107,6 +107,7 @@ class PresentationPane extends React.Component {
 									<Icon name='table' size='huge' /><br/>
 									<Label>Participating Organizations</Label>
 								</PresentationNavButton>
+								<Checkbox label='Colorize Top Orgs' toggle index='colorize_orgs' onClick={this.toggleThemeValue} checked={this.props.theme.colorize_orgs || false} />
 
 							</Grid.Column>
 							<Grid.Column>
@@ -151,7 +152,7 @@ class PresentationPane extends React.Component {
 								</PresentationNavButton>
 								<Checkbox label='Show Leverage' toggle index='leverage_visible' onClick={this.toggleThemeValue} checked={this.props.theme.leverage_visible || false} />
 								<br/>
-								<Checkbox label='Show Save Vales' toggle index='saves_visible' onClick={this.toggleThemeValue} checked={this.props.theme.saves_visible || false} />
+								<Checkbox label='Show Save Values' toggle index='saves_visible' onClick={this.toggleThemeValue} checked={this.props.theme.saves_visible || false} />
 
 							</Grid.Column>
 							<Grid.Column>

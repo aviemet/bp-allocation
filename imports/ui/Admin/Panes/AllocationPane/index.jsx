@@ -144,7 +144,7 @@ class AllocationPane extends React.Component {
 					</Grid.Column>
 
 					<Grid.Column width={2} align="right">
-						<Link to={`${this.props.url}/simulation/`} target='_blank'>
+						<Link to={`/simulation/${this.props.theme._id}`} target='_blank'>
 							<Button>Simulate</Button>
 						</Link>
 					</Grid.Column>

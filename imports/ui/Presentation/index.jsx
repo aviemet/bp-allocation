@@ -78,7 +78,7 @@ class Presentation extends React.Component {
 
 					{/* Participating Organizations */}
 					<Route exact path={`${path}/orgs`} render={(props) => (
-						<Orgs orgs={this.props.orgs} />
+						<Orgs orgs={this.props.orgs} topOrgs={this.props.topOrgs} theme={this.props.theme} />
 					)}/>
 
 					{/* Timer */}

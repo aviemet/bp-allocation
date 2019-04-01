@@ -9,7 +9,7 @@ import _ from 'underscore';
 import { Loader, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { ThemeContext } from '/imports/ui/Contexts';
+import { withContext, ThemeContext } from '/imports/ui/Contexts';
 import { Themes, Organizations, Images } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 
@@ -32,10 +32,10 @@ const Presentation = (props) => {
 	return (
 		<ThemeContext.Consumer>{context => (
 			<SimulationContainer>
-				<Allocation orgs={ThemeMethods.filterTopOrgs(context.theme._id, context.orgs)} theme={context.theme._id} />
+				<Allocation orgs={context.topOrgs} theme={context.theme} />
 			</SimulationContainer>
 		)}</ThemeContext.Consumer>
 	);
 }
 
-export default Presentation;
+export default withContext(Presentation);

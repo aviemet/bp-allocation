@@ -126,6 +126,7 @@ const LeverageCount = styled.div`
 `;
 
 const Graph = (props) => {
+	console.log({props});
 	const _calcStartingLeverage = () => {
 		let leverage = props.theme.leverage_total;
 
@@ -133,12 +134,14 @@ const Graph = (props) => {
 			leverage -= org.amount_from_votes || 0;
 			leverage -= org.topoff || 0;
 		});
+		if(props.theme.consolation_active) {
+			leverage -= (props.theme.organizations.length - props.orgs.length) * props.theme.consolation_amount;
+		}
 		return leverage;
 	}
 
 	const visibility = props.theme.leverage_visible ? 'visible' : 'hidden';
 	const startingLeverage = _calcStartingLeverage();
-
 
 	// const pledges = props.orgs.reduce((sum, org) => {return sum + org.pledges}, 0);
 
