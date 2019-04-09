@@ -53,13 +53,13 @@ const Results = (props) => {
 	let awardees = [];
 	let others = [];
 	let saves = props.theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
-	let total = props.theme.leverage_total + saves;
+	let total = (props.theme.leverageTotal || 0) + saves + props.offset;
 
 	let orgs = _.cloneDeep(props.orgs).map(org => {
 		total += org.pledges / 2;
 
 		org.save = props.theme.saves.find(save => save.org === org._id);
-		org.totalFunds = org.amount_from_votes + org.leverage_funds + org.pledges + org.topoff + (org.save ? org.save.amount : 0);
+		org.totalFunds = org.amountFromVotes + org.leverageFunds + org.pledges + org.topOff + (org.save ? org.save.amount : 0);
 
 		if(org.totalFunds >= org.ask){
 			awardees.push(org);
@@ -77,7 +77,7 @@ const Results = (props) => {
 			<AwardsImage src="/img/BAT_awards.png" />
 
 			<Header as='h1'>
-				Total amount given: {numeral(total + (props.theme.results_offset || 0)).format('$0.[00]a')}
+				Total amount given: {numeral(total).format('$0.[00]a')}
 			</Header>
 
 			<Header as='h2'>Battery Powered Awardees</Header>

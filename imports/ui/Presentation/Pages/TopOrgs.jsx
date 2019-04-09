@@ -3,8 +3,6 @@ import React from 'react';
 import { Card, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { ThemeMethods } from '/imports/api/methods';
-
 import OrgCard from '/imports/ui/Components/OrgCard';
 
 import { COLORS } from '/imports/utils';

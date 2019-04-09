@@ -3,7 +3,7 @@ import React from 'react';
 import { Router, Route, Switch, withRouter } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 import { withTracker } from 'meteor/react-meteor-data';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { Loader, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -12,7 +12,7 @@ import { PresentationLayout } from '/imports/ui/Layouts';
 
 import { withContext } from '/imports/ui/Contexts';
 import { Themes, Organizations, Images } from '/imports/api';
-import { ThemeMethods } from '/imports/api/methods';
+import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Intro, Orgs, Timer, TopOrgs, Allocation, Results } from '/imports/ui/Presentation/Pages';
 
@@ -43,8 +43,9 @@ class Presentation extends React.Component {
 		};
 	}
 
+	// TODO: wait for image load before showing page
 	doNavigation() {
-		let page = `/presentation/${this.props.theme._id}/${this.props.theme.currentPage}`;
+		let page = `/presentation/${this.props.theme._id}/${this.props.presentationSettings.currentPage}`;
 		if(this.props.location.pathname !== page && this.state.show){
 			this.setState({ show: false });
 
@@ -67,8 +68,11 @@ class Presentation extends React.Component {
 		if(this.props.loading) {
 			return <Loader/>
 		}
+
 		const { show } = this.state;
 		const path = this.props.match.path;
+		const { timerLength, animateOrgs } = this.props.presentationSettings;
+
 		return (
 			<Transition in={show} timeout={FADE_DURATION}>
 				{(state) => (
@@ -83,22 +87,22 @@ class Presentation extends React.Component {
 
 					{/* Timer */}
 					<Route exact path={`${path}/timer`} render={(props) => (
-						<Timer seconds={this.props.theme.timer_length} />
+						<Timer seconds={timerLength} />
 					)} />
 
 					{/* Top Orgs */}
 					<Route exact path={`${path}/toporgs`} render={(props) => (
-						<TopOrgs orgs={this.props.topOrgs} animate={this.props.theme.animate_orgs} />
+						<TopOrgs orgs={this.props.topOrgs} animate={animateOrgs} />
 					)} />
 
 					{/* Allocation */}
 					<Route exact path={`${path}/allocation`} render={(props) => (
-						<Allocation orgs={this.props.topOrgs} theme={this.props.theme} />
+						<Allocation />
 					)} />
 
 					{/* Results */}
 					<Route exact path={`${path}/results`} render={(props) => (
-						<Results orgs={this.props.topOrgs} theme={this.props.theme} />
+						<Results orgs={this.props.topOrgs} theme={this.props.theme} offset={(this.props.presentationSettings.resultsOffset || 0)} />
 					)} />
 				</PageFader>
 				)}
@@ -108,3 +112,5 @@ class Presentation extends React.Component {
 }
 
 export default withContext(withRouter(Presentation));
+
+// orgs={this.props.topOrgs} theme={this.props.theme}

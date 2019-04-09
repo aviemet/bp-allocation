@@ -4,8 +4,9 @@ import { withTracker } from 'meteor/react-meteor-data';
 
 import { withContext } from '/imports/ui/Contexts';
 
-import { Themes } from '/imports/api';
-import { ThemeMethods } from '/imports/api/methods';
+import _ from 'lodash';
+
+import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Loader, Button, Form, Input, Icon } from 'semantic-ui-react';
 
@@ -13,15 +14,33 @@ class SettingsPane extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.usingFields = ['title', 'question', 'timer_length', 'chit_weight', 'match_ratio', 'leverage_total', 'consolation_amount', 'consolation_active'];
+		this.usingFields = [
+			'theme.title',
+			'theme.question',
+			'theme.chitWeight',
+			'theme.matchRatio',
+			'theme.leverageTotal',
+			'theme.consolationAmount',
+			'theme.consolationActive',
+			'presentationSettings.timerLength'
+		];
 
 		let buildState = {};
 
-		this.usingFields.map(field => buildState[field] = this.props.theme[field]);
+		this.usingFields.map(field => {
+			let split = field.split('.');
+			if(split.length > 1){
+				console.log({path: `props.${split[0]}.${split[1]}`});
+				buildState[field] = this.props[split[0]][split[1]];
+			}
+		});
 
 		this.state = buildState;
+
+		console.log({state: this.state});
 	}
 
+	// 2 way binding to inputs
 	updateValue = (e, el) => {
 		let newState = {};
 		newState[el.name] = el.value || el.checked;
@@ -31,20 +50,34 @@ class SettingsPane extends React.Component {
 	handleSubmit = (e) => {
 		e.preventDefault();
 
-		let dataChanged = false;
-		for(var i = 0; i < this.usingFields.length && !dataChanged; i++){
+		let data = {
+			theme: {},
+			presentationSettings: {}
+		};
+
+		// Build object of data which has changed
+		for(var i = 0; i < this.usingFields.length; i++){
 			let field = this.usingFields[i];
 			if(this.state[field] !== this.props.theme[field]) {
-				dataChanged = true;
+				let split = field.split('.');
+				if(split.length > 1) {
+					data[split[0]][split[1]] = this.state[field];
+				}
 			}
 		}
 
 		// Only update if data has changed
-		if(dataChanged) {
-
+		if(!_.isEmpty(data.theme)) {
 			ThemeMethods.update.call({
 				id: this.props.theme._id,
-				data: this.state
+				data: data.theme
+			});
+		}
+
+		if(!_.isEmpty(data.presentationSettings)) {
+			PresentationSettingsMethods.update.call({
+				id: this.props.theme.presentationSettings,
+				data: data.presentationSettings
 			});
 		}
 	}
@@ -55,27 +88,39 @@ class SettingsPane extends React.Component {
 		}
 		return (
 			<Form onBlur={this.handleSubmit} onSubmit={this.handleSubmit}>
+
+			 {/* Title */}
 				<Form.Field>
-					<Form.Input type='text' placeholder='Title' label='Theme Title' name='title' value={this.state.title} onChange={this.updateValue}  />
+					<Form.Input name='theme.title' type='text' placeholder='Title' label='Theme Title' value={this.state['theme.title'] || ''} onChange={this.updateValue}  />
 				</Form.Field>
 
+			 {/* Question */}
 				<Form.Field>
-					<Form.Input type='text' placeholder='Question' label='Theme Question' name='question' value={this.state.question} onChange={this.updateValue} />
+					<Form.Input name='theme.question' type='text' placeholder='Question' label='Theme Question' value={this.state['theme.question'] || ''} onChange={this.updateValue} />
 				</Form.Field>
 
+			 {/* Total Leverage Amount */}
 				<Form.Group>
-			 		<Form.Input icon='dollar sign' iconPosition='left' label='Total Pot' name='leverage_total' placeholder='Total Pot' value={this.state.leverage_total} onChange={this.updateValue} />
+			 		<Form.Input name='theme.leverageTotal' icon='dollar sign' iconPosition='left' label='Total Pot' placeholder='Total Pot' value={this.state['theme.leverageTotal'] || ''} onChange={this.updateValue} />
 				</Form.Group>
 
 				<Form.Group>
-					<Form.Input type='number' placeholder='Timer Length' label='Length of Timers' name='timer_length' value={this.state.timer_length} onChange={this.updateValue} />
-					<Form.Input type='number' placeholder='Chit Weight' label='Chit weight in ounces' name='chit_weight' value={this.state.chit_weight} onChange={this.updateValue} />
-					<Form.Input type='number' placeholder='Match Ratio' label='Multiplier for matched funds' name='match_ratio' value={this.state.match_ratio} onChange={this.updateValue} />
+			 		{/* Timer Length */}
+					<Form.Input name='presentationSettings.timerLength' type='number' placeholder='Timer Length' label='Length of Timers' value={this.state['presentationSettings.timerLength'] || ''} onChange={this.updateValue} />
+
+			 		{/* Chit Weigh */}
+					<Form.Input name='theme.chitWeight' type='number' placeholder='Chit Weight' label='Chit weight in ounces' value={this.state['theme.chitWeight'] || ''} onChange={this.updateValue} />
+
+			 		{/* Match Ratio */}
+					<Form.Input name='theme.matchRatio' type='number' placeholder='Match Ratio' label='Multiplier for matched funds' value={this.state['theme.matchRatio'] || ''} onChange={this.updateValue} />
 				</Form.Group>
 
 				<Form.Group>
-					<Form.Input type="number" placeholder='Consolation' label='Amount for bottom orgs' name='consolation_amount' value={this.state.consolation_amount} onChange={this.updateValue} />
-					<Form.Checkbox toggle label='Use Consolation?' checked={this.state.consolation_active} name='consolation_active' onChange={this.updateValue} />
+			 		{/* Consolation Amount */}
+					<Form.Input name='theme.consolationAmount' type="number" placeholder='Consolation' label='Amount for bottom orgs' value={this.state['theme.consolationAmount'] || ''} onChange={this.updateValue} />
+
+			 		{/* Consolation Active */}
+					<Form.Checkbox toggle name='theme.consolationActive' label='Use Consolation?' checked={this.state['theme.consolationActive']} onChange={this.updateValue} />
 				</Form.Group>
 			</Form>
 		);

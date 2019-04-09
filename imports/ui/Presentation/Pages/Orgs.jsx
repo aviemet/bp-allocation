@@ -46,7 +46,7 @@ const Orgs = (props) => {
 			<Container>
 				<Card.Group centered itemsPerRow={4}>
 				{props.orgs.map((org) => (
-					<OrgCard org={org} key={org._id} bgcolor={props.theme.colorize_orgs && colorOrgs[org._id] ? colorOrgs[org._id] : false} />
+					<OrgCard org={org} key={org._id} bgcolor={props.theme.colorizeOrgs && colorOrgs[org._id] ? colorOrgs[org._id] : false} />
 				))}
 				</Card.Group>
 			</Container>

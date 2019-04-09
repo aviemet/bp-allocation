@@ -3,7 +3,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'lodash';
 
 import { Organizations } from '/imports/api';
-import { ThemeMethods } from '/imports/api/methods';
+import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 
 import { sortTopOrgs } from '/imports/utils';
 
@@ -23,6 +23,7 @@ const NumTopOrgsInput = styled(Input)`
 export default class TopOrgsByChitVote extends React.Component {
 	constructor(props) {
 		super(props);
+		console.log(props);
 	}
 
 	updateNumTopOrgs = (e, data) => {
@@ -34,21 +35,21 @@ export default class TopOrgsByChitVote extends React.Component {
 	/**
 	 * Togle boolean values on the Theme model
 	 */
-	toggleThemeValue = (e, data) => {
+	togglePresentationSettingsValue = (e, data) => {
 		let tempData = {};
 		tempData[data.index] = data.checked;
 
-		ThemeMethods.update.call({id: this.props.themeId, data: tempData});
+		PresentationSettingsMethods.update.call({id: this.props.theme.presentationSettings, data: tempData});
 	}
 
 	render() {
-		let orgs = sortTopOrgs(this.props.theme, this.props.organizations);
+		let orgs = sortTopOrgs(this.props.theme, this.props.orgs);
 
 		return (
 			<React.Fragment>
 
 				<Header as="h3" floated="right">
-					<Checkbox label='Chit Voting Active' toggle index='chit_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.chit_voting_active || false} />
+					<Checkbox label='Chit Voting Active' toggle index='chitVotingActive' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.chitVotingActive || false} />
 				</Header>
 				<Header as="h1" floated="left">
 					Top <NumTopOrgsInput size='mini' type='number' value={this.props.theme.numTopOrgs} onChange={this.updateNumTopOrgs} width={1} /> Organizations

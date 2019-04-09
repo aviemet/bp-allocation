@@ -6,6 +6,7 @@ const KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds' };
 
 const roundFloat = (value, decimal) => {
 	decimal = decimal || 2;
+	console.log({ value, decimal });
 	return parseFloat(parseFloat(value).toFixed(decimal));
 };
 
@@ -31,9 +32,9 @@ sortTopOrgs = (theme, orgs) => {
 
 	// First sort orgs by weight and vote count
 	let sortedOrgs = _.sortBy(orgs, (org) => {
-		// Calculate the votes for each org (weight/chit_weight unless there's a manual count)
+		// Calculate the votes for each org (weight/chitWeight unless there's a manual count)
 		let votes = org.chitVotes && org.chitVotes.count ? org.chitVotes.count :
-								org.chitVotes && org.chitVotes.weight ? org.chitVotes.weight / theme.chit_weight : 0;
+								org.chitVotes && org.chitVotes.weight ? org.chitVotes.weight / theme.chitWeight : 0;
 
 		// Save the votes count for later
 		org.votes = votes;

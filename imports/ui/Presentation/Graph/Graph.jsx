@@ -1,6 +1,7 @@
 import React from 'react';
 import numeral from 'numeral';
-import _ from 'underscore';
+
+import { withContext } from '/imports/ui/Contexts';
 
 import styled from 'styled-components';
 import { Grid, Progress } from 'semantic-ui-react';
@@ -128,19 +129,19 @@ const LeverageCount = styled.div`
 const Graph = (props) => {
 	console.log({props});
 	const _calcStartingLeverage = () => {
-		let leverage = props.theme.leverage_total;
+		let leverage = props.theme.leverageTotal;
 
-		props.orgs.map((org) => {
-			leverage -= org.amount_from_votes || 0;
-			leverage -= org.topoff || 0;
+		props.topOrgs.map((org) => {
+			leverage -= org.amountFromVotes || 0;
+			leverage -= org.topOff || 0;
 		});
-		if(props.theme.consolation_active) {
-			leverage -= (props.theme.organizations.length - props.orgs.length) * props.theme.consolation_amount;
+		if(props.theme.consolationActive) {
+			leverage -= (props.theme.organizations.length - props.orgs.length) * props.theme.consolationAmount;
 		}
 		return leverage;
 	}
 
-	const visibility = props.theme.leverage_visible ? 'visible' : 'hidden';
+	const visibility = props.presentationSettings.leverageVisible ? 'visible' : 'hidden';
 	const startingLeverage = _calcStartingLeverage();
 
 	// const pledges = props.orgs.reduce((sum, org) => {return sum + org.pledges}, 0);
@@ -161,7 +162,7 @@ const Graph = (props) => {
 
 					<BarsContainer columns='equal'>
 					{props.orgs.map((org, i) => (
-						<Bar org={org} theme={props.theme} key={org._id} color={COLORS[i%COLORS.length]} />
+						<Bar org={org} theme={props.theme} key={org._id} color={COLORS[i%COLORS.length]} savesVisible={props.presentationSettings.savesVisible} />
 					))}
 					</BarsContainer>
 
@@ -177,8 +178,8 @@ const Graph = (props) => {
 
 					<Grid.Row style={{visibility: visibility}}>
 						<Grid.Column>
-							<ProgressBar value={startingLeverage - props.theme.leverage_used} total={startingLeverage} inverted color='green' size='large' />
-							<LeverageCount>${numeral(startingLeverage - props.theme.leverage_used).format('0.0a')}</LeverageCount>
+							<ProgressBar value={startingLeverage - props.theme.leverageUsed} total={startingLeverage} inverted color='green' size='large' />
+							<LeverageCount>${numeral(startingLeverage - props.theme.leverageUsed).format('0.0a')}</LeverageCount>
 						</Grid.Column>
 					</Grid.Row>
 				</InfoGrid>
@@ -187,4 +188,4 @@ const Graph = (props) => {
 	);
 }
 
-export default Graph;
+export default withContext(Graph);

@@ -9,7 +9,7 @@ const OrgSaveSchema = new SimpleSchema({
 		label: 'Identity of person(s) who saved this org',
 		required: false
 	}
-})
+});
 
 // Define Collection
 const Themes = new Mongo.Collection('themes');
@@ -42,99 +42,44 @@ const ThemeSchema = new SimpleSchema({
 		defaultValue: [],
 		required: false
 	},
-	'topOrgsManual.$': SimpleSchema.RegEx.Id,
-	currentPage: {
-		type: String,
-		label: 'Currently displayed presentation page',
-		required: false,
-		defaultValue: 'intro'
-	},
-	// Theme settings
 	numTopOrgs: {
 		type: Number,
 		defaultValue: 5,
 		required: false
 	},
-	chit_weight: {
+	'topOrgsManual.$': SimpleSchema.RegEx.Id,
+	chitWeight: {
 		type: SimpleSchema.Integer,
 		label: 'Multiplicant weight of chits vs. non-present votes',
 		required: false,
 		defaultValue: 3
 	},
-	timer_length: {
-		type: SimpleSchema.Integer,
-		label: 'Length of timers in seconds',
-		required: false,
-		defaultValue: 600
-	},
-	animate_orgs: {
-		type: Boolean,
-		label: 'Wether to animate the Top Orgs',
-		required: false,
-		defaultValue: true
-	},
-	match_ratio: {
+	matchRatio: {
 		type: SimpleSchema.Integer,
 		label: 'Multiplicant of dollar match values in pledge round',
 		required: false,
 		defaultValue: 2
 	},
-	consolation_amount: {
+	consolationAmount: {
 		type: Number,
 		label: 'Amount to allocate for not top 5',
 		required: false,
 		defaultValue: 10000
 	},
-	consolation_active: {
+	consolationActive: {
 		type: Boolean,
 		label: 'Will the bottom orgs receive consolation funds?',
 		required: false,
 		defaultValue: true
 	},
-	leverage_total: {
+	leverageTotal: {
 		type: Number,
 		label: 'Total amount to allocate for this theme',
 		required: false
 	},
-	leverage_used: {
+	leverageUsed: {
 		type: Number,
 		label: 'Amount of leverage allocated',
-		required: false,
-		defaultValue: 0
-	},
-	leverage_visible: {
-		type: Boolean,
-		label: 'Show leverage on presentation',
-		required: false,
-		defaultValue: false
-	},
-	saves_visible: {
-		type: Boolean,
-		label: 'Show saves on presentation',
-		required: false,
-		defaultValue: false
-	},
-	colorize_orgs: {
-		type: Boolean,
-		label: 'Top Org cards ahve color on all orgs page',
-		required: false,
-		defaultValue: false
-	},
-	chit_voting_active: {
-		type: Boolean,
-		label: 'Activate chit voting',
-		required: false,
-		defaultValue: false
-	},
-	funds_voting_active: {
-		type: Boolean,
-		label: 'Activate funds voting',
-		required: false,
-		defaultValue: false
-	},
-	results_offset: {
-		type: Number,
-		label: 'Amount to offset total displayed on the results page',
 		required: false,
 		defaultValue: 0
 	},
@@ -144,6 +89,11 @@ const ThemeSchema = new SimpleSchema({
 		required: false
 	},
 	'saves.$': OrgSaveSchema,
+	/*presentationSettings: {
+		type: PresentationSettingsSchema,
+		required: false
+	},*/
+	presentationSettings: SimpleSchema.RegEx.Id,
 	createdAt: {
 		type: Date,
 		autoValue: () => (new Date())

@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Promise } from 'meteor/promise';
 
-import { Themes, Organizations, Images } from '/imports/api';
+import { Themes, PresentationSettings, Organizations, Images } from '/imports/api';
 
 import '/imports/api/methods';
 
@@ -12,6 +12,14 @@ Meteor.startup(() => {
 			return Themes.find({_id: themeId});
 		}
 		return Themes.find({});
+	});
+
+	Meteor.publish('presentationSettings', (settingsId) => {
+		try{
+			return PresentationSettings.find({_id: settingsId});
+		} catch(e) {
+			console.error("Specify an ID to fetch presentation settings");
+		}
 	});
 
 	Meteor.publish('organizations', (themeId) => {

@@ -6,7 +6,7 @@ import _ from 'underscore';
 import { withTracker } from 'meteor/react-meteor-data';
 import numeral from 'numeral';
 
-import { ThemeMethods } from '/imports/api/methods';
+import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 import { Themes, Organizations } from '/imports/api';
 
 import { withContext } from '/imports/ui/Contexts';
@@ -31,32 +31,38 @@ const Arithmetic = styled.span`
 class AllocationPane extends React.Component {
 	constructor(props) {
 		super(props);
+
+		console.log({props});
 	}
 
 	toggleShowLeverage = (e, data) => {
-		ThemeMethods.update.call({id: this.props.theme._id, data: { leverage_visible: data.checked } });
+		PresentationSettingsMethods.update.call({
+			id: this.props.theme.presentationSettings,
+			data: { leverageVisible: data.checked }
+		});
 	}
 
 	_calculateCrowdFavorite = () => {
 		let allEntered = true;
 		let favorite = 0;
-		this.props.orgs.map((org, i) => {
-			if(org.amount_from_votes == 0){
+		this.props.topOrgs.map((org, i) => {
+			if(org.amountFromVotes == 0){
 				allEntered = false;
 			}
-			if(org.amount_from_votes > this.props.orgs[favorite].amount_from_votes){
+			if(org.amountFromVotes > this.props.topOrgs[favorite].amountFromVotes){
 				favorite = i;
 			}
 		});
+		console.log({crowdFavorite: allEntered ? favorite : false});
 		return allEntered ? favorite : false;
 	}
 
 	_calculateVoteAllocated = () => {
 		let voteAllocated = 0;
- 		this.props.orgs.map((org) => {
- 			voteAllocated += parseInt(org.amount_from_votes || 0);
- 			if(org.topoff > 0){
- 				voteAllocated += org.topoff;
+ 		this.props.topOrgs.map((org) => {
+ 			voteAllocated += parseInt(org.amountFromVotes || 0);
+ 			if(org.topOff > 0){
+ 				voteAllocated += org.topOff;
  			}
  		});
  		return voteAllocated;
@@ -69,13 +75,13 @@ class AllocationPane extends React.Component {
 
 		const saves = this.props.theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
 		const voteAllocated = this._calculateVoteAllocated();
-		const totalPot = this.props.theme.leverage_total + saves;
-		const consolation = this.props.theme.consolation_active ?
-			(this.props.theme.organizations.length - this.props.orgs.length) *
-			(this.props.theme.consolation_amount || 10000) : 0;
+		const totalPot = this.props.theme.leverageTotal + saves;
+		const consolation = this.props.theme.consolationActive ?
+			(this.props.theme.organizations.length - this.props.topOrgs.length) *
+			(this.props.theme.consolationAmount || 10000) : 0;
 		const votedFunds = voteAllocated;
-		const leverage = this.props.theme.leverage_total - voteAllocated - consolation + saves;
-		const pledges = this.props.theme.leverage_used;
+		const leverage = this.props.theme.leverageTotal - voteAllocated - consolation + saves;
+		const pledges = this.props.theme.leverageUsed;
 
 		return (
 			<Grid>
@@ -102,7 +108,7 @@ class AllocationPane extends React.Component {
 
 								<Arithmetic>-</Arithmetic>
 
-								{/* Subtract funds from votes and topoff */}
+								{/* Subtract funds from votes and topOff */}
 								<Statistic>
 									<Statistic.Value>{numeral(votedFunds).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Votes + Topoff + Saves</Statistic.Label>
@@ -128,7 +134,7 @@ class AllocationPane extends React.Component {
 
 								{/* Amount remaining to spread to winners */}
 								<Statistic>
-									<Statistic.Value>{numeral(this.props.theme.leverage_remaining).format('$0,0')}</Statistic.Value>
+									<Statistic.Value>{numeral(this.props.theme.leverageRemaining).format('$0,0')}</Statistic.Value>
 									<Statistic.Label>Remaining</Statistic.Label>
 								</Statistic>
 
@@ -140,7 +146,7 @@ class AllocationPane extends React.Component {
 
 				<Grid.Row>
 					<Grid.Column width={10}>
-						<Header as="h2">Top {this.props.orgs.length} Funds Allocation</Header>
+						<Header as="h2">Top {this.props.topOrgs.length} Funds Allocation</Header>
 					</Grid.Column>
 
 					<Grid.Column width={2} align="right">
@@ -150,7 +156,7 @@ class AllocationPane extends React.Component {
 					</Grid.Column>
 
 					<Grid.Column width={4}>
-						<Checkbox label='Show Leverage' toggle onClick={this.toggleShowLeverage} checked={this.props.theme.leverage_visible || false} />
+						<Checkbox label='Show Leverage' toggle onClick={this.toggleShowLeverage} checked={this.props.presentationSettings.leverageVisible || false} />
 					</Grid.Column>
 
 				</Grid.Row>
@@ -171,13 +177,13 @@ class AllocationPane extends React.Component {
 							</Table.Header>
 
 							<Table.Body>
-							{this.props.orgs.map((org, i) => (
+							{this.props.topOrgs.map((org, i) => (
 								<AllocationInputs
 									key={i}
 									org={org}
 									theme={this.props.theme}
 									crowdFavorite={(i === this._calculateCrowdFavorite())}
-									tabInfo={{index: i+1, length: this.props.orgs.length}}
+									tabInfo={{index: i+1, length: this.props.topOrgs.length}}
 								/>
 							))}
 							</Table.Body>

@@ -7,6 +7,7 @@ import { Promise } from 'meteor/promise';
 import { Themes, Organizations } from '/imports/api';
 import { ThemesSchema }  from '/imports/api/schema';
 import OrganizationMethods from './OrganizationMethods';
+import PresentationSettingsMethods from './PresentationSettingsMethods';
 
 import _ from 'lodash';
 
@@ -21,7 +22,9 @@ const ThemeMethods = {
 		validate: null,
 
 		run(data) {
-			return Themes.insert(data);
+			let theme = Themes.insert(_.merge(data, {presentationSettings: PresentationSettingsMethods.create.call()}));
+			console.log({theme});
+			return theme;
 		}
 	}),
 
@@ -167,7 +170,7 @@ const ThemeMethods = {
 			orgs.map(org => {
 				Organizations.update({_id: org._id}, {
 					$set: {
-						leverage_funds: 0
+						leverageFunds: 0
 					}
 				});
 			});

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Grid, Card, Container, Header } from 'semantic-ui-react';
+import { Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const KioskContainer = styled.div`

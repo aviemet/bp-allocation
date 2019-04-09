@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { withContext } from '/imports/ui/Contexts';
 

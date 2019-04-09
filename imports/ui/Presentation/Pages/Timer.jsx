@@ -45,11 +45,9 @@ export default class Timer extends React.Component {
 		this.state = {
 			countdown: true
 		}
-
-		this.timerFinish = this.timerFinish.bind(this);
 	}
 
-	timerFinish(){
+	timerFinish = () => {
 		setTimeout(() => {
 			this.setState({countdown: false});
 		}, 2000);
@@ -59,7 +57,14 @@ export default class Timer extends React.Component {
 		if(this.state.countdown){
 			return (
 				<TimerContainer>
-					<ReactCountdownClock seconds={this.props.seconds} color="#FFF" size={850} weight={10} onComplete={this.timerFinish} />
+					<ReactCountdownClock
+						seconds={this.props.seconds}
+						color="#FFF"
+						size={850}
+						weight={10}
+						onComplete={this.timerFinish}
+						showMilliseconds={false}
+					/>
 				</TimerContainer>
 			);
 		} else {

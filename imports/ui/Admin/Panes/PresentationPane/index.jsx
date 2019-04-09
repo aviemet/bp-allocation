@@ -1,14 +1,14 @@
 import Meter from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 
 import { withContext } from '/imports/ui/Contexts';
 
 import { Themes } from '/imports/api';
-import { ThemeMethods } from '/imports/api/methods';
+import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Loader, Grid, Button, Icon, Label, Segment, Input, Checkbox } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -36,34 +36,35 @@ class PresentationPane extends React.Component {
 		super(props);
 
 		this.state = {
-			results_offset: this.props.theme.results_offset,
-			timer_length: this.props.theme.timer_length
+			resultsOffset: this.props.presentationSettings.resultsOffset,
+			timerLength: this.props.presentationSettings.timerLength
 		};
 	}
 
 	/**
-	 * Togle boolean values on the Theme model
+	 * Togle boolean values on the PresentationSettings model
 	 */
-	toggleThemeValue = (e, data) => {
+	togglePresentationSettingsValue = (e, data) => {
 		let tempData = {};
 		tempData[data.index] = data.checked;
 
-		ThemeMethods.update.call({id: this.props.themeId, data: tempData});
+		PresentationSettingsMethods.update.call({id: this.props.theme.presentationSettings, data: tempData});
 	}
 
 
 	/**
-	 * Update non-boolean values on the Theme model
+	 * Update non-boolean values on the PresentationSettings model
 	 */
-	updateThemeValue = (e, data) => {
+	updatePresentationSettingsValue = (e, data) => {
 		let tempData = {}
 		tempData[data.index] = data.value;
 		this.setState(tempData);
-		// Wait a second in case there's multiple inputs
+
 		// TODO: create queue to avoid multiple updates
-		setTimeout(() => {
-			ThemeMethods.update.call({id: this.props.themeId, data: tempData});
-		}, 1000);
+		PresentationSettingsMethods.update.call({
+			id: this.props.theme.presentationSettings,
+			data: tempData
+		});
 	}
 
 	/**
@@ -71,9 +72,9 @@ class PresentationPane extends React.Component {
 	 */
 	resetPresentation = () => {
 		console.log('reset');
-		ThemeMethods.update.call({id: this.props.themeId, data: {
-			leverage_visible: false,
-			animate_orgs: true,
+		PresentationSettingsMethods.update.call({id: this.props.theme.presentationSettings, data: {
+			leverageVisible: false,
+			animateOrgs: true,
 		}});
 	}
 
@@ -107,7 +108,7 @@ class PresentationPane extends React.Component {
 									<Icon name='table' size='huge' /><br/>
 									<Label>Participating Organizations</Label>
 								</PresentationNavButton>
-								<Checkbox label='Colorize Top Orgs' toggle index='colorize_orgs' onClick={this.toggleThemeValue} checked={this.props.theme.colorize_orgs || false} />
+								<Checkbox label='Colorize Top Orgs' toggle index='colorizeOrgs' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.colorizeOrgs || false} />
 
 							</Grid.Column>
 							<Grid.Column>
@@ -119,11 +120,11 @@ class PresentationPane extends React.Component {
 									<Icon name='hourglass' size='huge' /><br/>
 									<Label>Timer</Label>
 								</PresentationNavButton>
-								<Input type='number' label='Seconds' index='timer_length' onChange={this.updateThemeValue} value={this.state.timer_length} />
+								<Input type='number' label='Seconds' index='timerLength' onChange={this.updatePresentationSettingsValue} value={this.state.timerLength} />
 								<br/>
-								<Checkbox label='Chit Voting Active' toggle index='chit_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.chit_voting_active || false} />
+								<Checkbox label='Chit Voting Active' toggle index='chitVotingActive' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.chitVotingActive || false} />
 								<br/>
-								<Checkbox label='Funds Voting Active' toggle index='funds_voting_active' onClick={this.toggleThemeValue} checked={this.props.theme.funds_voting_active || false} />
+								<Checkbox label='Funds Voting Active' toggle index='fundsVotingActive' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.fundsVotingActive || false} />
 
 							</Grid.Column>
 
@@ -138,7 +139,7 @@ class PresentationPane extends React.Component {
 									<Icon name='winner' size='huge' /><br/>
 									<Label>Top Organizations</Label>
 								</PresentationNavButton>
-								<Checkbox label='Animate' toggle index='animate_orgs' onClick={this.toggleThemeValue} checked={this.props.theme.animate_orgs || false} />
+								<Checkbox label='Animate' toggle index='animateOrgs' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.animateOrgs || false} />
 
 							</Grid.Column>
 							<Grid.Column>
@@ -150,9 +151,9 @@ class PresentationPane extends React.Component {
 									<Icon name='chart bar' size='huge' /><br/>
 									<Label>Allocation</Label>
 								</PresentationNavButton>
-								<Checkbox label='Show Leverage' toggle index='leverage_visible' onClick={this.toggleThemeValue} checked={this.props.theme.leverage_visible || false} />
+								<Checkbox label='Show Leverage' toggle index='leverageVisible' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.leverageVisible || false} />
 								<br/>
-								<Checkbox label='Show Save Values' toggle index='saves_visible' onClick={this.toggleThemeValue} checked={this.props.theme.saves_visible || false} />
+								<Checkbox label='Show Save Values' toggle index='savesVisible' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.savesVisible || false} />
 
 							</Grid.Column>
 							<Grid.Column>
@@ -164,7 +165,7 @@ class PresentationPane extends React.Component {
 									<Icon name='check' size='huge' /><br/>
 									<Label>Result</Label>
 								</PresentationNavButton>
-								<Input type='number' icon='dollar sign' iconPosition='left' label='Offset' labelPosition='right' index='results_offset' value={this.state.results_offset} onChange={this.updateThemeValue} />
+								<Input type='number' icon='dollar sign' iconPosition='left' label='Offset' labelPosition='right' index='resultsOffset' value={this.state.resultsOffset} onChange={this.updatePresentationSettingsValue} />
 
 							</Grid.Column>
 						</Grid.Row>

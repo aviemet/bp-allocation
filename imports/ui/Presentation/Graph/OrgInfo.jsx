@@ -44,7 +44,7 @@ const OrgInfo = (props)  => {
 		return ( <Loader /> );
 	}
 
-	const need = props.org.ask - props.org.amount_from_votes - props.org.leverage_funds - props.org.pledges - props.org.topoff - getSaveAmount(props.theme.saves, props.org._id) || 0;
+	const need = props.org.ask - props.org.amountFromVotes - props.org.leverageFunds - props.org.pledges - props.org.topOff - getSaveAmount(props.theme.saves, props.org._id) || 0;
 
 	return (
 		<InfoContainer className='orginfo'>

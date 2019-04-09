@@ -3,7 +3,7 @@ import React from 'react';
 import { Router, Route, Switch, withRouter } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 import { withTracker } from 'meteor/react-meteor-data';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { Loader, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -28,10 +28,10 @@ class Kiosk extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(this.props.theme.chit_voting_active !== prevProps.theme.chit_voting_active ||
-		   this.props.theme.funds_voting_active !== prevProps.theme.funds_voting_active) {
-			let displayPage = this.props.theme.chit_voting_active ? KIOSK_PAGES.chit :
-												this.props.theme.funds_voting_active ? KIOSK_PAGES.funds :
+		if(this.props.theme.chitVotingActive !== prevProps.theme.chitVotingActive ||
+		   this.props.theme.fundsVotingActive !== prevProps.theme.fundsVotingActive) {
+			let displayPage = this.props.theme.chitVotingActive ? KIOSK_PAGES.chit :
+												this.props.theme.fundsVotingActive ? KIOSK_PAGES.funds :
 												KIOSK_PAGES.info;
 			this.setState({
 				displayPage: displayPage

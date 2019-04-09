@@ -8,9 +8,11 @@ import Graph from '/imports/ui/Presentation/Graph/Graph';
 const Allocation = (props) => {
 	return (
 		<React.Fragment>
-			<Graph theme={props.theme} orgs={props.orgs} />
+			<Graph  />
 		</React.Fragment>
 	);
 }
 
 export default Allocation;
+
+// theme={props.theme} orgs={props.orgs}

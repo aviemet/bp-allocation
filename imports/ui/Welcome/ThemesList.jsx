@@ -10,6 +10,7 @@ import { Button, Table, Header, Grid, Icon } from 'semantic-ui-react';
 
 import NewThemeModal from '/imports/ui/Welcome/NewThemeModal';
 
+// TODO: add pagination
 class ThemesList extends React.Component {
 
 	constructor(props) {

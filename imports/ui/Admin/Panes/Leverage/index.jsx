@@ -2,7 +2,6 @@ import React from 'react';
 import _ from 'lodash';
 import numeral from 'numeral';
 
- // import { getLeverageSpreadRounds } from '/imports/utils';
 import { roundFloat } from '/imports/utils';
 
 import { ThemeMethods } from '/imports/api/methods';
@@ -17,6 +16,13 @@ export default class Leverage extends React.Component {
 		super(props);
 	}
 
+	/**
+	 * Returns array of "rounds" representing the distribution of the remaining
+	 * leverage
+	 * @param  {Object} topOrgs           Top Orgs for the theme
+	 * @param  {Number} leverageRemaining Amount of remaining leverage
+	 * @return {Array}                    Array of Objects (rounds)
+	 */
 	getLeverageSpreadRounds = (topOrgs, leverageRemaining) => {
 		let { orgs, sumRemainingOrgs } = this._initLeverageVars(topOrgs);
 		let rounds = [];
@@ -78,25 +84,45 @@ export default class Leverage extends React.Component {
 	  ));
 
 		// Accumulate the running total of all accrued funds during leverage rounds
-		org.leverage_funds = roundFloat(org.leverage_funds + org.roundFunds);
+		org.leverageFunds = roundFloat(org.leverageFunds + org.roundFunds);
 
 		// Amount needed to be fully funded
-		org.need = roundFloat(org.ask - org.allocatedFunds - org.leverage_funds);
+		org.need = roundFloat(org.ask - org.allocatedFunds - org.leverageFunds);
 
 		return org;
 	}
 
+ 	/**
+ 	 * Clone top orgs (so no reference issues) and add some more variables to the object. Also calculate sumRemainingOrgs
+ 	 * @param  {[type]} orgsOriginal [description]
+ 	 * @return {[type]}              [description]
+ 	 */
 	_initLeverageVars = (orgsOriginal) => {
+		// Amount allocated so far to top-orgs which have not yet been fully funded
 		let sumRemainingOrgs = 0;
+
 		let orgs = _.cloneDeep(orgsOriginal).map(org => {
-			// Set up some variables
-			let save = this.props.theme.saves.find( save => save.org === org._id);
-			org.allocatedFunds = roundFloat(org.amount_from_votes + org.pledges + org.topoff + (save ? save.amount : 0));
-			org.leverage_funds = 0; // Accumulator for funds recieved from leverage spread
-			org.need = roundFloat(org.ask - org.allocatedFunds); // Amount needed to be fully funded
+			// Amount from saves if any
+			let save = (() => {
+				let saveObj = this.props.theme.saves.find( save => save.org === org._id);
+				return saveObj ? (saveObj.amount || 0) : 0;
+			})();
+
+			// Total amount allocated from all sources for this org
+			org.allocatedFunds = roundFloat(org.amountFromVotes + org.pledges + org.topOff + save);
+			console.log({amountFromVotes: org.amountFromVotes, pledges: org.pledges,  topOff: org.topOff, save});
+
+			// Accumulator for funds recieved from leverage spread
+			org.leverageFunds = 0;
+
+			// Amount needed to be fully funded
+			org.need = roundFloat(org.ask - org.allocatedFunds);
 
 			// Use the loop to calculate the funding total of orgs not fully funded
 			sumRemainingOrgs = roundFloat(sumRemainingOrgs + org.allocatedFunds);
+
+			//console.log({sumRemainingOrgs, orgAllocatedFunds: org.allocatedFunds, ask: org.ask, orgLeverageFunds: org.leverageFunds, need: org.need, save, pledges: org.pledges, topOff: org.topOff});
+
 			return org;
 		});
 
@@ -113,7 +139,7 @@ export default class Leverage extends React.Component {
 		let lastRound = rounds[rounds.length-1]
 		let leverageRemaining = lastRound.leverageRemaining;
 		let funds = lastRound.orgs.reduce((sum, org) => {
-			return sum + (org.leverage_funds > 0 ? org.roundFunds : 0);
+			return sum + (org.leverageFunds > 0 ? org.roundFunds : 0);
 		}, 0);
 		return leverageRemaining - funds;
 	}
@@ -127,14 +153,14 @@ export default class Leverage extends React.Component {
 	}
 
 	render() {
-		if(!this.props.theme.leverage_remaining) {
+		if(!this.props.theme.leverageRemaining) {
 			return <Loader />
 		}
 
-		const rounds = this.getLeverageSpreadRounds(this.props.topOrgs, this.props.theme.leverage_remaining);
+		const rounds = this.getLeverageSpreadRounds(this.props.topOrgs, this.props.theme.leverageRemaining);
 
-		const orgSpreadSum = this.props.topOrgs.reduce((sum, org) => {return sum + org.leverage_funds}, 0);
-		const roundSpreadSum = rounds[rounds.length-1].orgs.reduce((sum, org) => {return sum + org.leverage_funds}, 0);
+		const orgSpreadSum = this.props.topOrgs.reduce((sum, org) => {return sum + org.leverageFunds}, 0);
+		const roundSpreadSum = rounds[rounds.length-1].orgs.reduce((sum, org) => {return sum + org.leverageFunds}, 0);
 
 		const leverageDistributed = orgSpreadSum === roundSpreadSum;
 

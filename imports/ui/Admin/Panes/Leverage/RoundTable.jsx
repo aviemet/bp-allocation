@@ -1,7 +1,7 @@
 import React from 'react';
 
 import numeral from 'numeral';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { Table, Header, Icon } from 'semantic-ui-react';
 
@@ -18,7 +18,7 @@ const RoundTable = props => {
 	props.orgs.map(org => {
 		totals.percent += org.percent;
 		totals.funds += org.roundFunds;
-		totals.total += org.allocatedFunds + org.leverage_funds;
+		totals.total += org.allocatedFunds + org.leverageFunds;
 		totals.needed += org.need;
 	});
 
@@ -44,7 +44,7 @@ const RoundTable = props => {
 					<Table.Cell>{org.title}</Table.Cell>
 					<Table.Cell>{org.roundFunds === 0 ? '-' : numeral(org.roundFunds).format('$0,0.00')}</Table.Cell>
 					<Table.Cell>{org.percent === 0 ? '-' : numeral(org.percent).format('0.0000%')}</Table.Cell>
-					<Table.Cell>{numeral(org.allocatedFunds + org.leverage_funds).format('$0,0.00')}</Table.Cell>
+					<Table.Cell>{numeral(org.allocatedFunds + org.leverageFunds).format('$0,0.00')}</Table.Cell>
 					<Table.Cell>{org.need === 0 ? <Icon color='green' name='check circle' /> : numeral(org.need).format('$0,0.00')}</Table.Cell>
 				</Table.Row>
 

@@ -138,13 +138,13 @@ const OrganizationMethods = {
 			let theme = Themes.find({_id: themeId}).fetch()[0];
 
 			// Pledge should increment org.pledged by twice the amount
-			// increment theme.leverage_used by the amount
+			// increment theme.leverageUsed by the amount
 
-			Themes.update({_id: themeId}, {$inc: {leverage_used: amount}});
+			Themes.update({_id: themeId}, {$inc: {leverageUsed: amount}});
 
 			// if(match){
 			// 	let theme = Themes.find({_id: themeId}).fetch()[0];
-			// 	ThemeMethods.update.call({id: themeId, data: {leverage_used: parseInt(theme.leverage_used) + amount}});
+			// 	ThemeMethods.update.call({id: themeId, data: {leverageUsed: parseInt(theme.leverageUsed) + amount}});
 			// 	amount *= parseInt(theme.match_ratio);
 			// }
 
@@ -155,8 +155,8 @@ const OrganizationMethods = {
 	/**
 	 * Top-off organization
 	 */
-	topoff: new ValidatedMethod({
-		name: 'organizations.topoff',
+	topOff: new ValidatedMethod({
+		name: 'organizations.topOff',
 
 		validate: null,
 
@@ -164,16 +164,17 @@ const OrganizationMethods = {
 			let org = Organizations.find({_id: id}).fetch()[0];
 			// let theme = Themes.find({_id: org.theme}).fetch()[0];
 
-			let topoffAmount = org.ask - org.amount_from_votes - org.pledges;
+			let topOffAmount = org.ask - org.amountFromVotes - org.pledges;
 
-			// ThemeMethods.update.call({id: org.theme, data: {leverage_used: parseInt(theme.leverage_used) + topoffAmount}});
+			// ThemeMethods.update.call({id: org.theme, data: {leverageUsed: parseInt(theme.leverageUsed) + topOffAmount}});
 
-			return Organizations.update({_id: id}, {$set: {topoff: topoffAmount}});
+			return Organizations.update({_id: id}, {$set: {topOff: topOffAmount}});
 		}
 	}),
 
 	/**
-	 * Reset organization
+	 * Reset organization funding totals
+	 *
 	 */
 	reset: new ValidatedMethod({
 		name: 'organizations.reset',
@@ -184,11 +185,9 @@ const OrganizationMethods = {
 			let org = Organizations.find({_id: id}).fetch()[0];
 			let theme = Themes.find({_id: org.theme}).fetch()[0];
 
-			let resetAmount = org.ask - org.amount_from_votes - org.pledges;
+			ThemeMethods.update.call({id: org.theme, data: {leverageUsed: parseInt(theme.leverageUsed || 0) - (org.pledges/2)}});
 
-			ThemeMethods.update.call({id: org.theme, data: {leverage_used: parseInt(theme.leverage_used) - (org.pledges/2)}});
-
-			return Organizations.update({_id: id}, {$set: {pledges: 0, amount_from_votes: 0, topoff: 0}});
+			return Organizations.update({_id: id}, {$set: {pledges: 0, amountFromVotes: 0, topOff: 0}});
 		}
 	}),
 

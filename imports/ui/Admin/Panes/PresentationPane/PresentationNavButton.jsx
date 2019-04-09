@@ -5,15 +5,15 @@ import styled from 'styled-components';
 
 import { withContext } from '/imports/ui/Contexts';
 
-import { ThemeMethods } from '/imports/api/methods';
+import { PresentationSettingsMethods } from '/imports/api/methods';
 
 class PresentationNavButton extends React.Component {
 	constructor(props) {
 		super(props);
 	}
 
-	changeCurrentPage = (e, data) => ThemeMethods.update.call({
-		id: this.props.theme._id,
+	changeCurrentPage = (e, data) => PresentationSettingsMethods.update.call({
+		id: this.props.theme.presentationSettings,
 		data: {currentPage: this.props.page
 	}});
 

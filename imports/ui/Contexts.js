@@ -1,13 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { filterTopOrgs } from '/imports/utils';
 
-import { Themes, Organizations, Images } from '/imports/api';
-import { ThemeMethods, OrganizationMethods, ImageMethods } from '/imports/api/methods';
+import { Themes, PresentationSettings, Organizations, Images } from '/imports/api';
+import { ThemeMethods, PresentationSettingsMethods, OrganizationMethods, ImageMethods } from '/imports/api/methods';
 
 import { Loader } from 'semantic-ui-react'
 
@@ -52,6 +52,7 @@ class ThemeProviderTemplate extends React.Component {
 			<ThemeContext.Provider value={{
 				toggleThemeValue: this.toggleThemeValue,
 				theme: this.props.theme,
+				presentationSettings: this.props.presentationSettings,
 				orgs: this.props.orgs,
 				topOrgs: this.props.topOrgs,
 				loading: this.props.loading,
@@ -65,13 +66,22 @@ class ThemeProviderTemplate extends React.Component {
 const ThemeProvider = withTracker((props) => {
 	let id = props.id;
 
-	themesHandle = Meteor.subscribe('themes', id);
-	orgsHandle = Meteor.subscribe('organizations', id);
-	imagesHandle = Meteor.subscribe('images');
-
+	// Ask for the theme
+	let themesHandle = Meteor.subscribe('themes', id);
 	let theme = Themes.find({_id: id}).fetch()[0];
+
+	// Start fetching the rest of the data
+	let orgsHandle = Meteor.subscribe('organizations', id);
 	let orgs = Organizations.find({theme: id}).fetch();
-	let images;
+
+	// Escape out if the theme or orgs haven't loaded yet
+	if(!themesHandle.ready() || !orgsHandle.ready() || !theme || !orgs) return { loading: true };
+
+	let imagesHandle = Meteor.subscribe('images');
+	let images = [];
+
+	let presentationSettingsHandle = Meteor.subscribe('presentationSettings', theme.presentationSettings);
+	let presentationSettings = PresentationSettings.find({_id: theme.presentationSettings}).fetch()[0];
 
 	// Get the image info into the orgs
 	let imgIds = orgs.map((org) => ( org.image ));
@@ -96,41 +106,44 @@ const ThemeProvider = withTracker((props) => {
 
 	// Pre-filter the top orgs, add to loading condition
 	let topOrgs = [];
-	let topOrgsReady = false;
-	// console.log({themeReady: themesHandle.ready(), orgsReady: orgsHandle.ready(), theme, orgs});
-	if(themesHandle.ready() && orgsHandle.ready() && theme && orgs) {
-		topOrgs = filterTopOrgs(theme, orgs);
-		topOrgsReady = theme.organizations.length > 0 && topOrgs.length <= 0;
-	}
+	topOrgs = filterTopOrgs(theme, orgs);
 
 	// Calculate the remaining leverage
 	let remainingLeverage = 0;
 	if(!_.isEmpty(theme) && !_.isEmpty(topOrgs)) {
-		let consolation = theme.consolation_active ? (theme.organizations.length - topOrgs.length) * theme.consolation_amount : 0;
-		remainingLeverage = theme.leverage_total - theme.leverage_used - consolation;
+		let consolation = theme.consolationActive ? (theme.organizations.length - topOrgs.length) * theme.consolationAmount : 0;
+		remainingLeverage = theme.leverageTotal - theme.leverageUsed - consolation;
 
 		topOrgs.map((org) => {
-			remainingLeverage -= parseInt(org.amount_from_votes || 0);
-			if(org.topoff > 0){
-				remainingLeverage -= org.topoff;
+			remainingLeverage -= parseInt(org.amountFromVotes || 0);
+			if(org.topOff > 0){
+				remainingLeverage -= org.topOff;
 			}
 		});
-		theme.leverage_remaining = parseFloat((remainingLeverage).toFixed(2));
+		theme.leverageRemaining = parseFloat((remainingLeverage).toFixed(2));
 	}
 
-	let loading = !themesHandle.ready() && _.isUndefined(theme) &&
-								!orgsHandle.ready() && _.isEmpty(orgs) &&
-								!imagesHandle.ready() && _.isUndefined(images) &&
-								!topOrgsReady;
+	let loading = (!themesHandle.ready() || _.isUndefined(theme)) ||
+                (!presentationSettingsHandle.ready() || _.isUndefined(theme.presentationSettings)) ||
+                (!orgsHandle.ready() || _.isUndefined(orgs)) ||
+                (!imagesHandle.ready());
 
-	return {
-		loading: loading,
-		theme: theme,
-		orgs: orgs,
-		topOrgs: topOrgs
-	};
+  /*console.log({
+  	themesHandle: !themesHandle.ready(),
+  	themeDefined: _.isUndefined(theme),
+	  presentationSettingsHandle: !presentationSettingsHandle.ready(),
+	  presentationSettingsDefined: _.isUndefined(theme.presentationSettings),
+	  orgsHandle: !orgsHandle.ready(),
+	  orgsDefined: _.isUndefined(orgs),
+	  imagesHandle: !imagesHandle.ready()
+	});*/
+	return { loading, theme, orgs, topOrgs, presentationSettings };
 })(ThemeProviderTemplate);
 
+
+/**
+ * HOC to also provide the same context
+ */
 const withContext = (ComposedComponent) => {
 	class ContextComponent extends React.Component {
 		constructor(props) {

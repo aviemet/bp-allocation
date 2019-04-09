@@ -79,10 +79,10 @@ const Bar = (props) => {
 
 	let funded =
 		(props.org.pledges || 0) +
-		(props.org.amount_from_votes || 0) +
-		(props.org.topoff || 0) +
-		(props.org.leverage_funds || 0) +
-		(props.theme.saves_visible && save ? save.amount : 0);
+		(props.org.amountFromVotes || 0) +
+		(props.org.topOff || 0) +
+		(props.org.leverageFunds || 0) +
+		(props.savesVisible && save ? save.amount : 0);
 
 	let height = Math.min(Math.round((funded / props.org.ask) * 100), 100);
 

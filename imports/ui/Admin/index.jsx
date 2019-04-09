@@ -5,8 +5,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import { Themes } from '/imports/api';
 
-import { ThemeMethods } from '/imports/api/methods';
-import { ThemeContext, withContext } from '/imports/ui/Contexts';
+import { withContext } from '/imports/ui/Contexts';
 
 import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react'
 import styled from 'styled-components';
@@ -71,11 +70,12 @@ class Admin extends React.Component {
 	}
 
 	render() {
-		const { activeItem } = this.state;
-
 		if(this.props.loading){
 			return(<Loader/>)
 		}
+
+		const { activeItem } = this.state;
+		// TODO: iterate over TABS object instead of declaring each tab
 		return (
 			<React.Fragment>
 
@@ -116,7 +116,7 @@ class Admin extends React.Component {
 
 							{/* Allocation Voting */}
 							<Route exact path={TABS.money.slug} render={props => (
-								<AllocationPane theme={this.props.theme} orgs={this.props.topOrgs} />
+								<AllocationPane {...this.props} />
 							)} />
 
 							{/* Remaining Leverage Distribution */}

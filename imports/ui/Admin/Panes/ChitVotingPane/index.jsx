@@ -40,7 +40,7 @@ const ChitVotingPane = (props) => {
 					</Grid.Column>
 
 					<Grid.Column>
-							<TopOrgsByChitVote organizations={props.orgs} theme={props.theme} />
+						<TopOrgsByChitVote {...props} />
 					</Grid.Column>
 
 				</Grid.Row>
