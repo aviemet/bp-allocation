@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'underscore';
 import numeral from 'numeral';
 
-import { getSaveAmount } from '/imports/utils';
+import { getSaveAmount, roundFloat } from '/imports/utils';
 
 import { OrganizationMethods, ThemeMethods } from '/imports/api/methods';
 
@@ -38,7 +38,7 @@ export default class AllocationInputs extends React.Component {
 		e.preventDefault();
 
 		// Get the amount to pledge
-		let amount = e.target.elements.valueInput.value;
+		let amount = roundFloat(e.target.elements.valueInput.value);
 
 		OrganizationMethods.pledge.call({
 			id: this.props.org._id,

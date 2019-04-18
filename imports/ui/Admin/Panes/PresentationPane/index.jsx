@@ -71,7 +71,6 @@ class PresentationPane extends React.Component {
 	 * Reset the values for the presentation
 	 */
 	resetPresentation = () => {
-		console.log('reset');
 		PresentationSettingsMethods.update.call({id: this.props.theme.presentationSettings, data: {
 			leverageVisible: false,
 			animateOrgs: true,

@@ -30,14 +30,11 @@ class SettingsPane extends React.Component {
 		this.usingFields.map(field => {
 			let split = field.split('.');
 			if(split.length > 1){
-				console.log({path: `props.${split[0]}.${split[1]}`});
 				buildState[field] = this.props[split[0]][split[1]];
 			}
 		});
 
 		this.state = buildState;
-
-		console.log({state: this.state});
 	}
 
 	// 2 way binding to inputs

@@ -14,6 +14,7 @@
     "history": "^4.7.2",
     "lodash": "^4.17.11",
     "meteor-node-stubs": "^0.4.1",
+    "moment": "^2.24.0",
     "numeral": "^2.0.6",
     "react": "^16.5.2",
     "react-countdown-clock": "^2.4.0",

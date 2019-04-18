@@ -31,8 +31,6 @@ const Arithmetic = styled.span`
 class AllocationPane extends React.Component {
 	constructor(props) {
 		super(props);
-
-		console.log({props});
 	}
 
 	toggleShowLeverage = (e, data) => {
@@ -53,7 +51,6 @@ class AllocationPane extends React.Component {
 				favorite = i;
 			}
 		});
-		console.log({crowdFavorite: allEntered ? favorite : false});
 		return allEntered ? favorite : false;
 	}
 

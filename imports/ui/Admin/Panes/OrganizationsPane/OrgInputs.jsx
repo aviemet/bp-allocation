@@ -53,9 +53,9 @@ export default class OrgInputs extends React.Component {
 				image: this.state.orgImage
 			}}, (err, res) => {
 				if(err){
-					console.log(err);
+					console.error(err);
 				} else {
-					console.log('success');
+					// Success
 				}
 			});
 		}
@@ -97,7 +97,7 @@ export default class OrgInputs extends React.Component {
 	removeOrg = (e) => {
 		e.preventDefault();
 		OrganizationMethods.remove.call(this.props.org._id, (err, res) => {
-			if(err) console.log(err);
+			if(err) console.error(err);
 		});
 	}
 

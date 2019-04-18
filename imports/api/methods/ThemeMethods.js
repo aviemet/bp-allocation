@@ -3,6 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import SimpleSchema from 'simpl-schema';
 
 import { Promise } from 'meteor/promise';
+import moment from 'moment';
 
 import { Themes, Organizations } from '/imports/api';
 import { ThemesSchema }  from '/imports/api/schema';
@@ -22,8 +23,12 @@ const ThemeMethods = {
 		validate: null,
 
 		run(data) {
+			if(!data.quarter) {
+				data.quarter = `${moment().year()}Q${moment().quarter()}`;
+			}
+
 			let theme = Themes.insert(_.merge(data, {presentationSettings: PresentationSettingsMethods.create.call()}));
-			console.log({theme});
+
 			return theme;
 		}
 	}),
@@ -97,13 +102,11 @@ const ThemeMethods = {
 			let org = Organizations.findOne({_id: id});
 			let theme = Themes.findOne({_id: org.theme});
 
-			console.log({theme});
-
 			let data = {org: id, amount: amount}
 			if(name) {
 				data.name = name;
 			}
-			console.log({data});
+
 			let result = Themes.update({_id: theme._id}, {
 				$push: {
 					saves: {
@@ -113,7 +116,7 @@ const ThemeMethods = {
 				$inc: {numTopOrgs: 1},
 				$addToSet: {topOrgsManual: id}
 			});
-			console.log(result);
+
 			return result;
 		}
 	}),

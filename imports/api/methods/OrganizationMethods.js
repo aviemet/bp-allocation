@@ -21,7 +21,7 @@ const OrganizationMethods = {
 		run(data) {
 			Organizations.insert(data, (err, res) => {
 				if(err){
-					console.log(err);
+					console.error(err);
 				} else {
 					Themes.update({_id: data.theme}, {
 						$push: { organizations: res }
@@ -63,10 +63,10 @@ const OrganizationMethods = {
 
 				// Remove organization
 				return Organizations.remove(id, (err) => {
-					if(err) console.log(err);
+					if(err) console.error(err);
 
 					Themes.update({_id: org.theme}, {$pull: {organizations: id}}, (err) => {
-						if(err) console.log(err);
+						if(err) console.error(err);
 					});
 				});
 			} else {
@@ -134,8 +134,10 @@ const OrganizationMethods = {
 		validate: null,
 
 		run({id, amount, match, themeId}) {
-			amount = parseInt(amount);
+			amount = roundFloat(amount);
 			let theme = Themes.find({_id: themeId}).fetch()[0];
+
+			console.log({id, amount, match, themeId, theme, matchRatio: amount * parseInt(theme.matchRatio)});
 
 			// Pledge should increment org.pledged by twice the amount
 			// increment theme.leverageUsed by the amount
@@ -148,7 +150,7 @@ const OrganizationMethods = {
 			// 	amount *= parseInt(theme.match_ratio);
 			// }
 
-			return Organizations.update({_id: id}, {$inc: {pledges: (amount * parseInt(theme.match_ratio))}});
+			return Organizations.update({_id: id}, {$inc: {pledges: (amount * parseInt(theme.matchRatio))}});
 		}
 	}),
 

@@ -88,8 +88,9 @@ export default class OrgCard extends React.Component {
 		let animateClass = this.props.animateClass ? 'animate-orgs' : '';
 		let imagePath = '';
 		if(this.props.org.image && this.props.org.image.path){
-			imagePath = Images.link(this.props.org.image);
+			imagePath = Images.link(this.props.org.image, 'original', '/');
 		}
+		console.log({imagePath, 'image.path':this.props.org.image.path, image: this.props.org.image});
 		let className = this.props.bgcolor ? 'white' : '';
 		return (
 			<Card className={animateClass}>

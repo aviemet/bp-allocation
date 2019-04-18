@@ -8,7 +8,7 @@ import Graph from '/imports/ui/Presentation/Graph/Graph';
 const Allocation = (props) => {
 	return (
 		<React.Fragment>
-			<Graph  />
+			<Graph />
 		</React.Fragment>
 	);
 }

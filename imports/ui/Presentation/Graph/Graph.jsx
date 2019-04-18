@@ -127,7 +127,6 @@ const LeverageCount = styled.div`
 `;
 
 const Graph = (props) => {
-	console.log({props});
 	const _calcStartingLeverage = () => {
 		let leverage = props.theme.leverageTotal;
 
@@ -161,7 +160,7 @@ const Graph = (props) => {
 				<Goal style={{top: "50%"}} />
 
 					<BarsContainer columns='equal'>
-					{props.orgs.map((org, i) => (
+					{props.topOrgs.map((org, i) => (
 						<Bar org={org} theme={props.theme} key={org._id} color={COLORS[i%COLORS.length]} savesVisible={props.presentationSettings.savesVisible} />
 					))}
 					</BarsContainer>
@@ -171,7 +170,7 @@ const Graph = (props) => {
 			<InfoContainer>
 				<InfoGrid columns='equal'>
 					<Grid.Row>
-					{props.orgs.map((org) => (
+					{props.topOrgs.map((org) => (
 						<OrgInfo org={org} theme={props.theme} key={org._id} />
 					))}
 					</Grid.Row>

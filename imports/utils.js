@@ -6,7 +6,6 @@ const KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds' };
 
 const roundFloat = (value, decimal) => {
 	decimal = decimal || 2;
-	console.log({ value, decimal });
 	return parseFloat(parseFloat(value).toFixed(decimal));
 };
 

@@ -23,7 +23,6 @@ const NumTopOrgsInput = styled(Input)`
 export default class TopOrgsByChitVote extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log(props);
 	}
 
 	updateNumTopOrgs = (e, data) => {

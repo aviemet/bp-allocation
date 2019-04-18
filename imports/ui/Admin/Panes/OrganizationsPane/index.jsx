@@ -44,7 +44,7 @@ class OrganizationsPane extends React.Component {
 	disableAddButton = () => { this.setState({addButtonDisabled: true});	}
 
 	fileError = (error, file) => {
-		console.log({error: error, file: file});
+		console.error({error: error, file: file});
 	}
 
 	handleNewOrgSubmit = (e) => {
@@ -58,11 +58,10 @@ class OrganizationsPane extends React.Component {
 			image: this.state.orgImage,
 			theme: this.props.theme._id
 		};
-		console.log({data});
 
 		OrganizationMethods.create.call(data, (err, res) => {
 			if(err){
-				console.log(err);
+				console.error(err);
 			} else {
 				this.setState({orgTitle: '', orgAsk: '', orgImage: ''});
 			}

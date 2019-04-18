@@ -34,7 +34,7 @@ export default class NewThemeModal extends React.Component {
       quarter: this.state.newThemeQuarter
     }, (err, res) => {
       if(err) {
-        console.log(err);
+        console.error(err);
       } else {
         this.handleClose();
       }

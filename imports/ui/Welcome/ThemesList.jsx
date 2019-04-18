@@ -3,6 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 
+import moment from 'moment';
+
 import { Themes } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 
@@ -20,7 +22,6 @@ class ThemesList extends React.Component {
 	}
 
 	deleteTheme(e, data){
-		console.log(data.value);
 		ThemeMethods.remove.call(data.value)
 	}
 
@@ -40,7 +41,9 @@ class ThemesList extends React.Component {
 						{this.props.themes.map((theme) => {
 							return (
 								<Table.Row key={theme._id}>
-									<Table.Cell><Link to={`/themes/${theme._id}`}>{theme.title}</Link></Table.Cell>
+									<Table.Cell>
+										<Link to={`/themes/${theme._id}`}>{theme.title}</Link>
+									</Table.Cell>
 									<Table.Cell>{theme.quarter}</Table.Cell>
 									<Table.Cell><Button onClick={this.deleteTheme} value={theme._id}><Icon name='trash' /></Button></Table.Cell>
 								</Table.Row>
@@ -57,5 +60,5 @@ class ThemesList extends React.Component {
 export default withTracker(() => {
 	themesHandle = Meteor.subscribe('themes');
 
-	return { themes: Themes.find({}).fetch() };
+	return { themes: Themes.find({}, {limit: 5, sort: {createdAt: -1}}).fetch() };
 })(ThemesList);

@@ -73,8 +73,6 @@ const Bar = (props) => {
 		return ( <Loader /> )
 	}
 
-	console.log({barProps: props});
-
 	let save = props.theme.saves.find( save => save.org === props.org._id );
 
 	let funded =

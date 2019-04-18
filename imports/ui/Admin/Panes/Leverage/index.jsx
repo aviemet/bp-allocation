@@ -110,7 +110,7 @@ export default class Leverage extends React.Component {
 
 			// Total amount allocated from all sources for this org
 			org.allocatedFunds = roundFloat(org.amountFromVotes + org.pledges + org.topOff + save);
-			console.log({amountFromVotes: org.amountFromVotes, pledges: org.pledges,  topOff: org.topOff, save});
+			// console.log({amountFromVotes: org.amountFromVotes, pledges: org.pledges,  topOff: org.topOff, save});
 
 			// Accumulator for funds recieved from leverage spread
 			org.leverageFunds = 0;
