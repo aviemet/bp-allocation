@@ -5,6 +5,8 @@ import { Themes, PresentationSettings, Organizations, Images } from '/imports/ap
 
 import '/imports/api/methods';
 
+import { DEBUG } from '/imports/debug';
+
 Meteor.startup(() => {
 
 	Meteor.publish('themes', (themeId) => {
@@ -40,74 +42,33 @@ Meteor.startup(() => {
 		if(themeId){
 			let theme = MeteorPromise.await(Themes.find({_id: id})).fetch();
 			let orgs = MeteorPromise.await(Organizations.find({theme: id})).fetch();
-
-			/*
-			// Save manual top orgs as key/value true/false pairs for reference
-			let manualTopOrgs = {};
-			theme.topOrgsManual.map((org) => {
-				manualTopOrgs[org] = true;
-			});
-
-			// First sort orgs by weight and vote count
-			let sortedOrgs = _.sortBy(orgs, (org) => {
-				// Calculate the votes for each org (weight/chit_weight unless there's a manual count)
-				let votes = org.chitVotes.count ? org.chitVotes.count :
-											org.chitVotes.weight ? org.chitVotes.weight / theme.chit_weight : 0;
-
-				// Save the votes count for later
-				org.votes = votes;
-
-				// Sort in descending order
-				return -(votes)
-			});
-
-			let slice = theme.topOrgsManual.length;
-
-			//Then bubble up the manual top orgs
-			// No need to proceed if manual orgs is >= numTopOrgs
-			if(theme.numTopOrgs > theme.topOrgsManual.length){
-				slice = theme.numTopOrgs;
-
-				// climb up the bottom of the list looking for manually selected orgs
-				for(let i = sortedOrgs.length-1; i >= theme.numTopOrgs; i--){
-					// console.log({i: i, num: theme.numTopOrgs});
-					// console.log({id: sortedOrgs[i]._id, index: i});
-					// Check if the org has been manually selected
-					if(manualTopOrgs[sortedOrgs[i]._id]){
-						// Find the closest automatically selected top org
-						let j = i-1;
-						while(j > 0 && manualTopOrgs[sortedOrgs[j]._id]){
-							j--;
-						}
-
-						// Start swapping the auto top org down the list
-						while(j < i){
-							let tmp = sortedOrgs[i];
-							sortedOrgs[i] = sortedOrgs[j];
-							sortedOrgs[j] = tmp;
-
-							j++;
-						}
-
-						// Send the index back one in case we swapped another match into previous place
-						i++;
-					}
-				}
-			}
-
-			return sortedOrgs.slice(0, slice);
-		*/
 		}
 		// TODO: return error
 	});
 
-  Meteor.publish('images', (themeId) => {
+	Meteor.publish('image', (id) =>  {
+		if(!id) return false;
+
+		console.log({subscribe: id});
+
+		return Images.find({_id: id}).cursor;
+	});
+
+  Meteor.publish('images', (ids) => {
+  	if(!ids) return false;
+
+    return Images.find({_id: {$in: ids}}).cursor;
+  });
+
+  Meteor.publish('images.byTheme', function(themeId) {
   	if(themeId){
-	  	let orgs = Organizations.find({theme: themeId}, {_id: true, image: true, title: false, ask: false, theme: false, chitVotes: false, value: false}).fetch();
+  	// console.log({server: this._session.server});
+	  	let orgs = Organizations.find({theme: themeId}, {_id: true, image: true}).fetch();
+	  	// console.log({orgs});
 
 	  	let imgIds = [];
 	  	orgs.map((org, i) => {
-	  		imgIds.push(org._id);
+	  		imgIds.push(org.image);
 	  	});
 
 	    return Images.find({_id: {$in: imgIds}}).cursor;

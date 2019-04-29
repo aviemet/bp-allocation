@@ -137,7 +137,7 @@ const OrganizationMethods = {
 			amount = roundFloat(amount);
 			let theme = Themes.find({_id: themeId}).fetch()[0];
 
-			console.log({id, amount, match, themeId, theme, matchRatio: amount * parseInt(theme.matchRatio)});
+			// console.log({id, amount, match, themeId, theme, matchRatio: amount * parseInt(theme.matchRatio)});
 
 			// Pledge should increment org.pledged by twice the amount
 			// increment theme.leverageUsed by the amount

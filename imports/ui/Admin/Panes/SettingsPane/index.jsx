@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { withContext } from '/imports/ui/Contexts';
+import { withContext } from '/imports/api/Context';
 
 import _ from 'lodash';
 

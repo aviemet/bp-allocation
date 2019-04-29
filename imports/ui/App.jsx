@@ -5,7 +5,7 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { Grid, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { ThemeProvider } from '/imports/ui/Contexts';
+import { ThemeProvider } from '/imports/api/Context';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from '/imports/ui/Layouts';

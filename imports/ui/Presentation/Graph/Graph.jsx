@@ -1,7 +1,7 @@
 import React from 'react';
 import numeral from 'numeral';
 
-import { withContext } from '/imports/ui/Contexts';
+import { withContext } from '/imports/api/Context';
 
 import styled from 'styled-components';
 import { Grid, Progress } from 'semantic-ui-react';

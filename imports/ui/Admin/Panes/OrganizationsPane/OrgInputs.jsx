@@ -1,24 +1,24 @@
 import React from 'react';
+import _ from 'lodash';
 
-import { withContext } from '/imports/ui/Contexts';
+import { withTracker } from 'meteor/react-meteor-data';
+import { withContext } from '/imports/api/Context';
 
-import { Organizations } from '/imports/api';
+import { Organizations, Images } from '/imports/api';
 import { OrganizationMethods, ImageMethods } from '/imports/api/methods';
 
 import { Button, Form, Input, Icon, Popup, Modal, Header, Image, Label, Loader, Dropdown } from 'semantic-ui-react';
 
 import FileUpload from '/imports/ui/Components/FileUpload';
 
-export default class OrgInputs extends React.Component {
+class OrgInputs extends React.Component {
 	constructor(props) {
 		super(props);
 
-		// Initial state of bound inputs
 		this.state = {
 			orgTitle: props.org.title,
 			orgAsk: props.org.ask,
-			// Image objects not loaded at constructor
-			orgImage: typeof props.org.image === "object" ? props.org.image._id : props.org.image,
+			orgImage: props.org.image,
 			replaceModalOpen: false,
 			viewModalOpen: false,
 		};
@@ -26,7 +26,7 @@ export default class OrgInputs extends React.Component {
 		this.imageReplaced = false;
 	}
 
-	// State updater for all inputs
+	// 2-way binding for inputs
 	updateValue = (e) => {
 		let newState = {};
 		newState[e.target.name] = e.target.value;
@@ -45,7 +45,7 @@ export default class OrgInputs extends React.Component {
 		// Only update the document if data has changed
 		if(this.state.orgTitle !== this.props.org.title ||
 			 this.state.orgAsk   !== this.props.org.ask ||
-			 this.state.orgImage !== this.props.org.image._id) {
+			 this.state.orgImage !== this.props.org.image) {
 
 			OrganizationMethods.update.call({id: this.props.org._id, data: {
 				title: this.state.orgTitle,
@@ -108,6 +108,7 @@ export default class OrgInputs extends React.Component {
 		];
 
 		let org = this.props.org;
+		let image = this.props.image;
 
 		return(
 			<Form organization={org._id} onSubmit={this.handleOrgUpdate} encType="multipart/form-data" onBlur={this.handleOrgUpdate}>
@@ -119,7 +120,7 @@ export default class OrgInputs extends React.Component {
 					<Form.Dropdown width={2} text='Image' simple fluid button options={imageOptions} onChange={this.handleImageDropdown} />
 
 					<Form.Field width={5}>
-						<Label style={{width: '100%', height: '100%'}}>{org.image && org.image.name ? org.image.name : ''}</Label>
+						<Label style={{width: '100%', height: '100%'}}>{image && image.name ? image.name : ''}</Label>
 					</Form.Field>
 
 					<Modal
@@ -141,7 +142,7 @@ export default class OrgInputs extends React.Component {
 				<Modal
 					open={this.state.viewModalOpen}
 					onClose={this.closeViewModal}>
-					<Image src={org.image && org.image.path ? org.image.path : '/img/default.jpg'} />
+					<Image src={image && image.path ? image.path : '/img/default.jpg'} />
 				</Modal>
 
 				{/* Replace Image */}
@@ -152,7 +153,11 @@ export default class OrgInputs extends React.Component {
 					<Header icon='browser' content='Choose New Image' />
 
 	        <Modal.Content>
-						<FileUpload width={4} name='orgImage' onEnd={this.updateImageValue} />
+						<FileUpload
+							width={4}
+							name='orgImage'
+							onEnd={this.updateImageValue}
+						/>
 					</Modal.Content>
 
 	        <Modal.Actions>
@@ -167,3 +172,5 @@ export default class OrgInputs extends React.Component {
 	}
 
 }
+
+export default OrgInputs;

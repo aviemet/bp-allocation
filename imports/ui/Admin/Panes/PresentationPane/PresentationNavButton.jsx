@@ -3,7 +3,7 @@ import React from 'react';
 import { Grid, Button } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { withContext } from '/imports/ui/Contexts';
+import { withContext } from '/imports/api/Context';
 
 import { PresentationSettingsMethods } from '/imports/api/methods';
 

@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 
-import { withContext } from '/imports/ui/Contexts';
+import { withContext } from '/imports/api/Context';
 
 import { Themes } from '/imports/api';
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';

@@ -5,7 +5,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import { Themes } from '/imports/api';
 
-import { withContext } from '/imports/ui/Contexts';
+import { withContext } from '/imports/api/Context';
 
 import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react'
 import styled from 'styled-components';
@@ -26,30 +26,38 @@ const TabMenu = styled(Menu)`
 	}
 `;
 
+const TABS_ORDER = ['settings', 'orgs', 'chits', 'money', 'leverage', 'presentation'];
 const TABS = {
 	orgs:{
 		slug: 'orgs',
-		heading: 'Organizations'
+		heading: 'Organizations',
+		color: 'green'
 	},
 	chits: {
 		slug: 'chits',
-		heading: 'Chit Voting'
+		heading: 'Chit Voting',
+		color: 'brown'
 	},
 	money: {
 		slug: 'money',
-		heading: 'Allocation'
+		heading: 'Allocation',
+		color: 'orange'
 	},
 	settings: {
 		slug: 'settings',
-		heading: 'Theme Settings'
+		heading: 'Theme Settings',
+		color: 'blue'
 	},
 	presentation: {
 		slug: 'presentation',
-		heading: 'Presentation'
+		heading: 'Presentation',
+		color: 'pink',
+		position: 'right'
 	},
 	leverage: {
 		slug: 'leverage',
-		heading: 'Leverage'
+		heading: 'Leverage',
+		color: 'violet'
 	}
 };
 
@@ -70,30 +78,30 @@ class Admin extends React.Component {
 	}
 
 	render() {
-		if(this.props.loading){
-			return(<Loader/>)
-		}
+		let title = this.props.loading ? '' : this.props.theme.title;
 
 		const { activeItem } = this.state;
-		// TODO: iterate over TABS object instead of declaring each tab
 		return (
 			<React.Fragment>
 
 				<Grid.Row>
-					<Title as='h1'>Allocation Night for {this.props.theme.title}</Title>
+					<Title as='h1'>Allocation Night for {title}</Title>
 				</Grid.Row>
 
 				<Grid.Row>
 					<TabMenu attached='top' tabular>
-						<Menu.Item name={TABS.settings.heading} slug={TABS.settings.slug} active={activeItem === TABS.settings.slug} onClick={this.handleItemClick} color='blue' />
-						<Menu.Item name={TABS.orgs.heading} slug={TABS.orgs.slug} active={activeItem === TABS.orgs.slug} onClick={this.handleItemClick} color='green' />
-						<Menu.Item name={TABS.chits.heading} slug={TABS.chits.slug} active={activeItem === TABS.chits.slug} onClick={this.handleItemClick} color='brown' />
-						<Menu.Item name={TABS.money.heading} slug={TABS.money.slug} active={activeItem === TABS.money.slug} onClick={this.handleItemClick} color='orange' />
-						<Menu.Item name={TABS.leverage.heading} slug={TABS.leverage.slug} active={activeItem === TABS.leverage.slug} onClick={this.handleItemClick} color='violet' />
 
-						<Menu.Menu position='right'>
-							<Menu.Item name={TABS.presentation.heading} slug={TABS.presentation.slug} active={activeItem === TABS.presentation.slug} onClick={this.handleItemClick} color='pink' />
-						</Menu.Menu>
+						{TABS_ORDER.map((tab) => (
+							<Menu.Item key={tab}
+								position={TABS[tab].position ? TABS[tab].position : ''}
+								name={TABS[tab].heading}
+								slug={TABS[tab].slug}
+								active={activeItem === TABS[tab].slug}
+								onClick={this.handleItemClick}
+								color={TABS[tab].color}
+							/>
+						))}
+
 					</TabMenu>
 
 					<Segment attached="bottom">
@@ -126,7 +134,7 @@ class Admin extends React.Component {
 
 							{/* Presentation Controls */}
 							<Route exact path={TABS.presentation.slug} render={props => (
-								<PresentationPane themeId={this.props.theme._id} {...props} />
+								<PresentationPane {...this.props} />
 							)} />
 
 						</Switch>

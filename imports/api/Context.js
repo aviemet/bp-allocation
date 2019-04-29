@@ -11,6 +11,8 @@ import { ThemeMethods, PresentationSettingsMethods, OrganizationMethods, ImageMe
 
 import { Loader } from 'semantic-ui-react'
 
+import { DEBUG } from '/imports/debug';
+
 /**
  * Initialize the Context
  */
@@ -40,14 +42,10 @@ class ThemeProviderTemplate extends React.Component {
 		tempData[data.index] = data.checked;
 
 		// ThemeMethods.update.call({id: this.props.themeId, data: tempData});
-		console.log({context: data});
+		// console.log({context: data});
 	}
 
 	render() {
-		if(this.props.loading){
-			return(<Loader/>);
-		}
-
 		return (
 			<ThemeContext.Provider value={{
 				toggleThemeValue: this.toggleThemeValue,
@@ -55,6 +53,7 @@ class ThemeProviderTemplate extends React.Component {
 				presentationSettings: this.props.presentationSettings,
 				orgs: this.props.orgs,
 				topOrgs: this.props.topOrgs,
+				images: this.props.images,
 				loading: this.props.loading,
 			}}>
 				{this.props.children}
@@ -64,33 +63,38 @@ class ThemeProviderTemplate extends React.Component {
 }
 
 const ThemeProvider = withTracker((props) => {
+	if(!props.id) return { loading: true };
+
 	let id = props.id;
 
-	// Ask for the theme
+	// Get the theme
 	let themesHandle = Meteor.subscribe('themes', id);
 	let theme = Themes.find({_id: id}).fetch()[0];
 
-	// Start fetching the rest of the data
+	// Get the Organizations in the theme
 	let orgsHandle = Meteor.subscribe('organizations', id);
 	let orgs = Organizations.find({theme: id}).fetch();
 
 	// Escape out if the theme or orgs haven't loaded yet
 	if(!themesHandle.ready() || !orgsHandle.ready() || !theme || !orgs) return { loading: true };
 
-	let imagesHandle = Meteor.subscribe('images');
-	let images = [];
-
+	// Get the presentation settings for the theme
 	let presentationSettingsHandle = Meteor.subscribe('presentationSettings', theme.presentationSettings);
 	let presentationSettings = PresentationSettings.find({_id: theme.presentationSettings}).fetch()[0];
 
-	// Get the image info into the orgs
+	// Begin getting the images
+	// let imagesHandle = Meteor.subscribe('images.byTheme', id);
+	let images = [];
+
 	let imgIds = orgs.map((org) => ( org.image ));
+	let imagesHandle = Meteor.subscribe('images', imgIds);
+
 	if(!_.isEmpty(imgIds)){
 		// Fetch the images
 		images = Images.find({_id: {$in: imgIds}}).fetch();
 
 		// Map fields from each image object to its respective org
-		if(!_.isEmpty(images)){
+		/*if(!_.isEmpty(images)){
 			orgs.map((org) => {
 				image = _.find(images, (img) => ( img._id === org.image));
 
@@ -98,10 +102,10 @@ const ThemeProvider = withTracker((props) => {
 				if(image){
 					imageObj = image;
 					imageObj.path = `/uploads/${image._id}.${image.extension}`;
+					org.image = imageObj;
 				}
-				org.image = imageObj;
 			});
-		}
+		}*/
 	}
 
 	// Pre-filter the top orgs, add to loading condition
@@ -128,16 +132,7 @@ const ThemeProvider = withTracker((props) => {
                 (!orgsHandle.ready() || _.isUndefined(orgs)) ||
                 (!imagesHandle.ready());
 
-  /*console.log({
-  	themesHandle: !themesHandle.ready(),
-  	themeDefined: _.isUndefined(theme),
-	  presentationSettingsHandle: !presentationSettingsHandle.ready(),
-	  presentationSettingsDefined: _.isUndefined(theme.presentationSettings),
-	  orgsHandle: !orgsHandle.ready(),
-	  orgsDefined: _.isUndefined(orgs),
-	  imagesHandle: !imagesHandle.ready()
-	});*/
-	return { loading, theme, orgs, topOrgs, presentationSettings };
+	return { loading, theme, orgs, topOrgs, images, presentationSettings };
 })(ThemeProviderTemplate);
 
 

@@ -9,7 +9,7 @@ import numeral from 'numeral';
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 import { Themes, Organizations } from '/imports/api';
 
-import { withContext } from '/imports/ui/Contexts';
+import { withContext } from '/imports/api/Context';
 
 import { Loader, Grid, Table, Checkbox, Button, Statistic, Segment, Header } from 'semantic-ui-react';
 import styled from 'styled-components';

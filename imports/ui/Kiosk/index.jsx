@@ -10,7 +10,7 @@ import styled from 'styled-components';
 
 import { KIOSK_PAGES } from '/imports/utils';
 
-import { ThemeContext, withContext } from '/imports/ui/Contexts';
+import { ThemeContext, withContext } from '/imports/api/Context';
 import { Themes, Organizations, Images } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
+import { withContext } from '/imports/api/Context';
 import styled from 'styled-components';
 
 import { Images } from '/imports/api';
@@ -66,11 +67,9 @@ class FileUpload extends React.Component {
 
         // These are the event functions, don't need most of them, it shows where we are in the process
         uploadInstance.on('start', function () {
-          console.log('Starting');
           if(that.props.onStart) that.props.onStart();
 
         }).on('progress', function (progress, fileObj) {
-          console.log('Upload Percentage: ' + progress);
           if(that.props.onProgress) that.props.onProgress({progress: progress, file: fileObj});
 
           // Update our progress bar
@@ -79,7 +78,6 @@ class FileUpload extends React.Component {
           });
 
         }).on('uploaded', function (error, fileObj) {
-          console.log('uploaded: ', fileObj);
           if(that.props.onUploaded) that.props.onUploaded({error: error, file: fileObj});
 
           that.setState({
@@ -90,11 +88,10 @@ class FileUpload extends React.Component {
           });
 
         }).on('end', function (error, fileObj) {
-          console.log('On end File Object: ', fileObj);
           if(that.props.onEnd) that.props.onEnd({error: error, file: fileObj});
 
         }).on('error', function (error, fileObj) {
-          console.log('Error during upload: ' + error)
+          console.error('Error during upload: ' + error)
           if(that.props.onError) that.props.onError({error: error, file: fileObj});
 
         })
@@ -106,7 +103,11 @@ class FileUpload extends React.Component {
 
   render() {
     // console.log({fileUploadProps: this.props});
-    if(this.props.files && this.props.docsReady) {
+    if(this.props.loading) {
+      return(
+        <Loader />
+      );
+    } else {
       let file = Images.findOne({_id: this.props.image});
 
       return (
@@ -115,24 +116,8 @@ class FileUpload extends React.Component {
           <Progress attached='bottom' percent={this.state.progress} color={this.state.color} />
         </FileUploadContainer>
       );
-
-    } else {
-      return(
-        <Loader />
-      );
     }
   }
 }
 
-//
-// This is the HOC - included in this file just for convenience, but usually kept
-// in a separate file to provide separation of concerns.
-//
-export default withTracker( ( props ) => {
-  const filesHandle = Meteor.subscribe('images');
-
-  return {
-    docsReady: filesHandle.ready(),
-    files: Images.find({}).fetch(),
-  }
-})(FileUpload);
+export default withContext(FileUpload);

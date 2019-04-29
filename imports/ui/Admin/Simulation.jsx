@@ -4,7 +4,7 @@ import React from 'react';
 import { Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { withContext, ThemeContext } from '/imports/ui/Contexts';
+import { withContext, ThemeContext } from '/imports/api/Context';
 
 import { Allocation } from '/imports/ui/Presentation/Pages';
 

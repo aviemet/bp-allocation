@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import { Organizations } from '/imports/api';
 
-import { ThemeContext } from '/imports/ui/Contexts';
+import { ThemeContext } from '/imports/api/Context';
 
 import { Loader, Grid, Table, Header, Segment, Container } from 'semantic-ui-react';
 

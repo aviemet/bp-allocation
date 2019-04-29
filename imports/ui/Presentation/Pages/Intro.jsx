@@ -3,7 +3,7 @@ import React from 'react';
 import { Header, Loader, Image } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { ThemeContext } from '/imports/ui/Contexts';
+import { ThemeContext } from '/imports/api/Context';
 
 const TitlePage = styled.div`
 	margin: 0 auto;

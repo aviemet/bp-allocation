@@ -10,7 +10,7 @@ import styled from 'styled-components';
 
 import { PresentationLayout } from '/imports/ui/Layouts';
 
-import { withContext } from '/imports/ui/Contexts';
+import { withContext } from '/imports/api/Context';
 import { Themes, Organizations, Images } from '/imports/api';
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 
