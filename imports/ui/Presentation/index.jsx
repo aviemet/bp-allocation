@@ -40,6 +40,7 @@ class Presentation extends React.Component {
 		this.state = {
 			show: true,
 			entered: false,
+			loading: true
 		};
 	}
 
@@ -55,17 +56,24 @@ class Presentation extends React.Component {
 			}, FADE_DURATION);
 		}
 	}
-
+/*
 	componentDidMount() {
-		this.doNavigation();
+		if(!this.props.loading){
+		}
 	}
-
+*/
 	componentDidUpdate(prevState, prevProps) {
-		this.doNavigation();
+		if(this.state.loading){
+			if(!this.props.loading && this.props.presentationSettings) {
+				this.setState({loading: false});
+			}
+		} else {
+			this.doNavigation();
+		}
 	}
 
 	render() {
-		if(this.props.loading) {
+		if(this.state.loading) {
 			return <Loader/>
 		}
 

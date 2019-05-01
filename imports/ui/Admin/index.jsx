@@ -78,6 +78,10 @@ class Admin extends React.Component {
 	}
 
 	render() {
+		if(this.props.loading) {
+			return <Loader />
+		}
+
 		let title = this.props.loading ? '' : this.props.theme.title;
 
 		const { activeItem } = this.state;
