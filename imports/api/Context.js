@@ -92,20 +92,6 @@ const ThemeProvider = withTracker((props) => {
 	if(!_.isEmpty(imgIds)){
 		// Fetch the images
 		images = Images.find({_id: {$in: imgIds}}).fetch();
-
-		// Map fields from each image object to its respective org
-		/*if(!_.isEmpty(images)){
-			orgs.map((org) => {
-				image = _.find(images, (img) => ( img._id === org.image));
-
-				imageObj = {}
-				if(image){
-					imageObj = image;
-					imageObj.path = `/uploads/${image._id}.${image.extension}`;
-					org.image = imageObj;
-				}
-			});
-		}*/
 	}
 
 	// Pre-filter the top orgs, add to loading condition
