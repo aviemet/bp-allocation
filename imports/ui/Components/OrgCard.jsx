@@ -58,50 +58,54 @@ const AwardAmount = styled.span`
 	transform: translateX(-50%);
 `
 
+/**
+ * Award Emblem
+ */
 const Award = ({show, type, amount}) => {
-	if(show === true){
+	if(show !== true) return <React.Fragment />;
 
-		const awardImgSrc = {
-			awardee: '/img/circle_awardee.png',
-			other: '/img/circle.png'
-		};
+	const awardImgSrc = {
+		awardee: '/img/circle_awardee.png',
+		other: '/img/circle.png'
+	};
 
-		return (
-			<AwardEmblem>
-				<AwardImage className='ui.card.image' style={{backgroundImage: `url(${awardImgSrc[type || 'awardee']})`,
-	backgroundSize: type === 'awardee' ? '120%' : '100%'}}>
-					<AwardAmount style={{fontSize: type === 'awardee' ? '3.3em' : '2.9em'}}>{numeral(amount).format('$0.0a')}</AwardAmount>
-				</AwardImage>
-			</AwardEmblem>
-		);
-	}
-	return (<React.Fragment />);
+	return (
+		<AwardEmblem>
+			<AwardImage className='ui.card.image' style={{backgroundImage: `url(${awardImgSrc[type || 'awardee']})`,
+backgroundSize: type === 'awardee' ? '120%' : '100%'}}>
+				<AwardAmount style={{fontSize: type === 'awardee' ? '3.3em' : '2.9em'}}>{numeral(amount).format('$0.0a')}</AwardAmount>
+			</AwardImage>
+		</AwardEmblem>
+	);
 }
 
-export default class OrgCard extends React.Component {
-	constructor(props) {
-		super(props);
+
+/**
+ * OrgCard Component
+ */
+const OrgCard = props => {
+
+	// Add animation class if toggled
+	let animateClass = props.animateClass ? 'animate-orgs' : '';
+
+	let imagePath = '';
+	if(props.image && props.image.path){
+		imagePath = Images.link(props.image, 'original', '/');
 	}
 
-	render() {
-		// Add animation class if toggled
-		let animateClass = this.props.animateClass ? 'animate-orgs' : '';
-		let imagePath = '';
-		if(this.props.org.image && this.props.org.image.path){
-			imagePath = Images.link(this.props.org.image, 'original', '/');
-		}
-		console.log({imagePath, 'image.path':this.props.org.image.path, image: this.props.org.image});
-		let className = this.props.bgcolor ? 'white' : '';
-		return (
-			<Card className={animateClass}>
-				<CardImage style={{ backgroundImage: `url(${imagePath})` }} className='orgsImage'>
-					<Award show={this.props.award} type={this.props.awardtype} amount={this.props.org.totalFunds} />
-				</CardImage>
-				<CardContent bgcolor={this.props.bgcolor || '#FFF'} className={className}>
-					<OrgTitle>{this.props.org.title}</OrgTitle>
-					<OrgAsk>{numeral(this.props.org.ask).format('$0a')}</OrgAsk>
-				</CardContent>
-			</Card>
-		);
-	}
+	let className = props.bgcolor ? 'white' : '';
+
+	return (
+		<Card className={animateClass}>
+			<CardImage style={{ backgroundImage: `url(${imagePath})` }} className='orgsImage'>
+				<Award show={props.award} type={props.awardtype} amount={props.org.totalFunds} />
+			</CardImage>
+			<CardContent bgcolor={props.bgcolor || '#FFF'} className={className}>
+				<OrgTitle>{props.org.title}</OrgTitle>
+				<OrgAsk>{numeral(props.org.ask).format('$0a')}</OrgAsk>
+			</CardContent>
+		</Card>
+	);
 }
+
+export default OrgCard;

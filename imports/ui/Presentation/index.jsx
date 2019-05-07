@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Router, Route, Switch, withRouter } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 import { withTracker } from 'meteor/react-meteor-data';
@@ -10,7 +10,7 @@ import styled from 'styled-components';
 
 import { PresentationLayout } from '/imports/ui/Layouts';
 
-import { withContext } from '/imports/api/Context';
+import { ThemeContext, OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
 import { Themes, Organizations, Images } from '/imports/api';
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 
@@ -33,92 +33,78 @@ const PageFader = styled.div`
 	opacity: 0;
 `;
 
-class Presentation extends React.Component {
-	constructor(props) {
-		super(props);
+const Presentation = props => {
 
-		this.state = {
-			show: true,
-			entered: false,
-			loading: true
-		};
-	}
+	const { theme, themeLoading } = useContext(ThemeContext);
+	const { orgs, topOrgs, orgsLoading } = useContext(OrganizationContext);
+	const { settings, settingsLoading } = useContext(PresentationSettingsContext);
+	const { images, imagesLoading } = useContext(ImageContext);
+
+	const [ show, setShow ] = useState(true);
+	const [ entered, setEntered ] = useState(false);
+
+	const loading = (themeLoading || orgsLoading || settingsLoading || imagesLoading);
+
+	useEffect(() => {
+		if(!loading) {
+			doNavigation();
+		}
+	});
 
 	// TODO: wait for image load before showing page
-	doNavigation() {
-		let page = `/presentation/${this.props.theme._id}/${this.props.presentationSettings.currentPage}`;
-		if(this.props.location.pathname !== page && this.state.show){
-			this.setState({ show: false });
+	const doNavigation = () => {
+		let page = `/presentation/${theme._id}/${settings.currentPage}`;
+		if(location.pathname !== page && show){
+			setShow(false);
 
 			setTimeout(() => {
-				this.props.history.push(page);
-				this.setState({ show: true });
+				props.history.push(page);
+				setShow(true);
 			}, FADE_DURATION);
 		}
 	}
-/*
-	componentDidMount() {
-		if(!this.props.loading){
-		}
-	}
-*/
-	componentDidUpdate(prevState, prevProps) {
-		if(this.state.loading){
-			if(!this.props.loading && this.props.presentationSettings) {
-				this.setState({loading: false});
-			}
-		} else {
-			this.doNavigation();
-		}
+
+	if(loading) {
+		return <Loader />
 	}
 
-	render() {
-		if(this.state.loading) {
-			return <Loader/>
-		}
+	return (
+		<Transition in={show} timeout={FADE_DURATION}>
+			{(state) => (
+			<PageFader style={{...defaultStyle, ...transitionStyles[state]}}>
+				{/* Intro */}
+				<Route path={`${props.match.path}/intro`} render={(props) => (
+					<Intro title={theme.title} question={theme.question} />
+				)} />
 
-		const { show } = this.state;
-		const path = this.props.match.path;
-		const { timerLength, animateOrgs } = this.props.presentationSettings;
+				{/* Participating Organizations */}
+				<Route exact path={`${props.match.path}/orgs`} component={Orgs} />
 
-		return (
-			<Transition in={show} timeout={FADE_DURATION}>
-				{(state) => (
-				<PageFader style={{...defaultStyle, ...transitionStyles[state]}}>
-					{/* Intro */}
-					<Route path={`${path}/intro`} component={Intro} />
+				{/* Timer */}
+				<Route exact path={`${props.match.path}/timer`} render={(props) => (
+					<Timer seconds={settings.timerLength} />
+				)} />
 
-					{/* Participating Organizations */}
-					<Route exact path={`${path}/orgs`} render={(props) => (
-						<Orgs orgs={this.props.orgs} topOrgs={this.props.topOrgs} theme={this.props.theme} />
-					)}/>
+				{/* Top Orgs */}
+				<Route exact path={`${props.match.path}/toporgs`} component={TopOrgs} />
 
-					{/* Timer */}
-					<Route exact path={`${path}/timer`} render={(props) => (
-						<Timer seconds={timerLength} />
-					)} />
+				{/* Allocation */}
+				<Route exact path={`${props.match.path}/allocation`} component={Allocation} />
 
-					{/* Top Orgs */}
-					<Route exact path={`${path}/toporgs`} render={(props) => (
-						<TopOrgs orgs={this.props.topOrgs} animate={animateOrgs} />
-					)} />
+				{/* Results */}
+				<Route exact path={`${props.match.path}/results`} component={Results} />
 
-					{/* Allocation */}
-					<Route exact path={`${path}/allocation`} render={(props) => (
-						<Allocation />
-					)} />
-
-					{/* Results */}
-					<Route exact path={`${path}/results`} render={(props) => (
-						<Results orgs={this.props.topOrgs} theme={this.props.theme} offset={(this.props.presentationSettings.resultsOffset || 0)} />
-					)} />
-				</PageFader>
-				)}
-			</Transition>
-		);
-	}
+			</PageFader>
+			)}
+		</Transition>
+	);
 }
 
-export default withContext(withRouter(Presentation));
+export default withRouter(Presentation);
 
-// orgs={this.props.topOrgs} theme={this.props.theme}
+/*
+ render={(props) => (
+					<Results orgs={topOrgs} theme={theme} offset={(presentationSettings.resultsOffset || 0)} />
+ */
+
+

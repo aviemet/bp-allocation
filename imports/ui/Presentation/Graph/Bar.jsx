@@ -58,21 +58,15 @@ const Award = styled.img`
 `;
 
 const AwardImg = ({show}) => {
-	if(show){
-		return (
-			<Award src='/img/BAT_award_logo.svg' />
-		)
-	}
-	return(
-		<React.Fragment />
+	if(show !== true) return <React.Fragment />
+
+	return (
+		<Award src='/img/BAT_award_logo.svg' />
 	)
+
 }
 
-const Bar = (props) => {
-	if(props.loading){
-		return ( <Loader /> )
-	}
-
+const Bar = props => {
 	let save = props.theme.saves.find( save => save.org === props.org._id );
 
 	let funded =

@@ -14,5 +14,3 @@ const Allocation = (props) => {
 }
 
 export default Allocation;
-
-// theme={props.theme} orgs={props.orgs}

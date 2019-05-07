@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Header } from 'semantic-ui-react';
@@ -38,41 +38,36 @@ const FinishedContainer = styled.div`
 	}
 `;
 
-export default class Timer extends React.Component {
-	constructor(props) {
-		super(props);
+const Timer = props => {
 
-		this.state = {
-			countdown: true
-		}
-	}
+	const [ countdown, setCountdown ] = useState(true);
 
 	timerFinish = () => {
 		setTimeout(() => {
-			this.setState({countdown: false});
+			setCountdown(false);
 		}, 2000);
 	}
 
-	render() {
-		if(this.state.countdown){
-			return (
-				<TimerContainer>
-					<ReactCountdownClock
-						seconds={this.props.seconds}
-						color="#FFF"
-						size={850}
-						weight={10}
-						onComplete={this.timerFinish}
-						showMilliseconds={false}
-					/>
-				</TimerContainer>
-			);
-		} else {
-			return(
-				<FinishedContainer>
-					<h1>Thank you<br/>for voting!</h1>
-				</FinishedContainer>
-			);
-		}
+	if(!countdown) {
+		return(
+			<FinishedContainer>
+				<h1>Thank you<br/>for voting!</h1>
+			</FinishedContainer>
+		);
 	}
- }
+
+	return (
+		<TimerContainer>
+			<ReactCountdownClock
+				seconds={props.seconds}
+				color="#FFF"
+				size={850}
+				weight={10}
+				onComplete={timerFinish}
+				showMilliseconds={false}
+			/>
+		</TimerContainer>
+	);
+}
+
+export default Timer;

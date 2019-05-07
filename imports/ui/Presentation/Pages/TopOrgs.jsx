@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import _ from 'lodash';
 
 import { Card, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
+
+import { ThemeContext, OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
@@ -41,17 +44,23 @@ const CardsContainer = styled.div`
 	}
 `
 
-const TopOrgs = (props) => {
+const TopOrgs = props => {
+
+	const { topOrgs } = useContext(OrganizationContext);
+	const { settings } = useContext(PresentationSettingsContext);
+	const { images } = useContext(ImageContext);
+
 	return (
 		<TopOrgsContainer>
-			<PageTitle>Top {props.orgs.length} Organizations</PageTitle>
+			<PageTitle>Top {topOrgs.length} Organizations</PageTitle>
 			<CardsContainer>
-				<Card.Group centered itemsPerRow={Math.ceil(props.orgs.length / 2)}>
-				{props.orgs.map((org, i) => (
+				<Card.Group centered itemsPerRow={Math.ceil(topOrgs.length / 2)}>
+				{topOrgs.map((org, i) => (
 					<OrgCard
-						org={org}
 						key={org._id}
-						animateClass={props.animate}
+						org={org}
+						image={_.find(images, ['_id', org.image])}
+						animateClass={settings.animateOrgs}
 						bgcolor={COLORS[i % COLORS.length]}
 					/>
 				))}

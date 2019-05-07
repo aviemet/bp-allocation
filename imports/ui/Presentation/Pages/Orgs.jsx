@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import _ from 'lodash';
 
 import { Card, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
+
+import { ThemeContext, OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
@@ -34,9 +37,14 @@ const PageTitle = styled.h2`
 	margin-bottom: 20px;
 `;
 
-const Orgs = (props) => {
+const Orgs = props => {
+
+	const { orgs, topOrgs } = useContext(OrganizationContext);
+	const { settings } = useContext(PresentationSettingsContext);
+	const { images } = useContext(ImageContext);
+
 	let colorOrgs = {};
-	props.topOrgs.map((org, i) => {
+	topOrgs.map((org, i) => {
 		colorOrgs[org._id] = COLORS[i % COLORS.length];
 	});
 
@@ -45,8 +53,13 @@ const Orgs = (props) => {
 			<PageTitle>Participating Organizations</PageTitle>
 			<Container>
 				<Card.Group centered itemsPerRow={4}>
-				{props.orgs.map((org) => (
-					<OrgCard org={org} key={org._id} bgcolor={props.theme.colorizeOrgs && colorOrgs[org._id] ? colorOrgs[org._id] : false} />
+				{orgs.map((org) => (
+					<OrgCard
+						key={org._id}
+						org={org}
+						image={_.find(images, ['_id', org.image])}
+						bgcolor={settings.colorizeOrgs && colorOrgs[org._id] ? colorOrgs[org._id] : false}
+					/>
 				))}
 				</Card.Group>
 			</Container>

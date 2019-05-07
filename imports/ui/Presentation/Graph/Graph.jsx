@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import numeral from 'numeral';
 
-import { withContext } from '/imports/api/Context';
+import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
 
 import styled from 'styled-components';
 import { Grid, Progress } from 'semantic-ui-react';
@@ -126,24 +126,29 @@ const LeverageCount = styled.div`
   padding-right: .2em;
 `;
 
-const Graph = (props) => {
-	const _calcStartingLeverage = () => {
-		let leverage = props.theme.leverageTotal;
+const Graph = props => {
 
-		props.topOrgs.map((org) => {
+	const { theme, themeLoading } = useContext(ThemeContext);
+	const { orgs, topOrgs, orgsLoading } = useContext(OrganizationContext);
+	const { settings, settingsLoading } = useContext(PresentationSettingsContext);
+
+	const _calcStartingLeverage = () => {
+		let leverage = theme.leverageTotal;
+
+		topOrgs.map((org) => {
 			leverage -= org.amountFromVotes || 0;
 			leverage -= org.topOff || 0;
 		});
-		if(props.theme.consolationActive) {
-			leverage -= (props.theme.organizations.length - props.orgs.length) * props.theme.consolationAmount;
+		if(theme.consolationActive) {
+			leverage -= (theme.organizations.length - orgs.length) * theme.consolationAmount;
 		}
 		return leverage;
 	}
 
-	const visibility = props.presentationSettings.leverageVisible ? 'visible' : 'hidden';
+	const visibility = settings.leverageVisible ? 'visible' : 'hidden';
 	const startingLeverage = _calcStartingLeverage();
 
-	// const pledges = props.orgs.reduce((sum, org) => {return sum + org.pledges}, 0);
+	// const pledges = orgs.reduce((sum, org) => {return sum + org.pledges}, 0);
 
 	return (
 		<GraphPageContainer>
@@ -160,8 +165,8 @@ const Graph = (props) => {
 				<Goal style={{top: "50%"}} />
 
 					<BarsContainer columns='equal'>
-					{props.topOrgs.map((org, i) => (
-						<Bar org={org} theme={props.theme} key={org._id} color={COLORS[i%COLORS.length]} savesVisible={props.presentationSettings.savesVisible} />
+					{topOrgs.map((org, i) => (
+						<Bar org={org} theme={theme} key={org._id} color={COLORS[i%COLORS.length]} savesVisible={settings.savesVisible} />
 					))}
 					</BarsContainer>
 
@@ -170,15 +175,15 @@ const Graph = (props) => {
 			<InfoContainer>
 				<InfoGrid columns='equal'>
 					<Grid.Row>
-					{props.topOrgs.map((org) => (
-						<OrgInfo org={org} theme={props.theme} key={org._id} />
+					{topOrgs.map((org) => (
+						<OrgInfo org={org} theme={theme} key={org._id} />
 					))}
 					</Grid.Row>
 
 					<Grid.Row style={{visibility: visibility}}>
 						<Grid.Column>
-							<ProgressBar value={startingLeverage - props.theme.leverageUsed} total={startingLeverage} inverted color='green' size='large' />
-							<LeverageCount>${numeral(startingLeverage - props.theme.leverageUsed).format('0.0a')}</LeverageCount>
+							<ProgressBar value={startingLeverage - theme.leverageUsed} total={startingLeverage} inverted color='green' size='large' />
+							<LeverageCount>${numeral(startingLeverage - theme.leverageUsed).format('0.0a')}</LeverageCount>
 						</Grid.Column>
 					</Grid.Row>
 				</InfoGrid>
@@ -187,4 +192,4 @@ const Graph = (props) => {
 	);
 }
 
-export default withContext(Graph);
+export default Graph;

@@ -39,7 +39,7 @@ const TotalNeed = styled.div`
 	color: #c31a1a;
 `;
 
-const OrgInfo = (props)  => {
+const OrgInfo = props => {
 	if(props.loading){
 		return ( <Loader /> );
 	}

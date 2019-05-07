@@ -56,11 +56,11 @@ export default class App extends React.Component {
 							</AppProvider>
 						) } />
 						<Route path="/presentation/:id" render={ (props) => (
-		    			<ThemeProvider id={props.match.params.id}>
+		    			<AppProvider id={props.match.params.id}>
 								<PresentationLayout>
 									<Presentation />
 								</PresentationLayout>
-							</ThemeProvider>
+							</AppProvider>
 						) } />
 						<Route path="/simulation/:id" render= { (props) => (
 		    			<ThemeProvider id={props.match.params.id}>

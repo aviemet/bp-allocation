@@ -3,8 +3,6 @@ import React from 'react';
 import { Header, Loader, Image } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { ThemeContext } from '/imports/api/Context';
-
 const TitlePage = styled.div`
 	margin: 0 auto;
 	top: 50%;
@@ -51,20 +49,17 @@ const ThemeQuestion = styled.h2`
 	margin-bottom: 1.5em;
 `;
 
-const ThemeConsumer = ThemeContext.Consumer;
+const Intro = props => {
 
-const Intro = (props) => {
 	return (
-		<ThemeConsumer>{(context) => (
-			<TitlePage>
-				<MainHeading>Allocation Night</MainHeading>
-				<ThemeTitle>{context.theme.title}</ThemeTitle>
-				<ThemeQuestion>{context.theme.question}</ThemeQuestion>
-				<LogoContainer>
-					<Image src='/img/BPLogoBlue.svg' />
-				</LogoContainer>
-			</TitlePage>
-		)}</ThemeConsumer>
+		<TitlePage>
+			<MainHeading>Allocation Night</MainHeading>
+			<ThemeTitle>{props.title}</ThemeTitle>
+			<ThemeQuestion>{props.question}</ThemeQuestion>
+			<LogoContainer>
+				<Image src='/img/BPLogoBlue.svg' />
+			</LogoContainer>
+		</TitlePage>
 	);
 }
 

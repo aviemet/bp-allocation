@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Router, Route, Switch, withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import numeral from 'numeral';
 
-import { withTracker } from 'meteor/react-meteor-data';
+import { ThemeContext, OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
 
 import { Loader, Header, Container, Grid, Card } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -49,16 +49,22 @@ const AwardsImage = styled.img`
 	width: 10%;
 `;
 
-const Results = (props) => {
+const Results = props => {
+
+	const { theme } = useContext(ThemeContext);
+	const { topOrgs } = useContext(OrganizationContext);
+	const { settings } = useContext(PresentationSettingsContext);
+	const { images } = useContext(ImageContext);
+
 	let awardees = [];
 	let others = [];
-	let saves = props.theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
-	let total = (props.theme.leverageTotal || 0) + saves + props.offset;
+	let saves = theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
+	let total = (theme.leverageTotal || 0) + saves + (settings.resultsOffset || 0);
 
-	let orgs = _.cloneDeep(props.orgs).map(org => {
+	let orgs = _.cloneDeep(topOrgs).map(org => {
 		total += org.pledges / 2;
 
-		org.save = props.theme.saves.find(save => save.org === org._id);
+		org.save = theme.saves.find(save => save.org === org._id);
 		org.totalFunds = org.amountFromVotes + org.leverageFunds + org.pledges + org.topOff + (org.save ? org.save.amount : 0);
 
 		if(org.totalFunds >= org.ask){
@@ -87,11 +93,12 @@ const Results = (props) => {
 				i++;
 				return(
 					<OrgCard
+						key={org._id}
 						org={org}
+						image={_.find(images, ['_id', org.image])}
 						bgcolor={COLORS[i % COLORS.length]}
 						award={true}
 						awardtype={'awardee'}
-						key={org._id}
 					/>
 				);
 			})}
@@ -104,11 +111,12 @@ const Results = (props) => {
 				i++;
 				return(
 					<OrgCard
+						key={org._id}
 						org={org}
+						image={_.find(images, ['_id', org.image])}
 						bgcolor={COLORS[i % COLORS.length]}
 						award={true}
 						awardtype={'other'}
-						key={org._id}
 					/>
 				);
 			})}
