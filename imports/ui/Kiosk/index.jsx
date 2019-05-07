@@ -30,6 +30,7 @@ class Kiosk extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if(this.props.theme.chitVotingActive !== prevProps.theme.chitVotingActive ||
 		   this.props.theme.fundsVotingActive !== prevProps.theme.fundsVotingActive) {
+
 			let displayPage = this.props.theme.chitVotingActive ? KIOSK_PAGES.chit :
 												this.props.theme.fundsVotingActive ? KIOSK_PAGES.funds :
 												KIOSK_PAGES.info;
@@ -70,4 +71,6 @@ class Kiosk extends React.Component {
 	}
 }
 
-export default withContext(Kiosk);
+export default Kiosk;
+
+// export default withContext(Kiosk);

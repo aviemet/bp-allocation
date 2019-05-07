@@ -5,6 +5,8 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { Grid, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
+import { AppProvider } from '/imports/context';
+
 import { ThemeProvider } from '/imports/api/Context';
 import { ThemeMethods } from '/imports/api/methods';
 
@@ -68,11 +70,11 @@ export default class App extends React.Component {
 							</ThemeProvider>
 						) } />
 						<Route path="/kiosk/:id" render= { (props) => (
-		    			<ThemeProvider id={props.match.params.id}>
+		    			<AppProvider id={props.match.params.id}>
 								<KioskLayout>
 									<Kiosk />
 								</KioskLayout>
-							</ThemeProvider>
+							</AppProvider>
 						) } />
 
 					</Switch>

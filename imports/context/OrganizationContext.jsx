@@ -43,6 +43,8 @@ const OrganizationProvider = withTracker((props) => {
 	let orgsHandle = Meteor.subscribe('organizations', props.id);
 	let orgs = Organizations.find({theme: props.id}).fetch();
 
+	if(_.isUndefined(theme) || _.isUndefined(orgs)) return { loading: true };
+
 	// Pre-filter the top orgs, add to loading condition
 	let topOrgs = [];
 	topOrgs = filterTopOrgs(theme, orgs);

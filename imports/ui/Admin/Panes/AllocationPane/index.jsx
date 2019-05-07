@@ -1,7 +1,7 @@
 import Meter from 'meteor/meteor';
 import React from 'react';
 import { Link } from 'react-router-dom'
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { withTracker } from 'meteor/react-meteor-data';
 import numeral from 'numeral';

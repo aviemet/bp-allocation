@@ -1,7 +1,7 @@
 import React from 'react';
 
 import numeral from 'numeral';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { Table, Header, Icon } from 'semantic-ui-react';
 

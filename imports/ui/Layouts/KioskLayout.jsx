@@ -10,18 +10,12 @@ const KioskContainer = styled.div`
 	color: white;
 `;
 
-export default class WelcomeLayout extends React.Component {
-	constructor(props) {
-		super(props);
-	}
+const WelcomeLayout = (props) => (
+  <KioskContainer>
+		<Container>
+			{props.children}
+		</Container>
+	</KioskContainer>
+);
 
-	render() {
-		return (
-		  <KioskContainer>
-				<Container>
-					{this.props.children}
-				</Container>
-			</KioskContainer>
-		);
-	}
-}
+export default WelcomeLayout;

@@ -37,12 +37,14 @@ const PresentationSettingsProvider = withTracker((props) => {
 	if(!props.id) return { loading: true };
 
 	let themeHandle = Meteor.subscribe('theme', props.id);
-	let theme = Theme.find({_id: props.id}).fetch()[0];
+	let theme = Themes.find({_id: props.id}).fetch()[0];
+
+	if(_.isUndefined(theme)) return { loading: true };
 
 	let presentationSettingsHandle = Meteor.subscribe('presentationSettings', theme.presentationSettings);
 	let presentationSettings = PresentationSettings.find({_id: theme.presentationSettings}).fetch()[0];
 
-	let loading = (!presentationSettings.Handle.ready() || _.isUndefined(theme.presentationSettings));
+	let loading = (!presentationSettingsHandle.ready() || _.isUndefined(theme.presentationSettings));
 
 	return { loading, presentationSettings };
 })(PresentationSettingsProviderTemplate);

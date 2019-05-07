@@ -6,15 +6,15 @@ import { OrganizationContext, OrganizationProvider }  from './OrganizationContex
 import { PresentationSettingsContext, PresentationSettingsProvider }  from './PresentationSettingsContext';
 
 const AppProvider = (props) => (
-	<ThemeContext.Provider id={props.id}>
-		<PresentationSettingsContext id={props.id}>
-			<OrganizationContext id={props.id}>
-				<ImageContext id={props.id}>
+	<ThemeProvider id={props.id}>
+		<PresentationSettingsProvider id={props.id}>
+			<OrganizationProvider id={props.id}>
+				<ImageProvider id={props.id}>
 					{props.children}
-				</ImageContext>
-			</OrganizationContext>
-		</PresentationSettingsContext>
-	</ThemeContext.Provider>
+				</ImageProvider>
+			</OrganizationProvider>
+		</PresentationSettingsProvider>
+	</ThemeProvider>
 );
 
 export { AppProvider, ThemeContext, ImageContext, OrganizationContext, PresentationSettingsContext };
