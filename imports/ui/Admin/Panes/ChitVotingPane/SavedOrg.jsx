@@ -5,25 +5,25 @@ import { ThemeMethods } from '/imports/api/methods';
 
 import { Grid, Header, Segment, Button } from 'semantic-ui-react';
 
-export default class SavedOrg extends React.Component {
-	constructor(props) {
-		super(props);
+const SavedOrg = props => {
+
+	const unSaveOrg = () => {
+		ThemeMethods.unSaveOrg.call({
+			theme_id: props.org.theme,
+			org_id: props.org._id
+		});
 	}
 
-	unSaveOrg = () => {
-		ThemeMethods.unSaveOrg.call({theme_id: this.props.org.theme, org_id: this.props.org._id});
-	}
-
-	render() {
-		return(
-			<React.Fragment>
-				<Grid.Column>
-					<Header as="h5">{this.props.org && this.props.org.title}, {this.props.save.amount}</Header>
-				</Grid.Column>
-				<Grid.Column>
-					<Button icon='trash' onClick={this.unSaveOrg} />
-				</Grid.Column>
-			</React.Fragment>
-		);
-	}
+	return(
+		<React.Fragment>
+			<Grid.Column>
+				<Header as="h5">{props.org && props.org.title}, {props.save.amount}</Header>
+			</Grid.Column>
+			<Grid.Column>
+				<Button icon='trash' onClick={unSaveOrg} />
+			</Grid.Column>
+		</React.Fragment>
+	);
 }
+
+export default SavedOrg;

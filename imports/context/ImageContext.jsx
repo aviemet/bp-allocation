@@ -26,6 +26,7 @@ class ImageProviderTemplate extends React.Component {
 		return (
 			<ImageContext.Provider value={{
 				images: this.props.images,
+				imagesLoading: this.props.loading
 			}}>
 				{this.props.children}
 			</ImageContext.Provider>

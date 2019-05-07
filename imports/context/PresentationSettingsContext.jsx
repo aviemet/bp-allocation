@@ -25,7 +25,8 @@ class PresentationSettingsProviderTemplate extends React.Component {
 	render() {
 		return (
 			<PresentationSettingsContext.Provider value={{
-				PresentationSettings: this.props.presentationSettings
+				settings: this.props.presentationSettings,
+				settingsLoading: this.props.loading
 			}}>
 				{this.props.children}
 			</PresentationSettingsContext.Provider>

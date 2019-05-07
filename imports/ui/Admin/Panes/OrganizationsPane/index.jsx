@@ -1,9 +1,9 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'lodash';
 
-import { ThemeContext, withContext } from '/imports/api/Context';
+import { ThemeContext, OrganizationContext, ImageContext } from '/imports/context';
 
 import { OrganizationMethods } from '/imports/api/methods';
 
@@ -12,111 +12,91 @@ import { Button, Table, Header, Grid, Form, Input, Label, Loader } from 'semanti
 import OrgInputs from './OrgInputs';
 import FileUpload from '/imports/ui/Components/FileUpload';
 
-const ThemeConsumer = ThemeContext.Consumer;
+const OrganizationsPane = props => {
 
-class OrganizationsPane extends React.Component {
+	const { theme } = useContext(ThemeContext);
+	const { orgs, topOrgs }  = useContext(OrganizationContext);
+	const { images } = useContext(ImageContext);
 
-	constructor(props) {
-		super(props);
+	const [ orgTitle, setOrgTitle ] = useState('');
+	const [ orgAsk, setOrgAsk ]     = useState('');
+	const [ orgImage, setOrgImage ] = useState('');
+	const [ addButtonDisabled, setAddButtonDisabled] = useState(false);
 
-		this.state = {
-			orgTitle: '',
-			orgAsk: '',
-			orgImage: '',
-			addButtonDisabled: false
-		};
-	}
-
-	// 2-way binding for inputs, fires on onChange event
-	updateValue = (e, data) => {
-		let newState = {};
-		newState[data.name] = data.value;
-		this.setState(newState);
-	}
-
-	// Populates state with uploaded image data to be saved in db
-	updateImageValue = ({file}) => {
-		this.setState({orgImage: file._id || false});
-		// console.log({orgImage: this.state.orgImage});
-	}
-
-	enableAddButton = () =>  { this.setState({addButtonDisabled: false});	}
-	disableAddButton = () => { this.setState({addButtonDisabled: true});	}
-
-	fileError = (error, file) => {
+	const fileError = (error, file) => {
 		console.error({error: error, file: file});
 	}
 
-	handleNewOrgSubmit = (e) => {
+	const handleNewOrgSubmit = (e) => {
 		e.preventDefault();
 
 		e.target.reset();
 
+		console.log({orgImage});
+
 		let data = {
-			title: this.state.orgTitle,
-			ask: this.state.orgAsk,
-			image: this.state.orgImage,
-			theme: this.props.theme._id
+			title: orgTitle,
+			ask: orgAsk,
+			image: orgImage,
+			theme: theme._id
 		};
 
 		OrganizationMethods.create.call(data, (err, res) => {
 			if(err){
 				console.error(err);
 			} else {
-				this.setState({orgTitle: '', orgAsk: '', orgImage: ''});
+				setTitle('');
+				setOrgAsk('');
+				setOrgImage('');
 			}
 		});
 	}
 
-	render() {
-		let title = this.props.loading ? '' : this.props.theme.title;
+	return (
+		<React.Fragment>
+			<Grid.Row>
+				<Header as="h1">Organizations for Theme: {theme.title}</Header>
+			</Grid.Row>
 
-		return (
-			<React.Fragment>
-				<Grid.Row>
-					<Header as="h1">Organizations for Theme: {title}</Header>
-				</Grid.Row>
+			<Form onSubmit={handleNewOrgSubmit}>
+				<Form.Group>
+					<Form.Input
+						name='orgTitle'
+						width={6}
+						type='text'
+						placeholder='Organization Name'
+						value={orgTitle}
+						onChange={e => setOrgTitle(e.target.value)}
+					/>
 
-				<Form onSubmit={this.handleNewOrgSubmit}>
-					<Form.Group>
-						<Form.Input
-							width={6}
-							type='text'
-							placeholder='Organization Name'
-							name='orgTitle'
-							onChange={this.updateValue}
-							value={this.state.orgTitle}
-						/>
+					<Form.Input
+						name='orgAsk'
+						width={2}
+						type='text'
+						placeholder='Ask'
+						iconPosition='left'
+						icon='dollar sign'
+						value={orgAsk}
+						onChange={e => setOrgAsk(e.target.value)}
+					/>
 
-						<Form.Input
-							width={2}
-							type='text'
-							placeholder='Ask'
-							iconPosition='left'
-							icon='dollar sign'
-							name='orgAsk'
-							onChange={this.updateValue}
-							value={this.state.orgAsk}
-						/>
+					<FileUpload
+						name='orgImage'
+						width={4}
+						onEnd={({file}) => setOrgImage(file._id || false)}
+						onStart={() => setAddButtonDisabled(true)}
+						onUploaded={() => setAddButtonDisabled(false)}
+						onError={fileError}
+					/>
 
-						<FileUpload
-							name='orgImage'
-							width={4}
-							onEnd={this.updateImageValue}
-							onStart={this.disableAddButton}
-							onUploaded={this.enableAddButton}
-							onError={this.fileError}
-						/>
+					<Form.Button width={2} type='submit' disabled={addButtonDisabled}>Add</Form.Button>
+				</Form.Group>
+			</Form>
 
-						<Form.Button width={2} type='submit' disabled={this.state.addButtonDisabled}>Add</Form.Button>
-					</Form.Group>
-				</Form>
+			{orgs.map((org, i) => <OrgInputs org={org} image={_.find(images, {'_id': org.image})} key={i} /> )}
 
-				{!_.isEmpty(this.props.orgs) && this.props.orgs.map((org, i) => <OrgInputs org={org} image={_.find(this.props.images, {'_id': org.image})} key={i} /> )}
-
-			</React.Fragment>
-		);
-	}
+		</React.Fragment>
+	);
 }
 
-export default withContext(OrganizationsPane);
+export default OrganizationsPane;

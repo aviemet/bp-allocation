@@ -1,28 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { Grid, Button } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { withContext } from '/imports/api/Context';
-
+import { PresentationSettingsContext } from '/imports/context';
 import { PresentationSettingsMethods } from '/imports/api/methods';
 
-class PresentationNavButton extends React.Component {
-	constructor(props) {
-		super(props);
+const PresentationNavButton = props => {
+
+	const { settings } = useContext(PresentationSettingsContext)
+
+	const changeCurrentPage = (e, data) => {
+		PresentationSettingsMethods.update.call({
+			id: settings._id,
+			data: {
+				currentPage: props.page
+			}
+		});
 	}
 
-	changeCurrentPage = (e, data) => PresentationSettingsMethods.update.call({
-		id: this.props.theme.presentationSettings,
-		data: {currentPage: this.props.page
-	}});
-
-	render() {
-		return (
-			<Button icon onClick={this.changeCurrentPage}>
-				{this.props.children}
-			</Button>
-		);
-	}
+	return (
+		<Button icon onClick={changeCurrentPage}>
+			{props.children}
+		</Button>
+	);
 }
-export default withContext(PresentationNavButton);
+
+export default PresentationNavButton;

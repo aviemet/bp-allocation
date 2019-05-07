@@ -1,11 +1,11 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Route, Switch } from 'react-router-dom';
 
 import { Themes } from '/imports/api';
 
-import { withContext } from '/imports/api/Context';
+import { ThemeContext, PresentationSettingsContext, OrganizationContext } from '/imports/context';
 
 import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react'
 import styled from 'styled-components';
@@ -62,93 +62,88 @@ const TABS = {
 };
 
 // Main class for the Theme page
-class Admin extends React.Component {
+const Admin = props => {
 
-	constructor(props) {
-		super(props);
+	const { theme, themeLoading } = useContext(ThemeContext);
+	const { settingsLoading }     = useContext(PresentationSettingsContext);
+	const { orgsLoading }         = useContext(OrganizationContext);
 
-		this.state = {
-			activeItem: location.hash.replace(/#/, '') || TABS.settings.slug
-		}
-	}
+	const [ activeTab, setActiveTab ] = useState(location.hash.replace(/#/, '') || TABS.settings.slug)
 
-	handleItemClick = (e, {slug}) => {
+	const handleItemClick = (e, {slug}) => {
 		location.hash = slug;
-		this.setState({ activeItem: slug });
+		setActiveTab(slug);
 	}
 
-	render() {
-		if(this.props.loading) {
-			return <Loader />
-		}
-
-		let title = this.props.loading ? '' : this.props.theme.title;
-
-		const { activeItem } = this.state;
-		return (
-			<React.Fragment>
-
-				<Grid.Row>
-					<Title as='h1'>Allocation Night for {title}</Title>
-				</Grid.Row>
-
-				<Grid.Row>
-					<TabMenu attached='top' tabular>
-
-						{TABS_ORDER.map((tab) => (
-							<Menu.Item key={tab}
-								position={TABS[tab].position ? TABS[tab].position : ''}
-								name={TABS[tab].heading}
-								slug={TABS[tab].slug}
-								active={activeItem === TABS[tab].slug}
-								onClick={this.handleItemClick}
-								color={TABS[tab].color}
-							/>
-						))}
-
-					</TabMenu>
-
-					<Segment attached="bottom">
-						<Switch location={{pathname: this.state.activeItem}}>
-
-							{/* Theme Settings */}
-							<Route exact path={TABS.settings.slug} render={props => (
-								<SettingsPane {...this.props} />
-							)} />
-
-							{/* Organizations */}
-							<Route exact path={TABS.orgs.slug} render={props => (
-								<OrganizationsPane {...this.props} />
-							)} />
-
-							{/* Chit Voting */}
-							<Route exact path={TABS.chits.slug} render={props => (
-								<ChitVotingPane {...this.props} />
-							)} />
-
-							{/* Allocation Voting */}
-							<Route exact path={TABS.money.slug} render={props => (
-								<AllocationPane {...this.props} />
-							)} />
-
-							{/* Remaining Leverage Distribution */}
-							<Route exact path={TABS.leverage.slug} render={props => (
-								<LeveragePane {...this.props} />
-							)} />
-
-							{/* Presentation Controls */}
-							<Route exact path={TABS.presentation.slug} render={props => (
-								<PresentationPane {...this.props} />
-							)} />
-
-						</Switch>
-					</Segment>
-
-				</Grid.Row>
-
-			</React.Fragment>
-		);
+	if(themeLoading || settingsLoading || orgsLoading) {
+		return <Loader />
 	}
+
+	return (
+		<React.Fragment>
+
+			<Grid.Row>
+				<Title as='h1'>Allocation Night for {theme.title}</Title>
+			</Grid.Row>
+
+			<Grid.Row>
+				<TabMenu attached='top' tabular>
+
+					{TABS_ORDER.map((tab) => (
+						<Menu.Item key={tab}
+							name={TABS[tab].heading}
+							slug={TABS[tab].slug}
+							active={activeTab === TABS[tab].slug}
+							onClick={handleItemClick}
+							color={TABS[tab].color}
+						/>
+					))}
+
+				</TabMenu>
+
+				<Segment attached="bottom">
+					<Switch location={{pathname: activeTab}}>
+
+						{/* Theme Settings */}
+						<Route exact path={TABS.settings.slug} >
+							<SettingsPane />
+						</Route>
+
+						{/* Organizations */}
+						<Route exact path={TABS.orgs.slug} >
+							<OrganizationsPane />
+						</Route>
+
+						{/* Chit Voting */}
+						<Route exact path={TABS.chits.slug} >
+							<ChitVotingPane />
+						</Route>
+
+						{/* Allocation Voting */}
+						<Route exact path={TABS.money.slug} >
+							<AllocationPane />
+						</Route>
+
+						{/* Remaining Leverage Distribution */}
+						<Route exact path={TABS.leverage.slug} >
+							<LeveragePane />
+						</Route>
+
+						{/* Presentation Controls */}
+						<Route exact path={TABS.presentation.slug} >
+							<PresentationPane />
+						</Route>
+
+					</Switch>
+				</Segment>
+
+			</Grid.Row>
+
+		</React.Fragment>
+	);
 }
 
-export default withContext(Admin);
+export default Admin;
+
+
+							// position={TABS[tab].position ? TABS[tab].position : false}

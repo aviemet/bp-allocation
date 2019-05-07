@@ -26,7 +26,8 @@ class OrganizationProviderTemplate extends React.Component {
 		return (
 			<OrganizationContext.Provider value={{
 				orgs: this.props.orgs,
-				topOrgs: this.props.topOrgs
+				topOrgs: this.props.topOrgs,
+				orgsLoading: this.props.loading
 			}}>
 				{this.props.children}
 			</OrganizationContext.Provider>

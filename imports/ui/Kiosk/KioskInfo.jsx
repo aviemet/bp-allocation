@@ -21,9 +21,11 @@ const OrgsContainer = styled.div`
 `;
 
 const KioskInfo = props => {
-	const theme = useContext(ThemeContext);
+	const {theme, themeLoading} = useContext(ThemeContext);
 	const settings = useContext(PresentationSettingsContext);
 	const orgs = useContext(OrganizationContext);
+
+	console.log({theme, themeLoading, settings, orgs});
 
 	if(props.loading) {
 		return <Loader />

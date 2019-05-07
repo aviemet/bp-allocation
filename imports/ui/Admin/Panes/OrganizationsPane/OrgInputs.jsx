@@ -1,10 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
 
-import { withTracker } from 'meteor/react-meteor-data';
-import { withContext } from '/imports/api/Context';
-
-import { Organizations, Images } from '/imports/api';
 import { OrganizationMethods, ImageMethods } from '/imports/api/methods';
 
 import { Button, Form, Input, Icon, Popup, Modal, Header, Image, Label, Loader, Dropdown } from 'semantic-ui-react';
@@ -12,6 +8,7 @@ import { Button, Form, Input, Icon, Popup, Modal, Header, Image, Label, Loader, 
 import FileUpload from '/imports/ui/Components/FileUpload';
 
 class OrgInputs extends React.Component {
+
 	constructor(props) {
 		super(props);
 

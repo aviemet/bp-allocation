@@ -1,17 +1,16 @@
-import Meter from 'meteor/meteor';
-import React from 'react';
-import { withTracker } from 'meteor/react-meteor-data';
+import Meteor from 'meteor/meteor';
+import React, { useState, useContext, useEffect } from 'react';
 import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 
-import { withContext } from '/imports/api/Context';
-
-import { Themes } from '/imports/api';
+import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Loader, Grid, Button, Icon, Label, Segment, Input, Checkbox } from 'semantic-ui-react';
 import styled from 'styled-components';
+
+import { ChitVotingActiveToggle, FundsVotingActiveToggle, ColorizeTopOrgsToggle, AnimateTopOrgsToggle, ShowLeverageToggle, ShowSaveValuesToggle } from '/imports/ui/Components/Toggles';
 
 import PresentationNavButton from './PresentationNavButton';
 
@@ -31,164 +30,166 @@ const ButtonPanel = styled.div`
 	}
 `;
 
-class PresentationPane extends React.Component {
-	constructor(props) {
-		super(props);
+const PresentationPane = props => {
 
-		this.state = {
-			resultsOffset: this.props.presentationSettings.resultsOffset,
-			timerLength: this.props.presentationSettings.timerLength
-		};
-	}
+	const { theme } = useContext(ThemeContext);
+	const { topOrgs } = useContext(OrganizationContext);
+	const { settings } = useContext(PresentationSettingsContext);
 
-	/**
-	 * Togle boolean values on the PresentationSettings model
-	 */
-	togglePresentationSettingsValue = (e, data) => {
-		let tempData = {};
-		tempData[data.index] = data.checked;
+	const [ resultsOffset, setResultsOffset ] = useState(settings.resultsOffset);
+	const [ timerLength, setTimerLength ] = useState(settings.timerLength);
 
-		PresentationSettingsMethods.update.call({id: this.props.theme.presentationSettings, data: tempData});
-	}
+	useEffect(() => {
+		data = {};
+		if(resultsOffset !== settings.resultsOffset) {
+			data.resultsOffset = resultsOffset;
+		}
 
+		if(timerLength !== settings.timerLength) {
+			data.timerLength = timerLength;
+		}
 
-	/**
-	 * Update non-boolean values on the PresentationSettings model
-	 */
-	updatePresentationSettingsValue = (e, data) => {
-		let tempData = {}
-		tempData[data.index] = data.value;
-		this.setState(tempData);
-
-		// TODO: create queue to avoid multiple updates
-		PresentationSettingsMethods.update.call({
-			id: this.props.theme.presentationSettings,
-			data: tempData
-		});
-	}
+		if(!_.isEmpty(data)){
+			PresentationSettingsMethods.update.call({
+				id: theme.presentationSettings,
+				data: data
+			});
+		}
+	});
 
 	/**
 	 * Reset the values for the presentation
 	 */
-	resetPresentation = () => {
-		PresentationSettingsMethods.update.call({id: this.props.theme.presentationSettings, data: {
-			leverageVisible: false,
-			animateOrgs: true,
-		}});
+	const resetPresentation = () => {
+		PresentationSettingsMethods.update.call({
+			id: settings._id,
+			data: {
+				leverageVisible: false,
+				animateOrgs: true,
+			}
+		});
 	}
 
-	render() {
-		if(this.props.loading){
-			return (
-				<Loader />
-			);
-		}
-		return (
-			<ButtonPanel>
-					<Grid celled columns={3}>
-						<Grid.Row>
-							<Grid.Column>
+	return (
+		<ButtonPanel>
+			<Grid celled columns={3}>
+				<Grid.Row>
+					<Grid.Column>
 
-							{/************
-							  * Intro/Title Page
-							  ************/}
+					{/************
+					  * Intro/Title Page
+					  ************/}
+						<PresentationNavButton page='intro'>
+							<Icon name='address card' size='huge' /><br/>
+							<Label>Title Page</Label>
+						</PresentationNavButton>
+
+					</Grid.Column>
+					<Grid.Column>
+
+					{/************
+					  * Participating Organizations
+					  ************/}
+						<PresentationNavButton page='orgs'>
+							<Icon name='table' size='huge' /><br/>
+							<Label>Participating Organizations</Label>
+						</PresentationNavButton>
+						<ColorizeTopOrgsToggle />
+
+					</Grid.Column>
+					<Grid.Column>
+
+					{/************
+					  * Timer
+					  ************/}
+						<PresentationNavButton page='timer' icon>
+							<Icon name='hourglass' size='huge' /><br/>
+							<Label>Timer</Label>
+						</PresentationNavButton>
+						<Input
+							type='number'
+							label='Seconds'
+							index='timerLength'
+							value={timerLength}
+							onChange={e => setTimerLength(parseInt(e.target.value))}
+						/>
+						<br/>
+						<ChitVotingActiveToggle />
+						<br/>
+						<FundsVotingActiveToggle />
+
+					</Grid.Column>
+
+				</Grid.Row>
+				<Grid.Row>
+					<Grid.Column>
+
+					{/************
+					  * Top Organizations
+					  ************/}
+						<PresentationNavButton page='toporgs'>
+							<Icon name='winner' size='huge' /><br/>
+							<Label>Top Organizations</Label>
+						</PresentationNavButton>
+						<AnimateTopOrgsToggle />
+
+					</Grid.Column>
+					<Grid.Column>
+
+					{/************
+					  * Allocation/Evaluation
+					  ************/}
+						<PresentationNavButton page='allocation'>
+							<Icon name='chart bar' size='huge' /><br/>
+							<Label>Allocation</Label>
+						</PresentationNavButton>
+						<ShowLeverageToggle />
+						<br/>
+						<ShowSaveValuesToggle />
+
+					</Grid.Column>
+					<Grid.Column>
+
+					{/************
+					  * Results Page
+					  ************/}
+						<PresentationNavButton page='results'>
+							<Icon name='check' size='huge' /><br/>
+							<Label>Result</Label>
+						</PresentationNavButton>
+						<Input
+							type='number'
+							icon='dollar sign'
+							iconPosition='left'
+							label='Offset'
+							labelPosition='right'
+							index='resultsOffset'
+							value={resultsOffset}
+							onChange={e => setResultsOffset(parseFloat(e.target.value))}
+						/>
+
+					</Grid.Column>
+				</Grid.Row>
+			</Grid>
+
+			<Segment>
+				<Grid columns={1}>
+					<Grid.Row>
+						<Grid.Column>
+
+							<Link to={`/presentation/${theme._id}`} target='_blank'>
 								<PresentationNavButton page='intro'>
-									<Icon name='address card' size='huge' /><br/>
-									<Label>Title Page</Label>
+									<Label>Launch Presentaion</Label>
 								</PresentationNavButton>
+							</Link>
 
-							</Grid.Column>
-							<Grid.Column>
+						</Grid.Column>
+					</Grid.Row>
+				</Grid>
+			</Segment>
 
-							{/************
-							  * Participating Organizations
-							  ************/}
-								<PresentationNavButton page='orgs'>
-									<Icon name='table' size='huge' /><br/>
-									<Label>Participating Organizations</Label>
-								</PresentationNavButton>
-								<Checkbox label='Colorize Top Orgs' toggle index='colorizeOrgs' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.colorizeOrgs || false} />
-
-							</Grid.Column>
-							<Grid.Column>
-
-							{/************
-							  * Timer
-							  ************/}
-								<PresentationNavButton page='timer' icon>
-									<Icon name='hourglass' size='huge' /><br/>
-									<Label>Timer</Label>
-								</PresentationNavButton>
-								<Input type='number' label='Seconds' index='timerLength' onChange={this.updatePresentationSettingsValue} value={this.state.timerLength} />
-								<br/>
-								<Checkbox label='Chit Voting Active' toggle index='chitVotingActive' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.chitVotingActive || false} />
-								<br/>
-								<Checkbox label='Funds Voting Active' toggle index='fundsVotingActive' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.fundsVotingActive || false} />
-
-							</Grid.Column>
-
-						</Grid.Row>
-						<Grid.Row>
-							<Grid.Column>
-
-							{/************
-							  * Top Organizations
-							  ************/}
-								<PresentationNavButton page='toporgs'>
-									<Icon name='winner' size='huge' /><br/>
-									<Label>Top Organizations</Label>
-								</PresentationNavButton>
-								<Checkbox label='Animate' toggle index='animateOrgs' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.animateOrgs || false} />
-
-							</Grid.Column>
-							<Grid.Column>
-
-							{/************
-							  * Allocation/Evaluation
-							  ************/}
-								<PresentationNavButton page='allocation'>
-									<Icon name='chart bar' size='huge' /><br/>
-									<Label>Allocation</Label>
-								</PresentationNavButton>
-								<Checkbox label='Show Leverage' toggle index='leverageVisible' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.leverageVisible || false} />
-								<br/>
-								<Checkbox label='Show Save Values' toggle index='savesVisible' onClick={this.togglePresentationSettingsValue} checked={this.props.presentationSettings.savesVisible || false} />
-
-							</Grid.Column>
-							<Grid.Column>
-
-							{/************
-							  * Results Page
-							  ************/}
-								<PresentationNavButton page='results'>
-									<Icon name='check' size='huge' /><br/>
-									<Label>Result</Label>
-								</PresentationNavButton>
-								<Input type='number' icon='dollar sign' iconPosition='left' label='Offset' labelPosition='right' index='resultsOffset' value={this.state.resultsOffset} onChange={this.updatePresentationSettingsValue} />
-
-							</Grid.Column>
-						</Grid.Row>
-					</Grid>
-
-				<Segment>
-					<Grid columns={1}>
-						<Grid.Row>
-							<Grid.Column>
-
-								<Link to={`/presentation/${this.props.theme._id}`} target='_blank'>
-									<PresentationNavButton page='intro'>
-										<Label>Launch Presentaion</Label>
-									</PresentationNavButton>
-								</Link>
-
-							</Grid.Column>
-						</Grid.Row>
-					</Grid>
-				</Segment>
-
-			</ButtonPanel>
-		);
-	}
+		</ButtonPanel>
+	);
 }
 
-export default withContext(PresentationPane);
+export default PresentationPane;

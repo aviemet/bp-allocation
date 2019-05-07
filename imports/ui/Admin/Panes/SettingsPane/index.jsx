@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { withContext } from '/imports/api/Context';
+import { ThemeContext, PresentationSettingsContext } from '/imports/context';
 
 import _ from 'lodash';
 
@@ -10,118 +10,97 @@ import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods'
 
 import { Loader, Button, Form, Input, Icon } from 'semantic-ui-react';
 
-class SettingsPane extends React.Component {
-	constructor(props) {
-		super(props);
+const SettingsPane = props => {
 
-		this.usingFields = [
-			'theme.title',
-			'theme.question',
-			'theme.chitWeight',
-			'theme.matchRatio',
-			'theme.leverageTotal',
-			'theme.consolationAmount',
-			'theme.consolationActive',
-			'presentationSettings.timerLength'
-		];
+	const { theme, themeLoading } = useContext(ThemeContext);
+	const { settings, settingsLoading } = useContext(PresentationSettingsContext);
 
-		let buildState = {};
+	const [ title, setTitle ]                         = useState(theme.title);
+	const [ question, setQuestion ]                   = useState(theme.question);
+	const [ chitWeight, setChitWeight ]               = useState(theme.chitWeight);
+	const [ matchRatio, setMatchRatio ]               = useState(theme.matchRatio);
+	const [ leverageTotal, setLeverageTotal ]         = useState(theme.leverageTotal);
+	const [ consolationAmount, setConsolationAmount ] = useState(theme.consolationAmount);
+	const [ consolationActive, setConsolationActive ] = useState(theme.consolationActive);
+	const [ timerLength, setTimerLength ]             = useState(settings.timerLength);
 
-		this.usingFields.map(field => {
-			let split = field.split('.');
-			if(split.length > 1){
-				buildState[field] = this.props[split[0]][split[1]];
-			}
-		});
-
-		this.state = buildState;
-	}
-
-	// 2 way binding to inputs
-	updateValue = (e, el) => {
-		let newState = {};
-		newState[el.name] = el.value || el.checked;
-		this.setState(newState);
-	}
-
-	handleSubmit = (e) => {
+	const handleSubmit = (e) => {
 		e.preventDefault();
 
 		let data = {
-			theme: {},
-			presentationSettings: {}
+			theme: {title, question, chitWeight, matchRatio, leverageTotal, consolationActive, consolationAmount},
+			settings: {timerLength}
 		};
 
-		// Build object of data which has changed
-		for(var i = 0; i < this.usingFields.length; i++){
-			let field = this.usingFields[i];
-			if(this.state[field] !== this.props.theme[field]) {
-				let split = field.split('.');
-				if(split.length > 1) {
-					data[split[0]][split[1]] = this.state[field];
+		// Iterate over database objects with keys to be saved
+		_.forEach(data, (value, dataKey) => {
+			// In each object, delete keys which haven't changed
+			_.keys(data[dataKey]).map(key => {
+				// I know we shouldn't use eval; Justification:
+				// Values being eval'd are not from user, the only way to have dynamic variable names in JS
+				if(eval(key) === eval(dataKey)[key]) {
+					delete data[dataKey][key];
 				}
-			}
-		}
+			});
+		});
 
 		// Only update if data has changed
 		if(!_.isEmpty(data.theme)) {
 			ThemeMethods.update.call({
-				id: this.props.theme._id,
+				id: theme._id,
 				data: data.theme
 			});
 		}
 
-		if(!_.isEmpty(data.presentationSettings)) {
+		if(!_.isEmpty(data.settings)) {
 			PresentationSettingsMethods.update.call({
-				id: this.props.theme.presentationSettings,
-				data: data.presentationSettings
+				id: settings._id,
+				data: data.settings
 			});
 		}
 	}
 
-	render() {
-		if(this.props.loading){
-			return(<Loader/>)
-		}
-		return (
-			<Form onBlur={this.handleSubmit} onSubmit={this.handleSubmit}>
-
-			 {/* Title */}
-				<Form.Field>
-					<Form.Input name='theme.title' type='text' placeholder='Title' label='Theme Title' value={this.state['theme.title'] || ''} onChange={this.updateValue}  />
-				</Form.Field>
-
-			 {/* Question */}
-				<Form.Field>
-					<Form.Input name='theme.question' type='text' placeholder='Question' label='Theme Question' value={this.state['theme.question'] || ''} onChange={this.updateValue} />
-				</Form.Field>
-
-			 {/* Total Leverage Amount */}
-				<Form.Group>
-			 		<Form.Input name='theme.leverageTotal' icon='dollar sign' iconPosition='left' label='Total Pot' placeholder='Total Pot' value={this.state['theme.leverageTotal'] || ''} onChange={this.updateValue} />
-				</Form.Group>
-
-				<Form.Group>
-			 		{/* Timer Length */}
-					<Form.Input name='presentationSettings.timerLength' type='number' placeholder='Timer Length' label='Length of Timers' value={this.state['presentationSettings.timerLength'] || ''} onChange={this.updateValue} />
-
-			 		{/* Chit Weigh */}
-					<Form.Input name='theme.chitWeight' type='number' placeholder='Chit Weight' label='Chit weight in ounces' value={this.state['theme.chitWeight'] || ''} onChange={this.updateValue} />
-
-			 		{/* Match Ratio */}
-					<Form.Input name='theme.matchRatio' type='number' placeholder='Match Ratio' label='Multiplier for matched funds' value={this.state['theme.matchRatio'] || ''} onChange={this.updateValue} />
-				</Form.Group>
-
-				<Form.Group>
-			 		{/* Consolation Amount */}
-					<Form.Input name='theme.consolationAmount' type="number" placeholder='Consolation' label='Amount for bottom orgs' value={this.state['theme.consolationAmount'] || ''} onChange={this.updateValue} />
-
-			 		{/* Consolation Active */}
-					<Form.Checkbox toggle name='theme.consolationActive' label='Use Consolation?' checked={this.state['theme.consolationActive']} onChange={this.updateValue} />
-				</Form.Group>
-			</Form>
-		);
+	if(themeLoading || settingsLoading){
+		return(<Loader/>)
 	}
+	return (
+		<Form onBlur={handleSubmit} onSubmit={handleSubmit}>
+
+		 {/* Title */}
+			<Form.Field>
+				<Form.Input name='theme.title' type='text' placeholder='Title' label='Theme Title' value={title} onChange={e => setTitle(e.target.value)}  />
+			</Form.Field>
+
+		 {/* Question */}
+			<Form.Field>
+				<Form.Input name='theme.question' type='text' placeholder='Question' label='Theme Question' value={question} onChange={e => setQuestion(e.target.value)} />
+			</Form.Field>
+
+		 {/* Total Leverage Amount */}
+			<Form.Group>
+		 		<Form.Input name='theme.leverageTotal' icon='dollar sign' iconPosition='left' label='Total Pot' placeholder='Total Pot' value={leverageTotal} onChange={e => setLeverageTotal(e.target.value)} />
+			</Form.Group>
+
+			<Form.Group>
+		 		{/* Timer Length */}
+				<Form.Input name='presentationSettings.timerLength' type='number' placeholder='Timer Length' label='Length of Timers' value={timerLength} onChange={e => setTimerLength(e.target.value)} />
+
+		 		{/* Chit Weigh */}
+				<Form.Input name='theme.chitWeight' type='number' placeholder='Chit Weight' label='Chit weight in ounces' value={chitWeight} onChange={e => setChitWeight(e.target.value)} />
+
+		 		{/* Match Ratio */}
+				<Form.Input name='theme.matchRatio' type='number' placeholder='Match Ratio' label='Multiplier for matched funds' value={matchRatio} onChange={e => setMatchRatio(e.target.value)} />
+			</Form.Group>
+
+			<Form.Group>
+		 		{/* Consolation Amount */}
+				<Form.Input name='theme.consolationAmount' type="number" placeholder='Consolation' label='Amount for bottom orgs' value={consolationAmount} onChange={e => setConsolationActive(e.target.value)} />
+
+		 		{/* Consolation Active */}
+				<Form.Checkbox toggle name='theme.consolationActive' label='Use Consolation?' checked={consolationActive} onChange={e => setConsolationActive(e.target.value)} />
+			</Form.Group>
+		</Form>
+	);
 }
 
-export default withContext(SettingsPane);
+export default SettingsPane;

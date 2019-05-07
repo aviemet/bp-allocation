@@ -28,6 +28,7 @@ class ThemeProviderTemplate extends React.Component {
 		return (
 			<ThemeContext.Provider value={{
 				theme: this.props.theme,
+				themeLoading: this.props.loading
 			}}>
 				{this.props.children}
 			</ThemeContext.Provider>
@@ -41,6 +42,29 @@ const ThemeProvider = withTracker((props) => {
 	// Get the theme
 	let themesHandle = Meteor.subscribe('themes', props.id);
 	let theme = Themes.find({_id: props.id}).fetch()[0];
+
+	let orgsHandle = Meteor.subscribe('organizations', props.id);
+	let orgs = Organizations.find({theme: props.id}).fetch();
+
+	if(_.isUndefined(theme) || _.isUndefined(orgs)) return { loading: true };
+
+	// Pre-filter the top orgs, add to loading condition
+	let topOrgs = [];
+	topOrgs = filterTopOrgs(theme, orgs);
+
+	let remainingLeverage = 0;
+	if(!_.isEmpty(theme) && !_.isEmpty(topOrgs)) {
+		let consolation = theme.consolationActive ? (theme.organizations.length - topOrgs.length) * theme.consolationAmount : 0;
+		remainingLeverage = theme.leverageTotal - theme.leverageUsed - consolation;
+
+		topOrgs.map((org) => {
+			remainingLeverage -= parseInt(org.amountFromVotes || 0);
+			if(org.topOff > 0){
+				remainingLeverage -= org.topOff;
+			}
+		});
+		theme.leverageRemaining = parseFloat((remainingLeverage).toFixed(2));
+	}
 
 	let loading = (!themesHandle.ready() || _.isUndefined(theme));
 
