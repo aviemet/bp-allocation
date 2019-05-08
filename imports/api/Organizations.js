@@ -1,20 +1,27 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
-const ChitTallySchema = new SimpleSchema({
+const ChitVoteSchema = new SimpleSchema({
 	weight: Number,
 	count: Number
 });
-/*
+
 const MatchPledgeSchema = new SimpleSchema({
-	member: String,
 	amount: Number,
+	member: {
+		type: SimpleSchema.RegEx.Id,
+		required: false
+	},
+	notes: {
+		type: String,
+		required: false
+	},
 	createdAt: {
 		type: Date,
 		autoValue: () => (new Date())
 	}
 });
-*/
+
 // Define Collection
 const Organizations = new Mongo.Collection('organizations');
 
@@ -33,7 +40,7 @@ const OrganizationSchema = new SimpleSchema({
 		required: false
 	},
 	chitVotes: {
-		type: ChitTallySchema,
+		type: ChitVoteSchema,
 		required: false,
 		defaultValue: { weight: 0, count: 0 }
 	},
@@ -47,17 +54,17 @@ const OrganizationSchema = new SimpleSchema({
 		required: false,
 		defaultValue: 0
 	},
-	pledges: {
+	/*pledges: {
 		type: Number,
 		required: false,
 		defaultValue: 0
+	},*/
+	pledges: {
+		type: Array,
+		defaultValue: [],
+		required: false
 	},
-	// pledges: {
-	// 	type: Array,
-	// 	defaultValue: [],
-	// 	required: false
-	// },
-	// 'pledges.$': MatchPledgeSchema,
+	'pledges.$': MatchPledgeSchema,
 	leverageFunds: {
 		type: Number,
 		required: false,
@@ -85,4 +92,4 @@ Organizations.allow({
 	},
 });
 
-export { Organizations, OrganizationSchema, ChitTallySchema };
+export { Organizations, OrganizationSchema, ChitVoteSchema };

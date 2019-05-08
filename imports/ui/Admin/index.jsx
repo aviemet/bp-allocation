@@ -75,7 +75,9 @@ const Admin = props => {
 		setActiveTab(slug);
 	}
 
-	if(themeLoading || settingsLoading || orgsLoading) {
+	const loading = (themeLoading || settingsLoading || orgsLoading);
+
+	if(loading) {
 		return <Loader />
 	}
 

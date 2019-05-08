@@ -2,15 +2,15 @@ import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'lodash';
 
-import { Organizations } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 
-import { Table, Checkbox, Icon, Input, Header, Button } from 'semantic-ui-react';
+import { Table, Checkbox, Icon, Input, Header, Button, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { roundFloat } from '/imports/utils';
 
 import SaveButton from './SaveButton';
+import UnSaveButton from './UnSaveButton';
 
 const TopOrgsRow = props => {
 	/**
@@ -27,7 +27,14 @@ const TopOrgsRow = props => {
 		<Table.Row positive={props.inTopOrgs}>
 			<Table.Cell>
 				{props.org.title}
-				{!props.inTopOrgs && <SaveButton org={props.org} />}
+				{!props.inTopOrgs &&
+					<SaveButton org={props.org} />
+				}
+				{props.isSaved &&
+					<span style={{float: 'right'}}>
+						<UnSaveButton org={props.org} />
+					</span>
+				}
 			</Table.Cell>
 			<Table.Cell>{ roundFloat(props.org.votes, 1) }</Table.Cell>
 			<Table.Cell>

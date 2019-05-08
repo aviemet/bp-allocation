@@ -54,8 +54,8 @@ const TopOrgsByChitVote = props => {
 				<Table.Header>
 					<Table.Row>
 						<Table.HeaderCell>Organization</Table.HeaderCell>
-						<Table.HeaderCell>Votes</Table.HeaderCell>
-						<Table.HeaderCell><Icon name="lock" /></Table.HeaderCell>
+						<Table.HeaderCell collapsing>Votes</Table.HeaderCell>
+						<Table.HeaderCell collapsing><Icon name="lock" /></Table.HeaderCell>
 					</Table.Row>
 				</Table.Header>
 

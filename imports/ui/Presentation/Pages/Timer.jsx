@@ -59,7 +59,7 @@ const Timer = props => {
 	return (
 		<TimerContainer>
 			<ReactCountdownClock
-				seconds={props.seconds}
+				seconds={props.seconds+1}
 				color="#FFF"
 				size={850}
 				weight={10}

@@ -48,7 +48,7 @@ const ImageProvider = withTracker((props) => {
 		images = Images.find({_id: {$in: imgIds}}).fetch();
 	}
 
-	let loading = (!imagesHandle.ready() || _.isEmpty(images));
+	let loading = (!imagesHandle.ready());
 
 	return { loading, images };
 })(ImageProviderTemplate);

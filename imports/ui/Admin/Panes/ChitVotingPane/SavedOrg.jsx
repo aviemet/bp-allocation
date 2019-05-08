@@ -1,15 +1,18 @@
-import Meter from 'meteor/meteor';
-import React from 'react';
+import Meteor from 'meteor/meteor';
+import React, { useContext } from 'react';
 
+import { ThemeContext } from '/imports/context';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { Grid, Header, Segment, Button } from 'semantic-ui-react';
 
 const SavedOrg = props => {
 
+	const { theme } = useContext(ThemeContext);
+
 	const unSaveOrg = () => {
 		ThemeMethods.unSaveOrg.call({
-			theme_id: props.org.theme,
+			theme_id: theme._id,
 			org_id: props.org._id
 		});
 	}

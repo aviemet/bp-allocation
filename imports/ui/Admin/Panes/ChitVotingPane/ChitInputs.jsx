@@ -12,6 +12,7 @@ const ChitInputs = props => {
 
 	useEffect(() => {
 		if(weightVotes !== props.org.chitVotes.weight || countVotes !== props.org.chitVotes.count) {
+
 			OrganizationMethods.update.call({
 				id: props.org._id,
 				data: {

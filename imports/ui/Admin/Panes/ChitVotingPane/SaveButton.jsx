@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import numeral from 'numeral';
 
 import { Button, Modal, Form, Input, Icon } from 'semantic-ui-react';
 
@@ -8,7 +9,7 @@ import { ThemeMethods } from '/imports/api/methods';
 
 const SaveButton = props => {
 
-	const [ amount, setAmount ] = useState('');
+	const [ amount, setAmount ]       = useState('');
 	const [ modalOpen, setModalOpen ] = useState(false);
 
 	const saveOrg = (e, el) => {
@@ -25,6 +26,8 @@ const SaveButton = props => {
 	return (
 		<Modal
 			size='tiny'
+			open={modalOpen}
+			onClose={() => setModalOpen(false)}
 			trigger={
 				<Button
 					onClick={() => setModalOpen(true)}
@@ -32,19 +35,18 @@ const SaveButton = props => {
 					style={{float: 'right'}}
 				>Save</Button>
 			}
-			open={modalOpen}
-			onClose={() => setModalOpen(false)}
 		>
 			<Modal.Header>Saving {props.org.title}</Modal.Header>
 			<Modal.Content>
 				<Modal.Description>
+					<p>This org can be saved for {numeral(props.org.ask / 2).format('$0,0')}</p>
 					<Form onSubmit={saveOrg}>
 						<Form.Field>
 							<Input
 								id='amountInput'
 								icon='dollar'
 								iconPosition='left'
-								placeholder={`Need: ${props.org.ask / 2}`}
+								placeholder={`Need: ${numeral(props.org.ask / 2).format('$0,0')}`}
 								value={amount}
 								onChange={e => setAmount(e.target.value)}
 								action={<Button type='submit' color='green'>Save!</Button>}

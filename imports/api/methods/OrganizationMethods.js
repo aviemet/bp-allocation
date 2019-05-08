@@ -105,30 +105,30 @@ const OrganizationMethods = {
 	/**
 	 * Add matched pledge
 	 */
-	/*pledge: new ValidatedMethod({
+	pledge: new ValidatedMethod({
 		name: 'organizations.pledge',
 
 		validate: null,
 
-		run({id, amount, name}) {
+		run({id, data}) {
 			amount = roundFloat(amount);
 
 			return Organizations.update({_id: id}, {
 				$push: {
-					pledges: {
-						amount: roundFloat(amount),
-						name: name || ''
-					}
+					pledges: data
 				}
 			});
 		}
-	}),*/
+	}),
 
 
 	/**
 	 * Adjust Pledged Value
+	 *
+	 * Legacy: Pledges were a single value on the Organization model,
+	 * changed to be array of pledges with optional relation to Members
 	 */
-	pledge: new ValidatedMethod({
+	/*pledge: new ValidatedMethod({
 		name: 'organizations.pledge',
 
 		validate: null,
@@ -137,22 +137,14 @@ const OrganizationMethods = {
 			amount = roundFloat(amount);
 			let theme = Themes.find({_id: themeId}).fetch()[0];
 
-			// console.log({id, amount, match, themeId, theme, matchRatio: amount * parseInt(theme.matchRatio)});
-
 			// Pledge should increment org.pledged by twice the amount
 			// increment theme.leverageUsed by the amount
 
 			Themes.update({_id: themeId}, {$inc: {leverageUsed: amount}});
 
-			// if(match){
-			// 	let theme = Themes.find({_id: themeId}).fetch()[0];
-			// 	ThemeMethods.update.call({id: themeId, data: {leverageUsed: parseInt(theme.leverageUsed) + amount}});
-			// 	amount *= parseInt(theme.match_ratio);
-			// }
-
 			return Organizations.update({_id: id}, {$inc: {pledges: (amount * parseInt(theme.matchRatio))}});
 		}
-	}),
+	}),*/
 
 	/**
 	 * Top-off organization

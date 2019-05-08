@@ -15,7 +15,7 @@ const PresentationSettingsSchema = new SimpleSchema({
 		type: SimpleSchema.Integer,
 		label: 'Length of timers in seconds',
 		required: false,
-		defaultValue: 601
+		defaultValue: 600
 	},
 	animateOrgs: {
 		type: Boolean,

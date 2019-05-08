@@ -50,7 +50,7 @@ const OrganizationProvider = withTracker((props) => {
 	let topOrgs = [];
 	topOrgs = filterTopOrgs(theme, orgs);
 
-	let loading = (!orgsHandle.ready() || _.isEmpty(orgs));
+	let loading = (!orgsHandle.ready());
 
 	return { loading, orgs, topOrgs };
 })(OrganizationProviderTemplate);

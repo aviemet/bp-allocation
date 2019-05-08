@@ -50,16 +50,7 @@ const ChitVotingPane = props => {
 
 				</Grid.Row>
 			</Grid>
-			{theme.saves && theme.saves.length > 0 && <Container>
-				<Header as="h2">Saved Orgs</Header>
-				<Grid columns={2}>
 
-					<Grid.Row>
-					{theme.saves.map((save, i) => <SavedOrg org={_.filter(orgs, ['_id', save.org])[0]} save={save} key={i} /> )}
-					</Grid.Row>
-
-				</Grid>
-			</Container>}
 		</React.Fragment>
 	);
 }
