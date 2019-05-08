@@ -1,17 +1,9 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
-const ChitVoteSchema = new SimpleSchema({
-	weight: {
-		type: Number,
-		label: 'Weight of Chit Tokens',
-		required: false
-	},
-	count: {
-		type: Number,
-		label: 'Count of Chit Tokens',
-		required: false
-	}
+const ChitTallySchema = new SimpleSchema({
+	weight: Number,
+	count: Number
 });
 /*
 const MatchPledgeSchema = new SimpleSchema({
@@ -36,14 +28,14 @@ const OrganizationSchema = new SimpleSchema({
 		label: 'Funding Request Amount'
 	},
 	image: {
-		type: String,
+		type: SimpleSchema.RegEx.Id,
 		label: 'Organization Image',
 		required: false
 	},
 	chitVotes: {
-		type: ChitVoteSchema,
+		type: ChitTallySchema,
 		required: false,
-		defaultValue: { weight: undefined, count: undefined }
+		defaultValue: { weight: 0, count: 0 }
 	},
 	amountFromVotes: {
 		type: Number,
@@ -74,7 +66,7 @@ const OrganizationSchema = new SimpleSchema({
 	theme: SimpleSchema.RegEx.Id,
 	createdAt: {
 		type: Date,
-		autoValue: () => (new Date())
+		autoValue: () => new Date()
 	}
 });
 
@@ -93,4 +85,4 @@ Organizations.allow({
 	},
 });
 
-export { Organizations, OrganizationSchema, ChitVoteSchema };
+export { Organizations, OrganizationSchema, ChitTallySchema };

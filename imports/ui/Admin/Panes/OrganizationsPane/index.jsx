@@ -45,7 +45,7 @@ const OrganizationsPane = props => {
 			if(err){
 				console.error(err);
 			} else {
-				setTitle('');
+				setOrgTitle('');
 				setOrgAsk('');
 				setOrgImage('');
 			}
