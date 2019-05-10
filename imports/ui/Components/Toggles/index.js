@@ -5,4 +5,11 @@ import AnimateTopOrgsToggle from './AnimateTopOrgsToggle';
 import ShowLeverageToggle from './ShowLeverageToggle';
 import ShowSaveValuesToggle from './ShowSaveValuesToggle';
 
-export { ChitVotingActiveToggle, FundsVotingActiveToggle, ColorizeTopOrgsToggle, AnimateTopOrgsToggle, ShowLeverageToggle, ShowSaveValuesToggle };
+export {
+	ChitVotingActiveToggle,
+	FundsVotingActiveToggle,
+	ColorizeTopOrgsToggle,
+	AnimateTopOrgsToggle,
+	ShowLeverageToggle,
+	ShowSaveValuesToggle
+};

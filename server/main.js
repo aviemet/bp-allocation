@@ -49,8 +49,6 @@ Meteor.startup(() => {
 	Meteor.publish('image', (id) =>  {
 		if(!id) return false;
 
-		console.log({subscribe: id});
-
 		return Images.find({_id: id}).cursor;
 	});
 
@@ -62,9 +60,7 @@ Meteor.startup(() => {
 
   Meteor.publish('images.byTheme', function(themeId) {
   	if(themeId){
-  	// console.log({server: this._session.server});
 	  	let orgs = Organizations.find({theme: themeId}, {_id: true, image: true}).fetch();
-	  	// console.log({orgs});
 
 	  	let imgIds = [];
 	  	orgs.map((org, i) => {

@@ -4,8 +4,6 @@ import React from 'react';
 import { Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { withContext, ThemeContext } from '/imports/api/Context';
-
 import { Allocation } from '/imports/ui/Presentation/Pages';
 
 const SimulationContainer = styled.div`
@@ -18,17 +16,12 @@ const SimulationContainer = styled.div`
 	}
 `;
 
-const Presentation = (props) => {
-	if(props.loading){
-		return(<Loader />);
-	}
+const Presentation = props => {
 	return (
-		<ThemeContext.Consumer>{context => (
-			<SimulationContainer>
-				<Allocation orgs={context.topOrgs} theme={context.theme} />
-			</SimulationContainer>
-		)}</ThemeContext.Consumer>
+		<SimulationContainer>
+			<Allocation />
+		</SimulationContainer>
 	);
 }
 
-export default withContext(Presentation);
+export default Presentation;

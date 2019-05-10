@@ -1,14 +1,8 @@
-import { Meteor } from 'meteor/meteor';
-import React, { Component } from 'react';
-import { withTracker } from 'meteor/react-meteor-data';
-
-import { getSaveAmount } from '/imports/utils';
-
-import { Organizations } from '/imports/api';
+import React from 'react';
 
 import numeral from 'numeral';
 
-import { Loader, Grid } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const InfoContainer = styled(Grid.Column)`
@@ -32,26 +26,30 @@ const Ask = styled.div`
 `;
 
 const MatchNeed = styled.div`
-	color: #00853f;
-`;
-
-const TotalNeed = styled.div`
 	color: #c31a1a;
 `;
 
+const TotalNeed = styled.div`
+	color: #00853f;
+`;
+
 const OrgInfo = props => {
-	if(props.loading){
-		return ( <Loader /> );
-	}
-
-	const need = props.org.ask - props.org.amountFromVotes - props.org.leverageFunds - props.org.pledges - props.org.topOff - getSaveAmount(props.theme.saves, props.org._id) || 0;
-
+	console.log({props});
 	return (
 		<InfoContainer className='orginfo'>
 			<Title>{props.org.title}</Title>
 			<Ask>Ask: ${numeral(props.org.ask).format('0.0a')}</Ask>
-			<MatchNeed>Match Need: {need > 0 ? `$${numeral(need / 2).format('0.0a')}` : '--'}</MatchNeed>
-			<TotalNeed>Total Need: {need > 0 ? `$${numeral(need).format('0.0a')}` : '--'}</TotalNeed>
+
+			<TotalNeed>
+				Need: {props.org.need > 0 ? `$${numeral(props.org.need).format('0.0a')}` : '--'}
+			</TotalNeed>
+
+			{props.showLeverage &&
+				<MatchNeed>
+					Match Need: {props.org.need > 0 ? `$${numeral(props.org.need / 2).format('0.0a')}` : '--'}
+				</MatchNeed>
+			}
+
 		</InfoContainer>
 	);
 }

@@ -14,13 +14,15 @@ import FileUpload from '/imports/ui/Components/FileUpload';
 
 const OrganizationsPane = props => {
 
-	const { theme } = useContext(ThemeContext);
+	const { theme }          = useContext(ThemeContext);
 	const { orgs, topOrgs }  = useContext(OrganizationContext);
-	const { images } = useContext(ImageContext);
+	const { images }         = useContext(ImageContext);
 
-	const [ orgTitle, setOrgTitle ] = useState('');
-	const [ orgAsk, setOrgAsk ]     = useState('');
-	const [ orgImage, setOrgImage ] = useState('');
+	console.log({orgs})
+
+	const [ orgTitle, setOrgTitle ]                  = useState('');
+	const [ orgAsk, setOrgAsk ]                      = useState('');
+	const [ orgImage, setOrgImage ]                  = useState('');
 	const [ addButtonDisabled, setAddButtonDisabled] = useState(false);
 
 	const fileError = (error, file) => {

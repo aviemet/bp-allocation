@@ -20,8 +20,6 @@ const UnSaveButton = props => {
 
 	const { theme } = useContext(ThemeContext);
 
-	console.log({theme});
-
 	const unSaveOrg = () => {
 		ThemeMethods.unSaveOrg.call({
 			theme_id: theme._id,
@@ -31,7 +29,6 @@ const UnSaveButton = props => {
 	}
 
 	const save = _.find(theme.saves, ['org', props.org._id]);
-	console.log({save});
 
 	return (
 		<Modal
@@ -44,7 +41,7 @@ const UnSaveButton = props => {
 					content='Un-Save'
 					color='red'
 					labelPosition='left'
-					label={{ basic: true, color: 'red', pointing: 'right', content: `Saved for ${numeral(save.amount).format('$0,0')}`}}
+					label={{ basic: true, color: 'black', pointing: 'right', content: `Saved for ${numeral(save.amount).format('$0,0')}`}}
 				/>
 			}
 		>

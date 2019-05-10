@@ -77,12 +77,12 @@ const ThemeSchema = new SimpleSchema({
 		label: 'Total amount to allocate for this theme',
 		required: false
 	},
-	leverageUsed: {
-		type: Number,
-		label: 'Amount of leverage allocated',
-		required: false,
-		defaultValue: 0
-	},
+	// leverageUsed: {
+	// 	type: Number,
+	// 	label: 'Amount of leverage allocated',
+	// 	required: false,
+	// 	defaultValue: 0
+	// },
 	saves: {
 		type: Array,
 		defaultValue: [],

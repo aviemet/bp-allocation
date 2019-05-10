@@ -7,9 +7,6 @@ import styled from 'styled-components';
 
 import { AppProvider } from '/imports/context';
 
-import { ThemeProvider } from '/imports/api/Context';
-import { ThemeMethods } from '/imports/api/methods';
-
 import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from '/imports/ui/Layouts';
 import ThemesList from '/imports/ui/Welcome/ThemesList';
 import Admin from '/imports/ui/Admin';
@@ -63,11 +60,11 @@ export default class App extends React.Component {
 							</AppProvider>
 						) } />
 						<Route path="/simulation/:id" render= { (props) => (
-		    			<ThemeProvider id={props.match.params.id}>
+		    			<AppProvider id={props.match.params.id}>
 								<PresentationLayout>
 									<Simulation />
 								</PresentationLayout>
-							</ThemeProvider>
+							</AppProvider>
 						) } />
 						<Route path="/kiosk/:id" render= { (props) => (
 		    			<AppProvider id={props.match.params.id}>

@@ -1,3 +1,5 @@
+import { Meteor } from 'meteor/meteor';
+import { Random } from 'meteor/random';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
@@ -7,6 +9,10 @@ const ChitVoteSchema = new SimpleSchema({
 });
 
 const MatchPledgeSchema = new SimpleSchema({
+	_id: {
+		type: SimpleSchema.RegEx.Id,
+		autoValue: () => Random.id()
+	},
 	amount: Number,
 	member: {
 		type: SimpleSchema.RegEx.Id,
@@ -18,7 +24,7 @@ const MatchPledgeSchema = new SimpleSchema({
 	},
 	createdAt: {
 		type: Date,
-		autoValue: () => (new Date())
+		autoValue: () => new Date()
 	}
 });
 
@@ -42,33 +48,33 @@ const OrganizationSchema = new SimpleSchema({
 	chitVotes: {
 		type: ChitVoteSchema,
 		required: false,
-		defaultValue: { weight: 0, count: 0 }
+		defaultValue: { weight: 0, count: 0 },
+		label: 'Amount of chit votes from first voting round'
 	},
 	amountFromVotes: {
 		type: Number,
 		required: false,
-		defaultValue: 0
+		defaultValue: 0,
+		label: 'Dollar amount allocated in second voting round'
 	},
 	topOff: {
 		type: Number,
 		required: false,
-		defaultValue: 0
+		defaultValue: 0,
+		label: 'Topoff value for crowd favorite'
 	},
-	/*pledges: {
-		type: Number,
-		required: false,
-		defaultValue: 0
-	},*/
 	pledges: {
 		type: Array,
 		defaultValue: [],
-		required: false
+		required: false,
+		label: 'Array of matched pledges from members'
 	},
 	'pledges.$': MatchPledgeSchema,
 	leverageFunds: {
 		type: Number,
 		required: false,
-		defaultValue: 0
+		defaultValue: 0,
+		label: 'Distribution of funds from final round of leverage assignment'
 	},
 	theme: SimpleSchema.RegEx.Id,
 	createdAt: {

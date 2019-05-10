@@ -40,7 +40,7 @@ const RoundTable = props => {
 					key={org._id}
 					positive={org.need === 0 && org.roundFunds > 0}
 					warning={org.need > 0}
-					>
+				>
 					<Table.Cell>{org.title}</Table.Cell>
 					<Table.Cell>{org.roundFunds === 0 ? '-' : numeral(org.roundFunds).format('$0,0.00')}</Table.Cell>
 					<Table.Cell>{org.percent === 0 ? '-' : numeral(org.percent).format('0.0000%')}</Table.Cell>

@@ -166,7 +166,13 @@ const Graph = props => {
 
 					<BarsContainer columns='equal'>
 					{topOrgs.map((org, i) => (
-						<Bar org={org} theme={theme} key={org._id} color={COLORS[i%COLORS.length]} savesVisible={settings.savesVisible} />
+						<Bar
+							key={org._id}
+							org={org}
+							theme={theme}
+							color={COLORS[i%COLORS.length]}
+							savesVisible={settings.savesVisible}
+						/>
 					))}
 					</BarsContainer>
 
@@ -176,14 +182,25 @@ const Graph = props => {
 				<InfoGrid columns='equal'>
 					<Grid.Row>
 					{topOrgs.map((org) => (
-						<OrgInfo org={org} theme={theme} key={org._id} />
+						<OrgInfo
+							org={org}
+							theme={theme}
+							key={org._id}
+							showLeverage={settings.leverageVisible}
+						/>
 					))}
 					</Grid.Row>
 
 					<Grid.Row style={{visibility: visibility}}>
 						<Grid.Column>
-							<ProgressBar value={startingLeverage - theme.leverageUsed} total={startingLeverage} inverted color='green' size='large' />
-							<LeverageCount>${numeral(startingLeverage - theme.leverageUsed).format('0.0a')}</LeverageCount>
+							<ProgressBar
+								value={theme.leverageRemaining}
+								total={startingLeverage}
+								inverted
+								color='green'
+								size='large'
+							/>
+							<LeverageCount>${numeral(theme.leverageRemaining).format('0.0a')}</LeverageCount>
 						</Grid.Column>
 					</Grid.Row>
 				</InfoGrid>

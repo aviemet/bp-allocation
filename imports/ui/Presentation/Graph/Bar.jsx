@@ -67,16 +67,11 @@ const AwardImg = ({show}) => {
 }
 
 const Bar = props => {
-	let save = props.theme.saves.find( save => save.org === props.org._id );
 
-	let funded =
-		(props.org.pledges || 0) +
-		(props.org.amountFromVotes || 0) +
-		(props.org.topOff || 0) +
-		(props.org.leverageFunds || 0) +
-		(props.savesVisible && save ? save.amount : 0);
+	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0);
+	if(!props.savesVisible) shownFunds -= props.org.save;
 
-	let height = Math.min(Math.round((funded / props.org.ask) * 100), 100);
+	let height = Math.min(Math.round((shownFunds / props.org.ask) * 100), 100);
 
 	if(height === 0){
 		return (
@@ -88,7 +83,7 @@ const Bar = props => {
 		<BarContainer>
 			<AwardImg show={height === 100} />
 			<GraphBar style={{height: `${height}%`, backgroundColor: props.color }}>
-				<Pledged>${numeral(funded).format('0.0a')}</Pledged>
+				<Pledged>${numeral(shownFunds).format('0.0a')}</Pledged>
 			</GraphBar>
 		</BarContainer>
 	);

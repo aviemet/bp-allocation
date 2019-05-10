@@ -56,18 +56,18 @@ const Results = props => {
 	const { settings } = useContext(PresentationSettingsContext);
 	const { images } = useContext(ImageContext);
 
+	console.log({theme});
+	console.log({topOrgs});
+
 	let awardees = [];
 	let others = [];
 	let saves = theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
-	let total = (theme.leverageTotal || 0) + saves + (settings.resultsOffset || 0);
+	let total = parseFloat((theme.leverageTotal || 0) + saves + (settings.resultsOffset || 0));
 
 	let orgs = _.cloneDeep(topOrgs).map(org => {
-		total += org.pledges / 2;
+		total += org.pledgeTotal / 2;
 
-		org.save = theme.saves.find(save => save.org === org._id);
-		org.totalFunds = org.amountFromVotes + org.leverageFunds + org.pledges + org.topOff + (org.save ? org.save.amount : 0);
-
-		if(org.totalFunds >= org.ask){
+		if(org.allocatedFunds + org.leverageFunds >= org.ask){
 			awardees.push(org);
 		} else {
 			others.push(org);

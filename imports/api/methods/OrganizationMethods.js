@@ -103,21 +103,44 @@ const OrganizationMethods = {
 
 
 	/**
-	 * Add matched pledge
+	 * Add a matched pledge
 	 */
 	pledge: new ValidatedMethod({
 		name: 'organizations.pledge',
 
 		validate: null,
 
-		run({id, data}) {
+		run({id, amount}) {
 			amount = roundFloat(amount);
 
 			return Organizations.update({_id: id}, {
 				$push: {
-					pledges: data
+					pledges: {
+						amount: amount
+					}
 				}
 			});
+		}
+	}),
+
+	/**
+	 * Remove a matched pledge
+	 */
+	removePledge: new ValidatedMethod({
+		name: 'organizations.removePledge',
+
+		validate: null,
+
+		run({orgId, pledgeId}) {
+			return Organizations.update(
+				{ _id: orgId },
+				{
+					$pull: {
+						pledges: { _id: pledgeId }
+					}
+				},
+				{ getAutoValues: false }
+			);
 		}
 	}),
 
@@ -179,9 +202,13 @@ const OrganizationMethods = {
 			let org = Organizations.find({_id: id}).fetch()[0];
 			let theme = Themes.find({_id: org.theme}).fetch()[0];
 
-			ThemeMethods.update.call({id: org.theme, data: {leverageUsed: parseInt(theme.leverageUsed || 0) - (org.pledges/2)}});
-
-			return Organizations.update({_id: id}, {$set: {pledges: 0, amountFromVotes: 0, topOff: 0}});
+			return Organizations.update({_id: id}, {
+				$set: {
+					pledges: [],
+					amountFromVotes: 0,
+					topOff: 0
+				}
+			});
 		}
 	}),
 

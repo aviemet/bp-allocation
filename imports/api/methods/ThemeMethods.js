@@ -152,7 +152,6 @@ const ThemeMethods = {
 
 		run(orgs) {
 			orgs.map(org => {
-				console.log({org});
 				Organizations.update({_id: org._id}, {
 					$set: {
 						leverageFunds: org.leverageFunds

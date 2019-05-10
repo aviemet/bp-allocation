@@ -95,10 +95,15 @@ const OrgCard = props => {
 
 	let className = props.bgcolor ? 'white' : '';
 
+	let total = props.org.allocatedFunds + props.org.leverageFunds;
+
 	return (
 		<Card className={animateClass}>
 			<CardImage style={{ backgroundImage: `url(${imagePath})` }} className='orgsImage'>
-				<Award show={props.award} type={props.awardtype} amount={props.org.totalFunds} />
+				<Award
+					show={props.award}
+					type={props.awardtype}
+					amount={total} />
 			</CardImage>
 			<CardContent bgcolor={props.bgcolor || '#FFF'} className={className}>
 				<OrgTitle>{props.org.title}</OrgTitle>

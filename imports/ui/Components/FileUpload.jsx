@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { withTracker } from 'meteor/react-meteor-data';
-import { withContext } from '/imports/api/Context';
+
 import styled from 'styled-components';
 
+import { ImageContext } from '/imports/context';
 import { Images } from '/imports/api';
 
 import { Loader, Form, Progress, Input, Segment } from 'semantic-ui-react';
@@ -25,24 +25,17 @@ const FileUploadContainer = styled(Segment)`
   }
 `;
 
-class FileUpload extends React.Component {
-  constructor(props) {
-    super(props);
+const FileUpload = props => {
 
-    this.state = {
-      uploading: [],
-      progress: 0,
-      inProgress: false,
-      color: 'orange'
-    };
+  const [ uploading, setUploading ]   = useState([]);
+  const [ progress, setProgress ]     = useState(0);
+  const [ inProgress, setInProgress ] = useState(false);
+  const [ color, setColor ]           = useState('orange');
 
-    this.handleUpload = this.handleUpload.bind(this);
-  }
+  const images = useContext(ImageContext);
 
-  handleUpload(e) {
+  const handleUpload = e => {
     e.preventDefault();
-
-    let that = this;
 
     if (e.currentTarget.files && e.currentTarget.files[0]) {
       // We upload only one file, in case there was multiple files selected
@@ -52,7 +45,7 @@ class FileUpload extends React.Component {
         let uploadInstance = Images.insert({
           file: file,
           meta: {
-            locator: that.props.fileLocator,
+            locator: props.fileLocator,
             // userId: Meteor.userId() // Optional, used to check on server for file tampering
           },
           streams: 'dynamic',
@@ -60,39 +53,33 @@ class FileUpload extends React.Component {
           allowWebWorkers: true // If you see issues with uploads, change this to false
         }, false);
 
-        that.setState({
-          uploading: uploadInstance, // Keep track of this instance to use below
-          inProgress: true // Show the progress bar now
-        });
+        setUploading(uploadInstance); // Keep track of this instance to use below
+        setInProgress(true); // Show the progress bar now
 
         // These are the event functions, don't need most of them, it shows where we are in the process
         uploadInstance.on('start', function () {
-          if(that.props.onStart) that.props.onStart();
+          if(props.onStart) props.onStart();
 
         }).on('progress', function (progress, fileObj) {
-          if(that.props.onProgress) that.props.onProgress({progress: progress, file: fileObj});
+          if(props.onProgress) props.onProgress({progress: progress, file: fileObj});
 
           // Update our progress bar
-          that.setState({
-            progress: progress
-          });
+          setProgress(progress);
 
         }).on('uploaded', function (error, fileObj) {
-          if(that.props.onUploaded) that.props.onUploaded({error: error, file: fileObj});
+          if(props.onUploaded) props.onUploaded({error: error, file: fileObj});
 
-          that.setState({
-            uploading: [],
-            progress: 0,
-            inProgress: false,
-            color: 'green'
-          });
+          setUploading([]);
+          setInProgress(false);
+          setColor('green');
+          // setProgress(0);
 
         }).on('end', function (error, fileObj) {
-          if(that.props.onEnd) that.props.onEnd({error: error, file: fileObj});
+          if(props.onEnd) props.onEnd({error: error, file: fileObj});
 
         }).on('error', function (error, fileObj) {
           console.error('Error during upload: ' + error)
-          if(that.props.onError) that.props.onError({error: error, file: fileObj});
+          if(props.onError) props.onError({error: error, file: fileObj});
 
         })
 
@@ -101,23 +88,23 @@ class FileUpload extends React.Component {
     }
   }
 
-  render() {
-    // console.log({fileUploadProps: this.props});
-    if(this.props.loading) {
-      return(
-        <Loader />
-      );
-    } else {
-      let file = Images.findOne({_id: this.props.image});
+  let file = Images.findOne({_id: props.image});
 
-      return (
-        <FileUploadContainer>
-          <Input type='file' disabled={this.state.inProgress} onChange={this.handleUpload} width={this.props.width} />
-          <Progress attached='bottom' percent={this.state.progress} color={this.state.color} />
-        </FileUploadContainer>
-      );
-    }
-  }
+  return (
+    <FileUploadContainer>
+      <Input
+        type='file'
+        disabled={inProgress}
+        onChange={handleUpload}
+        width={props.width}
+      />
+      <Progress
+        attached='bottom'
+        percent={progress}
+        color={color}
+      />
+    </FileUploadContainer>
+  );
 }
 
-export default withContext(FileUpload);
+export default FileUpload;

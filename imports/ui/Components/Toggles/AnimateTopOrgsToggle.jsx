@@ -6,7 +6,7 @@ import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Checkbox } from 'semantic-ui-react';
 
-const ChitVotingActiveToggle = props => {
+const AnimateTopOrgsToggle = props => {
 
 	const{ settings } = useContext(PresentationSettingsContext);
 
@@ -31,4 +31,4 @@ const ChitVotingActiveToggle = props => {
 
 }
 
-export default ChitVotingActiveToggle;
+export default AnimateTopOrgsToggle;

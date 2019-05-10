@@ -19,21 +19,63 @@ const ThemeContext = React.createContext('theme');
 /**
  * Create a Provider with its own API to act as App-wide state store
  */
-class ThemeProviderTemplate extends React.Component {
-	constructor(props) {
-		super(props);
+const ThemeProviderTemplate = props => {
+
+	const pledgedTotal = () => {
+		if(_.isUndefined(props.topOrgs)) return 0;
+
+		let total = 0;
+		props.topOrgs.map(org => {
+			total += org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0);
+		});
+		return total;
 	}
 
-	render() {
-		return (
-			<ThemeContext.Provider value={{
-				theme: this.props.theme,
-				themeLoading: this.props.loading
-			}}>
-				{this.props.children}
-			</ThemeContext.Provider>
-		);
+	const consolationTotal = () => {
+		if(_.isUndefined(props.theme) || _.isUndefined(props.topOrgs) || !props.theme.consolationActive) return 0;
+		return (props.theme.organizations.length - props.topOrgs.length) * props.theme.consolationAmount;
 	}
+
+	const leverageRemaining = () => {
+		if(_.isUndefined(props.theme)) return 0;
+
+		let remainingLeverage = props.theme.leverageTotal - consolationTotal();
+
+		props.topOrgs.map((org) => {
+			remainingLeverage -= parseInt(org.amountFromVotes || 0);
+			if(org.topOff > 0){
+				remainingLeverage -= org.topOff;
+			}
+			const pledges = org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0);
+			remainingLeverage -= pledges;
+		});
+		return parseFloat((remainingLeverage).toFixed(2));
+	}
+
+	const votedFunds = () => {
+		if(_.isUndefined(props.topOrgs)) return 0;
+
+		let voteAllocated = 0;
+ 		props.topOrgs.map((org) => {
+ 			voteAllocated += parseFloat(org.amountFromVotes || 0);
+ 			voteAllocated += parseFloat(org.topOff || 0);
+ 		});
+ 		return voteAllocated;
+	}
+
+	return (
+		<ThemeContext.Provider value={{
+			theme: Object.assign({
+				consolationTotal: consolationTotal(),
+				leverageRemaining: leverageRemaining(),
+				votedFunds: votedFunds(),
+				pledgedTotal: pledgedTotal()
+			}, props.theme),
+			themeLoading: props.loading
+		}}>
+			{props.children}
+		</ThemeContext.Provider>
+	);
 }
 
 const ThemeProvider = withTracker((props) => {
@@ -52,23 +94,9 @@ const ThemeProvider = withTracker((props) => {
 	let topOrgs = [];
 	topOrgs = filterTopOrgs(theme, orgs);
 
-	let remainingLeverage = 0;
-	if(!_.isEmpty(theme) && !_.isEmpty(topOrgs)) {
-		let consolation = theme.consolationActive ? (theme.organizations.length - topOrgs.length) * theme.consolationAmount : 0;
-		remainingLeverage = theme.leverageTotal - theme.leverageUsed - consolation;
-
-		topOrgs.map((org) => {
-			remainingLeverage -= parseInt(org.amountFromVotes || 0);
-			if(org.topOff > 0){
-				remainingLeverage -= org.topOff;
-			}
-		});
-		theme.leverageRemaining = parseFloat((remainingLeverage).toFixed(2));
-	}
-
 	let loading = (!themesHandle.ready() || _.isUndefined(theme));
 
-	return { loading, theme };
+	return { loading, theme, topOrgs };
 })(ThemeProviderTemplate);
 
 

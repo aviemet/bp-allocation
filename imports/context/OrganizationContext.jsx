@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import _ from 'lodash';
 
+import { roundFloat } from '/imports/utils';
+
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { filterTopOrgs } from '/imports/utils';
@@ -17,22 +19,47 @@ const OrganizationContext = React.createContext('theme');
 /**
  * Create a Provider with its own API to act as App-wide state store
  */
-class OrganizationProviderTemplate extends React.Component {
-	constructor(props) {
-		super(props);
+const OrganizationProviderTemplate = props => {
+
+	getTopOrgs = () => {
+		if(_.isUndefined(props.orgs) || _.isUndefined(props.theme)) return {};
+
+		let topOrgs = filterTopOrgs(props.theme, props.orgs);
+
+		topOrgs = topOrgs.map(org => {
+			// Get save amount if saved
+			org.save = 0;
+			if(!_.isEmpty(props.theme.saves)) {
+				org.save = (() => {
+					let saveObj = props.theme.saves.find( save => save.org === org._id);
+					return saveObj ? (saveObj.amount || 0) : 0;
+				})();
+			}
+
+			// Total of funds pledged for this org multiplied by the match ratio
+			org.pledgeTotal = org.pledges.reduce((sum, pledge) => { return sum + pledge.amount}, 0) * props.theme.matchRatio;
+
+			// Total amount of money allocted to this org aside from leverage distribution
+			org.allocatedFunds = roundFloat((org.amountFromVotes || 0) + org.pledgeTotal + org.save + org.topOff);
+
+			let need = org.ask - org.allocatedFunds - org.leverageFunds;
+			org.need = roundFloat(need > 0 ? need : 0);
+
+			return org;
+		});
+
+		return topOrgs;
 	}
 
-	render() {
-		return (
-			<OrganizationContext.Provider value={{
-				orgs: this.props.orgs,
-				topOrgs: this.props.topOrgs,
-				orgsLoading: this.props.loading
-			}}>
-				{this.props.children}
-			</OrganizationContext.Provider>
-		);
-	}
+	return (
+		<OrganizationContext.Provider value={{
+			orgs: props.orgs,
+			topOrgs: getTopOrgs(),
+			orgsLoading: props.loading
+		}}>
+			{props.children}
+		</OrganizationContext.Provider>
+	);
 }
 
 const OrganizationProvider = withTracker((props) => {
@@ -44,15 +71,9 @@ const OrganizationProvider = withTracker((props) => {
 	let orgsHandle = Meteor.subscribe('organizations', props.id);
 	let orgs = Organizations.find({theme: props.id}).fetch();
 
-	if(_.isUndefined(theme) || _.isUndefined(orgs)) return { loading: true };
+	let loading = (!orgsHandle.ready() || _.isUndefined(orgs));
 
-	// Pre-filter the top orgs, add to loading condition
-	let topOrgs = [];
-	topOrgs = filterTopOrgs(theme, orgs);
-
-	let loading = (!orgsHandle.ready());
-
-	return { loading, orgs, topOrgs };
+	return { loading, orgs, theme };
 })(OrganizationProviderTemplate);
 
 export { OrganizationContext, OrganizationProvider };
