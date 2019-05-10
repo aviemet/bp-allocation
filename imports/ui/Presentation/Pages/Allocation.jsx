@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import Graph from '/imports/ui/Presentation/Graph/Graph';
 
-const Allocation = (props) => {
+const Allocation = props => {
 	return (
 		<React.Fragment>
 			<Graph />

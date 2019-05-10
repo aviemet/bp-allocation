@@ -145,10 +145,14 @@ const Graph = props => {
 		return leverage;
 	}
 
+	const loading = (themeLoading || orgsLoading || settingsLoading);
+
+	if(loading) {
+		return <GraphPageContainer />
+	}
+
 	const visibility = settings.leverageVisible ? 'visible' : 'hidden';
 	const startingLeverage = _calcStartingLeverage();
-
-	// const pledges = orgs.reduce((sum, org) => {return sum + org.pledges}, 0);
 
 	return (
 		<GraphPageContainer>
