@@ -10,7 +10,7 @@ import { ThemeContext, PresentationSettingsContext, OrganizationContext } from '
 import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react'
 import styled from 'styled-components';
 
-import { SettingsPane, OrganizationsPane, ChitVotingPane, AllocationPane, LeveragePane, PresentationPane } from '/imports/ui/Admin/Panes';
+import { SettingsPane, MembersPane, OrganizationsPane, ChitVotingPane, AllocationPane, LeveragePane, PresentationPane } from '/imports/ui/Admin/Panes';
 
 const Title = styled(Header)`
 	&& {
@@ -114,6 +114,11 @@ const Admin = props => {
 						{/* Theme Settings */}
 						<Route exact path={TABS.settings.slug} >
 							<SettingsPane />
+						</Route>
+
+						{/* Members */}
+						<Route exact path={TABS.members.slug} >
+							<MembersPane />
 						</Route>
 
 						{/* Organizations */}
