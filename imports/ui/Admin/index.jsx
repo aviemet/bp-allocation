@@ -26,7 +26,7 @@ const TabMenu = styled(Menu)`
 	}
 `;
 
-const TABS_ORDER = ['settings', 'orgs', 'chits', 'money', 'leverage', 'presentation'];
+const TABS_ORDER = ['settings', 'members', 'orgs', 'chits', 'money', 'leverage', 'presentation'];
 const TABS = {
 	orgs:{
 		slug: 'orgs',
@@ -58,6 +58,11 @@ const TABS = {
 		slug: 'leverage',
 		heading: 'Leverage',
 		color: 'violet'
+	},
+	members: {
+		slug: 'members',
+		heading: 'Members',
+		color: 'teal'
 	}
 };
 
