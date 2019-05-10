@@ -49,8 +49,7 @@ sortTopOrgs = (theme, orgs) => {
 
 		// climb up the bottom of the list looking for manually selected orgs
 		for(let i = sortedOrgs.length-1; i >= theme.numTopOrgs; i--){
-			// console.log({i: i, num: theme.numTopOrgs});
-			// console.log({id: sortedOrgs[i]._id, index: i});
+
 			// Check if the org has been manually selected
 			if(manualTopOrgs[sortedOrgs[i]._id]){
 				// Find the closest automatically selected top org

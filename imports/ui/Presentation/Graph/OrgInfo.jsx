@@ -34,7 +34,6 @@ const TotalNeed = styled.div`
 `;
 
 const OrgInfo = props => {
-	console.log({props});
 	return (
 		<InfoContainer className='orginfo'>
 			<Title>{props.org.title}</Title>

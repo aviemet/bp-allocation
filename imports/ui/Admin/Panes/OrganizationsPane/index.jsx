@@ -18,8 +18,6 @@ const OrganizationsPane = props => {
 	const { orgs, topOrgs }  = useContext(OrganizationContext);
 	const { images }         = useContext(ImageContext);
 
-	console.log({orgs})
-
 	const [ orgTitle, setOrgTitle ]                  = useState('');
 	const [ orgAsk, setOrgAsk ]                      = useState('');
 	const [ orgImage, setOrgImage ]                  = useState('');
@@ -33,8 +31,6 @@ const OrganizationsPane = props => {
 		e.preventDefault();
 
 		e.target.reset();
-
-		console.log({orgImage});
 
 		let data = {
 			title: orgTitle,

@@ -12,10 +12,8 @@ const Pledges = props => {
 	const { topOrgs } = useContext(OrganizationContext);
 
 	const deletePledge = (e, data) => {
-		console.log({data});
 		const pledgeId = data.pledgeid;
 		const orgId = data.orgid;
-		console.log({orgId, pledgeId});
 
 		OrganizationMethods.removePledge.call({orgId, pledgeId});
 	}
@@ -32,7 +30,6 @@ const Pledges = props => {
 		});
 	});
 	pledges = _.sortBy(pledges, ['createdAt']);
-	console.log({pledges});
 
   return (
   	<Container>

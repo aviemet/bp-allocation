@@ -5,8 +5,6 @@ import { Themes, PresentationSettings, Organizations, Images } from '/imports/ap
 
 import '/imports/api/methods';
 
-import { DEBUG } from '/imports/debug';
-
 Meteor.startup(() => {
 
 	Meteor.publish('themes', (themeId) => {

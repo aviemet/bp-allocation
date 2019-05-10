@@ -140,14 +140,11 @@ const Leverage = props => {
 	}
 
 	const rounds = getLeverageSpreadRounds(theme.leverageRemaining);
-	console.log({rounds});
 
 	const orgSpreadSum = topOrgs.reduce((sum, org) => {return sum + org.leverageFunds}, 0);
 	const roundSpreadSum = rounds[rounds.length-1].orgs.reduce((sum, org) => {return sum + org.leverageFunds}, 0);
 
 	const leverageDistributed = orgSpreadSum === roundSpreadSum;
-
-	console.log({leverageDistributed, orgSpreadSum, roundSpreadSum});
 
 	return (
 	  <React.Fragment>

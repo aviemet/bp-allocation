@@ -56,9 +56,6 @@ const Results = props => {
 	const { settings } = useContext(PresentationSettingsContext);
 	const { images } = useContext(ImageContext);
 
-	console.log({theme});
-	console.log({topOrgs});
-
 	let awardees = [];
 	let others = [];
 	let saves = theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
