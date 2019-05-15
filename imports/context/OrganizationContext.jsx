@@ -8,24 +8,25 @@ import { withTracker } from 'meteor/react-meteor-data';
 
 import { filterTopOrgs } from '/imports/utils';
 
-import { Themes, PresentationSettings, Organizations, Images } from '/imports/api';
-import { ThemeMethods, PresentationSettingsMethods, OrganizationMethods, ImageMethods } from '/imports/api/methods';
+import { Themes, Organizations } from '/imports/api';
 
 /**
  * Initialize the Context
  */
-const OrganizationContext = React.createContext('theme');
+const OrganizationContext = React.createContext();
 
 /**
  * Create a Provider with its own API to act as App-wide state store
  */
 const OrganizationProviderTemplate = props => {
 
+	// Return only the top orgs for the theme, adding "virtual fields"
 	getTopOrgs = () => {
 		if(_.isUndefined(props.orgs) || _.isUndefined(props.theme)) return {};
 
 		let topOrgs = filterTopOrgs(props.theme, props.orgs);
 
+		// Pre-calculate values
 		topOrgs = topOrgs.map(org => {
 			// Get save amount if saved
 			org.save = 0;
@@ -42,6 +43,7 @@ const OrganizationProviderTemplate = props => {
 			// Total amount of money allocted to this org aside from leverage distribution
 			org.allocatedFunds = roundFloat((org.amountFromVotes || 0) + org.pledgeTotal + org.save + org.topOff);
 
+			// Amount needed to reach goal
 			let need = org.ask - org.allocatedFunds - org.leverageFunds;
 			org.need = roundFloat(need > 0 ? need : 0);
 
@@ -62,7 +64,7 @@ const OrganizationProviderTemplate = props => {
 	);
 }
 
-const OrganizationProvider = withTracker((props) => {
+const OrganizationProvider = withTracker(props => {
 	if(!props.id) return { loading: true };
 
 	let themeHandle = Meteor.subscribe('theme', props.id);

@@ -14,7 +14,7 @@ import { Loader } from 'semantic-ui-react'
 /**
  * Initialize the Context
  */
-const ThemeContext = React.createContext('theme');
+const ThemeContext = React.createContext();
 
 /**
  * Create a Provider with its own API to act as App-wide state store

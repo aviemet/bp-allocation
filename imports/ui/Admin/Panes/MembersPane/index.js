@@ -1,57 +1,104 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
+import Papa from 'papaparse';
+import _ from 'lodash';
 
-import { MemberContext } from '/imports/context';
+import { useTheme } from '/imports/context';
+import { MemberMethods } from '/imports/api/methods';
 
-import { Container, Form, Input, Button } from 'semantic-ui-react';
+import { Container, Button, Input } from 'semantic-ui-react';
+
+import NewMemberInputs from './NewMemberInputs';
+import MembersList from './MembersList';
 
 const MembersPane = props => {
 
-	const { members } = useContext(MemberContext);
+	const { theme } = useTheme();
 
-	let [ firstName, setFirstName ] = useState('');
-	let [ lastName, setLastName ] = useState('');
-	let [ memberNumber, setMemberNumber ] = useState(undefined);
-	let [ memberAmount, setMemberAmount ] = useState(0);
+	let skipped = [];
+
+	let uploadedMembersList = [];
+	const acceptedValues = [
+		{
+			name: 'firstName',
+			forms: ['firstname', 'first name', 'first', 'f_name', 'f name', 'f']
+		},
+		{
+			name: 'lastName',
+			forms: ['lastName', 'last name', 'last', 'l_name', 'l name', 'l']
+		},
+		{
+			name: 'number',
+			forms: ['number', 'member', 'member number', 'membernumber', 'member_number', 'no', 'no.', 'num', '#']
+		},
+		{
+			name: 'amount',
+			forms: ['amount', 'money', 'donated', 'donations', 'given', 'funds', 'dollars']
+		}
+	];
+
+	const clickFileInput = () => document.getElementById('fileInput').click();
+
+	const doThing = e => {
+		let file = e.currentTarget.files[0];
+
+		let parser = Papa.parse(file, {
+			header: true,
+			dynamicTyping: true,
+			skipEmptyLines: true,
+			step: (results, parser) => {
+				// console.log(results.data);
+
+				let memberRow = {};
+
+				_.forEach(results.data[0], (value, key) => {
+					const matchKey = key.trim().toLowerCase();
+					// console.log({matchKey, key, value});
+					let matched = false;
+					for(let i = 0; !matched && i < acceptedValues.length; i++) {
+						const formsIndex = _.indexOf(acceptedValues[i].forms, matchKey);
+						// console.log({formsIndex});
+						if(formsIndex >= 0) {
+							matched = true;
+							memberRow[acceptedValues[i].name] = value;
+						}
+					}
+				});
+
+				let complete = true;
+				acceptedValues.map(values => {
+					if(!memberRow.hasOwnProperty(values.name)) {
+						complete = false;
+						skipped.push({raw: results.data[0], memberRow});
+						console.log("FAILED");
+					}
+				})
+
+				if(complete) {
+					MemberMethods.upsert.call(Object.assign({themeId: theme._id}, memberRow));
+					// console.log({memberRow});
+				}
+
+				uploadedMembersList.push(memberRow);
+
+			},
+			complete: results => {
+				// console.log(results.data);
+				// console.log({uploadedMembersList});
+			}
+		});
+	}
 
 	return (
 		<Container>
-			<h1>Members</h1>
-			<Form>
-				<Form.Group>
-					<Form.Input
-						width={ 4 }
-						placeholder='First Name'
-						value={ firstName }
-						onChange={ e => setFirstName(e.target.value) }
-					/>
-					<Form.Input
-						width={ 4 }
-						placeholder='Last Name'
-						value={ lastName }
-						onChange={ e => setLastName(e.target.value) }
-					/>
-					<Form.Input
-						width={ 3 }
-						iconPosition='left'
-						icon='hashtag'
-						placeholder='Member Number'
-						value={ memberNumber || '' }
-						onChange={ e => setMemberNumber(e.target.value) }
-					/>
-					<Form.Input
-						width={ 3 }
-						iconPosition='left'
-						icon='dollar'
-						placeholder='Amount'
-						value= { memberAmount || '' }
-						onChange={ e => setMemberAmount(e.target.value) }
-					/>
-					<Button width={ 2 } type='submit'>Add Member</Button>
-
-				</Form.Group>
-			</Form>
+			<h1>
+				Members
+				<Button style={{float: "right"}} onClick={clickFileInput}>Import List as .csv</Button>
+			</h1>
+			<Input type='file' id='fileInput' name='fileInput' accept='.csv' style={{display: 'none'}} onChange={doThing} />
+			<NewMemberInputs />
+			<MembersList />
 		</Container>
-	)
+	);
 }
 
 export default MembersPane;

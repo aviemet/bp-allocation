@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { ThemeContext, ThemeProvider } from './ThemeContext';
 import { ImageContext, ImageProvider } from './ImageContext';
@@ -11,7 +11,7 @@ const AppProvider = (props) => (
 		<PresentationSettingsProvider id={props.id}>
 			<OrganizationProvider id={props.id}>
 				<ImageProvider id={props.id}>
-					<MemberProvider>
+					<MemberProvider id={props.id}>
 						{props.children}
 					</MemberProvider>
 				</ImageProvider>
@@ -20,4 +20,44 @@ const AppProvider = (props) => (
 	</ThemeProvider>
 );
 
-export { AppProvider, ThemeContext, ImageContext, OrganizationContext, MemberContext, PresentationSettingsContext };
+const useTheme = () => {
+	const { theme, themeLoading } = useContext(ThemeContext);
+	return { theme, themeLoading };
+};
+
+const useOrganizations = () => {
+	const { orgs, topOrgs, orgLoading } = useContext(OrganizationContext);
+	return { orgs, topOrgs, orgLoading };
+};
+
+const useImages = () => {
+	const { images, imagesLoading } = useContext(ImageContext);
+	return { images, imagesLoading };
+};
+
+const usePresentationSettings = () => {
+	const { settings, settingsLoading } = useContext(PresentationSettingsContext);
+	return { settings, settingsLoading };
+};
+
+const useMembers = () => {
+	const { members, membersLoading } = useContext(MemberContext);
+	return { members, membersLoading };
+};
+
+
+export {
+	AppProvider,
+
+	ThemeContext,
+	ImageContext,
+	OrganizationContext,
+	MemberContext,
+	PresentationSettingsContext,
+
+	useTheme,
+	useOrganizations,
+	useImages,
+	usePresentationSettings,
+	useMembers
+};

@@ -1,7 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 import { Promise } from 'meteor/promise';
 
-import { Themes, PresentationSettings, Organizations, Images } from '/imports/api';
+import {
+	Themes,
+	PresentationSettings,
+	Organizations,
+	Images,
+	Members,
+	MemberThemes
+} from '/imports/api';
 
 import '/imports/api/methods';
 
@@ -23,10 +30,9 @@ Meteor.startup(() => {
 	});
 
 	Meteor.publish('organizations', (themeId) => {
-		if(themeId){
-			return Organizations.find({theme: themeId});
-		}
-		return Organizations.find({});
+		if(! themeId) return Organizations.find({});
+
+		return Organizations.find({theme: themeId});
 	});
 
 	Meteor.publish('organization', (orgId) => {
@@ -36,38 +42,46 @@ Meteor.startup(() => {
 		// TODO: return error
 	});
 
-	Meteor.publish('toporgs', (themeId) => {
-		if(themeId){
-			let theme = MeteorPromise.await(Themes.find({_id: id})).fetch();
-			let orgs = MeteorPromise.await(Organizations.find({theme: id})).fetch();
-		}
-		// TODO: return error
-	});
-
+	// Images need the cursor
 	Meteor.publish('image', (id) =>  {
 		if(!id) return false;
 
 		return Images.find({_id: id}).cursor;
 	});
 
-  Meteor.publish('images', (ids) => {
-  	if(!ids) return false;
+	Meteor.publish('images', (ids) => {
+		if(!ids) return false;
 
-    return Images.find({_id: {$in: ids}}).cursor;
-  });
+		return Images.find({_id: {$in: ids}}).cursor;
+	});
 
-  Meteor.publish('images.byTheme', function(themeId) {
-  	if(themeId){
-	  	let orgs = Organizations.find({theme: themeId}, {_id: true, image: true}).fetch();
+	Meteor.publish('images.byTheme', function(themeId) {
+		if(!themeId) return Images.find({}).cursor;
 
-	  	let imgIds = [];
-	  	orgs.map((org, i) => {
-	  		imgIds.push(org.image);
-	  	});
+		let orgs = Organizations.find({theme: themeId}, {_id: true, image: true}).fetch();
 
-	    return Images.find({_id: {$in: imgIds}}).cursor;
-	  }
-	  return Images.find({}).cursor;
-  });
+		let imgIds = [];
+		orgs.map((org, i) => {
+			imgIds.push(org.image);
+		});
+
+		return Images.find({_id: {$in: imgIds}}).cursor;
+	});
+
+	// Find Members and associated theme values
+	Meteor.publish('memberThemes', (themeId) => {
+		if(!themeId) return MemberThemes.find({});
+		return MemberThemes.find({theme: themeId});
+	});
+
+	Meteor.publish('members', (ids) => {
+		if(!ids) return Members.find({});
+		return Members.find({_id: {$in: ids}});
+	});
 
 });
+
+
+
+
+

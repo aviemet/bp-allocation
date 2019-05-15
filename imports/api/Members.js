@@ -1,47 +1,6 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
-const AllocationSchema = new SimpleSchema({
-	organization: SimpleSchema.RegEx.Id,
-	amount: Number,
-	createdAt: {
-		type: Date,
-		autoValue: () => new Date()
-	}
-});
-
-const ChitVoteSchema = new SimpleSchema({
-	organization: SimpleSchema.RegEx.Id,
-	votes: Number,
-	createdAt: {
-		type: Date,
-		autoValue: () => new Date()
-	}
-});
-
-const MemberThemeSchema = new SimpleSchema({
-	'contributions': {
-		type: Number,
-		required: false
-	},
-	chitVotes: {
-		type: Array,
-		defaultValue: [],
-		required: false
-	},
-	'chitVotes.$': ChitVoteSchema,
-	allocations: {
-		type: Array,
-		defaultValue: [],
-		required: false
-	},
-	'allocations.$': AllocationSchema,
-	createdAt: {
-		type: Date,
-		autoValue: () => new Date()
-	}
-});
-
 const Members = new Mongo.Collection('members');
 
 const MemberSchema = new SimpleSchema({
@@ -49,14 +8,6 @@ const MemberSchema = new SimpleSchema({
 	lastName: String,
 	number: {
 		type: Number,
-		required: false
-	},
-	theme: {
-		type: Array,
-		required: false
-	},
-	'theme.$': {
-		type: MemberThemeSchema,
 		required: false
 	},
 	createdAt: {

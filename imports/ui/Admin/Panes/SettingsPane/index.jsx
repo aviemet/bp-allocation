@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { ThemeContext, PresentationSettingsContext } from '/imports/context';
+import { useTheme, usePresentationSettings } from '/imports/context';
 
 import _ from 'lodash';
 
@@ -12,8 +12,8 @@ import { Loader, Button, Form, Input, Icon } from 'semantic-ui-react';
 
 const SettingsPane = props => {
 
-	const { theme, themeLoading } = useContext(ThemeContext);
-	const { settings, settingsLoading } = useContext(PresentationSettingsContext);
+	const { theme, themeLoading } = useTheme(); //useContext(ThemeContext);
+	const { settings, settingsLoading } = usePresentationSettings();
 
 	const [ title, setTitle ]                         = useState(theme.title);
 	const [ question, setQuestion ]                   = useState(theme.question);

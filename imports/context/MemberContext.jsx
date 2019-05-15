@@ -4,23 +4,32 @@ import _ from 'lodash';
 
 import { withTracker } from 'meteor/react-meteor-data';
 
-
-import { Members } from '/imports/api';
-import { MemberMethods } from '/imports/api/methods';
+import { Members, MemberThemes } from '/imports/api';
 
 /**
  * Initialize the Context
  */
-const MemberContext = React.createContext('theme');
+const MemberContext = React.createContext();
 
 /**
  * Create a Provider with its own API to act as App-wide state store
  */
 const MemberProviderTemplate = props => {
 
+	const aggregateMembers = () => {
+		if(props.loading || _.isUndefined(props.members) || _.isUndefined(props.memberThemes)) return [];
+
+		let members = props.members.map(member => {
+			let memberTheme = _.find(props.memberThemes, ['member', member._id]);
+			// console.log({member, memberTheme});
+			return Object.assign({theme: memberTheme}, member);
+		});
+		return members;
+	};
+
 	return (
 		<MemberContext.Provider value={{
-			members: props.members,
+			members: aggregateMembers(),
 			membersLoading: props.loading
 		}}>
 			{props.children}
@@ -28,16 +37,20 @@ const MemberProviderTemplate = props => {
 	);
 }
 
-const MemberProvider = withTracker((props) => {
+const MemberProvider = withTracker(props => {
 	if(!props.id) return { loading: true };
 
-	// Get the theme
-	let membersHandle = Meteor.subscribe('members', props.id);
-	let members = Themes.find({_id: props.id}).fetch()[0];
+	const memberThemesHandle = Meteor.subscribe('memberThemes', props.id);
+	const memberThemes = MemberThemes.find({theme: props.id}).fetch();
 
-	let loading = (!membersHandle.ready() || _.isUndefined(member));
+	const memberIds = memberThemes.map(memberTheme => memberTheme.member);
 
-	return { loading, members };
+	const membersHandle = Meteor.subscribe('members', memberIds);
+	const members = Members.find({_id: {$in: memberIds}}).fetch();
+
+	const loading = (!membersHandle.ready() || !memberThemesHandle.ready());
+
+	return { loading, members, memberThemes };
 })(MemberProviderTemplate);
 
 export { MemberContext, MemberProvider };

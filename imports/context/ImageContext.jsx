@@ -12,7 +12,7 @@ import { ThemeMethods, PresentationSettingsMethods, OrganizationMethods, ImageMe
 /**
  * Initialize the Context
  */
-const ImageContext = React.createContext('theme');
+const ImageContext = React.createContext();
 
 /**
  * Create a Provider with its own API to act as App-wide state store
