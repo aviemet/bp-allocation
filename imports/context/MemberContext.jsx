@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { useContext } from 'react';
 import _ from 'lodash';
 
 import { withTracker } from 'meteor/react-meteor-data';
@@ -30,6 +30,7 @@ const MemberProviderTemplate = props => {
 	return (
 		<MemberContext.Provider value={{
 			members: aggregateMembers(),
+			memberThemes: props.memberThemes,
 			membersLoading: props.loading
 		}}>
 			{props.children}
@@ -53,4 +54,6 @@ const MemberProvider = withTracker(props => {
 	return { loading, members, memberThemes };
 })(MemberProviderTemplate);
 
-export { MemberContext, MemberProvider };
+const useMembers = () => useContext(MemberContext);
+
+export { MemberContext, MemberProvider, useMembers };

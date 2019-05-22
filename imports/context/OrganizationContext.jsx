@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { useContext } from 'react';
 import _ from 'lodash';
 
 import { roundFloat } from '/imports/utils';
@@ -57,7 +57,10 @@ const OrganizationProviderTemplate = props => {
 		<OrganizationContext.Provider value={{
 			orgs: props.orgs,
 			topOrgs: getTopOrgs(),
-			orgsLoading: props.loading
+			orgsLoading: props.loading,
+			handles: Object.assign({
+				orgs: props.orgsHandle
+			}, props.handles)
 		}}>
 			{props.children}
 		</OrganizationContext.Provider>
@@ -67,7 +70,7 @@ const OrganizationProviderTemplate = props => {
 const OrganizationProvider = withTracker(props => {
 	if(!props.id) return { loading: true };
 
-	let themeHandle = Meteor.subscribe('theme', props.id);
+	// let themeHandle = Meteor.subscribe('theme', props.id);
 	let theme = Themes.find({_id: props.id}).fetch()[0];
 
 	let orgsHandle = Meteor.subscribe('organizations', props.id);
@@ -75,7 +78,9 @@ const OrganizationProvider = withTracker(props => {
 
 	let loading = (!orgsHandle.ready() || _.isUndefined(orgs));
 
-	return { loading, orgs, theme };
+	return { loading, orgs, theme, orgsHandle };
 })(OrganizationProviderTemplate);
 
-export { OrganizationContext, OrganizationProvider };
+const useOrganizations = () => useContext(OrganizationContext);
+
+export { OrganizationContext, OrganizationProvider, useOrganizations };

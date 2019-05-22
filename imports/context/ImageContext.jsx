@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { useContext } from 'react';
 import _ from 'lodash';
 
 import { withTracker } from 'meteor/react-meteor-data';
@@ -17,27 +17,25 @@ const ImageContext = React.createContext();
 /**
  * Create a Provider with its own API to act as App-wide state store
  */
-class ImageProviderTemplate extends React.Component {
-	constructor(props) {
-		super(props);
-	}
+const ImageProviderTemplate = props => {
 
-	render() {
-		return (
-			<ImageContext.Provider value={{
-				images: this.props.images,
-				imagesLoading: this.props.loading
-			}}>
-				{this.props.children}
-			</ImageContext.Provider>
-		);
-	}
+	return (
+		<ImageContext.Provider value={{
+			images: props.images,
+			imagesLoading: props.loading,
+			handles: Object.assign({
+				images: props.imagesHandle
+			}, props.handles)
+		}}>
+			{props.children}
+		</ImageContext.Provider>
+	);
 }
 
 const ImageProvider = withTracker((props) => {
 	if(!props.id) return { loading: true };
 
-	let OrgsHandle = Meteor.subscribe('organizations', props.id);
+	// let OrgsHandle = Meteor.subscribe('organizations', props.id);
 	let orgs = Organizations.find({theme: props.id}).fetch();
 
 	let imgIds = orgs.map((org) => ( org.image ));
@@ -50,7 +48,9 @@ const ImageProvider = withTracker((props) => {
 
 	let loading = (!imagesHandle.ready());
 
-	return { loading, images };
+	return { loading, images, imagesHandle };
 })(ImageProviderTemplate);
 
-export { ImageContext, ImageProvider };
+const useImages = () => useContext(ImageContext);
+
+export { ImageContext, ImageProvider, useImages };

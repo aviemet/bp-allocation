@@ -1,15 +1,18 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import numeral from 'numeral';
 
-import { OrganizationContext } from '/imports/context';
+import { useOrganizations, useMembers } from '/imports/context';
 import { OrganizationMethods } from '/imports/api/methods';
 
 import { Container, Header, Table, Input, Button } from 'semantic-ui-react';
 
+import InputSuggest from '/imports/ui/Components/InputSuggest';
+
 const Pledges = props => {
 
-	const { topOrgs } = useContext(OrganizationContext);
+	const { topOrgs } = useOrganizations();
+	const { members, membersLoading } = useMembers();
 
 	const deletePledge = (e, data) => {
 		const pledgeId = data.pledgeid;
@@ -45,13 +48,12 @@ const Pledges = props => {
 				</Table.Header>
 
 				<Table.Body>
-					{pledges.map(pledge => (
+					{!membersLoading && pledges.map(pledge => (
 						<Table.Row key={pledge._id}>
-							<Table.Cell>{pledge.org.title}</Table.Cell>
+							<Table.Cell singleLine>{pledge.org.title}</Table.Cell>
 							<Table.Cell>
-								<Input
-									fluid
-									type='text'
+								<InputSuggest
+									data={members}
 									pledgeid={pledge._id}
 								/>
 							</Table.Cell>

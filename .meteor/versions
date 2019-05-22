@@ -67,6 +67,7 @@ meteortoys:sub@4.0.0
 meteortoys:throttle@4.0.0
 meteortoys:toggle@4.0.0
 meteortoys:toykit@4.0.2
+mikowals:batch-insert@1.1.9
 minifier-js@2.4.1
 minimongo@1.4.5
 mobile-experience@1.0.5

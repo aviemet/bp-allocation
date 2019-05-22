@@ -1,50 +1,24 @@
 import React, { useContext } from 'react';
 
-import { ThemeContext, ThemeProvider } from './ThemeContext';
-import { ImageContext, ImageProvider } from './ImageContext';
-import { OrganizationContext, OrganizationProvider }  from './OrganizationContext';
-import { MemberContext, MemberProvider }  from './MemberContext';
-import { PresentationSettingsContext, PresentationSettingsProvider }  from './PresentationSettingsContext';
+import { ThemeContext, ThemeProvider, useTheme } from './ThemeContext';
+import { PresentationSettingsContext, PresentationSettingsProvider, usePresentationSettings }  from './PresentationSettingsContext';
+import { OrganizationContext, OrganizationProvider, useOrganizations }  from './OrganizationContext';
+import { ImageContext, ImageProvider, useImages } from './ImageContext';
+import { MemberContext, MemberProvider, useMembers }  from './MemberContext';
 
-const AppProvider = (props) => (
-	<ThemeProvider id={props.id}>
-		<PresentationSettingsProvider id={props.id}>
-			<OrganizationProvider id={props.id}>
-				<ImageProvider id={props.id}>
-					<MemberProvider id={props.id}>
+const AppProvider = props => (
+	<ThemeProvider id={props.id}><ThemeContext.Consumer>{theme => (
+		<PresentationSettingsProvider id={props.id} handles={theme.handles}><PresentationSettingsContext.Consumer>{settings => (
+			<OrganizationProvider id={props.id} handles={settings.handles}><OrganizationContext.Consumer>{orgs => (
+				<ImageProvider id={props.id} handles={orgs.handles}><ImageContext.Consumer>{images => (
+					<MemberProvider id={props.id} handles={images.handles}>
 						{props.children}
 					</MemberProvider>
-				</ImageProvider>
-			</OrganizationProvider>
-		</PresentationSettingsProvider>
-	</ThemeProvider>
+				)}</ImageContext.Consumer></ImageProvider>
+			)}</OrganizationContext.Consumer></OrganizationProvider>
+		)}</PresentationSettingsContext.Consumer></PresentationSettingsProvider>
+	)}</ThemeContext.Consumer></ThemeProvider>
 );
-
-const useTheme = () => {
-	const { theme, themeLoading } = useContext(ThemeContext);
-	return { theme, themeLoading };
-};
-
-const useOrganizations = () => {
-	const { orgs, topOrgs, orgLoading } = useContext(OrganizationContext);
-	return { orgs, topOrgs, orgLoading };
-};
-
-const useImages = () => {
-	const { images, imagesLoading } = useContext(ImageContext);
-	return { images, imagesLoading };
-};
-
-const usePresentationSettings = () => {
-	const { settings, settingsLoading } = useContext(PresentationSettingsContext);
-	return { settings, settingsLoading };
-};
-
-const useMembers = () => {
-	const { members, membersLoading } = useContext(MemberContext);
-	return { members, membersLoading };
-};
-
 
 export {
 	AppProvider,

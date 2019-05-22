@@ -7,23 +7,49 @@ import { roundFloat } from '/imports/utils';
 
 import { Members, MemberThemes } from '/imports/api';
 
-const insertMember = query => {
+const memberInsert = function(query) {
+	let member = Members.find(query).fetch()[0];
+
 	return new Promise((resolve, reject) => {
-		Members.insert(query, (err, result) => {
-			if(err) reject(err);
-			resolve(result);
-		})
+		if(!member) {
+			Members.insert(query, (err, result) => {
+				if(err){
+					reject(err);
+				} else {
+					resolve(result);
+				}
+			});
+		} else {
+			resolve(member._id);
+		}
 	});
 }
 
-const insertMemberTheme = query => {
+const memberThemeInsert = function(query) {
+	console.log({query});
+	let memberTheme = MemberThemes.find({member: query.member, theme: query.theme}).fetch()[0];
+
 	return new Promise((resolve, reject) => {
-		MemberThemes.insert(query, (err, result) => {
-			if(err) reject(err);
-			resolve(result);
-		});
+		if(!memberTheme) {
+			MemberThemes.insert(query, (err, result) => {
+				if(err) {
+					reject(err);
+				} else {
+					resolve(result);
+				}
+			});
+		} else {
+			MemberThemes.update({_id: memberTheme._id}, {$set: {amount: query.amount}}, (err, result) => {
+				if(err) {
+					reject(err);
+				} else {
+					resolve(memberTheme._id);
+				}
+			});
+		}
 	});
 }
+
 
 const MemberMethods = {
 	/**
@@ -34,27 +60,27 @@ const MemberMethods = {
 
 		validate: null,
 
-		async run(data) {
-			const { firstName, lastName, number, themeId, amount } = data;
+		run(data) {
+			// Get strange results if run on client
+			if(Meteor.isServer) {
+				const { firstName, lastName, number, themeId, amount } = data;
+				const memberQuery = { firstName, lastName, number: parseInt(number) };
 
-			const query = { firstName, lastName, number: parseInt(number) };
+				memberInsert(memberQuery).then(member => {
+					const memberThemeQuery = { member, amount, theme: themeId };
 
-			let member = Members.find(query).fetch()[0];
-			if(!member) {
-				memberId = await insertMember(query).then(result => result);
-				member = Members.find({_id: memberId}).fetch()[0];
+					memberThemeInsert(memberThemeQuery).then(memberTheme => {
+						console.log({memberTheme});
+						return memberTheme;
+					}, memberThemeError => {
+						console.error({memberThemeError});
+					});
+
+				}, memberError => {
+					console.error({memberError});
+				});
+
 			}
-
-			let memberTheme = MemberThemes.find({theme: themeId, member: member._id}).fetch()[0];
-			console.log({memberThemeFound: memberTheme});
-			if(!memberTheme) {
-				console.log('nope');
-				memberThemeId = await insertMemberTheme({theme: themeId, member: member._id}).then(result => result);
-				memberTheme = MemberThemes.find({theme: themeId, member: member._id}).fetch()[0];
-				console.log({memberId});
-			}
-			console.log({memberTheme});
-			MemberThemes.update({_id: memberTheme._id}, {$set: {amount: amount}});
 		}
 	}),
 

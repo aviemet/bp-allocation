@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { roundFloat } from '/imports/utils';
 
 import { useMembers, useTheme } from '/imports/context';
- import { MemberMethods } from '/imports/api/methods';
+import { MemberMethods } from '/imports/api/methods';
 
 import { Form, Input, Button } from 'semantic-ui-react';
 
@@ -54,7 +55,7 @@ const NewMemberInputs = (props) => {
 					icon='hashtag'
 					placeholder='Member Number'
 					value={ memberNumber || '' }
-					onChange={ e => setMemberNumber(e.target.value) }
+					onChange={ e => setMemberNumber(parseInt(e.target.value)) }
 				/>
 				<Form.Input
 					width={ 3 }
@@ -62,7 +63,7 @@ const NewMemberInputs = (props) => {
 					icon='dollar'
 					placeholder='Amount'
 					value= { memberAmount || '' }
-					onChange={ e => setMemberAmount(e.target.value) }
+					onChange={ e => setMemberAmount(roundFloat(e.target.value)) }
 				/>
 				<Button width={ 2 } type='submit'>Add Member</Button>
 

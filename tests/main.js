@@ -1,4 +1,5 @@
 import assert from "assert";
+import './NewMemberInputs.test';
 
 describe("bpallocation", function () {
   it("package.json has correct name", async function () {

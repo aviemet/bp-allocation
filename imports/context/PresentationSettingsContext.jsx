@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { useContext } from 'react';
 import _ from 'lodash';
 
 import { withTracker } from 'meteor/react-meteor-data';
@@ -7,7 +7,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { filterTopOrgs } from '/imports/utils';
 
 import { Themes, PresentationSettings, Organizations, Images } from '/imports/api';
-import { ThemeMethods, PresentationSettingsMethods, OrganizationMethods, ImageMethods } from '/imports/api/methods';
+import { useTheme } from './ThemeContext';
 
 /**
  * Initialize the Context
@@ -17,27 +17,25 @@ const PresentationSettingsContext = React.createContext();
 /**
  * Create a Provider with its own API to act as App-wide state store
  */
-class PresentationSettingsProviderTemplate extends React.Component {
-	constructor(props) {
-		super(props);
-	}
+const PresentationSettingsProviderTemplate = props => {
 
-	render() {
-		return (
-			<PresentationSettingsContext.Provider value={{
-				settings: this.props.presentationSettings,
-				settingsLoading: this.props.loading
-			}}>
-				{this.props.children}
-			</PresentationSettingsContext.Provider>
-		);
-	}
+	return (
+		<PresentationSettingsContext.Provider value={{
+			settings: props.presentationSettings,
+			settingsLoading: props.loading,
+			handles: Object.assign({
+				settings: props.presentationSettingsHandle
+			}, props.handles)
+		}}>
+			{props.children}
+		</PresentationSettingsContext.Provider>
+	);
 }
 
 const PresentationSettingsProvider = withTracker((props) => {
-	if(!props.id) return { loading: true };
+	if(!props.id || _.isUndefined(props.handles.themes) || _.isUndefined(props.handles.orgs)) return { loading: true };
 
-	let themeHandle = Meteor.subscribe('theme', props.id);
+	// let themeHandle = Meteor.subscribe('theme', props.id);
 	let theme = Themes.find({_id: props.id}).fetch()[0];
 
 	if(_.isUndefined(theme)) return { loading: true };
@@ -47,7 +45,9 @@ const PresentationSettingsProvider = withTracker((props) => {
 
 	let loading = (!presentationSettingsHandle.ready() || _.isUndefined(theme.presentationSettings));
 
-	return { loading, presentationSettings };
+	return { loading, presentationSettings, presentationSettingsHandle };
 })(PresentationSettingsProviderTemplate);
 
-export { PresentationSettingsContext, PresentationSettingsProvider };
+const usePresentationSettings = () => useContext(PresentationSettingsContext);
+
+export { PresentationSettingsContext, PresentationSettingsProvider, usePresentationSettings };

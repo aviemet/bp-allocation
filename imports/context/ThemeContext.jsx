@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { useContext } from 'react';
 import _ from 'lodash';
 
 import { withTracker } from 'meteor/react-meteor-data';
@@ -71,7 +71,11 @@ const ThemeProviderTemplate = props => {
 				votedFunds: votedFunds(),
 				pledgedTotal: pledgedTotal()
 			}, props.theme),
-			themeLoading: props.loading
+			themeLoading: props.loading,
+			handles: {
+				themes: props.themesHandle,
+				orgs: props.orgsHandle
+			}
 		}}>
 			{props.children}
 		</ThemeContext.Provider>
@@ -96,9 +100,9 @@ const ThemeProvider = withTracker((props) => {
 
 	let loading = (!themesHandle.ready() || _.isUndefined(theme));
 
-	return { loading, theme, topOrgs };
+	return { loading, theme, topOrgs, themesHandle, orgsHandle };
 })(ThemeProviderTemplate);
 
+const useTheme = () => useContext(ThemeContext);
 
-
-export { ThemeContext, ThemeProvider };
+export { ThemeContext, ThemeProvider, useTheme };
