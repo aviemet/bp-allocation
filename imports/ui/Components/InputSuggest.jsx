@@ -32,7 +32,9 @@ export default class InputSuggest extends Component {
 	}
 
 	handleSearchChange = (e, { value }) => {
-		this.setState({ isLoading: true, value })
+		this.setState({ isLoading: true, value });
+
+		console.log(this.props);
 
 		setTimeout(() => {
 			if (this.state.value.length < 1) return this.setState(initialState)

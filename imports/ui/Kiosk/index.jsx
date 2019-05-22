@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Router, Route, Switch, withRouter } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 import { withTracker } from 'meteor/react-meteor-data';
@@ -12,62 +12,93 @@ import { KIOSK_PAGES } from '/imports/utils';
 
 import { Themes, Organizations, Images } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
+import { usePresentationSettings } from '/imports/context';
 
 import KioskInfo from './KioskInfo';
 import KioskChitVoting from './KioskChitVoting';
 import KioskFundsVoting from './KioskFundsVoting';
 
-class Kiosk extends React.Component {
-	constructor(props) {
-		super(props);
+// Transition group definitions
+const FADE_DURATION = 300;
 
-		this.state = {
-			displayPage: KIOSK_PAGES.info
+const defaultStyle = {
+	transition: `opacity ${FADE_DURATION}ms ease-in-out`,
+	opacity: 0
+};
+
+const transitionStyles = {
+	entering: { opacity: 0 },
+	entered: { opacity: 1 }
+};
+
+const PageFader = styled.div`
+	opacity: 0;
+`;
+
+// Kiosk Component
+const Kiosk = props => {
+
+	const [ displayPage, setDisplayPage ] = useState(KIOSK_PAGES.info);
+	const [ show, setShow ] = useState(true);
+
+	const { settings, settingsLoading } = usePresentationSettings();
+
+	useEffect(() => {
+		if(settingsLoading) return;
+
+		if(settings.chitVotingActive) {
+			doNavigation(KIOSK_PAGES.chit);
+		} else if(settings.fundsVotingActive) {
+			doNavigation(KIOSK_PAGES.funds);
+		} else {
+			doNavigation(KIOSK_PAGES.info);
+		}
+	});
+
+	const doNavigation = page => {
+		if(displayPage !== page) {
+			setShow(false);
+
+			setTimeout(() => {
+				setDisplayPage(page);
+				setShow(true);
+			}, FADE_DURATION);
 		}
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		if(this.props.theme.chitVotingActive !== prevProps.theme.chitVotingActive ||
-		   this.props.theme.fundsVotingActive !== prevProps.theme.fundsVotingActive) {
-
-			let displayPage = this.props.theme.chitVotingActive ? KIOSK_PAGES.chit :
-												this.props.theme.fundsVotingActive ? KIOSK_PAGES.funds :
-												KIOSK_PAGES.info;
-			this.setState({
-				displayPage: displayPage
-			});
-		}
+	if(settingsLoading){
+		return(<Loader/>)
 	}
 
-	render() {
-		const { displayPage } = this.state;
+	console.log({chit: settings.chitVotingActive, funds: settings.fundsVotingActive});
 
-		if(this.props.loading){
-			return(<Loader/>)
-		}
-		return (
-			<React.Fragment>
-				<Switch location={{pathname: this.state.displayPage}}>
+	return (
+		<Transition in={show} timeout={FADE_DURATION}>
+			{(state) => (
+			<PageFader style={{...defaultStyle, ...transitionStyles[state]}}>
+				<Switch location={{pathname: displayPage}}>
 
-					{/* Theme Settings */}
+					{/* Orgs Grid */}
 					<Route exact path={KIOSK_PAGES.info} render={props => (
-						<KioskInfo {...this.props} />
-					)} />
-
-					{/* Organizations */}
-					<Route exact path={KIOSK_PAGES.chit} render={props => (
-						<KioskChitVoting {...this.props} />
+						<KioskInfo />
 					)} />
 
 					{/* Chit Voting */}
+					<Route exact path={KIOSK_PAGES.chit} render={props => (
+						<KioskChitVoting />
+					)} />
+
+					{/* Funds Voting */}
 					<Route exact path={KIOSK_PAGES.funds} render={props => (
-						<KioskFundsVoting {...this.props} />
+						<KioskFundsVoting />
 					)} />
 
 				</Switch>
-			</React.Fragment>
-		);
-	}
+
+			</PageFader>
+			)}
+		</Transition>
+	);
 }
 
 export default Kiosk;

@@ -14,7 +14,8 @@ const FundsVotingActiveToggle = props => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
-				fundsVotingActive: data.checked
+				fundsVotingActive: data.checked,
+				chitVotingActive: false
 			}
 		});
 	}
