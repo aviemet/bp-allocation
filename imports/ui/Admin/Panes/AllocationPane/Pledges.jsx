@@ -7,7 +7,7 @@ import { OrganizationMethods } from '/imports/api/methods';
 
 import { Container, Header, Table, Input, Button } from 'semantic-ui-react';
 
-import InputSuggest from '/imports/ui/Components/InputSuggest';
+import MemberSearch from '/imports/ui/Components/MemberSearch';
 
 const Pledges = props => {
 
@@ -52,7 +52,7 @@ const Pledges = props => {
 						<Table.Row key={pledge._id}>
 							<Table.Cell singleLine>{pledge.org.title}</Table.Cell>
 							<Table.Cell>
-								<InputSuggest
+								<MemberSearch
 									data={members}
 									pledgeid={pledge._id}
 								/>

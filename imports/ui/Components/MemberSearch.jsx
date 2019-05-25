@@ -13,28 +13,29 @@ const resultRenderer = ({title, number}) => (
 	</React.Fragment>
 );
 
-export default class InputSuggest extends Component {
+export default class MemberSearch extends Component {
 	constructor(props) {
 		super(props);
 		source = props.data.map(member => {
 			return ({
 				title: `${member.firstName} ${member.lastName}`,
-				number: member.number
+				number: member.number,
+				id: member._id
 			})
 		});
-		console.log({source});
 	}
 
 	state = initialState;
 
 	handleResultSelect = (e, { result }) => {
 		this.setState({ value: result.title });
+		if(this.props.callback) {
+			this.props.callback(result);
+		}
 	}
 
 	handleSearchChange = (e, { value }) => {
 		this.setState({ isLoading: true, value });
-
-		console.log(this.props);
 
 		setTimeout(() => {
 			if (this.state.value.length < 1) return this.setState(initialState)
@@ -43,7 +44,6 @@ export default class InputSuggest extends Component {
 			const isMatch = result => re.test(result.title) || re.test(result.number);
 
 			let results = _.filter(source, isMatch);
-			console.log({results});
 
 			this.setState({
 				isLoading: false,
@@ -65,7 +65,6 @@ export default class InputSuggest extends Component {
 				results={results}
 				resultRenderer={resultRenderer}
 				value={value}
-				{...this.props}
 			/>
 		)
 	}

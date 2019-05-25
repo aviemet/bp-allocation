@@ -1,9 +1,10 @@
 import React from 'react';
+import _ from 'lodash';
 
 import { Loader, Card, Container, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { useTheme, useOrganizations, usePresentationSettings } from '/imports/context';
+import { useTheme, useOrganizations, usePresentationSettings, useImages } from '/imports/context';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
@@ -36,6 +37,7 @@ const OrgsContainer = styled.div`
 const KioskInfo = props => {
 	const { theme, themeLoading } = useTheme();
 	const { orgs, orgsLoading } = useOrganizations();
+	const { images } = useImages();
 	const { settings } = usePresentationSettings();
 
 	if(themeLoading || orgsLoading) {
@@ -45,10 +47,14 @@ const KioskInfo = props => {
 	return (
 		<OrgsContainer>
 			<Container>
-				<Header as='h1' id="title">VOTE FOR YOUR FAVORITE ORGANIZATIONS</Header>
+				<Header as='h1' id="title">ORGANIZATIONS THIS QUARTER</Header>
 						<Card.Group centered itemsPerRow={3}>
 							{orgs.map(org => (
-								<OrgCard org={org} key={org._id} />
+								<OrgCard
+									key={org._id}
+									org={org}
+									image={_.find(images, ['_id', org.image])}
+								/>
 							))}
 						</Card.Group>
 			</Container>

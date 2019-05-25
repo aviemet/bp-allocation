@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
+import _ from 'lodash';
 
 import { Loader, Card, Container, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { useTheme, useOrganizations, usePresentationSettings } from '/imports/context';
+import { useTheme, useOrganizations, usePresentationSettings, useMembers, useImages } from '/imports/context';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
@@ -11,6 +12,10 @@ const OrgsContainer = styled.div`
 	padding-top: 20px;
 
 	.ui.card {
+
+		.orgsImage {
+			height: 150px;
+		}
 
 		.content{
 			color: #002B45;
@@ -30,9 +35,14 @@ const OrgsContainer = styled.div`
 `;
 
 const KioskInfo = props => {
+
+	const [ user, setUser ] = useState(false);
+
 	const { theme, themeLoading } = useTheme();
-	const { topOrgs, orgsLoading } = useOrganizations();
+	const { orgs, orgsLoading } = useOrganizations();
+	const { images } = useImages();
 	const { settings } = usePresentationSettings();
+	const { members } = useMembers();
 
 	if(themeLoading || orgsLoading) {
 		return <Loader />
@@ -41,10 +51,14 @@ const KioskInfo = props => {
 	return (
 		<OrgsContainer>
 			<Container>
-				<Header as='h1' id="title">ALLOCATE YOUR FUNDS</Header>
-						<Card.Group centered itemsPerRow={2}>
-							{topOrgs.map(org => (
-								<OrgCard org={org} key={org._id} />
+				<Header as='h1' id="title">VOTE FOR YOUR FAVORITE ORGANIZATIONS</Header>
+						<Card.Group centered itemsPerRow={3}>
+							{orgs.map(org => (
+								<OrgCard
+									 key={org._id}
+									org={org}
+									image={_.find(images, ['_id', org.image])}
+								/>
 							))}
 						</Card.Group>
 			</Container>

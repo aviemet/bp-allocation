@@ -14,9 +14,10 @@ import { Themes, Organizations, Images } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 import { usePresentationSettings } from '/imports/context';
 
-import KioskInfo from './KioskInfo';
-import KioskChitVoting from './KioskChitVoting';
-import KioskFundsVoting from './KioskFundsVoting';
+import KioskInfo from './Info/KioskInfo';
+import KioskChitVoting from './ChitVoting/KioskChitVoting';
+import FundsVotingKiosk from './FundsVoting';
+import MemberLoginRequired from './MemberLoginRequired';
 
 // Transition group definitions
 const FADE_DURATION = 300;
@@ -70,8 +71,6 @@ const Kiosk = props => {
 		return(<Loader/>)
 	}
 
-	console.log({chit: settings.chitVotingActive, funds: settings.fundsVotingActive});
-
 	return (
 		<Transition in={show} timeout={FADE_DURATION}>
 			{(state) => (
@@ -85,12 +84,12 @@ const Kiosk = props => {
 
 					{/* Chit Voting */}
 					<Route exact path={KIOSK_PAGES.chit} render={props => (
-						<KioskChitVoting />
+						<MemberLoginRequired component={KioskChitVoting} />
 					)} />
 
 					{/* Funds Voting */}
 					<Route exact path={KIOSK_PAGES.funds} render={props => (
-						<KioskFundsVoting />
+						<MemberLoginRequired component={FundsVotingKiosk} />
 					)} />
 
 				</Switch>

@@ -111,6 +111,43 @@ const MemberMethods = {
 	}),
 
 	/**
+	 * Record funds allocation vote for member for org
+	 */
+	fundVote: new ValidatedMethod({
+		name: 'members.fundVote',
+
+		validate: null,
+
+		run({theme, member, org, amount}) {
+			// Check for existing allocation for this org from this member
+			let allocations = MemberThemes.find({theme, member}).fetch()[0].allocations;
+			let allocation = _.find(allocations, ['organization', org]);
+
+			// Update amount
+			if(!allocation) {
+				MemberThemes.update({theme: theme, member: member}, {
+					$push: {
+						allocations: { organization: org, amount: amount }
+					}
+				});
+			// Or insert allocation vote
+			} else {
+				MemberThemes.update({
+					theme: theme, member: member, allocations: {
+						$elemMatch: {
+							organization: org
+						}
+					}
+				}, {
+					$set: {
+						'allocations.$.amount': amount
+					}
+				});
+			}
+		}
+	}),
+
+	/**
 	 * Delete Member
 	 */
 	remove: new ValidatedMethod({

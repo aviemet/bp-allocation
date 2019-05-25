@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import { Organizations, Images } from '/imports/api';
 import { OrganizationsSchema } from '/imports/api/schema';
 
+import AwardEmblem from './AwardEmblem';
+
 const OrgTitle = styled.p`
 	font-family: TradeGothic;
 	font-size: 1.5em;
@@ -34,52 +36,6 @@ const CardContent = styled(Card.Content)`
 	color: ${props => (props.bgcolor ? '#FFF' : '#222')};
 `;
 
-const AwardEmblem = styled.div`
-	width: 100%;
-	height: 100%;
-	text-align: center;
-`;
-
-const AwardImage = styled(Image)`
-	width: 100%;
-	height: 100%;
-	background-position: center center;
-	position: relative;
-`;
-
-const AwardAmount = styled.span`
-	color: #fff;
-	font-family: TradeGothic;
-	z-index: 999;
-	font-weight: 700;
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	transform: translateX(-50%);
-`
-
-/**
- * Award Emblem
- */
-const Award = ({show, type, amount}) => {
-	if(show !== true) return <React.Fragment />;
-
-	const awardImgSrc = {
-		awardee: '/img/circle_awardee.png',
-		other: '/img/circle.png'
-	};
-
-	return (
-		<AwardEmblem>
-			<AwardImage className='ui.card.image' style={{backgroundImage: `url(${awardImgSrc[type || 'awardee']})`,
-backgroundSize: type === 'awardee' ? '120%' : '100%'}}>
-				<AwardAmount style={{fontSize: type === 'awardee' ? '3.3em' : '2.9em'}}>{numeral(amount).format('$0.0a')}</AwardAmount>
-			</AwardImage>
-		</AwardEmblem>
-	);
-}
-
-
 /**
  * OrgCard Component
  */
@@ -95,15 +51,14 @@ const OrgCard = props => {
 
 	let className = props.bgcolor ? 'white' : '';
 
-	let total = props.org.allocatedFunds + props.org.leverageFunds;
+	// let total = props.org.allocatedFunds + props.org.leverageFunds;
+
+	const Overlay = props.overlay || false;
 
 	return (
 		<Card className={animateClass}>
 			<CardImage style={{ backgroundImage: `url(${imagePath})` }} className='orgsImage'>
-				<Award
-					show={props.award}
-					type={props.awardtype}
-					amount={total} />
+				{Overlay && <Overlay />}
 			</CardImage>
 			<CardContent bgcolor={props.bgcolor || '#FFF'} className={className}>
 				<OrgTitle>{props.org.title}</OrgTitle>

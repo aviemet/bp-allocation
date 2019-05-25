@@ -10,6 +10,7 @@ import { Loader, Header, Container, Grid, Card } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
+import AwardEmblem from '/imports/ui/Components/AwardEmblem';
 
 import { COLORS } from '/imports/utils';
 
@@ -94,8 +95,10 @@ const Results = props => {
 						org={org}
 						image={_.find(images, ['_id', org.image])}
 						bgcolor={COLORS[i % COLORS.length]}
-						award={true}
-						awardtype={'awardee'}
+						overlay={() => <AwardEmblem
+							type={'awardee'}
+							amount={org.allocatedFunds + org.leverageFunds}
+						/>}
 					/>
 				);
 			})}
@@ -112,8 +115,10 @@ const Results = props => {
 						org={org}
 						image={_.find(images, ['_id', org.image])}
 						bgcolor={COLORS[i % COLORS.length]}
-						award={true}
-						awardtype={'other'}
+						overlay={() => <AwardEmblem
+							type={'other'}
+							amount={org.allocatedFunds + org.leverageFunds}
+						/>}
 					/>
 				);
 			})}
