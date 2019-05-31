@@ -42,7 +42,8 @@ class FundsSliderComponent extends React.PureComponent {
 		super(props);
 
 		this.state = {
-			value: props.votes[props.org._id]
+			value: props.votes[props.org._id],
+			showLabel: false
 		}
 	}
 
@@ -61,17 +62,27 @@ class FundsSliderComponent extends React.PureComponent {
 		this.props.updateVotes(this.props.org._id, newValue);
 	}
 
+	showLabel = () => {
+		this.setState({ showLabel: true });
+		// Hopefully fix issue where onChangeComplete doesn't fire
+		window.addEventListener('mouseup', () => this.setState({ showLabel: false }), false);
+	}
+
 	render() {
+		const MAX = this.props.member.theme.amount;
+		const showLabelClass = this.state.showLabel ? 'visible' : false;
 		return (
 			<SliderContainer>
 				<Amount>{numeral(this.state.value).format('$0,0')}</Amount>
-				<BottomAlign>
+				<BottomAlign className={showLabelClass}>
 					<InputRange
 						minValue={0}
 						maxValue={this.props.member.theme.amount}
 						value={this.state.value}
 						onChange={this.handleChange}
-						formatLabel={value => ''}
+						onChangeStart={this.showLabel}
+						onChangeComplete={() => this.setState({ showLabel: false })}
+						formatLabel={value => numeral(value / MAX).format('0%')}
 						step={5}
 					/>
 				</BottomAlign>
