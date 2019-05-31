@@ -4,10 +4,13 @@ import _ from 'lodash';
 
 import { useTheme, useOrganizations, usePresentationSettings, useImages } from '/imports/context';
 
+import { MemberMethods } from '/imports/api/methods';
+
 const FundsVoteContext = React.createContext();
 
 const VotingContextProvider = props => {
 
+	const { theme } = useTheme();
 	const { topOrgs, orgsLoading } = useOrganizations();
 
 	let initialVotesState = {};
@@ -26,11 +29,24 @@ const VotingContextProvider = props => {
 		setVotes(newVotes);
 	}
 
+	const saveVotes = () => {
+		_.forEach(votes, (amount, org) => {
+			MemberMethods.fundVote.call({
+				theme: theme._id,
+				member: props.member._id,
+				org: org,
+				amount: amount
+			});
+		});
+	}
+
   return (
     <FundsVoteContext.Provider value={{
     	votes,
     	updateVotes,
-    	member: props.member || false
+    	saveVotes,
+    	member: props.member || false,
+    	unsetUser: props.unsetUser
     }}>
     	{props.children}
     </FundsVoteContext.Provider>

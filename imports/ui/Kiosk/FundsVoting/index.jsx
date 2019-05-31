@@ -13,6 +13,7 @@ import styled from 'styled-components';
 
 import InputRange from 'react-input-range';
 
+import VotingComplete from '../VotingComplete';
 import OrgCard from '/imports/ui/Components/OrgCard';
 import FundsSlider from './FundsSlider';
 
@@ -76,8 +77,11 @@ const FundsVotingKiosk = props => {
 	const { topOrgs, orgsLoading } = useOrganizations();
 	const { images } = useImages();
 
-	const finalizeVotes = () => {}
+	const [ votingComplete, setVotingComplete ] = useState(false);
 
+	if(votingComplete) {
+		return <VotingComplete />
+	}
 	return (
 		<OrgsContainer>
 
@@ -100,14 +104,19 @@ const FundsVotingKiosk = props => {
 						/>)
 				})}
 			</Card.Group>
-			<FundsVoteContext.Consumer>{({votes, member}) => {
+			<FundsVoteContext.Consumer>{({votes, saveVotes, member}) => {
 				let sum = 0;
 				_.forEach(votes, value => sum += value);
 				return(
-					<AmountRemaining value={member.theme.amount - sum} />
+					<React.Fragment>
+						<AmountRemaining value={member.theme.amount - sum} />
+						<Button size='huge' onClick={() => {
+							saveVotes();
+							setVotingComplete(true);
+						}}>Finalize Vote</Button>
+					</React.Fragment>
 				)
 			}}</FundsVoteContext.Consumer>
-			<Button size='huge' onClick={finalizeVotes}>Finalize Vote</Button>
 		</OrgsContainer>
 	);
 }

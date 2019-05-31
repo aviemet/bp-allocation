@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 
-import { Search, Label } from 'semantic-ui-react'
+import styled from 'styled-components';
+
+import { Search, Label, Input } from 'semantic-ui-react'
 
 const initialState = { isLoading: false, results: [], value: '' }
 
@@ -65,6 +67,8 @@ export default class MemberSearch extends Component {
 				results={results}
 				resultRenderer={resultRenderer}
 				value={value}
+				fluid
+				size='massive'
 			/>
 		)
 	}
