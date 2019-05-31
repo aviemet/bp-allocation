@@ -5,6 +5,7 @@ import numeral from 'numeral';
 import { roundFloat } from '/imports/utils';
 
 import { MemberMethods } from '/imports/api/methods';
+import { useVoting } from '/imports/ui/Kiosk/VotingContext';
 
 import styled from 'styled-components';
 import InputRange from 'react-input-range';
@@ -36,60 +37,52 @@ const BottomAlign = styled.div`
 	padding-right: 30px;
 `;
 
+class FundsSliderComponent extends React.PureComponent {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			value: props.votes[props.org._id]
+		}
+	}
+
+	componentWillUnmount() {
+		console.log("unmounting");
+	}
+
+	handleChange = value => {
+		this.setState({
+			value: value
+		});
+		this.props.onUpdate(this.props.org._id, value);
+	}
+
+	render() {
+		return (
+			<SliderContainer>
+				<Amount>{numeral(this.state.value).format('$0,0')}</Amount>
+				<BottomAlign>
+					<InputRange
+						minValue={0}
+						maxValue={this.props.member.theme.amount}
+						value={this.state.value}
+						onChange={this.handleChange}
+						formatLabel={value => ''}
+						step={5}
+					/>
+				</BottomAlign>
+			</SliderContainer>
+		)
+	}
+}
+
+
 const FundsSlider = props => {
+	const { member, votes, updateVotes } = useVoting();
 
-	console.log({props});
+	const context = Object.assign({ member, votes, updateVotes }, props);
 
-	const MAX_AMOUNT = props.member.theme.amount;
-/*
-	let initialValue = 0;
-	if(!_.isUndefined(props)) {
-		initialValue = roundFloat(_.find(props.member.theme.allocations, ['organization', props.org._id]).amount);
-	}
-	if(props.onChangeCallback) {
-		props.onChangeCallback(props.org._id, initialValue);
-	}
-
-	const [ value, setValue ] = useState(initialValue);
-
-	// console.log({value});
-	// console.log({props});
-
-	// Updats MemberTheme.allocations.push({org, amount})
-	const handleChange = value => {
-		// console.log({newValue: value});
-		setValue(value);
-	}
-
-	useEffect(() => {
-		if(props.onChangeCallback) {
-			props.onChangeCallback(props.org._id, value);
-		}
-	});
-*/
-	// MemberMethods.fundVote.call({theme: props.theme._id, member: props.member._id, org: props.org._id, amount: value});
-
-	const handleChange = value => {
-		if(props.onChangeCallback) {
-			props.onChangeCallback({value, orgId: props.org._id});
-		}
-	}
-
-  return (
-  	<SliderContainer>
-  		<Amount>{numeral(props.vote).format('$0,0')}</Amount>
-  		<BottomAlign>
-		    <InputRange
-					minValue={0}
-					maxValue={MAX_AMOUNT}
-					value={props.vote}
-					onChange={handleChange}
-					formatLabel={value => ''}
-					step={5}
-				/>
-			</BottomAlign>
-		</SliderContainer>
-  )
+	return <FundsSliderComponent {...context}>{props.children}</FundsSliderComponent>;
 }
 
 export default FundsSlider;

@@ -1,43 +1,42 @@
 import { Meteor } from 'meteor/meteor';
-import React, { useState, useReducer, useContext, useEffect } from 'react';
+import React, { useState, useReducer, useContext, useEffect, useRef } from 'react';
+import _ from 'lodash';
 
 import { useTheme, useOrganizations, usePresentationSettings, useImages } from '/imports/context';
 
-const VoteContext = React.createContext();
+const FundsVoteContext = React.createContext();
 
 const VotingContextProvider = props => {
 
-	const { topOrgs } = useOrganizations();
+	const { topOrgs, orgsLoading } = useOrganizations();
 
 	let initialVotesState = {};
 	if(!_.isUndefined(props.member) && !orgsLoading) {
-		// Init array of 0 values for votes for the toporgs
 		topOrgs.map(org => {
-			// Update the vote value if user has voted already
 			const vote = _.find(props.member.theme.allocations, ['organization', org._id]);
-
 			initialVotesState[org._id] = vote ? vote.amount : 0;
 		});
 	}
 
-	const updateVotes = ({org, amount}) => {
-		let newVotes = votes;
-		newVotes[org] = amount;
-		return newVotes;
-	}
+	const [ votes, setVotes ] = useState(initialVotesState);
 
-	const [ votes, dispatchVotes ] = useReducer(updateVotes, {});
+	const updateVotes = ({org, amount}) => {
+		let newVotes = _.clone(votes);
+		newVotes[org] = amount;
+		setVotes(newVotes);
+	}
 
   return (
     <FundsVoteContext.Provider value={{
-    	votes: votes,
-    	updateVotes: dispatchVotes
+    	votes,
+    	updateVotes,
+    	member: props.member || false
     }}>
     	{props.children}
     </FundsVoteContext.Provider>
   )
 }
 
-const useVoting = () => useContext(VoteContext);
+const useVoting = () => useContext(FundsVoteContext);
 
-export default { VotingContextProvider, useVoting };
+export { VotingContextProvider, useVoting };
