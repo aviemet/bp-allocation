@@ -6,7 +6,7 @@ import numeral from 'numeral';
 import { roundFloat } from '/imports/utils';
 
 import { useTheme, useOrganizations, usePresentationSettings, useImages } from '/imports/context';
-import { useVoting } from '/imports/ui/Kiosk/VotingContext';
+import { FundsVoteContext, useVoting } from '/imports/ui/Kiosk/VotingContext';
 
 import { Loader, Card, Container, Header, Button } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -73,38 +73,15 @@ const AmountRemaining = React.memo(function AmountRemaining({value}) {
 
 const FundsVotingKiosk = props => {
 
-	const { theme, themeLoading } = useTheme();
 	const { topOrgs, orgsLoading } = useOrganizations();
 	const { images } = useImages();
-	const { settings } = usePresentationSettings();
-
-	const { member } = useVoting();
-
-	let sum = 0;
-	let votes = {};
-	if(!_.isUndefined(props.member) && !orgsLoading) {
-		topOrgs.map(org => {
-			const vote = _.find(props.member.theme.allocations, ['organization', org._id]);
-			votes[org._id] = vote ? vote.amount : 0;
-			sum += votes[org._id];
-		});
-	}
 
 	const finalizeVotes = () => {}
-
-	const changeVotesValue = (org, amount) => {
-		console.log({org, amount});
-		votes[org] = amount;
-		console.log({votes});
-		sum -= amount;
-	}
-
-	const MAX_AMOUNT = member.theme.amount;
 
 	return (
 		<OrgsContainer>
 
-			<Header as='h1' className="title">Voting for {member.firstName}</Header>
+			<Header as='h1' className="title">Voting for {props.memberName}</Header>
 
 			<Card.Group centered itemsPerRow={2}>
 				{topOrgs.map(org => {
@@ -117,14 +94,19 @@ const FundsVotingKiosk = props => {
 
 						  	<FundsSlider
 						  		org={org}
-						  		onUpdate={changeVotesValue}
 					  		/>
 
 							)}
 						/>)
 				})}
 			</Card.Group>
-			<AmountRemaining value={member.theme.amount - sum} />
+			<FundsVoteContext.Consumer>{({votes, member}) => {
+				let sum = 0;
+				_.forEach(votes, value => sum += value);
+				return(
+					<AmountRemaining value={member.theme.amount - sum} />
+				)
+			}}</FundsVoteContext.Consumer>
 			<Button size='huge' onClick={finalizeVotes}>Finalize Vote</Button>
 		</OrgsContainer>
 	);

@@ -20,7 +20,7 @@ const VotingContextProvider = props => {
 
 	const [ votes, setVotes ] = useState(initialVotesState);
 
-	const updateVotes = ({org, amount}) => {
+	const updateVotes = (org, amount) => {
 		let newVotes = _.clone(votes);
 		newVotes[org] = amount;
 		setVotes(newVotes);
@@ -39,4 +39,4 @@ const VotingContextProvider = props => {
 
 const useVoting = () => useContext(FundsVoteContext);
 
-export { VotingContextProvider, useVoting };
+export { VotingContextProvider, FundsVoteContext, useVoting };

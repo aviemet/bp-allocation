@@ -46,15 +46,19 @@ class FundsSliderComponent extends React.PureComponent {
 		}
 	}
 
-	componentWillUnmount() {
-		console.log("unmounting");
-	}
-
 	handleChange = value => {
-		this.setState({
-			value: value
+		const MAX = this.props.member.theme.amount;
+
+		let sum = 0;
+		_.forEach(this.props.votes,(voteAmount, key) => {
+			sum += key === this.props.org._id ? value : voteAmount;
 		});
-		this.props.onUpdate(this.props.org._id, value);
+		const newValue = MAX - sum < 0 ? value + (MAX - sum) : value
+
+		this.setState({
+			value: newValue
+		});
+		this.props.updateVotes(this.props.org._id, newValue);
 	}
 
 	render() {

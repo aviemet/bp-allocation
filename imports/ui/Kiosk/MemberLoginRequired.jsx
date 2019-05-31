@@ -69,7 +69,7 @@ const MemberLoginRequired = props => {
 	// Member is chosen, display the voting panel
 	return (
 		<VotingContextProvider member={user}>
-			<ChildComponent />
+			<ChildComponent memberName={user.firstName} />
 		</VotingContextProvider>
 	);
 }
