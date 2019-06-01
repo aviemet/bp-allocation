@@ -8,16 +8,16 @@ import { OrganizationMethods, ThemeMethods } from '/imports/api/methods';
 
 import { Table, Checkbox, Button, Form, Dropdown, Input, Label } from 'semantic-ui-react';
 
-const actionOptions = [
-	{ key: 'actions', text: 'Actions', value: 'actions' },
-	{ key: 'topOff', text: 'Top Off', value: 'topff' },
-	{ key: 'reset', text: 'Reset', value: 'reset' }
-];
-
 /**
  * Allocation Inputs Component
  */
 const AllocationInputs = props => {
+
+	const actionOptions = [
+		{ key: 'actions', text: 'Actions', value: 'actions' },
+		{ key: 'topOff', text: `${props.org.topOff > 0 ? 'Undo Top Off' : 'Top Off'}`, value: 'topoff' },
+		{ key: 'reset', text: 'Reset', value: 'reset' }
+	];
 
 	const enterAmountFromVotes = (e, data) => {
 		if(data.value !== props.org.amountFromVotes){
@@ -44,7 +44,11 @@ const AllocationInputs = props => {
 	const handleActionSelection = (e, data) => {
 		switch(data.value){
 			case actionOptions[1].value: // topOff
-				OrganizationMethods.topOff.call({id: props.org._id});
+				if(props.org.topOff > 0) {
+					OrganizationMethods.topOff.call({id: props.org._id, negate: true});
+				} else {
+					OrganizationMethods.topOff.call({id: props.org._id});
+				}
 				break;
 			case actionOptions[2].value: // reset
 				OrganizationMethods.reset.call({id: props.org._id});
@@ -52,7 +56,7 @@ const AllocationInputs = props => {
 		}
 	}
 
-	// Initialize to 0 if empty so it's truthiness can be read
+	// Initialize to 0 if empty so it's truthiness can be tested
 	const amountFromVotes = props.org.amountFromVotes || 0;
 
 	// Boolean help for marking fully funded orgs

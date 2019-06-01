@@ -1,5 +1,11 @@
 const PAGES = ['intro', 'orgs', 'timer', 'toporgs', 'allocation', 'results'];
 
-const bpGreen = "#0E8743";
+const GREEN = "#0D8744";
+const BLUE = "#002B43";
 
-export { PAGES };
+const COLORS = {
+	green: GREEN,
+	blue: BLUE
+};
+
+export { PAGES, COLORS };

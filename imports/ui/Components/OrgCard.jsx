@@ -14,6 +14,8 @@ const GREEN = "#0D8744";
 const BLUE = "#002B43";
 
 const StyledCard = styled(Card)`
+	text-align: center;
+
 	&& {
 		border: 5px solid #FFF !important;
 	}
@@ -23,17 +25,30 @@ const StyledCard = styled(Card)`
 	}
 `;
 
-const OrgTitle = styled.p`
+const OrgTitle = styled.div`
 	font-family: TradeGothic;
 	font-size: 2.5rem;
 	margin: 5px;
 	font-weight: 600;
-	min-height: 7rem;
+	min-height: 8rem;
+	position: relative;
+
+	.big & {
+		min-height: 4rem;
+	}
+
+	& > p {
+		display: block;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
 `;
 
 const OrgAsk = styled.p`
 	font-family: TradeGothic20;
-	font-size: 3.25rem;
+	font-size: 3rem;
 	font-weight: 700;
 `;
 
@@ -58,6 +73,7 @@ const OrgCard = props => {
 	}
 
 	const Overlay = props.overlay || false;
+	const Content = props.content || false;
 
 	let bgcolor = GREEN;
 	if(props.index) {
@@ -72,7 +88,12 @@ const OrgCard = props => {
 			{Overlay && <Overlay />}
 
 			<CardContent bgcolor={bgcolor} >
-				<OrgTitle>{props.org.title}</OrgTitle>
+
+				{props.content && <Card.Content>
+					<Content />
+				</Card.Content>}
+
+				<OrgTitle><p>{props.org.title}</p></OrgTitle>
 				<OrgAsk>{numeral(props.org.ask).format('$0a')}</OrgAsk>
 			</CardContent>
 		</StyledCard>

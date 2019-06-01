@@ -8,7 +8,7 @@ import { useTheme, useOrganizations, usePresentationSettings, useImages } from '
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
-const OrgsContainer = styled.div`
+const OrgsContainer = styled(Container)`
 	padding-top: 20px;
 
 	.ui.card {
@@ -18,7 +18,6 @@ const OrgsContainer = styled.div`
 		}
 
 		.content{
-			color: #002B45;
 			padding-bottom: 0.2em;
 		}
 	}
@@ -46,18 +45,16 @@ const KioskInfo = props => {
 
 	return (
 		<OrgsContainer>
-			<Container>
-				<Header as='h1' id="title">ORGANIZATIONS THIS QUARTER</Header>
-						<Card.Group centered itemsPerRow={3}>
-							{orgs.map(org => (
-								<OrgCard
-									key={org._id}
-									org={org}
-									image={_.find(images, ['_id', org.image])}
-								/>
-							))}
-						</Card.Group>
-			</Container>
+			<Header as='h1' id="title">ORGANIZATIONS THIS QUARTER</Header>
+				<Card.Group centered itemsPerRow={3}>
+					{orgs.map((org, i) => (
+						<OrgCard
+							key={org._id}
+							org={org}
+							image={_.find(images, ['_id', org.image])}
+						/>
+					))}
+				</Card.Group>
 		</OrgsContainer>
 	);
 }

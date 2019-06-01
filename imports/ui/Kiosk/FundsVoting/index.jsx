@@ -17,19 +17,25 @@ import VotingComplete from '../VotingComplete';
 import OrgCard from '/imports/ui/Components/OrgCard';
 import FundsSlider from './FundsSlider';
 
+import { COLORS } from '/imports/global';
+
 const OrgsContainer = styled(Container)`
 	padding-top: 20px;
 
+	.ui.centered.two.cards {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+	}
+
 	.ui.card {
-		margin: 2rem 1rem;
+		margin: 1rem;
 
 		.content{
-			color: #002B45;
 			padding-bottom: 0.2em;
 		}
 	}
 
-	.title {
+	h1.ui.header.title {
 		color: #FFF;
 		text-align: center;
 		font-size: 3rem;
@@ -44,7 +50,6 @@ const OrgsContainer = styled(Container)`
 const SliderContainer = styled.div`
 	width: 100%;
 	height: 100%;
-	background: rgba(0,0,0,0.5);
 	margin: 0;
 	padding: 15px;
 	position: relative;
@@ -68,8 +73,22 @@ const BottomAlign = styled.div`
 	padding-right: 30px;
 `;
 
+const FinalizeButton = styled(Button)`
+	width: 100%;
+	text-align: center;
+	background-color: ${COLORS.blue} !important;
+	color: white !important;
+	border: 2px solid #fff !important;
+	font-size: 2rem !important;
+	text-transform: uppercase !important;
+`
+const NumberFormat = styled.span`
+	width: 12rem;
+	display: inline-block;
+`;
+
 const AmountRemaining = React.memo(function AmountRemaining({value}) {
-	return <Header as='h1' className="title">FUNDS LEFT TO ALLOCATE: {numeral(value).format('$0,0')}</Header>
+	return <Header as='h1' className="title">FUNDS LEFT TO ALLOCATE: <NumberFormat>{numeral(value).format('$0,0')}</NumberFormat></Header>
 });
 
 const FundsVotingKiosk = props => {
@@ -94,26 +113,26 @@ const FundsVotingKiosk = props => {
 							key={org._id}
 							org={org}
 							image={_.find(images, ['_id', org.image])}
-							overlay={() => (
-
-						  	<FundsSlider
-						  		org={org}
-					  		/>
-
+							size='big'
+							content={() => (
+								<FundsSlider
+									org={org}
+								/>
 							)}
 						/>)
 				})}
 			</Card.Group>
+
 			<FundsVoteContext.Consumer>{({votes, saveVotes, member}) => {
 				let sum = 0;
 				_.forEach(votes, value => sum += value);
 				return(
 					<React.Fragment>
 						<AmountRemaining value={member.theme.amount - sum} />
-						<Button size='huge' onClick={() => {
+						<FinalizeButton size='huge' onClick={() => {
 							saveVotes();
 							setVotingComplete(true);
-						}}>Finalize Vote</Button>
+						}}>Finalize Vote</FinalizeButton>
 					</React.Fragment>
 				)
 			}}</FundsVoteContext.Consumer>

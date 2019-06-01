@@ -34,7 +34,7 @@ const MemberLoginRequired = props => {
 
 	const { members, membersLoading } = useMembers();
 
-	// Debuggin purposes only
+	// Debugging purposes only
 	/*if(!membersLoading && !user) {
 		setUser(members[0]);
 	}*/

@@ -177,13 +177,16 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({id}) {
+		run({id, negate}) {
+			negate = negate || false;
+
 			let org = Organizations.find({_id: id}).fetch()[0];
-			// let theme = Themes.find({_id: org.theme}).fetch()[0];
 
-			let topOffAmount = org.ask - org.amountFromVotes - org.pledges;
+			let topOffAmount = 0;
 
-			// ThemeMethods.update.call({id: org.theme, data: {leverageUsed: parseInt(theme.leverageUsed) + topOffAmount}});
+			if(!negate)	{
+				topOffAmount = org.ask - org.amountFromVotes - org.pledges;
+			}
 
 			return Organizations.update({_id: id}, {$set: {topOff: topOffAmount}});
 		}

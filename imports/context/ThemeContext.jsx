@@ -39,16 +39,19 @@ const ThemeProviderTemplate = props => {
 	const leverageRemaining = () => {
 		if(_.isUndefined(props.theme)) return 0;
 
-		let remainingLeverage = props.theme.leverageTotal - consolationTotal();
+		let remainingLeverage = (props.theme.leverageTotal || 0) - consolationTotal();
 
 		props.topOrgs.map((org) => {
 			remainingLeverage -= parseInt(org.amountFromVotes || 0);
 			if(org.topOff > 0){
 				remainingLeverage -= org.topOff;
 			}
-			const pledges = org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0);
-			remainingLeverage -= pledges;
+			if(!_.isEmpty(org.pledges)) {
+				remainingLeverage -= org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0);
+			}
+
 		});
+		if(remainingLeverage <= 0) return 0;
 		return parseFloat((remainingLeverage).toFixed(2));
 	}
 

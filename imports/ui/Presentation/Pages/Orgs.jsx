@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import _ from 'lodash';
 
-import { Card, Container } from 'semantic-ui-react';
+import { Card, Container, Image } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { ThemeContext, OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
@@ -36,6 +36,31 @@ const PageTitle = styled.h2`
 	margin-bottom: 20px;
 `;
 
+const DimOverlay = styled.div`
+	width: calc(100% + 10px);
+	height: calc(100% + 10px);
+	background-color: rgba(0,0,0,0.8);
+	position: absolute;
+	top: -5px;
+	left: -5px;
+	z-index: 1;
+
+	img {
+		opacity: 0.125;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+`;
+
+const Overlay = () => (
+	<DimOverlay>
+		<Image src='/img/BPLogo.svg' />
+	</DimOverlay>
+);
+
 const Orgs = props => {
 
 	const { orgs, topOrgs } = useContext(OrganizationContext);
@@ -44,9 +69,8 @@ const Orgs = props => {
 
 	let colorOrgs = {};
 	topOrgs.map((org, i) => {
-		colorOrgs[org._id] = COLORS[i % COLORS.length];
+		colorOrgs[org._id] = true;
 	});
-	// bgcolor={settings.colorizeOrgs && colorOrgs[org._id] ? colorOrgs[org._id] : false}
 
 	return (
 		<OrgsContainer>
@@ -59,6 +83,7 @@ const Orgs = props => {
 						org={org}
 						image={_.find(images, ['_id', org.image])}
 						index={i}
+						overlay={settings.colorizeOrgs && colorOrgs[org._id] ? Overlay : false}
 					/>
 				))}
 				</Card.Group>

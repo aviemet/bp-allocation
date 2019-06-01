@@ -1,13 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import React, { Component } from 'react';
-import { withTracker } from 'meteor/react-meteor-data';
+import numeral from 'numeral';
 
 import { Organizations } from '/imports/api';
 
-import numeral from 'numeral';
-
 import { Loader, Grid, Image } from 'semantic-ui-react';
 import styled from 'styled-components';
+
+import { COLORS } from '/imports/global';
 
 const BarContainer = styled(Grid.Column)`
 	height: 100%;
@@ -21,9 +21,11 @@ const GraphBar = styled.div`
 	left: 50%;
 	width: 80%;
 	transform: translateX(-50%);
+	background-color: ${COLORS.blue};
 
-	-webkit-animation: animate-bar 4s 1 ease-out;
-	-webkit-transition: all 4s ease-out;
+	animation: animate-bar 4s 1 ease-out;
+	transition: height 4s ease-out,
+	            background-color 5s ease-in;
 `;
 
 const Pledged = styled.span`
@@ -72,6 +74,7 @@ const Bar = props => {
 	if(!props.savesVisible) shownFunds -= props.org.save;
 
 	let height = Math.min(Math.round((shownFunds / props.org.ask) * 100), 100);
+	let backgroundColor = height === 100 ? COLORS.green : COLORS.blue;
 
 	if(height === 0){
 		return (
@@ -82,7 +85,7 @@ const Bar = props => {
 	return (
 		<BarContainer>
 			<AwardImg show={height === 100} />
-			<GraphBar style={{height: `${height}%`, backgroundColor: props.color }}>
+			<GraphBar style={{height: `${height}%`, backgroundColor: backgroundColor }}>
 				<Pledged>${numeral(shownFunds).format('0.0a')}</Pledged>
 			</GraphBar>
 		</BarContainer>

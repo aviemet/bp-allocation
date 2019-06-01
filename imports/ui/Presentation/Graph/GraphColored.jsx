@@ -174,6 +174,7 @@ const Graph = props => {
 							key={org._id}
 							org={org}
 							theme={theme}
+							color={COLORS[i%COLORS.length]}
 							savesVisible={settings.savesVisible}
 						/>
 					))}
@@ -199,6 +200,7 @@ const Graph = props => {
 							<ProgressBar
 								value={theme.leverageRemaining}
 								total={startingLeverage}
+								inverted
 								color='green'
 								size='large'
 							/>

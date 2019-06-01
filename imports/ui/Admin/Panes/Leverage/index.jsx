@@ -30,8 +30,7 @@ const Leverage = props => {
 		let rounds = [];
 
 		let nRounds = 1;
-		while((leverageRemaining >= 1 || _numFullyFundedOrgs(orgs) === orgs.length) && nRounds < 10) {
-
+		while(leverageRemaining >= 1 && _numFullyFundedOrgs(orgs) < orgs.length && nRounds < 10) {
 			let round = {
 				leverageRemaining: leverageRemaining,
 				sumRemainingOrgs: sumRemainingOrgs
@@ -140,6 +139,15 @@ const Leverage = props => {
 	}
 
 	const rounds = getLeverageSpreadRounds(theme.leverageRemaining);
+
+	if(rounds.length === 0) {
+		return (
+			<React.Fragment>
+				<Header as='h1'>Not enough leverage to assign to organizations</Header>
+				<p>Check if amount has been entered to the 'Total Pot' field in Theme Settings</p>
+			</React.Fragment>
+		)
+	}
 
 	const orgSpreadSum = topOrgs.reduce((sum, org) => {return sum + org.leverageFunds}, 0);
 	const roundSpreadSum = rounds[rounds.length-1].orgs.reduce((sum, org) => {return sum + org.leverageFunds}, 0);

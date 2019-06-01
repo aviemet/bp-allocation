@@ -13,9 +13,7 @@ import InputRange from 'react-input-range';
 const SliderContainer = styled.div`
 	width: 100%;
 	height: 100%;
-	background: rgba(0,0,0,0.5);
 	margin: 0;
-	padding: 15px;
 	position: relative;
 
 	.input-range {
@@ -27,14 +25,13 @@ const Amount = styled.div`
 	font-size: 5.75rem;
 	text-align: center;
 	line-height: 1.15;
-	margin-top: 2rem;
+	padding-bottom: 4rem;
 `;
 
 const BottomAlign = styled.div`
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	padding-right: 30px;
 `;
 
 class FundsSliderComponent extends React.PureComponent {
