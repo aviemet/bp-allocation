@@ -20,7 +20,6 @@ const ThemeContext = React.createContext();
  * Create a Provider with its own API to act as App-wide state store
  */
 const ThemeProviderTemplate = props => {
-
 	const pledgedTotal = () => {
 		if(_.isUndefined(props.topOrgs)) return 0;
 

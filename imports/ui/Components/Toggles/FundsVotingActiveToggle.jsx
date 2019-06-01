@@ -20,6 +20,8 @@ const FundsVotingActiveToggle = props => {
 		});
 	}
 
+	if(!settings.useKioskFundsVoting) return <React.Fragment></React.Fragment>
+
 	return(
 		<Checkbox
 			label='Funds Voting Active'

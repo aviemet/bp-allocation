@@ -20,6 +20,8 @@ const ChitVotingActiveToggle = props => {
 		});
 	}
 
+	if(!settings.useKioskChitVoting) return <React.Fragment></React.Fragment>
+
 	return(
 		<Checkbox
 			label='Chit Voting Active'

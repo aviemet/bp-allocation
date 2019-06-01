@@ -35,7 +35,6 @@ const PresentationSettingsProviderTemplate = props => {
 const PresentationSettingsProvider = withTracker((props) => {
 	if(!props.id || _.isUndefined(props.handles.themes) || _.isUndefined(props.handles.orgs)) return { loading: true };
 
-	// let themeHandle = Meteor.subscribe('theme', props.id);
 	let theme = Themes.find({_id: props.id}).fetch()[0];
 
 	if(_.isUndefined(theme)) return { loading: true };

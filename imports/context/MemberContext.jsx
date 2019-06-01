@@ -31,7 +31,11 @@ const MemberProviderTemplate = props => {
 		<MemberContext.Provider value={{
 			members: aggregateMembers(),
 			memberThemes: props.memberThemes,
-			membersLoading: props.loading
+			membersLoading: props.loading,
+			handles: Object.assign({
+				memberThemes: props.memberThemesHandle,
+				members: props.membersHandle
+			}, props.handles)
 		}}>
 			{props.children}
 		</MemberContext.Provider>
@@ -51,7 +55,7 @@ const MemberProvider = withTracker(props => {
 
 	const loading = (!membersHandle.ready() || !memberThemesHandle.ready());
 
-	return { loading, members, memberThemes };
+	return { loading, members, memberThemes, memberThemesHandle, membersHandle };
 })(MemberProviderTemplate);
 
 const useMembers = () => useContext(MemberContext);

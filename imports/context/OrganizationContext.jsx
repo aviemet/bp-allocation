@@ -8,7 +8,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 
 import { filterTopOrgs } from '/imports/utils';
 
-import { Themes, Organizations } from '/imports/api';
+import { Themes, Organizations, PresentationSettings, Members, MemberThemes } from '/imports/api';
 
 /**
  * Initialize the Context
@@ -22,7 +22,8 @@ const OrganizationProviderTemplate = props => {
 
 	// Return only the top orgs for the theme, adding "virtual fields"
 	getTopOrgs = () => {
-		if(_.isUndefined(props.orgs) || _.isUndefined(props.theme)) return {};
+		// if(_.isUndefined(props.settings) || _.isUndefined(props.orgs) || _.isUndefined(props.theme)) return {};
+		if(props.loading) return {};
 
 		let topOrgs = filterTopOrgs(props.theme, props.orgs);
 
@@ -40,6 +41,13 @@ const OrganizationProviderTemplate = props => {
 			// Total of funds pledged for this org multiplied by the match ratio
 			org.pledgeTotal = org.pledges.reduce((sum, pledge) => { return sum + pledge.amount}, 0) * props.theme.matchRatio;
 
+			if(props.settings.useKioskFundsVoting) {
+				org.amountFromVotes = 0;
+				props.memberThemes.map(memberTheme => {
+					let vote = _.find(memberTheme.allocations, ['organization', org._id]) || false;
+					org.amountFromVotes += vote.amount || 0;
+				});
+			}
 			// Total amount of money allocted to this org aside from leverage distribution
 			org.allocatedFunds = roundFloat((org.amountFromVotes || 0) + org.pledgeTotal + org.save + org.topOff);
 
@@ -70,15 +78,23 @@ const OrganizationProviderTemplate = props => {
 const OrganizationProvider = withTracker(props => {
 	if(!props.id) return { loading: true };
 
-	// let themeHandle = Meteor.subscribe('theme', props.id);
 	let theme = Themes.find({_id: props.id}).fetch()[0];
+	if(_.isUndefined(theme)) return { loading: true };
+
+	let settings = PresentationSettings.find({_id: theme.presentationSettings}).fetch()[0];
+	if(_.isUndefined(settings)) return { loading: true };
 
 	let orgsHandle = Meteor.subscribe('organizations', props.id);
 	let orgs = Organizations.find({theme: props.id}).fetch();
 
-	let loading = (!orgsHandle.ready() || _.isUndefined(orgs));
+	// Get the members participating in this theme
+	const memberThemes = MemberThemes.find({theme: props.id}).fetch();
+	const memberIds = memberThemes.map(memberTheme => memberTheme.member);
+	const members = Members.find({_id: {$in: memberIds}}).fetch();
 
-	return { loading, orgs, theme, orgsHandle };
+	let loading = (!orgsHandle.ready() || _.isUndefined(orgs) || _.isUndefined(memberThemes));
+
+	return { loading, orgs, theme, settings, members, memberThemes, orgsHandle };
 })(OrganizationProviderTemplate);
 
 const useOrganizations = () => useContext(OrganizationContext);
