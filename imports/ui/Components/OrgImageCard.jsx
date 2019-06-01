@@ -10,36 +10,31 @@ import { OrganizationsSchema } from '/imports/api/schema';
 
 import AwardEmblem from './AwardEmblem';
 
-const GREEN = "#0D8744";
-const BLUE = "#002B43";
-
-const StyledCard = styled(Card)`
-	&& {
-		border: 5px solid #FFF !important;
-	}
-
-	&.big {
-		/*height: 24rem;*/
-	}
-`;
-
 const OrgTitle = styled.p`
 	font-family: TradeGothic;
-	font-size: 2.5rem;
+	font-size: 1.5em;
 	margin: 5px;
 	font-weight: 600;
-	min-height: 7rem;
 `;
 
 const OrgAsk = styled.p`
 	font-family: TradeGothic20;
-	font-size: 3.25rem;
+	font-size: 2.1em;
 	font-weight: 700;
+`;
+
+const CardImage = styled.div`
+	width: 100%;
+	height: 205px;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
 `;
 
 const CardContent = styled(Card.Content)`
 	background-color: ${props => props.bgcolor} !important;
-	color: '#FFF';
+	color: ${props => (props.bgcolor ? '#FFF' : '#222')};
+	// color: #002B45;
 `;
 
 /**
@@ -47,35 +42,30 @@ const CardContent = styled(Card.Content)`
  */
 const OrgCard = props => {
 
-	console.log({props});
-
 	// Add animation class if toggled
-	// let animateClass = props.animateClass ? 'animate-orgs' : '';
+	let animateClass = props.animateClass ? 'animate-orgs' : '';
 
 	let imagePath = '';
 	if(props.image && props.image.path){
 		imagePath = Images.link(props.image, 'original', '/');
 	}
 
+	let className = props.bgcolor ? 'white' : '';
+
+	// let total = props.org.allocatedFunds + props.org.leverageFunds;
+
 	const Overlay = props.overlay || false;
 
-	let bgcolor = GREEN;
-	if(props.index) {
-		const row = parseInt(props.index / 4) % 4;
-		bgcolor = (props.index + (row % 2)) % 2 === 0 ? GREEN : BLUE;
-	}
-
-	cardClass = `${props.size ? props.size : ''} ${props.animateClass ? 'animate-orgs' : ''}`;
-
 	return (
-		<StyledCard className={cardClass}>
-			{Overlay && <Overlay />}
-
-			<CardContent bgcolor={bgcolor} >
+		<Card className={animateClass}>
+			<CardImage style={{ backgroundImage: `url(${imagePath})` }} className='orgsImage'>
+				{Overlay && <Overlay />}
+			</CardImage>
+			<CardContent bgcolor={props.bgcolor || '#FFF'} className={className}>
 				<OrgTitle>{props.org.title}</OrgTitle>
 				<OrgAsk>{numeral(props.org.ask).format('$0a')}</OrgAsk>
 			</CardContent>
-		</StyledCard>
+		</Card>
 	);
 }
 

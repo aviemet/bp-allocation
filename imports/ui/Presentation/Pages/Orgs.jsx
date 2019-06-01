@@ -19,7 +19,6 @@ const OrgsContainer = styled.div`
 		}
 
 		.content{
-			color: #002B45;
 			padding-bottom: 0.2em;
 
 			&.white{
@@ -47,18 +46,19 @@ const Orgs = props => {
 	topOrgs.map((org, i) => {
 		colorOrgs[org._id] = COLORS[i % COLORS.length];
 	});
+	// bgcolor={settings.colorizeOrgs && colorOrgs[org._id] ? colorOrgs[org._id] : false}
 
 	return (
 		<OrgsContainer>
 			<PageTitle>Participating Organizations</PageTitle>
 			<Container>
 				<Card.Group centered itemsPerRow={4}>
-				{orgs.map((org) => (
+				{orgs.map((org, i) => (
 					<OrgCard
 						key={org._id}
 						org={org}
 						image={_.find(images, ['_id', org.image])}
-						bgcolor={settings.colorizeOrgs && colorOrgs[org._id] ? colorOrgs[org._id] : false}
+						index={i}
 					/>
 				))}
 				</Card.Group>

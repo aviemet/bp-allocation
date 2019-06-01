@@ -62,6 +62,7 @@ const TopOrgs = props => {
 						image={_.find(images, ['_id', org.image])}
 						animateClass={settings.animateOrgs}
 						bgcolor={COLORS[i % COLORS.length]}
+						size='big'
 					/>
 				))}
 				</Card.Group>
