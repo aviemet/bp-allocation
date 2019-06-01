@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { useTheme, usePresentationSettings } from '/imports/context';
@@ -8,7 +8,7 @@ import _ from 'lodash';
 
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 
-import { Loader, Button, Form, Input, Icon } from 'semantic-ui-react';
+import { Loader, Button, Form, Input, Checkbox, Label, Icon } from 'semantic-ui-react';
 
 const SettingsPane = props => {
 
@@ -23,14 +23,18 @@ const SettingsPane = props => {
 	const [ consolationAmount, setConsolationAmount ] = useState(theme.consolationAmount);
 	const [ consolationActive, setConsolationActive ] = useState(theme.consolationActive);
 	const [ timerLength, setTimerLength ]             = useState(settings.timerLength);
+	const [ useKioskChitVoting, setKioskChitVoting]   = useState(settings.useKioskChitVoting);
+	const [ useKioskFundsVoting, setKioskFundsVoting] = useState(settings.useKioskFundsVoting);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
 		let data = {
 			theme: {title, question, chitWeight, matchRatio, leverageTotal, consolationActive, consolationAmount},
-			settings: {timerLength}
+			settings: {timerLength, useKioskChitVoting, useKioskFundsVoting}
 		};
+
+		console.log({data});
 
 		// Iterate over database objects with keys to be saved
 		_.forEach(data, (value, dataKey) => {
@@ -59,6 +63,10 @@ const SettingsPane = props => {
 			});
 		}
 	}
+
+const tester = (a, b, c) => {
+	console.log({a, b, c});
+}
 
 	if(themeLoading || settingsLoading){
 		return(<Loader/>)
@@ -90,6 +98,25 @@ const SettingsPane = props => {
 
 		 		{/* Match Ratio */}
 				<Form.Input name='theme.matchRatio' type='number' placeholder='Match Ratio' label='Multiplier for matched funds' value={matchRatio} onChange={e => setMatchRatio(e.target.value)} />
+
+			</Form.Group>
+
+			<Form.Group>
+				{/* Use Chit Votes Kiosk Toggle */}
+				<Form.Field>
+					<label>Chit Votes Entered Via:</label>
+					<Label>Manual</Label>
+					<Checkbox slider name='settings.useKioskChitVoting' style={{'verticalAlign': 'middle'}} checked={useKioskChitVoting} onChange={(e, value) => setKioskChitVoting(value.checked)} />
+					<Label>Kiosk</Label>
+				</Form.Field>
+
+				{/* Use Kiosk Votes Kiosk Toggle */}
+				<Form.Field>
+					<label>Funds Voting Entered Via:</label>
+					<Label>Manual</Label>
+					<Checkbox slider name='settings.useKioskFundsVoting' style={{'verticalAlign': 'middle'}} checked={useKioskFundsVoting} onChange={(e, value) => setKioskFundsVoting(value.checked)} />
+					<Label>Kiosk</Label>
+				</Form.Field>
 			</Form.Group>
 
 			<Form.Group>
@@ -97,7 +124,7 @@ const SettingsPane = props => {
 				<Form.Input name='theme.consolationAmount' type="number" placeholder='Consolation' label='Amount for bottom orgs' value={consolationAmount} onChange={e => setConsolationActive(e.target.value)} />
 
 		 		{/* Consolation Active */}
-				<Form.Checkbox toggle name='theme.consolationActive' label='Use Consolation?' checked={consolationActive} onChange={e => setConsolationActive(e.target.value)} />
+				<Form.Checkbox toggle name='theme.consolationActive' label='Use Consolation?' checked={consolationActive} onChange={(e, value) => setConsolationActive(value.checked)} />
 			</Form.Group>
 		</Form>
 	);

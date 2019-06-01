@@ -58,6 +58,18 @@ const PresentationSettingsSchema = new SimpleSchema({
 		label: 'Amount to offset total displayed on the results page',
 		required: false,
 		defaultValue: 0
+	},
+	useKioskChitVoting: {
+		type: Boolean,
+		label: 'Will the chit voting totals be entered manually or taken from kiosk voting?',
+		required: false,
+		defaultValue: false
+	},
+	useKioskFundsVoting: {
+		type: Boolean,
+		label: 'Will the funds voting totals be entered manually or taken from kiosk voting?',
+		required: false,
+		defaultValue: false
 	}
 });
 
