@@ -127,7 +127,7 @@ const Leverage = props => {
 		let funds = lastRound.orgs.reduce((sum, org) => {
 			return sum + (org.leverageFunds > 0 ? org.roundFunds : 0);
 		}, 0);
-		return leverageRemaining - funds;
+		return roundFloat(leverageRemaining - funds);
 	}
 
 	const saveLeverageSpread = (lastRound) => {

@@ -9,7 +9,7 @@ import { ThemeContext, OrganizationContext, PresentationSettingsContext, ImageCo
 import { Loader, Header, Container, Grid, Card } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import OrgCard from '/imports/ui/Components/OrgCard';
+import AwardCard from '/imports/ui/Components/AwardCard';
 import AwardEmblem from '/imports/ui/Components/AwardEmblem';
 
 import { COLORS } from '/imports/utils';
@@ -90,7 +90,13 @@ const Results = props => {
 			{awardees.map((org) => {
 				i++;
 				return(
-					<OrgCard
+					<AwardCard
+						key={org._id}
+						org={org}
+						award={'awardee'}
+						amount={org.allocatedFunds + org.leverageFunds}
+					/>
+					/* OLD <OrgCard
 						key={org._id}
 						org={org}
 						image={_.find(images, ['_id', org.image])}
@@ -99,7 +105,7 @@ const Results = props => {
 							type={'awardee'}
 							amount={org.allocatedFunds + org.leverageFunds}
 						/>}
-					/>
+					/>*/
 				);
 			})}
 			</Card.Group>
@@ -110,7 +116,13 @@ const Results = props => {
 			{others.map((org) => {
 				i++;
 				return(
-					<OrgCard
+					<AwardCard
+						key={org._id}
+						org={org}
+						award={'other'}
+						amount={org.allocatedFunds + org.leverageFunds}
+					/>
+					/* OLD <AwardCard
 						key={org._id}
 						org={org}
 						image={_.find(images, ['_id', org.image])}
@@ -119,7 +131,7 @@ const Results = props => {
 							type={'other'}
 							amount={org.allocatedFunds + org.leverageFunds}
 						/>}
-					/>
+					/>*/
 				);
 			})}
 			</Card.Group>
