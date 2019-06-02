@@ -2,6 +2,8 @@ import React from 'react';
 import _ from 'lodash';
 import numeral from 'numeral';
 
+import { usePresentationSettings } from '/imports/context';
+
 import { getSaveAmount, roundFloat } from '/imports/utils';
 
 import { OrganizationMethods, ThemeMethods } from '/imports/api/methods';
@@ -12,6 +14,8 @@ import { Table, Checkbox, Button, Form, Dropdown, Input, Label } from 'semantic-
  * Allocation Inputs Component
  */
 const AllocationInputs = props => {
+
+	const { settings } = usePresentationSettings();
 
 	const actionOptions = [
 		{ key: 'actions', text: 'Actions', value: 'actions' },
@@ -56,6 +60,12 @@ const AllocationInputs = props => {
 		}
 	}
 
+	const topoff = () => {
+		OrganizationMethods.update.call({id: props.org._id, data: {
+			topOff: props.org.need
+		}});
+	}
+
 	// Initialize to 0 if empty so it's truthiness can be tested
 	const amountFromVotes = props.org.amountFromVotes || 0;
 
@@ -74,13 +84,17 @@ const AllocationInputs = props => {
 
 			{/* Voted Amount Input */}
 			<Table.Cell>
-				<Input
-					fluid
-					type='number'
-					value={props.org.amountFromVotes || ''}
-					onChange={enterAmountFromVotes}
-					tabIndex={props.tabInfo ? props.tabInfo.index : false}
-				/>
+				{settings.useKioskFundsVoting ?
+					<span>{numeral(props.org.amountFromVotes || 0).format('$0,0')}</span>
+				:
+					<Input
+						fluid
+						type='number'
+						value={props.org.amountFromVotes || ''}
+						onChange={enterAmountFromVotes}
+						tabIndex={props.tabInfo ? props.tabInfo.index : false}
+					/>
+				}
 			</Table.Cell>
 
 			{/* Matched Pledges Input */}
@@ -108,18 +122,19 @@ const AllocationInputs = props => {
 
 			{/* Need */}
 			<Table.Cell>
-				{numeral(props.org.need).format('$0,0.00')}
+				{numeral(props.org.need).format('$0,0')}
 			</Table.Cell>
 
 			{/* Actions */}
 			<Table.Cell singleLine>
-				<Dropdown
+				<Button onClick={topoff} style={{width: '100%'}}>{props.org.topOff > 0 ? 'Undo' : '' } Top Off</Button>
+				{/*<Dropdown
 					floating
 					button
 					text='Actions'
 					options={actionOptions}
 					onChange={handleActionSelection}
-				/>
+				/>*/}
 			</Table.Cell>
 		</Table.Row>
 	);

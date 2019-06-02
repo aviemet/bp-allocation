@@ -72,7 +72,7 @@ const AllocationPane = props => {
 								<Table.HeaderCell>Funded</Table.HeaderCell>
 								<Table.HeaderCell>Ask</Table.HeaderCell>
 								<Table.HeaderCell>Need</Table.HeaderCell>
-								<Table.HeaderCell collapsing>Actions</Table.HeaderCell>
+								<Table.HeaderCell collapsing></Table.HeaderCell>
 							</Table.Row>
 						</Table.Header>
 
