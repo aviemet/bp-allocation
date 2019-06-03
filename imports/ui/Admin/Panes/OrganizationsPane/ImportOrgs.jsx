@@ -3,34 +3,28 @@ import Papa from 'papaparse';
 import _ from 'lodash';
 
 import { useTheme } from '/imports/context';
-import { MemberMethods } from '/imports/api/methods';
+import { OrganizationMethods } from '/imports/api/methods';
 
 import { Button, Input } from 'semantic-ui-react';
 
-const ImportMembers = props => {
+const ImportOrgs = props => {
 
 	const { theme } = useTheme();
 
 	let skipped = [];
 
-	let uploadedMembersList = [];
+	let uploadedOrgsList = [];
 	const acceptedValues = [
 		{
-			name: 'firstName',
-			forms: ['firstname', 'first name', 'first', 'f_name', 'f name', 'f']
+			name: 'title',
+			forms: ['title', 'org', 'organization', 'name', 'org name', 'organization name'],
+			type: String
 		},
 		{
-			name: 'lastName',
-			forms: ['lastName', 'last name', 'last', 'l_name', 'l name', 'l']
+			name: 'ask',
+			forms: ['ask', 'amount'],
+			type: value => parseInt(value.replace(/[^0-9]+/g, ''))
 		},
-		{
-			name: 'number',
-			forms: ['number', 'member', 'member number', 'membernumber', 'member_number', 'no', 'no.', 'num', '#']
-		},
-		{
-			name: 'amount',
-			forms: ['amount', 'money', 'donated', 'donations', 'given', 'funds', 'dollars']
-		}
 	];
 
 	const clickFileInput = () => document.getElementById('fileInput').click();
@@ -43,44 +37,42 @@ const ImportMembers = props => {
 			dynamicTyping: true,
 			skipEmptyLines: true,
 			step: (results, parser) => {
-				// console.log(results.data);
-
-				let memberRow = {};
+				let row = {};
 
 				_.forEach(results.data[0], (value, key) => {
 					const matchKey = key.trim().toLowerCase();
-					// console.log({matchKey, key, value});
+
 					let matched = false;
 					for(let i = 0; !matched && i < acceptedValues.length; i++) {
 						const formsIndex = _.indexOf(acceptedValues[i].forms, matchKey);
-						// console.log({formsIndex});
+
 						if(formsIndex >= 0) {
 							matched = true;
-							memberRow[acceptedValues[i].name] = value;
+							row[acceptedValues[i].name] = acceptedValues[i].type(value);
+							console.log({row, type: acceptedValues[i].type, value});
 						}
 					}
 				});
 
 				let complete = true;
 				acceptedValues.map(values => {
-					if(!memberRow.hasOwnProperty(values.name)) {
+					if(!row.hasOwnProperty(values.name)) {
 						complete = false;
-						skipped.push({raw: results.data[0], memberRow});
+						skipped.push({raw: results.data[0], row});
 						console.log("FAILED");
 					}
 				})
 
 				if(complete) {
-					 MemberMethods.upsert.call(Object.assign({themeId: theme._id}, memberRow));
-					// console.log({memberRow});
+					 OrganizationMethods.create.call(Object.assign({theme: theme._id}, row));
 				}
 
-				uploadedMembersList.push(memberRow);
+				uploadedOrgsList.push(row);
 
 			},
 			complete: results => {
-				// console.log(results.data);
-				// console.log({uploadedMembersList});
+				console.log(results.data);
+				console.log({uploadedOrgsList});
 			}
 		});
 	}
@@ -105,4 +97,4 @@ const ImportMembers = props => {
 	);
 }
 
-export default ImportMembers;
+export default ImportOrgs;

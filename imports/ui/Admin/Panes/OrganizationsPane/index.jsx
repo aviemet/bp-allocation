@@ -11,6 +11,7 @@ import { Button, Table, Header, Grid, Form, Input, Label, Loader } from 'semanti
 
 import OrgInputs from './OrgInputs';
 import FileUpload from '/imports/ui/Components/FileUpload';
+import ImportOrgs from './ImportOrgs';
 
 const OrganizationsPane = props => {
 
@@ -53,7 +54,10 @@ const OrganizationsPane = props => {
 	return (
 		<React.Fragment>
 			<Grid.Row>
-				<Header as="h1">Organizations for Theme: {theme.title}</Header>
+				<Header as="h1">
+					Organizations for Theme: {theme.title}
+					<ImportOrgs />
+				</Header>
 			</Grid.Row>
 
 			<Form onSubmit={handleNewOrgSubmit}>

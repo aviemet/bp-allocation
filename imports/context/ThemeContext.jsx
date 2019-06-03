@@ -25,7 +25,9 @@ const ThemeProviderTemplate = props => {
 
 		let total = 0;
 		props.topOrgs.map(org => {
-			total += org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0);
+			if(org.pledges) {
+				total += org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0);
+			}
 		});
 		return total;
 	}
