@@ -61,6 +61,7 @@ const MemberLoginRequired = props => {
 						key={renderCount}
 						data={members}
 						callback={chooseMember}
+						size='massive'
 					/>
 				{confirmUser && <React.Fragment>
 

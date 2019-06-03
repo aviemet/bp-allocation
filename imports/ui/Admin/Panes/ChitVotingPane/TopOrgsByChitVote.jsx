@@ -47,7 +47,11 @@ const TopOrgsByChitVote = props => {
 			</Header>
 
 			<Header as="h1" floated="left">
-				Top <NumTopOrgsInput size='mini' type='number' value={theme.numTopOrgs} onChange={updateNumTopOrgs} width={1} /> Organizations
+				Top {!props.hideAdminFields ?
+					<NumTopOrgsInput size='mini' type='number' value={theme.numTopOrgs} onChange={updateNumTopOrgs} width={1} />
+					:
+					theme.numTopOrgs
+				} Organizations
 			</Header>
 
 			<Table celled>
@@ -72,7 +76,9 @@ const TopOrgsByChitVote = props => {
 							isLocked={_isLocked}
 							isSaved={_isSaved}
 							themeId={theme._id}
-							org={org} />
+							org={org}
+							hideAdminFields={props.hideAdminFields || false}
+						/>
 					);
 
 				})}

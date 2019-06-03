@@ -187,21 +187,23 @@ const Leverage = props => {
 							<span>Leverage Remaining: {numeral(finalRoundAllcoation(rounds)).format('$0,0.00')}</span><br/>
 						</Grid.Column>
 						<Grid.Column width={6}>
-							{!leverageDistributed ?
-								<Button
-									color='green'
-									onClick={() => saveLeverageSpread(rounds[rounds.length-1])}
-								>
-									Submit Final Values
-								</Button>
-								:
-								<Button
-									color='red'
-									onClick={resetLeverage}
-								>
-									Reset Leverage Distribution
-								</Button>
-							}
+							{!props.hideAdminFields && <React.Fragment>
+								{!leverageDistributed ?
+									<Button
+										color='green'
+										onClick={() => saveLeverageSpread(rounds[rounds.length-1])}
+									>
+										Submit Final Values
+									</Button>
+									:
+									<Button
+										color='red'
+										onClick={resetLeverage}
+									>
+										Reset Leverage Distribution
+									</Button>
+								}
+							</React.Fragment>}
 						</Grid.Column>
 					</Grid.Row>
 

@@ -43,7 +43,9 @@ const Pledges = props => {
 						<Table.HeaderCell collapsing>Organization</Table.HeaderCell>
 						<Table.HeaderCell>Pledged By</Table.HeaderCell>
 						<Table.HeaderCell collapsing>Amount</Table.HeaderCell>
+						{!props.hideAdminFields &&
 						<Table.HeaderCell collapsing></Table.HeaderCell>
+						}
 					</Table.Row>
 				</Table.Header>
 
@@ -52,13 +54,18 @@ const Pledges = props => {
 						<Table.Row key={pledge._id}>
 							<Table.Cell singleLine>{pledge.org.title}</Table.Cell>
 							<Table.Cell>
-								<MemberSearch
-									data={members}
-									pledgeid={pledge._id}
-								/>
+								{props.hideAdminFields ?
+									pledge.member ? `${members[pledge.member].firstName} ${members[pledge.member].lastName}` : ''
+								:
+									<MemberSearch
+										data={members}
+										pledgeid={pledge._id}
+									/>
+								}
 							</Table.Cell>
 							<Table.Cell>{numeral(pledge.amount).format('$0,0')}</Table.Cell>
 							<Table.Cell>
+								{!props.hideAdminFields &&
 								<Button
 									color='red'
 									icon='trash'
@@ -66,6 +73,7 @@ const Pledges = props => {
 									pledgeid={pledge._id}
 									orgid={pledge.org._id}
 								/>
+								}
 							</Table.Cell>
 						</Table.Row>
 					))}

@@ -151,7 +151,7 @@ const Graph = props => {
 		return <GraphPageContainer />
 	}
 
-	const visibility = settings.leverageVisible ? 'visible' : 'hidden';
+	const visibility = settings.leverageVisible || props.simulation ? 'visible' : 'hidden';
 	const startingLeverage = _calcStartingLeverage();
 
 	return (
@@ -181,7 +181,7 @@ const Graph = props => {
 
 			</GraphContainer>
 
-			<InfoContainer>
+			<InfoContainer id="info">
 				<InfoGrid columns='equal'>
 					<Grid.Row>
 					{topOrgs.map((org) => (

@@ -19,7 +19,7 @@ const SimulationContainer = styled.div`
 const Presentation = props => {
 	return (
 		<SimulationContainer>
-			<Allocation />
+			<Allocation simulation={true} />
 		</SimulationContainer>
 	);
 }

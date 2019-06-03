@@ -6,14 +6,14 @@ import styled from 'styled-components';
 
 import HomeButton from '/imports/ui/Components/HomeButton';
 
-const AdminContainer = styled.div`
-	background: #2b4a7c;
+const FeedbackContainer = styled.div`
+	background: #111;
 	width: 100%;
 	min-height: 100%;
 `;
 
-const AdminLayout = (props) => (
-	<AdminContainer>
+const FeedbackLayout = (props) => (
+	<FeedbackContainer>
 		<HomeButton />
 
 		<Container>
@@ -21,7 +21,7 @@ const AdminLayout = (props) => (
 				{props.children}
 			</Grid>
 		</Container>
-	</AdminContainer>
+	</FeedbackContainer>
 );
 
-export default AdminLayout;
+export default FeedbackLayout;

@@ -84,7 +84,7 @@ const AllocationInputs = props => {
 
 			{/* Voted Amount Input */}
 			<Table.Cell>
-				{settings.useKioskFundsVoting ?
+				{props.hideAdminFields || settings.useKioskFundsVoting ?
 					<span>{numeral(props.org.amountFromVotes || 0).format('$0,0')}</span>
 				:
 					<Input
@@ -99,15 +99,19 @@ const AllocationInputs = props => {
 
 			{/* Matched Pledges Input */}
 			<Table.Cell>
-				<Form onSubmit={pledge}>
-					<Form.Input
-						fluid
-						type='text'
-						name='valueInput'
-						action='+'
-						tabIndex={props.tabInfo ? props.tabInfo.index + props.tabInfo.length : false}
-					/>
-				</Form>
+				{props.hideAdminFields ?
+					numeral(props.org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0)).format('$0,0')
+				:
+					<Form onSubmit={pledge}>
+						<Form.Input
+							fluid
+							type='text'
+							name='valueInput'
+							action='+'
+							tabIndex={props.tabInfo ? props.tabInfo.index + props.tabInfo.length : false}
+						/>
+					</Form>
+				}
 			</Table.Cell>
 
 			{/* Funded */}
@@ -126,6 +130,7 @@ const AllocationInputs = props => {
 			</Table.Cell>
 
 			{/* Actions */}
+			{!props.hideAdminFields &&
 			<Table.Cell singleLine>
 				<Button onClick={topoff} style={{width: '100%'}}>{props.org.topOff > 0 ? 'Undo' : '' } Top Off</Button>
 				{/*<Dropdown
@@ -135,7 +140,7 @@ const AllocationInputs = props => {
 					options={actionOptions}
 					onChange={handleActionSelection}
 				/>*/}
-			</Table.Cell>
+			</Table.Cell>}
 		</Table.Row>
 	);
 }

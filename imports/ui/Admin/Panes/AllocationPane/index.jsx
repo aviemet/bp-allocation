@@ -49,15 +49,17 @@ const AllocationPane = props => {
 					<Header as="h2">Top {topOrgs.length} Funds Allocation</Header>
 				</Grid.Column>
 
-				<Grid.Column width={2} align="right">
-					<Link to={`/simulation/${theme._id}`} target='_blank'>
-						<Button>Simulate</Button>
-					</Link>
-				</Grid.Column>
+				{!props.hideAdminFields && <React.Fragment>
+					<Grid.Column width={2} align="right">
+						<Link to={`/simulation/${theme._id}`} target='_blank'>
+							<Button>Simulate</Button>
+						</Link>
+					</Grid.Column>
 
-				<Grid.Column width={4}>
-					<ShowLeverageToggle />
-				</Grid.Column>
+					<Grid.Column width={4}>
+						<ShowLeverageToggle />
+					</Grid.Column>
+				</React.Fragment>}
 
 			</Grid.Row>
 			<Grid.Row>
@@ -68,11 +70,13 @@ const AllocationPane = props => {
 							<Table.Row>
 								<Table.HeaderCell>Organization</Table.HeaderCell>
 								<Table.HeaderCell>Voted Amount</Table.HeaderCell>
-								<Table.HeaderCell>Matched Pledges</Table.HeaderCell>
+								<Table.HeaderCell>Matched Pledges (x{theme.matchRatio})</Table.HeaderCell>
 								<Table.HeaderCell>Funded</Table.HeaderCell>
 								<Table.HeaderCell>Ask</Table.HeaderCell>
 								<Table.HeaderCell>Need</Table.HeaderCell>
+								{!props.hideAdminFields &&
 								<Table.HeaderCell collapsing></Table.HeaderCell>
+								}
 							</Table.Row>
 						</Table.Header>
 
@@ -84,6 +88,7 @@ const AllocationPane = props => {
 								theme={theme}
 								crowdFavorite={(i === _calculateCrowdFavorite())}
 								tabInfo={{index: i+1, length: topOrgs.length}}
+								hideAdminFields={props.hideAdminFields || false}
 							/>
 						))}
 						</Table.Body>
@@ -94,7 +99,7 @@ const AllocationPane = props => {
 
 			<Grid.Row columns={1}>
 				<Grid.Column>
-					<Pledges />
+					<Pledges hideAdminFields={props.hideAdminFields || false} />
 				</Grid.Column>
 			</Grid.Row>
 		</Grid>

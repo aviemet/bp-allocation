@@ -10,7 +10,11 @@ import { ThemeContext, PresentationSettingsContext, OrganizationContext } from '
 import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react'
 import styled from 'styled-components';
 
-import { SettingsPane, MembersPane, OrganizationsPane, ChitVotingPane, AllocationPane, LeveragePane, PresentationPane } from '/imports/ui/Admin/Panes';
+import { AllocationPane, LeveragePane } from '/imports/ui/Admin/Panes';
+import Organizations from './Organizations';
+import Stats from './Stats';
+import Graph from './Graph';
+import MembersList from '/imports/ui/Admin/Panes/MembersPane/MembersList';
 
 const Title = styled(Header)`
 	&& {
@@ -26,38 +30,52 @@ const TabMenu = styled(Menu)`
 	}
 `;
 
-const TABS_ORDER = ['settings', 'members', 'orgs', 'chits', 'money', 'leverage', 'presentation'];
+/**
+ * Orgs:
+ *   Chit voting inputs (if not using kiosk for chits)
+ *   TopOrgs display
+ *
+ * Members:
+ *   Lists members
+ *   Check marks next to those who have finished voting (if using kiosk for funds)
+ *
+ * Allocation:
+ *   Shows the graph
+ *   TopOrgs round voting inputs (if not using kiosk for funds)
+ *
+ * Leverage:
+ *   Shows leverage rounds information
+ *
+ * Stats:
+ *   Brief rundown of interesting stats
+ *   Expoort buttons for information
+ */
+
+const TABS_ORDER = ['orgs', 'members', 'allocation', 'graph', 'leverage', 'stats'];
 const TABS = {
 	orgs:{
 		slug: 'orgs',
 		heading: 'Organizations',
 		color: 'green',
-		component: OrganizationsPane
+		component: Organizations
 	},
-	chits: {
-		slug: 'chits',
-		heading: 'Chit Voting',
-		color: 'brown',
-		component: ChitVotingPane
+	members: {
+		slug: 'members',
+		heading: 'Members',
+		color: 'teal',
+		component: MembersList
 	},
-	money: {
-		slug: 'money',
+	allocation: {
+		slug: 'allocation',
 		heading: 'Allocation',
 		color: 'orange',
 		component: AllocationPane
 	},
-	settings: {
-		slug: 'settings',
-		heading: 'Theme Settings',
-		color: 'blue',
-		component: SettingsPane
-	},
-	presentation: {
-		slug: 'presentation',
-		heading: 'Presentation',
-		color: 'pink',
-		position: 'right',
-		component: PresentationPane
+	graph: {
+		slug: 'graph',
+		heading: 'Graph',
+		color: 'violet',
+		component: Graph
 	},
 	leverage: {
 		slug: 'leverage',
@@ -65,22 +83,24 @@ const TABS = {
 		color: 'violet',
 		component: LeveragePane
 	},
-	members: {
-		slug: 'members',
-		heading: 'Members',
-		color: 'teal',
-		component: MembersPane
+	stats: {
+		slug: 'stats',
+		heading: 'Stats',
+		color: 'violet',
+		component: Stats
 	}
 };
 
 // Main class for the Theme page
 const Admin = props => {
 
+	const defaultPage = 'orgs';
+
 	const { theme, themeLoading } = useContext(ThemeContext);
 	const { settingsLoading }     = useContext(PresentationSettingsContext);
 	const { orgsLoading }         = useContext(OrganizationContext);
 
-	const [ activeTab, setActiveTab ] = useState(location.hash.replace(/#/, '') || TABS.settings.slug)
+	const [ activeTab, setActiveTab ] = useState(location.hash.replace(/#/, '') || TABS[defaultPage].slug)
 
 	const handleItemClick = (e, {slug}) => {
 		location.hash = slug;
@@ -103,7 +123,7 @@ const Admin = props => {
 			<Grid.Row>
 				<TabMenu attached='top' tabular>
 
-					{TABS_ORDER.map(tab => (
+					{TABS_ORDER.map((tab) => (
 						<Menu.Item key={tab}
 							name={TABS[tab].heading}
 							slug={TABS[tab].slug}
@@ -121,7 +141,7 @@ const Admin = props => {
 						const Component = TABS[tab].component;
 						return(
 							<Route exact path={TABS[tab].slug} key={tab} >
-								<Component />
+								<Component hideAdminFields={true} />
 							</Route>
 						)})}
 					</Switch>
@@ -134,43 +154,3 @@ const Admin = props => {
 }
 
 export default Admin;
-
-
-							// position={TABS[tab].position ? TABS[tab].position : false}
-
-
-
-// 						{/* Theme Settings */}
-// 						<Route exact path={TABS.settings.slug} >
-// 							<SettingsPane />
-// 						</Route>
-//
-// 						{/* Members */}
-// 						<Route exact path={TABS.members.slug} >
-// 							<MembersPane />
-// 						</Route>
-//
-// 						{/* Organizations */}
-// 						<Route exact path={TABS.orgs.slug} >
-// 							<OrganizationsPane />
-// 						</Route>
-//
-// 						{/* Chit Voting */}
-// 						<Route exact path={TABS.chits.slug} >
-// 							<ChitVotingPane />
-// 						</Route>
-//
-// 						{/* Allocation Voting */}
-// 						<Route exact path={TABS.money.slug} >
-// 							<AllocationPane />
-// 						</Route>
-//
-// 						{/* Remaining Leverage Distribution */}
-// 						<Route exact path={TABS.leverage.slug} >
-// 							<LeveragePane />
-// 						</Route>
-//
-// 						{/* Presentation Controls */}
-// 						<Route exact path={TABS.presentation.slug} >
-// 							<PresentationPane />
-// 						</Route>

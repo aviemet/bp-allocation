@@ -7,13 +7,14 @@ import styled from 'styled-components';
 
 import { AppProvider } from '/imports/context';
 
-import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from '/imports/ui/Layouts';
+import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts';
 import ThemesList from '/imports/ui/Welcome/ThemesList';
 import Admin from '/imports/ui/Admin';
 import Presentation from '/imports/ui/Presentation';
 import Simulation from '/imports/ui/Admin/Simulation';
 import WelcomePage from '/imports/ui/Welcome/WelcomePage';
 import Kiosk from '/imports/ui/Kiosk';
+import Feedback from '/imports/ui/Feedback';
 
 const GlobalContainer = styled.div`
 	width: 100%;
@@ -52,6 +53,7 @@ export default class App extends React.Component {
 								</AdminLayout>
 							</AppProvider>
 						) } />
+
 						<Route path="/presentation/:id" render={ (props) => (
 		    			<AppProvider id={props.match.params.id}>
 								<PresentationLayout>
@@ -59,6 +61,7 @@ export default class App extends React.Component {
 								</PresentationLayout>
 							</AppProvider>
 						) } />
+
 						<Route path="/simulation/:id" render= { (props) => (
 		    			<AppProvider id={props.match.params.id}>
 								<PresentationLayout>
@@ -66,11 +69,20 @@ export default class App extends React.Component {
 								</PresentationLayout>
 							</AppProvider>
 						) } />
+
 						<Route path="/kiosk/:id" render= { (props) => (
 		    			<AppProvider id={props.match.params.id}>
 								<KioskLayout>
 									<Kiosk />
 								</KioskLayout>
+							</AppProvider>
+						) } />
+
+						<Route path="/feedback/:id" render= { (props) => (
+		    			<AppProvider id={props.match.params.id}>
+								<FeedbackLayout>
+									<Feedback />
+								</FeedbackLayout>
 							</AppProvider>
 						) } />
 

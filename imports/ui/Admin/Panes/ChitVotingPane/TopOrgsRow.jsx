@@ -27,6 +27,7 @@ const TopOrgsRow = props => {
 		<Table.Row positive={props.inTopOrgs}>
 			<Table.Cell>
 				{props.org.title}
+				{!props.hideAdminFields && <React.Fragment>
 				{!props.inTopOrgs &&
 					<SaveButton org={props.org} />
 				}
@@ -34,7 +35,7 @@ const TopOrgsRow = props => {
 					<span style={{float: 'right'}}>
 						<UnSaveButton org={props.org} />
 					</span>
-				}
+				}</React.Fragment>}
 			</Table.Cell>
 			<Table.Cell>{ roundFloat(props.org.votes, 1) }</Table.Cell>
 			<Table.Cell>

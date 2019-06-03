@@ -15,6 +15,7 @@ const resultRenderer = ({title, number}) => (
 	</React.Fragment>
 );
 
+
 export default class MemberSearch extends Component {
 	constructor(props) {
 		super(props);
@@ -68,7 +69,7 @@ export default class MemberSearch extends Component {
 				resultRenderer={resultRenderer}
 				value={value}
 				fluid
-				size='massive'
+				size={this.props.size}
 			/>
 		)
 	}
