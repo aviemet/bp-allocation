@@ -31,6 +31,7 @@ const Leverage = props => {
 
 		let nRounds = 1;
 		while(leverageRemaining >= 1 && _numFullyFundedOrgs(orgs) < orgs.length && nRounds < 10) {
+
 			let round = {
 				leverageRemaining: leverageRemaining,
 				sumRemainingOrgs: sumRemainingOrgs
@@ -78,7 +79,7 @@ const Leverage = props => {
 			org.percent = org.allocatedFunds / sumRemainingOrgs;
 		}
 
-			// Give funds for this round
+		// Give funds for this round
 	  org.roundFunds = roundFloat(Math.min(
 	    org.percent * leverageRemaining,
 	    org.need

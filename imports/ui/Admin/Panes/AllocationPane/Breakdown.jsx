@@ -26,6 +26,12 @@ const Arithmetic = styled.span`
   text-align: center;
 `;
 
+const BreakdownContainer = styled.div`
+	& .ui.statistics .ui.statistic {
+		margin: 0em 1em 2em;
+	}
+`;
+
 const Breakdown = props => {
 
 	const { theme } = useContext(ThemeContext);
@@ -38,57 +44,59 @@ const Breakdown = props => {
 	console.log({votedFunds: theme.votedFunds, saves});
 
 	return (
-		<Segment>
-			<Statistic.Group size='tiny'>
+		<BreakdownContainer>
+			<Segment>
+				<Statistic.Group size='tiny'>
 
-				{/* Total amount to allocate */}
-				<Statistic>
-					<Statistic.Value>{numeral(totalPot).format('$0,0')}</Statistic.Value>
-					<Statistic.Label>Total Pot + Saves</Statistic.Label>
-				</Statistic>
+					{/* Total amount to allocate */}
+					<Statistic>
+						<Statistic.Value>{numeral(totalPot).format('$0,0')}</Statistic.Value>
+						<Statistic.Label>Total Pot + Saves</Statistic.Label>
+					</Statistic>
 
-				<Arithmetic>-</Arithmetic>
+					<Arithmetic>-</Arithmetic>
 
-				{/* Subtract 10k for each unchosen organization */}
-				<Statistic>
-					<Statistic.Value>{numeral(theme.consolationTotal).format('$0,0')}</Statistic.Value>
-					<Statistic.Label>Pulled/Others</Statistic.Label>
-				</Statistic>
+					{/* Subtract 10k for each unchosen organization */}
+					<Statistic>
+						<Statistic.Value>{numeral(theme.consolationTotal).format('$0,0')}</Statistic.Value>
+						<Statistic.Label>Pulled/Others</Statistic.Label>
+					</Statistic>
 
-				<Arithmetic>-</Arithmetic>
+					<Arithmetic>-</Arithmetic>
 
-				{/* Subtract funds from votes and topOff */}
-				<Statistic>
-					<Statistic.Value>{numeral(theme.votedFunds + saves).format('$0,0')}</Statistic.Value>
-					<Statistic.Label>Votes + Topoff + Saves</Statistic.Label>
-				</Statistic>
+					{/* Subtract funds from votes and topOff */}
+					<Statistic>
+						<Statistic.Value>{numeral(theme.votedFunds + saves).format('$0,0')}</Statistic.Value>
+						<Statistic.Label>Votes + Topoff + Saves</Statistic.Label>
+					</Statistic>
 
-				<Arithmetic>=</Arithmetic>
+					<Arithmetic>=</Arithmetic>
 
-				{/* Leverage amount to begin pledge round */}
-				<Statistic>
-					<Statistic.Value>{numeral(leverage).format('$0,0')}</Statistic.Value>
-					<Statistic.Label>Starting Leverage</Statistic.Label>
-				</Statistic>
+					{/* Leverage amount to begin pledge round */}
+					<Statistic>
+						<Statistic.Value>{numeral(leverage).format('$0,0')}</Statistic.Value>
+						<Statistic.Label>Starting Leverage</Statistic.Label>
+					</Statistic>
 
-				<Arithmetic>-</Arithmetic>
+					<Arithmetic>-</Arithmetic>
 
-				{/* Subtract funds from pledge round */}
-				<Statistic>
-					<Statistic.Value>{numeral(theme.pledgedTotal).format('$0,0')}</Statistic.Value>
-					<Statistic.Label>Pledge Matches</Statistic.Label>
-				</Statistic>
+					{/* Subtract funds from pledge round */}
+					<Statistic>
+						<Statistic.Value>{numeral(theme.pledgedTotal).format('$0,0')}</Statistic.Value>
+						<Statistic.Label>Pledge Matches</Statistic.Label>
+					</Statistic>
 
-				<Arithmetic>=</Arithmetic>
+					<Arithmetic>=</Arithmetic>
 
-				{/* Amount remaining to spread to winners */}
-				<Statistic>
-					<Statistic.Value>{numeral(theme.leverageRemaining).format('$0,0')}</Statistic.Value>
-					<Statistic.Label>Remaining</Statistic.Label>
-				</Statistic>
+					{/* Amount remaining to spread to winners */}
+					<Statistic>
+						<Statistic.Value>{numeral(theme.leverageRemaining).format('$0,0')}</Statistic.Value>
+						<Statistic.Label>Remaining</Statistic.Label>
+					</Statistic>
 
-			</Statistic.Group>
-		</Segment>
+				</Statistic.Group>
+			</Segment>
+		</BreakdownContainer>
 	);
 
 }

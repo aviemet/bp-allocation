@@ -39,7 +39,10 @@ const OrganizationProviderTemplate = props => {
 			}
 
 			// Total of funds pledged for this org multiplied by the match ratio
-			org.pledgeTotal = org.pledges.reduce((sum, pledge) => { return sum + pledge.amount}, 0) * props.theme.matchRatio;
+			org.pledgeTotal = 0;
+			if(org.pledges) {
+				org.pledgeTotal = org.pledges.reduce((sum, pledge) => { return sum + pledge.amount}, 0) * props.theme.matchRatio;
+			}
 
 			if(props.settings.useKioskFundsVoting) {
 				org.amountFromVotes = 0;
