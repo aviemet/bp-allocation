@@ -21,7 +21,11 @@ const StyledCard = styled(Card)`
 	}
 
 	&.big {
-		/*height: 24rem;*/
+		height: 23rem;
+	}
+
+	.content {
+		padding: 1em 0.5em !important;
 	}
 `;
 
@@ -32,9 +36,15 @@ const OrgTitle = styled.div`
 	font-weight: 600;
 	min-height: 8rem;
 	position: relative;
+	padding: 0;
+
+	.small & {
+		min-height: 3.5rem;
+	}
 
 	.big & {
-		min-height: 4rem;
+		min-height: 16rem;
+		font-size: 4rem;
 	}
 
 	& > p {
@@ -43,6 +53,7 @@ const OrgTitle = styled.div`
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+		width: 100%;
 	}
 `;
 
@@ -61,9 +72,6 @@ const CardContent = styled(Card.Content)`
  * OrgCard Component
  */
 const OrgCard = props => {
-
-	console.log({props});
-
 	// Add animation class if toggled
 	// let animateClass = props.animateClass ? 'animate-orgs' : '';
 

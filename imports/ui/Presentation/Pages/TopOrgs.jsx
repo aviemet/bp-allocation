@@ -61,7 +61,6 @@ const TopOrgs = props => {
 						org={org}
 						image={_.find(images, ['_id', org.image])}
 						animateClass={settings.animateOrgs}
-						bgcolor={COLORS[i % COLORS.length]}
 						size='big'
 					/>
 				))}

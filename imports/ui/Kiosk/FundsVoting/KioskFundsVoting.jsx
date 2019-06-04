@@ -84,7 +84,7 @@ const KioskInfo = props => {
 					<OrgCard
 						key={org._id}
 						org={org}
-						image={_.find(images, ['_id', org.image])}
+						// image={_.find(images, ['_id', org.image])}
 						overlay={() => (
 							<FundsSlider
 								theme={theme}

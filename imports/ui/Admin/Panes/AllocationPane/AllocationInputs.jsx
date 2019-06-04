@@ -61,8 +61,9 @@ const AllocationInputs = props => {
 	}
 
 	const topoff = () => {
+		const amount = props.org.topOff > 0 ? 0 : props.org.need;
 		OrganizationMethods.update.call({id: props.org._id, data: {
-			topOff: props.org.need
+			topOff: amount
 		}});
 	}
 

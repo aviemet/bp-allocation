@@ -113,7 +113,7 @@ const FundsVotingKiosk = props => {
 							key={org._id}
 							org={org}
 							image={_.find(images, ['_id', org.image])}
-							size='big'
+							size='small'
 							content={() => (
 								<FundsSlider
 									org={org}

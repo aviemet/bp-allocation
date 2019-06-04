@@ -33,7 +33,6 @@ const MemberProviderTemplate = props => {
 			memberThemes: props.memberThemes,
 			membersLoading: props.loading,
 			handles: Object.assign({
-				memberThemes: props.memberThemesHandle,
 				members: props.membersHandle
 			}, props.handles)
 		}}>
@@ -45,7 +44,6 @@ const MemberProviderTemplate = props => {
 const MemberProvider = withTracker(props => {
 	if(!props.id) return { loading: true };
 
-	const memberThemesHandle = Meteor.subscribe('memberThemes', props.id);
 	const memberThemes = MemberThemes.find({theme: props.id}).fetch();
 
 	const memberIds = memberThemes.map(memberTheme => memberTheme.member);
@@ -53,9 +51,9 @@ const MemberProvider = withTracker(props => {
 	const membersHandle = Meteor.subscribe('members', memberIds);
 	const members = Members.find({_id: {$in: memberIds}}).fetch();
 
-	const loading = (!membersHandle.ready() || !memberThemesHandle.ready());
+	const loading = (!membersHandle.ready() || !props.handles.memberThemes.ready());
 
-	return { loading, members, memberThemes, memberThemesHandle, membersHandle };
+	return { loading, members, memberThemes, membersHandle };
 })(MemberProviderTemplate);
 
 const useMembers = () => useContext(MemberContext);
