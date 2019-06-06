@@ -60,7 +60,7 @@ const MemberLoginRequired = props => {
 
 	const chooseMember = () => {
 		setSearchError(false);
-		const member = _.find(members, ['code', searchInput]);
+		const member = _.find(members, ['code', searchInput.trim().toUpperCase()]);
 		if(member) {
 			setConfirmUser(member);
 		} else {
@@ -69,10 +69,15 @@ const MemberLoginRequired = props => {
 		}
 	}
 
-	// Increments key of search bar to force a re-render
 	const resetMember = () => {
 		setConfirmUser(false);
-		setRenderCount(renderCount + 1);
+		setSearchInput('');
+	}
+
+	const displayVoting = () => {
+		setSearchInput('');
+		setUser(confirmUser);
+		setConfirmUser(false);
 	}
 
 	const ChildComponent = props.component;
@@ -85,9 +90,8 @@ const MemberLoginRequired = props => {
 					<Container style={{width: "80%"}}>
 						<Form onSubmit={chooseMember}>
 							<Form.Input fluid
-								key={renderCount}
 								value={searchInput}
-								onChange={e => setSearchInput(e.target.value)}
+								onChange={e => setSearchInput(e.target.value.trim().toUpperCase())}
 								type="text"
 								size="massive"
 								icon="user"
@@ -107,7 +111,7 @@ const MemberLoginRequired = props => {
 
 					<Header as='h2' className='title'>Hello {confirmUser.firstName}, ready to vote?</Header>
 					<Button size='massive' color='red' onClick={resetMember}>Oops, not me!</Button>
-					<Button size='massive' color='green' onClick={() => {setUser(confirmUser); setConfirmUser(false)}}>Let's vote!</Button>
+					<Button size='massive' color='green' onClick={displayVoting}>Let's vote!</Button>
 
 				</React.Fragment>}
 

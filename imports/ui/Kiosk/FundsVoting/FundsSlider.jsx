@@ -9,6 +9,7 @@ import { useVoting } from '/imports/ui/Kiosk/VotingContext';
 
 import styled from 'styled-components';
 import InputRange from 'react-input-range';
+import { Form, Input, Button, Icon } from 'semantic-ui-react';
 
 const SliderContainer = styled.div`
 	width: 100%;
@@ -28,6 +29,15 @@ const Amount = styled.div`
 	padding-bottom: 4rem;
 `;
 
+const AmountInputContainer = styled.div`
+	height: 148px;
+
+	.ui.massive.input {
+		height: 90px;
+		font-size: 3rem;
+	}
+`;
+
 const BottomAlign = styled.div`
 	position: absolute;
 	bottom: 0;
@@ -39,43 +49,92 @@ class FundsSliderComponent extends React.PureComponent {
 		super(props);
 
 		this.state = {
-			value: props.votes[props.org._id],
-			showLabel: false
+			value: parseInt(props.votes[props.org._id]),
+			showLabel: false,
+			showInput: false
 		}
 	}
 
 	handleChange = value => {
+		if(_.isNaN(value)) {
+			this.setState({value: ''});
+			this.props.updateVotes(this.props.org._id, 0);
+			return;
+		}
+
 		const MAX = this.props.member.theme.amount;
 
 		let sum = 0;
 		_.forEach(this.props.votes,(voteAmount, key) => {
-			sum += key === this.props.org._id ? value : voteAmount;
+			sum += key === this.props.org._id ? parseInt(value) : voteAmount;
 		});
-		const newValue = MAX - sum < 0 ? value + (MAX - sum) : value
+		const newValue = MAX - sum < 0 ? parseInt(value) + (MAX - sum) : parseInt(value)
 
 		this.setState({
 			value: newValue
 		});
 		this.props.updateVotes(this.props.org._id, newValue);
+
 	}
 
 	showLabel = () => {
 		this.setState({ showLabel: true });
 		// Hopefully fix issue where onChangeComplete doesn't fire
-		window.addEventListener('mouseup', () => this.setState({ showLabel: false }), false);
+		window.addEventListener('mouseup', () => this.setState({ showLabel: false }), {once: true});
+		window.addEventListener('touchend', () => this.setState({ showLabel: false }), {once: true});
+	}
+
+	showInput = () => {
+		this.setState({ showInput: true });
+		// Wait a tic for the click/touch event to stop propagating
+		setTimeout(() => {
+			window.addEventListener('click', this.handlePageClick, false);
+			window.addEventListener('touchstart', this.handlePageClick, false);
+		}, 1);
+	}
+
+	handlePageClick = e => {
+		const inputContainer = document.getElementById("inputContainer");
+		const clickInsideInput = inputContainer.contains(e.target);
+
+		if(inputContainer && !clickInsideInput) {
+			this.hideInput();
+		}
+	}
+
+	hideInput = () => {
+		this.handleChange(_.isNaN(this.state.value) ? 0 : this.state.value);
+		this.setState({ showInput: false });
+		window.removeEventListener('click', this.handlePageClick, false);
+		window.removeEventListener('touchstart', this.handlePageClick, false);
 	}
 
 	render() {
 		const MAX = this.props.member.theme.amount;
 		const showLabelClass = this.state.showLabel ? 'visible' : false;
+		console.log({value: this.state.value});
 		return (
 			<SliderContainer>
-				<Amount>{numeral(this.state.value).format('$0,0')}</Amount>
+				{this.state.showInput ?
+					<AmountInputContainer id="inputContainer">
+						<Input fluid
+							type="number"
+							value={this.state.value || ''}
+							onChange={e => this.handleChange(parseInt(e.currentTarget.value))}
+							size="massive"
+							action={<Button onClick={this.hideInput}><Icon name="check" /></Button>}
+						/>
+					</AmountInputContainer>
+					:
+					<Amount onClick={this.showInput}>
+						{numeral(this.state.value).format('$0,0')}
+					</Amount>
+				}
 				<BottomAlign className={showLabelClass}>
 					<InputRange
 						minValue={0}
 						maxValue={this.props.member.theme.amount}
-						value={this.state.value}
+						value={this.state.value || 0}
 						onChange={this.handleChange}
 						onChangeStart={this.showLabel}
 						onChangeComplete={() => this.setState({ showLabel: false })}

@@ -163,6 +163,24 @@ const MemberMethods = {
 	}),
 
 	/**
+	 * Remove All Members From Theme
+	 */
+	removeAllMembers: new ValidatedMethod({
+		name: 'members.removeAllMembers',
+
+		validate: null,
+
+		run(themeId) {
+			const memberThemes = MemberThemes.distinct("_id", {theme: themeId});
+			try {
+				memberThemes.remove({_id: {$in: memberThemes}});
+			} catch(e) {
+				console.error(e);
+			}
+		}
+	}),
+
+	/**
 	 * Update Member
 	 */
 	update: new ValidatedMethod({

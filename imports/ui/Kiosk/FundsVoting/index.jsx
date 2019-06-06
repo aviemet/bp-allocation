@@ -98,6 +98,10 @@ const FundsVotingKiosk = props => {
 
 	const [ votingComplete, setVotingComplete ] = useState(false);
 
+	if(orgsLoading) {
+		return <Loader />
+	}
+
 	if(votingComplete) {
 		return <VotingComplete />
 	}

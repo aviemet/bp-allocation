@@ -16,6 +16,10 @@ const MembersList = (props) => {
 		MemberMethods.removeMemberFromTheme.call({memberId: id, themeId: theme._id});
 	}
 
+	const removeAllMembers = () => {
+		MemberMethods.removeAllMembers.call({themeId: theme._id});
+	}
+
 	let votingColspan = 0;
 	if(settings.useKioskChitVoting) votingColspan++;
 	if(settings.useKioskFundsVoting) votingColspan++;
@@ -31,9 +35,12 @@ const MembersList = (props) => {
 					{votingColspan > 0 &&
 						<Table.HeaderCell colSpan={votingColspan} collapsing textAlign="center">Voting</Table.HeaderCell>
 					}
-					{!props.hideAdminFields &&
-						<Table.HeaderCell rowSpan="2" collapsing></Table.HeaderCell>
-					}
+					{!props.hideAdminFields && <>
+						<Table.HeaderCell rowSpan="2" collapsing>Code</Table.HeaderCell>
+						<Table.HeaderCell rowSpan="2" collapsing>
+							<Button icon='trash' color='red' onClick={removeAllMembers} />
+						</Table.HeaderCell>
+					</>}
 				</Table.Row>
 				{votingColspan > 0 &&
 				<Table.Row>
@@ -60,9 +67,14 @@ const MembersList = (props) => {
 									{votesComplete && <Icon color='green' name='check' />}
 								</Table.Cell>}
 							</React.Fragment>}
-							{!props.hideAdminFields &&
-								<Table.Cell><Button icon='trash' onClick={() => removeMember(member._id)} /></Table.Cell>
-							}
+							{!props.hideAdminFields && <React.Fragment>
+								<Table.Cell>
+									{member.code ? member.code : ''}
+								</Table.Cell>
+								<Table.Cell>
+									<Button icon='trash' onClick={() => removeMember(member._id)} />
+								</Table.Cell>
+							</React.Fragment>}
 						</Table.Row>
 					)
 				})}

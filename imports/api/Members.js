@@ -23,10 +23,12 @@ const MemberSchema = new SimpleSchema({
 	},
 	number: {
 		type: Number,
+		label: "Battery member number",
 		required: true
 	},
 	code: {
 		type: String,
+		label: "Code used for signing in to kiosk voting. Initials and number combined",
 		required: false
 	},
 	createdAt: {
