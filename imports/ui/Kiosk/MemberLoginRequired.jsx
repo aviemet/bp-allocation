@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 
 import { useMembers } from '/imports/context';
+import { Members } from '/imports/api'
 
 import styled from 'styled-components';
-import { Container, Input, Label, Header, Button } from 'semantic-ui-react';
+import { Container, Form, Input, Label, Header, Button } from 'semantic-ui-react';
 
 import { VotingContextProvider } from './VotingContext';
 
@@ -21,6 +22,10 @@ const MemberLoginContainer = styled(Container)`
 		text-transform: uppercase;
 	}
 
+	& h2.ui.header {
+		color: #FFF;
+	}
+
 	.ui.search .ui.icon.input {
 		width: 100%;
 	}
@@ -28,6 +33,8 @@ const MemberLoginContainer = styled(Container)`
 
 const MemberLoginRequired = props => {
 
+	const [ searchInput, setSearchInput ] = useState('');
+	const [ searchError, setSearchError ] = useState(false);
 	const [ user, setUser ] = useState(false);
 	const [ confirmUser, setConfirmUser ] = useState(false);
 	const [ renderCount, setRenderCount ] = useState(0);
@@ -40,8 +47,26 @@ const MemberLoginRequired = props => {
 	}*/
 
 	// Member chosen from search bar, record for confirmation
-	const chooseMember = result => {
+	/*const chooseMember = result => {
 		setConfirmUser(_.find(members, ['_id', result.id]));
+	}*/
+
+	const showSearchError = () => {
+		setSearchError(true);
+		setTimeout(() => {
+			setSearchError(false);
+		}, 5000);
+	}
+
+	const chooseMember = () => {
+		setSearchError(false);
+		const member = _.find(members, ['code', searchInput]);
+		if(member) {
+			setConfirmUser(member);
+		} else {
+			showSearchError();
+			setSearchInput('');
+		}
 	}
 
 	// Increments key of search bar to force a re-render
@@ -56,20 +81,37 @@ const MemberLoginRequired = props => {
 	if(!user) {
 		return(
 			<MemberLoginContainer>
-				<Header as='h1' className='title'>Search by your name or member number</Header>
-					<MemberSearch
+				<Header as='h1' className='title'>Enter Your Member ID</Header>
+					<Container style={{width: "80%"}}>
+						<Form onSubmit={chooseMember}>
+							<Form.Input fluid
+								key={renderCount}
+								value={searchInput}
+								onChange={e => setSearchInput(e.target.value)}
+								type="text"
+								size="massive"
+								icon="user"
+								iconPosition="left"
+								placeholder="Example: MB1234"
+								action={<Button>Search</Button>}
+							/>
+						</Form>
+					</Container>
+					{/*<MemberSearch
 						key={renderCount}
 						data={members}
 						callback={chooseMember}
 						size='massive'
-					/>
+					/>*/}
 				{confirmUser && <React.Fragment>
 
 					<Header as='h2' className='title'>Hello {confirmUser.firstName}, ready to vote?</Header>
 					<Button size='massive' color='red' onClick={resetMember}>Oops, not me!</Button>
-					<Button size='massive' color='green' onClick={() => setUser(confirmUser)}>Let's vote!</Button>
+					<Button size='massive' color='green' onClick={() => {setUser(confirmUser); setConfirmUser(false)}}>Let's vote!</Button>
 
 				</React.Fragment>}
+
+				{searchError && <Header as='h2' className='title'>No Member Found, Try Again</Header>}
 			</MemberLoginContainer>
 		);
 	}

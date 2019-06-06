@@ -1,11 +1,18 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
+import _ from 'lodash';
 
 const Members = new Mongo.Collection('members');
 
 const MemberSchema = new SimpleSchema({
-	firstName: String,
-	lastName: String,
+	firstName: {
+		type: String,
+		required: false
+	},
+	lastName: {
+		type: String,
+		required: false
+	},
 	fullName: {
 		type: String,
 		required: false
@@ -16,6 +23,10 @@ const MemberSchema = new SimpleSchema({
 	},
 	number: {
 		type: Number,
+		required: true
+	},
+	code: {
+		type: String,
 		required: false
 	},
 	createdAt: {

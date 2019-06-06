@@ -76,9 +76,77 @@ Meteor.startup(() => {
 
 	Meteor.publish('members', (ids) => {
 		if(!ids) return Members.find({});
-		return Members.find({_id: {$in: ids}});
-	});
+		return Members.find({_id: { $in: ids }});
+/*
+		const rawMembers = Members.rawCollection();
+		const aggregate = Meteor.wrapAsync(rawMembers.aggregate, rawMembers);
 
+		const results = aggregate([
+			{
+				$match: {
+					_id: {
+						$in: ids
+					}
+				}
+			},
+			{
+				$addFields: {
+					code: {
+						$concat: [
+							"$initials",
+							{
+								$convert: {
+									input: "$number",
+									to: "string",
+									onError: "Error",
+									onNull: ""
+								}
+							}
+						]
+					}
+				}
+			}
+		], {
+			cursor: { batchSize: 1000 }
+		});
+
+		console.log({results: results});
+		return [results];
+
+
+		const members = Members.aggregate([
+			{
+				$match: {
+					_id: {
+						$in: ids
+					}
+				}
+			},
+			{
+				$addFields: {
+					code: {
+						$concat: [
+							"$initials",
+							{
+								$convert: {
+									input: "$number",
+									to: "string",
+									onError: "Error",
+									onNull: ""
+								}
+							}
+						]
+					}
+				}
+			}
+		]);
+
+		console.log({members});
+
+		return members;
+
+*/
+	});
 });
 
 

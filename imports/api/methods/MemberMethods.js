@@ -14,13 +14,14 @@ import { Members, MemberThemes } from '/imports/api';
 const memberInsert = function(data) {
 	// Normalize the data
 	let { firstName, lastName, fullName, number, initials } = data;
+	let code;
 	number = parseInt(number);
-	if(!_.isEmpty(firstName)) firstName = firstName.trim();
-	if(!_.isEmpty(lastName)) lastName = lastName.trim();
-	if(!_.isEmpty(fullName)) fullName = fullName.trim();
+	if(!_.isUndefined(firstName)) firstName = firstName.trim();
+	if(!_.isUndefined(lastName)) lastName = lastName.trim();
+	if(!_.isUndefined(fullName)) fullName = fullName.trim();
 
 	// Build first/last from fullName if not present
-	if(_.isEmpty(firstName) && _.isEmpty(lastName) && !_.isEmpty(fullName)) {
+	if(_.isUndefined(firstName) && _.isUndefined(lastName) && !_.isUndefined(fullName)) {
 		const nameArr = fullName.split(' ');
 		if(nameArr.length === 2) {
 			firstName = nameArr[0];
@@ -29,21 +30,26 @@ const memberInsert = function(data) {
 	}
 
 	// Build fullName from first/last if not present
-	if(_.isEmpty(fullName) && !_.isEmpty(firstName) && !_.isEmpty(lastName)) {
+	if(_.isUndefined(fullName) && !_.isUndefined(firstName) && !_.isUndefined(lastName)) {
 		fullName = firstName + ' ' + lastName;
 	}
 
 	// Build initials from first/last if not present
-	if(!_.isEmpty(firstName) && !_.isEmpty(lastName)) {
+	if(!_.isUndefined(firstName) && !_.isUndefined(lastName)) {
 		initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+	}
+
+	// Build code from initials and number
+	if(!_.isUndefined(initials) && !_.isUndefined(number)) {
+		code = `${initials}${String(number)}`;
 	}
 
 	// Build the query: Search by either of first/last or full name
 	const memberQuery = {'$or': []};
-	if(!_.isEmpty(firstName) && !_.isEmpty(lastName)) {
+	if(!_.isUndefined(firstName) && !_.isUndefined(lastName)) {
 		memberQuery.$or.push({firstName, lastName, number});
 	}
-	if(!_.isEmpty(fullName)) {
+	if(!_.isUndefined(fullName)) {
 		memberQuery.$or.push({fullName, number});
 	}
 
@@ -52,7 +58,8 @@ const memberInsert = function(data) {
 
 	return new Promise((resolve, reject) => {
 		if(!member) {
-			const newMember = { firstName, lastName, fullName, number, initials };
+			const newMember = { firstName, lastName, fullName, number, initials, code };
+			console.log({newMember});
 			try{
 				Members.insert(newMember, (err, result) => {
 					if(err){
