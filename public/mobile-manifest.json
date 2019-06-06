@@ -1,0 +1,13 @@
+{
+  "name": "Battery Powered Allocation",
+  "short_name": "Battery Powered Allocation",
+  "description": "Voting interface for Battery Powered Allocation Night",
+  "start_url": "/",
+  "background_color": "#000000",
+  "theme_color": "#0f4a73",
+  "icons": [{
+    "src": "icon-256.png",
+    "sizes": "256x256",
+    "type": "image/png"
+  }]
+}
