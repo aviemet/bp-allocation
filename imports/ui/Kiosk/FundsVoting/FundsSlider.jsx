@@ -23,14 +23,13 @@ const SliderContainer = styled.div`
 `;
 
 const Amount = styled.div`
-	font-size: 5.75rem;
+	font-size: 4rem;
 	text-align: center;
 	line-height: 1.15;
-	padding-bottom: 4rem;
 `;
 
 const AmountInputContainer = styled.div`
-	height: 148px;
+	/*height: 148px;*/
 
 	.ui.massive.input {
 		height: 90px;
@@ -39,9 +38,7 @@ const AmountInputContainer = styled.div`
 `;
 
 const BottomAlign = styled.div`
-	position: absolute;
-	bottom: 0;
-	width: 100%;
+	margin: 10px 5px -15px 5px;
 `;
 
 class FundsSliderComponent extends React.PureComponent {

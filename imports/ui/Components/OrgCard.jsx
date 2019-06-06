@@ -18,14 +18,14 @@ const StyledCard = styled(Card)`
 
 	&& {
 		border: 5px solid #FFF !important;
+
+		.content {
+			padding: 1em 0.5em;
+		}
 	}
 
 	&.big {
 		height: 23rem;
-	}
-
-	.content {
-		padding: 1em 0.5em !important;
 	}
 `;
 

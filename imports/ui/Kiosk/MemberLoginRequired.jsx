@@ -109,7 +109,7 @@ const MemberLoginRequired = props => {
 					/>*/}
 				{confirmUser && <React.Fragment>
 
-					<Header as='h2' className='title'>Hello {confirmUser.firstName}, ready to vote?</Header>
+					<Header as='h2' className='title'>Hello {confirmUser.firstName ? confirmUser.firstName : confirmUser.fullName}, ready to vote?</Header>
 					<Button size='massive' color='red' onClick={resetMember}>Oops, not me!</Button>
 					<Button size='massive' color='green' onClick={displayVoting}>Let's vote!</Button>
 

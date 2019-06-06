@@ -13,13 +13,13 @@ import { COLORS } from '/imports/utils';
 const OrgsContainer = styled.div`
 	padding-top: 20px;
 
-	.ui.card {
+	&& .ui.card {
 		.orgsImage{
-			height: 181px;
+			height: 200px;
 		}
 
 		.content{
-			padding-bottom: 0.2em;
+			/*padding-bottom: 0.2em;*/
 
 			&.white{
 				color: #FFF;
@@ -27,7 +27,7 @@ const OrgsContainer = styled.div`
 		}
 	}
 
-	p{
+	&& p{
 		line-height: 1em;
 	}
 `;

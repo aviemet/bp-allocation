@@ -83,8 +83,8 @@ const Results = props => {
 			<Header as='h1'>
 				Total amount given: {numeral(total).format('$0.[00]a')}
 			</Header>
-
-			<Header as='h2'>Battery Powered Awardees</Header>
+<br/><br/>
+			{/*<Header as='h2'>Battery Powered Awardees</Header>*/}
 
 			<Card.Group centered>
 			{awardees.map((org) => {
@@ -110,7 +110,7 @@ const Results = props => {
 			})}
 			</Card.Group>
 			<br/>
-			<Header as='h2'>Other winners</Header>
+			{/*<Header as='h2'>Other winners</Header>*/}
 
 			<Card.Group centered >
 			{others.map((org) => {

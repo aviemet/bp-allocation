@@ -22,27 +22,27 @@ import { COLORS } from '/imports/global';
 const OrgsContainer = styled(Container)`
 	padding-top: 20px;
 
-	.ui.centered.two.cards {
+	&& .ui.centered.two.cards {
 		margin-top: 1rem;
 		margin-bottom: 1rem;
 	}
 
-	.ui.card {
-		margin: 1rem;
+	&& .ui.card {
+		margin: 0.3rem;
 
 		.content{
-			padding-bottom: 0.2em;
+			padding: 0.2em 0.5em;
 		}
 	}
 
-	h1.ui.header.title {
+	&& h1.ui.header.title {
 		color: #FFF;
 		text-align: center;
 		font-size: 3rem;
 		text-transform: uppercase;
 	}
 
-	p {
+	&& p {
 		line-height: 1em;
 	}
 `;
@@ -54,23 +54,9 @@ const SliderContainer = styled.div`
 	padding: 15px;
 	position: relative;
 
-	.input-range {
+	&& .input-range {
 		margin-bottom: 15px;
 	}
-`;
-
-const Amount = styled.div`
-	font-size: 5.75rem;
-	text-align: center;
-	line-height: 1.15;
-	margin-top: 2rem;
-`;
-
-const BottomAlign = styled.div`
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-	padding-right: 30px;
 `;
 
 const FinalizeButton = styled(Button)`
