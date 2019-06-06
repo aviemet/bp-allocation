@@ -21,7 +21,7 @@ const ColorizeTopOrgsToggle = props => {
 
 	return(
 		<Checkbox
-			label='Colorize Top Orgs'
+			label='Dim Top Orgs'
 			toggle
 			index='colorizeOrgs'
 			onClick={saveValue}

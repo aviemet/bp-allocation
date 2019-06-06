@@ -37,7 +37,7 @@ const OrgInfo = props => {
 	return (
 		<InfoContainer className='orginfo'>
 			<Title>{props.org.title}</Title>
-			<Ask>Ask: ${numeral(props.org.ask).format('0.0a')}</Ask>
+
 
 			<TotalNeed>
 				Need: {props.org.need > 0 ? `$${numeral(props.org.need).format('0.0a')}` : '--'}
@@ -54,3 +54,5 @@ const OrgInfo = props => {
 }
 
 export default OrgInfo;
+
+// <Ask>Ask: ${numeral(props.org.ask).format('0.0a')}</Ask>

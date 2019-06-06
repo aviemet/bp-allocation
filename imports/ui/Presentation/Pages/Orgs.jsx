@@ -57,7 +57,7 @@ const DimOverlay = styled.div`
 
 const Overlay = () => (
 	<DimOverlay>
-		<Image src='/img/BPLogo.svg' />
+		{/*<Image src='/img/BPLogo.svg' />*/}
 	</DimOverlay>
 );
 

@@ -6,6 +6,14 @@ const Members = new Mongo.Collection('members');
 const MemberSchema = new SimpleSchema({
 	firstName: String,
 	lastName: String,
+	fullName: {
+		type: String,
+		required: false
+	},
+	initials: {
+		type: String,
+		required: false
+	},
 	number: {
 		type: Number,
 		required: false

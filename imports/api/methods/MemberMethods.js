@@ -7,45 +7,102 @@ import { roundFloat } from '/imports/utils';
 
 import { Members, MemberThemes } from '/imports/api';
 
-const memberInsert = function(query) {
-	let member = Members.find(query).fetch()[0];
+/**
+ * Upserts a member
+ * @param  {Object} data {firstName, lastName, fullName, initials, number, amount}
+ */
+const memberInsert = function(data) {
+	// Normalize the data
+	let { firstName, lastName, fullName, number, initials } = data;
+	number = parseInt(number);
+	if(!_.isEmpty(firstName)) firstName = firstName.trim();
+	if(!_.isEmpty(lastName)) lastName = lastName.trim();
+	if(!_.isEmpty(fullName)) fullName = fullName.trim();
+
+	// Build first/last from fullName if not present
+	if(_.isEmpty(firstName) && _.isEmpty(lastName) && !_.isEmpty(fullName)) {
+		const nameArr = fullName.split(' ');
+		if(nameArr.length === 2) {
+			firstName = nameArr[0];
+			lastName = nameArr[1];
+		}
+	}
+
+	// Build fullName from first/last if not present
+	if(_.isEmpty(fullName) && !_.isEmpty(firstName) && !_.isEmpty(lastName)) {
+		fullName = firstName + ' ' + lastName;
+	}
+
+	// Build initials from first/last if not present
+	if(!_.isEmpty(firstName) && !_.isEmpty(lastName)) {
+		initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+	}
+
+	// Build the query: Search by either of first/last or full name
+	const memberQuery = {'$or': []};
+	if(!_.isEmpty(firstName) && !_.isEmpty(lastName)) {
+		memberQuery.$or.push({firstName, lastName, number});
+	}
+	if(!_.isEmpty(fullName)) {
+		memberQuery.$or.push({fullName, number});
+	}
+
+	// Check if the member already exists
+	let member = Members.find(memberQuery).fetch()[0];
 
 	return new Promise((resolve, reject) => {
 		if(!member) {
-			Members.insert(query, (err, result) => {
-				if(err){
-					reject(err);
-				} else {
-					resolve(result);
-				}
-			});
+			const newMember = { firstName, lastName, fullName, number, initials };
+			try{
+				Members.insert(newMember, (err, result) => {
+					if(err){
+						reject(err);
+					} else {
+						resolve(result);
+					}
+				});
+			} catch(e) {
+				console.error(e);
+			}
 		} else {
 			resolve(member._id);
 		}
 	});
 }
 
+/**
+ * Upserts a memberTheme assocication
+ * @param  {Object} query
+ */
 const memberThemeInsert = function(query) {
-	console.log({query});
+
 	let memberTheme = MemberThemes.find({member: query.member, theme: query.theme}).fetch()[0];
 
 	return new Promise((resolve, reject) => {
 		if(!memberTheme) {
-			MemberThemes.insert(query, (err, result) => {
-				if(err) {
-					reject(err);
-				} else {
-					resolve(result);
-				}
-			});
+			try {
+				MemberThemes.insert(query, (err, result) => {
+					if(err) {
+						reject(err);
+					} else {
+						resolve(result);
+					}
+				});
+			} catch(e) {
+				console.error(e);
+			}
 		} else {
-			MemberThemes.update({_id: memberTheme._id}, {$set: {amount: query.amount}}, (err, result) => {
-				if(err) {
-					reject(err);
-				} else {
-					resolve(memberTheme._id);
-				}
-			});
+			try {
+				MemberThemes.update({_id: memberTheme._id}, {$set: {amount: query.amount}}, (err, result) => {
+					if(err) {
+						reject(err);
+					} else {
+						resolve(memberTheme._id);
+					}
+				});
+			} catch(e) {
+				console.error(e);
+			}
 		}
 	});
 }
@@ -61,16 +118,17 @@ const MemberMethods = {
 		validate: null,
 
 		run(data) {
+			const { amount, themeId } = data;
 			// Get strange results if run on client
 			if(Meteor.isServer) {
-				const { firstName, lastName, number, themeId, amount } = data;
-				const memberQuery = { firstName, lastName, number: parseInt(number) };
 
-				memberInsert(memberQuery).then(member => {
+				// Create/edit member
+				memberInsert(data).then(member => {
+					console.log({data});
 					const memberThemeQuery = { member, amount, theme: themeId };
 
+					// Create/edit theme association
 					memberThemeInsert(memberThemeQuery).then(memberTheme => {
-						console.log({memberTheme});
 						return memberTheme;
 					}, memberThemeError => {
 						console.error({memberThemeError});
