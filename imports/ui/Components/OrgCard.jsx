@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
+import _ from 'lodash';
 
 import { Card, Image } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -91,6 +92,9 @@ const OrgCard = props => {
 
 	cardClass = `${props.size ? props.size : ''} ${props.animateClass ? 'animate-orgs' : ''}`;
 
+	// Default to true, cast to boolean
+	const showAsk = _.isUndefined(props.showAsk) ? true : !!props.showAsk;
+
 	return (
 		<StyledCard className={cardClass}>
 			{Overlay && <Overlay />}
@@ -102,7 +106,7 @@ const OrgCard = props => {
 				</Card.Content>}
 
 				<OrgTitle><p>{props.org.title}</p></OrgTitle>
-				<OrgAsk>{numeral(props.org.ask).format('$0a')}</OrgAsk>
+				{showAsk && <OrgAsk>{numeral(props.org.ask).format('$0a')}</OrgAsk>}
 			</CardContent>
 		</StyledCard>
 	);

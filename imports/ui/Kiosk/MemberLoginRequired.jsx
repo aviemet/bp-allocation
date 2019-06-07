@@ -61,24 +61,24 @@ const MemberLoginRequired = props => {
 	const chooseMember = () => {
 		setSearchError(false);
 		const member = _.find(members, ['code', searchInput.trim().toUpperCase()]);
+		setSearchInput('');
 		if(member) {
-			setConfirmUser(member);
+			setUser(member);
 		} else {
 			showSearchError();
-			setSearchInput('');
 		}
 	}
 
-	const resetMember = () => {
+	/*const resetMember = () => {
 		setConfirmUser(false);
 		setSearchInput('');
-	}
+	}*/
 
-	const displayVoting = () => {
+	/*const displayVoting = () => {
 		setSearchInput('');
 		setUser(confirmUser);
 		setConfirmUser(false);
-	}
+	}*/
 
 	const ChildComponent = props.component;
 
@@ -107,13 +107,13 @@ const MemberLoginRequired = props => {
 						callback={chooseMember}
 						size='massive'
 					/>*/}
-				{confirmUser && <React.Fragment>
+				{/*confirmUser && <React.Fragment>
 
 					<Header as='h2' className='title'>Hello {confirmUser.firstName ? confirmUser.firstName : confirmUser.fullName}, ready to vote?</Header>
 					<Button size='massive' color='red' onClick={resetMember}>Oops, not me!</Button>
 					<Button size='massive' color='green' onClick={displayVoting}>Let's vote!</Button>
 
-				</React.Fragment>}
+				</React.Fragment>*/}
 
 				{searchError && <Header as='h2' className='title'>No Member Found, Try Again</Header>}
 			</MemberLoginContainer>
@@ -123,7 +123,7 @@ const MemberLoginRequired = props => {
 	// Member is chosen, display the voting panel
 	return (
 		<VotingContextProvider member={user} unsetUser={() => setUser(false)}>
-			<ChildComponent memberName={user.firstName} />
+			<ChildComponent user={user} />
 		</VotingContextProvider>
 	);
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import numeral from 'numeral';
 
@@ -31,14 +31,15 @@ const Amount = styled.div`
 const AmountInputContainer = styled.div`
 	/*height: 148px;*/
 
-	.ui.massive.input {
-		height: 90px;
-		font-size: 3rem;
+	&& .ui.input {
+		height: 64px;
+		text-align: center;
+		font-size: 2.5rem;
 	}
 `;
 
 const BottomAlign = styled.div`
-	margin: 10px 5px -15px 5px;
+	margin: 15px 5px -15px 5px;
 `;
 
 class FundsSliderComponent extends React.PureComponent {
@@ -49,6 +50,12 @@ class FundsSliderComponent extends React.PureComponent {
 			value: parseInt(props.votes[props.org._id]),
 			showLabel: false,
 			showInput: false
+		}
+	}
+
+	componentDidRender = () => {
+		document.oncontextmenu = () => {
+		  return false;
 		}
 	}
 
@@ -119,6 +126,8 @@ class FundsSliderComponent extends React.PureComponent {
 							value={this.state.value || ''}
 							onChange={e => this.handleChange(parseInt(e.currentTarget.value))}
 							size="massive"
+							icon="dollar"
+							iconPosition="left"
 							action={<Button onClick={this.hideInput}><Icon name="check" /></Button>}
 						/>
 					</AmountInputContainer>

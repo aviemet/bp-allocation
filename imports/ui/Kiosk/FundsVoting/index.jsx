@@ -31,7 +31,7 @@ const OrgsContainer = styled(Container)`
 		margin: 0.3rem;
 
 		.content{
-			padding: 0.2em 0.5em;
+			padding: 0.2em 0.5em 1.5em;
 		}
 	}
 
@@ -84,6 +84,8 @@ const FundsVotingKiosk = props => {
 
 	const [ votingComplete, setVotingComplete ] = useState(false);
 
+	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName;
+
 	if(orgsLoading) {
 		return <Loader />
 	}
@@ -94,7 +96,7 @@ const FundsVotingKiosk = props => {
 	return (
 		<OrgsContainer>
 
-			<Header as='h1' className="title">Voting for {props.memberName}</Header>
+			<Header as='h1' className="title">{props.user.firstName && 'Voting for'} {memberName}</Header>
 
 			<Card.Group centered itemsPerRow={2}>
 				{topOrgs.map(org => {
@@ -102,7 +104,8 @@ const FundsVotingKiosk = props => {
 						<OrgCard
 							key={org._id}
 							org={org}
-							image={_.find(images, ['_id', org.image])}
+							// image={_.find(images, ['_id', org.image])}
+							showAsk={false}
 							size='small'
 							content={() => (
 								<FundsSlider
@@ -116,13 +119,18 @@ const FundsVotingKiosk = props => {
 			<FundsVoteContext.Consumer>{({votes, saveVotes, member}) => {
 				let sum = 0;
 				_.forEach(votes, value => sum += value);
+				const remaining = member.theme.amount - sum;
+				const buttonDisabled = remaining !== 0;
 				return(
 					<React.Fragment>
-						<AmountRemaining value={member.theme.amount - sum} />
-						<FinalizeButton size='huge' onClick={() => {
-							saveVotes();
-							setVotingComplete(true);
-						}}>Finalize Vote</FinalizeButton>
+						<AmountRemaining value={remaining} />
+						<FinalizeButton
+							size='huge'
+							disabled={buttonDisabled}
+							onClick={() => {
+								saveVotes();
+								setVotingComplete(true);
+							}}>Finalize Vote</FinalizeButton>
 					</React.Fragment>
 				)
 			}}</FundsVoteContext.Consumer>
