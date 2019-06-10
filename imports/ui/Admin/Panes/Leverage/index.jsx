@@ -56,8 +56,8 @@ const Leverage = props => {
 				return org;
 			});
 
- 			sumRemainingOrgs = trackers.newSumRemainingOrgs;
- 			leverageRemaining = roundFloat(leverageRemaining - trackers.givenThisRound);
+			sumRemainingOrgs = trackers.newSumRemainingOrgs;
+			leverageRemaining = roundFloat(leverageRemaining - trackers.givenThisRound);
 
 			round.orgs = _.cloneDeep(roundOrgs);
 			rounds.push(round);
@@ -80,10 +80,10 @@ const Leverage = props => {
 		}
 
 		// Give funds for this round
-	  org.roundFunds = roundFloat(Math.min(
-	    org.percent * leverageRemaining,
-	    org.need
-	  ));
+		org.roundFunds = roundFloat(Math.min(
+			org.percent * leverageRemaining,
+			org.need
+		));
 
 		// Accumulate the running total of all accrued funds during leverage rounds
 		org.leverageFunds = roundFloat(org.leverageFunds + org.roundFunds);
@@ -94,11 +94,11 @@ const Leverage = props => {
 		return org;
 	}
 
- 	/**
- 	 * Clone top orgs (so no reference issues)
- 	 * Add an accumulator for the leverage allocation per round
- 	 * Also calculate sumRemainingOrgs for first round leverage
- 	 */
+	/**
+	 * Clone top orgs (so no reference issues)
+	 * Add an accumulator for the leverage allocation per round
+	 * Also calculate sumRemainingOrgs for first round leverage
+	 */
 	const _initLeverageVars = () => {
 		// Amount allocated so far to top-orgs which have not yet been fully funded
 		let sumRemainingOrgs = 0;
@@ -156,33 +156,12 @@ const Leverage = props => {
 	const leverageDistributed = orgSpreadSum === roundSpreadSum;
 
 	return (
-	  <React.Fragment>
-		  {rounds.map((round, i) => (
-		  	<Segment key={i}>
-					<Grid>
-						<Grid.Row>
-							<Grid.Column width={6}>
-								<Header as="h2">Round {i+1}</Header>
-							</Grid.Column>
-							<Grid.Column width={10}>
-								<span>Leverage Remaining: {numeral(round.leverageRemaining).format('$0,0.00')}</span><br/>
-								<span>Remaining Orgs Sum: {numeral(round.sumRemainingOrgs).format('$0,0.00')}</span>
-							</Grid.Column>
-						</Grid.Row>
-
-						<Grid.Row>
-							<Grid.Column>
-		  					<RoundTable orgs={round.orgs} />
-							</Grid.Column>
-						</Grid.Row>
-					</Grid>
-		  	</Segment>
-	  	))}
-	  	<Segment color='violet'>
+		<React.Fragment>
+			<Segment color='violet'>
 				<Grid>
 					<Grid.Row>
 						<Grid.Column width={6}>
-  						<Header as="h2">Final Distribution</Header>
+							<Header as="h2">Final Distribution</Header>
 						</Grid.Column>
 						<Grid.Column width={4}>
 							<span>Leverage Remaining: {numeral(finalRoundAllcoation(rounds)).format('$0,0.00')}</span><br/>
@@ -210,12 +189,34 @@ const Leverage = props => {
 
 					<Grid.Row>
 						<Grid.Column>
-		  				<ResultsTable round={rounds[rounds.length-1]} />
+							<ResultsTable round={rounds[rounds.length-1]} />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-	  	</Segment>
-  	</React.Fragment>
+			</Segment>
+
+			{rounds.map((round, i) => (
+				<Segment key={i}>
+					<Grid>
+						<Grid.Row>
+							<Grid.Column width={6}>
+								<Header as="h2">Round {i+1}</Header>
+							</Grid.Column>
+							<Grid.Column width={10}>
+								<span>Leverage Remaining: {numeral(round.leverageRemaining).format('$0,0.00')}</span><br/>
+								<span>Remaining Orgs Sum: {numeral(round.sumRemainingOrgs).format('$0,0.00')}</span>
+							</Grid.Column>
+						</Grid.Row>
+
+						<Grid.Row>
+							<Grid.Column>
+								<RoundTable orgs={round.orgs} />
+							</Grid.Column>
+						</Grid.Row>
+					</Grid>
+				</Segment>
+			))}
+		</React.Fragment>
 	);
 }
 
