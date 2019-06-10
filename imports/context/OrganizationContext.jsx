@@ -55,8 +55,9 @@ const OrganizationProviderTemplate = props => {
 			org.allocatedFunds = roundFloat((org.amountFromVotes || 0) + org.pledgeTotal + org.save + org.topOff);
 
 			// Amount needed to reach goal
-			let need = org.ask - org.allocatedFunds - org.leverageFunds;
+			let need = org.ask - org.allocatedFunds;
 			org.need = roundFloat(need > 0 ? need : 0);
+			console.log({ask: org.ask, allocatedFunds: org.allocatedFunds, leverageFunds: org.leverageFunds, need: org.need});
 
 			return org;
 		});

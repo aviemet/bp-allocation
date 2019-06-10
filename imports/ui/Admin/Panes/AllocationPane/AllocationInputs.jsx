@@ -61,7 +61,7 @@ const AllocationInputs = props => {
 	}
 
 	const topoff = () => {
-		const amount = props.org.topOff > 0 ? 0 : props.org.need;
+		const amount = props.org.topOff > 0 ? 0 : props.org.need - props.org.leverageFunds;
 		OrganizationMethods.update.call({id: props.org._id, data: {
 			topOff: amount
 		}});
@@ -71,7 +71,7 @@ const AllocationInputs = props => {
 	const amountFromVotes = props.org.amountFromVotes || 0;
 
 	// Boolean help for marking fully funded orgs
-	const reachedGoal = props.org.need <= 0;
+	const reachedGoal = props.org.need - props.org.leverageFunds <= 0;
 
 	return (
 		<Table.Row positive={reachedGoal}>
@@ -127,7 +127,7 @@ const AllocationInputs = props => {
 
 			{/* Need */}
 			<Table.Cell>
-				{numeral(props.org.need).format('$0,0')}
+				{numeral(props.org.need - props.org.leverageFunds).format('$0,0')}
 			</Table.Cell>
 
 			{/* Actions */}
