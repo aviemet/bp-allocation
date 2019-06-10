@@ -1,61 +1,81 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import _ from 'lodash';
 
 import { Table, Input } from 'semantic-ui-react';
 
 import { OrganizationMethods } from '/imports/api/methods';
 
-const ChitInputs = props => {
+class ChitInputs extends React.Component {
+	constructor(props) {
+		super(props);
 
-	const [ weightVotes, setWeightVotes ] = useState(props.org.chitVotes.weight);
-	const [ countVotes, setCountVotes ]   = useState(props.org.chitVotes.count);
+		this.state = {
+			weightVotes: props.org.chitVotes.weight,
+			countVotes: props.org.chitVotes.count
+		};
+	}
 
-	useEffect(() => {
-		if(weightVotes !== props.org.chitVotes.weight || countVotes !== props.org.chitVotes.count) {
-
-			OrganizationMethods.update.call({
-				id: props.org._id,
-				data: {
-					chitVotes: {
-						count: countVotes,
-						weight: weightVotes
-					}
-				}
+	componentDidUpdate = (prevProps, prevState) => {
+		if(this.props.org.chitVotes.weight !== this.state.weightVotes && prevProps.org.chitVotes !== this.state.weightVotes) {
+			this.setState({
+				weightVotes: this.props.org.chitVotes.weight
 			});
 		}
-	});
+	}
 
-	return (
-		<Table.Row>
+	saveVotes = () => {
+		OrganizationMethods.update.call({
+			id: this.props.org._id,
+			data: {
+				chitVotes: {
+					count: this.state.countVotes,
+					weight: this.state.weightVotes
+				}
+			}
+		});
+	}
 
-			<Table.Cell collapsing>
-				{props.org.title}
-			</Table.Cell>
+	render() {
+		return (
+			<Table.Row>
 
-			<Table.Cell collapsing>
-				<Input
-					name='weightVotes'
-					type='number'
-					tabIndex={props.tabInfo.index}
-					fluid
-					value={weightVotes || ''}
-					onChange={e => setWeightVotes(e.target.value ? parseFloat(e.target.value) : 0)}
-				/>
-			</Table.Cell>
+				<Table.Cell collapsing>
+					{this.props.org.title}
+				</Table.Cell>
 
-			<Table.Cell collapsing>
-				<Input
-					name='countVotes'
-					type='number'
-					tabIndex={props.tabInfo.index + props.tabInfo.length}
-					fluid
-					value={countVotes || ''}
-					onChange={e => setCountVotes(e.target.value ? parseFloat(e.target.value) : 0)}
-				/>
-			</Table.Cell>
+				<Table.Cell collapsing>
+					<Input
+						name='weightVotes'
+						type='number'
+						tabIndex={this.props.tabInfo.index}
+						fluid
+						value={this.state.weightVotes || ''}
+						onChange={e => {
+							this.setState({
+								weightVotes:e.currentTarget.value ? parseFloat(e.currentTarget.value) : 0
+							}, this.saveVotes);
+						}}
+					/>
+				</Table.Cell>
 
-		</Table.Row>
-	);
+				<Table.Cell collapsing>
+					<Input
+						name='countVotes'
+						type='number'
+						tabIndex={this.props.tabInfo.index + this.props.tabInfo.length}
+						fluid
+						value={this.state.countVotes || ''}
+						onChange={e => {
+							this.setState({
+								countVotes:e.currentTarget.value ? parseFloat(e.currentTarget.value) : 0
+							}, this.saveVotes);
+						}}
+					/>
+				</Table.Cell>
+
+			</Table.Row>
+		);
+	}
 }
 
 export default ChitInputs;

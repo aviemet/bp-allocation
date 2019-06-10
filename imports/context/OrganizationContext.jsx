@@ -69,9 +69,7 @@ const OrganizationProviderTemplate = props => {
 			orgs: props.orgs,
 			topOrgs: getTopOrgs(),
 			orgsLoading: props.loading,
-			handles: Object.assign({
-				orgs: props.orgsHandle
-			}, props.handles)
+			handles: props.handles
 		}}>
 			{props.children}
 		</OrganizationContext.Provider>
@@ -87,7 +85,6 @@ const OrganizationProvider = withTracker(props => {
 	let settings = PresentationSettings.find({_id: theme.presentationSettings}).fetch()[0];
 	if(_.isUndefined(settings)) return { loading: true };
 
-	let orgsHandle = Meteor.subscribe('organizations', props.id);
 	let orgs = Organizations.find({theme: props.id}).fetch();
 
 	// Get the members participating in this theme
@@ -95,9 +92,9 @@ const OrganizationProvider = withTracker(props => {
 	const memberIds = memberThemes.map(memberTheme => memberTheme.member);
 	const members = Members.find({_id: {$in: memberIds}}).fetch();
 
-	let loading = (!orgsHandle.ready() || _.isUndefined(orgs) || _.isUndefined(memberThemes));
+	let loading = (!props.handles.orgs.ready() || _.isUndefined(orgs) || _.isUndefined(memberThemes));
 
-	return { loading, orgs, theme, settings, members, memberThemes, orgsHandle };
+	return { loading, orgs, theme, settings, members, memberThemes };
 })(OrganizationProviderTemplate);
 
 const useOrganizations = () => useContext(OrganizationContext);

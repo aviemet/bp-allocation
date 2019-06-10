@@ -1,19 +1,19 @@
 import Meter from 'meteor/meteor';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import _ from 'lodash';
 
-import { ThemeContext, OrganizationContext } from '/imports/context';
+import { useOrganizations, OrganizationProvider } from '/imports/context';
 
 import { Loader, Grid, Table, Header, Segment, Container } from 'semantic-ui-react';
+
+import { useTraceUpdate } from '/imports/utils';
 
 import ChitInputs from './ChitInputs';
 import TopOrgsByChitVote from './TopOrgsByChitVote';
 import SavedOrg from './SavedOrg';
 
 const ChitVotingPane = props => {
-
-	const { theme } = useContext(ThemeContext);
-	const { orgs }  = useContext(OrganizationContext);
+	const { orgs }  = useOrganizations();
 
 	return (
 		<React.Fragment>

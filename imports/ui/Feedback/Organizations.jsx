@@ -11,7 +11,6 @@ import TopOrgsByChitVote from '/imports/ui/Admin/Panes/ChitVotingPane/TopOrgsByC
 import SavedOrg from '/imports/ui/Admin/Panes/ChitVotingPane/SavedOrg';
 
 const ChitVotingPane = props => {
-
 	const { theme } = useContext(ThemeContext);
 	const { orgs }  = useContext(OrganizationContext);
 
