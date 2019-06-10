@@ -12,10 +12,11 @@ const NewMemberInputs = (props) => {
 	const { theme } = useTheme();
 	const { members } = useMembers();
 
-	let [ firstName, setFirstName ] = useState('');
-	let [ lastName, setLastName ] = useState('');
-	let [ memberNumber, setMemberNumber ] = useState(undefined);
-	let [ memberAmount, setMemberAmount ] = useState(0);
+	const [ firstName, setFirstName ] = useState('');
+	const [ lastName, setLastName ] = useState('');
+	const [ initials, setInitials ] = useState('');
+	const [ memberNumber, setMemberNumber ] = useState(undefined);
+	const [ memberAmount, setMemberAmount ] = useState(0);
 
 	const saveMember = e => {
 		e.preventDefault();
@@ -23,12 +24,14 @@ const NewMemberInputs = (props) => {
 		MemberMethods.upsert.call({
 			firstName,
 			lastName,
+			initials,
 			number: memberNumber,
 			themeId: theme._id,
 			amount: memberAmount
 		}, (err, res) => {
 			setFirstName('');
 			setLastName('');
+			setInitials('');
 			setMemberNumber('');
 			setMemberAmount('');
 		});
@@ -48,6 +51,12 @@ const NewMemberInputs = (props) => {
 					placeholder='Last Name'
 					value={ lastName }
 					onChange={ e => setLastName(e.target.value) }
+				/>
+				<Form.Input
+					width={ 3 }
+					placeholder='Initials'
+					value={ initials || '' }
+					onChange={ e => setInitials(e.target.value) }
 				/>
 				<Form.Input
 					width={ 3 }

@@ -56,10 +56,10 @@ const ImportMembers = props => {
 
 		const parser = readCsvWithHeadings(file, acceptedValues, {
 			'beforeInferHeadings': headings => {
-				console.log({beforeInferHeadings: headings});
+				// console.log({beforeInferHeadings: headings});
 			},
 			'afterInferHeadings': headings => {
-				console.log({afterInferHeadings: headings});
+				// console.log({afterInferHeadings: headings});
 			},
 			'beforeRowParse': row => {
 				// console.log({beforeRowParse: row});
@@ -69,58 +69,7 @@ const ImportMembers = props => {
 				MemberMethods.upsert.call(Object.assign({themeId: theme._id}, row));
 			},
 			'onComplete': data => {
-				console.log({onComplete: data});
-			}
-		});
-	}
-
-	const doThing = e => {
-		let file = e.currentTarget.files[0];
-
-		let parser = Papa.parse(file, {
-			header: true,
-			dynamicTyping: true,
-			skipEmptyLines: true,
-			step: (results, parser) => {
-				console.log({results: results, parser});
-
-				let memberRow = {};
-
-				_.forEach(results.data[0], (value, key) => {
-					const matchKey = key.trim().toLowerCase();
-					console.log({matchKey, key, value});
-					let matched = false;
-					for(let i = 0; !matched && i < acceptedValues.length; i++) {
-						const formsIndex = _.indexOf(acceptedValues[i].forms, matchKey);
-						console.log({formsIndex});
-						if(formsIndex >= 0) {
-							matched = true;
-							memberRow[acceptedValues[i].name] = value;
-						}
-					}
-				});
-
-				let complete = true;
-				acceptedValues.map(values => {
-					if(!memberRow.hasOwnProperty(values.name)) {
-						complete = false;
-						skipped.push({raw: results.data[0], memberRow});
-						console.log("FAILED");
-
-					}
-				})
-
-				if(complete) {
-					 MemberMethods.upsert.call(Object.assign({themeId: theme._id}, memberRow));
-					// console.log({memberRow});
-				}
-
-				uploadedMembersList.push(memberRow);
-
-			},
-			complete: results => {
-				// console.log(results.data);
-				// console.log({uploadedMembersList});
+				// console.log({onComplete: data});
 			}
 		});
 	}

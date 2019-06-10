@@ -19,6 +19,7 @@ const memberInsert = function(data) {
 	if(!_.isUndefined(firstName)) firstName = firstName.trim();
 	if(!_.isUndefined(lastName)) lastName = lastName.trim();
 	if(!_.isUndefined(fullName)) fullName = fullName.trim();
+	if(!_.isUndefined(initials)) initials = initials.trim();
 
 	// Build first/last from fullName if not present
 	if(_.isUndefined(firstName) && _.isUndefined(lastName) && !_.isUndefined(fullName)) {
@@ -35,7 +36,7 @@ const memberInsert = function(data) {
 	}
 
 	// Build initials from first/last if not present
-	if(!_.isUndefined(firstName) && !_.isUndefined(lastName)) {
+	if(_.isUndefined(initials) && !_.isUndefined(firstName) && !_.isUndefined(lastName)) {
 		initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 	}
 
@@ -59,7 +60,6 @@ const memberInsert = function(data) {
 	return new Promise((resolve, reject) => {
 		if(!member) {
 			const newMember = { firstName, lastName, fullName, number, initials, code };
-			console.log({newMember});
 			try{
 				Members.insert(newMember, (err, result) => {
 					if(err){
@@ -72,6 +72,13 @@ const memberInsert = function(data) {
 				console.error(e);
 			}
 		} else {
+			if(member.initials !== initials) {
+				console.log({member, initials});
+				Members.update({_id: member._id}, {$set: {
+					initials: initials,
+					code: code
+				}});
+			}
 			resolve(member._id);
 		}
 	});
@@ -131,7 +138,6 @@ const MemberMethods = {
 
 				// Create/edit member
 				memberInsert(data).then(member => {
-					console.log({data});
 					const memberThemeQuery = { member, amount, theme: themeId };
 
 					// Create/edit theme association
@@ -171,9 +177,12 @@ const MemberMethods = {
 		validate: null,
 
 		run(themeId) {
-			const memberThemes = MemberThemes.distinct("_id", {theme: themeId});
+			const memberThemes = MemberThemes.find({theme: themeId}, {_id: true, member: true}).fetch();
+			const ids = memberThemes.map(memberTheme => {
+				return memberTheme._id;
+			});
 			try {
-				memberThemes.remove({_id: {$in: memberThemes}});
+				MemberThemes.remove({_id: {$in: ids}});
 			} catch(e) {
 				console.error(e);
 			}

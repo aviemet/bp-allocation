@@ -17,7 +17,7 @@ const MembersList = (props) => {
 	}
 
 	const removeAllMembers = () => {
-		MemberMethods.removeAllMembers.call({themeId: theme._id});
+		MemberMethods.removeAllMembers.call(theme._id);
 	}
 
 	let votingColspan = 0;
@@ -25,7 +25,7 @@ const MembersList = (props) => {
 	if(settings.useKioskFundsVoting) votingColspan++;
 
 	return (
-		<Table size='small' striped celled structured>
+		<Table size='small' sortable striped celled structured>
 			<Table.Header>
 				<Table.Row>
 					<Table.HeaderCell rowSpan="2" collapsing>Initials</Table.HeaderCell>
