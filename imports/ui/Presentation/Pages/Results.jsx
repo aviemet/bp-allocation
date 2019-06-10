@@ -18,7 +18,7 @@ const ResultsPageContainer = styled.div`
 	color: #FFF;
 
 	&& {
-		h1, h2{
+		h1, h2 {
 			line-height: 1em;
 			color: #FFF;
 			text-transform: uppercase;
@@ -30,7 +30,7 @@ const ResultsPageContainer = styled.div`
 			margin: 0;
 		}
 
-		h2{
+		h2 {
 			font-size: 2.75em;
 			margin: 2px 0 0 0;
 		}
@@ -83,7 +83,7 @@ const Results = props => {
 			<Header as='h1'>
 				Total amount given: {numeral(total).format('$0.[00]a')}
 			</Header>
-<br/><br/>
+			<br/><br/>
 			{/*<Header as='h2'>Battery Powered Awardees</Header>*/}
 
 			<Card.Group centered>
