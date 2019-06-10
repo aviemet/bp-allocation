@@ -63,6 +63,7 @@ const memberInsert = function(data) {
 			try{
 				Members.insert(newMember, (err, result) => {
 					if(err){
+						console.log({newMember});
 						reject(err);
 					} else {
 						resolve(result);
@@ -73,7 +74,6 @@ const memberInsert = function(data) {
 			}
 		} else {
 			if(member.initials !== initials) {
-				console.log({member, initials});
 				Members.update({_id: member._id}, {$set: {
 					initials: initials,
 					code: code

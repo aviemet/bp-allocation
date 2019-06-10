@@ -54,6 +54,7 @@ const ImportMembers = props => {
 	importMembers = e => {
 		const file = e.currentTarget.files[0];
 
+		// TODO: Display loading indicator while uploading members
 		const parser = readCsvWithHeadings(file, acceptedValues, {
 			'beforeInferHeadings': headings => {
 				// console.log({beforeInferHeadings: headings});
