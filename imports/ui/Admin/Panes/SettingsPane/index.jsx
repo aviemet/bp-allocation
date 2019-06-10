@@ -34,8 +34,6 @@ const SettingsPane = props => {
 			settings: {timerLength, useKioskChitVoting, useKioskFundsVoting}
 		};
 
-		console.log({data});
-
 		// Iterate over database objects with keys to be saved
 		_.forEach(data, (value, dataKey) => {
 			// In each object, delete keys which haven't changed
@@ -63,10 +61,6 @@ const SettingsPane = props => {
 			});
 		}
 	}
-
-const tester = (a, b, c) => {
-	console.log({a, b, c});
-}
 
 	if(themeLoading || settingsLoading){
 		return(<Loader/>)
