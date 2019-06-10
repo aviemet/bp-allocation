@@ -45,7 +45,7 @@ const KioskInfo = props => {
 
 	return (
 		<OrgsContainer>
-			<Header as='h1' id="title">ORGANIZATIONS THIS QUARTER</Header>
+			<Header as='h1' id="title">ORGANIZATIONS THIS THEME</Header>
 				<Card.Group centered itemsPerRow={3}>
 					{orgs.map((org, i) => (
 						<OrgCard
