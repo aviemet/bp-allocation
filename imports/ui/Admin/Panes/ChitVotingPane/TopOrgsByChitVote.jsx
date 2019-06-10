@@ -22,7 +22,6 @@ const NumTopOrgsInput = styled(Input)`
 `;
 
 const TopOrgsByChitVote = props => {
-
 	const { theme } = useContext(ThemeContext);
 	const { orgs }  = useContext(OrganizationContext);
 

@@ -92,8 +92,7 @@ const TABS = {
 };
 
 // Main class for the Theme page
-const Admin = props => {
-
+const Feedback = props => {
 	const defaultPage = 'orgs';
 
 	const { theme, themeLoading } = useContext(ThemeContext);
@@ -153,4 +152,4 @@ const Admin = props => {
 	);
 }
 
-export default Admin;
+export default Feedback;

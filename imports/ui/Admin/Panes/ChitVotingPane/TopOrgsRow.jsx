@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'lodash';
 

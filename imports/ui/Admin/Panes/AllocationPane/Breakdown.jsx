@@ -41,8 +41,6 @@ const Breakdown = props => {
 	const totalPot = theme.leverageTotal + saves;
 	const leverage = theme.leverageTotal - theme.votedFunds - theme.consolationTotal;
 
-	console.log({votedFunds: theme.votedFunds, saves});
-
 	return (
 		<BreakdownContainer>
 			<Segment>
