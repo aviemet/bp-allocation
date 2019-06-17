@@ -1,8 +1,11 @@
 import React from 'react';
 import { VictoryStack, VictoryArea, VictoryLine, VictoryChart, VictoryTheme } from 'victory';
 import numeral from 'numeral';
+import _ from 'lodash';
 
 import { useTheme, useOrganizations, useMembers } from '/imports/context';
+
+import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';
 
 import styled from 'styled-components';
 
@@ -35,10 +38,30 @@ const Stats = (props) => {
 		{x: "Leverage Spread", y: totals.c}
 	];
 
-	console.log({points});
+
 
 	return (
 		<React.Fragment>
+			<ExportCsvButton
+				data={members.map(member => {
+					let newMember = {
+						"Name": member.fullName,
+						"Code": member.code,
+						"Initials": member.initials,
+						"Number": member.number
+					};
+
+					topOrgs.forEach(org => {
+						const allocation = _.find(member.theme.allocations, ['organization', org._id]);
+						newMember[org.title] = allocation ? allocation.amount : 0;
+						if(allocation) console.log({newMember});
+					});
+
+					return newMember;
+
+				})}
+				description='Member Information'
+			/>
 			<VictoryStack width={600}
 				colorScale={"qualitative"}
 				animate={{
