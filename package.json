@@ -4,10 +4,26 @@
   "scripts": {
     "start": "meteor run",
     "dev": "ROOT_URL=http://0.0.0.0:3000 meteor run",
-    "test": "meteor test --once --driver-package meteortesting:mocha",
-    "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
-    "visualize": "meteor --production --extra-packages bundle-visualizer",
-    "build": "meteor build --server-only --directory ../allocation"
+
+    "visualize":              "meteor --production --extra-packages bundle-visualizer",
+    "build":                  "meteor build --server-only --directory ../allocation",
+    
+    "lint":                   "eslint .",
+    "pretest":                "npm run lint --silent",
+
+    "test":                   "meteor test --once --driver-package meteortesting:mocha",
+    "test:app":               "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha MOCHA_GREP=test",
+    "test:server":            "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha TEST_CLIENT=0",
+    "test:client":            "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha TEST_SERVER=0",
+
+    "test-chrome":            "TEST_BROWSER_DRIVER=chrome meteor test --once --driver-package meteortesting:mocha",
+    "test-app-chrome":        "TEST_BROWSER_DRIVER=chrome meteor test --full-app --once --driver-package meteortesting:mocha",
+    "test-phantom":           "TEST_BROWSER_DRIVER=phantomjs meteor test --once --driver-package meteortesting:mocha",
+    "test-app-phantom":       "TEST_BROWSER_DRIVER=phantomjs meteor test --full-app --once --driver-package meteortesting:mocha",
+    "test-watch":             "TEST_BROWSER_DRIVER=chrome meteor test --driver-package meteortesting:mocha",
+    "test-app-watch":         "TEST_BROWSER_DRIVER=chrome meteor test --full-app --driver-package meteortesting:mocha",
+    "test-watch-browser":     "meteor test --driver-package meteortesting:mocha",
+    "test-app-watch-browser": "meteor test --full-app --driver-package meteortesting:mocha"
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",
@@ -30,12 +46,15 @@
     "styled-components": "^3.4.10",
     "victory": "^32.2.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint-plugin-react": "^7.14.2",
+    "faker": "^4.1.0",
+    "jest": "^24.8.0"
+  },
   "meteor": {
     "mainModule": {
       "client": "client/main.js",
       "server": "server/main.js"
-    },
-    "testModule": "tests/main.js"
+    }
   }
 }

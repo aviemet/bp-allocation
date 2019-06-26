@@ -29,3 +29,4 @@ promise@0.11.2
 meteortesting:mocha
 percolate:migrations
 mikowals:batch-insert
+dburles:factory
