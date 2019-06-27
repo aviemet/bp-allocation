@@ -1,9 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import SimpleSchema from 'simpl-schema';
 import _ from 'lodash';
-
-import { roundFloat } from '/imports/utils';
 
 import { Members, MemberThemes } from '/imports/api';
 
@@ -82,7 +79,7 @@ const memberInsert = function(data) {
 			resolve(member._id);
 		}
 	});
-}
+};
 
 /**
  * Upserts a memberTheme assocication
@@ -119,7 +116,7 @@ const memberThemeInsert = function(query) {
 			}
 		}
 	});
-}
+};
 
 
 const MemberMethods = {
@@ -251,7 +248,6 @@ const MemberMethods = {
 			let member = Members.findOne(id);
 			if(!member){
 				throw new Meteor.Error('MemberMethods.remove', 'Member to be removed was not found');
-				return false;
 			}
 
 			// Remove member
@@ -262,6 +258,6 @@ const MemberMethods = {
 		}
 	}),
 
-}
+};
 
 export default MemberMethods;

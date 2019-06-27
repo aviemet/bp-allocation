@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
@@ -88,13 +87,13 @@ Organizations.attachSchema(OrganizationSchema);
 // Set permissions
 Organizations.allow({
 	insert: (userId, doc) => {
-		return true
+		return true;
 	},
 	update: (userId, doc) => {
-		return true
+		return true;
 	},
 	remove: (userId, doc) => {
-		return true
+		return true;
 	},
 });
 

@@ -1,8 +1,6 @@
-import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import SimpleSchema from 'simpl-schema';
 
-import { Themes, Organizations, Images } from '/imports/api';
+import { Images } from '/imports/api';
 
 const ImageMethods = {
 	remove: new ValidatedMethod({
@@ -34,6 +32,6 @@ const ImageMethods = {
 
 		}
 	})
-}
+};
 
 export default ImageMethods;

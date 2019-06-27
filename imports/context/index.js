@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import { ThemeContext, ThemeProvider, useTheme } from './ThemeContext';
 import { PresentationSettingsContext, PresentationSettingsProvider, usePresentationSettings }  from './PresentationSettingsContext';
@@ -19,6 +20,11 @@ const AppProvider = props => (
 		)}</PresentationSettingsContext.Consumer></PresentationSettingsProvider>
 	)}</ThemeContext.Consumer></ThemeProvider>
 );
+
+AppProvider.propTypes = {
+	children: PropTypes.object,
+	id: PropTypes.string
+};
 
 export {
 	AppProvider,

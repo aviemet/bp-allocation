@@ -51,13 +51,13 @@ MemberThemes.attachSchema(MemberThemeSchema);
 // Set permissions
 MemberThemes.allow({
 	insert: (userId, doc) => {
-		return true
+		return true;
 	},
 	update: (userId, doc) => {
-		return true
+		return true;
 	},
 	remove: (userId, doc) => {
-		return true
+		return true;
 	},
 });
 

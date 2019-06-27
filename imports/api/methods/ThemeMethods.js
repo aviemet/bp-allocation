@@ -1,12 +1,8 @@
-import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import SimpleSchema from 'simpl-schema';
 
-import { Promise } from 'meteor/promise';
 import moment from 'moment';
 
 import { Themes, Organizations } from '/imports/api';
-import { ThemesSchema }  from '/imports/api/schema';
 import OrganizationMethods from './OrganizationMethods';
 import PresentationSettingsMethods from './PresentationSettingsMethods';
 
@@ -102,7 +98,7 @@ const ThemeMethods = {
 			let org = Organizations.findOne({_id: id});
 			let theme = Themes.findOne({_id: org.theme});
 
-			let data = {org: id, amount: amount}
+			let data = {org: id, amount: amount};
 			if(name) {
 				data.name = name;
 			}
@@ -179,6 +175,6 @@ const ThemeMethods = {
 			});
 		}
 	})
-}
+};
 
 export default ThemeMethods;

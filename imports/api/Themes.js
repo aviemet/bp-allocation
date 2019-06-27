@@ -96,7 +96,7 @@ Themes.attachSchema(ThemeSchema);
 // Set permissions
 Themes.allow({
 	insert: (userId, doc) => {
-		return true
+		return true;
 	}
 });
 

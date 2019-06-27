@@ -1,3 +1,4 @@
+import Meteor from 'meteor/meteor';
 import { useRef, useEffect } from 'react';
 import Papa from 'papaparse';
 import _ from 'lodash';
@@ -12,7 +13,7 @@ const roundFloat = (value, decimal) => {
 const getSaveAmount = (saves, org_id) => {
 	let save = saves.find( save => save.org === org_id);
 	return save ? save.amount : 0;
-}
+};
 
 /**************************************
  *         ORGANIZATION METHODS       *
@@ -21,10 +22,9 @@ const getSaveAmount = (saves, org_id) => {
 /**
  * Return all orgs sorted by votes
  */
-sortTopOrgs = (theme, orgs) => {
+const sortTopOrgs = (theme, orgs) => {
 	if(!theme){
-		throw new Meteor.Error("No theme provided to ThemeMethods.filterTopOrgs");
-		return;
+		throw new Meteor.Error('No theme provided to ThemeMethods.filterTopOrgs');
 	}
 
 	// Save manual top orgs as key/value true/false pairs for reference
@@ -36,21 +36,25 @@ sortTopOrgs = (theme, orgs) => {
 	// First sort orgs by weight and vote count
 	let sortedOrgs = _.sortBy(orgs, (org) => {
 		// Calculate the votes for each org (weight/chitWeight unless there's a manual count)
-		let votes = org.chitVotes && org.chitVotes.count ? org.chitVotes.count :
-								org.chitVotes && org.chitVotes.weight ? org.chitVotes.weight / theme.chitWeight : 0;
+		let votes = 0;
+		if(org.chitVotes) {
+			if(org.chitVotes.count) {
+				votes = org.chitVotes.count;	
+			} else if(org.chitVotes.weight) {
+				votes = org.chitVotes.weight;
+			}
+		}
 
 		// Save the votes count for later
 		org.votes = votes;
 
 		// Sort in descending order
-		return -(votes)
+		return -(votes);
 	});
 
 	//Then bubble up the manual top orgs
 	// No need to proceed if manual orgs is >= numTopOrgs
 	if(theme.numTopOrgs >= theme.topOrgsManual.length){
-		slice = theme.numTopOrgs;
-
 		// climb up the bottom of the list looking for manually selected orgs
 		for(let i = sortedOrgs.length-1; i >= theme.numTopOrgs; i--){
 
@@ -83,10 +87,10 @@ sortTopOrgs = (theme, orgs) => {
 /**
  * Get Top Orgs Sorted by chit votes
  */
-filterTopOrgs = (theme, orgs) => {
-	slice = theme.numTopOrgs >= theme.topOrgsManual.length ? theme.numTopOrgs : theme.topOrgsManual.length;
+const filterTopOrgs = (theme, orgs) => {
+	const slice = theme.numTopOrgs >= theme.topOrgsManual.length ? theme.numTopOrgs : theme.topOrgsManual.length;
 
-	let sortedOrgs = this.sortTopOrgs(theme, orgs);
+	let sortedOrgs = sortTopOrgs(theme, orgs);
 
 	return sortedOrgs.slice(0, slice);
 };
@@ -102,13 +106,13 @@ filterTopOrgs = (theme, orgs) => {
  * @param  {Function} cb   Callback to be called
  * @return {Object}        Data response object
  */
-_dispatchCallback = (cb, data) => {
+const _dispatchCallback = (cb, data) => {
 	if(!_.isUndefined(cb)) {
 		const response = cb(data);
 		if(!_.isUndefined(response)) return response;
 	}
 	return data;
-}
+};
 
 /**
  * Takes a row from a csv file, maps headings in file to key values in final return object
@@ -145,7 +149,7 @@ const _inferHeadings = (headings, acceptedHeadings, callbacks) => {
 	_dispatchCallback(callbacks.afterInferHeadings, headingsMap);
 
 	return headingsMap;
-}
+};
 
 /**
  * Reads a csv file, mapping headings in the file to given key values.
@@ -172,7 +176,7 @@ const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
 		step: (results, parser) => {
 			// Look at the first row to infer heading mapping
 			if(_.isEmpty(headings)) {
-				headings = _inferHeadings(results.meta.fields, acceptedHeadings, callbacks)
+				headings = _inferHeadings(results.meta.fields, acceptedHeadings, callbacks);
 			}
 
 			let row = {}; // Return object
@@ -183,7 +187,7 @@ const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
 			// Touch each value in the row
 			_.forEach(rowData, (value, key) => {
 				// Grab data with an accepted heading
-				if(headings.hasOwnProperty(key)) {
+				if(_.has(headings, key)) {
 					row[headings[key].name] = typeof headings[key].type === 'function' ? headings[key].type(value) : value;
 				}
 			});
@@ -198,27 +202,26 @@ const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
 	});
 
 	return parser;
-}
-
+};
 
 /*****************
  * DEBUG METHODS *
  *****************/
 
 function useTraceUpdate(props) {
-  const prev = useRef(props);
-  useEffect(() => {
-    const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
-      if (prev.current[k] !== v) {
-        ps[k] = [prev.current[k], v];
-      }
-      return ps;
-    }, {});
-    if (Object.keys(changedProps).length > 0) {
-      console.log('Changed props:', changedProps);
-    }
-    prev.current = props;
-  });
+	const prev = useRef(props);
+	useEffect(() => {
+		const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
+			if (prev.current[k] !== v) {
+				ps[k] = [prev.current[k], v];
+			}
+			return ps;
+		}, {});
+		if (Object.keys(changedProps).length > 0) {
+			console.log('Changed props:', changedProps);
+		}
+		prev.current = props;
+	});
 }
 
 export {

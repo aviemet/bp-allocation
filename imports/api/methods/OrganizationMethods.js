@@ -1,13 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import SimpleSchema from 'simpl-schema';
 
 import { roundFloat } from '/imports/utils';
 
-import { Themes, Organizations, Images } from '/imports/api';
-import { OrganizationsSchema }  from '/imports/api/schema';
+import { Themes, Organizations } from '/imports/api';
 import ImageMethods from './ImageMethods';
-import ThemeMethods from './ThemeMethods';
 
 const OrganizationMethods = {
 	/**
@@ -202,8 +199,8 @@ const OrganizationMethods = {
 		validate: null,
 
 		run({id}) {
-			let org = Organizations.find({_id: id}).fetch()[0];
-			let theme = Themes.find({_id: org.theme}).fetch()[0];
+			// let org = Organizations.find({_id: id}).fetch()[0];
+			// let theme = Themes.find({_id: org.theme}).fetch()[0];
 
 			return Organizations.update({_id: id}, {
 				$set: {
@@ -215,6 +212,6 @@ const OrganizationMethods = {
 		}
 	}),
 
-}
+};
 
 export default OrganizationMethods;

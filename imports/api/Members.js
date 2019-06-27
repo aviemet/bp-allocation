@@ -1,6 +1,5 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
-import _ from 'lodash';
 
 const Members = new Mongo.Collection('members');
 
@@ -23,12 +22,12 @@ const MemberSchema = new SimpleSchema({
 	},
 	number: {
 		type: Number,
-		label: "Battery member number",
+		label: 'Battery member number',
 		required: true
 	},
 	code: {
 		type: String,
-		label: "Code used for signing in to kiosk voting. Initials and number combined",
+		label: 'Code used for signing in to kiosk voting. Initials and number combined',
 		required: false
 	},
 	createdAt: {
@@ -43,14 +42,14 @@ Members.attachSchema(MemberSchema);
 // Set permissions
 Members.allow({
 	insert: (userId, doc) => {
-		return true
+		return true;
 	},
 	update: (userId, doc) => {
-		return true
+		return true;
 	},
 	remove: (userId, doc) => {
-		return true
+		return true;
 	},
 });
 
-export { Members, MemberSchema, MemberThemeSchema, AllocationSchema, ChitVoteSchema };
+export { Members, MemberSchema };

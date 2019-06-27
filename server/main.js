@@ -1,5 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-import { Promise } from 'meteor/promise';
 
 import {
 	Themes,
@@ -25,7 +24,7 @@ Meteor.startup(() => {
 		try{
 			return PresentationSettings.find({_id: settingsId});
 		} catch(e) {
-			console.error("Specify an ID to fetch presentation settings");
+			console.error('Specify an ID to fetch presentation settings');
 		}
 	});
 
@@ -77,7 +76,7 @@ Meteor.startup(() => {
 	Meteor.publish('members', (ids) => {
 		if(!ids) return Members.find({});
 		return Members.find({_id: { $in: ids }});
-/*
+	/*
 		const rawMembers = Members.rawCollection();
 		const aggregate = Meteor.wrapAsync(rawMembers.aggregate, rawMembers);
 
@@ -145,7 +144,7 @@ Meteor.startup(() => {
 
 		return members;
 
-*/
+	*/
 	});
 });
 

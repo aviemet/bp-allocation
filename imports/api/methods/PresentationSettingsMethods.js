@@ -1,14 +1,6 @@
-import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import SimpleSchema from 'simpl-schema';
 
-import { Promise } from 'meteor/promise';
-
-import { PresentationSettings, Organizations } from '/imports/api';
-import { PresentationSettingsSchema }  from '/imports/api/schema';
-
-import _ from 'lodash';
-
+import { PresentationSettings } from '/imports/api';
 
 const PresentationSettingsMethods = {
 	/**
@@ -37,6 +29,6 @@ const PresentationSettingsMethods = {
 		}
 	}),
 
-}
+};
 
 export default PresentationSettingsMethods;
