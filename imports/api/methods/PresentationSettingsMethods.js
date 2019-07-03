@@ -24,8 +24,8 @@ const PresentationSettingsMethods = {
 
 		validate: null,
 
-		run({id, data}) {
-			return PresentationSettings.update({_id: id}, {$set: data});
+		run({ id, data }) {
+			return PresentationSettings.update({ _id: id }, { $set: data });
 		}
 	}),
 

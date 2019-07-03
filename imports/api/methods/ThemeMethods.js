@@ -8,7 +8,6 @@ import PresentationSettingsMethods from './PresentationSettingsMethods';
 
 import _ from 'lodash';
 
-
 const ThemeMethods = {
 	/**
 	 * Create new Theme
@@ -19,13 +18,20 @@ const ThemeMethods = {
 		validate: null,
 
 		run(data) {
+			if(!data) return null;
+
 			if(!data.quarter) {
 				data.quarter = `${moment().year()}Q${moment().quarter()}`;
 			}
 
-			let theme = Themes.insert(_.merge(data, {presentationSettings: PresentationSettingsMethods.create.call()}));
+			try {
+				let theme = Themes.insert(_.merge(data, { presentationSettings: PresentationSettingsMethods.create.call() }));
+				return theme;
+			} catch (e) {
+				console.error(e);
+				return null;
+			}
 
-			return theme;
 		}
 	}),
 
@@ -37,8 +43,8 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run({id, data}) {
-			return Themes.update({_id: id}, {$set: data});
+		run({ id, data }) {
+			return Themes.update({ _id: id }, { $set: data });
 		}
 	}),
 
@@ -51,12 +57,12 @@ const ThemeMethods = {
 		validate: null,
 
 		run(id) {
-			let orgs = Themes.findOne({_id: id}, {organizations: true});
+			let orgs = Themes.findOne({ _id: id }, { organizations: true });
 
 			if(orgs.organizations.length > 0){
 				OrganizationMethods.removeMany.call(orgs.organizations);
 			}
-			return Themes.remove({_id: id});
+			return Themes.remove({ _id: id });
 		}
 	}),
 
@@ -68,18 +74,18 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run({theme_id, org_id}) {
-			let theme = Themes.findOne({_id: theme_id}, {topOrgsManual: true});
+		run({ theme_id, org_id }) {
+			let theme = Themes.findOne({ _id: theme_id }, { topOrgsManual: true });
 
 			// Remove if exists
 			if(theme.topOrgsManual.includes(org_id)){
-				return Themes.update({_id: theme_id}, {
-					$pull: {topOrgsManual: org_id}
+				return Themes.update({ _id: theme_id }, {
+					$pull: { topOrgsManual: org_id }
 				});
 			}
 			// Add if not exists
-			return Themes.update({_id: theme_id}, {
-				$addToSet: {topOrgsManual: org_id}
+			return Themes.update({ _id: theme_id }, {
+				$addToSet: { topOrgsManual: org_id }
 			});
 		}
 	}),
@@ -92,25 +98,25 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run({id, amount, name}) {
+		run({ id, amount, name }) {
 			if(!id || !amount) return false;
 
-			let org = Organizations.findOne({_id: id});
-			let theme = Themes.findOne({_id: org.theme});
+			let org = Organizations.findOne({ _id: id });
+			let theme = Themes.findOne({ _id: org.theme });
 
-			let data = {org: id, amount: amount};
+			let data = { org: id, amount: amount };
 			if(name) {
 				data.name = name;
 			}
 
-			let result = Themes.update({_id: theme._id}, {
+			let result = Themes.update({ _id: theme._id }, {
 				$push: {
 					saves: {
 						$each: [data]
 					}
 				},
-				$inc: {numTopOrgs: 1},
-				$addToSet: {topOrgsManual: id}
+				$inc: { numTopOrgs: 1 },
+				$addToSet: { topOrgsManual: id }
 			});
 
 			return result;
@@ -125,15 +131,15 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run({theme_id, org_id}) {
+		run({ theme_id, org_id }) {
 			if(!theme_id || !org_id) return false;
 
-			return Themes.update({_id: theme_id}, {
+			return Themes.update({ _id: theme_id }, {
 				$pull: {
-					saves: {org: org_id},
+					saves: { org: org_id },
 					topOrgsManual: org_id
 				},
-				$inc: {numTopOrgs: -1}
+				$inc: { numTopOrgs: -1 }
 			});
 		}
 	}),
@@ -148,7 +154,7 @@ const ThemeMethods = {
 
 		run(orgs) {
 			orgs.map(org => {
-				Organizations.update({_id: org._id}, {
+				Organizations.update({ _id: org._id }, {
 					$set: {
 						leverageFunds: org.leverageFunds
 					}
@@ -167,7 +173,7 @@ const ThemeMethods = {
 
 		run(orgs) {
 			orgs.map(org => {
-				Organizations.update({_id: org._id}, {
+				Organizations.update({ _id: org._id }, {
 					$set: {
 						leverageFunds: 0
 					}

@@ -16,7 +16,7 @@ let config = {
 };
 
 if(Meteor.isServer){
-	config.storagePath = process.env.PWD+'/public/.uploads';
+	config.storagePath = process.env.PWD + '/public/.uploads';
 }
 
 const Images = new FilesCollection(config);

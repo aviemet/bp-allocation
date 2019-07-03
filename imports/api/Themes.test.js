@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Themes } from '/imports/api';
+import { ThemeMethods } from '/imports/api/methods';
 
 /** Things to test:
  * - Required fields are required
@@ -15,9 +15,17 @@ const themeData = {
 }
 
 describe("Themes model", function() {
-	it("New Theme insert succeeds", async function() {
-		let item = Items.insert(themeData);
-		console.log({item});
-		assert.strictEqual(true, true);
+	describe("Creating a record", function() {
+
+		it("Should return an _id when succesful", async function() {
+			let theme = ThemeMethods.create.call(themeData);
+			assert.notEqual(theme, null);
+		});
+		
+		it("Should fail without the required fields", async function() {
+			let theme = ThemeMethods.create.call();
+			assert.equal(theme, null);
+		});
+
 	});
 });

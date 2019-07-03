@@ -9,7 +9,7 @@ const ImageMethods = {
 		validate: null,
 
 		run(id) {
-			Images.collection.remove({_id: id});
+			Images.collection.remove({ _id: id });
 		}
 	}),
 
@@ -19,7 +19,7 @@ const ImageMethods = {
 		validate: null,
 
 		run(ids) {
-			Images.collection.remove({_id: {$in: ids}});
+			Images.collection.remove({ _id: { $in: ids }});
 		}
 	}),
 

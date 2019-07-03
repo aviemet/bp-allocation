@@ -56,12 +56,12 @@ const sortTopOrgs = (theme, orgs) => {
 	// No need to proceed if manual orgs is >= numTopOrgs
 	if(theme.numTopOrgs >= theme.topOrgsManual.length){
 		// climb up the bottom of the list looking for manually selected orgs
-		for(let i = sortedOrgs.length-1; i >= theme.numTopOrgs; i--){
+		for(let i = sortedOrgs.length - 1; i >= theme.numTopOrgs; i--){
 
 			// Check if the org has been manually selected
 			if(manualTopOrgs[sortedOrgs[i]._id]){
 				// Find the closest automatically selected top org
-				let j = i-1;
+				let j = i - 1;
 				while(j > 0 && manualTopOrgs[sortedOrgs[j]._id]){
 					j--;
 				}

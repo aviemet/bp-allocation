@@ -43,12 +43,12 @@ const memberInsert = function(data) {
 	}
 
 	// Build the query: Search by either of first/last or full name
-	const memberQuery = {'$or': []};
+	const memberQuery = { '$or': [] };
 	if(!_.isUndefined(firstName) && !_.isUndefined(lastName)) {
-		memberQuery.$or.push({firstName, lastName, number});
+		memberQuery.$or.push({ firstName, lastName, number });
 	}
 	if(!_.isUndefined(fullName)) {
-		memberQuery.$or.push({fullName, number});
+		memberQuery.$or.push({ fullName, number });
 	}
 
 	// Check if the member already exists
@@ -60,7 +60,7 @@ const memberInsert = function(data) {
 			try{
 				Members.insert(newMember, (err, result) => {
 					if(err){
-						console.log({newMember});
+						console.log({ newMember });
 						reject(err);
 					} else {
 						resolve(result);
@@ -71,7 +71,7 @@ const memberInsert = function(data) {
 			}
 		} else {
 			if(member.initials !== initials) {
-				Members.update({_id: member._id}, {$set: {
+				Members.update({ _id: member._id }, { $set: {
 					initials: initials,
 					code: code
 				}});
@@ -87,7 +87,7 @@ const memberInsert = function(data) {
  */
 const memberThemeInsert = function(query) {
 
-	let memberTheme = MemberThemes.find({member: query.member, theme: query.theme}).fetch()[0];
+	let memberTheme = MemberThemes.find({ member: query.member, theme: query.theme }).fetch()[0];
 
 	return new Promise((resolve, reject) => {
 		if(!memberTheme) {
@@ -104,7 +104,7 @@ const memberThemeInsert = function(query) {
 			}
 		} else {
 			try {
-				MemberThemes.update({_id: memberTheme._id}, {$set: {amount: query.amount}}, (err, result) => {
+				MemberThemes.update({ _id: memberTheme._id }, { $set: { amount: query.amount }}, (err, result) => {
 					if(err) {
 						reject(err);
 					} else {
@@ -141,11 +141,11 @@ const MemberMethods = {
 					memberThemeInsert(memberThemeQuery).then(memberTheme => {
 						return memberTheme;
 					}, memberThemeError => {
-						console.error({memberThemeError});
+						console.error({ memberThemeError });
 					});
 
 				}, memberError => {
-					console.error({memberError});
+					console.error({ memberError });
 				});
 
 			}
@@ -160,8 +160,8 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({memberId, themeId}) {
-			return MemberThemes.remove({member: memberId, theme: themeId});
+		run({ memberId, themeId }) {
+			return MemberThemes.remove({ member: memberId, theme: themeId });
 		}
 	}),
 
@@ -174,12 +174,12 @@ const MemberMethods = {
 		validate: null,
 
 		run(themeId) {
-			const memberThemes = MemberThemes.find({theme: themeId}, {_id: true, member: true}).fetch();
+			const memberThemes = MemberThemes.find({ theme: themeId }, { _id: true, member: true }).fetch();
 			const ids = memberThemes.map(memberTheme => {
 				return memberTheme._id;
 			});
 			try {
-				MemberThemes.remove({_id: {$in: ids}});
+				MemberThemes.remove({ _id: { $in: ids }});
 			} catch(e) {
 				console.error(e);
 			}
@@ -194,8 +194,8 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({id, data}) {
-			return Members.update({_id: id}, {$set: data});
+		run({ id, data }) {
+			return Members.update({ _id: id }, { $set: data });
 		}
 	}),
 
@@ -207,14 +207,14 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({theme, member, org, amount}) {
+		run({ theme, member, org, amount }) {
 			// Check for existing allocation for this org from this member
-			let allocations = MemberThemes.find({theme, member}).fetch()[0].allocations;
+			let allocations = MemberThemes.find({ theme, member }).fetch()[0].allocations;
 			let allocation = _.find(allocations, ['organization', org]);
 
 			// Update amount
 			if(!allocation) {
-				MemberThemes.update({theme: theme, member: member}, {
+				MemberThemes.update({ theme: theme, member: member }, {
 					$push: {
 						allocations: { organization: org, amount: amount }
 					}
