@@ -2,7 +2,6 @@ import React from 'react';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import createBrowserHistory from 'history/createBrowserHistory';
 
-import { Grid, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { AppProvider } from '/imports/context';
@@ -30,7 +29,7 @@ export default class App extends React.Component {
 
 	render() {
 		return (
-		  <GlobalContainer>
+			<GlobalContainer>
 				<Router history={browserHistory}>
 					<Switch>
 
@@ -47,7 +46,7 @@ export default class App extends React.Component {
 						)} />
 
 						<Route path="/admin/:id" render={ (props) => (
-		    			<AppProvider id={props.match.params.id}>
+							<AppProvider id={props.match.params.id}>
 								<AdminLayout>
 									<Admin />
 								</AdminLayout>
@@ -55,7 +54,7 @@ export default class App extends React.Component {
 						) } />
 
 						<Route path="/presentation/:id" render={ (props) => (
-		    			<AppProvider id={props.match.params.id}>
+							<AppProvider id={props.match.params.id}>
 								<PresentationLayout>
 									<Presentation />
 								</PresentationLayout>
@@ -63,7 +62,7 @@ export default class App extends React.Component {
 						) } />
 
 						<Route path="/simulation/:id" render= { (props) => (
-		    			<AppProvider id={props.match.params.id}>
+							<AppProvider id={props.match.params.id}>
 								<PresentationLayout>
 									<Simulation />
 								</PresentationLayout>
@@ -71,7 +70,7 @@ export default class App extends React.Component {
 						) } />
 
 						<Route path="/kiosk/:id" render= { (props) => (
-		    			<AppProvider id={props.match.params.id}>
+							<AppProvider id={props.match.params.id}>
 								<KioskLayout>
 									<Kiosk />
 								</KioskLayout>
@@ -79,7 +78,7 @@ export default class App extends React.Component {
 						) } />
 
 						<Route path="/feedback/:id" render= { (props) => (
-		    			<AppProvider id={props.match.params.id}>
+							<AppProvider id={props.match.params.id}>
 								<FeedbackLayout>
 									<Feedback />
 								</FeedbackLayout>
