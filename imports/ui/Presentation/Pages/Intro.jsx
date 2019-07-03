@@ -61,6 +61,6 @@ const Intro = props => {
 			</LogoContainer>
 		</TitlePage>
 	);
-}
+};
 
 export default Intro;

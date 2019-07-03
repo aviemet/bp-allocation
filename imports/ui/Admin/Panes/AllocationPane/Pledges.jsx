@@ -1,11 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
 
 import { useOrganizations, useMembers } from '/imports/context';
 import { OrganizationMethods } from '/imports/api/methods';
 
-import { Container, Header, Table, Input, Button } from 'semantic-ui-react';
+import { Container, Header, Table, Button } from 'semantic-ui-react';
 
 import MemberSearch from '/imports/ui/Components/MemberSearch';
 
@@ -18,8 +19,8 @@ const Pledges = props => {
 		const pledgeId = data.pledgeid;
 		const orgId = data.orgid;
 
-		OrganizationMethods.removePledge.call({orgId, pledgeId});
-	}
+		OrganizationMethods.removePledge.call({ orgId, pledgeId });
+	};
 
 	let pledges = [];
 	topOrgs.map(org => {
@@ -34,8 +35,8 @@ const Pledges = props => {
 	});
 	pledges = _.sortBy(pledges, ['createdAt']);
 
-  return (
-  	<Container>
+	return (
+		<Container>
 			<Header as="h2">Matched Pledges</Header>
 			<Table striped>
 				<Table.Header>
@@ -51,15 +52,15 @@ const Pledges = props => {
 
 				<Table.Body>
 					{!membersLoading && pledges.map(pledge => (
-						<Table.Row key={pledge._id}>
+						<Table.Row key={ pledge._id }>
 							<Table.Cell singleLine>{pledge.org.title}</Table.Cell>
 							<Table.Cell>
 								{props.hideAdminFields ?
 									pledge.member ? `${members[pledge.member].firstName} ${members[pledge.member].lastName}` : ''
-								:
+									:
 									<MemberSearch
-										data={members}
-										pledgeid={pledge._id}
+										data={ members }
+										pledgeid={ pledge._id }
 									/>
 								}
 							</Table.Cell>
@@ -69,9 +70,9 @@ const Pledges = props => {
 								<Button
 									color='red'
 									icon='trash'
-									onClick={deletePledge}
-									pledgeid={pledge._id}
-									orgid={pledge.org._id}
+									onClick={ deletePledge }
+									pledgeid={ pledge._id }
+									orgid={ pledge.org._id }
 								/>
 								}
 							</Table.Cell>
@@ -80,8 +81,12 @@ const Pledges = props => {
 				</Table.Body>
 			</Table>
 		</Container>
-  )
-}
+	);
+};
+
+Pledges.propTypes = {
+	hideAdminFields: PropTypes.bool
+};
 
 export default Pledges;
 

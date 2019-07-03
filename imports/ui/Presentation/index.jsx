@@ -62,43 +62,43 @@ const Presentation = props => {
 				setShow(true);
 			}, FADE_DURATION);
 		}
-	}
+	};
 
 	if(loading) {
-		return <Loader />
+		return <Loader />;
 	}
 
 	return (
-		<Transition in={show} timeout={FADE_DURATION}>
+		<Transition in={ show } timeout={ FADE_DURATION }>
 			{(state) => (
-			<PageFader style={{...defaultStyle, ...transitionStyles[state]}}>
-				{/* Intro */}
-				<Route path={`${props.match.path}/intro`} render={(props) => (
-					<Intro title={theme.title} question={theme.question} />
-				)} />
+				<PageFader style={ { ...defaultStyle, ...transitionStyles[state] } }>
+					{/* Intro */}
+					<Route path={ `${props.match.path}/intro` } render={ (props) => (
+						<Intro title={ theme.title } question={ theme.question } />
+					) } />
 
-				{/* Participating Organizations */}
-				<Route exact path={`${props.match.path}/orgs`} component={Orgs} />
+					{/* Participating Organizations */}
+					<Route exact path={ `${props.match.path}/orgs` } component={ Orgs } />
 
-				{/* Timer */}
-				<Route exact path={`${props.match.path}/timer`} render={(props) => (
-					<Timer seconds={settings.timerLength} />
-				)} />
+					{/* Timer */}
+					<Route exact path={ `${props.match.path}/timer` } render={ (props) => (
+						<Timer seconds={ settings.timerLength } />
+					) } />
 
-				{/* Top Orgs */}
-				<Route exact path={`${props.match.path}/toporgs`} component={TopOrgs} />
+					{/* Top Orgs */}
+					<Route exact path={ `${props.match.path}/toporgs` } component={ TopOrgs } />
 
-				{/* Allocation */}
-				<Route exact path={`${props.match.path}/allocation`} component={Allocation} />
+					{/* Allocation */}
+					<Route exact path={ `${props.match.path}/allocation` } component={ Allocation } />
 
-				{/* Results */}
-				<Route exact path={`${props.match.path}/results`} component={Results} />
+					{/* Results */}
+					<Route exact path={ `${props.match.path}/results` } component={ Results } />
 
-			</PageFader>
+				</PageFader>
 			)}
 		</Transition>
 	);
-}
+};
 
 export default withRouter(Presentation);
 

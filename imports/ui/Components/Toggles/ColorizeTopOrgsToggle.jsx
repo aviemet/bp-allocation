@@ -6,7 +6,7 @@ import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Checkbox } from 'semantic-ui-react';
 
-const ColorizeTopOrgsToggle = props => {
+const ColorizeTopOrgsToggle = () => {
 
 	const{ settings } = useContext(PresentationSettingsContext);
 
@@ -17,18 +17,18 @@ const ColorizeTopOrgsToggle = props => {
 				colorizeOrgs: data.checked
 			}
 		});
-	}
+	};
 
 	return(
 		<Checkbox
 			label='Dim Top Orgs'
 			toggle
 			index='colorizeOrgs'
-			onClick={saveValue}
-			checked={settings.colorizeOrgs || false}
+			onClick={ saveValue }
+			checked={ settings.colorizeOrgs || false }
 		/>
 	);
 
-}
+};
 
 export default ColorizeTopOrgsToggle;

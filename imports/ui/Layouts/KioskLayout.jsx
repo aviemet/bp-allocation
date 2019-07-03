@@ -11,7 +11,7 @@ const KioskContainer = styled.div`
 `;
 
 const WelcomeLayout = (props) => (
-  <KioskContainer>
+	<KioskContainer>
 		<Container>
 			{props.children}
 		</Container>

@@ -50,18 +50,18 @@ class FundsSliderComponent extends React.PureComponent {
 			value: parseInt(props.votes[props.org._id]),
 			showLabel: false,
 			showInput: false
-		}
+		};
 	}
 
 	componentDidRender = () => {
 		document.oncontextmenu = () => {
 		  return false;
-		}
+		};
 	}
 
 	handleChange = value => {
 		if(_.isNaN(value)) {
-			this.setState({value: ''});
+			this.setState({ value: '' });
 			this.props.updateVotes(this.props.org._id, 0);
 			return;
 		}
@@ -72,7 +72,7 @@ class FundsSliderComponent extends React.PureComponent {
 		_.forEach(this.props.votes,(voteAmount, key) => {
 			sum += key === this.props.org._id ? parseInt(value) : voteAmount;
 		});
-		const newValue = MAX - sum < 0 ? parseInt(value) + (MAX - sum) : parseInt(value)
+		const newValue = MAX - sum < 0 ? parseInt(value) + (MAX - sum) : parseInt(value);
 
 		this.setState({
 			value: newValue
@@ -84,8 +84,8 @@ class FundsSliderComponent extends React.PureComponent {
 	showLabel = () => {
 		this.setState({ showLabel: true });
 		// Hopefully fix issue where onChangeComplete doesn't fire
-		window.addEventListener('mouseup', () => this.setState({ showLabel: false }), {once: true});
-		window.addEventListener('touchend', () => this.setState({ showLabel: false }), {once: true});
+		window.addEventListener('mouseup', () => this.setState({ showLabel: false }), { once: true });
+		window.addEventListener('touchend', () => this.setState({ showLabel: false }), { once: true });
 	}
 
 	showInput = () => {
@@ -98,7 +98,7 @@ class FundsSliderComponent extends React.PureComponent {
 	}
 
 	handlePageClick = e => {
-		const inputContainer = document.getElementById("inputContainer");
+		const inputContainer = document.getElementById('inputContainer');
 		const clickInsideInput = inputContainer.contains(e.target);
 
 		if(inputContainer && !clickInsideInput) {
@@ -116,40 +116,40 @@ class FundsSliderComponent extends React.PureComponent {
 	render() {
 		const MAX = this.props.member.theme.amount;
 		const showLabelClass = this.state.showLabel ? 'visible' : false;
-		console.log({value: this.state.value});
+		console.log({ value: this.state.value });
 		return (
 			<SliderContainer>
 				{this.state.showInput ?
 					<AmountInputContainer id="inputContainer">
 						<Input fluid
 							type="number"
-							value={this.state.value || ''}
-							onChange={e => this.handleChange(parseInt(e.currentTarget.value))}
+							value={ this.state.value || '' }
+							onChange={ e => this.handleChange(parseInt(e.currentTarget.value)) }
 							size="massive"
 							icon="dollar"
 							iconPosition="left"
-							action={<Button onClick={this.hideInput}><Icon name="check" /></Button>}
+							action={ <Button onClick={ this.hideInput }><Icon name="check" /></Button> }
 						/>
 					</AmountInputContainer>
 					:
-					<Amount onClick={this.showInput}>
+					<Amount onClick={ this.showInput }>
 						{numeral(this.state.value).format('$0,0')}
 					</Amount>
 				}
-				<BottomAlign className={showLabelClass}>
+				<BottomAlign className={ showLabelClass }>
 					<InputRange
-						minValue={0}
-						maxValue={this.props.member.theme.amount}
-						value={this.state.value || 0}
-						onChange={this.handleChange}
-						onChangeStart={this.showLabel}
-						onChangeComplete={() => this.setState({ showLabel: false })}
-						formatLabel={value => numeral(value / MAX).format('0%')}
-						step={5}
+						minValue={ 0 }
+						maxValue={ this.props.member.theme.amount }
+						value={ this.state.value || 0 }
+						onChange={ this.handleChange }
+						onChangeStart={ this.showLabel }
+						onChangeComplete={ () => this.setState({ showLabel: false }) }
+						formatLabel={ value => numeral(value / MAX).format('0%') }
+						step={ 5 }
 					/>
 				</BottomAlign>
 			</SliderContainer>
-		)
+		);
 	}
 }
 
@@ -159,7 +159,7 @@ const FundsSlider = props => {
 
 	const context = Object.assign({ member, votes, updateVotes }, props);
 
-	return <FundsSliderComponent {...context}>{props.children}</FundsSliderComponent>;
-}
+	return <FundsSliderComponent { ...context }>{props.children}</FundsSliderComponent>;
+};
 
 export default FundsSlider;

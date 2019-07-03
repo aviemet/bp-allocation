@@ -65,39 +65,39 @@ const Kiosk = props => {
 				setShow(true);
 			}, FADE_DURATION);
 		}
-	}
+	};
 
 	if(settingsLoading){
-		return(<Loader/>)
+		return(<Loader/>);
 	}
 
 	return (
-		<Transition in={show} timeout={FADE_DURATION}>
+		<Transition in={ show } timeout={ FADE_DURATION }>
 			{(state) => (
-			<PageFader style={{...defaultStyle, ...transitionStyles[state]}}>
-				<Switch location={{pathname: displayPage}}>
+				<PageFader style={ { ...defaultStyle, ...transitionStyles[state] } }>
+					<Switch location={ { pathname: displayPage } }>
 
-					{/* Orgs Grid */}
-					<Route exact path={KIOSK_PAGES.info} render={props => (
-						<KioskInfo />
-					)} />
+						{/* Orgs Grid */}
+						<Route exact path={ KIOSK_PAGES.info } render={ props => (
+							<KioskInfo />
+						) } />
 
-					{/* Chit Voting */}
-					<Route exact path={KIOSK_PAGES.chit} render={props => (
-						<MemberLoginRequired component={KioskChitVoting} />
-					)} />
+						{/* Chit Voting */}
+						<Route exact path={ KIOSK_PAGES.chit } render={ props => (
+							<MemberLoginRequired component={ KioskChitVoting } />
+						) } />
 
-					{/* Funds Voting */}
-					<Route exact path={KIOSK_PAGES.funds} render={props => (
-						<MemberLoginRequired component={FundsVotingKiosk} />
-					)} />
+						{/* Funds Voting */}
+						<Route exact path={ KIOSK_PAGES.funds } render={ props => (
+							<MemberLoginRequired component={ FundsVotingKiosk } />
+						) } />
 
-				</Switch>
+					</Switch>
 
-			</PageFader>
+				</PageFader>
 			)}
 		</Transition>
 	);
-}
+};
 
 export default Kiosk;

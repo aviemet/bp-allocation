@@ -1,28 +1,23 @@
-import Meter from 'meteor/meteor';
-import React, { useContext, useEffect, useRef } from 'react';
-import _ from 'lodash';
+import React from 'react';
 
-import { useOrganizations, OrganizationProvider } from '/imports/context';
+import { useOrganizations } from '/imports/context';
 
-import { Loader, Grid, Table, Header, Segment, Container } from 'semantic-ui-react';
-
-import { useTraceUpdate } from '/imports/utils';
+import { Grid, Table } from 'semantic-ui-react';
 
 import ChitInputs from './ChitInputs';
 import TopOrgsByChitVote from './TopOrgsByChitVote';
-import SavedOrg from './SavedOrg';
 
-const ChitVotingPane = props => {
+const ChitVotingPane = () => {
 	const { orgs }  = useOrganizations();
 
 	return (
 		<React.Fragment>
-			<Grid columns={2} divided>
+			<Grid columns={ 2 } divided>
 				<Grid.Row>
 
 					<Grid.Column>
 
-						<Table celled striped unstackable columns={3}>
+						<Table celled striped unstackable columns={ 3 }>
 							<Table.Header>
 								<Table.Row>
 									<Table.HeaderCell>Organization</Table.HeaderCell>
@@ -32,13 +27,13 @@ const ChitVotingPane = props => {
 							</Table.Header>
 
 							<Table.Body>
-							{orgs.map((org, i) => (
-								<ChitInputs
-									org={org}
-									key={i}
-									tabInfo={{index: i+1, length: orgs.length}}
-								/>
-							))}
+								{orgs.map((org, i) => (
+									<ChitInputs
+										org={ org }
+										key={ i }
+										tabInfo={ { index: i + 1, length: orgs.length } }
+									/>
+								))}
 							</Table.Body>
 						</Table>
 
@@ -53,6 +48,8 @@ const ChitVotingPane = props => {
 
 		</React.Fragment>
 	);
-}
+};
+
+ChitVotingPane.propTypes = {};
 
 export default ChitVotingPane;

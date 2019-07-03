@@ -2,11 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
-import { Card, Image } from 'semantic-ui-react';
+import { Image } from 'semantic-ui-react';
 import styled from 'styled-components';
-
-import { Organizations, Images } from '/imports/api';
-import { OrganizationsSchema } from '/imports/api/schema';
 
 const Award = styled.div`
 	width: 100%;
@@ -35,7 +32,7 @@ const AwardAmount = styled.span`
 /**
  * Award Emblem
  */
-const AwardEmblem = ({type, amount, size}) => {
+const AwardEmblem = ({ type, amount }) => {
 
 	const awardImgSrc = {
 		awardee: '/img/circle_awardee.png',
@@ -44,12 +41,17 @@ const AwardEmblem = ({type, amount, size}) => {
 
 	return (
 		<Award>
-			<AwardImage className='ui.card.image' style={{backgroundImage: `url(${awardImgSrc[type || 'awardee']})`,
-backgroundSize: type === 'awardee' ? '120%' : '100%'}}>
-				<AwardAmount style={{fontSize: type === 'awardee' ? '3.3em' : '2.9em'}}>{numeral(amount).format('$0.0a')}</AwardAmount>
+			<AwardImage className='ui.card.image' style={ { backgroundImage: `url(${awardImgSrc[type || 'awardee']})`,
+				backgroundSize: type === 'awardee' ? '120%' : '100%' } }>
+				<AwardAmount style={ { fontSize: type === 'awardee' ? '3.3em' : '2.9em' } }>{numeral(amount).format('$0.0a')}</AwardAmount>
 			</AwardImage>
 		</Award>
 	);
-}
+};
+
+AwardEmblem.propTypes = {
+	type: PropTypes.string,
+	amount: PropTypes.number
+};
 
 export default AwardEmblem;

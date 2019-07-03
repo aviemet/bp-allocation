@@ -23,6 +23,6 @@ const PresentationLayout = (props) => (
 	<PresentationContainer>
 		{props.children}
 	</PresentationContainer>
-)
+);
 
 export default PresentationLayout;

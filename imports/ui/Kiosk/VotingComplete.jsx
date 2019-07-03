@@ -22,9 +22,9 @@ const VotingComplete = props => {
 		unsetUser();
 	}, 2000);
 
-  return (
-    <Centered>Voting Complete!</Centered>
-  )
-}
+	return (
+		<Centered>Voting Complete!</Centered>
+	);
+};
 
 export default VotingComplete;

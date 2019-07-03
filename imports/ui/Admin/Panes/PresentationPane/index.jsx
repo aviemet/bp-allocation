@@ -1,13 +1,12 @@
-import Meteor from 'meteor/meteor';
 import React, { useState, useContext, useEffect } from 'react';
 import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 
-import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
-import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
+import { ThemeContext, PresentationSettingsContext } from '/imports/context';
+import { PresentationSettingsMethods } from '/imports/api/methods';
 
-import { Loader, Grid, Button, Icon, Label, Segment, Input, Checkbox } from 'semantic-ui-react';
+import { Grid, Icon, Label, Segment, Input } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { ChitVotingActiveToggle, FundsVotingActiveToggle, ColorizeTopOrgsToggle, AnimateTopOrgsToggle, ShowLeverageToggle, ShowSaveValuesToggle } from '/imports/ui/Components/Toggles';
@@ -30,17 +29,16 @@ const ButtonPanel = styled.div`
 	}
 `;
 
-const PresentationPane = props => {
+const PresentationPane = () => {
 
 	const { theme } = useContext(ThemeContext);
-	const { topOrgs } = useContext(OrganizationContext);
 	const { settings } = useContext(PresentationSettingsContext);
 
 	const [ resultsOffset, setResultsOffset ] = useState(settings.resultsOffset);
 	const [ timerLength, setTimerLength ] = useState(settings.timerLength);
 
 	useEffect(() => {
-		data = {};
+		let data = {};
 		if(resultsOffset !== settings.resultsOffset) {
 			data.resultsOffset = resultsOffset;
 		}
@@ -60,7 +58,7 @@ const PresentationPane = props => {
 	/**
 	 * Reset the values for the presentation
 	 */
-	const resetPresentation = () => {
+	/*const resetPresentation = () => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
@@ -68,15 +66,15 @@ const PresentationPane = props => {
 				animateOrgs: true,
 			}
 		});
-	}
+	};*/
 
 	return (
 		<ButtonPanel>
-			<Grid celled columns={3}>
+			<Grid celled columns={ 3 }>
 				<Grid.Row>
 					<Grid.Column>
 
-					{/************
+						{/************
 					  * Intro/Title Page
 					  ************/}
 						<PresentationNavButton page='intro'>
@@ -87,7 +85,7 @@ const PresentationPane = props => {
 					</Grid.Column>
 					<Grid.Column>
 
-					{/************
+						{/************
 					  * Participating Organizations
 					  ************/}
 						<PresentationNavButton page='orgs'>
@@ -99,7 +97,7 @@ const PresentationPane = props => {
 					</Grid.Column>
 					<Grid.Column>
 
-					{/************
+						{/************
 					  * Timer
 					  ************/}
 						<PresentationNavButton page='timer' icon>
@@ -110,8 +108,8 @@ const PresentationPane = props => {
 							type='number'
 							label='Seconds'
 							index='timerLength'
-							value={timerLength}
-							onChange={e => setTimerLength(parseInt(e.target.value))}
+							value={ timerLength }
+							onChange={ e => setTimerLength(parseInt(e.target.value)) }
 						/>
 						<br/>
 						<ChitVotingActiveToggle />
@@ -124,7 +122,7 @@ const PresentationPane = props => {
 				<Grid.Row>
 					<Grid.Column>
 
-					{/************
+						{/************
 					  * Top Organizations
 					  ************/}
 						<PresentationNavButton page='toporgs'>
@@ -136,7 +134,7 @@ const PresentationPane = props => {
 					</Grid.Column>
 					<Grid.Column>
 
-					{/************
+						{/************
 					  * Allocation/Evaluation
 					  ************/}
 						<PresentationNavButton page='allocation'>
@@ -150,7 +148,7 @@ const PresentationPane = props => {
 					</Grid.Column>
 					<Grid.Column>
 
-					{/************
+						{/************
 					  * Results Page
 					  ************/}
 						<PresentationNavButton page='results'>
@@ -164,8 +162,8 @@ const PresentationPane = props => {
 							label='Offset'
 							labelPosition='right'
 							index='resultsOffset'
-							value={resultsOffset}
-							onChange={e => setResultsOffset(parseFloat(e.target.value))}
+							value={ resultsOffset }
+							onChange={ e => setResultsOffset(parseFloat(e.target.value)) }
 						/>
 
 					</Grid.Column>
@@ -173,11 +171,11 @@ const PresentationPane = props => {
 			</Grid>
 
 			<Segment>
-				<Grid columns={1}>
+				<Grid columns={ 1 }>
 					<Grid.Row>
 						<Grid.Column>
 
-							<Link to={`/presentation/${theme._id}`} target='_blank'>
+							<Link to={ `/presentation/${theme._id}` } target='_blank'>
 								<PresentationNavButton page='intro'>
 									<Label>Launch Presentaion</Label>
 								</PresentationNavButton>
@@ -190,6 +188,6 @@ const PresentationPane = props => {
 
 		</ButtonPanel>
 	);
-}
+};
 
 export default PresentationPane;

@@ -6,7 +6,7 @@ import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Checkbox } from 'semantic-ui-react';
 
-const ShowLeverageToggle = props => {
+const ShowLeverageToggle = () => {
 
 	const{ settings } = useContext(PresentationSettingsContext);
 
@@ -17,18 +17,18 @@ const ShowLeverageToggle = props => {
 				leverageVisible: data.checked
 			}
 		});
-	}
+	};
 
 	return(
 		<Checkbox
 			label='Show Leverage'
 			toggle
 			index='leverageVisible'
-			onClick={saveValue}
-			checked={settings.leverageVisible || false}
+			onClick={ saveValue }
+			checked={ settings.leverageVisible || false }
 		/>
 	);
 
-}
+};
 
 export default ShowLeverageToggle;

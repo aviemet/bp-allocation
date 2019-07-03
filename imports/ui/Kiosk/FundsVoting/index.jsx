@@ -67,14 +67,14 @@ const FinalizeButton = styled(Button)`
 	border: 2px solid #fff !important;
 	font-size: 2rem !important;
 	text-transform: uppercase !important;
-`
+`;
 const NumberFormat = styled.span`
 	width: 12rem;
 	display: inline-block;
 `;
 
-const AmountRemaining = React.memo(function AmountRemaining({value}) {
-	return <Header as='h1' className="title">FUNDS LEFT TO ALLOCATE: <NumberFormat>{numeral(value).format('$0,0')}</NumberFormat></Header>
+const AmountRemaining = React.memo(function AmountRemaining({ value }) {
+	return <Header as='h1' className="title">FUNDS LEFT TO ALLOCATE: <NumberFormat>{numeral(value).format('$0,0')}</NumberFormat></Header>;
 });
 
 const FundsVotingKiosk = props => {
@@ -87,55 +87,55 @@ const FundsVotingKiosk = props => {
 	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName;
 
 	if(orgsLoading) {
-		return <Loader />
+		return <Loader />;
 	}
 
 	if(votingComplete) {
-		return <VotingComplete />
+		return <VotingComplete />;
 	}
 	return (
 		<OrgsContainer>
 
 			<Header as='h1' className="title">{props.user.firstName && 'Voting for'} {memberName}</Header>
 
-			<Card.Group centered itemsPerRow={2}>
+			<Card.Group centered itemsPerRow={ 2 }>
 				{topOrgs.map(org => {
 					return(
 						<OrgCard
-							key={org._id}
-							org={org}
+							key={ org._id }
+							org={ org }
 							// image={_.find(images, ['_id', org.image])}
-							showAsk={false}
+							showAsk={ false }
 							size='small'
-							content={() => (
+							content={ () => (
 								<FundsSlider
-									org={org}
+									org={ org }
 								/>
-							)}
-						/>)
+							) }
+						/>);
 				})}
 			</Card.Group>
 
-			<FundsVoteContext.Consumer>{({votes, saveVotes, member}) => {
+			<FundsVoteContext.Consumer>{({ votes, saveVotes, member }) => {
 				let sum = 0;
 				_.forEach(votes, value => sum += value);
 				const remaining = member.theme.amount - sum;
 				const buttonDisabled = remaining !== 0;
 				return(
 					<React.Fragment>
-						<AmountRemaining value={remaining} />
+						<AmountRemaining value={ remaining } />
 						<FinalizeButton
 							size='huge'
-							disabled={buttonDisabled}
-							onClick={() => {
+							disabled={ buttonDisabled }
+							onClick={ () => {
 								saveVotes();
 								setVotingComplete(true);
-							}}>Finalize Vote</FinalizeButton>
+							} }>Finalize Vote</FinalizeButton>
 					</React.Fragment>
-				)
+				);
 			}}</FundsVoteContext.Consumer>
 		</OrgsContainer>
 	);
-}
+};
 
 export default FundsVotingKiosk;

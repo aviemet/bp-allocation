@@ -1,6 +1,4 @@
 import React from 'react';
-import Papa from 'papaparse';
-import _ from 'lodash';
 
 import { readCsvWithHeadings } from '/imports/utils';
 
@@ -10,12 +8,8 @@ import { MemberMethods } from '/imports/api/methods';
 import { Button, Input } from 'semantic-ui-react';
 
 const ImportMembers = props => {
-
 	const { theme } = useTheme();
 
-	let skipped = [];
-
-	let uploadedMembersList = [];
 	const acceptedValues = [
 		{
 			name: 'firstName',
@@ -51,7 +45,7 @@ const ImportMembers = props => {
 
 	const clickFileInput = () => document.getElementById('fileInput').click();
 
-	importMembers = e => {
+	const importMembers = e => {
 		const file = e.currentTarget.files[0];
 
 		// TODO: Display loading indicator while uploading members
@@ -67,19 +61,20 @@ const ImportMembers = props => {
 			},
 			'afterRowParse': row => {
 				// console.log({afterRowParse: row});
-				MemberMethods.upsert.call(Object.assign({themeId: theme._id}, row));
+				MemberMethods.upsert.call(Object.assign({ themeId: theme._id }, row));
 			},
 			'onComplete': data => {
 				// console.log({onComplete: data});
 			}
 		});
-	}
+		return parser;
+	};
 
 	return (
 		<React.Fragment>
 			<Button
-				style={{float: "right"}}
-				onClick={clickFileInput}
+				style={ { float: 'right' } }
+				onClick={ clickFileInput }
 			>
 			Import List as .csv
 			</Button>
@@ -88,11 +83,13 @@ const ImportMembers = props => {
 				id='fileInput'
 				name='fileInput'
 				accept='.csv'
-				style={{display: 'none'}}
-				onChange={importMembers}
+				style={ { display: 'none' } }
+				onChange={ importMembers }
 			/>
-			</React.Fragment>
+		</React.Fragment>
 	);
-}
+};
+
+ImportMembers.propTypes = {};
 
 export default ImportMembers;

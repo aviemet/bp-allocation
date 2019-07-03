@@ -1,13 +1,10 @@
-import { Meteor } from 'meteor/meteor';
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { filterTopOrgs } from '/imports/utils';
-
-import { Themes, PresentationSettings, Organizations, Images } from '/imports/api';
-import { useTheme } from './ThemeContext';
+import { Themes, PresentationSettings } from '/imports/api';
 
 /**
  * Initialize the Context
@@ -20,28 +17,35 @@ const PresentationSettingsContext = React.createContext();
 const PresentationSettingsProviderTemplate = props => {
 
 	return (
-		<PresentationSettingsContext.Provider value={{
+		<PresentationSettingsContext.Provider value={ {
 			settings: props.presentationSettings,
 			settingsLoading: props.loading,
 			handles: props.handles
-		}}>
+		} }>
 			{props.children}
 		</PresentationSettingsContext.Provider>
 	);
-}
+};
+
+PresentationSettingsProviderTemplate.propTypes = {
+	presentationSettings: PropTypes.object,
+	loading: PropTypes.bool,
+	handles: PropTypes.object,
+	children: PropTypes.object
+};
 
 const PresentationSettingsProvider = withTracker((props) => {
 	if(!props.id || _.isUndefined(props.handles.themes) || _.isUndefined(props.handles.orgs)) return { loading: true };
 
-	const theme = Themes.find({_id: props.id}).fetch()[0];
+	const theme = Themes.find({ _id: props.id }).fetch()[0];
 
 	if(_.isUndefined(theme)) return { loading: true };
 
-	const presentationSettings = PresentationSettings.find({_id: theme.presentationSettings}).fetch()[0];
+	const presentationSettings = PresentationSettings.find({ _id: theme.presentationSettings }).fetch()[0];
 
 	const loading = (!props.handles.presentationSettings.ready() || _.isUndefined(theme.presentationSettings));
 
-	return { loading, presentationSettings};
+	return { loading, presentationSettings };
 })(PresentationSettingsProviderTemplate);
 
 const usePresentationSettings = () => useContext(PresentationSettingsContext);

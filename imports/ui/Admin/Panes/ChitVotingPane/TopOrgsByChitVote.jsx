@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { ThemeContext, OrganizationContext } from '/imports/context';
-import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
+import { ThemeMethods } from '/imports/api/methods';
 
 import { sortTopOrgs } from '/imports/utils';
 
-import { Table, Checkbox, Icon, Input, Header, Button } from 'semantic-ui-react';
+import { Table, Icon, Input, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import TopOrgsRow from './TopOrgsRow';
@@ -34,7 +35,7 @@ const TopOrgsByChitVote = props => {
 				}
 			});
 		}
-	}
+	};
 
 	let sortedOrgs = sortTopOrgs(theme, orgs);
 
@@ -47,7 +48,7 @@ const TopOrgsByChitVote = props => {
 
 			<Header as="h1" floated="left">
 				Top {!props.hideAdminFields ?
-					<NumTopOrgsInput size='mini' type='number' value={theme.numTopOrgs} onChange={updateNumTopOrgs} width={1} />
+					<NumTopOrgsInput size='mini' type='number' value={ theme.numTopOrgs } onChange={ updateNumTopOrgs } width={ 1 } />
 					:
 					theme.numTopOrgs
 				} Organizations
@@ -63,29 +64,33 @@ const TopOrgsByChitVote = props => {
 				</Table.Header>
 
 				<Table.Body>
-				{sortedOrgs.map((org, i) => {
-					const inTopOrgs = i < theme.numTopOrgs;
-					const _isLocked = theme.topOrgsManual.includes(org._id);
-					const _isSaved = (_.findIndex(theme.saves, ['org', org._id]) >= 0);
+					{sortedOrgs.map((org, i) => {
+						const inTopOrgs = i < theme.numTopOrgs;
+						const _isLocked = theme.topOrgsManual.includes(org._id);
+						const _isSaved = (_.findIndex(theme.saves, ['org', org._id]) >= 0);
 
-					return(
-						<TopOrgsRow
-							key={i}
-							inTopOrgs={inTopOrgs}
-							isLocked={_isLocked}
-							isSaved={_isSaved}
-							themeId={theme._id}
-							org={org}
-							hideAdminFields={props.hideAdminFields || false}
-						/>
-					);
+						return(
+							<TopOrgsRow
+								key={ i }
+								inTopOrgs={ inTopOrgs }
+								isLocked={ _isLocked }
+								isSaved={ _isSaved }
+								themeId={ theme._id }
+								org={ org }
+								hideAdminFields={ props.hideAdminFields || false }
+							/>
+						);
 
-				})}
+					})}
 				</Table.Body>
 			</Table>
 
 		</React.Fragment>
 	);
-}
+};
+
+TopOrgsByChitVote.propTypes = {
+	hideAdminFields: PropTypes.bool
+};
 
 export default TopOrgsByChitVote;

@@ -6,7 +6,7 @@ import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Checkbox } from 'semantic-ui-react';
 
-const AnimateTopOrgsToggle = props => {
+const AnimateTopOrgsToggle = () => {
 
 	const{ settings } = useContext(PresentationSettingsContext);
 
@@ -17,18 +17,18 @@ const AnimateTopOrgsToggle = props => {
 				animateOrgs: data.checked
 			}
 		});
-	}
+	};
 
 	return(
 		<Checkbox
 			label='Animate'
 			toggle
 			index='animateOrgs'
-			onClick={saveValue}
-			checked={settings.animateOrgs || false}
+			onClick={ saveValue }
+			checked={ settings.animateOrgs || false }
 		/>
 	);
 
-}
+};
 
 export default AnimateTopOrgsToggle;

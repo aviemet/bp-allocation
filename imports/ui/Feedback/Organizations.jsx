@@ -16,12 +16,12 @@ const ChitVotingPane = props => {
 
 	return (
 		<React.Fragment>
-			<Grid columns={2} divided>
+			<Grid columns={ 2 } divided>
 				<Grid.Row>
 
 					<Grid.Column>
 
-						<Table celled striped unstackable columns={3}>
+						<Table celled striped unstackable columns={ 3 }>
 							<Table.Header>
 								<Table.Row>
 									<Table.HeaderCell>Organization</Table.HeaderCell>
@@ -31,20 +31,20 @@ const ChitVotingPane = props => {
 							</Table.Header>
 
 							<Table.Body>
-							{orgs.map((org, i) => (
-								<ChitInputs
-									org={org}
-									key={i}
-									tabInfo={{index: i+1, length: orgs.length}}
-								/>
-							))}
+								{orgs.map((org, i) => (
+									<ChitInputs
+										org={ org }
+										key={ i }
+										tabInfo={ { index: i + 1, length: orgs.length } }
+									/>
+								))}
 							</Table.Body>
 						</Table>
 
 					</Grid.Column>
 
 					<Grid.Column>
-						<TopOrgsByChitVote hideAdminFields={true} />
+						<TopOrgsByChitVote hideAdminFields={ true } />
 					</Grid.Column>
 
 				</Grid.Row>
@@ -52,6 +52,6 @@ const ChitVotingPane = props => {
 
 		</React.Fragment>
 	);
-}
+};
 
 export default ChitVotingPane;

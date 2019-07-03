@@ -15,13 +15,13 @@ const SimulationContainer = styled.div`
 `;
 
 const Graph = (props) => {
-  return (
+	return (
   	<React.Fragment>
   		<SimulationContainer>
 	  		<Simulation />
 			</SimulationContainer>
   	</React.Fragment>
-  )
-}
+	);
+};
 
 export default Graph;

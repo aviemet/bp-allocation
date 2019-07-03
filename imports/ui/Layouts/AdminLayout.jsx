@@ -17,7 +17,7 @@ const AdminLayout = (props) => (
 		<HomeButton />
 
 		<Container>
-			<Grid columns={16}>
+			<Grid columns={ 16 }>
 				{props.children}
 			</Grid>
 		</Container>

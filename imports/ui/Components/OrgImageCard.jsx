@@ -2,13 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
-import { Card, Image } from 'semantic-ui-react';
+import { Card } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { Organizations, Images } from '/imports/api';
-import { OrganizationsSchema } from '/imports/api/schema';
-
-import AwardEmblem from './AwardEmblem';
+import { Images } from '/imports/api';
 
 const OrgTitle = styled.p`
 	font-family: TradeGothic;
@@ -40,7 +37,7 @@ const CardContent = styled(Card.Content)`
 /**
  * OrgCard Component
  */
-const OrgCard = props => {
+const OrgImageCard = props => {
 
 	// Add animation class if toggled
 	let animateClass = props.animateClass ? 'animate-orgs' : '';
@@ -57,16 +54,24 @@ const OrgCard = props => {
 	const Overlay = props.overlay || false;
 
 	return (
-		<Card className={animateClass}>
-			<CardImage style={{ backgroundImage: `url(${imagePath})` }} className='orgsImage'>
+		<Card className={ animateClass }>
+			<CardImage style={ { backgroundImage: `url(${imagePath})` } } className='orgsImage'>
 				{Overlay && <Overlay />}
 			</CardImage>
-			<CardContent bgcolor={props.bgcolor || '#FFF'} className={className}>
+			<CardContent bgcolor={ props.bgcolor || '#FFF' } className={ className }>
 				<OrgTitle>{props.org.title}</OrgTitle>
 				<OrgAsk>{numeral(props.org.ask).format('$0a')}</OrgAsk>
 			</CardContent>
 		</Card>
 	);
-}
+};
 
-export default OrgCard;
+OrgImageCard.propTypes = {
+	image: PropTypes.object,
+	org: PropTypes.object,
+	animateClass: PropTypes.bool,
+	bgcolor: PropTypes.bool,
+	overlay: PropTypes.object
+};
+
+export default OrgImageCard;

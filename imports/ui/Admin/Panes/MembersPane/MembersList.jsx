@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
 import { useTheme, usePresentationSettings, useMembers } from '/imports/context';
@@ -13,12 +14,12 @@ const MembersList = (props) => {
 	const { members } = useMembers();
 
 	const removeMember = id => {
-		MemberMethods.removeMemberFromTheme.call({memberId: id, themeId: theme._id});
-	}
+		MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: theme._id });
+	};
 
 	const removeAllMembers = () => {
 		MemberMethods.removeAllMembers.call(theme._id);
-	}
+	};
 
 	let votingColspan = 0;
 	if(settings.useKioskChitVoting) votingColspan++;
@@ -32,55 +33,59 @@ const MembersList = (props) => {
 					<Table.HeaderCell rowSpan="2" collapsing><Icon name='hashtag' /></Table.HeaderCell>
 					<Table.HeaderCell rowSpan="2">Member Name</Table.HeaderCell>
 					<Table.HeaderCell rowSpan="2">Funds</Table.HeaderCell>
-					{votingColspan > 0 &&
-						<Table.HeaderCell colSpan={votingColspan} collapsing textAlign="center">Voting</Table.HeaderCell>
+					{ votingColspan > 0 &&
+						<Table.HeaderCell colSpan={ votingColspan } collapsing textAlign="center">Voting</Table.HeaderCell>
 					}
-					{!props.hideAdminFields && <>
+					{ !props.hideAdminFields && ( <>
 						<Table.HeaderCell rowSpan="2" collapsing>Code</Table.HeaderCell>
 						<Table.HeaderCell rowSpan="2" collapsing>
-							<Button icon='trash' color='red' onClick={removeAllMembers} />
+							<Button icon='trash' color='red' onClick={ removeAllMembers } />
 						</Table.HeaderCell>
-					</>}
+					</> ) }
 				</Table.Row>
-				{votingColspan > 0 &&
-				<Table.Row>
-					{settings.useKioskChitVoting && <Table.HeaderCell collapsing><Icon name='cog' /></Table.HeaderCell>}
-					{settings.useKioskFundsVoting &&<Table.HeaderCell collapsing><Icon name='dollar' /></Table.HeaderCell>}
-				</Table.Row>
-				}
+				{ votingColspan > 0 && (
+					<Table.Row>
+						{ settings.useKioskChitVoting && <Table.HeaderCell collapsing><Icon name='cog' /></Table.HeaderCell> }
+						{ settings.useKioskFundsVoting && <Table.HeaderCell collapsing><Icon name='dollar' /></Table.HeaderCell> }
+					</Table.Row>
+				) }
 			</Table.Header>
 			<Table.Body>
-				{members && members.map(member => {
-					let votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount }, 0);
+				{ members && members.map(member => {
+					let votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount; }, 0);
 					let votesComplete = votedTotal === member.theme.amount;
 					let fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`;
 
 					return(
-						<Table.Row key={member._id}>
-							<Table.Cell>{member.initials ? member.initials : ''}</Table.Cell>
-							<Table.Cell>{member.number ? member.number : ''}</Table.Cell>
-							<Table.Cell>{fullName}</Table.Cell>
-							<Table.Cell>{numeral(member.theme.amount || 0).format('$0,0')}</Table.Cell>
-							{votingColspan > 0 && <React.Fragment>
-								{settings.useKioskChitVoting && <Table.Cell></Table.Cell>}
-								{settings.useKioskFundsVoting && <Table.Cell>
-									{votesComplete && <Icon color='green' name='check' />}
-								</Table.Cell>}
-							</React.Fragment>}
-							{!props.hideAdminFields && <React.Fragment>
+						<Table.Row key={ member._id }>
+							<Table.Cell>{ member.initials ? member.initials : '' }</Table.Cell>
+							<Table.Cell>{ member.number ? member.number : '' }</Table.Cell>
+							<Table.Cell>{ fullName }</Table.Cell>
+							<Table.Cell>{ numeral(member.theme.amount || 0).format('$0,0') }</Table.Cell>
+							{ votingColspan > 0 && <React.Fragment>
+								{ settings.useKioskChitVoting && <Table.Cell></Table.Cell> }
+								{ settings.useKioskFundsVoting && <Table.Cell>
+									{ votesComplete && <Icon color='green' name='check' /> }
+								</Table.Cell> }
+							</React.Fragment> }
+							{ !props.hideAdminFields && <React.Fragment>
 								<Table.Cell>
-									{member.code ? member.code : ''}
+									{ member.code ? member.code : '' }
 								</Table.Cell>
 								<Table.Cell>
-									<Button icon='trash' onClick={() => removeMember(member._id)} />
+									<Button icon='trash' onClick={ () => removeMember(member._id) } />
 								</Table.Cell>
-							</React.Fragment>}
+							</React.Fragment> }
 						</Table.Row>
-					)
-				})}
+					);
+				}) }
 			</Table.Body>
 		</Table>
 	);
-}
+};
+
+MembersList.propTypes = {
+	hideAdminFields: PropTypes.bool
+};
 
 export default MembersList;

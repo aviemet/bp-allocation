@@ -27,7 +27,7 @@ const VotingContextProvider = props => {
 		let newVotes = _.clone(votes);
 		newVotes[org] = amount;
 		setVotes(newVotes);
-	}
+	};
 
 	const saveVotes = () => {
 		_.forEach(votes, (amount, org) => {
@@ -38,20 +38,20 @@ const VotingContextProvider = props => {
 				amount: amount
 			});
 		});
-	}
+	};
 
-  return (
-    <FundsVoteContext.Provider value={{
+	return (
+		<FundsVoteContext.Provider value={ {
     	votes,
     	updateVotes,
     	saveVotes,
     	member: props.member || false,
     	unsetUser: props.unsetUser
-    }}>
+		} }>
     	{props.children}
-    </FundsVoteContext.Provider>
-  )
-}
+		</FundsVoteContext.Provider>
+	);
+};
 
 const useVoting = () => useContext(FundsVoteContext);
 

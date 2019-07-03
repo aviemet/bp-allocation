@@ -76,20 +76,20 @@ const Orgs = props => {
 		<OrgsContainer>
 			<PageTitle>Participating Organizations</PageTitle>
 			<Container>
-				<Card.Group centered itemsPerRow={4}>
-				{orgs.map((org, i) => (
-					<OrgCard
-						key={org._id}
-						org={org}
-						image={_.find(images, ['_id', org.image])}
-						index={i}
-						overlay={settings.colorizeOrgs && colorOrgs[org._id] ? Overlay : false}
-					/>
-				))}
+				<Card.Group centered itemsPerRow={ 4 }>
+					{orgs.map((org, i) => (
+						<OrgCard
+							key={ org._id }
+							org={ org }
+							image={ _.find(images, ['_id', org.image]) }
+							index={ i }
+							overlay={ settings.colorizeOrgs && colorOrgs[org._id] ? Overlay : false }
+						/>
+					))}
 				</Card.Group>
 			</Container>
 		</OrgsContainer>
 	);
-}
+};
 
 export default Orgs;

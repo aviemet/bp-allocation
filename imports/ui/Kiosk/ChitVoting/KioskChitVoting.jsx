@@ -45,25 +45,25 @@ const KioskInfo = props => {
 	const { members } = useMembers();
 
 	if(themeLoading || orgsLoading) {
-		return <Loader />
+		return <Loader />;
 	}
 
 	return (
 		<OrgsContainer>
 			<Container>
 				<Header as='h1' id="title">VOTE FOR YOUR FAVORITE ORGANIZATIONS</Header>
-						<Card.Group centered itemsPerRow={3}>
-							{orgs.map(org => (
-								<OrgCard
-									 key={org._id}
-									org={org}
-									image={_.find(images, ['_id', org.image])}
-								/>
-							))}
-						</Card.Group>
+				<Card.Group centered itemsPerRow={ 3 }>
+					{orgs.map(org => (
+						<OrgCard
+									 key={ org._id }
+							org={ org }
+							image={ _.find(images, ['_id', org.image]) }
+						/>
+					))}
+				</Card.Group>
 			</Container>
 		</OrgsContainer>
 	);
-}
+};
 
-export default KioskInfo
+export default KioskInfo;

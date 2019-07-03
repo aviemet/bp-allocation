@@ -35,12 +35,12 @@ const WelcomeLayout = (props) => {
 				<Centered>
 					<PageTitle>{props.title}</PageTitle>
 					<Hr/>
-						{props.children}
+					{props.children}
 					<Hr/>
 				</Centered>
 			</Container>
 		</WelcomeContainer>
 	);
-}
+};
 
 export default WelcomeLayout;

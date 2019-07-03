@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { withTracker } from 'meteor/react-meteor-data';
@@ -22,38 +23,51 @@ const MemberProviderTemplate = props => {
 		let members = props.members.map(member => {
 			let memberTheme = _.find(props.memberThemes, ['member', member._id]);
 			// console.log({member, memberTheme});
-			return Object.assign({theme: memberTheme}, member);
+			return Object.assign({ theme: memberTheme }, member);
 		});
 		return members;
 	};
 
 	return (
-		<MemberContext.Provider value={{
+		<MemberContext.Provider value={ {
 			members: aggregateMembers(),
 			memberThemes: props.memberThemes,
 			membersLoading: props.loading,
-			handles: Object.assign({
-				members: props.membersHandle
-			}, props.handles)
-		}}>
+			handles: props.handles
+		} }>
 			{props.children}
 		</MemberContext.Provider>
 	);
-}
+};
+
+MemberProviderTemplate.propTypes = {
+	members: PropTypes.object,
+	loading: PropTypes.bool,
+	memberThemes: PropTypes.object,
+	handles: PropTypes.object,
+	children: PropTypes.object
+};
 
 const MemberProvider = withTracker(props => {
 	if(!props.id) return { loading: true };
 
-	const memberThemes = MemberThemes.find({theme: props.id}).fetch();
+	const memberThemes = MemberThemes.find({ theme: props.id }).fetch();
 
 	const memberIds = memberThemes.map(memberTheme => memberTheme.member);
 
 	const membersHandle = Meteor.subscribe('members', memberIds);
-	const members = Members.find({_id: {$in: memberIds}}).fetch();
+	const members = Members.find({ _id: { $in: memberIds }}).fetch();
 
 	const loading = (!membersHandle.ready() || !props.handles.memberThemes.ready());
 
-	return { loading, members, memberThemes, membersHandle };
+	return { 
+		loading, 
+		members, 
+		memberThemes, 
+		handles: Object.assign({
+			members: membersHandle
+		}, props.handles )
+	};
 })(MemberProviderTemplate);
 
 const useMembers = () => useContext(MemberContext);

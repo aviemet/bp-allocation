@@ -17,6 +17,7 @@
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly"
 	},
+	"parser": "babel-eslint",
 	"parserOptions": {
 		"ecmaFeatures": {
 			"jsx": true
@@ -28,7 +29,9 @@
 		"react"
 	],
 	"rules": {
-		"indent": [ "error", "tab" ],
+		"indent": [ "error", "tab", {
+			"SwitchCase": 1
+		} ],
 		"linebreak-style": [ "error", "unix" ],
 		"quotes": [ "error", "single" ],
 		"semi": [ "error", "always" ],
@@ -36,11 +39,13 @@
 				"vars": "all",
 				"args": "none"
 		}],
+		"no-prototype-builtins": [ 0 ],
 		"space-infix-ops": [ "error" ],
 		"object-curly-spacing": [ "error", "always", { 
 			"objectsInObjects": false 
 		}],
 		"react/boolean-prop-naming": [ "error" ],
-		"react/no-typos": [ "error" ]
+		"react/no-typos": [ "error" ],
+		"react/jsx-curly-spacing": [ "error", {"when": "always"} ]
 	}
 }

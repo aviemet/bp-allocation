@@ -1,14 +1,16 @@
 import React from 'react';
-import _ from 'lodash';
+import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
 import { usePresentationSettings } from '/imports/context';
 
-import { getSaveAmount, roundFloat } from '/imports/utils';
+import { roundFloat } from '/imports/utils';
 
-import { OrganizationMethods, ThemeMethods } from '/imports/api/methods';
+import { OrganizationMethods } from '/imports/api/methods';
 
-import { Table, Checkbox, Button, Form, Dropdown, Input, Label } from 'semantic-ui-react';
+import { Table, Button, Form, Input } from 'semantic-ui-react';
+
+import CrowdFavoriteRibbon from '/imports/Components/CrowdFavoriteRibbon';
 
 /**
  * Allocation Inputs Component
@@ -17,19 +19,21 @@ const AllocationInputs = props => {
 
 	const { settings } = usePresentationSettings();
 
+	/*
 	const actionOptions = [
 		{ key: 'actions', text: 'Actions', value: 'actions' },
 		{ key: 'topOff', text: `${props.org.topOff > 0 ? 'Undo Top Off' : 'Top Off'}`, value: 'topoff' },
 		{ key: 'reset', text: 'Reset', value: 'reset' }
 	];
+	*/
 
 	const enterAmountFromVotes = (e, data) => {
 		if(data.value !== props.org.amountFromVotes){
-			OrganizationMethods.update.call({id: props.org._id, data: {
+			OrganizationMethods.update.call({ id: props.org._id, data: {
 				amountFromVotes: data.value
 			}});
 		}
-	}
+	};
 
 	const pledge = (e, data) => {
 		e.preventDefault();
@@ -43,42 +47,40 @@ const AllocationInputs = props => {
 
 		// Clear the input
 		e.target.elements.valueInput.value = '';
-	}
+	};
 
+	/*
 	const handleActionSelection = (e, data) => {
 		switch(data.value){
-			case actionOptions[1].value: // topOff
-				if(props.org.topOff > 0) {
-					OrganizationMethods.topOff.call({id: props.org._id, negate: true});
-				} else {
-					OrganizationMethods.topOff.call({id: props.org._id});
-				}
-				break;
-			case actionOptions[2].value: // reset
-				OrganizationMethods.reset.call({id: props.org._id});
-				break;
+		case actionOptions[1].value: // topOff
+			if(props.org.topOff > 0) {
+				OrganizationMethods.topOff.call({ id: props.org._id, negate: true });
+			} else {
+				OrganizationMethods.topOff.call({ id: props.org._id });
+			}
+			break;
+		case actionOptions[2].value: // reset
+			OrganizationMethods.reset.call({ id: props.org._id });
+			break;
 		}
-	}
+	};*/
 
 	const topoff = () => {
 		const amount = props.org.topOff > 0 ? 0 : props.org.need - props.org.leverageFunds;
-		OrganizationMethods.update.call({id: props.org._id, data: {
+		OrganizationMethods.update.call({ id: props.org._id, data: {
 			topOff: amount
 		}});
-	}
-
-	// Initialize to 0 if empty so it's truthiness can be tested
-	const amountFromVotes = props.org.amountFromVotes || 0;
+	};
 
 	// Boolean help for marking fully funded orgs
 	const reachedGoal = props.org.need - props.org.leverageFunds <= 0;
 
 	return (
-		<Table.Row positive={reachedGoal}>
+		<Table.Row positive={ reachedGoal }>
 
 			{/* Org Title */}
 			<Table.Cell>
-				<CrowdFavoriteRibbon crowdFavorite={props.crowdFavorite || false}>
+				<CrowdFavoriteRibbon crowdFavorite={ props.crowdFavorite || false }>
 					{props.org.title}
 				</CrowdFavoriteRibbon>
 			</Table.Cell>
@@ -87,13 +89,13 @@ const AllocationInputs = props => {
 			<Table.Cell>
 				{props.hideAdminFields || settings.useKioskFundsVoting ?
 					<span>{numeral(props.org.amountFromVotes || 0).format('$0,0')}</span>
-				:
+					:
 					<Input
 						fluid
 						type='number'
-						value={props.org.amountFromVotes || ''}
-						onChange={enterAmountFromVotes}
-						tabIndex={props.tabInfo ? props.tabInfo.index : false}
+						value={ props.org.amountFromVotes || '' }
+						onChange={ enterAmountFromVotes }
+						tabIndex={ props.tabInfo ? props.tabInfo.index : false }
 					/>
 				}
 			</Table.Cell>
@@ -101,27 +103,27 @@ const AllocationInputs = props => {
 			{/* Matched Pledges Input */}
 			<Table.Cell>
 				{props.hideAdminFields ?
-					numeral(props.org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0)).format('$0,0')
-				:
-					<Form onSubmit={pledge}>
+					numeral(props.org.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0)).format('$0,0')
+					:
+					<Form onSubmit={ pledge }>
 						<Form.Input
 							fluid
 							type='text'
 							name='valueInput'
 							action='+'
-							tabIndex={props.tabInfo ? props.tabInfo.index + props.tabInfo.length : false}
+							tabIndex={ props.tabInfo ? props.tabInfo.index + props.tabInfo.length : false }
 						/>
 					</Form>
 				}
 			</Table.Cell>
 
 			{/* Funded */}
-			<Table.Cell className={reachedGoal ? 'bold' : ''}>
+			<Table.Cell className={ reachedGoal ? 'bold' : '' }>
 				{numeral(props.org.allocatedFunds).format('$0,0')}
 			</Table.Cell>
 
 			{/* Ask */}
-			<Table.Cell className={reachedGoal ? 'bold' : ''}>
+			<Table.Cell className={ reachedGoal ? 'bold' : '' }>
 				{numeral(props.org.ask).format('$0,0')}
 			</Table.Cell>
 
@@ -133,7 +135,7 @@ const AllocationInputs = props => {
 			{/* Actions */}
 			{!props.hideAdminFields &&
 			<Table.Cell singleLine>
-				<Button onClick={topoff} style={{width: '100%'}}>{props.org.topOff > 0 ? 'Undo' : '' } Top Off</Button>
+				<Button onClick={ topoff } style={ { width: '100%' } }>{props.org.topOff > 0 ? 'Undo' : '' } Top Off</Button>
 				{/*<Dropdown
 					floating
 					button
@@ -144,16 +146,13 @@ const AllocationInputs = props => {
 			</Table.Cell>}
 		</Table.Row>
 	);
-}
+};
+
+AllocationInputs.propTypes = {
+	org: PropTypes.object,
+	crowdFavorite: PropTypes.number,
+	tabInfo: PropTypes.number,
+	hideAdminFields: PropTypes.bool
+};
 
 export default AllocationInputs;
-
-/**
- * Adorn table row with a ribbon for the crowd favorite
- */
-const CrowdFavoriteRibbon = props => {
-	if(props.crowdFavorite === false){
-		return <React.Fragment>{props.children}</React.Fragment>
-	}
-	return <Label ribbon color='green'>{props.children}: Crowd Favorite</Label>
-}

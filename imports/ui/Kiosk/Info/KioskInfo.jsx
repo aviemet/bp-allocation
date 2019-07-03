@@ -40,23 +40,23 @@ const KioskInfo = props => {
 	const { settings } = usePresentationSettings();
 
 	if(themeLoading || orgsLoading) {
-		return <Loader />
+		return <Loader />;
 	}
 
 	return (
 		<OrgsContainer>
 			<Header as='h1' id="title">ORGANIZATIONS THIS THEME</Header>
-				<Card.Group centered itemsPerRow={3}>
-					{orgs.map((org, i) => (
-						<OrgCard
-							key={org._id}
-							org={org}
-							image={_.find(images, ['_id', org.image])}
-						/>
-					))}
-				</Card.Group>
+			<Card.Group centered itemsPerRow={ 3 }>
+				{orgs.map((org, i) => (
+					<OrgCard
+						key={ org._id }
+						org={ org }
+						image={ _.find(images, ['_id', org.image]) }
+					/>
+				))}
+			</Card.Group>
 		</OrgsContainer>
 	);
-}
+};
 
-export default KioskInfo
+export default KioskInfo;

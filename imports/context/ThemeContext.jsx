@@ -1,15 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { filterTopOrgs } from '/imports/utils';
 
-import { Themes, PresentationSettings, Organizations, Images, MemberThemes } from '/imports/api';
-import { ThemeMethods, PresentationSettingsMethods, OrganizationMethods, ImageMethods } from '/imports/api/methods';
-
-import { Loader } from 'semantic-ui-react'
+import { Themes, PresentationSettings, Organizations, MemberThemes } from '/imports/api';
 
 /**
  * Initialize the Context
@@ -26,16 +24,16 @@ const ThemeProviderTemplate = props => {
 		let total = 0;
 		props.topOrgs.map(org => {
 			if(org.pledges) {
-				total += org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0);
+				total += org.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0);
 			}
 		});
 		return total;
-	}
+	};
 
 	const consolationTotal = () => {
 		if(_.isUndefined(props.theme) || _.isUndefined(props.topOrgs) || !props.theme.consolationActive) return 0;
 		return (props.theme.organizations.length - props.topOrgs.length) * props.theme.consolationAmount;
-	}
+	};
 
 	const leverageRemaining = () => {
 		if(_.isUndefined(props.theme)) return 0;
@@ -48,13 +46,13 @@ const ThemeProviderTemplate = props => {
 				remainingLeverage -= org.topOff;
 			}
 			if(!_.isEmpty(org.pledges)) {
-				remainingLeverage -= org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0);
+				remainingLeverage -= org.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0);
 			}
 
 		});
 		if(remainingLeverage <= 0) return 0;
 		return parseFloat((remainingLeverage).toFixed(2));
-	}
+	};
 
 	const votedFunds = () => {
 		if(_.isUndefined(props.topOrgs) || _.isUndefined(props.presentationSettings)) return 0;
@@ -62,19 +60,19 @@ const ThemeProviderTemplate = props => {
 		let voteAllocated = 0;
 		if(props.presentationSettings.useKioskFundsVoting) {
 			props.memberThemes.map(memberTheme => {
-				voteAllocated += memberTheme.allocations.reduce((sum, allocation) => { return allocation.amount + sum }, 0);
+				voteAllocated += memberTheme.allocations.reduce((sum, allocation) => { return allocation.amount + sum; }, 0);
 			});
 		} else {
-	 		props.topOrgs.map((org) => {
-	 			voteAllocated += parseFloat(org.amountFromVotes || 0);
-	 			voteAllocated += parseFloat(org.topOff || 0);
-	 		});
-	 	}
- 		return voteAllocated;
-	}
+			props.topOrgs.map((org) => {
+				voteAllocated += parseFloat(org.amountFromVotes || 0);
+				voteAllocated += parseFloat(org.topOff || 0);
+			});
+		}
+		return voteAllocated;
+	};
 
 	return (
-		<ThemeContext.Provider value={{
+		<ThemeContext.Provider value={ {
 			theme: Object.assign({
 				consolationTotal: consolationTotal(),
 				leverageRemaining: leverageRemaining(),
@@ -82,35 +80,40 @@ const ThemeProviderTemplate = props => {
 				pledgedTotal: pledgedTotal()
 			}, props.theme),
 			themeLoading: props.loading,
-			handles: {
-				themes: props.themesHandle,
-				orgs: props.orgsHandle,
-				memberThemes: props.memberThemesHandle,
-				presentationSettings: props.presentationSettingsHandle
-			}
-		}}>
+			handles: props.handles
+		} }>
 			{props.children}
 		</ThemeContext.Provider>
 	);
-}
+};
+
+ThemeProviderTemplate.propTypes = {
+	topOrgs: PropTypes.object,
+	presentationSettings: PropTypes.object,
+	memberThemes: PropTypes.object,
+	theme: PropTypes.object,
+	loading: PropTypes.bool,
+	handles: PropTypes.object,
+	children: PropTypes.object
+};
 
 const ThemeProvider = withTracker((props) => {
 	if(!props.id) return { loading: true };
 
 	// Get the theme
 	const themesHandle = Meteor.subscribe('themes', props.id);
-	const theme = Themes.find({_id: props.id}).fetch()[0];
+	const theme = Themes.find({ _id: props.id }).fetch()[0];
 
 	const orgsHandle = Meteor.subscribe('organizations', props.id);
-	const orgs = Organizations.find({theme: props.id}).fetch();
+	const orgs = Organizations.find({ theme: props.id }).fetch();
 
 	const memberThemesHandle = Meteor.subscribe('memberThemes', props.id);
-	const memberThemes = MemberThemes.find({theme: props.id}).fetch();
+	const memberThemes = MemberThemes.find({ theme: props.id }).fetch();
 
 	if(_.isUndefined(theme) || _.isUndefined(orgs)) return { loading: true };
 
 	const presentationSettingsHandle = Meteor.subscribe('presentationSettings', theme.presentationSettings);
-	const presentationSettings = PresentationSettings.find({_id: theme.presentationSettings}).fetch()[0];
+	const presentationSettings = PresentationSettings.find({ _id: theme.presentationSettings }).fetch()[0];
 
 	// Pre-filter the top orgs, add to loading condition
 	let topOrgs = [];
@@ -118,7 +121,19 @@ const ThemeProvider = withTracker((props) => {
 
 	const loading = (!themesHandle.ready() || _.isUndefined(theme) || _.isUndefined(presentationSettings));
 
-	return { loading, theme, topOrgs, memberThemes, presentationSettings, themesHandle, presentationSettingsHandle, orgsHandle, memberThemesHandle };
+	return { 
+		loading, 
+		theme, 
+		topOrgs, 
+		memberThemes, 
+		presentationSettings, 
+		handles: {
+			themesHandle, 
+			presentationSettingsHandle, 
+			orgsHandle, 
+			memberThemesHandle 
+		}
+	};
 })(ThemeProviderTemplate);
 
 const useTheme = () => useContext(ThemeContext);

@@ -1,9 +1,8 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import numeral from 'numeral';
-import _ from 'lodash';
 
-import { Table, Header, Icon } from 'semantic-ui-react';
+import { Table, Icon } from 'semantic-ui-react';
 
 
 const RoundTable = props => {
@@ -37,15 +36,15 @@ const RoundTable = props => {
 			<Table.Body>{props.orgs.map(org => (
 
 				<Table.Row
-					key={org._id}
-					positive={org.need === 0 && org.roundFunds > 0}
-					warning={org.need > 0}
+					key={ org._id }
+					positive={ org.need === 0 && org.roundFunds > 0 }
+					warning={ org.need > 0 }
 				>
-					<Table.Cell>{org.title}</Table.Cell>
-					<Table.Cell>{org.roundFunds === 0 ? '-' : numeral(org.roundFunds).format('$0,0.00')}</Table.Cell>
-					<Table.Cell>{org.percent === 0 ? '-' : numeral(org.percent).format('0.0000%')}</Table.Cell>
-					<Table.Cell>{numeral(org.allocatedFunds + org.leverageFunds).format('$0,0.00')}</Table.Cell>
-					<Table.Cell>{org.need === 0 ? <Icon color='green' name='check circle' /> : numeral(org.need).format('$0,0.00')}</Table.Cell>
+					<Table.Cell>{ org.title }</Table.Cell>
+					<Table.Cell>{ org.roundFunds === 0 ? '-' : numeral(org.roundFunds).format('$0,0.00') }</Table.Cell>
+					<Table.Cell>{ org.percent === 0 ? '-' : numeral(org.percent).format('0.0000%') }</Table.Cell>
+					<Table.Cell>{ numeral(org.allocatedFunds + org.leverageFunds).format('$0,0.00') }</Table.Cell>
+					<Table.Cell>{ org.need === 0 ? <Icon color='green' name='check circle' /> : numeral(org.need).format('$0,0.00') }</Table.Cell>
 				</Table.Row>
 
 			))}</Table.Body>
@@ -53,14 +52,18 @@ const RoundTable = props => {
 			<Table.Footer>
 				<Table.Row color="orange">
 					<Table.HeaderCell align="right">Totals:</Table.HeaderCell>
-					<Table.HeaderCell>{numeral(totals.funds).format('$0,0.00')}</Table.HeaderCell>
-					<Table.HeaderCell>{numeral(totals.percent).format('0.00%')}</Table.HeaderCell>
-					<Table.HeaderCell>{numeral(totals.total).format('$0,0.00')}</Table.HeaderCell>
-					<Table.HeaderCell>{numeral(totals.needed).format('$0,0.00')}</Table.HeaderCell>
+					<Table.HeaderCell>{ numeral(totals.funds).format('$0,0.00') }</Table.HeaderCell>
+					<Table.HeaderCell>{ numeral(totals.percent).format('0.00%') }</Table.HeaderCell>
+					<Table.HeaderCell>{ numeral(totals.total).format('$0,0.00') }</Table.HeaderCell>
+					<Table.HeaderCell>{ numeral(totals.needed).format('$0,0.00') }</Table.HeaderCell>
 				</Table.Row>
 			</Table.Footer>
 		</Table>
 	);
+};
+
+RoundTable.propTypes = {
+	orgs: PropTypes.object
 };
 
 export default RoundTable;

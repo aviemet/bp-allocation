@@ -33,7 +33,7 @@ const NewThemeModal = props => {
 
 	return (
 		<Modal 
-			trigger={ <Button onClick={ () => setIsModalOpen(true) }>+ New Theme</Button>} 
+			trigger={ <Button onClick={ () => setIsModalOpen(true) }>+ New Theme</Button> } 
 			centered={ false } 
 			open={ isModalOpen } 
 			onClose={ () => setIsModalOpen(false) }

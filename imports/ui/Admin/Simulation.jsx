@@ -1,7 +1,5 @@
-import { Meteor } from 'meteor/meteor';
 import React from 'react';
 
-import { Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { Allocation } from '/imports/ui/Presentation/Pages';
@@ -19,9 +17,9 @@ const SimulationContainer = styled.div`
 const Presentation = props => {
 	return (
 		<SimulationContainer>
-			<Allocation simulation={true} />
+			<Allocation simulation={ true } />
 		</SimulationContainer>
 	);
-}
+};
 
 export default Presentation;

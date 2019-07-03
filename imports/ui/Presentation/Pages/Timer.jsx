@@ -46,7 +46,7 @@ const Timer = props => {
 		setTimeout(() => {
 			setCountdown(false);
 		}, 2000);
-	}
+	};
 
 	if(!countdown) {
 		return(
@@ -59,15 +59,15 @@ const Timer = props => {
 	return (
 		<TimerContainer>
 			<ReactCountdownClock
-				seconds={props.seconds+1}
+				seconds={ props.seconds + 1 }
 				color="#FFF"
-				size={850}
-				weight={10}
-				onComplete={timerFinish}
-				showMilliseconds={false}
+				size={ 850 }
+				weight={ 10 }
+				onComplete={ timerFinish }
+				showMilliseconds={ false }
 			/>
 		</TimerContainer>
 	);
-}
+};
 
 export default Timer;

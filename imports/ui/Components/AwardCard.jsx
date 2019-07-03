@@ -57,8 +57,8 @@ const AwardCard = props => {
 		<OrgCard>
 			<CardImage>
 				<AwardEmblem
-					type={props.award}
-					amount={props.org.allocatedFunds + props.org.leverageFunds}
+					type={ props.award }
+					amount={ props.org.allocatedFunds + props.org.leverageFunds }
 				/>
 			</CardImage>
 			<CardContent>
@@ -66,6 +66,6 @@ const AwardCard = props => {
 			</CardContent>
 		</OrgCard>
 	);
-}
+};
 
 export default AwardCard;

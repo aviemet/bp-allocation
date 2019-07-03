@@ -3,16 +3,13 @@ import PropTypes from 'prop-types';
 import numeral from 'numeral';
 import _ from 'lodash';
 
-import { Card, Image } from 'semantic-ui-react';
+import { Card } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { Organizations, Images } from '/imports/api';
-import { OrganizationsSchema } from '/imports/api/schema';
+import { Images } from '/imports/api';
 
-import AwardEmblem from './AwardEmblem';
-
-const GREEN = "#0D8744";
-const BLUE = "#002B43";
+const GREEN = '#0D8744';
+const BLUE = '#002B43';
 
 const StyledCard = styled(Card)`
 	text-align: center;
@@ -76,10 +73,10 @@ const OrgCard = props => {
 	// Add animation class if toggled
 	// let animateClass = props.animateClass ? 'animate-orgs' : '';
 
-	let imagePath = '';
+	/*let imagePath = '';
 	if(props.image && props.image.path){
 		imagePath = Images.link(props.image, 'original', '/');
-	}
+	}*/
 
 	const Overlay = props.overlay || false;
 	const Content = props.content || false;
@@ -90,16 +87,16 @@ const OrgCard = props => {
 		bgcolor = (props.index + (row % 2)) % 2 === 0 ? GREEN : BLUE;
 	}
 
-	cardClass = `${props.size ? props.size : ''} ${props.animateClass ? 'animate-orgs' : ''}`;
+	const cardClass = `${props.size ? props.size : ''} ${props.animateClass ? 'animate-orgs' : ''}`;
 
 	// Default to true, cast to boolean
 	const showAsk = _.isUndefined(props.showAsk) ? true : !!props.showAsk;
 
 	return (
-		<StyledCard className={cardClass}>
+		<StyledCard className={ cardClass }>
 			{Overlay && <Overlay />}
 
-			<CardContent bgcolor={bgcolor} >
+			<CardContent bgcolor={ bgcolor } >
 
 				{props.content && <Card.Content>
 					<Content />
@@ -110,6 +107,17 @@ const OrgCard = props => {
 			</CardContent>
 		</StyledCard>
 	);
-}
+};
+
+OrgCard.propTypes = {
+	image: PropTypes.object,
+	org: PropTypes.object,
+	overlay: PropTypes.object,
+	content: PropTypes.object,
+	index: PropTypes.number,
+	size: PropTypes.number,
+	showAsk: PropTypes.bool,
+	animateClass: PropTypes.bool
+};
 
 export default OrgCard;

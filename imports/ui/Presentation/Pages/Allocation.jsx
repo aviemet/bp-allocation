@@ -8,9 +8,9 @@ import Graph from '/imports/ui/Presentation/Graph/Graph';
 const Allocation = props => {
 	return (
 		<React.Fragment>
-			<Graph simulation={props.simulation || false} />
+			<Graph simulation={ props.simulation || false } />
 		</React.Fragment>
 	);
-}
+};
 
 export default Allocation;

@@ -6,9 +6,9 @@ import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Checkbox } from 'semantic-ui-react';
 
-const FundsVotingActiveToggle = props => {
+const FundsVotingActiveToggle = () => {
 
-	const{ settings } = useContext(PresentationSettingsContext);
+	const { settings } = useContext(PresentationSettingsContext);
 
 	const saveValue = (e, data) => {
 		PresentationSettingsMethods.update.call({
@@ -18,20 +18,20 @@ const FundsVotingActiveToggle = props => {
 				chitVotingActive: false
 			}
 		});
-	}
+	};
 
-	if(!settings.useKioskFundsVoting) return <React.Fragment></React.Fragment>
+	if(!settings.useKioskFundsVoting) return <React.Fragment></React.Fragment>;
 
 	return(
 		<Checkbox
 			label='Funds Voting Active'
 			toggle
 			index='fundsVotingActive'
-			onClick={saveValue}
-			checked={settings.fundsVotingActive || false}
+			onClick={ saveValue }
+			checked={ settings.fundsVotingActive || false }
 		/>
 	);
 
-}
+};
 
 export default FundsVotingActiveToggle;

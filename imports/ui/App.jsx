@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
-import createBrowserHistory from 'history/createBrowserHistory';
+import { createBrowserHistory as createHistory } from 'history';
 
 import styled from 'styled-components';
 
@@ -20,9 +20,9 @@ const GlobalContainer = styled.div`
 	height: 100vh;
 `;
 
-const browserHistory = createBrowserHistory();
+const browserHistory = createHistory();
 
-export default class App extends React.Component {
+class App extends React.Component {
 	constructor(props) {
 		super(props);
 	}
@@ -30,23 +30,23 @@ export default class App extends React.Component {
 	render() {
 		return (
 			<GlobalContainer>
-				<Router history={browserHistory}>
+				<Router history={ browserHistory }>
 					<Switch>
 
-						<Route exact path="/" render={() => (
+						<Route exact path="/" render={ () => (
 							<Redirect to="/themes" />
-						)} />
+						) } />
 
 						<Route path="/themes" render={ (props) => (
 							<WelcomeLayout>
-								<Route exact path='/themes' component={ThemesList} />
+								<Route exact path='/themes' component={ ThemesList } />
 
-								<Route exact path='/themes/:id' component={WelcomePage} />
+								<Route exact path='/themes/:id' component={ WelcomePage } />
 							</WelcomeLayout>
-						)} />
+						) } />
 
 						<Route path="/admin/:id" render={ (props) => (
-							<AppProvider id={props.match.params.id}>
+							<AppProvider id={ props.match.params.id }>
 								<AdminLayout>
 									<Admin />
 								</AdminLayout>
@@ -54,7 +54,7 @@ export default class App extends React.Component {
 						) } />
 
 						<Route path="/presentation/:id" render={ (props) => (
-							<AppProvider id={props.match.params.id}>
+							<AppProvider id={ props.match.params.id }>
 								<PresentationLayout>
 									<Presentation />
 								</PresentationLayout>
@@ -62,7 +62,7 @@ export default class App extends React.Component {
 						) } />
 
 						<Route path="/simulation/:id" render= { (props) => (
-							<AppProvider id={props.match.params.id}>
+							<AppProvider id={ props.match.params.id }>
 								<PresentationLayout>
 									<Simulation />
 								</PresentationLayout>
@@ -70,7 +70,7 @@ export default class App extends React.Component {
 						) } />
 
 						<Route path="/kiosk/:id" render= { (props) => (
-							<AppProvider id={props.match.params.id}>
+							<AppProvider id={ props.match.params.id }>
 								<KioskLayout>
 									<Kiosk />
 								</KioskLayout>
@@ -78,7 +78,7 @@ export default class App extends React.Component {
 						) } />
 
 						<Route path="/feedback/:id" render= { (props) => (
-							<AppProvider id={props.match.params.id}>
+							<AppProvider id={ props.match.params.id }>
 								<FeedbackLayout>
 									<Feedback />
 								</FeedbackLayout>
@@ -91,3 +91,5 @@ export default class App extends React.Component {
 		);
 	}
 }
+
+export default App;

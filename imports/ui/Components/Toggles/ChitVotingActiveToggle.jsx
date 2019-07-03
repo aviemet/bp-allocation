@@ -6,7 +6,7 @@ import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Checkbox } from 'semantic-ui-react';
 
-const ChitVotingActiveToggle = props => {
+const ChitVotingActiveToggle = () => {
 
 	const{ settings } = useContext(PresentationSettingsContext);
 
@@ -18,20 +18,20 @@ const ChitVotingActiveToggle = props => {
 				fundsVotingActive: false
 			}
 		});
-	}
+	};
 
-	if(!settings.useKioskChitVoting) return <React.Fragment></React.Fragment>
+	if(!settings.useKioskChitVoting) return <React.Fragment></React.Fragment>;
 
 	return(
 		<Checkbox
 			label='Chit Voting Active'
 			toggle
 			index='chitVotingActive'
-			onClick={saveValue}
-			checked={settings.chitVotingActive || false}
+			onClick={ saveValue }
+			checked={ settings.chitVotingActive || false }
 		/>
 	);
 
-}
+};
 
 export default ChitVotingActiveToggle;

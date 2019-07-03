@@ -51,7 +51,7 @@ const OrgInfo = props => {
 
 		</InfoContainer>
 	);
-}
+};
 
 export default OrgInfo;
 

@@ -1,14 +1,10 @@
-import Meter from 'meteor/meteor';
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom'
-import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
-import numeral from 'numeral';
+import { ThemeContext, OrganizationContext } from '/imports/context';
 
-import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
-
-import { Loader, Grid, Table, Checkbox, Button, Statistic, Segment, Header } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Grid, Table, Button, Header } from 'semantic-ui-react';
 
 import Breakdown from './Breakdown';
 import AllocationInputs from './AllocationInputs';
@@ -20,7 +16,6 @@ const AllocationPane = props => {
 
 	const { theme } = useContext(ThemeContext);
 	const { topOrgs } = useContext(OrganizationContext);
-	const { settings } = useContext(PresentationSettingsContext);
 
 	const _calculateCrowdFavorite = () => {
 		let favorite = 0;
@@ -32,7 +27,7 @@ const AllocationPane = props => {
 			}
 		});
 		return favorite;
-	}
+	};
 
 	return (
 		<Grid>
@@ -41,22 +36,22 @@ const AllocationPane = props => {
 			<Grid.Row>
 				<Grid.Column>
 					<Breakdown />
-			 	</Grid.Column>
+				</Grid.Column>
 			</Grid.Row>
 
 			<Grid.Row>
-				<Grid.Column width={10}>
+				<Grid.Column width={ 10 }>
 					<Header as="h2">Top {topOrgs.length} Funds Allocation</Header>
 				</Grid.Column>
 
 				{!props.hideAdminFields && <React.Fragment>
-					<Grid.Column width={2} align="right">
-						<Link to={`/simulation/${theme._id}`} target='_blank'>
+					<Grid.Column width={ 2 } align="right">
+						<Link to={ `/simulation/${theme._id}` } target='_blank'>
 							<Button>Simulate</Button>
 						</Link>
 					</Grid.Column>
 
-					<Grid.Column width={4}>
+					<Grid.Column width={ 4 }>
 						<ShowLeverageToggle />
 					</Grid.Column>
 				</React.Fragment>}
@@ -81,30 +76,34 @@ const AllocationPane = props => {
 						</Table.Header>
 
 						<Table.Body>
-						{topOrgs.map((org, i) => (
-							<AllocationInputs
-								key={i}
-								org={org}
-								theme={theme}
-								crowdFavorite={(i === _calculateCrowdFavorite())}
-								tabInfo={{index: i+1, length: topOrgs.length}}
-								hideAdminFields={props.hideAdminFields || false}
-							/>
-						))}
+							{topOrgs.map((org, i) => (
+								<AllocationInputs
+									key={ i }
+									org={ org }
+									theme={ theme }
+									crowdFavorite={ (i === _calculateCrowdFavorite()) }
+									tabInfo={ { index: i + 1, length: topOrgs.length } }
+									hideAdminFields={ props.hideAdminFields || false }
+								/>
+							))}
 						</Table.Body>
 					</Table>
 
-			 	</Grid.Column>
+				</Grid.Column>
 			</Grid.Row>
 
-			<Grid.Row columns={1}>
+			<Grid.Row columns={ 1 }>
 				<Grid.Column>
-					<Pledges hideAdminFields={props.hideAdminFields || false} />
+					<Pledges hideAdminFields={ props.hideAdminFields || false } />
 				</Grid.Column>
 			</Grid.Row>
 		</Grid>
 	);
 
-}
+};
+
+AllocationPane.propTypes = {
+	hideAdminFields: PropTypes.bool
+};
 
 export default AllocationPane;

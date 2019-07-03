@@ -1,18 +1,11 @@
-import Meter from 'meteor/meteor';
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom'
-import _ from 'lodash';
 
 import numeral from 'numeral';
 
-import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
+import { ThemeContext } from '/imports/context';
 
-import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
-
-import { Loader, Grid, Table, Checkbox, Button, Statistic, Segment, Header } from 'semantic-ui-react';
+import { Statistic, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
-
-import AllocationInputs from './AllocationInputs';
 
 const Arithmetic = styled.span`
 	font-size: 2rem;
@@ -32,12 +25,11 @@ const BreakdownContainer = styled.div`
 	}
 `;
 
-const Breakdown = props => {
+const Breakdown = () => {
 
 	const { theme } = useContext(ThemeContext);
-	const { topOrgs } = useContext(OrganizationContext);
 
-	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
+	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
 	const totalPot = theme.leverageTotal + saves;
 	const leverage = theme.leverageTotal - theme.votedFunds - theme.consolationTotal;
 
@@ -97,6 +89,8 @@ const Breakdown = props => {
 		</BreakdownContainer>
 	);
 
-}
+};
+
+Breakdown.propTypes = {};
 
 export default Breakdown;

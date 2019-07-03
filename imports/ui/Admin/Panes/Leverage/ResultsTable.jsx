@@ -1,9 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import numeral from 'numeral';
-import _ from 'lodash';
 
-import { Table, Header, Icon } from 'semantic-ui-react';
+import { Table, Icon } from 'semantic-ui-react';
 
 
 const ResultsTable = props => {
@@ -33,12 +33,12 @@ const ResultsTable = props => {
 
 			<Table.Body>{props.round.orgs.map(org => (
 
-				<Table.Row key={org._id} positive={org.need === 0}>
-					<Table.Cell>{org.title}</Table.Cell>
-					<Table.Cell>{org.leverageFunds === 0 ? '-' : numeral(org.leverageFunds).format('$0,0.00')}</Table.Cell>
-					<Table.Cell>{numeral(org.ask).format('$0,0.00')}</Table.Cell>
-					<Table.Cell>{numeral(org.allocatedFunds + org.leverageFunds).format('$0,0.00')}</Table.Cell>
-					<Table.Cell>{org.need === 0 ? <Icon color='green' name='check circle' />  : numeral(org.need).format('$0,0.00')}</Table.Cell>
+				<Table.Row key={ org._id } positive={ org.need === 0 }>
+					<Table.Cell>{ org.title }</Table.Cell>
+					<Table.Cell>{ org.leverageFunds === 0 ? '-' : numeral(org.leverageFunds).format('$0,0.00') }</Table.Cell>
+					<Table.Cell>{ numeral(org.ask).format('$0,0.00') }</Table.Cell>
+					<Table.Cell>{ numeral(org.allocatedFunds + org.leverageFunds).format('$0,0.00') }</Table.Cell>
+					<Table.Cell>{ org.need === 0 ? <Icon color='green' name='check circle' />  : numeral(org.need).format('$0,0.00') }</Table.Cell>
 				</Table.Row>
 
 			))}</Table.Body>
@@ -46,14 +46,18 @@ const ResultsTable = props => {
 			<Table.Footer>
 				<Table.Row>
 					<Table.HeaderCell align="right">Totals:</Table.HeaderCell>
-					<Table.HeaderCell>{numeral(totals.spread).format('$0,0.00')}</Table.HeaderCell>
+					<Table.HeaderCell>{ numeral(totals.spread).format('$0,0.00') }</Table.HeaderCell>
 					<Table.HeaderCell></Table.HeaderCell>
-					<Table.HeaderCell>{numeral(totals.total).format('$0,0.00')}</Table.HeaderCell>
-					<Table.HeaderCell>{numeral(totals.needed).format('$0,0.00')}</Table.HeaderCell>
+					<Table.HeaderCell>{ numeral(totals.total).format('$0,0.00') }</Table.HeaderCell>
+					<Table.HeaderCell>{ numeral(totals.needed).format('$0,0.00') }</Table.HeaderCell>
 				</Table.Row>
 			</Table.Footer>
 		</Table>
 	);
+};
+
+ResultsTable.propTypes = {
+	round: PropTypes.object
 };
 
 export default ResultsTable;

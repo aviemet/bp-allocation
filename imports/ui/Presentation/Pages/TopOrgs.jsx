@@ -42,7 +42,7 @@ const CardsContainer = styled.div`
 	.ui.card div.content p{
 		color: #FFF;
 	}
-`
+`;
 
 const TopOrgs = props => {
 
@@ -54,20 +54,20 @@ const TopOrgs = props => {
 		<TopOrgsContainer>
 			<PageTitle>Top {topOrgs.length} Organizations</PageTitle>
 			<CardsContainer>
-				<Card.Group centered itemsPerRow={Math.ceil(topOrgs.length / 2)}>
-				{topOrgs.map((org, i) => (
-					<OrgCard
-						key={org._id}
-						org={org}
-						image={_.find(images, ['_id', org.image])}
-						animateClass={settings.animateOrgs}
-						size='big'
-					/>
-				))}
+				<Card.Group centered itemsPerRow={ Math.ceil(topOrgs.length / 2) }>
+					{topOrgs.map((org, i) => (
+						<OrgCard
+							key={ org._id }
+							org={ org }
+							image={ _.find(images, ['_id', org.image]) }
+							animateClass={ settings.animateOrgs }
+							size='big'
+						/>
+					))}
 				</Card.Group>
 			</CardsContainer>
 		</TopOrgsContainer>
 	);
-}
+};
 
 export default TopOrgs;

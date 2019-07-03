@@ -59,7 +59,7 @@ const Results = props => {
 
 	let awardees = [];
 	let others = [];
-	let saves = theme.saves.reduce((sum, save) => {return sum + save.amount}, 0);
+	let saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
 	let total = parseFloat((theme.leverageTotal || 0) + saves + (settings.resultsOffset || 0));
 
 	let orgs = _.cloneDeep(topOrgs).map(org => {
@@ -70,7 +70,7 @@ const Results = props => {
 		} else {
 			others.push(org);
 		}
-		return org
+		return org;
 	});
 
 	let awardeesColumns = awardees.length > 3 ? parseInt(awardees.length / 2) + awardees.length % 2 : false ;
@@ -87,15 +87,15 @@ const Results = props => {
 			{/*<Header as='h2'>Battery Powered Awardees</Header>*/}
 
 			<Card.Group centered>
-			{awardees.map((org) => {
-				i++;
-				return(
-					<AwardCard
-						key={org._id}
-						org={org}
-						award={'awardee'}
-						amount={org.allocatedFunds + org.leverageFunds}
-					/>
+				{awardees.map((org) => {
+					i++;
+					return(
+						<AwardCard
+							key={ org._id }
+							org={ org }
+							award={ 'awardee' }
+							amount={ org.allocatedFunds + org.leverageFunds }
+						/>
 					/* OLD <OrgCard
 						key={org._id}
 						org={org}
@@ -106,22 +106,22 @@ const Results = props => {
 							amount={org.allocatedFunds + org.leverageFunds}
 						/>}
 					/>*/
-				);
-			})}
+					);
+				})}
 			</Card.Group>
 			<br/>
 			{/*<Header as='h2'>Other winners</Header>*/}
 
 			<Card.Group centered >
-			{others.map((org) => {
-				i++;
-				return(
-					<AwardCard
-						key={org._id}
-						org={org}
-						award={'other'}
-						amount={org.allocatedFunds + org.leverageFunds}
-					/>
+				{others.map((org) => {
+					i++;
+					return(
+						<AwardCard
+							key={ org._id }
+							org={ org }
+							award={ 'other' }
+							amount={ org.allocatedFunds + org.leverageFunds }
+						/>
 					/* OLD <AwardCard
 						key={org._id}
 						org={org}
@@ -132,12 +132,12 @@ const Results = props => {
 							amount={org.allocatedFunds + org.leverageFunds}
 						/>}
 					/>*/
-				);
-			})}
+					);
+				})}
 			</Card.Group>
 
 		</ResultsPageContainer>
 	);
-}
+};
 
 export default Results;

@@ -1,5 +1,5 @@
-import { Meteor } from 'meteor/meteor';
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { roundFloat } from '/imports/utils';
@@ -21,7 +21,7 @@ const OrganizationContext = React.createContext();
 const OrganizationProviderTemplate = props => {
 
 	// Return only the top orgs for the theme, adding "virtual fields"
-	getTopOrgs = () => {
+	const getTopOrgs = () => {
 		// if(_.isUndefined(props.settings) || _.isUndefined(props.orgs) || _.isUndefined(props.theme)) return {};
 		if(props.loading) return {};
 
@@ -41,7 +41,7 @@ const OrganizationProviderTemplate = props => {
 			// Total of funds pledged for this org multiplied by the match ratio
 			org.pledgeTotal = 0;
 			if(org.pledges) {
-				org.pledgeTotal = org.pledges.reduce((sum, pledge) => { return sum + pledge.amount}, 0) * props.theme.matchRatio;
+				org.pledgeTotal = org.pledges.reduce((sum, pledge) => { return sum + pledge.amount;}, 0) * props.theme.matchRatio;
 			}
 
 			if(props.settings.useKioskFundsVoting) {
@@ -62,35 +62,45 @@ const OrganizationProviderTemplate = props => {
 		});
 
 		return topOrgs;
-	}
+	};
 
 	return (
-		<OrganizationContext.Provider value={{
+		<OrganizationContext.Provider value={ {
 			orgs: props.orgs,
 			topOrgs: getTopOrgs(),
 			orgsLoading: props.loading,
 			handles: props.handles
-		}}>
+		} }>
 			{props.children}
 		</OrganizationContext.Provider>
 	);
-}
+};
+
+OrganizationProviderTemplate.propTypes = {
+	theme: PropTypes.object,
+	orgs: PropTypes.object,
+	loading: PropTypes.bool,
+	settings: PropTypes.object,
+	memberThemes: PropTypes.object,
+	handles: PropTypes.object,
+	children: PropTypes.object
+};
 
 const OrganizationProvider = withTracker(props => {
 	if(!props.id) return { loading: true };
 
-	let theme = Themes.find({_id: props.id}).fetch()[0];
+	let theme = Themes.find({ _id: props.id }).fetch()[0];
 	if(_.isUndefined(theme)) return { loading: true };
 
-	let settings = PresentationSettings.find({_id: theme.presentationSettings}).fetch()[0];
+	let settings = PresentationSettings.find({ _id: theme.presentationSettings }).fetch()[0];
 	if(_.isUndefined(settings)) return { loading: true };
 
-	let orgs = Organizations.find({theme: props.id}).fetch();
+	let orgs = Organizations.find({ theme: props.id }).fetch();
 
 	// Get the members participating in this theme
-	const memberThemes = MemberThemes.find({theme: props.id}).fetch();
+	const memberThemes = MemberThemes.find({ theme: props.id }).fetch();
 	const memberIds = memberThemes.map(memberTheme => memberTheme.member);
-	const members = Members.find({_id: {$in: memberIds}}).fetch();
+	const members = Members.find({ _id: { $in: memberIds }}).fetch();
 
 	let loading = (!props.handles.orgs.ready() || _.isUndefined(orgs) || _.isUndefined(memberThemes));
 

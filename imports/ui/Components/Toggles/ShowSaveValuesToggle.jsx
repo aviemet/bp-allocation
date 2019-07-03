@@ -6,7 +6,7 @@ import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Checkbox } from 'semantic-ui-react';
 
-const ShowSaveValuesToggle = props => {
+const ShowSaveValuesToggle = () => {
 
 	const{ settings } = useContext(PresentationSettingsContext);
 
@@ -17,18 +17,18 @@ const ShowSaveValuesToggle = props => {
 				savesVisible: data.checked
 			}
 		});
-	}
+	};
 
 	return(
 		<Checkbox
 			label='Show Save Values'
 			toggle
 			index='savesVisible'
-			onClick={saveValue}
-			checked={settings.savesVisible || false}
+			onClick={ saveValue }
+			checked={ settings.savesVisible || false }
 		/>
 	);
 
-}
+};
 
 export default ShowSaveValuesToggle;

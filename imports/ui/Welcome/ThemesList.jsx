@@ -22,7 +22,7 @@ class ThemesList extends React.Component {
 	}
 
 	deleteTheme(e, data){
-		ThemeMethods.remove.call(data.value)
+		ThemeMethods.remove.call(data.value);
 	}
 
 	render() {
@@ -32,22 +32,22 @@ class ThemesList extends React.Component {
 				<Table celled striped>
 					<Table.Header>
 						<Table.Row>
-								<Table.HeaderCell>Title</Table.HeaderCell>
-								<Table.HeaderCell>Allocation Night Date</Table.HeaderCell>
-								<Table.HeaderCell><NewThemeModal /></Table.HeaderCell>
+							<Table.HeaderCell>Title</Table.HeaderCell>
+							<Table.HeaderCell>Allocation Night Date</Table.HeaderCell>
+							<Table.HeaderCell><NewThemeModal /></Table.HeaderCell>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
 						{this.props.themes.map((theme) => {
 							return (
-								<Table.Row key={theme._id}>
+								<Table.Row key={ theme._id }>
 									<Table.Cell>
-										<Link to={`/themes/${theme._id}`}>{theme.title}</Link>
+										<Link to={ `/themes/${theme._id}` }>{theme.title}</Link>
 									</Table.Cell>
 									<Table.Cell>{theme.quarter}</Table.Cell>
-									<Table.Cell><Button onClick={this.deleteTheme} value={theme._id}><Icon name='trash' /></Button></Table.Cell>
+									<Table.Cell><Button onClick={ this.deleteTheme } value={ theme._id }><Icon name='trash' /></Button></Table.Cell>
 								</Table.Row>
-							)
+							);
 						})}
 					</Table.Body>
 				</Table>
@@ -60,5 +60,5 @@ class ThemesList extends React.Component {
 export default withTracker(() => {
 	themesHandle = Meteor.subscribe('themes');
 
-	return { themes: Themes.find({}, {limit: 5, sort: {createdAt: -1}}).fetch() };
+	return { themes: Themes.find({}, { limit: 5, sort: { createdAt: -1 }}).fetch() };
 })(ThemesList);

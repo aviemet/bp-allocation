@@ -143,12 +143,12 @@ const Graph = props => {
 			leverage -= (theme.organizations.length - orgs.length) * theme.consolationAmount;
 		}
 		return leverage;
-	}
+	};
 
 	const loading = (themeLoading || orgsLoading || settingsLoading);
 
 	if(loading) {
-		return <GraphPageContainer />
+		return <GraphPageContainer />;
 	}
 
 	const visibility = settings.leverageVisible ? 'visible' : 'hidden';
@@ -158,48 +158,48 @@ const Graph = props => {
 		<GraphPageContainer>
 			<GraphContainer id='graph'>
 				<XAxis>
-					<span style={{top: "0%"}}>100%</span>
-					<span style={{top: "50%"}}>50%</span>
-					<span style={{top: "100%"}}>0%</span>
+					<span style={ { top: '0%' } }>100%</span>
+					<span style={ { top: '50%' } }>50%</span>
+					<span style={ { top: '100%' } }>0%</span>
 				</XAxis>
 
 				<YAxis />
 
-				<Goal style={{top: 0}} />
-				<Goal style={{top: "50%"}} />
+				<Goal style={ { top: 0 } } />
+				<Goal style={ { top: '50%' } } />
 
-					<BarsContainer columns='equal'>
+				<BarsContainer columns='equal'>
 					{topOrgs.map((org, i) => (
 						<Bar
-							key={org._id}
-							org={org}
-							theme={theme}
-							color={COLORS[i%COLORS.length]}
-							savesVisible={settings.savesVisible}
+							key={ org._id }
+							org={ org }
+							theme={ theme }
+							color={ COLORS[i % COLORS.length] }
+							savesVisible={ settings.savesVisible }
 						/>
 					))}
-					</BarsContainer>
+				</BarsContainer>
 
 			</GraphContainer>
 
 			<InfoContainer>
 				<InfoGrid columns='equal'>
 					<Grid.Row>
-					{topOrgs.map((org) => (
-						<OrgInfo
-							org={org}
-							theme={theme}
-							key={org._id}
-							showLeverage={settings.leverageVisible}
-						/>
-					))}
+						{topOrgs.map((org) => (
+							<OrgInfo
+								org={ org }
+								theme={ theme }
+								key={ org._id }
+								showLeverage={ settings.leverageVisible }
+							/>
+						))}
 					</Grid.Row>
 
-					<Grid.Row style={{visibility: visibility}}>
+					<Grid.Row style={ { visibility: visibility } }>
 						<Grid.Column>
 							<ProgressBar
-								value={theme.leverageRemaining}
-								total={startingLeverage}
+								value={ theme.leverageRemaining }
+								total={ startingLeverage }
 								inverted
 								color='green'
 								size='large'
@@ -211,6 +211,6 @@ const Graph = props => {
 			</InfoContainer>
 		</GraphPageContainer>
 	);
-}
+};
 
 export default Graph;

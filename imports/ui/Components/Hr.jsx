@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { Grid, Card } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const PaddedImg = styled.img`
 	margin: 15px 0;
-`
+`;
 
 
 const Hr = (props) => (

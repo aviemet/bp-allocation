@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
 
 import { roundFloat } from '/imports/utils';
 
-import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
+import { ThemeContext, OrganizationContext } from '/imports/context';
 import { ThemeMethods } from '/imports/api/methods';
 
-import { Header, Loader, Segment, Grid, Button } from 'semantic-ui-react';
+import { Header, Segment, Grid, Button } from 'semantic-ui-react';
 
 import RoundTable from './RoundTable';
 import ResultsTable from './ResultsTable';
@@ -16,7 +17,6 @@ const Leverage = props => {
 
 	const { theme } = useContext(ThemeContext);
 	const { topOrgs } = useContext(OrganizationContext);
-	const { settings } = useContext(PresentationSettingsContext);
 
 	/**
 	 * Returns array of "rounds" representing the distribution of the remaining
@@ -40,7 +40,7 @@ const Leverage = props => {
 			let trackers = {
 				newSumRemainingOrgs: 0,
 				givenThisRound: 0
-			}
+			};
 
 			let roundOrgs = orgs.map(org => {
 				org = _orgRoundValues(org, nRounds, leverageRemaining, sumRemainingOrgs);
@@ -65,7 +65,7 @@ const Leverage = props => {
 		}
 
 		return rounds;
-	}
+	};
 
 	const _orgRoundValues = (org, nRounds, leverageRemaining, sumRemainingOrgs) => {
 		/** DEFAULTS **/
@@ -92,7 +92,7 @@ const Leverage = props => {
 		org.need = roundFloat(org.ask - org.allocatedFunds - org.leverageFunds);
 
 		return org;
-	}
+	};
 
 	/**
 	 * Clone top orgs (so no reference issues)
@@ -114,30 +114,30 @@ const Leverage = props => {
 		});
 
 		return { orgs, sumRemainingOrgs };
-	}
+	};
 
 	const _numFullyFundedOrgs = (orgs) => {
 		return orgs.reduce((sum, org) => {
 			return sum + (org.need <= 0 ? 1 : 0);
 		}, 0);
-	}
+	};
 
 	const finalRoundAllcoation = (rounds) => {
-		let lastRound = rounds[rounds.length-1]
+		let lastRound = rounds[rounds.length - 1];
 		let leverageRemaining = lastRound.leverageRemaining;
 		let funds = lastRound.orgs.reduce((sum, org) => {
 			return sum + (org.leverageFunds > 0 ? org.roundFunds : 0);
 		}, 0);
 		return roundFloat(leverageRemaining - funds);
-	}
+	};
 
 	const saveLeverageSpread = (lastRound) => {
 		ThemeMethods.saveLeverageSpread.call(lastRound.orgs);
-	}
+	};
 
 	const resetLeverage = () => {
 		ThemeMethods.resetLeverage.call(topOrgs);
-	}
+	};
 
 	const rounds = getLeverageSpreadRounds(theme.leverageRemaining);
 
@@ -145,13 +145,13 @@ const Leverage = props => {
 		return (
 			<React.Fragment>
 				<Header as='h1'>Not enough leverage to assign to organizations</Header>
-				<p>Check if amount has been entered to the 'Total Pot' field in Theme Settings</p>
+				<p>Check if amount has been entered to the &apos;Total Pot&apos; field in Theme Settings</p>
 			</React.Fragment>
-		)
+		);
 	}
 
-	const orgSpreadSum = topOrgs.reduce((sum, org) => {return sum + org.leverageFunds}, 0);
-	const roundSpreadSum = rounds[rounds.length-1].orgs.reduce((sum, org) => {return sum + org.leverageFunds}, 0);
+	const orgSpreadSum = topOrgs.reduce((sum, org) => {return sum + org.leverageFunds;}, 0);
+	const roundSpreadSum = rounds[rounds.length - 1].orgs.reduce((sum, org) => {return sum + org.leverageFunds;}, 0);
 
 	const leverageDistributed = orgSpreadSum === roundSpreadSum;
 
@@ -160,49 +160,49 @@ const Leverage = props => {
 			<Segment color='violet'>
 				<Grid>
 					<Grid.Row>
-						<Grid.Column width={6}>
+						<Grid.Column width={ 6 }>
 							<Header as="h2">Final Distribution</Header>
 						</Grid.Column>
-						<Grid.Column width={4}>
+						<Grid.Column width={ 4 }>
 							<span>Leverage Remaining: {numeral(finalRoundAllcoation(rounds)).format('$0,0.00')}</span><br/>
 						</Grid.Column>
-						<Grid.Column width={6}>
-							{!props.hideAdminFields && <React.Fragment>
-								{!leverageDistributed ?
+						<Grid.Column width={ 6 }>
+							{ !props.hideAdminFields && <React.Fragment>
+								{ !leverageDistributed ? (
 									<Button
 										color='green'
-										onClick={() => saveLeverageSpread(rounds[rounds.length-1])}
+										onClick={ () => saveLeverageSpread(rounds[rounds.length - 1]) }
 									>
 										Submit Final Values
 									</Button>
-									:
+								) : (
 									<Button
 										color='red'
-										onClick={resetLeverage}
+										onClick={ resetLeverage }
 									>
 										Reset Leverage Distribution
 									</Button>
-								}
-							</React.Fragment>}
+								) }
+							</React.Fragment> }
 						</Grid.Column>
 					</Grid.Row>
 
 					<Grid.Row>
 						<Grid.Column>
-							<ResultsTable round={rounds[rounds.length-1]} />
+							<ResultsTable round={ rounds[rounds.length - 1] } />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
 			</Segment>
 
-			{rounds.map((round, i) => (
-				<Segment key={i}>
+			{ rounds.map((round, i) => (
+				<Segment key={ i }>
 					<Grid>
 						<Grid.Row>
-							<Grid.Column width={6}>
-								<Header as="h2">Round {i+1}</Header>
+							<Grid.Column width={ 6 }>
+								<Header as="h2">Round {i + 1}</Header>
 							</Grid.Column>
-							<Grid.Column width={10}>
+							<Grid.Column width={ 10 }>
 								<span>Leverage Remaining: {numeral(round.leverageRemaining).format('$0,0.00')}</span><br/>
 								<span>Remaining Orgs Sum: {numeral(round.sumRemainingOrgs).format('$0,0.00')}</span>
 							</Grid.Column>
@@ -210,14 +210,18 @@ const Leverage = props => {
 
 						<Grid.Row>
 							<Grid.Column>
-								<RoundTable orgs={round.orgs} />
+								<RoundTable orgs={ round.orgs } />
 							</Grid.Column>
 						</Grid.Row>
 					</Grid>
 				</Segment>
-			))}
+			)) }
 		</React.Fragment>
 	);
-}
+};
+
+Leverage.propTypes = {
+	hideAdminFields: PropTypes.bool
+};
 
 export default Leverage;

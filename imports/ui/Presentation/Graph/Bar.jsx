@@ -59,14 +59,14 @@ const Award = styled.img`
 	-webkit-animation-fill-mode: forwards;
 `;
 
-const AwardImg = ({show}) => {
-	if(show !== true) return <React.Fragment />
+const AwardImg = ({ show }) => {
+	if(show !== true) return <React.Fragment />;
 
 	return (
 		<Award src='/img/BAT_award_logo.svg' />
-	)
+	);
 
-}
+};
 
 const Bar = props => {
 
@@ -78,18 +78,18 @@ const Bar = props => {
 
 	if(height === 0){
 		return (
-		<Grid.Column>
-			<BarContainer />
-		</Grid.Column> );
+			<Grid.Column>
+				<BarContainer />
+			</Grid.Column> );
 	}
 	return (
 		<BarContainer>
-			<AwardImg show={height === 100} />
-			<GraphBar style={{height: `${height}%`, backgroundColor: backgroundColor }}>
+			<AwardImg show={ height === 100 } />
+			<GraphBar style={ { height: `${height}%`, backgroundColor: backgroundColor } }>
 				<Pledged>${numeral(shownFunds).format('0.0a')}</Pledged>
 			</GraphBar>
 		</BarContainer>
 	);
-}
+};
 
 export default Bar;

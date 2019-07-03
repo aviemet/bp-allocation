@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { roundFloat } from '/imports/utils';
 
-import { useMembers, useTheme } from '/imports/context';
+import { useTheme } from '/imports/context';
 import { MemberMethods } from '/imports/api/methods';
 
-import { Form, Input, Button } from 'semantic-ui-react';
+import { Form, Button } from 'semantic-ui-react';
 
 
 const NewMemberInputs = (props) => {
 
 	const { theme } = useTheme();
-	const { members } = useMembers();
 
 	const [ firstName, setFirstName ] = useState('');
 	const [ lastName, setLastName ] = useState('');
@@ -35,10 +34,10 @@ const NewMemberInputs = (props) => {
 			setMemberNumber('');
 			setMemberAmount('');
 		});
-	}
+	};
 
-  return (
-		<Form onSubmit={saveMember}>
+	return (
+		<Form onSubmit={ saveMember }>
 			<Form.Group>
 				<Form.Input
 					width={ 4 }
@@ -78,7 +77,7 @@ const NewMemberInputs = (props) => {
 
 			</Form.Group>
 		</Form>
-  );
-}
+	);
+};
 
 export default NewMemberInputs;

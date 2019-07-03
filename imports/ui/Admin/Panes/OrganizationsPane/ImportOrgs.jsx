@@ -29,7 +29,7 @@ const ImportOrgs = props => {
 
 	const clickFileInput = () => document.getElementById('fileInput').click();
 
-	const doThing = e => {
+	const parseFile = e => {
 		let file = e.currentTarget.files[0];
 
 		let parser = Papa.parse(file, {
@@ -49,7 +49,7 @@ const ImportOrgs = props => {
 						if(formsIndex >= 0) {
 							matched = true;
 							row[acceptedValues[i].name] = acceptedValues[i].type(value);
-							console.log({row, type: acceptedValues[i].type, value});
+							console.log({ row, type: acceptedValues[i].type, value });
 						}
 					}
 				});
@@ -58,13 +58,13 @@ const ImportOrgs = props => {
 				acceptedValues.map(values => {
 					if(!row.hasOwnProperty(values.name)) {
 						complete = false;
-						skipped.push({raw: results.data[0], row});
-						console.log("FAILED");
+						skipped.push({ raw: results.data[0], row });
+						console.error('FAILED');
 					}
-				})
+				});
 
 				if(complete) {
-					 OrganizationMethods.create.call(Object.assign({theme: theme._id}, row));
+					OrganizationMethods.create.call(Object.assign({ theme: theme._id }, row));
 				}
 
 				uploadedOrgsList.push(row);
@@ -72,16 +72,17 @@ const ImportOrgs = props => {
 			},
 			complete: results => {
 				console.log(results.data);
-				console.log({uploadedOrgsList});
+				console.log({ uploadedOrgsList });
 			}
 		});
-	}
+		return parser;
+	};
 
 	return (
 		<React.Fragment>
 			<Button
-				style={{float: "right"}}
-				onClick={clickFileInput}
+				style={ { float: 'right' } }
+				onClick={ clickFileInput }
 			>
 			Import List as .csv
 			</Button>
@@ -90,11 +91,11 @@ const ImportOrgs = props => {
 				id='fileInput'
 				name='fileInput'
 				accept='.csv'
-				style={{display: 'none'}}
-				onChange={doThing}
+				style={ { display: 'none' } }
+				onChange={ parseFile }
 			/>
-			</React.Fragment>
+		</React.Fragment>
 	);
-}
+};
 
 export default ImportOrgs;

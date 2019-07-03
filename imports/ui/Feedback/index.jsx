@@ -7,7 +7,7 @@ import { Themes } from '/imports/api';
 
 import { ThemeContext, PresentationSettingsContext, OrganizationContext } from '/imports/context';
 
-import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react'
+import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { AllocationPane, LeveragePane } from '/imports/ui/Admin/Panes';
@@ -99,17 +99,17 @@ const Feedback = props => {
 	const { settingsLoading }     = useContext(PresentationSettingsContext);
 	const { orgsLoading }         = useContext(OrganizationContext);
 
-	const [ activeTab, setActiveTab ] = useState(location.hash.replace(/#/, '') || TABS[defaultPage].slug)
+	const [ activeTab, setActiveTab ] = useState(location.hash.replace(/#/, '') || TABS[defaultPage].slug);
 
-	const handleItemClick = (e, {slug}) => {
+	const handleItemClick = (e, { slug }) => {
 		location.hash = slug;
 		setActiveTab(slug);
-	}
+	};
 
 	const loading = (themeLoading || settingsLoading || orgsLoading);
 
 	if(loading) {
-		return <Loader />
+		return <Loader />;
 	}
 
 	return (
@@ -123,26 +123,26 @@ const Feedback = props => {
 				<TabMenu attached='top' tabular>
 
 					{TABS_ORDER.map((tab) => (
-						<Menu.Item key={tab}
-							name={TABS[tab].heading}
-							slug={TABS[tab].slug}
-							active={activeTab === TABS[tab].slug}
-							onClick={handleItemClick}
-							color={TABS[tab].color}
+						<Menu.Item key={ tab }
+							name={ TABS[tab].heading }
+							slug={ TABS[tab].slug }
+							active={ activeTab === TABS[tab].slug }
+							onClick={ handleItemClick }
+							color={ TABS[tab].color }
 						/>
 					))}
 
 				</TabMenu>
 
 				<Segment attached="bottom">
-					<Switch location={{pathname: activeTab}}>
+					<Switch location={ { pathname: activeTab } }>
 						{TABS_ORDER.map(tab => {
-						const Component = TABS[tab].component;
-						return(
-							<Route exact path={TABS[tab].slug} key={tab} >
-								<Component hideAdminFields={true} />
-							</Route>
-						)})}
+							const Component = TABS[tab].component;
+							return(
+								<Route exact path={ TABS[tab].slug } key={ tab } >
+									<Component hideAdminFields={ true } />
+								</Route>
+							);})}
 					</Switch>
 				</Segment>
 
@@ -150,6 +150,6 @@ const Feedback = props => {
 
 		</React.Fragment>
 	);
-}
+};
 
 export default Feedback;

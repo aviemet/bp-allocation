@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 
 import { useMembers } from '/imports/context';
-import { Members } from '/imports/api'
+import { Members } from '/imports/api';
 
 import styled from 'styled-components';
 import { Container, Form, Input, Label, Header, Button } from 'semantic-ui-react';
@@ -38,7 +38,7 @@ const Centered = styled.div`
 	top: 50%;
 	transform: translateY(-50%);
 	z-index: 1000;
-`
+`;
 const BackgroundImage = styled.div`
 	position: absolute;
 	top: 0;
@@ -49,7 +49,7 @@ const BackgroundImage = styled.div`
 	z-index: 1;
 	background: url('/img/BPLogo.svg') no-repeat 50% 50%;
 	background-size: 1600px;
-`
+`;
 
 const MemberLoginRequired = props => {
 
@@ -81,7 +81,7 @@ const MemberLoginRequired = props => {
 		setTimeout(() => {
 			setSearchError(false);
 		}, 5000);
-	}
+	};
 
 	const chooseMember = e => {
 		e.preventDefault();
@@ -98,7 +98,7 @@ const MemberLoginRequired = props => {
 		} else {
 			showSearchError();
 		}
-	}
+	};
 
 	const SubmitButton = styled(Button)`
 		width: 100%;
@@ -108,7 +108,7 @@ const MemberLoginRequired = props => {
 		border: 2px solid #fff !important;
 		font-size: 2rem !important;
 		text-transform: uppercase !important;
-	`
+	`;
 	/*const resetMember = () => {
 		setConfirmUser(false);
 		setSearchInput('');
@@ -121,7 +121,7 @@ const MemberLoginRequired = props => {
 	}*/
 
 	const ChildComponent = props.component;
-	const submitDisabled = initials === '' || number === ''
+	const submitDisabled = initials === '' || number === '';
 
 	// Display the interface to choose a member
 	if(!user) {
@@ -129,9 +129,9 @@ const MemberLoginRequired = props => {
 			<MemberLoginContainer>
 				<BackgroundImage />
 				<Centered>
-				<Header as='h1' className='title'>Enter Your Initials & Member ID</Header>
+					<Header as='h1' className='title'>Enter Your Initials & Member ID</Header>
 					<Container>
-						<Form onSubmit={chooseMember} ref={formRef}>
+						<Form onSubmit={ chooseMember } ref={ formRef }>
 							{/*<Form.Input fluid
 								value={searchInput}
 								onChange={e => setSearchInput(e.target.value.trim().toUpperCase())}
@@ -145,26 +145,26 @@ const MemberLoginRequired = props => {
 							<Form.Group inline>
 								<Form.Field>
 									<Input
-										style={{width: '325px'}}
+										style={ { width: '325px' } }
 										size='huge'
 										label='Initials'
 										placeholder='Ex: MB'
-										value={initials}
-										onChange={e => setInitials(e.target.value.trim().toUpperCase())}
+										value={ initials }
+										onChange={ e => setInitials(e.target.value.trim().toUpperCase()) }
 									/>
 								</Form.Field>
 								<Form.Field>
-								<Input
-									size='huge'
-									label='Member #'
-									placeholder='Ex: 1234'
-									value={number}
-									onChange={e => setNumber(parseInt(e.target.value.trim()) || '')}
-								/>
+									<Input
+										size='huge'
+										label='Member #'
+										placeholder='Ex: 1234'
+										value={ number }
+										onChange={ e => setNumber(parseInt(e.target.value.trim()) || '') }
+									/>
 								</Form.Field>
 							</Form.Group>
 							<Form.Group>
-								<SubmitButton size='huge' disabled={submitDisabled} onClick={formRef.submit}>Begin Voting!</SubmitButton>
+								<SubmitButton size='huge' disabled={ submitDisabled } onClick={ formRef.submit }>Begin Voting!</SubmitButton>
 							</Form.Group>
 						</Form>
 					</Container>
@@ -174,7 +174,7 @@ const MemberLoginRequired = props => {
 						callback={chooseMember}
 						size='massive'
 					/>*/}
-				{/*confirmUser && <React.Fragment>
+					{/*confirmUser && <React.Fragment>
 
 					<Header as='h2' className='title'>Hello {confirmUser.firstName ? confirmUser.firstName : confirmUser.fullName}, ready to vote?</Header>
 					<Button size='massive' color='red' onClick={resetMember}>Oops, not me!</Button>
@@ -182,7 +182,7 @@ const MemberLoginRequired = props => {
 
 				</React.Fragment>*/}
 
-				{searchError && <Header as='h2' className='title'>No Member Found, Try Again</Header>}
+					{searchError && <Header as='h2' className='title'>No Member Found, Try Again</Header>}
 				</Centered>
 			</MemberLoginContainer>
 		);
@@ -190,10 +190,10 @@ const MemberLoginRequired = props => {
 
 	// Member is chosen, display the voting panel
 	return (
-		<VotingContextProvider member={user} unsetUser={() => setUser(false)}>
-			<ChildComponent user={user} />
+		<VotingContextProvider member={ user } unsetUser={ () => setUser(false) }>
+			<ChildComponent user={ user } />
 		</VotingContextProvider>
 	);
-}
+};
 
 export default MemberLoginRequired;
