@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import numeral from 'numeral';
 
@@ -19,10 +20,6 @@ const InfoContainer = styled(Grid.Column)`
 
 const Title = styled.div`
 	min-height: 60px;
-`;
-
-const Ask = styled.div`
-	color: #ea810c;
 `;
 
 const MatchNeed = styled.div`
@@ -51,6 +48,11 @@ const OrgInfo = props => {
 
 		</InfoContainer>
 	);
+};
+
+OrgInfo.propTypes = {
+	org: PropTypes.object,
+	showLeverage: PropTypes.bool
 };
 
 export default OrgInfo;

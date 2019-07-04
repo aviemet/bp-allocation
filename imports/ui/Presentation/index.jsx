@@ -1,18 +1,12 @@
-import { Meteor } from 'meteor/meteor';
 import React, { useContext, useState, useEffect } from 'react';
-import { Router, Route, Switch, withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Route, withRouter } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
-import { withTracker } from 'meteor/react-meteor-data';
-import _ from 'lodash';
 
-import { Loader, Container } from 'semantic-ui-react';
+import { Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { PresentationLayout } from '/imports/ui/Layouts';
-
 import { ThemeContext, OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
-import { Themes, Organizations, Images } from '/imports/api';
-import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Intro, Orgs, Timer, TopOrgs, Allocation, Results } from '/imports/ui/Presentation/Pages';
 
@@ -36,12 +30,11 @@ const PageFader = styled.div`
 const Presentation = props => {
 
 	const { theme, themeLoading } = useContext(ThemeContext);
-	const { orgs, topOrgs, orgsLoading } = useContext(OrganizationContext);
+	const { orgsLoading } = useContext(OrganizationContext);
 	const { settings, settingsLoading } = useContext(PresentationSettingsContext);
-	const { images, imagesLoading } = useContext(ImageContext);
+	const { imagesLoading } = useContext(ImageContext);
 
 	const [ show, setShow ] = useState(true);
-	const [ entered, setEntered ] = useState(false);
 
 	const loading = (themeLoading || orgsLoading || settingsLoading || imagesLoading);
 
@@ -100,11 +93,11 @@ const Presentation = props => {
 	);
 };
 
-export default withRouter(Presentation);
+Presentation.propTypes = {
+	history: PropTypes.object,
+	match: PropTypes.object
+};
 
-/*
- render={(props) => (
-					<Results orgs={topOrgs} theme={theme} offset={(presentationSettings.resultsOffset || 0)} />
- */
+export default withRouter(Presentation);
 
 

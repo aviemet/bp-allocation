@@ -1,8 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { Grid, Card } from 'semantic-ui-react';
-
-import { WelcomeLayout } from '/imports/ui/Layouts';
 
 const WelcomePage = ({ match }) => (
 	<Grid.Row>
@@ -18,5 +17,9 @@ const WelcomePage = ({ match }) => (
 
 	</Grid.Row>
 );
+
+WelcomePage.propTypes = {
+	match: PropTypes.object
+};
 
 export default WelcomePage;

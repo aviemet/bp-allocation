@@ -6,8 +6,6 @@ import _ from 'lodash';
 import { Card } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { Images } from '/imports/api';
-
 const GREEN = '#0D8744';
 const BLUE = '#002B43';
 

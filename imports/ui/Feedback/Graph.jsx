@@ -16,11 +16,11 @@ const SimulationContainer = styled.div`
 
 const Graph = (props) => {
 	return (
-  	<React.Fragment>
-  		<SimulationContainer>
-	  		<Simulation />
+		<React.Fragment>
+			<SimulationContainer>
+				<Simulation />
 			</SimulationContainer>
-  	</React.Fragment>
+		</React.Fragment>
 	);
 };
 

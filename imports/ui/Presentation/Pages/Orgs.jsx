@@ -1,14 +1,12 @@
 import React, { useContext } from 'react';
 import _ from 'lodash';
 
-import { Card, Container, Image } from 'semantic-ui-react';
+import { Card, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { ThemeContext, OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
+import { OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
-
-import { COLORS } from '/imports/utils';
 
 const OrgsContainer = styled.div`
 	padding-top: 20px;
@@ -61,7 +59,7 @@ const Overlay = () => (
 	</DimOverlay>
 );
 
-const Orgs = props => {
+const Orgs = () => {
 
 	const { orgs, topOrgs } = useContext(OrganizationContext);
 	const { settings } = useContext(PresentationSettingsContext);

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { Container } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -10,7 +11,7 @@ const KioskContainer = styled.div`
 	color: white;
 `;
 
-const WelcomeLayout = (props) => (
+const KioskLayout = (props) => (
 	<KioskContainer>
 		<Container>
 			{props.children}
@@ -18,4 +19,11 @@ const WelcomeLayout = (props) => (
 	</KioskContainer>
 );
 
-export default WelcomeLayout;
+KioskLayout.propTypes = {
+	children: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.node),
+		PropTypes.node
+	])
+};
+
+export default KioskLayout;

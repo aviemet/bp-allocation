@@ -16,7 +16,7 @@ const Centered = styled.div`
 
 const VotingComplete = props => {
 
-	const { member, unsetUser } = useVoting();
+	const { unsetUser } = useVoting();
 
 	setTimeout(() => {
 		unsetUser();

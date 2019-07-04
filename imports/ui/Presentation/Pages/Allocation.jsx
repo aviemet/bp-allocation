@@ -1,7 +1,5 @@
 import React from 'react';
-
-import { Loader } from 'semantic-ui-react';
-import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 import Graph from '/imports/ui/Presentation/Graph/Graph';
 
@@ -11,6 +9,10 @@ const Allocation = props => {
 			<Graph simulation={ props.simulation || false } />
 		</React.Fragment>
 	);
+};
+
+Allocation.propTypes = {
+	simulation: PropTypes.bool
 };
 
 export default Allocation;

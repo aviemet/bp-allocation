@@ -68,7 +68,7 @@ const Goal = styled.div`
 	border-right: 0;
 	border-style: dashed;
 `;
-
+/*
 const BarsOuterContainer = styled.div`
 	width: 100%;
 	position: relative;
@@ -81,7 +81,7 @@ const BarsInnerContainer = styled.div`
 	height: 100%;
 	position: absolute;
 `;
-
+*/
 const BarsContainer = styled(Grid)`
 	width: 100%;
 	height: 100%;

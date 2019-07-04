@@ -1,9 +1,5 @@
-import { Meteor } from 'meteor/meteor';
 import React, { useState, useContext } from 'react';
-import { withTracker } from 'meteor/react-meteor-data';
 import { Route, Switch } from 'react-router-dom';
-
-import { Themes } from '/imports/api';
 
 import { ThemeContext, PresentationSettingsContext, OrganizationContext } from '/imports/context';
 
@@ -92,7 +88,7 @@ const TABS = {
 };
 
 // Main class for the Theme page
-const Feedback = props => {
+const Feedback = () => {
 	const defaultPage = 'orgs';
 
 	const { theme, themeLoading } = useContext(ThemeContext);

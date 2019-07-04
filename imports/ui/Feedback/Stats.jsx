@@ -1,15 +1,11 @@
 import React from 'react';
-import { VictoryStack, VictoryArea, VictoryLine, VictoryChart, VictoryTheme } from 'victory';
+import { VictoryStack, VictoryArea, VictoryLine, VictoryChart } from 'victory';
 import numeral from 'numeral';
 import _ from 'lodash';
 
 import { useTheme, useOrganizations, useMembers } from '/imports/context';
 
 import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';
-
-import styled from 'styled-components';
-
-import { COLORS } from '/imports/global';
 
 const Stats = (props) => {
 	const { theme } = useTheme();

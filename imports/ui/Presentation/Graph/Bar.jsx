@@ -1,10 +1,9 @@
-import { Meteor } from 'meteor/meteor';
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
-import { Organizations } from '/imports/api';
 
-import { Loader, Grid, Image } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { COLORS } from '/imports/global';
@@ -68,6 +67,10 @@ const AwardImg = ({ show }) => {
 
 };
 
+AwardImg.propTypes = {
+	show: PropTypes.bool
+};
+
 const Bar = props => {
 
 	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0);
@@ -90,6 +93,11 @@ const Bar = props => {
 			</GraphBar>
 		</BarContainer>
 	);
+};
+
+Bar.propTypes = {
+	org: PropTypes.object,
+	savesVisible: PropTypes.bool
 };
 
 export default Bar;

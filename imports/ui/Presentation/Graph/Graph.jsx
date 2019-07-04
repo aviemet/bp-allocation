@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
 import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
@@ -8,8 +9,6 @@ import { Grid, Progress } from 'semantic-ui-react';
 
 import OrgInfo from '/imports/ui/Presentation/Graph/OrgInfo';
 import Bar from '/imports/ui/Presentation/Graph/Bar';
-
-import { COLORS } from '/imports/utils';
 
 const GraphPageContainer = styled.div`
 	overflow-y: hidden;
@@ -68,7 +67,7 @@ const Goal = styled.div`
 	border-right: 0;
 	border-style: dashed;
 `;
-
+/*
 const BarsOuterContainer = styled.div`
 	width: 100%;
 	position: relative;
@@ -81,7 +80,7 @@ const BarsInnerContainer = styled.div`
 	height: 100%;
 	position: absolute;
 `;
-
+*/
 const BarsContainer = styled(Grid)`
 	width: 100%;
 	height: 100%;
@@ -209,6 +208,10 @@ const Graph = props => {
 			</InfoContainer>
 		</GraphPageContainer>
 	);
+};
+
+Graph.propTypes = {
+	simulation: PropTypes.bool
 };
 
 export default Graph;

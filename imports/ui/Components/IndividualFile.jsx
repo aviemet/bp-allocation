@@ -1,4 +1,6 @@
+import Meteor from 'meteor/meteor';
 import React from 'react';
+import PropTypes from 'react';
 
 import { Grid, Button } from 'semantic-ui-react';
 
@@ -15,7 +17,7 @@ const IndividualFile = props => {
 	};
 
 	const renameFile = () => {
-		let validName = /[^a-zA-Z0-9 \.:\+()\-_%!&]/gi;
+		let validName = /[^a-zA-Z0-9 .:+()\-_%!&]/gi;
 		let prompt    = window.prompt('New file name?', props.fileName);
 
 		// Replace any non valid characters, also do this on the server
@@ -49,8 +51,7 @@ const IndividualFile = props => {
 
 
 				<Grid.Column>
-					<a href={ props.fileUrl } className="btn btn-outline btn-primary btn-sm"
-						target="_blank">View</a>
+					<a href={ props.fileUrl } className="btn btn-outline btn-primary btn-sm" target="_blank" rel="noopener noreferrer">View</a>
 				</Grid.Column>
 
 				<Grid.Column>
@@ -63,6 +64,13 @@ const IndividualFile = props => {
 			</Grid.Row>
 		</React.Fragment>
 	);
+};
+
+IndividualFile.propTypes = {
+	fileId: PropTypes.string,
+	fileName: PropTypes.string,
+	fileUrl: PropTypes.string,
+	fileSize: PropTypes.number
 };
 
 export default IndividualFile;

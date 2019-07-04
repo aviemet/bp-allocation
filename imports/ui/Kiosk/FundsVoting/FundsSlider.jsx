@@ -1,15 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
 
-import { roundFloat } from '/imports/utils';
-
-import { MemberMethods } from '/imports/api/methods';
 import { useVoting } from '/imports/ui/Kiosk/VotingContext';
 
 import styled from 'styled-components';
 import InputRange from 'react-input-range';
-import { Form, Input, Button, Icon } from 'semantic-ui-react';
+import { Input, Button, Icon } from 'semantic-ui-react';
 
 const SliderContainer = styled.div`
 	width: 100%;
@@ -55,7 +53,7 @@ class FundsSliderComponent extends React.PureComponent {
 
 	componentDidRender = () => {
 		document.oncontextmenu = () => {
-		  return false;
+			return false;
 		};
 	}
 
@@ -153,6 +151,13 @@ class FundsSliderComponent extends React.PureComponent {
 	}
 }
 
+FundsSliderComponent.propTypes = {
+	member: PropTypes.object,
+	org: PropTypes.object,
+	updateVotes: PropTypes.func,
+	votes: PropTypes.number,
+
+};
 
 const FundsSlider = props => {
 	const { member, votes, updateVotes } = useVoting();
@@ -160,6 +165,13 @@ const FundsSlider = props => {
 	const context = Object.assign({ member, votes, updateVotes }, props);
 
 	return <FundsSliderComponent { ...context }>{props.children}</FundsSliderComponent>;
+};
+
+FundsSlider.propTypes = {
+	children: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.node),
+		PropTypes.node
+	])
 };
 
 export default FundsSlider;

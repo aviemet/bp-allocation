@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import ReactCountdownClock from 'react-countdown-clock';
@@ -42,7 +41,7 @@ const Timer = props => {
 
 	const [ countdown, setCountdown ] = useState(true);
 
-	timerFinish = () => {
+	const timerFinish = () => {
 		setTimeout(() => {
 			setCountdown(false);
 		}, 2000);
@@ -68,6 +67,10 @@ const Timer = props => {
 			/>
 		</TimerContainer>
 	);
+};
+
+Timer.propTypes = {
+	seconds: PropTypes.number
 };
 
 export default Timer;

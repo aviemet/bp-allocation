@@ -1,14 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
-
-import moment from 'moment';
 
 import { Themes } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 
-import { Button, Table, Header, Grid, Icon } from 'semantic-ui-react';
+import { Button, Table, Icon } from 'semantic-ui-react';
 
 import NewThemeModal from '/imports/ui/Welcome/NewThemeModal';
 
@@ -57,8 +56,12 @@ class ThemesList extends React.Component {
 	}
 }
 
+ThemesList.propTypes = {
+	themes: PropTypes.array
+};
+
 export default withTracker(() => {
-	themesHandle = Meteor.subscribe('themes');
+	Meteor.subscribe('themes');
 
 	return { themes: Themes.find({}, { limit: 5, sort: { createdAt: -1 }}).fetch() };
 })(ThemesList);

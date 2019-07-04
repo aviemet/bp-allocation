@@ -1,17 +1,12 @@
-import { Meteor } from 'meteor/meteor';
 import React, { useState, useEffect } from 'react';
-import { Router, Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
-import { withTracker } from 'meteor/react-meteor-data';
-import _ from 'lodash';
 
-import { Loader, Container } from 'semantic-ui-react';
+import { Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { KIOSK_PAGES } from '/imports/utils';
 
-import { Themes, Organizations, Images } from '/imports/api';
-import { ThemeMethods } from '/imports/api/methods';
 import { usePresentationSettings } from '/imports/context';
 
 import KioskInfo from './Info/KioskInfo';

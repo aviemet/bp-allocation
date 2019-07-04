@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { useMembers } from '/imports/context';
-import { Members } from '/imports/api';
 
 import styled from 'styled-components';
-import { Container, Form, Input, Label, Header, Button } from 'semantic-ui-react';
+import { Container, Form, Input, Header, Button } from 'semantic-ui-react';
 
 import { VotingContextProvider } from './VotingContext';
-
-import MemberSearch from '/imports/ui/Components/MemberSearch';
 
 import { COLORS } from '/imports/global';
 
@@ -61,10 +59,10 @@ const MemberLoginRequired = props => {
 
 	const [ searchError, setSearchError ] = useState(false);
 	const [ user, setUser ] = useState(false);
-	const [ confirmUser, setConfirmUser ] = useState(false);
-	const [ renderCount, setRenderCount ] = useState(0);
+	// const [ confirmUser, setConfirmUser ] = useState(false);
+	// const [ renderCount, setRenderCount ] = useState(0);
 
-	const { members, membersLoading } = useMembers();
+	const { members } = useMembers();
 
 	// Debugging purposes only
 	/*if(!membersLoading && !user) {
@@ -194,6 +192,10 @@ const MemberLoginRequired = props => {
 			<ChildComponent user={ user } />
 		</VotingContextProvider>
 	);
+};
+
+MemberLoginRequired.propTypes = {
+	component: PropTypes.func
 };
 
 export default MemberLoginRequired;

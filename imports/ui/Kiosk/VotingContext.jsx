@@ -1,8 +1,8 @@
-import { Meteor } from 'meteor/meteor';
-import React, { useState, useReducer, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import { useTheme, useOrganizations, usePresentationSettings, useImages } from '/imports/context';
+import { useTheme, useOrganizations } from '/imports/context';
 
 import { MemberMethods } from '/imports/api/methods';
 
@@ -42,17 +42,29 @@ const VotingContextProvider = props => {
 
 	return (
 		<FundsVoteContext.Provider value={ {
-    	votes,
-    	updateVotes,
-    	saveVotes,
-    	member: props.member || false,
-    	unsetUser: props.unsetUser
+			votes,
+			updateVotes,
+			saveVotes,
+			member: props.member || false,
+			unsetUser: props.unsetUser
 		} }>
-    	{props.children}
+			{props.children}
 		</FundsVoteContext.Provider>
 	);
 };
 
+VotingContextProvider.propTypes = {
+	member: PropTypes.object,
+	unsetUser: PropTypes.func,
+	children: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.node),
+		PropTypes.node
+	])
+};
+
+/**
+ * Context hook
+ */
 const useVoting = () => useContext(FundsVoteContext);
 
 export { VotingContextProvider, FundsVoteContext, useVoting };

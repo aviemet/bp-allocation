@@ -1,18 +1,13 @@
-import { Meteor } from 'meteor/meteor';
 import React, { useContext } from 'react';
-import { Router, Route, Switch, withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import numeral from 'numeral';
 
-import { ThemeContext, OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
+import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
 
-import { Loader, Header, Container, Grid, Card } from 'semantic-ui-react';
+import { Header, Card } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import AwardCard from '/imports/ui/Components/AwardCard';
-import AwardEmblem from '/imports/ui/Components/AwardEmblem';
-
-import { COLORS } from '/imports/utils';
 
 const ResultsPageContainer = styled.div`
 	color: #FFF;
@@ -50,19 +45,18 @@ const AwardsImage = styled.img`
 	width: 10%;
 `;
 
-const Results = props => {
+const Results = () => {
 
 	const { theme } = useContext(ThemeContext);
 	const { topOrgs } = useContext(OrganizationContext);
 	const { settings } = useContext(PresentationSettingsContext);
-	const { images } = useContext(ImageContext);
 
 	let awardees = [];
 	let others = [];
 	let saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
 	let total = parseFloat((theme.leverageTotal || 0) + saves + (settings.resultsOffset || 0));
 
-	let orgs = _.cloneDeep(topOrgs).map(org => {
+	_.cloneDeep(topOrgs).map(org => {
 		total += org.pledgeTotal / 2;
 
 		if(org.allocatedFunds + org.leverageFunds >= org.ask){
@@ -73,9 +67,8 @@ const Results = props => {
 		return org;
 	});
 
-	let awardeesColumns = awardees.length > 3 ? parseInt(awardees.length / 2) + awardees.length % 2 : false ;
+	// let awardeesColumns = awardees.length > 3 ? parseInt(awardees.length / 2) + awardees.length % 2 : false ;
 
-	let i = -1;
 	return (
 		<ResultsPageContainer>
 			<AwardsImage src="/img/BAT_awards.png" />
@@ -88,7 +81,6 @@ const Results = props => {
 
 			<Card.Group centered>
 				{awardees.map((org) => {
-					i++;
 					return(
 						<AwardCard
 							key={ org._id }
@@ -96,16 +88,6 @@ const Results = props => {
 							award={ 'awardee' }
 							amount={ org.allocatedFunds + org.leverageFunds }
 						/>
-					/* OLD <OrgCard
-						key={org._id}
-						org={org}
-						image={_.find(images, ['_id', org.image])}
-						bgcolor={COLORS[i % COLORS.length]}
-						overlay={() => <AwardEmblem
-							type={'awardee'}
-							amount={org.allocatedFunds + org.leverageFunds}
-						/>}
-					/>*/
 					);
 				})}
 			</Card.Group>
@@ -114,7 +96,6 @@ const Results = props => {
 
 			<Card.Group centered >
 				{others.map((org) => {
-					i++;
 					return(
 						<AwardCard
 							key={ org._id }
@@ -122,16 +103,6 @@ const Results = props => {
 							award={ 'other' }
 							amount={ org.allocatedFunds + org.leverageFunds }
 						/>
-					/* OLD <AwardCard
-						key={org._id}
-						org={org}
-						image={_.find(images, ['_id', org.image])}
-						bgcolor={COLORS[i % COLORS.length]}
-						overlay={() => <AwardEmblem
-							type={'other'}
-							amount={org.allocatedFunds + org.leverageFunds}
-						/>}
-					/>*/
 					);
 				})}
 			</Card.Group>

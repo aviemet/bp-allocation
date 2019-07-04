@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Hr from '/imports/ui/Components/Hr';
-import { Grid, Card, Container, Header } from 'semantic-ui-react';
+import { Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const WelcomeContainer = styled.div`
@@ -41,6 +42,14 @@ const WelcomeLayout = (props) => {
 			</Container>
 		</WelcomeContainer>
 	);
+};
+
+WelcomeLayout.propTypes = {
+	title: PropTypes.string,
+	children: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.node),
+		PropTypes.node
+	])
 };
 
 export default WelcomeLayout;

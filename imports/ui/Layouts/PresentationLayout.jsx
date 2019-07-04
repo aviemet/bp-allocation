@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import styled from 'styled-components';
 
 const PresentationContainer = styled.div`
@@ -24,5 +26,12 @@ const PresentationLayout = (props) => (
 		{props.children}
 	</PresentationContainer>
 );
+
+PresentationLayout.propTypes = {
+	children: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.node),
+		PropTypes.node
+	])
+};
 
 export default PresentationLayout;

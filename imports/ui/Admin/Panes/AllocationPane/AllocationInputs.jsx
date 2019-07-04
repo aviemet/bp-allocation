@@ -8,9 +8,9 @@ import { roundFloat } from '/imports/utils';
 
 import { OrganizationMethods } from '/imports/api/methods';
 
-import { Table, Button, Form, Input } from 'semantic-ui-react';
+import CrowdFavoriteRibbon from '/imports/ui/Components/CrowdFavoriteRibbon';
 
-import CrowdFavoriteRibbon from '/imports/Components/CrowdFavoriteRibbon';
+import { Table, Button, Form, Input } from 'semantic-ui-react';
 
 /**
  * Allocation Inputs Component

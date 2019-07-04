@@ -34,8 +34,14 @@ PresentationSettingsProviderTemplate.propTypes = {
 	children: PropTypes.object
 };
 
-const PresentationSettingsProvider = withTracker((props) => {
-	if(!props.id || _.isUndefined(props.handles.themes) || _.isUndefined(props.handles.orgs)) return { loading: true };
+const PresentationSettingsProvider = withTracker(props => {
+	if(!props.id || 
+		_.isUndefined(props.handles) || 
+		_.isUndefined(props.handles.themes) || 
+		_.isUndefined(props.handles.orgs) ||
+		_.isUndefined(props.handles.presentationSettings)) {
+		return { loading: true };
+	}
 
 	const theme = Themes.find({ _id: props.id }).fetch()[0];
 

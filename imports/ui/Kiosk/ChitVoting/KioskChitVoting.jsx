@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import _ from 'lodash';
 
 import { Loader, Card, Container, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { useTheme, useOrganizations, usePresentationSettings, useMembers, useImages } from '/imports/context';
+import { useTheme, useOrganizations, useImages } from '/imports/context';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
@@ -34,15 +34,10 @@ const OrgsContainer = styled.div`
 	}
 `;
 
-const KioskInfo = props => {
-
-	const [ user, setUser ] = useState(false);
-
-	const { theme, themeLoading } = useTheme();
+const KioskInfo = () => {
+	const { themeLoading } = useTheme();
 	const { orgs, orgsLoading } = useOrganizations();
 	const { images } = useImages();
-	const { settings } = usePresentationSettings();
-	const { members } = useMembers();
 
 	if(themeLoading || orgsLoading) {
 		return <Loader />;
@@ -55,7 +50,7 @@ const KioskInfo = props => {
 				<Card.Group centered itemsPerRow={ 3 }>
 					{orgs.map(org => (
 						<OrgCard
-									 key={ org._id }
+							key={ org._id }
 							org={ org }
 							image={ _.find(images, ['_id', org.image]) }
 						/>

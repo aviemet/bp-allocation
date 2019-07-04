@@ -56,11 +56,11 @@ const OrgImageCard = props => {
 	return (
 		<Card className={ animateClass }>
 			<CardImage style={ { backgroundImage: `url(${imagePath})` } } className='orgsImage'>
-				{Overlay && <Overlay />}
+				{ Overlay && <Overlay /> }
 			</CardImage>
 			<CardContent bgcolor={ props.bgcolor || '#FFF' } className={ className }>
-				<OrgTitle>{props.org.title}</OrgTitle>
-				<OrgAsk>{numeral(props.org.ask).format('$0a')}</OrgAsk>
+				<OrgTitle>{ props.org.title }</OrgTitle>
+				<OrgAsk>{ numeral(props.org.ask).format('$0a') }</OrgAsk>
 			</CardContent>
 		</Card>
 	);

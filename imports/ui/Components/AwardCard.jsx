@@ -1,12 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import numeral from 'numeral';
 
-import { Card, Image } from 'semantic-ui-react';
+import { Card } from 'semantic-ui-react';
 import styled from 'styled-components';
-
-import { Organizations, Images } from '/imports/api';
-import { OrganizationsSchema } from '/imports/api/schema';
 
 import AwardEmblem from './AwardEmblem';
 
@@ -24,13 +20,13 @@ const OrgTitle = styled.p`
 	margin: 5px;
 	font-weight: 600;
 `;
-
+/*
 const OrgAsk = styled.p`
 	font-family: TradeGothic20;
 	font-size: 2.1em;
 	font-weight: 700;
 `;
-
+*/
 const CardImage = styled.div`
 	width: 100%;
 	height: 205px;
@@ -51,8 +47,6 @@ const CardContent = styled(Card.Content)`
  */
 const AwardCard = props => {
 
-	const Overlay = props.overlay || false;
-
 	return (
 		<OrgCard>
 			<CardImage>
@@ -66,6 +60,11 @@ const AwardCard = props => {
 			</CardContent>
 		</OrgCard>
 	);
+};
+
+AwardCard.propTypes = {
+	org: PropTypes.object,
+	award: PropTypes.string,
 };
 
 export default AwardCard;

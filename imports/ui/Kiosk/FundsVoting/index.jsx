@@ -1,17 +1,13 @@
-import { Meteor } from 'meteor/meteor';
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
 
-import { roundFloat } from '/imports/utils';
-
-import { useTheme, useOrganizations, usePresentationSettings, useImages } from '/imports/context';
-import { FundsVoteContext, useVoting } from '/imports/ui/Kiosk/VotingContext';
+import { useOrganizations } from '/imports/context';
+import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext';
 
 import { Loader, Card, Container, Header, Button } from 'semantic-ui-react';
 import styled from 'styled-components';
-
-import InputRange from 'react-input-range';
 
 import VotingComplete from '../VotingComplete';
 import OrgCard from '/imports/ui/Components/OrgCard';
@@ -47,18 +43,6 @@ const OrgsContainer = styled(Container)`
 	}
 `;
 
-const SliderContainer = styled.div`
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 15px;
-	position: relative;
-
-	&& .input-range {
-		margin-bottom: 15px;
-	}
-`;
-
 const FinalizeButton = styled(Button)`
 	width: 100%;
 	text-align: center;
@@ -73,14 +57,18 @@ const NumberFormat = styled.span`
 	display: inline-block;
 `;
 
-const AmountRemaining = React.memo(function AmountRemaining({ value }) {
-	return <Header as='h1' className="title">FUNDS LEFT TO ALLOCATE: <NumberFormat>{numeral(value).format('$0,0')}</NumberFormat></Header>;
+const AmountRemaining = React.memo(value => {
+	return (
+		<Header as='h1' className="title">
+			FUNDS LEFT TO ALLOCATE: <NumberFormat>{numeral(value).format('$0,0')}</NumberFormat>
+		</Header>
+	);
 });
+AmountRemaining.displayName = 'AmountRemaining'; // To slience eslint
 
 const FundsVotingKiosk = props => {
 
 	const { topOrgs, orgsLoading } = useOrganizations();
-	const { images } = useImages();
 
 	const [ votingComplete, setVotingComplete ] = useState(false);
 
@@ -136,6 +124,10 @@ const FundsVotingKiosk = props => {
 			}}</FundsVoteContext.Consumer>
 		</OrgsContainer>
 	);
+};
+
+FundsVotingKiosk.propTypes = {
+	user: PropTypes.object
 };
 
 export default FundsVotingKiosk;

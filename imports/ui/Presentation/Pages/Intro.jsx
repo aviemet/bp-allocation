@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-import { Header, Loader, Image } from 'semantic-ui-react';
+import { Image } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const TitlePage = styled.div`
@@ -61,6 +62,11 @@ const Intro = props => {
 			</LogoContainer>
 		</TitlePage>
 	);
+};
+
+Intro.propTypes = {
+	title: PropTypes.string,
+	question: PropTypes.string
 };
 
 export default Intro;

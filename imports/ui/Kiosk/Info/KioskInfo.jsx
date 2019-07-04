@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { Loader, Card, Container, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { useTheme, useOrganizations, usePresentationSettings, useImages } from '/imports/context';
+import { useTheme, useOrganizations, useImages } from '/imports/context';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
@@ -34,10 +34,9 @@ const OrgsContainer = styled(Container)`
 `;
 
 const KioskInfo = props => {
-	const { theme, themeLoading } = useTheme();
+	const { themeLoading } = useTheme();
 	const { orgs, orgsLoading } = useOrganizations();
 	const { images } = useImages();
-	const { settings } = usePresentationSettings();
 
 	if(themeLoading || orgsLoading) {
 		return <Loader />;

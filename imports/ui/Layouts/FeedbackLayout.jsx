@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-import { Container, Grid, Button, Icon } from 'semantic-ui-react';
+import { Container, Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import HomeButton from '/imports/ui/Components/HomeButton';
@@ -23,5 +23,12 @@ const FeedbackLayout = (props) => (
 		</Container>
 	</FeedbackContainer>
 );
+
+FeedbackLayout.propTypes = {
+	children: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.node),
+		PropTypes.node
+	])
+};
 
 export default FeedbackLayout;

@@ -14,7 +14,7 @@ const CrowdFavoriteRibbon = props => {
 };
 
 CrowdFavoriteRibbon.propTypes = {
-	crowdFavorite: PropTypes.number,
+	crowdFavorite: PropTypes.bool,
 	children: PropTypes.object
 };
 

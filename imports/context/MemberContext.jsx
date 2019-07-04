@@ -41,9 +41,9 @@ const MemberProviderTemplate = props => {
 };
 
 MemberProviderTemplate.propTypes = {
-	members: PropTypes.object,
+	members: PropTypes.array,
+	memberThemes: PropTypes.array,
 	loading: PropTypes.bool,
-	memberThemes: PropTypes.object,
 	handles: PropTypes.object,
 	children: PropTypes.object
 };

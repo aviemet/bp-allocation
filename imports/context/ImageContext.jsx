@@ -21,9 +21,7 @@ const ImageProviderTemplate = props => {
 		<ImageContext.Provider value={ {
 			images: props.images,
 			imagesLoading: props.loading,
-			handles: Object.assign({
-				images: props.imagesHandle
-			}, props.handles)
+			handles: props.handles
 		} }>
 			{props.children}
 		</ImageContext.Provider>
@@ -31,9 +29,8 @@ const ImageProviderTemplate = props => {
 };
 
 ImageProviderTemplate.propTypes = {
-	images: PropTypes.string,
+	images: PropTypes.array,
 	loading: PropTypes.bool,
-	imagesHandle: PropTypes.object,
 	handles: PropTypes.object,
 	children: PropTypes.object
 };

@@ -28,7 +28,10 @@ const PresentationNavButton = props => {
 
 PresentationNavButton.propTypes = {
 	page: PropTypes.string,
-	children: PropTypes.object
+	children: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.node),
+		PropTypes.node
+	])
 };
 
 export default PresentationNavButton;

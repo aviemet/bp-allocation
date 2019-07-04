@@ -78,10 +78,10 @@ const OrganizationProviderTemplate = props => {
 
 OrganizationProviderTemplate.propTypes = {
 	theme: PropTypes.object,
-	orgs: PropTypes.object,
-	loading: PropTypes.bool,
+	orgs: PropTypes.array,
 	settings: PropTypes.object,
-	memberThemes: PropTypes.object,
+	memberThemes: PropTypes.array,
+	loading: PropTypes.bool,
 	handles: PropTypes.object,
 	children: PropTypes.object
 };

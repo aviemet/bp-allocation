@@ -88,9 +88,9 @@ const ThemeProviderTemplate = props => {
 };
 
 ThemeProviderTemplate.propTypes = {
-	topOrgs: PropTypes.object,
+	topOrgs: PropTypes.array,
 	presentationSettings: PropTypes.object,
-	memberThemes: PropTypes.object,
+	memberThemes: PropTypes.array,
 	theme: PropTypes.object,
 	loading: PropTypes.bool,
 	handles: PropTypes.object,
@@ -128,10 +128,10 @@ const ThemeProvider = withTracker((props) => {
 		memberThemes, 
 		presentationSettings, 
 		handles: {
-			themesHandle, 
-			presentationSettingsHandle, 
-			orgsHandle, 
-			memberThemesHandle 
+			themes: themesHandle, 
+			presentationSettings: presentationSettingsHandle, 
+			orgs: orgsHandle, 
+			memberThemes: memberThemesHandle 
 		}
 	};
 })(ThemeProviderTemplate);

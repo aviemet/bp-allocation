@@ -85,7 +85,7 @@ const FileUpload = props => {
 		}
 	};
 
-	let file = Images.findOne({ _id: props.image });
+	// let file = Images.findOne({ _id: props.image });
 
 	return (
 		<FileUploadContainer>
