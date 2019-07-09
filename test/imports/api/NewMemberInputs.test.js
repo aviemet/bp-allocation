@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { assert } from 'chai';
 
 import { Members, MemberThemes, Themes } from '/imports/api';
 import { ThemeMethods, MemberMethods } from '/imports/api/methods';

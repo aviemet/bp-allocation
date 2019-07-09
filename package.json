@@ -6,24 +6,13 @@
     "dev": "ROOT_URL=http://0.0.0.0:3000 meteor run",
     "visualize": "meteor --production --extra-packages bundle-visualizer",
     "build": "meteor build --server-only --directory ../allocation",
-
-    "lint": "eslint --ext js,jsx .",
-    "lint:fix": "eslint --ext js,jsx . --fix",
-    "pretest": "npm run lint --silent",
-
+    "lint": "eslint --ext js,jsx,ts,tsx .",
+    "lint:fix": "eslint --ext js,jsx,ts,tsx . --fix",
     "test": "meteor test --once --driver-package meteortesting:mocha --port 3333",
-    "test:app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
-    "test:server": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha TEST_CLIENT=0",
-    "test:client": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha TEST_SERVER=0",
-    
-    "test:chrome": "TEST_BROWSER_DRIVER=chrome meteor test --once --driver-package meteortesting:mocha",
-    "test:app-chrome": "TEST_BROWSER_DRIVER=chrome meteor test --full-app --once --driver-package meteortesting:mocha",
-    "test:phantom": "TEST_BROWSER_DRIVER=phantomjs meteor test --once --driver-package meteortesting:mocha",
-    "test:app-phantom": "TEST_BROWSER_DRIVER=phantomjs meteor test --full-app --once --driver-package meteortesting:mocha",
-    "test:watch": "TEST_BROWSER_DRIVER=chrome meteor test --driver-package meteortesting:mocha",
-    "test:app-watch": "TEST_BROWSER_DRIVER=chrome meteor test --full-app --driver-package meteortesting:mocha",
-    "test:watch-browser": "meteor test --driver-package meteortesting:mocha",
-    "test:app-watch-browser": "meteor test --full-app --driver-package meteortesting:mocha"
+    "test:app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333",
+    "test:server": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333 TEST_CLIENT=0",
+    "test:client": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333 TEST_SERVER=0",
+    "posttest": "npm run lint --silent"
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",
@@ -48,6 +37,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.2",
+    "chai": "^4.2.0",
     "eslint": "^6.0.1",
     "eslint-plugin-react": "^7.14.2",
     "faker": "^4.1.0",
@@ -58,5 +48,8 @@
       "client": "client/main.js",
       "server": "server/main.js"
     }
+  },
+  "mocha": {
+    "recursive": true
   }
 }
