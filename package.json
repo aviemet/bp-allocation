@@ -12,7 +12,7 @@
     "test:app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333",
     "test:server": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333 TEST_CLIENT=0",
     "test:client": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333 TEST_SERVER=0",
-    "posttest": "npm run lint --silent"
+    "notnow:posttest": "npm run lint --silent"
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",

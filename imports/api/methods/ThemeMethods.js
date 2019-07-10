@@ -164,7 +164,7 @@ const ThemeMethods = {
 	}),
 
 	/**
-	 * Assign Leverage Funds to Orgs
+	 * Reset Leverage Funds on Orgs to 0
 	 */
 	resetLeverage: new ValidatedMethod({
 		name: 'organizations.resetLeverage',

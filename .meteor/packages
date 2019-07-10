@@ -31,3 +31,4 @@ percolate:migrations
 mikowals:batch-insert
 dburles:factory
 hwillson:stub-collections
+xolvio:cleaner
