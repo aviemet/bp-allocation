@@ -70,6 +70,12 @@ const PresentationSettingsSchema = new SimpleSchema({
 		label: 'Will the funds voting totals be entered manually or taken from kiosk voting?',
 		required: false,
 		defaultValue: false
+	},
+	formatAsDollars: {
+		type: Boolean,
+		label: 'Display numbers as dollars or percentages',
+		required: false,
+		defaultValue: true
 	}
 });
 

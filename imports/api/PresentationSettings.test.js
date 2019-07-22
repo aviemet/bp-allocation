@@ -19,7 +19,8 @@ const settingsDefaults = {
 	fundsVotingActive: false,
 	resultsOffset: 0,
 	useKioskChitVoting: false,
-	useKioskFundsVoting: false 
+	useKioskFundsVoting: false,
+	formatAsDollars: true
 };
 
 let presentationSettings;

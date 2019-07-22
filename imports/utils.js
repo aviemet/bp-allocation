@@ -15,6 +15,12 @@ const getSaveAmount = (saves, org_id) => {
 	return save ? save.amount : 0;
 };
 
+const numberFormats = {
+	dollar: '$0,0[a]',
+	percent: '0.0%'
+};
+
+
 /**************************************
  *         ORGANIZATION METHODS       *
  **************************************/
@@ -231,5 +237,6 @@ export {
 	sortTopOrgs,
 	filterTopOrgs,
 	readCsvWithHeadings,
-	useTraceUpdate
+	useTraceUpdate,
+	numberFormats
 };

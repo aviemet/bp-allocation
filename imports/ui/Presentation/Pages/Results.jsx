@@ -56,13 +56,27 @@ const Results = () => {
 	let saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
 	let total = parseFloat((theme.leverageTotal || 0) + saves + (settings.resultsOffset || 0));
 
-	_.cloneDeep(topOrgs).map(org => {
+	_.cloneDeep(topOrgs).map((org, i) => {
 		total += org.pledgeTotal / 2;
 
-		if(org.allocatedFunds + org.leverageFunds >= org.ask){
-			awardees.push(org);
+		if(settings.formatAsDollars) {
+			if(org.allocatedFunds + org.leverageFunds >= org.ask){
+				awardees.push(org);
+			} else {
+				others.push(org);
+			}
 		} else {
-			others.push(org);
+			if(awardees.length === 0) {
+				awardees.push(org);
+			} else {
+				const compareTotal = awardees[0].allocatedFunds + awardees[0].leverageFunds;
+				if(org.allocatedFunds + org.leverageFunds > compareTotal) {
+					others.push(awardees[0]);
+					awardees[0] = org;
+				} else {
+					others.push(org);
+				}
+			}
 		}
 		return org;
 	});
@@ -73,9 +87,11 @@ const Results = () => {
 		<ResultsPageContainer>
 			<AwardsImage src="/img/BAT_awards.png" />
 
-			<Header as='h1'>
-				Total amount given: {numeral(total).format('$0.[00]a')}
-			</Header>
+			{ settings.formatAsDollars &&
+				<Header as='h1'>
+					Total amount given: {numeral(total).format('$0.[00]a')}
+				</Header>
+			}
 			<br/><br/>
 			{/*<Header as='h2'>Battery Powered Awardees</Header>*/}
 

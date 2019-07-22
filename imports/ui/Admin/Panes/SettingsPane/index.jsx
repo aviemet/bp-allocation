@@ -23,13 +23,14 @@ const SettingsPane = props => {
 	const [ timerLength, setTimerLength ]              = useState(settings.timerLength);
 	const [ useKioskChitVoting, setKioskChitVoting ]   = useState(settings.useKioskChitVoting);
 	const [ useKioskFundsVoting, setKioskFundsVoting ] = useState(settings.useKioskFundsVoting);
+	const [ formatAsDollars, setFormatAsDollars ]      = useState(settings.formatAsDollars);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
 		let data = {
 			theme: { title, question, chitWeight, matchRatio, leverageTotal, consolationActive, consolationAmount },
-			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting }
+			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting, formatAsDollars }
 		};
 
 		// Iterate over database objects with keys to be saved
@@ -170,7 +171,7 @@ const SettingsPane = props => {
 				{/* Consolation Amount */}
 				<Form.Input 
 					name='theme.consolationAmount' 
-					type="number" 
+					type='number' 
 					placeholder='Consolation' 
 					label='Amount for bottom orgs' 
 					value={ consolationAmount } 
@@ -185,6 +186,21 @@ const SettingsPane = props => {
 					checked={ consolationActive } 
 					onChange={ (e, value) => setConsolationActive(value.checked) } 
 				/>
+			</Form.Group>
+
+			<Form.Group>
+				<Form.Field>
+					<label>Number Format</label>
+					<Label>%</Label>
+					<Checkbox
+						slider 
+						name='settings.formatAsDollars'
+						style={ { 'verticalAlign': 'middle' } } 
+						checked={ formatAsDollars }
+						onChange={ (e, value) => setFormatAsDollars(value.checked) } 
+					/>
+					<Label>$</Label>
+				</Form.Field>
 			</Form.Group>
 		</Form>
 	);

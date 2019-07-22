@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+
+import { PresentationSettingsContext } from '/imports/context';
 
 import numeral from 'numeral';
 
@@ -31,18 +33,22 @@ const TotalNeed = styled.div`
 `;
 
 const OrgInfo = props => {
+	const { settings } = useContext(PresentationSettingsContext);
+
 	return (
 		<InfoContainer className='orginfo'>
 			<Title>{props.org.title}</Title>
 
 
-			<TotalNeed>
-				Need: {props.org.need > 0 ? `$${numeral(props.org.need).format('0.0a')}` : '--'}
-			</TotalNeed>
-
+			{settings.formatAsDollars &&
+				<TotalNeed>
+					Need: {props.org.need > 0 ? `$${numeral(props.org.need).format('0,0[a]')}` : '--'}
+				</TotalNeed>
+			}
+			
 			{props.showLeverage &&
 				<MatchNeed>
-					Match Need: {props.org.need > 0 ? `$${numeral(props.org.need / 2).format('0.0a')}` : '--'}
+					Match Need: {props.org.need > 0 ? `$${numeral(props.org.need / 2).format('0,0[a]')}` : '--'}
 				</MatchNeed>
 			}
 

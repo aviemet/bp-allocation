@@ -114,7 +114,7 @@ class FundsSliderComponent extends React.PureComponent {
 	render() {
 		const MAX = this.props.member.theme.amount;
 		const showLabelClass = this.state.showLabel ? 'visible' : false;
-		console.log({ value: this.state.value });
+		
 		return (
 			<SliderContainer>
 				{this.state.showInput ?
@@ -136,8 +136,9 @@ class FundsSliderComponent extends React.PureComponent {
 				}
 				<BottomAlign className={ showLabelClass }>
 					<InputRange
+						disabled={ !this.props.member.theme.amount || this.props.member.theme.amount <= 0 }
 						minValue={ 0 }
-						maxValue={ this.props.member.theme.amount }
+						maxValue={ this.props.member.theme.amount || 1 }
 						value={ this.state.value || 0 }
 						onChange={ this.handleChange }
 						onChangeStart={ this.showLabel }
@@ -155,7 +156,7 @@ FundsSliderComponent.propTypes = {
 	member: PropTypes.object,
 	org: PropTypes.object,
 	updateVotes: PropTypes.func,
-	votes: PropTypes.number,
+	votes: PropTypes.object,
 
 };
 

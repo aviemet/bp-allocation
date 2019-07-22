@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import numeral from 'numeral';
 
-import { ThemeContext, OrganizationContext } from '/imports/context';
+import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
 
 import { Grid, Table, Button, Header } from 'semantic-ui-react';
 
@@ -17,6 +17,9 @@ const AllocationPane = props => {
 
 	const { theme } = useContext(ThemeContext);
 	const { topOrgs } = useContext(OrganizationContext);
+	const { settings } = useContext(PresentationSettingsContext);
+
+	console.log({ format: settings.numberFormat });
 
 	const _calculateCrowdFavorite = () => {
 		let favorite = 0;

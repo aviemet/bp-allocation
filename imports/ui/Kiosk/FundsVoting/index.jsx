@@ -52,18 +52,20 @@ const FinalizeButton = styled(Button)`
 	font-size: 2rem !important;
 	text-transform: uppercase !important;
 `;
+
 const NumberFormat = styled.span`
 	width: 12rem;
 	display: inline-block;
 `;
 
-const AmountRemaining = React.memo(value => {
+const AmountRemaining = React.memo(({ value }) => {
 	return (
 		<Header as='h1' className="title">
 			FUNDS LEFT TO ALLOCATE: <NumberFormat>{numeral(value).format('$0,0')}</NumberFormat>
 		</Header>
 	);
 });
+
 AmountRemaining.displayName = 'AmountRemaining'; // To slience eslint
 
 const FundsVotingKiosk = props => {
@@ -77,7 +79,6 @@ const FundsVotingKiosk = props => {
 	if(orgsLoading) {
 		return <Loader />;
 	}
-
 	if(votingComplete) {
 		return <VotingComplete />;
 	}
@@ -109,6 +110,7 @@ const FundsVotingKiosk = props => {
 				_.forEach(votes, value => sum += value);
 				const remaining = member.theme.amount - sum;
 				const buttonDisabled = remaining !== 0;
+				
 				return(
 					<React.Fragment>
 						<AmountRemaining value={ remaining } />
@@ -128,6 +130,10 @@ const FundsVotingKiosk = props => {
 
 FundsVotingKiosk.propTypes = {
 	user: PropTypes.object
+};
+
+AmountRemaining.propTypes = {
+	value: PropTypes.number
 };
 
 export default FundsVotingKiosk;

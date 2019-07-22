@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
+import { PresentationSettingsContext, MemberContext } from '/imports/context';
 
 import { Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -73,11 +74,21 @@ AwardImg.propTypes = {
 
 const Bar = props => {
 
+	const { settings } = useContext(PresentationSettingsContext);
+	const { members } = useContext(MemberContext);
+	
 	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0);
 	if(!props.savesVisible) shownFunds -= props.org.save;
 
 	let height = Math.min(Math.round((shownFunds / props.org.ask) * 100), 100);
 	let backgroundColor = height === 100 ? COLORS.green : COLORS.blue;
+
+	if(!settings.formatAsDollars) {
+		const percentBase = members.length * 100;
+		console.log({ percentBase, shownFunds });
+		shownFunds = (shownFunds / percentBase);
+		console.log({ percentBase, shownFunds });
+	}
 
 	if(height === 0){
 		return (
@@ -89,7 +100,7 @@ const Bar = props => {
 		<BarContainer>
 			<AwardImg show={ height === 100 } />
 			<GraphBar style={ { height: `${height}%`, backgroundColor: backgroundColor } }>
-				<Pledged>${numeral(shownFunds).format('0.0a')}</Pledged>
+				<Pledged>{numeral(shownFunds).format(settings.numberFormat)}</Pledged>
 			</GraphBar>
 		</BarContainer>
 	);

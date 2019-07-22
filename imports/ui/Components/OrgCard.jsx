@@ -111,9 +111,15 @@ OrgCard.propTypes = {
 	image: PropTypes.object,
 	org: PropTypes.object,
 	overlay: PropTypes.object,
-	content: PropTypes.object,
+	content: PropTypes.oneOfType([
+		PropTypes.object,
+		PropTypes.func
+	]), 
 	index: PropTypes.number,
-	size: PropTypes.number,
+	size: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.string
+	]),
 	showAsk: PropTypes.bool,
 	animateClass: PropTypes.bool
 };

@@ -74,7 +74,6 @@ const AllocationInputs = props => {
 
 	// Boolean help for marking fully funded orgs
 	const reachedGoal = props.org.need - props.org.leverageFunds <= 0;
-
 	return (
 		<Table.Row positive={ reachedGoal }>
 

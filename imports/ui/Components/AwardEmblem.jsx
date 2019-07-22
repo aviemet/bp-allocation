@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
+
+import { PresentationSettingsContext, MemberContext } from '/imports/context';
 
 import { Image } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -34,16 +36,24 @@ const AwardAmount = styled.span`
  */
 const AwardEmblem = ({ type, amount }) => {
 
+	const { settings } = useContext(PresentationSettingsContext);
+	const { members } = useContext(MemberContext);
+
 	const awardImgSrc = {
 		awardee: '/img/circle_awardee.png',
 		other: '/img/circle.png'
 	};
 
+	if(!settings.formatAsDollars) {
+		const percentBase = members.length * 100;
+		amount = (amount / percentBase);
+	}
+
 	return (
 		<Award>
 			<AwardImage className='ui.card.image' style={ { backgroundImage: `url(${awardImgSrc[type || 'awardee']})`,
 				backgroundSize: type === 'awardee' ? '120%' : '100%' } }>
-				<AwardAmount style={ { fontSize: type === 'awardee' ? '3.3em' : '2.9em' } }>{numeral(amount).format('$0.0a')}</AwardAmount>
+				<AwardAmount style={ { fontSize: type === 'awardee' ? '3.3em' : '2.9em' } }>{numeral(amount).format(settings.numberFormat)}</AwardAmount>
 			</AwardImage>
 		</Award>
 	);

@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { Themes, PresentationSettings } from '/imports/api';
+import { numberFormats } from '/imports/utils';
 
 /**
  * Initialize the Context
@@ -16,9 +17,19 @@ const PresentationSettingsContext = React.createContext();
  */
 const PresentationSettingsProviderTemplate = props => {
 
+	const numberFormat = () => {
+		let format = 'percent';
+		if(!props.loading && (_.isUndefined(props.presentationSettings.formatAsDollars) || props.presentationSettings.formatAsDollars)) {
+			format = 'dollar';
+		}
+		return numberFormats[format];
+	};
+
 	return (
 		<PresentationSettingsContext.Provider value={ {
-			settings: props.presentationSettings,
+			settings: Object.assign({ 
+				numberFormat: numberFormat() 
+			}, props.presentationSettings),
 			settingsLoading: props.loading,
 			handles: props.handles
 		} }>
