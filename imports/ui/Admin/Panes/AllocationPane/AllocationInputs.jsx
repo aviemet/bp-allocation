@@ -150,8 +150,8 @@ const AllocationInputs = props => {
 
 AllocationInputs.propTypes = {
 	org: PropTypes.object,
-	crowdFavorite: PropTypes.number,
-	tabInfo: PropTypes.number,
+	crowdFavorite: PropTypes.bool,
+	tabInfo: PropTypes.object,
 	hideAdminFields: PropTypes.bool
 };
 

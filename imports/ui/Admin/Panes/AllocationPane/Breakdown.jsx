@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 import numeral from 'numeral';
 
-import { ThemeContext } from '/imports/context';
+import { ThemeContext, OrganizationContext } from '/imports/context';
 
 import { Statistic, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -28,10 +28,12 @@ const BreakdownContainer = styled.div`
 const Breakdown = () => {
 
 	const { theme } = useContext(ThemeContext);
+	const { topOrgs } = useContext(OrganizationContext);
 
 	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
 	const totalPot = theme.leverageTotal + saves;
-	const leverage = theme.leverageTotal - theme.votedFunds - theme.consolationTotal;
+	const topOff = topOrgs.reduce((sum, org) => { return sum + org.topOff; }, 0);
+	const leverage = theme.leverageTotal - theme.consolationTotal - theme.votedFunds - topOff ;
 
 	return (
 		<BreakdownContainer>
@@ -56,7 +58,7 @@ const Breakdown = () => {
 
 					{/* Subtract funds from votes and topOff */}
 					<Statistic>
-						<Statistic.Value>{numeral(theme.votedFunds + saves).format('$0,0')}</Statistic.Value>
+						<Statistic.Value>{numeral(theme.votedFunds + saves + topOff).format('$0,0')}</Statistic.Value>
 						<Statistic.Label>Votes + Topoff + Saves</Statistic.Label>
 					</Statistic>
 

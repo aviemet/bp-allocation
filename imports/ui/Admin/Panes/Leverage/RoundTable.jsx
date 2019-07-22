@@ -63,7 +63,7 @@ const RoundTable = props => {
 };
 
 RoundTable.propTypes = {
-	orgs: PropTypes.object
+	orgs: PropTypes.array
 };
 
 export default RoundTable;

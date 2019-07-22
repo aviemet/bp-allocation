@@ -19,6 +19,10 @@ const ChitVoteSchema = new SimpleSchema({
 	}
 });
 
+/**
+ * Voting information for a member on a specific theme
+ * Members are persistent, can vote in multiple themes
+ */
 const MemberThemes = new Mongo.Collection('memberThemes');
 
 const MemberThemeSchema = new SimpleSchema({

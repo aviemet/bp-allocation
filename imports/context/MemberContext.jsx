@@ -49,7 +49,7 @@ MemberProviderTemplate.propTypes = {
 };
 
 const MemberProvider = withTracker(props => {
-	if(!props.id) return { loading: true };
+	if(!props.id || !props.handles) return { loading: true };
 
 	const memberThemes = MemberThemes.find({ theme: props.id }).fetch();
 

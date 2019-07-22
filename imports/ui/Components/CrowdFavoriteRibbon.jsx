@@ -15,7 +15,7 @@ const CrowdFavoriteRibbon = props => {
 
 CrowdFavoriteRibbon.propTypes = {
 	crowdFavorite: PropTypes.bool,
-	children: PropTypes.object
+	children: PropTypes.node
 };
 
 export default CrowdFavoriteRibbon;

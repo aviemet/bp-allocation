@@ -8,7 +8,7 @@ const memberData = {
 	number: faker.random.number(1000)
 }
 
-describe("MemberThemes model", function() {
+describe("Members model", function() {
 	describe("Creating a record", function() {
 
 		it("Should return an _id when succesful", function() {

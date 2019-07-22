@@ -74,8 +74,7 @@ const ChitInputs = props => {
 
 ChitInputs.propTypes = {
 	org: PropTypes.object,
-	tabInfo: PropTypes.number,
-
+	tabInfo: PropTypes.object,
 };
 
 export default ChitInputs;

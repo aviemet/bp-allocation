@@ -13,7 +13,7 @@ const AppProvider = props => (
 			<MemberProvider id={ props.id } handles={ settings.handles }><MemberContext.Consumer>{members => (
 				<OrganizationProvider id={ props.id } handles={ members.handles }><OrganizationContext.Consumer>{orgs => (
 					<ImageProvider id={ props.id } handles={ orgs.handles }>
-						{props.children}
+						{ props.children }
 					</ImageProvider>
 				)}</OrganizationContext.Consumer></OrganizationProvider>
 			)}</MemberContext.Consumer></MemberProvider>

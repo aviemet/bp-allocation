@@ -16,7 +16,7 @@ const OrganizationMethods = {
 		validate: null,
 
 		run(data) {
-			Organizations.insert(data, (err, res) => {
+			return Organizations.insert(data, (err, res) => {
 				if(err){
 					console.error(err);
 				} else {
@@ -24,7 +24,6 @@ const OrganizationMethods = {
 						$push: { organizations: res }
 					});
 				}
-
 			});
 		}
 	}),

@@ -19,7 +19,6 @@ resultRenderer.propTypes = {
 	number: PropTypes.number
 };
 
-
 class MemberSearch extends Component {
 	constructor(props) {
 		super(props);
@@ -80,7 +79,7 @@ class MemberSearch extends Component {
 }
 
 MemberSearch.propTypes = {
-	data: PropTypes.object,
+	data: PropTypes.array,
 	callback: PropTypes.func,
 	size: PropTypes.number
 };

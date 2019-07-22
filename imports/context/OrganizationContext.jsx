@@ -20,15 +20,16 @@ const OrganizationContext = React.createContext();
  */
 const OrganizationProviderTemplate = props => {
 
-	// Return only the top orgs for the theme, adding "virtual fields"
+	// Filter the top orgs for the theme
+	// Also add calculated fields
 	const getTopOrgs = () => {
-		// if(_.isUndefined(props.settings) || _.isUndefined(props.orgs) || _.isUndefined(props.theme)) return {};
 		if(props.loading) return {};
 
 		let topOrgs = filterTopOrgs(props.theme, props.orgs);
 
-		// Pre-calculate values
+		// Add calculated values
 		topOrgs = topOrgs.map(org => {
+
 			// Get save amount if saved
 			org.save = 0;
 			if(!_.isEmpty(props.theme.saves)) {
@@ -43,7 +44,9 @@ const OrganizationProviderTemplate = props => {
 			if(org.pledges) {
 				org.pledgeTotal = org.pledges.reduce((sum, pledge) => { return sum + pledge.amount;}, 0) * props.theme.matchRatio;
 			}
-
+			
+			// If voting with kiosk mode, get votes for this org from each member
+			// Override the model field 'amountFromVotes'
 			if(props.settings.useKioskFundsVoting) {
 				org.amountFromVotes = 0;
 				props.memberThemes.map(memberTheme => {
@@ -51,6 +54,7 @@ const OrganizationProviderTemplate = props => {
 					org.amountFromVotes += vote.amount || 0;
 				});
 			}
+
 			// Total amount of money allocted to this org aside from leverage distribution
 			org.allocatedFunds = roundFloat((org.amountFromVotes || 0) + org.pledgeTotal + org.save + org.topOff);
 
