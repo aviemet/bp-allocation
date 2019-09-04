@@ -1,4 +1,6 @@
+import { Meteor } from 'meteor/meteor';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import { createBrowserHistory as createHistory } from 'history';
 
@@ -15,81 +17,120 @@ import WelcomePage from '/imports/ui/Welcome/WelcomePage';
 import Kiosk from '/imports/ui/Kiosk';
 import Feedback from '/imports/ui/Feedback';
 
+import StoreTest from '/imports/stores/StoreTest';
+import AppContext from '/imports/stores/AppContext';
+import Login from '/imports/ui/Welcome/Login';
+
 const GlobalContainer = styled.div`
 	width: 100%;
 	height: 100vh;
 `;
 
+const PrivateRoute = ({ component: Component, ...rest }) => (
+	<Route { ...rest } render={ props => (
+		!Meteor.userId() 
+			? <Redirect to={ {
+				pathname: '/login',
+				state: { from: props.location }
+			} } />
+			: <Component { ...props } />
+	) } />
+);
+
+PrivateRoute.propTypes = {
+	component: PropTypes.any,
+	location: PropTypes.object
+};
+
 const browserHistory = createHistory();
 
-class App extends React.Component {
-	constructor(props) {
-		super(props);
-	}
+const App = (props) => {
+	console.log({ user: Meteor.userId() });
+	return (
+		<GlobalContainer>
+			<Router history={ browserHistory }>
+				<Switch>
 
-	render() {
-		return (
-			<GlobalContainer>
-				<Router history={ browserHistory }>
-					<Switch>
+					<Route path="/login" render={ props => (
+						!Meteor.userId() 
+							? <WelcomeLayout><Login /></WelcomeLayout>
+							: <Redirect to="/" />
+					) } />
 
-						<Route exact path="/" render={ () => (
-							<Redirect to="/themes" />
-						) } />
+					<PrivateRoute exact path="/" component={ () => (
+						<Redirect to="/themes" />
+					) } />
 
-						<Route path="/themes" render={ (props) => (
-							<WelcomeLayout>
-								<Route exact path='/themes' component={ ThemesList } />
+					<PrivateRoute path="/themes" component={ props => (
+						<WelcomeLayout>
+							<Route exact path='/themes' component={ ThemesList } />
 
-								<Route exact path='/themes/:id' component={ WelcomePage } />
-							</WelcomeLayout>
-						) } />
+							<Route exact path='/themes/:id' component={ WelcomePage } />
+						</WelcomeLayout>
+					) } />
 
-						<Route path="/admin/:id" render={ (props) => (
-							<AppProvider id={ props.match.params.id }>
+					<PrivateRoute path="/admin/:id" component={ props => (
+						<AppProvider id={ props.match.params.id }>
+							<AdminLayout>
+								<Admin />
+							</AdminLayout>
+						</AppProvider>
+					) } />
+
+					<PrivateRoute path="/simulation/:id" component={ props => (
+						<AppProvider id={ props.match.params.id }>
+							<PresentationLayout>
+								<Simulation />
+							</PresentationLayout>
+						</AppProvider>
+					) } />
+
+					<PrivateRoute path="/feedback/:id" component={ props => (
+						<AppProvider id={ props.match.params.id }>
+							<FeedbackLayout>
+								<Feedback />
+							</FeedbackLayout>
+						</AppProvider>
+					) } />
+
+					<Route path="/presentation/:id" render={ props => (
+						<AppProvider id={ props.match.params.id }>
+							<PresentationLayout>
+								<Presentation />
+							</PresentationLayout>
+						</AppProvider>
+					) } />
+
+					<Route path="/kiosk/:id" render={ props => (
+						<AppProvider id={ props.match.params.id }>
+							<KioskLayout>
+								<Kiosk />
+							</KioskLayout>
+						</AppProvider>
+					) } />
+
+					<Route exact path="/dev" render={ () => (
+						<Redirect to="/dev/DRbZ2ob63kpyaidMc" />
+					) } />
+
+					<Route path="/dev/:id" render={ props => {
+						return (
+							<AppContext themeId={ props.match.params.id }>
 								<AdminLayout>
-									<Admin />
+									<StoreTest />
 								</AdminLayout>
-							</AppProvider>
-						) } />
+							</AppContext>
+						);
+					} } />
 
-						<Route path="/presentation/:id" render={ (props) => (
-							<AppProvider id={ props.match.params.id }>
-								<PresentationLayout>
-									<Presentation />
-								</PresentationLayout>
-							</AppProvider>
-						) } />
+				</Switch>
+			</Router>
+		</GlobalContainer>
+	);
+};
 
-						<Route path="/simulation/:id" render= { (props) => (
-							<AppProvider id={ props.match.params.id }>
-								<PresentationLayout>
-									<Simulation />
-								</PresentationLayout>
-							</AppProvider>
-						) } />
-
-						<Route path="/kiosk/:id" render= { (props) => (
-							<AppProvider id={ props.match.params.id }>
-								<KioskLayout>
-									<Kiosk />
-								</KioskLayout>
-							</AppProvider>
-						) } />
-
-						<Route path="/feedback/:id" render= { (props) => (
-							<AppProvider id={ props.match.params.id }>
-								<FeedbackLayout>
-									<Feedback />
-								</FeedbackLayout>
-							</AppProvider>
-						) } />
-
-					</Switch>
-				</Router>
-			</GlobalContainer>
-		);
-	}
-}
+App.propTypes = {
+	match: PropTypes.object
+};
 
 export default App;

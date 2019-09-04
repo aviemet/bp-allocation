@@ -5,6 +5,7 @@ import { Container, Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import HomeButton from '/imports/ui/Components/HomeButton';
+import LogoutButton from '/imports/ui/Components/LogoutButton';
 
 const AdminContainer = styled.div`
 	background: #2b4a7c;
@@ -15,6 +16,7 @@ const AdminContainer = styled.div`
 const AdminLayout = (props) => (
 	<AdminContainer>
 		<HomeButton />
+		<LogoutButton />
 
 		<Container>
 			<Grid columns={ 16 }>

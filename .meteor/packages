@@ -32,3 +32,5 @@ mikowals:batch-insert
 dburles:factory
 hwillson:stub-collections
 xolvio:cleaner
+service-configuration
+accounts-google

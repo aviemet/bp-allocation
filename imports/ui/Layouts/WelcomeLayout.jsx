@@ -35,9 +35,9 @@ const WelcomeLayout = (props) => {
 			<Container>
 				<Centered>
 					<PageTitle>{props.title}</PageTitle>
-					<Hr/>
+					{/* <Hr/> */}
 					{props.children}
-					<Hr/>
+					{/* <Hr/> */}
 				</Centered>
 			</Container>
 		</WelcomeContainer>

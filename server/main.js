@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { ServiceConfiguration } from 'meteor/service-configuration';
 
 import {
 	Themes,
@@ -12,6 +13,24 @@ import {
 import '/imports/api/methods';
 
 Meteor.startup(() => {
+	Meteor.startup(() => {
+		ServiceConfiguration.configurations.upsert(
+			{ service: 'google' },
+			{
+				$set: {
+					clientId: Meteor.settings.google.client_id,
+					projectId: Meteor.settings.google.client_id,
+					authUri: Meteor.settings.google.auth_uri,
+					tokenUri: Meteor.settings.google.token_uri,
+					authProviderX509CertUrl: Meteor.settings.google.auth_provider_x509_cert_url,
+					secret: Meteor.settings.google.client_secret,
+					redirectUris: Meteor.settings.google.redirect_uris,
+					javascriptOrigins: Meteor.settings.google.javascript_origins,
+					loginStyle: 'popup',
+				}
+			}
+		);
+	});
 
 	Meteor.publish('themes', (themeId) => {
 		if(themeId){

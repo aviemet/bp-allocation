@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "meteor run",
-    "dev": "ROOT_URL=http://0.0.0.0:3000 meteor run",
+    "dev": "ROOT_URL=http://batterysf.com:3000 meteor --settings privateSettings.json run",
     "visualize": "meteor --production --extra-packages bundle-visualizer",
     "build": "meteor build --server-only --directory ../allocation",
     "lint": "eslint --ext js,jsx,ts,tsx .",
@@ -16,9 +16,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "history": "^4.7.2",
     "lodash": "^4.17.11",
     "meteor-node-stubs": "^0.4.1",
+    "mobx": "^5.13.0",
+    "mobx-react-lite": "^1.4.1",
     "moment": "^2.24.0",
     "numeral": "^2.0.6",
     "papaparse": "^4.6.3",
@@ -36,6 +39,9 @@
     "victory": "^32.2.3"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/plugin-syntax-decorators": "^7.2.0",
     "babel-eslint": "^10.0.2",
     "chai": "^4.2.0",
     "eslint": "^6.0.1",
