@@ -14,7 +14,8 @@ const Login = ({ history, location }) => {
 			if(err) {
 				console.log({ err });
 			} else {
-				history.push(location.state.from);
+				let redirect = location.state && location.state.from ? location.state.from : '/';
+				history.push(redirect);
 			}
 		});
 	};

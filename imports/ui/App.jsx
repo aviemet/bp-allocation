@@ -8,7 +8,7 @@ import styled from 'styled-components';
 
 import { AppProvider } from '/imports/context';
 
-import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts';
+import { AdminLayout, AdminLayoutNew, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts';
 import ThemesList from '/imports/ui/Welcome/ThemesList';
 import Admin from '/imports/ui/Admin';
 import Presentation from '/imports/ui/Presentation';
@@ -61,21 +61,24 @@ const App = (props) => {
 						<Redirect to="/themes" />
 					) } />
 
-					<PrivateRoute path="/themes" component={ props => (
-						<WelcomeLayout>
-							<Route exact path='/themes' component={ ThemesList } />
+					<AdminLayoutNew>
+						<PrivateRoute path="/themes" component={ props => (
+							<>
+								<Route exact path='/themes' component={ ThemesList } />
 
-							<Route exact path='/themes/:id' component={ WelcomePage } />
-						</WelcomeLayout>
-					) } />
+								<Route exact path='/themes/:id' component={ WelcomePage } />
+							</>
+						) } />
 
-					<PrivateRoute path="/admin/:id" component={ props => (
-						<AppProvider id={ props.match.params.id }>
-							<AdminLayout>
+						<PrivateRoute path="/admin/:id" component={ props => (
+							<AppProvider id={ props.match.params.id }>
+								{/* <AdminLayout> */}
+								{/* <AdminLayoutNew> */}
 								<Admin />
-							</AdminLayout>
-						</AppProvider>
-					) } />
+								{/* </AdminLayoutNew> */}
+							</AppProvider>
+						) } />
+					</AdminLayoutNew>
 
 					<PrivateRoute path="/simulation/:id" component={ props => (
 						<AppProvider id={ props.match.params.id }>

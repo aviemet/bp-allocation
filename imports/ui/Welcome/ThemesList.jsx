@@ -7,7 +7,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Themes } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 
-import { Button, Table, Icon } from 'semantic-ui-react';
+import { Button, Table, Icon, Segment, Input, Dropdown, Pagination } from 'semantic-ui-react';
 
 import NewThemeModal from '/imports/ui/Welcome/NewThemeModal';
 
@@ -28,12 +28,13 @@ class ThemesList extends React.Component {
 		return (
 			<React.Fragment>
 
+				<Segment><Input placeholder='Search' /><NewThemeModal /></Segment>
 				<Table celled striped>
 					<Table.Header>
 						<Table.Row>
 							<Table.HeaderCell>Title</Table.HeaderCell>
 							<Table.HeaderCell>Allocation Night Date</Table.HeaderCell>
-							<Table.HeaderCell><NewThemeModal /></Table.HeaderCell>
+							<Table.HeaderCell></Table.HeaderCell>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -41,15 +42,30 @@ class ThemesList extends React.Component {
 							return (
 								<Table.Row key={ theme._id }>
 									<Table.Cell>
-										<Link to={ `/themes/${theme._id}` }>{theme.title}</Link>
+										<Link to={ `/admin/${theme._id}` }>{theme.title}</Link>
 									</Table.Cell>
 									<Table.Cell>{theme.quarter}</Table.Cell>
-									<Table.Cell><Button onClick={ this.deleteTheme } value={ theme._id }><Icon name='trash' /></Button></Table.Cell>
+									<Table.Cell>
+										<Dropdown text='Actions' className='link item'>
+											<Dropdown.Menu>
+												<Dropdown.Item>Launch Kiosk</Dropdown.Item>
+												<Dropdown.Item>Launch Presentation</Dropdown.Item>
+												<Dropdown.Item>Live Stats</Dropdown.Item>
+												<Dropdown.Divider />
+												<Dropdown.Item>Delete Theme</Dropdown.Item>
+											</Dropdown.Menu>
+										</Dropdown>
+										<Button onClick={ this.deleteTheme } value={ theme._id }><Icon name='trash' /></Button>
+									</Table.Cell>
 								</Table.Row>
 							);
 						})}
 					</Table.Body>
 				</Table>
+				<Pagination 
+					defaultActivePage={ 1 }
+					totalPages={ 10 } 
+				/>
 
 			</React.Fragment>
 		);
