@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useTheme } from './AppContext';
 
 export const StoreTest = props => {
 
 	const [ count, setCount ] = useState(0);
+
+	const theme = useTheme();
+
+	console.log({ theme });
 
 	return (
 		<>

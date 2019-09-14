@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import _ from 'lodash';
 
-import { ThemeContext, OrganizationContext, ImageContext } from '/imports/context';
+import { useTheme, useOrgs, useImages } from '/imports/stores/AppContext';
 
 import { OrganizationMethods } from '/imports/api/methods';
 
-import { Header, Grid, Form } from 'semantic-ui-react';
+import { Loader, Header, Grid, Form, Container } from 'semantic-ui-react';
 
 import OrgInputs from './OrgInputs';
 import FileUpload from '/imports/ui/Components/FileUpload';
@@ -13,9 +13,11 @@ import ImportOrgs from './ImportOrgs';
 
 const OrganizationsPane = props => {
 
-	const { theme }          = useContext(ThemeContext);
-	const { orgs }  = useContext(OrganizationContext);
-	const { images }         = useContext(ImageContext);
+	const theme = useTheme();
+	const orgs = useOrgs();
+	const images = useImages();
+
+	if(!theme || !orgs) return <Loader />;
 
 	const [ orgTitle, setOrgTitle ]                  = useState('');
 	const [ orgAsk, setOrgAsk ]                      = useState('');
@@ -50,52 +52,56 @@ const OrganizationsPane = props => {
 	};
 
 	return (
-		<React.Fragment>
+		<Container>
 			<Grid.Row>
 				<Header as="h1">
-					Organizations for Theme: {theme.title}
+					Organizations for Theme: { theme.title }
 					<ImportOrgs />
 				</Header>
 			</Grid.Row>
 
-			<Form onSubmit={ handleNewOrgSubmit }>
-				<Form.Group>
-					<Form.Input
-						name='orgTitle'
-						width={ 6 }
-						type='text'
-						placeholder='Organization Name'
-						value={ orgTitle }
-						onChange={ e => setOrgTitle(e.target.value) }
-					/>
+			<Grid.Row>
 
-					<Form.Input
-						name='orgAsk'
-						width={ 2 }
-						type='text'
-						placeholder='Ask'
-						iconPosition='left'
-						icon='dollar sign'
-						value={ orgAsk }
-						onChange={ e => setOrgAsk(e.target.value) }
-					/>
+				<Form onSubmit={ handleNewOrgSubmit }>
+					<Form.Group>
+						<Form.Input
+							name='orgTitle'
+							width={ 6 }
+							type='text'
+							placeholder='Organization Name'
+							value={ orgTitle }
+							onChange={ e => setOrgTitle(e.target.value) }
+						/>
 
-					<FileUpload
-						name='orgImage'
-						width={ 4 }
-						onEnd={ ({ file }) => setOrgImage(file._id || false) }
-						onStart={ () => setAddButtonDisabled(true) }
-						onUploaded={ () => setAddButtonDisabled(false) }
-						onError={ fileError }
-					/>
+						<Form.Input
+							name='orgAsk'
+							width={ 2 }
+							type='text'
+							placeholder='Ask'
+							iconPosition='left'
+							icon='dollar sign'
+							value={ orgAsk }
+							onChange={ e => setOrgAsk(e.target.value) }
+						/>
 
-					<Form.Button width={ 2 } type='submit' disabled={ addButtonDisabled }>Add</Form.Button>
-				</Form.Group>
-			</Form>
+						<FileUpload
+							name='orgImage'
+							width={ 4 }
+							onEnd={ ({ file }) => setOrgImage(file._id || false) }
+							onStart={ () => setAddButtonDisabled(true) }
+							onUploaded={ () => setAddButtonDisabled(false) }
+							onError={ fileError }
+						/>
 
+						<Form.Button width={ 2 } type='submit' disabled={ addButtonDisabled }>Add</Form.Button>
+					</Form.Group>
+				</Form>
+
+			</Grid.Row>
+			
 			{orgs.map((org, i) => <OrgInputs org={ org } image={ _.find(images, { '_id': org.image }) } key={ i } /> )}
 
-		</React.Fragment>
+		</Container>
 	);
 };
 

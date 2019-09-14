@@ -2,14 +2,14 @@ import React from 'react';
 import Papa from 'papaparse';
 import _ from 'lodash';
 
-import { useTheme } from '/imports/context';
+import { useTheme } from '/imports/stores/AppContext';
 import { OrganizationMethods } from '/imports/api/methods';
 
 import { Button, Input } from 'semantic-ui-react';
 
 const ImportOrgs = props => {
 
-	const { theme } = useTheme();
+	const theme = useTheme();
 
 	let skipped = [];
 

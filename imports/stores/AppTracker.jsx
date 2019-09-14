@@ -45,15 +45,19 @@ const AppTracker = withTracker(({ themeId }) => {
 				}
 			}
 		}
+
+		let handlesLoading = Object.values(handles).some(handle => !handle.ready());
+		let valuesLoading  = Object.values(values).some(value => _.isUndefined(value));
+	
+		return {
+			themeId,
+			loading: handlesLoading || valuesLoading,
+			...values
+		};
 	}
 
-	let handlesLoading = Object.values(handles).some(handle => !handle.ready());
-	let valuesLoading  = Object.values(values).some(value => _.isUndefined(value));
-
-	return {
-		loading: handlesLoading || valuesLoading,
-		...values
-	};
+	// Return empty object if no themeId provided
+	return {};
 });
 
 export default AppTracker;

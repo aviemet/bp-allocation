@@ -1,9 +1,8 @@
-import React, { useState, useContext } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
-import { ThemeContext, PresentationSettingsContext, OrganizationContext } from '/imports/context';
-
-import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react';
+import { useTheme } from '/imports/stores/AppContext';
+import { Loader, Grid, Header, Menu, Segment, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { SettingsPane, MembersPane, OrganizationsPane, ChitVotingPane, AllocationPane, LeveragePane, PresentationPane } from '/imports/ui/Admin/Panes';
@@ -70,10 +69,8 @@ const TABS = {
 };
 
 // Main class for the Theme page
-const Admin = props => {
-	const { theme, themeLoading } = useContext(ThemeContext);
-	const { settingsLoading }     = useContext(PresentationSettingsContext);
-	const { orgsLoading }         = useContext(OrganizationContext);
+const Admin1 = props => {
+	const theme = useTheme();
 
 	const [ activeTab, setActiveTab ] = useState(location.hash.replace(/#/, '') || TABS.settings.slug);
 
@@ -82,11 +79,7 @@ const Admin = props => {
 		setActiveTab(slug);
 	};
 
-	const loading = (themeLoading || settingsLoading || orgsLoading);
-
-	if(loading) {
-		return <Loader />;
-	}
+	if(!theme) return <Loader />;
 
 	return (
 		<React.Fragment>
@@ -126,6 +119,26 @@ const Admin = props => {
 			</Grid.Row>
 
 		</React.Fragment>
+	);
+};
+
+
+
+const Admin = () => {
+	return (
+		<Container>
+			<Segment>
+				<Switch>
+					<Route exact path={ ['/admin/:id', '/admin/:id/settings'] } component={ SettingsPane } />
+					<Route exact path='/admin/:id/orgs' component={ OrganizationsPane } />
+					<Route exact path='/admin/:id/members' component={ MembersPane } />
+					<Route exact path='/admin/:id/chits' component={ ChitVotingPane } />
+					<Route exact path='/admin/:id/allocation' component={ AllocationPane } />
+					<Route exact path='/admin/:id/leverage' component={ LeveragePane } />
+					<Route exact path='/admin/:id/presentation' component={ PresentationPane } />
+				</Switch>	
+			</Segment>
+		</Container>
 	);
 };
 

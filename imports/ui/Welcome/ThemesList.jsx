@@ -29,7 +29,8 @@ class ThemesList extends React.Component {
 			<React.Fragment>
 
 				<Segment><Input placeholder='Search' /><NewThemeModal /></Segment>
-				<Table celled striped>
+				<Table celled striped
+					attached='top'>
 					<Table.Header>
 						<Table.Row>
 							<Table.HeaderCell>Title</Table.HeaderCell>
@@ -62,11 +63,12 @@ class ThemesList extends React.Component {
 						})}
 					</Table.Body>
 				</Table>
-				<Pagination 
+				<Pagination
+					attached='bottom'
+					style={ { width: '100%' } }
 					defaultActivePage={ 1 }
 					totalPages={ 10 } 
 				/>
-
 			</React.Fragment>
 		);
 	}

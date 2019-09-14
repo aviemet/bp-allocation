@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { useTheme, usePresentationSettings } from '/imports/context';
+import { useTheme, useSettings } from '/imports/stores/AppContext';
 
 import _ from 'lodash';
 
@@ -8,10 +8,20 @@ import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods'
 
 import { Loader, Form, Checkbox, Label } from 'semantic-ui-react';
 
-const SettingsPane = props => {
+import { observer } from 'mobx-react-lite';
+import { toJS } from 'mobx';
+import { useData } from '/imports/stores/DataProvider';
 
-	const { theme, themeLoading } = useTheme(); //useContext(ThemeContext);
-	const { settings, settingsLoading } = usePresentationSettings();
+const SettingsPane = observer(props => {
+
+	const data = useData();
+	const theme = data.theme || {};
+
+	console.log({ theme: theme });
+
+	// const theme = useTheme();
+	// const settings = useSettings();
+	const settings = {};
 
 	const [ title, setTitle ]                          = useState(theme.title);
 	const [ question, setQuestion ]                    = useState(theme.question);
@@ -61,10 +71,13 @@ const SettingsPane = props => {
 		}
 	};
 
-	if(themeLoading || settingsLoading){
-		return(<Loader/>);
-	}
+	if(!theme) return(<Loader/>);
+
 	return (
+		<>
+		<h1>Test</h1>
+		<Form.Input value={ theme.title || '' } onChange={ e => theme.updateTheme('title', e.target.value) } />
+
 		<Form onBlur={ handleSubmit } onSubmit={ handleSubmit }>
 
 			{/* Title */}
@@ -203,7 +216,8 @@ const SettingsPane = props => {
 				</Form.Field>
 			</Form.Group>
 		</Form>
+		</>
 	);
-};
+});
 
 export default SettingsPane;
