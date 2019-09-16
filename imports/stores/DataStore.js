@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { observable, action, autorun, toJS } from 'mobx';
 import ReactiveDataManager from './ReactiveDataManager';
 import { Themes, PresentationSettings, Organizations, MemberThemes, Members, Images } from '/imports/api';
-
+import ThemeStore from './ThemeStore';
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 
 class DataStore {
@@ -11,12 +11,12 @@ class DataStore {
 
 	@observable loading;
 
-	@observable theme;
-	@observable	settings;
-	@observable orgs;
-	@observable memberThemes;
-	@observable members;
-	@observable images;
+	theme;
+	settings;
+	orgs;
+	memberThemes;
+	members;
+	images;
 
 	subscriptions = {};
 	observers = {};
@@ -43,18 +43,23 @@ class DataStore {
 	}
 
 	loadData = autorun(() => {
-		console.log('autorun');
 		if(this.themeId) {
+			// Stop the subscriptions and observers which are about to be replaced
+			Object.values(this.subscriptions).forEach(subscription => subscription.stop());
+			Object.values(this.observers).forEach(observer => observer.stop());
+
+			
 			this.subscriptions.theme = Meteor.subscribe('themes', this.themeId, {
 				onReady: () => {
 					const cursor = Themes.find({ _id: this.themeId });
-					this.theme = cursor.fetch()[0];
+					this.theme = new ThemeStore(cursor.fetch()[0]);
+
 					this.observers.theme = cursor.observe({
 						added: theme => {
-							this.theme = theme;
+							this.theme.refreshTheme(theme);
 						},
 						changed: theme => {
-							this.theme = theme;
+							this.theme.refreshTheme(theme);
 						}
 					});
 				}

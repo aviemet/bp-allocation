@@ -17,8 +17,6 @@ const SettingsPane = observer(props => {
 	const data = useData();
 	const theme = data.theme || {};
 
-	console.log({ theme: theme });
-
 	// const theme = useTheme();
 	// const settings = useSettings();
 	const settings = {};
@@ -35,38 +33,38 @@ const SettingsPane = observer(props => {
 	const [ useKioskFundsVoting, setKioskFundsVoting ] = useState(settings.useKioskFundsVoting);
 	const [ formatAsDollars, setFormatAsDollars ]      = useState(settings.formatAsDollars);
 
-	const handleSubmit = (e) => {
+	const handleSubmit = e => {
 		e.preventDefault();
 
-		let data = {
+		let formData = {
 			theme: { title, question, chitWeight, matchRatio, leverageTotal, consolationActive, consolationAmount },
 			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting, formatAsDollars }
 		};
 
 		// Iterate over database objects with keys to be saved
-		_.forEach(data, (value, dataKey) => {
+		_.forEach(formData, (value, dataKey) => {
 			// In each object, delete keys which haven't changed
-			_.keys(data[dataKey]).map(key => {
+			_.keys(formData[dataKey]).map(key => {
 				// I know we shouldn't use eval; Justification:
 				// Values being eval'd are not from user, the only way to have dynamic variable names in JS
 				if(eval(key) === eval(dataKey)[key]) {
-					delete data[dataKey][key];
+					delete formData[dataKey][key];
 				}
 			});
 		});
 
 		// Only update if data has changed
-		if(!_.isEmpty(data.theme)) {
+		if(!_.isEmpty(formData.theme)) {
 			ThemeMethods.update.call({
 				id: theme._id,
-				data: data.theme
+				data: formData.theme
 			});
 		}
 
-		if(!_.isEmpty(data.settings)) {
+		if(!_.isEmpty(formData.settings)) {
 			PresentationSettingsMethods.update.call({
 				id: settings._id,
-				data: data.settings
+				data: formData.settings
 			});
 		}
 	};
@@ -76,7 +74,7 @@ const SettingsPane = observer(props => {
 	return (
 		<>
 		<h1>Test</h1>
-		<Form.Input value={ theme.title || '' } onChange={ e => theme.updateTheme('title', e.target.value) } />
+		<Form.Input value={ theme.title || '' } onChange={ e => theme.title = e.target.value } />
 
 		<Form onBlur={ handleSubmit } onSubmit={ handleSubmit }>
 
