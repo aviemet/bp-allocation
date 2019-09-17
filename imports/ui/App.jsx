@@ -20,11 +20,9 @@ const GlobalContainer = styled.div`
 const App = () => {
 	return (
 		<GlobalContainer>
-			<AppProvider>
-				<DataProvider>
-					<Routes />
-				</DataProvider>
-			</AppProvider>
+			<DataProvider>
+				<Routes />
+			</DataProvider>
 		</GlobalContainer>
 	);
 };

@@ -1,8 +1,7 @@
 import TrackableStore from './TrackableStore';
 import { observable, computed, action } from 'mobx';
 
-class ThemeStore extends TrackableStore {
-	
+class SettingsStore extends TrackableStore {
 }
 
-export default ThemeStore;
+export default SettingsStore;

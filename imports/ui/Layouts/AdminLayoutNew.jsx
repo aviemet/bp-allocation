@@ -1,14 +1,16 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useState, useEffect } from 'react';
 import { Route, withRouter, Switch } from 'react-router-dom';
+import Loading from '/imports/ui/Components/Loading';
 // import PrivateRoute from '/imports/ui/Components/PrivateRoute';
 // import { AppProvider } from '/imports/context';
 import PropTypes from 'prop-types';
 // import { Link } from 'react-router-dom';
-import { useTheme } from '/imports/stores/AppContext';
+// import { useTheme } from '/imports/stores/AppContext';
 import ThemesList from '/imports/ui/Welcome/ThemesList';
 import Admin from '/imports/ui/Admin';
 import {
+	Loader,
 	Container,
 	Divider,
 	Dropdown,
@@ -25,7 +27,7 @@ import {
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
-import { useApp } from '/imports/stores/AppProvider';
+// import { useApp } from '/imports/stores/AppProvider';
 import { useData } from '/imports/stores/DataProvider';
 
 const AdminContainer = styled.div`
@@ -53,15 +55,14 @@ const OffsetContainer = styled.div`
 const MenuLink = withRouter(props => {
 	const handleNav = () => {
 		if(props.target && props.target === '_blank') {
-			console.log({ location: props.location, match: props.match, history: props.history });
-			console.log({ createHref: props.history.createHref('admin') });
+			window.open(props.to);
 		} else {
 			props.history.push(props.to);
 		}
 	};
 
 	return (
-		<Menu.Item as='a' onClick={ handleNav }>{ props.children }</Menu.Item>
+		<Menu.Item as='a' to={ props.to } onClick={ handleNav }>{ props.children }</Menu.Item>
 	);
 });
 
@@ -70,9 +71,9 @@ const AdminLayoutNew = observer(withRouter(props => {
 	const [ sidebarVisible, setSidebarVisible ] = useState(false);
 	const [ headerTitle, setHeaderTitle ] = useState(defaultHeader);
 
-	const app = useApp();
+	// const app = useApp();
 	const data = useData();
-	const theme = useTheme();
+	// const theme = useTheme();
 
 	
 	useEffect(() => {
@@ -85,12 +86,12 @@ const AdminLayoutNew = observer(withRouter(props => {
 
 		// console.log({ app, theme });
 
-		if(app && theme) {
-			setHeaderTitle(`Allocation Night: ${theme.title}`);
+		if(data.themeId) {
+			setHeaderTitle(`Allocation Night: ${data.theme.title}`);
 		} else {
 			setHeaderTitle(defaultHeader);
 		}
-	}, [ props.location.pathname, app ]);
+	}, [ props.location.pathname, data.themeId ]);
 
 
 	return(
@@ -116,7 +117,7 @@ const AdminLayoutNew = observer(withRouter(props => {
 					<MenuLink to={ `/admin/${data.themeId}/settings` }>Settings</MenuLink>
 
 					<Header as={ 'h1' }>Pages</Header>
-					<MenuLink as={ 'a' } to='/presentation/:id' target='_blank'>Presentation</MenuLink>
+					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>Presentation</MenuLink>
 					<Menu.Item as={ 'a' }>Kiosk</Menu.Item>
 					<Menu.Item as={ 'a' }>Feedback</Menu.Item>
 
@@ -150,10 +151,11 @@ const AdminLayoutNew = observer(withRouter(props => {
 									return <ThemesList />;
 								} } />
 								<Route path='/admin/:id' render={ matchProps => {
-									// app.theme = matchProps.match.params.id;
-									// console.log({ app });
+									console.log({ loading: data.loading });
 									data.themeId = matchProps.match.params.id;
-									return <Admin />;
+									return <Loading loading={ data.loading } component={ Admin } />
+									// if(data.loaing) return <Loader />;
+									// return <Admin />;
 								} } />
 							</Switch>
 						</Grid>
@@ -163,7 +165,6 @@ const AdminLayoutNew = observer(withRouter(props => {
 		</AdminContainer>
 	);
 }));
-
 
 MenuLink.propTypes = {
 	children: PropTypes.any,

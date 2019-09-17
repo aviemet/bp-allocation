@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-
-import { useTheme, useSettings } from '/imports/stores/AppContext';
+import React, { useState, useEffect } from 'react';
 
 import _ from 'lodash';
 
@@ -9,17 +7,13 @@ import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods'
 import { Loader, Form, Checkbox, Label } from 'semantic-ui-react';
 
 import { observer } from 'mobx-react-lite';
-import { toJS } from 'mobx';
 import { useData } from '/imports/stores/DataProvider';
 
 const SettingsPane = observer(props => {
 
 	const data = useData();
 	const theme = data.theme || {};
-
-	// const theme = useTheme();
-	// const settings = useSettings();
-	const settings = {};
+	const settings = data.settings || {};
 
 	const [ title, setTitle ]                          = useState(theme.title);
 	const [ question, setQuestion ]                    = useState(theme.question);
@@ -32,6 +26,22 @@ const SettingsPane = observer(props => {
 	const [ useKioskChitVoting, setKioskChitVoting ]   = useState(settings.useKioskChitVoting);
 	const [ useKioskFundsVoting, setKioskFundsVoting ] = useState(settings.useKioskFundsVoting);
 	const [ formatAsDollars, setFormatAsDollars ]      = useState(settings.formatAsDollars);
+
+	useEffect(() => {
+		if(!data.loading) {
+			setTitle(theme.title);
+			setQuestion(theme.question);
+			setChitWeight(theme.chitWeight);
+			setMatchRatio(theme.matchRatio);
+			setLeverageTotal(theme.leverageTotal);
+			setConsolationAmount(theme.consolationAmount);
+			setConsolationActive(theme.consolationActive);
+			setTimerLength(settings.timerLength);
+			setKioskChitVoting(settings.useKioskChitVoting);
+			setKioskFundsVoting(settings.useKioskFundsVoting);
+			setFormatAsDollars(settings.formatAsDollars);
+		}
+	}, [data.loading]);
 
 	const handleSubmit = e => {
 		e.preventDefault();
@@ -69,13 +79,10 @@ const SettingsPane = observer(props => {
 		}
 	};
 
+
 	if(!theme) return(<Loader/>);
 
 	return (
-		<>
-		<h1>Test</h1>
-		<Form.Input value={ theme.title || '' } onChange={ e => theme.title = e.target.value } />
-
 		<Form onBlur={ handleSubmit } onSubmit={ handleSubmit }>
 
 			{/* Title */}
@@ -214,7 +221,6 @@ const SettingsPane = observer(props => {
 				</Form.Field>
 			</Form.Group>
 		</Form>
-		</>
 	);
 });
 

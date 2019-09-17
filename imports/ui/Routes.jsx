@@ -14,8 +14,6 @@ import Login from '/imports/ui/Welcome/Login';
 const browserHistory = createHistory();
 
 const Routes = observer(() => {
-	const appStore = useApp();
-
 	return(
 		<Router history={ browserHistory }>
 			<Switch>
