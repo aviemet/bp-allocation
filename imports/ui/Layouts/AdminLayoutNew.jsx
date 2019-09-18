@@ -66,9 +66,7 @@ const MenuLink = withRouter(props => {
 });
 
 const AdminLayoutNew = withRouter(observer(props => {
-	const defaultHeader = 'Battery Powered Allocation Night Themes';
 	const [ sidebarVisible, setSidebarVisible ] = useState(false);
-	const [ headerTitle, setHeaderTitle ] = useState(defaultHeader);
 
 	const data = useData();
 
@@ -79,13 +77,7 @@ const AdminLayoutNew = withRouter(observer(props => {
 			showSidebar = false;
 		}
 		setSidebarVisible(showSidebar);
-
-		if(data.themeId && !data.loading) {
-			setHeaderTitle(`Allocation Night: ${data.theme.title}`);
-		} else {
-			setHeaderTitle(defaultHeader);
-		}
-	}, [ props.location.pathname, data.themeId ]);
+	}, [ props.location.pathname ]);
 
 	console.log({ loading: data.loading });
 
@@ -123,7 +115,7 @@ const AdminLayoutNew = withRouter(observer(props => {
 						<Menu.Item>
 							<Image size='mini' src='/img/BPLogo.svg' style={ { filter: 'invert(100%)' } } />
 						</Menu.Item>
-						<Menu.Item header>{ headerTitle } { props.match.params.id && props.match.params.id }</Menu.Item>
+						<Menu.Item header>{ data.menuHeading } { props.match.params.id && props.match.params.id }</Menu.Item>
 
 						<Menu.Menu position='right'>
 							<Dropdown text='Menu' className='link item'>

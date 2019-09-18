@@ -38,6 +38,8 @@ class DataStore {
 
 			promises.theme = this._themeSubscription().then(theme => {
 				promises.settings = this._settingsSubscription(theme.presentationSettings);
+
+				this.menuHeading = `Battery Powered Allocation Night: ${theme.title}`;
 			});
 
 			promises.orgs = this._orgsSubscription();
@@ -49,12 +51,10 @@ class DataStore {
 			});
 
 			Promise.all(Object.values(promises)).then(values => {
-				console.log({ values, loading: this.loading });
 				this.loading = false;
-				console.log({ loading: this.loading });
 			});
 		} else {
-			console.log('no theme');
+			this.menuHeading = this.defaultMenuHeading;
 			this.theme = undefined;
 			this.settings = undefined;
 			this.orgs = undefined;
