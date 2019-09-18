@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useState, useEffect } from 'react';
 import { Route, withRouter, Switch } from 'react-router-dom';
-import Loading from '/imports/ui/Components/Loading';
 // import PrivateRoute from '/imports/ui/Components/PrivateRoute';
 // import { AppProvider } from '/imports/context';
 import PropTypes from 'prop-types';
@@ -66,16 +65,13 @@ const MenuLink = withRouter(props => {
 	);
 });
 
-const AdminLayoutNew = observer(withRouter(props => {
+const AdminLayoutNew = withRouter(observer(props => {
 	const defaultHeader = 'Battery Powered Allocation Night Themes';
 	const [ sidebarVisible, setSidebarVisible ] = useState(false);
 	const [ headerTitle, setHeaderTitle ] = useState(defaultHeader);
 
-	// const app = useApp();
 	const data = useData();
-	// const theme = useTheme();
 
-	
 	useEffect(() => {
 		// Hide sidebar on themes list, show when them is chosen
 		let showSidebar = true;
@@ -84,15 +80,14 @@ const AdminLayoutNew = observer(withRouter(props => {
 		}
 		setSidebarVisible(showSidebar);
 
-		// console.log({ app, theme });
-
-		if(data.themeId) {
+		if(data.themeId && !data.loading) {
 			setHeaderTitle(`Allocation Night: ${data.theme.title}`);
 		} else {
 			setHeaderTitle(defaultHeader);
 		}
 	}, [ props.location.pathname, data.themeId ]);
 
+	console.log({ loading: data.loading });
 
 	return(
 		<AdminContainer>
@@ -151,11 +146,9 @@ const AdminLayoutNew = observer(withRouter(props => {
 									return <ThemesList />;
 								} } />
 								<Route path='/admin/:id' render={ matchProps => {
-									console.log({ loading: data.loading });
 									data.themeId = matchProps.match.params.id;
-									return <Loading loading={ data.loading } component={ Admin } />
-									// if(data.loaing) return <Loader />;
-									// return <Admin />;
+									if(data.loading) return <Loader active />;
+									return <Admin />;
 								} } />
 							</Switch>
 						</Grid>

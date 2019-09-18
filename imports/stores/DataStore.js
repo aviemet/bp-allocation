@@ -26,13 +26,9 @@ class DataStore {
 	observers = {};
 
 	@action
-	updateSettings(newSettings) {
-		this.settings = newSettings;
-	}
-
 	loadData = autorun(() => {
 		if(this.themeId) {
-			// this.loading = true;
+			this.loading = true;
 			
 			// Stop the subscriptions and observers which are about to be replaced
 			Object.values(this.subscriptions).forEach(subscription => subscription.stop());
@@ -52,9 +48,19 @@ class DataStore {
 				promises.members = this._membersSubscription(memberIds);
 			});
 
-			Promise.all(Object.values(promises)).then(() => {
+			Promise.all(Object.values(promises)).then(values => {
+				console.log({ values, loading: this.loading });
 				this.loading = false;
+				console.log({ loading: this.loading });
 			});
+		} else {
+			console.log('no theme');
+			this.theme = undefined;
+			this.settings = undefined;
+			this.orgs = undefined;
+			this.memberThemes = undefined;
+			this.members = undefined;
+			this.images = undefined;
 		}
 	});
 

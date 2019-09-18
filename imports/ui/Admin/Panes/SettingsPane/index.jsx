@@ -27,7 +27,7 @@ const SettingsPane = observer(props => {
 	const [ useKioskFundsVoting, setKioskFundsVoting ] = useState(settings.useKioskFundsVoting);
 	const [ formatAsDollars, setFormatAsDollars ]      = useState(settings.formatAsDollars);
 
-	useEffect(() => {
+	/*useEffect(() => {
 		if(!data.loading) {
 			setTitle(theme.title);
 			setQuestion(theme.question);
@@ -41,7 +41,7 @@ const SettingsPane = observer(props => {
 			setKioskFundsVoting(settings.useKioskFundsVoting);
 			setFormatAsDollars(settings.formatAsDollars);
 		}
-	}, [data.loading]);
+	}, [data.loading]);*/
 
 	const handleSubmit = e => {
 		e.preventDefault();
@@ -81,7 +81,7 @@ const SettingsPane = observer(props => {
 
 
 	if(!theme) return(<Loader/>);
-
+// onChange={ e => setTitle(e.target.value) }  
 	return (
 		<Form onBlur={ handleSubmit } onSubmit={ handleSubmit }>
 
@@ -92,8 +92,8 @@ const SettingsPane = observer(props => {
 					type='text' 
 					placeholder='Title' 
 					label='Theme Title' 
-					value={ title } 
-					onChange={ e => setTitle(e.target.value) }  
+					value={ theme.title } 
+					onChange={ e => theme.title = e.currentTarget.value }
 				/>
 			</Form.Field>
 
