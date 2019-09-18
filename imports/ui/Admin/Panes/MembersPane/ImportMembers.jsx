@@ -2,13 +2,14 @@ import React from 'react';
 
 import { readCsvWithHeadings } from '/imports/utils';
 
-import { useTheme } from '/imports/context';
+import { useData } from '/imports/stores/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
 import { Button, Input } from 'semantic-ui-react';
 
 const ImportMembers = props => {
-	const { theme } = useTheme();
+	const data = useData();
+	const { theme } = data || {};
 
 	const acceptedValues = [
 		{

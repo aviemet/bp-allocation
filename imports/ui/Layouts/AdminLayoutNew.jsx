@@ -79,15 +79,17 @@ const AdminLayoutNew = withRouter(observer(props => {
 		setSidebarVisible(showSidebar);
 	}, [ props.location.pathname ]);
 
-	console.log({ loading: data.loading });
+	// console.log({ loading: data.loading });
+
+	const loading = data.loading;
 
 	return(
-		<AdminContainer>
+		<AdminContainer className='AdminContainer'>
 
 			{/* Sidebar encapsulates page to allow overlay on top bar menu */}
-			<Sidebar.Pushable style={ { minWidth: '100%', minHeight: '100vh' } }>
+			<Sidebar.Pushable style={ { width: '100%', height: '100vh' } } className='Sidebar.Pushable'>
 
-				<Sidebar 
+				<Sidebar className='Sidebar'
 					as={ Menu }
 					vertical
 					visible={ sidebarVisible }
@@ -110,8 +112,8 @@ const AdminLayoutNew = withRouter(observer(props => {
 
 				</Sidebar>
 
-				<Menu borderless style={ { margin: 0, borderRadius: 0 } }>
-					<Container>
+				<Menu borderless style={ { margin: 0, borderRadius: 0 } } className='Menu'>
+					<Container className='Container'>
 						<Menu.Item>
 							<Image size='mini' src='/img/BPLogo.svg' style={ { filter: 'invert(100%)' } } />
 						</Menu.Item>
@@ -130,8 +132,8 @@ const AdminLayoutNew = withRouter(observer(props => {
 				</Menu>
 
 				<OffsetContainer className={ sidebarVisible && 'offset' }>
-					<Container>
-						<Grid columns={ 16 }>
+					<Container className='Container'>
+						<Grid columns={ 16 } className='Grid'>
 							<Switch>
 								<Route exact path={ ['/themes', '/admin'] } render={ matchProps => {
 									data.themeId = undefined;
@@ -139,7 +141,7 @@ const AdminLayoutNew = withRouter(observer(props => {
 								} } />
 								<Route path='/admin/:id' render={ matchProps => {
 									data.themeId = matchProps.match.params.id;
-									if(data.loading) return <Loader active />;
+									if(loading) return <Loader active />;
 									return <Admin />;
 								} } />
 							</Switch>

@@ -2,16 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
-import { useTheme, usePresentationSettings, useMembers } from '/imports/context';
+import { useData } from '/imports/stores/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
 import { Table, Icon, Button } from 'semantic-ui-react';
 
 const MembersList = (props) => {
-
-	const { theme } = useTheme();
-	const { settings } = usePresentationSettings();
-	const { members } = useMembers();
+	const { theme, settings, members } = useData();
+	console.log({ members });
 
 	const removeMember = id => {
 		MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: theme._id });
@@ -51,7 +49,8 @@ const MembersList = (props) => {
 				) }
 			</Table.Header>
 			<Table.Body>
-				{ members && members.map(member => {
+				{ members.values && members.values.map(member => {
+					console.log({ member });
 					let votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount; }, 0);
 					let votesComplete = votedTotal === member.theme.amount;
 					let fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`;

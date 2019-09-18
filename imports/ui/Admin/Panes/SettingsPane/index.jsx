@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import _ from 'lodash';
 
@@ -10,10 +10,7 @@ import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 
 const SettingsPane = observer(props => {
-
-	const data = useData();
-	const theme = data.theme || {};
-	const settings = data.settings || {};
+	const { theme, settings } = useData();
 
 	const [ title, setTitle ]                          = useState(theme.title);
 	const [ question, setQuestion ]                    = useState(theme.question);
@@ -25,30 +22,13 @@ const SettingsPane = observer(props => {
 	const [ timerLength, setTimerLength ]              = useState(settings.timerLength);
 	const [ useKioskChitVoting, setKioskChitVoting ]   = useState(settings.useKioskChitVoting);
 	const [ useKioskFundsVoting, setKioskFundsVoting ] = useState(settings.useKioskFundsVoting);
-	const [ formatAsDollars, setFormatAsDollars ]      = useState(settings.formatAsDollars);
-
-	/*useEffect(() => {
-		if(!data.loading) {
-			setTitle(theme.title);
-			setQuestion(theme.question);
-			setChitWeight(theme.chitWeight);
-			setMatchRatio(theme.matchRatio);
-			setLeverageTotal(theme.leverageTotal);
-			setConsolationAmount(theme.consolationAmount);
-			setConsolationActive(theme.consolationActive);
-			setTimerLength(settings.timerLength);
-			setKioskChitVoting(settings.useKioskChitVoting);
-			setKioskFundsVoting(settings.useKioskFundsVoting);
-			setFormatAsDollars(settings.formatAsDollars);
-		}
-	}, [data.loading]);*/
 
 	const handleSubmit = e => {
 		e.preventDefault();
 
 		let formData = {
 			theme: { title, question, chitWeight, matchRatio, leverageTotal, consolationActive, consolationAmount },
-			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting, formatAsDollars }
+			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting }
 		};
 
 		// Iterate over database objects with keys to be saved
@@ -81,7 +61,6 @@ const SettingsPane = observer(props => {
 
 
 	if(!theme) return(<Loader/>);
-// onChange={ e => setTitle(e.target.value) }  
 	return (
 		<Form onBlur={ handleSubmit } onSubmit={ handleSubmit }>
 
@@ -92,8 +71,8 @@ const SettingsPane = observer(props => {
 					type='text' 
 					placeholder='Title' 
 					label='Theme Title' 
-					value={ theme.title } 
-					onChange={ e => theme.title = e.currentTarget.value }
+					value={ title } 
+					onChange={ e => setTitle(e.target.value) }  
 				/>
 			</Form.Field>
 
@@ -204,21 +183,6 @@ const SettingsPane = observer(props => {
 					checked={ consolationActive } 
 					onChange={ (e, value) => setConsolationActive(value.checked) } 
 				/>
-			</Form.Group>
-
-			<Form.Group>
-				<Form.Field>
-					<label>Number Format</label>
-					<Label>%</Label>
-					<Checkbox
-						slider 
-						name='settings.formatAsDollars'
-						style={ { 'verticalAlign': 'middle' } } 
-						checked={ formatAsDollars }
-						onChange={ (e, value) => setFormatAsDollars(value.checked) } 
-					/>
-					<Label>$</Label>
-				</Form.Field>
 			</Form.Group>
 		</Form>
 	);

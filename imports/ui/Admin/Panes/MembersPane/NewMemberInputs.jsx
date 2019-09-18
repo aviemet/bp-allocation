@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { roundFloat } from '/imports/utils';
 
-import { useTheme } from '/imports/context';
+import { useData } from '/imports/stores/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
 import { Form, Button } from 'semantic-ui-react';
 
 
 const NewMemberInputs = (props) => {
-
-	const { theme } = useTheme();
+	const data = useData();
+	const { theme } = data || {};
 
 	const [ firstName, setFirstName ] = useState('');
 	const [ lastName, setLastName ] = useState('');

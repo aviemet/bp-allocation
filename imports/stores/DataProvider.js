@@ -10,7 +10,6 @@ export const useData = () => useContext(DataContext);
 const dataStore = new DataStore();
 
 const DataProvider = props => {
-	console.log('data render');
 
 	return (
 		<DataContext.Provider value={ dataStore }>
