@@ -2,31 +2,24 @@ import { Meteor } from 'meteor/meteor';
 import React, { useState, useEffect } from 'react';
 import { Route, withRouter, Switch } from 'react-router-dom';
 // import PrivateRoute from '/imports/ui/Components/PrivateRoute';
-// import { AppProvider } from '/imports/context';
 import PropTypes from 'prop-types';
-// import { Link } from 'react-router-dom';
 // import { useTheme } from '/imports/stores/AppContext';
 import ThemesList from '/imports/ui/Welcome/ThemesList';
 import Admin from '/imports/ui/Admin';
 import {
 	Loader,
 	Container,
-	Divider,
 	Dropdown,
 	Grid,
 	Header,
 	Icon,
 	Image,
-	List,
-	Menu,
-	Segment,
-	Visibility,
-	Sidebar
+	Menu
 } from 'semantic-ui-react';
+import Sidebar from '/imports/ui/Components/Sidebar';
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
-// import { useApp } from '/imports/stores/AppProvider';
 import { useData } from '/imports/stores/DataProvider';
 
 const AdminContainer = styled.div`
@@ -48,6 +41,26 @@ const OffsetContainer = styled.div`
 
 	&.offset {
 		padding-left: 150px;
+	}
+`;
+
+const CustomMenu = styled(Menu)`
+	width: inherit !important;
+	backface-visibility: hidden;
+	transition: none;
+	will-change: transform;
+	transform: translate3d(0, 0, 0);
+	-webkit-overflow-scrolling: touch;
+	height: 100% !important;
+	max-height: 100%;
+	border-radius: 0em !important;
+	margin: 0em !important;
+	overflow-y: auto !important;
+	z-index: 102;
+
+	& .ui.header {
+    text-align: center;
+    padding-top: 10px;
 	}
 `;
 
@@ -79,23 +92,32 @@ const AdminLayoutNew = withRouter(observer(props => {
 		setSidebarVisible(showSidebar);
 	}, [ props.location.pathname ]);
 
-	// console.log({ loading: data.loading });
-
 	const loading = data.loading;
-
+	
 	return(
 		<AdminContainer className='AdminContainer'>
+			
+			<Menu borderless style={ { margin: 0, borderRadius: 0, paddingLeft: '150px' } } className='Menu'>
+				<Menu.Item>
+					<Image size='mini' src='/img/BPLogo.svg' style={ { filter: 'invert(100%)' } } />
+				</Menu.Item>
+				<Menu.Item header>{ data.menuHeading } { props.match.params.id && props.match.params.id }</Menu.Item>
 
-			{/* Sidebar encapsulates page to allow overlay on top bar menu */}
-			<Sidebar.Pushable style={ { width: '100%', height: '100vh' } } className='Sidebar.Pushable'>
+				<Menu.Menu position='right'>
+					<Dropdown text='Menu' className='link item'>
+						<Dropdown.Menu>
+							<Dropdown.Item onClick={ () => props.history.push('/admin') } >Themes List</Dropdown.Item>
+							<Dropdown.Divider />
+							<Dropdown.Item onClick={ () =>  Meteor.logout(() => props.history.push('/login')) } ><Icon name='sign-out' color='black'/>Sign Out</Dropdown.Item>
+						</Dropdown.Menu>
+					</Dropdown>
+				</Menu.Menu>
+			</Menu>
 
-				<Sidebar className='Sidebar'
-					as={ Menu }
-					vertical
-					visible={ sidebarVisible }
-					width='thin'
-					animation='overlay'
-				>
+			<Sidebar className='Sidebar'
+				visible={ sidebarVisible }
+			>
+				<CustomMenu vertical>
 					<Header as={ 'h1' }>Menu</Header>
 					<MenuLink to={ `/admin/${data.themeId}/orgs` }>Orgs</MenuLink>
 					<MenuLink to={ `/admin/${data.themeId}/members` }>Members</MenuLink>
@@ -109,46 +131,27 @@ const AdminLayoutNew = withRouter(observer(props => {
 					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>Presentation</MenuLink>
 					<Menu.Item as={ 'a' }>Kiosk</Menu.Item>
 					<Menu.Item as={ 'a' }>Feedback</Menu.Item>
+				</CustomMenu>
+			</Sidebar>
 
-				</Sidebar>
+			<OffsetContainer className={ sidebarVisible && 'offset' }>
+				<Container className='Container'>
+					<Grid columns={ 16 } className='Grid'>
+						<Switch>
+							<Route exact path={ ['/themes', '/admin'] } render={ matchProps => {
+								data.themeId = undefined;
+								return <ThemesList />;
+							} } />
+							<Route path='/admin/:id' render={ matchProps => {
+								data.themeId = matchProps.match.params.id;
+								if(loading) return <Loader active />;
+								return <Admin />;
+							} } />
+						</Switch>
+					</Grid>
+				</Container>
+			</OffsetContainer>
 
-				<Menu borderless style={ { margin: 0, borderRadius: 0 } } className='Menu'>
-					<Container className='Container'>
-						<Menu.Item>
-							<Image size='mini' src='/img/BPLogo.svg' style={ { filter: 'invert(100%)' } } />
-						</Menu.Item>
-						<Menu.Item header>{ data.menuHeading } { props.match.params.id && props.match.params.id }</Menu.Item>
-
-						<Menu.Menu position='right'>
-							<Dropdown text='Menu' className='link item'>
-								<Dropdown.Menu>
-									<Dropdown.Item onClick={ () => props.history.push('/admin') } >Themes List</Dropdown.Item>
-									<Dropdown.Divider />
-									<Dropdown.Item onClick={ () =>  Meteor.logout(() => props.history.push('/login')) } ><Icon name='sign-out' color='black'/>Sign Out</Dropdown.Item>
-								</Dropdown.Menu>
-							</Dropdown>
-						</Menu.Menu>
-					</Container>
-				</Menu>
-
-				<OffsetContainer className={ sidebarVisible && 'offset' }>
-					<Container className='Container'>
-						<Grid columns={ 16 } className='Grid'>
-							<Switch>
-								<Route exact path={ ['/themes', '/admin'] } render={ matchProps => {
-									data.themeId = undefined;
-									return <ThemesList />;
-								} } />
-								<Route path='/admin/:id' render={ matchProps => {
-									data.themeId = matchProps.match.params.id;
-									if(loading) return <Loader active />;
-									return <Admin />;
-								} } />
-							</Switch>
-						</Grid>
-					</Container>
-				</OffsetContainer>
-			</Sidebar.Pushable>
 		</AdminContainer>
 	);
 }));

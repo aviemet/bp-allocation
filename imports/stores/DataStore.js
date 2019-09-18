@@ -34,35 +34,30 @@ class DataStore {
 			Object.values(this.subscriptions).forEach(subscription => subscription.stop());
 			Object.values(this.observers).forEach(observer => observer.stop());
 
-			let promises = {};
+			let promises = [];
 
 			// Subscriptions to data stores
 
 			// Theme
-			promises.theme = this._themeSubscription().then(theme => {
+			promises.push(this._themeSubscription().then(theme => {
+				console.log({ theme });
 				// Presentation Settings
-				promises.settings = this._settingsSubscription(theme.presentationSettings);
+				promises.push(this._settingsSubscription(theme.presentationSettings));
 				// Organizations
-				promises.orgs = this._orgsSubscription();
+				promises.push(this._orgsSubscription());
 
-				promises.members = this._membersSubscription().then(members => {
-					// Once all subscriptions are loaded and have returned data, set loading to false
-					Promise.allSettled(Object.values(promises)).then(values => {
-						this.loading = false;
-					});
-				});
-/*
-				// Member Themes
-				promises.memberThemes = this._memberThemesSubscription().then(memberThemes => {
-					// Members
-					promises.members = this._membersSubscription(memberThemes).then(members => console.log({ members }));
+				promises.push(this._membersSubscription());
 
-					
+				// Once all subscriptions are loaded and have returned data, set loading to false
+				Promise.all(Object.values(promises)).then(values => {
+					this.loading = false;
 				});
-*/
+
 				this.menuHeading = `Battery Powered Allocation Night: ${theme.title}`;
-			});
+			}));
 		} else {
+			console.log('no theme');
+			this.loading = true;
 			this.menuHeading = this.defaultMenuHeading;
 			this.theme = undefined;
 			this.settings = undefined;

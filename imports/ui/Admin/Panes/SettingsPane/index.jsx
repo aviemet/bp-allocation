@@ -10,7 +10,10 @@ import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 
 const SettingsPane = observer(props => {
-	const { theme, settings } = useData();
+	const data = useData();
+	const { theme } = data || {};
+	const { settings } = data || {};
+	console.log({ theme });
 
 	const [ title, setTitle ]                          = useState(theme.title);
 	const [ question, setQuestion ]                    = useState(theme.question);
