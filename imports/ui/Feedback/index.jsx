@@ -1,9 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import { ThemeContext, PresentationSettingsContext, OrganizationContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
-import { Loader, Grid, Header, Menu, Segment } from 'semantic-ui-react';
+import { Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { AllocationPane, LeveragePane } from '/imports/ui/Admin/Panes';
@@ -88,12 +89,9 @@ const TABS = {
 };
 
 // Main class for the Theme page
-const Feedback = () => {
+const Feedback = observer(() => {
 	const defaultPage = 'orgs';
-
-	const { theme, themeLoading } = useContext(ThemeContext);
-	const { settingsLoading }     = useContext(PresentationSettingsContext);
-	const { orgsLoading }         = useContext(OrganizationContext);
+	const { theme } = useData();
 
 	const [ activeTab, setActiveTab ] = useState(location.hash.replace(/#/, '') || TABS[defaultPage].slug);
 
@@ -101,12 +99,6 @@ const Feedback = () => {
 		location.hash = slug;
 		setActiveTab(slug);
 	};
-
-	const loading = (themeLoading || settingsLoading || orgsLoading);
-
-	if(loading) {
-		return <Loader />;
-	}
 
 	return (
 		<React.Fragment>
@@ -146,6 +138,6 @@ const Feedback = () => {
 
 		</React.Fragment>
 	);
-};
+});
 
 export default Feedback;

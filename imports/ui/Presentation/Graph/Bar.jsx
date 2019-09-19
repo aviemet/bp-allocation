@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
-import { PresentationSettingsContext, MemberContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -72,10 +73,10 @@ AwardImg.propTypes = {
 	show: PropTypes.bool
 };
 
-const Bar = props => {
-
-	const { settings } = useContext(PresentationSettingsContext);
-	const { members } = useContext(MemberContext);
+const Bar = observer(props => {
+	const data = useData();
+	const { settings } = data;
+	const members = data.members.values;
 	
 	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0);
 	if(!props.savesVisible) shownFunds -= props.org.save;
@@ -104,7 +105,7 @@ const Bar = props => {
 			</GraphBar>
 		</BarContainer>
 	);
-};
+});
 
 Bar.propTypes = {
 	org: PropTypes.object,

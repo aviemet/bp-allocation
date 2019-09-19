@@ -3,17 +3,18 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
 
-import { useOrganizations, useMembers } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 import { OrganizationMethods } from '/imports/api/methods';
 
 import { Container, Header, Table, Button } from 'semantic-ui-react';
 
 import MemberSearch from '/imports/ui/Components/MemberSearch';
 
-const Pledges = props => {
-
-	const { topOrgs } = useOrganizations();
-	const { members, membersLoading } = useMembers();
+const Pledges = observer(props => {
+	const data = useData();
+	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
+	const members = data.members.values;
 
 	const deletePledge = (e, data) => {
 		const pledgeId = data.pledgeid;
@@ -51,7 +52,7 @@ const Pledges = props => {
 				</Table.Header>
 
 				<Table.Body>
-					{!membersLoading && pledges.map(pledge => (
+					{pledges.map(pledge => (
 						<Table.Row key={ pledge._id }>
 							<Table.Cell singleLine>{pledge.org.title}</Table.Cell>
 							<Table.Cell>
@@ -82,7 +83,7 @@ const Pledges = props => {
 			</Table>
 		</Container>
 	);
-};
+});
 
 Pledges.propTypes = {
 	hideAdminFields: PropTypes.bool

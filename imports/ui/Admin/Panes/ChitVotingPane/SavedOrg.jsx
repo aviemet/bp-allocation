@@ -1,14 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import { ThemeContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { Grid, Header, Button } from 'semantic-ui-react';
 
-const SavedOrg = props => {
+const SavedOrg = observer(props => {
 
-	const { theme } = useContext(ThemeContext);
+	const { theme } = useData();
 
 	const unSaveOrg = () => {
 		ThemeMethods.unSaveOrg.call({
@@ -27,7 +28,7 @@ const SavedOrg = props => {
 			</Grid.Column>
 		</React.Fragment>
 	);
-};
+});
 
 SavedOrg.propTypes = {
 	org: PropTypes.object,

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { roundFloat } from '/imports/utils';
 
+import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
 import { Form, Button } from 'semantic-ui-react';
 
 
-const NewMemberInputs = (props) => {
+const NewMemberInputs = observer(props => {
 	const data = useData();
 	const { theme } = data || {};
 
@@ -78,6 +79,6 @@ const NewMemberInputs = (props) => {
 			</Form.Group>
 		</Form>
 	);
-};
+});
 
 export default NewMemberInputs;

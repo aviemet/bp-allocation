@@ -1,14 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { PresentationSettingsContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Checkbox } from 'semantic-ui-react';
 
-const FundsVotingActiveToggle = () => {
+const FundsVotingActiveToggle = observer(() => {
 
-	const { settings } = useContext(PresentationSettingsContext);
+	const { settings } = useData();
 
 	const saveValue = (e, data) => {
 		PresentationSettingsMethods.update.call({
@@ -20,7 +21,7 @@ const FundsVotingActiveToggle = () => {
 		});
 	};
 
-	if(!settings.useKioskFundsVoting) return <React.Fragment></React.Fragment>;
+	if(!settings.useKioskFundsVoting) return <></>;
 
 	return(
 		<Checkbox
@@ -32,6 +33,6 @@ const FundsVotingActiveToggle = () => {
 		/>
 	);
 
-};
+});
 
 export default FundsVotingActiveToggle;

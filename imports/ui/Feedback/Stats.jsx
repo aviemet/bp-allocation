@@ -3,25 +3,27 @@ import { VictoryStack, VictoryArea, VictoryLine, VictoryChart } from 'victory';
 import numeral from 'numeral';
 import _ from 'lodash';
 
-import { useTheme, useOrganizations, useMembers } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';
 
-const Stats = (props) => {
-	const { theme } = useTheme();
-	const { topOrgs } = useOrganizations();
-	const { members } = useMembers();
+const Stats = observer(props => {
+	const data = useData();
+	const { theme } = data;
+	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
+	const members = data.members.values;
 
 	console.log({ theme, topOrgs, members });
 
 	let totals = { a: 0, b: 0, c: 0 };
-	let data = [];
+	let stats = [];
 	topOrgs.map(org => {
 		totals.a += org.amountFromVotes;
 		totals.b += org.amountFromVotes + org.pledgeTotal;
 		totals.c += org.amountFromVotes + org.pledgeTotal + org.leverageFunds;
 
-		data.push([
+		stats.push([
 			{ x: 'Round 1 Votes', y: org.amountFromVotes },
 			{ x: 'Pledges', y: org.amountFromVotes + org.pledgeTotal },
 			{ x: 'Leverage Spread', y: org.amountFromVotes + org.pledgeTotal + org.leverageFunds }
@@ -39,7 +41,7 @@ const Stats = (props) => {
 	return (
 		<React.Fragment>
 			<ExportCsvButton
-				data={ members.map(member => {
+				stats={ members.map(member => {
 					let newMember = {
 						'Name': member.fullName,
 						'Code': member.code,
@@ -50,7 +52,6 @@ const Stats = (props) => {
 					topOrgs.forEach(org => {
 						const allocation = _.find(member.theme.allocations, ['organization', org._id]);
 						newMember[org.title] = allocation ? allocation.amount : 0;
-						if(allocation) console.log({ newMember });
 					});
 
 					return newMember;
@@ -65,7 +66,7 @@ const Stats = (props) => {
 					onLoad: { duration: 1000 }
 				} }
 			>
-				{data.map((datum, i) => (
+				{stats.map((datum, i) => (
 					<VictoryArea
 						key={ i }
 						data={ datum }
@@ -78,6 +79,6 @@ const Stats = (props) => {
 			</VictoryStack>
 		</React.Fragment>
 	);
-};
+});
 
 export default Stats;

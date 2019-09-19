@@ -6,10 +6,32 @@ import { createBrowserHistory as createHistory } from 'history';
 import PrivateRoute from '/imports/ui/Components/PrivateRoute';
 
 import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 // import { AppProvider } from '/imports/context';
 import { AdminLayout, AdminLayoutNew, AdminLayoutRoute, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts';
-import { useApp } from '/imports/stores/AppProvider';
+import Presentation from '/imports/ui/Presentation';
+// import { useApp } from '/imports/stores/AppProvider';
 import Login from '/imports/ui/Welcome/Login';
+import { Loader } from 'semantic-ui-react';
+
+const LoadingRoute = observer(({ component, render, children, ...rest }) => {
+	const data = useData();
+
+	// Allow for any of the methods for passing components
+	const Component = render || component || children;
+	const loading = data.loading;
+
+	return (
+		<Route { ...rest } render={ matchProps => {
+			console.log({ matchProps });
+			data.themeId = matchProps.match.params.id || undefined;
+			if(loading) return <Loader active />;
+			console.log({ Component });
+			return <Component />;
+		} } />
+	);
+
+});
 
 const browserHistory = createHistory();
 
@@ -27,6 +49,11 @@ const Routes = observer(() => {
 				<Redirect exact from='/' to='/themes' />
 				<PrivateRoute path={ ['/themes', '/admin'] } component={ AdminLayoutNew } />
 
+				<LoadingRoute path='/presentation/:id' render={ () => (
+					<PresentationLayout>
+						<Presentation />
+					</PresentationLayout>
+				) } />
 
 				{/* <AdminLayoutNew>
 					<PrivateRoute exact path='/themes' component={ ThemesList } />

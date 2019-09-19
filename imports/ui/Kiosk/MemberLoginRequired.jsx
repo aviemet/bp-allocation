@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import { useMembers } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import styled from 'styled-components';
 import { Container, Form, Input, Header, Button } from 'semantic-ui-react';
@@ -49,7 +50,9 @@ const BackgroundImage = styled.div`
 	background-size: 1600px;
 `;
 
-const MemberLoginRequired = props => {
+const MemberLoginRequired = observer(props => {
+	const data = useData();
+	const members = data.members.values;
 
 	const formRef = React.createRef();
 
@@ -62,7 +65,6 @@ const MemberLoginRequired = props => {
 	// const [ confirmUser, setConfirmUser ] = useState(false);
 	// const [ renderCount, setRenderCount ] = useState(0);
 
-	const { members } = useMembers();
 
 	// Debugging purposes only
 	/*if(!membersLoading && !user) {
@@ -192,7 +194,7 @@ const MemberLoginRequired = props => {
 			<ChildComponent user={ user } />
 		</VotingContextProvider>
 	);
-};
+});
 
 MemberLoginRequired.propTypes = {
 	component: PropTypes.func

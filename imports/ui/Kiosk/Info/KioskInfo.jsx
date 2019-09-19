@@ -1,10 +1,10 @@
 import React from 'react';
-import _ from 'lodash';
 
-import { Loader, Card, Container, Header } from 'semantic-ui-react';
+import { Card, Container, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { useTheme, useOrganizations, useImages } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
@@ -33,14 +33,9 @@ const OrgsContainer = styled(Container)`
 	}
 `;
 
-const KioskInfo = props => {
-	const { themeLoading } = useTheme();
-	const { orgs, orgsLoading } = useOrganizations();
-	const { images } = useImages();
-
-	if(themeLoading || orgsLoading) {
-		return <Loader />;
-	}
+const KioskInfo = observer(props => {
+	const data = useData();
+	const orgs = data.orgs.values;
 
 	return (
 		<OrgsContainer>
@@ -50,12 +45,11 @@ const KioskInfo = props => {
 					<OrgCard
 						key={ org._id }
 						org={ org }
-						image={ _.find(images, ['_id', org.image]) }
 					/>
 				))}
 			</Card.Group>
 		</OrgsContainer>
 	);
-};
+});
 
 export default KioskInfo;

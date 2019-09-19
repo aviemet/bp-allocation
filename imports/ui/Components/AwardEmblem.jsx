@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
-import { PresentationSettingsContext, MemberContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { Image } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -34,10 +35,10 @@ const AwardAmount = styled.span`
 /**
  * Award Emblem
  */
-const AwardEmblem = ({ type, amount }) => {
-
-	const { settings } = useContext(PresentationSettingsContext);
-	const { members } = useContext(MemberContext);
+const AwardEmblem = observer(({ type, amount }) => {
+	const data = useData();
+	const { settings } = data;
+	const members = data.members.values;
 
 	const awardImgSrc = {
 		awardee: '/img/circle_awardee.png',
@@ -57,7 +58,7 @@ const AwardEmblem = ({ type, amount }) => {
 			</AwardImage>
 		</Award>
 	);
-};
+});
 
 AwardEmblem.propTypes = {
 	type: PropTypes.string,

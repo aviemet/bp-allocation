@@ -1,14 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { OrganizationContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { Grid, Table } from 'semantic-ui-react';
 
 import ChitInputs from '/imports/ui/Admin/Panes/ChitVotingPane/ChitInputs';
 import TopOrgsByChitVote from '/imports/ui/Admin/Panes/ChitVotingPane/TopOrgsByChitVote';
 
-const ChitVotingPane = () => {
-	const { orgs }  = useContext(OrganizationContext);
+const ChitVotingPane = observer(() => {
+	const data = useData();
+	const { orgs }  = data.orgs.values;
 
 	return (
 		<React.Fragment>
@@ -48,6 +50,6 @@ const ChitVotingPane = () => {
 
 		</React.Fragment>
 	);
-};
+});
 
 export default ChitVotingPane;

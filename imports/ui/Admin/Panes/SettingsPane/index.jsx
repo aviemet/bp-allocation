@@ -11,9 +11,7 @@ import { useData } from '/imports/stores/DataProvider';
 
 const SettingsPane = observer(props => {
 	const data = useData();
-	const { theme } = data || {};
-	const { settings } = data || {};
-	console.log({ theme });
+	const { theme, settings } = data;
 
 	const [ title, setTitle ]                          = useState(theme.title);
 	const [ question, setQuestion ]                    = useState(theme.question);

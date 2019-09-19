@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { PresentationSettingsContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Checkbox } from 'semantic-ui-react';
 
-const ChitVotingActiveToggle = () => {
-
-	const{ settings } = useContext(PresentationSettingsContext);
+const ChitVotingActiveToggle = observer(() => {
+	const { settings } = useData();
 
 	const saveValue = (e, data) => {
 		PresentationSettingsMethods.update.call({
@@ -32,6 +32,6 @@ const ChitVotingActiveToggle = () => {
 		/>
 	);
 
-};
+});
 
 export default ChitVotingActiveToggle;

@@ -1,12 +1,12 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Route, withRouter } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 
-import { Loader } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
-import { ThemeContext, OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
+import styled from 'styled-components';
 
 import { Intro, Orgs, Timer, TopOrgs, Allocation, Results } from '/imports/ui/Presentation/Pages';
 
@@ -27,22 +27,14 @@ const PageFader = styled.div`
 	opacity: 0;
 `;
 
-const Presentation = props => {
-
-	const { theme, themeLoading } = useContext(ThemeContext);
-	const { orgsLoading } = useContext(OrganizationContext);
-	const { settings, settingsLoading } = useContext(PresentationSettingsContext);
-	const { imagesLoading } = useContext(ImageContext);
+const Presentation = withRouter(observer(props => {
+	const { theme, settings } = useData();
 
 	const [ show, setShow ] = useState(true);
 
-	const loading = (themeLoading || orgsLoading || settingsLoading || imagesLoading);
-
 	useEffect(() => {
-		if(!loading) {
-			doNavigation();
-		}
-	});
+		doNavigation();
+	}, [settings.currentPage]);
 
 	// TODO: wait for image load before showing page
 	const doNavigation = () => {
@@ -56,10 +48,6 @@ const Presentation = props => {
 			}, FADE_DURATION);
 		}
 	};
-
-	if(loading) {
-		return <Loader />;
-	}
 
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
@@ -91,13 +79,15 @@ const Presentation = props => {
 			)}
 		</Transition>
 	);
-};
+}));
 
 Presentation.propTypes = {
 	history: PropTypes.object,
 	match: PropTypes.object
 };
 
-export default withRouter(Presentation);
+console.log({ pres1: Presentation });
+
+export default Presentation;
 
 

@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
-import { usePresentationSettings } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { roundFloat } from '/imports/utils';
 
@@ -15,9 +16,9 @@ import { Table, Button, Form, Input } from 'semantic-ui-react';
 /**
  * Allocation Inputs Component
  */
-const AllocationInputs = props => {
+const AllocationInputs = observer(props => {
 
-	const { settings } = usePresentationSettings();
+	const { settings } = useData();
 
 	/*
 	const actionOptions = [
@@ -145,7 +146,7 @@ const AllocationInputs = props => {
 			</Table.Cell>}
 		</Table.Row>
 	);
-};
+});
 
 AllocationInputs.propTypes = {
 	org: PropTypes.object,

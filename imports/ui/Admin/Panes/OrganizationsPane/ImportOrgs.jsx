@@ -2,14 +2,15 @@ import React from 'react';
 import Papa from 'papaparse';
 import _ from 'lodash';
 
-import { useTheme } from '/imports/stores/AppContext';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 import { OrganizationMethods } from '/imports/api/methods';
 
 import { Button, Input } from 'semantic-ui-react';
 
-const ImportOrgs = props => {
+const ImportOrgs = observer(props => {
 
-	const theme = useTheme();
+	const { theme } = useData();
 
 	let skipped = [];
 
@@ -96,6 +97,6 @@ const ImportOrgs = props => {
 			/>
 		</React.Fragment>
 	);
-};
+});
 
 export default ImportOrgs;

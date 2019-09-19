@@ -1,9 +1,10 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 
-import { ThemeContext, PresentationSettingsContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Grid, Icon, Label, Segment, Input } from 'semantic-ui-react';
@@ -29,10 +30,9 @@ const ButtonPanel = styled.div`
 	}
 `;
 
-const PresentationPane = () => {
+const PresentationPane = observer(() => {
 
-	const { theme } = useContext(ThemeContext);
-	const { settings } = useContext(PresentationSettingsContext);
+	const { theme, settings } = useData();
 
 	const [ resultsOffset, setResultsOffset ] = useState(settings.resultsOffset);
 	const [ timerLength, setTimerLength ] = useState(settings.timerLength);
@@ -188,6 +188,6 @@ const PresentationPane = () => {
 
 		</ButtonPanel>
 	);
-};
+});
 
 export default PresentationPane;

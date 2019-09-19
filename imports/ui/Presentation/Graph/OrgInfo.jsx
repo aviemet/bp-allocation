@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import { PresentationSettingsContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import numeral from 'numeral';
 
@@ -32,8 +33,8 @@ const TotalNeed = styled.div`
 	color: #00853f;
 `;
 
-const OrgInfo = props => {
-	const { settings } = useContext(PresentationSettingsContext);
+const OrgInfo = observer(props => {
+	const { settings } = useData();
 
 	return (
 		<InfoContainer className='orginfo'>
@@ -54,7 +55,7 @@ const OrgInfo = props => {
 
 		</InfoContainer>
 	);
-};
+});
 
 OrgInfo.propTypes = {
 	org: PropTypes.object,

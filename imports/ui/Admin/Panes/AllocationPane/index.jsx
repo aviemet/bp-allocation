@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import numeral from 'numeral';
 
-import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { Grid, Table, Button, Header } from 'semantic-ui-react';
 
@@ -13,13 +14,10 @@ import Pledges from './Pledges';
 
 import { ShowLeverageToggle } from '/imports/ui/Components/Toggles';
 
-const AllocationPane = props => {
-
-	const { theme } = useContext(ThemeContext);
-	const { topOrgs } = useContext(OrganizationContext);
-	const { settings } = useContext(PresentationSettingsContext);
-
-	console.log({ format: settings.numberFormat });
+const AllocationPane = observer(props => {
+	const data = useData();
+	const { theme } = data;
+	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
 
 	const _calculateCrowdFavorite = () => {
 		let favorite = 0;
@@ -130,7 +128,7 @@ const AllocationPane = props => {
 		</Grid>
 	);
 
-};
+});
 
 AllocationPane.propTypes = {
 	hideAdminFields: PropTypes.bool

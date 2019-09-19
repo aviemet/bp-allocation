@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import _ from 'lodash';
 import { observable, action, autorun, toJS } from 'mobx';
-import { Themes, PresentationSettings, Organizations, MemberThemes, Members, Images } from '/imports/api';
+
+import { Themes, PresentationSettings, Organizations, MemberThemes, Members } from '/imports/api';
 import ThemeStore from './ThemeStore';
 import OrgsStore from './OrgsStore';
-import MemberThemesStore from './MemberThemesStore';
 import SettingsStore from './SettingsStore';
 import MembersStore from './MembersStore';
 
@@ -40,7 +40,6 @@ class DataStore {
 
 			// Theme
 			promises.push(this._themeSubscription().then(theme => {
-				console.log({ theme });
 				// Presentation Settings
 				promises.push(this._settingsSubscription(theme.presentationSettings));
 				// Organizations
@@ -49,7 +48,7 @@ class DataStore {
 				promises.push(this._membersSubscription());
 
 				// Once all subscriptions are loaded and have returned data, set loading to false
-				Promise.all(Object.values(promises)).then(values => {
+				Promise.all(promises).then(values => {
 					this.loading = false;
 				});
 

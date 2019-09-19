@@ -2,19 +2,20 @@ import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import { useTheme, useOrganizations } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { MemberMethods } from '/imports/api/methods';
 
 const FundsVoteContext = React.createContext();
 
-const VotingContextProvider = props => {
-
-	const { theme } = useTheme();
-	const { topOrgs, orgsLoading } = useOrganizations();
+const VotingContextProvider = observer(props => {
+	const data = useData();
+	const { theme } = data;
+	const topOrgs = data.orgs.values; // TODO: Update when toporgs implemented
 
 	let initialVotesState = {};
-	if(!_.isUndefined(props.member) && !orgsLoading) {
+	if(!_.isUndefined(props.member)) {
 		topOrgs.map(org => {
 			const vote = _.find(props.member.theme.allocations, ['organization', org._id]);
 			initialVotesState[org._id] = vote ? vote.amount : 0;
@@ -51,7 +52,7 @@ const VotingContextProvider = props => {
 			{props.children}
 		</FundsVoteContext.Provider>
 	);
-};
+});
 
 VotingContextProvider.propTypes = {
 	member: PropTypes.object,

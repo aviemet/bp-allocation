@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 
-import { Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { KIOSK_PAGES } from '/imports/utils';
 
-import { usePresentationSettings } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import KioskInfo from './Info/KioskInfo';
 import KioskChitVoting from './ChitVoting/KioskChitVoting';
@@ -32,16 +32,14 @@ const PageFader = styled.div`
 `;
 
 // Kiosk Component
-const Kiosk = props => {
+const Kiosk = observer(props => {
+	const { settings } = useData();
 
 	const [ displayPage, setDisplayPage ] = useState(KIOSK_PAGES.info);
 	const [ show, setShow ] = useState(true);
 
-	const { settings, settingsLoading } = usePresentationSettings();
 
 	useEffect(() => {
-		if(settingsLoading) return;
-
 		if(settings.chitVotingActive) {
 			doNavigation(KIOSK_PAGES.chit);
 		} else if(settings.fundsVotingActive) {
@@ -62,9 +60,6 @@ const Kiosk = props => {
 		}
 	};
 
-	if(settingsLoading){
-		return(<Loader/>);
-	}
 
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
@@ -93,6 +88,6 @@ const Kiosk = props => {
 			)}
 		</Transition>
 	);
-};
+});
 
 export default Kiosk;

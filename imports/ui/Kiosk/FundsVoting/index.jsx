@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
 
-import { useOrganizations } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext';
 
-import { Loader, Card, Container, Header, Button } from 'semantic-ui-react';
+import { Card, Container, Header, Button } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import VotingComplete from '../VotingComplete';
@@ -68,17 +69,14 @@ const AmountRemaining = React.memo(({ value }) => {
 
 AmountRemaining.displayName = 'AmountRemaining'; // To slience eslint
 
-const FundsVotingKiosk = props => {
-
-	const { topOrgs, orgsLoading } = useOrganizations();
+const FundsVotingKiosk = observer(props => {
+	const data = useData();
+	const topOrgs = data.orgs.values; // TODO: Update when toporgs implemented
 
 	const [ votingComplete, setVotingComplete ] = useState(false);
 
 	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName;
 
-	if(orgsLoading) {
-		return <Loader />;
-	}
 	if(votingComplete) {
 		return <VotingComplete />;
 	}
@@ -126,7 +124,7 @@ const FundsVotingKiosk = props => {
 			}}</FundsVoteContext.Consumer>
 		</OrgsContainer>
 	);
-};
+});
 
 FundsVotingKiosk.propTypes = {
 	user: PropTypes.object

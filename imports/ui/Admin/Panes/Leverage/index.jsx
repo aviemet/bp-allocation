@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
 
 import { roundFloat } from '/imports/utils';
 
-import { ThemeContext, OrganizationContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { Header, Segment, Grid, Button } from 'semantic-ui-react';
@@ -13,10 +14,10 @@ import { Header, Segment, Grid, Button } from 'semantic-ui-react';
 import RoundTable from './RoundTable';
 import ResultsTable from './ResultsTable';
 
-const Leverage = props => {
-
-	const { theme } = useContext(ThemeContext);
-	const { topOrgs } = useContext(OrganizationContext);
+const Leverage = observer(props => {
+	const data = useData();
+	const { theme } = data;
+	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
 
 	/**
 	 * Returns array of "rounds" representing the distribution of the remaining
@@ -218,7 +219,7 @@ const Leverage = props => {
 			)) }
 		</React.Fragment>
 	);
-};
+});
 
 Leverage.propTypes = {
 	hideAdminFields: PropTypes.bool

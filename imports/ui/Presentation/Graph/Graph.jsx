@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
-import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import styled from 'styled-components';
 import { Grid, Progress } from 'semantic-ui-react';
@@ -125,11 +126,11 @@ const LeverageCount = styled.div`
   padding-right: .2em;
 `;
 
-const Graph = props => {
-
-	const { theme, themeLoading } = useContext(ThemeContext);
-	const { orgs, topOrgs, orgsLoading } = useContext(OrganizationContext);
-	const { settings, settingsLoading } = useContext(PresentationSettingsContext);
+const Graph = observer(props => {
+	const data = useData();
+	const { theme, settings } = useData();
+	const orgs = data.orgs.values;
+	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
 
 	const _calcStartingLeverage = () => {
 		let leverage = theme.leverageTotal;
@@ -143,12 +144,6 @@ const Graph = props => {
 		}
 		return leverage;
 	};
-
-	const loading = (themeLoading || orgsLoading || settingsLoading);
-
-	if(loading) {
-		return <GraphPageContainer />;
-	}
 
 	const visibility = settings.leverageVisible || props.simulation ? 'visible' : 'hidden';
 	const startingLeverage = _calcStartingLeverage();
@@ -208,7 +203,7 @@ const Graph = props => {
 			</InfoContainer>
 		</GraphPageContainer>
 	);
-};
+});
 
 Graph.propTypes = {
 	simulation: PropTypes.bool

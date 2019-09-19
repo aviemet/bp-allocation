@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import { ThemeContext, OrganizationContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { sortTopOrgs } from '/imports/utils';
@@ -22,9 +23,10 @@ const NumTopOrgsInput = styled(Input)`
 	}
 `;
 
-const TopOrgsByChitVote = props => {
-	const { theme } = useContext(ThemeContext);
-	const { orgs }  = useContext(OrganizationContext);
+const TopOrgsByChitVote = observer(props => {
+	const data = useData();
+	const { theme } = data;
+	const orgs = data.orgs.values;
 
 	const updateNumTopOrgs = (e, data) => {
 		if(data.value !== theme.numTopOrgs){
@@ -87,7 +89,7 @@ const TopOrgsByChitVote = props => {
 
 		</React.Fragment>
 	);
-};
+});
 
 TopOrgsByChitVote.propTypes = {
 	hideAdminFields: PropTypes.bool

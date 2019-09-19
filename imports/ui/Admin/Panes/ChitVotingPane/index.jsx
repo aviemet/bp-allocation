@@ -1,14 +1,16 @@
 import React from 'react';
 
-import { useOrganizations } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { Grid, Table } from 'semantic-ui-react';
 
 import ChitInputs from './ChitInputs';
 import TopOrgsByChitVote from './TopOrgsByChitVote';
 
-const ChitVotingPane = () => {
-	const { orgs }  = useOrganizations();
+const ChitVotingPane = observer(() => {
+	const data  = useData();
+	const orgs = data.orgs.values;
 
 	return (
 		<React.Fragment>
@@ -48,7 +50,7 @@ const ChitVotingPane = () => {
 
 		</React.Fragment>
 	);
-};
+});
 
 ChitVotingPane.propTypes = {};
 

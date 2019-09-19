@@ -1,32 +1,22 @@
 import React, { useState } from 'react';
-import _ from 'lodash';
 
-import { useTheme, useOrgs, useImages } from '/imports/stores/AppContext';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { OrganizationMethods } from '/imports/api/methods';
 
-import { Loader, Header, Grid, Form, Container } from 'semantic-ui-react';
+import { Header, Grid, Form, Container } from 'semantic-ui-react';
 
 import OrgInputs from './OrgInputs';
-import FileUpload from '/imports/ui/Components/FileUpload';
 import ImportOrgs from './ImportOrgs';
 
-const OrganizationsPane = props => {
+const OrganizationsPane = observer(props => {
+	const data = useData();
+	const { theme } = data;
+	const orgs = data.orgs.values;
 
-	const theme = useTheme();
-	const orgs = useOrgs();
-	const images = useImages();
-
-	if(!theme || !orgs) return <Loader />;
-
-	const [ orgTitle, setOrgTitle ]                  = useState('');
-	const [ orgAsk, setOrgAsk ]                      = useState('');
-	const [ orgImage, setOrgImage ]                  = useState('');
-	const [ addButtonDisabled, setAddButtonDisabled] = useState(false);
-
-	const fileError = (error, file) => {
-		console.error({ error: error, file: file });
-	};
+	const [ orgTitle, setOrgTitle ] = useState('');
+	const [ orgAsk, setOrgAsk ]     = useState('');
 
 	const handleNewOrgSubmit = (e) => {
 		e.preventDefault();
@@ -36,7 +26,6 @@ const OrganizationsPane = props => {
 		let data = {
 			title: orgTitle,
 			ask: orgAsk,
-			image: orgImage,
 			theme: theme._id
 		};
 
@@ -46,7 +35,6 @@ const OrganizationsPane = props => {
 			} else {
 				setOrgTitle('');
 				setOrgAsk('');
-				setOrgImage('');
 			}
 		});
 	};
@@ -84,25 +72,16 @@ const OrganizationsPane = props => {
 							onChange={ e => setOrgAsk(e.target.value) }
 						/>
 
-						<FileUpload
-							name='orgImage'
-							width={ 4 }
-							onEnd={ ({ file }) => setOrgImage(file._id || false) }
-							onStart={ () => setAddButtonDisabled(true) }
-							onUploaded={ () => setAddButtonDisabled(false) }
-							onError={ fileError }
-						/>
-
-						<Form.Button width={ 2 } type='submit' disabled={ addButtonDisabled }>Add</Form.Button>
+						<Form.Button width={ 2 } type='submit'>Add</Form.Button>
 					</Form.Group>
 				</Form>
 
 			</Grid.Row>
 			
-			{orgs.map((org, i) => <OrgInputs org={ org } image={ _.find(images, { '_id': org.image }) } key={ i } /> )}
+			{orgs.map((org, i) => <OrgInputs org={ org } key={ i } /> )}
 
 		</Container>
 	);
-};
+});
 
 export default OrganizationsPane;

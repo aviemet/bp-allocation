@@ -3,22 +3,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 
-const PrivateRoute = props => {
+const PrivateRoute = ({ location, component, render, children, ...rest }) => {
 	// Allow for any of the methods for passing components
-	const Component = props.render || props.component || props.children;
-
-	// Pull these out to pass remaining props
-	let rest = Object.assign({}, props);
-	delete rest.render;
-	delete rest.component;
-	delete rest.children;
+	const Component = render || component || children;
 
 	return (
 		<Route { ...rest } render={ props => (
 			!Meteor.userId() 
 				? <Redirect to={ {
 					pathname: '/login',
-					state: { from: props.location }
+					state: { from: location }
 				} } />
 				: <Component { ...props } />
 		) } />

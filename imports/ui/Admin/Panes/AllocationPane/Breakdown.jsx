@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
 import numeral from 'numeral';
 
-import { ThemeContext, OrganizationContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { Statistic, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -25,10 +26,10 @@ const BreakdownContainer = styled.div`
 	}
 `;
 
-const Breakdown = () => {
-
-	const { theme } = useContext(ThemeContext);
-	const { topOrgs } = useContext(OrganizationContext);
+const Breakdown = observer(() => {
+	const data = useData();
+	const { theme } = data;
+	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
 
 	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
 	const totalPot = theme.leverageTotal + saves;
@@ -91,7 +92,7 @@ const Breakdown = () => {
 		</BreakdownContainer>
 	);
 
-};
+});
 
 Breakdown.propTypes = {};
 

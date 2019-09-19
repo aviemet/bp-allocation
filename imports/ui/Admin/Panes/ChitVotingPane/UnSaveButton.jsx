@@ -1,17 +1,18 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
 
-import { ThemeContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { Button, Modal } from 'semantic-ui-react';
 
-const UnSaveButton = props => {
+const UnSaveButton = observer(props => {
 	const [ modalOpen, setModalOpen ] = useState(false);
 
-	const { theme } = useContext(ThemeContext);
+	const { theme } = useData();
 
 	const unSaveOrg = () => {
 		ThemeMethods.unSaveOrg.call({
@@ -56,7 +57,7 @@ const UnSaveButton = props => {
 			</Modal.Actions>
 		</Modal>
 	);
-};
+});
 
 UnSaveButton.propTypes = {
 	org: PropTypes.object

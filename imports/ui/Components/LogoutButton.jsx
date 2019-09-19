@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 
 import { Button, Icon } from 'semantic-ui-react';
 import styled from 'styled-components';

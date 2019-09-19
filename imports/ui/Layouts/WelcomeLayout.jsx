@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Hr from '/imports/ui/Components/Hr';
 import { Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
