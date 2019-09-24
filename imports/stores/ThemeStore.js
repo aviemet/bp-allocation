@@ -1,16 +1,94 @@
 import TrackableStore from './TrackableStore';
-import { observable, computed, action } from 'mobx';
-import { ThemeMethods } from '/imports/api/methods';
+import _ from 'lodash';
+import { computed } from 'mobx';
 
 class ThemeStore extends TrackableStore {
-	@action
-	setTitle(value) {
-		this.title = value;
-		this.dbUpdate({ title: value });
+	/**
+	* Sum of pledges made to top orgs
+	*/
+	@computed
+	get pledgedTotal() {
+		if(_.isUndefined(this.parent.orgs.topOrgs)) return 0;
+
+		let total = 0;
+		this.parent.orgs.topOrgs.map(org => {
+			if(org.pledges) {
+				total += org.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0);
+			}
+		});
+		return total;
 	}
 
-	dbUpdate(data) {
-		return ThemeMethods.update.call({ id: this._id, data });
+	/**
+	* Amount given to orgs other than top orgs
+	*/
+	@computed
+	get consolationTotal() {
+		return (this.organizations.length - this.numTopOrgs) * this.consolationAmount;
+	}
+
+	/**
+	* Amount of the total pot still unassigned
+	*   Total Pot
+	* - Consolation
+	* - Member Votes
+	* - Crowd Favorite Topoff
+	* - Matched Pledges
+	* = leverageRemaining
+	*/
+	@computed
+	get leverageRemaining() {
+		// Leverage moving forward into allocation round
+		let remainingLeverage = (this.leverageTotal) - this.consolationTotal;
+
+		// Subtract the amounts allocated to each org
+		this.parent.orgs.topOrgs.map((org, i) => {
+			// Amount from dollar voting round
+			let amountFromVotes = 0;
+			if(this.parent.settings.useKioskFundsVoting) {
+				this.parent.members.values.map(member => {
+					let vote = _.find(member.allocations, ['organization', org._id]) || false;
+					amountFromVotes += vote.amount || 0;
+				});
+			}
+			remainingLeverage -= parseInt(amountFromVotes || 0);
+
+			// The topoff for the crowd favorite
+			if(org.topOff > 0){
+				remainingLeverage -= org.topOff;
+			}
+			
+			// Individual pledges from members
+			if(!_.isEmpty(org.pledges)) {
+				// TODO: This should be calculated based on the match ratio
+				remainingLeverage -= org.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0);
+			}
+		});
+
+		if(remainingLeverage <= 0) return 0; // Lower bounds check in case the total pot has not been set
+		return parseFloat((remainingLeverage).toFixed(2));
+	}
+
+	/**
+	* Total amount of dollar votes
+	*/
+	@computed
+	get votedFunds() {
+		let voteAllocated = 0;
+
+		// Calculate based on individual votes if using kiosk method
+		if(this.parent.settings.useKioskFundsVoting) {
+			this.parent.members.values.map(member => {
+				voteAllocated += member.theme.allocations.reduce((sum, allocation) => { return allocation.amount + sum; }, 0);
+			});
+		// Calculate total count if not using kiosk method
+		} else {
+			this.parent.orgs.topOrgs.map((org) => {
+				voteAllocated += parseFloat(org.amountFromVotes || 0);
+				// voteAllocated += parseFloat(org.topOff || 0);
+			});
+		}
+		return voteAllocated;
 	}
 }
 

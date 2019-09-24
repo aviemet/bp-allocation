@@ -37,7 +37,7 @@ const FinishedContainer = styled.div`
 	}
 `;
 
-const Timer = props => {
+const Timer = ({ seconds }) => {
 
 	const [ countdown, setCountdown ] = useState(true);
 
@@ -58,7 +58,7 @@ const Timer = props => {
 	return (
 		<TimerContainer>
 			<ReactCountdownClock
-				seconds={ props.seconds + 1 }
+				seconds={ seconds + 1 }
 				color="#FFF"
 				size={ 850 }
 				weight={ 10 }

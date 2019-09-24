@@ -11,7 +11,7 @@ import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';
 const Stats = observer(props => {
 	const data = useData();
 	const { theme } = data;
-	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
+	const topOrgs = data.orgs.topOrgs;
 	const members = data.members.values;
 
 	console.log({ theme, topOrgs, members });

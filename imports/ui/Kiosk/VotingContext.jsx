@@ -12,7 +12,7 @@ const FundsVoteContext = React.createContext();
 const VotingContextProvider = observer(props => {
 	const data = useData();
 	const { theme } = data;
-	const topOrgs = data.orgs.values; // TODO: Update when toporgs implemented
+	const topOrgs = data.orgs.topOrgs;
 
 	let initialVotesState = {};
 	if(!_.isUndefined(props.member)) {

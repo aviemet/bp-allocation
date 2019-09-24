@@ -13,8 +13,8 @@ import MemberSearch from '/imports/ui/Components/MemberSearch';
 
 const Pledges = observer(props => {
 	const data = useData();
-	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
 	const members = data.members.values;
+	const topOrgs = data.orgs.topOrgs;
 
 	const deletePledge = (e, data) => {
 		const pledgeId = data.pledgeid;

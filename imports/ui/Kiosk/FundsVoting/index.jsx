@@ -71,7 +71,7 @@ AmountRemaining.displayName = 'AmountRemaining'; // To slience eslint
 
 const FundsVotingKiosk = observer(props => {
 	const data = useData();
-	const topOrgs = data.orgs.values; // TODO: Update when toporgs implemented
+	const topOrgs = data.orgs.topOrgs;
 
 	const [ votingComplete, setVotingComplete ] = useState(false);
 

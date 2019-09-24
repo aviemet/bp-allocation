@@ -1,7 +1,8 @@
 import { action, extendObservable } from 'mobx';
 
 class TrackableStore {
-	constructor(data) {
+	constructor(data, parent) {
+		this.parent = parent;
 		// Make all fields on the object observable
 		extendObservable(this, {
 			...data

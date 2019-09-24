@@ -76,20 +76,12 @@ AwardImg.propTypes = {
 const Bar = observer(props => {
 	const data = useData();
 	const { settings } = data;
-	const members = data.members.values;
 	
 	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0);
 	if(!props.savesVisible) shownFunds -= props.org.save;
 
 	let height = Math.min(Math.round((shownFunds / props.org.ask) * 100), 100);
 	let backgroundColor = height === 100 ? COLORS.green : COLORS.blue;
-
-	if(!settings.formatAsDollars) {
-		const percentBase = members.length * 100;
-		console.log({ percentBase, shownFunds });
-		shownFunds = (shownFunds / percentBase);
-		console.log({ percentBase, shownFunds });
-	}
 
 	if(height === 0){
 		return (

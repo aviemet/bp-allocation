@@ -130,7 +130,7 @@ const Graph = observer(props => {
 	const data = useData();
 	const { theme, settings } = useData();
 	const orgs = data.orgs.values;
-	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
+	const topOrgs = data.orgs.topOrgs;
 
 	const _calcStartingLeverage = () => {
 		let leverage = theme.leverageTotal;

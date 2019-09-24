@@ -29,11 +29,10 @@ const BreakdownContainer = styled.div`
 const Breakdown = observer(() => {
 	const data = useData();
 	const { theme } = data;
-	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
 
 	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
 	const totalPot = theme.leverageTotal + saves;
-	const topOff = topOrgs.reduce((sum, org) => { return sum + org.topOff; }, 0);
+	const topOff = data.orgs.topOrgs.reduce((sum, org) => { return sum + org.topOff; }, 0);
 	const leverage = theme.leverageTotal - theme.consolationTotal - theme.votedFunds - topOff ;
 
 	return (

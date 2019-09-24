@@ -17,7 +17,7 @@ import ResultsTable from './ResultsTable';
 const Leverage = observer(props => {
 	const data = useData();
 	const { theme } = data;
-	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
+	const topOrgs = data.orgs.topOrgs;
 
 	/**
 	 * Returns array of "rounds" representing the distribution of the remaining
@@ -151,8 +151,8 @@ const Leverage = observer(props => {
 		);
 	}
 
-	const orgSpreadSum = topOrgs.reduce((sum, org) => {return sum + org.leverageFunds;}, 0);
-	const roundSpreadSum = rounds[rounds.length - 1].orgs.reduce((sum, org) => {return sum + org.leverageFunds;}, 0);
+	const orgSpreadSum = topOrgs.reduce((sum, org) => { return sum + org.leverageFunds; }, 0);
+	const roundSpreadSum = rounds[rounds.length - 1].orgs.reduce((sum, org) => { return sum + org.leverageFunds; }, 0);
 
 	const leverageDistributed = orgSpreadSum === roundSpreadSum;
 

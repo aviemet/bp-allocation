@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import numeral from 'numeral';
 
-import { ThemeContext, OrganizationContext, PresentationSettingsContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import { Header, Card } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -45,11 +46,10 @@ const AwardsImage = styled.img`
 	width: 10%;
 `;
 
-const Results = () => {
-
-	const { theme } = useContext(ThemeContext);
-	const { topOrgs } = useContext(OrganizationContext);
-	const { settings } = useContext(PresentationSettingsContext);
+const Results = observer(() => {
+	const data = useData();
+	const { theme, settings } = data;
+	const topOrgs = data.orgs.topOrgs;
 
 	let awardees = [];
 	let others = [];
@@ -125,6 +125,6 @@ const Results = () => {
 
 		</ResultsPageContainer>
 	);
-};
+});
 
 export default Results;

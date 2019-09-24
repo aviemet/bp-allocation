@@ -1,8 +1,7 @@
 import TrackableCollection from './TrackableCollection';
 import { observable, computed, action } from 'mobx';
 
-class MembersStore extends TrackableCollection {
-	
+class MembersCollection extends TrackableCollection {
 }
 
-export default MembersStore;
+export default MembersCollection;

@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
-import _ from 'lodash';
+import React from 'react';
 
 import { Card, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
@@ -59,11 +59,11 @@ const Overlay = () => (
 	</DimOverlay>
 );
 
-const Orgs = () => {
-
-	const { orgs, topOrgs } = useContext(OrganizationContext);
-	const { settings } = useContext(PresentationSettingsContext);
-	const { images } = useContext(ImageContext);
+const Orgs = observer(() => {
+	const data = useData();
+	const { settings } = data;
+	const orgs = data.orgs.values;
+	const topOrgs = data.orgs.topOrgs;
 
 	let colorOrgs = {};
 	topOrgs.map((org, i) => {
@@ -79,7 +79,6 @@ const Orgs = () => {
 						<OrgCard
 							key={ org._id }
 							org={ org }
-							image={ _.find(images, ['_id', org.image]) }
 							index={ i }
 							overlay={ settings.colorizeOrgs && colorOrgs[org._id] ? Overlay : false }
 						/>
@@ -88,6 +87,6 @@ const Orgs = () => {
 			</Container>
 		</OrgsContainer>
 	);
-};
+});
 
 export default Orgs;

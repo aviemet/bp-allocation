@@ -11,6 +11,7 @@ import SaveButton from './SaveButton';
 import UnSaveButton from './UnSaveButton';
 
 const TopOrgsRow = props => {
+	console.log({ props });
 	/**
 	 * Manually pins an organization as a "Top Org"
 	 */

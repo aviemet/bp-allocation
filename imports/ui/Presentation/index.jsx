@@ -49,20 +49,24 @@ const Presentation = withRouter(observer(props => {
 		}
 	};
 
+	// Component doesn't update from mobx changes unless they are referenced
+	const title = theme.title || '';
+	const question = theme.question || '';
+
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{(state) => (
 				<PageFader style={ { ...defaultStyle, ...transitionStyles[state] } }>
 					{/* Intro */}
-					<Route path={ `${props.match.path}/intro` } render={ (props) => (
-						<Intro title={ theme.title } question={ theme.question } />
+					<Route path={ `${props.match.path}/intro` } render={ () => (
+						<Intro title={ title } question={ question } />
 					) } />
 
 					{/* Participating Organizations */}
 					<Route exact path={ `${props.match.path}/orgs` } component={ Orgs } />
 
 					{/* Timer */}
-					<Route exact path={ `${props.match.path}/timer` } render={ (props) => (
+					<Route exact path={ `${props.match.path}/timer` } render={ () => (
 						<Timer seconds={ settings.timerLength } />
 					) } />
 
@@ -86,8 +90,4 @@ Presentation.propTypes = {
 	match: PropTypes.object
 };
 
-console.log({ pres1: Presentation });
-
 export default Presentation;
-
-

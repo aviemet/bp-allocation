@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-
 import _ from 'lodash';
-
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
-
-import { Loader, Form, Checkbox, Label } from 'semantic-ui-react';
-
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
+import { Loader, Form, Checkbox, Label } from 'semantic-ui-react';
 
 const SettingsPane = observer(props => {
 	const data = useData();
@@ -72,7 +68,7 @@ const SettingsPane = observer(props => {
 					type='text' 
 					placeholder='Title' 
 					label='Theme Title' 
-					value={ title } 
+					value={ title || '' } 
 					onChange={ e => setTitle(e.target.value) }  
 				/>
 			</Form.Field>
@@ -84,7 +80,7 @@ const SettingsPane = observer(props => {
 					type='text' 
 					placeholder='Question' 
 					label='Theme Question' 
-					value={ question } 
+					value={ question || '' } 
 					onChange={ e => setQuestion(e.target.value) } 
 				/>
 			</Form.Field>
@@ -97,7 +93,7 @@ const SettingsPane = observer(props => {
 					iconPosition='left' 
 					label='Total Pot' 
 					placeholder='Total Pot' 
-					value={ leverageTotal } 
+					value={ leverageTotal || 0 } 
 					onChange={ e => setLeverageTotal(e.target.value) } 
 				/>
 			</Form.Group>
@@ -109,7 +105,7 @@ const SettingsPane = observer(props => {
 					type='number' 
 					placeholder='Timer Length' 
 					label='Length of Timers' 
-					value={ timerLength } 
+					value={ timerLength || 0 } 
 					onChange={ e => setTimerLength(e.target.value) } 
 				/>
 
@@ -119,7 +115,7 @@ const SettingsPane = observer(props => {
 					type='number' 
 					placeholder='Chit Weight' 
 					label='Chit weight in ounces' 
-					value={ chitWeight } 
+					value={ chitWeight || 0 } 
 					onChange={ e => setChitWeight(e.target.value) } 
 				/>
 
@@ -129,7 +125,7 @@ const SettingsPane = observer(props => {
 					type='number' 
 					placeholder='Match Ratio' 
 					label='Multiplier for matched funds' 
-					value={ matchRatio } 
+					value={ matchRatio || 0 } 
 					onChange={ e => setMatchRatio(e.target.value) } 
 				/>
 
@@ -144,7 +140,7 @@ const SettingsPane = observer(props => {
 						slider 
 						name='settings.useKioskChitVoting' 
 						style={ { 'verticalAlign': 'middle' } } 
-						checked={ useKioskChitVoting } 
+						checked={ !!useKioskChitVoting } 
 						onChange={ (e, value) => setKioskChitVoting(value.checked) } 
 					/>
 					<Label>Kiosk</Label>
@@ -158,7 +154,7 @@ const SettingsPane = observer(props => {
 						slider 
 						name='settings.useKioskFundsVoting' 
 						style={ { 'verticalAlign': 'middle' } } 
-						checked={ useKioskFundsVoting } 
+						checked={ !!useKioskFundsVoting } 
 						onChange={ (e, value) => setKioskFundsVoting(value.checked) } 
 					/>
 					<Label>Kiosk</Label>
@@ -172,7 +168,7 @@ const SettingsPane = observer(props => {
 					type='number' 
 					placeholder='Consolation' 
 					label='Amount for bottom orgs' 
-					value={ consolationAmount } 
+					value={ consolationAmount || 0 } 
 					onChange={ e => setConsolationAmount(e.target.value) } 
 				/>
 
@@ -181,7 +177,7 @@ const SettingsPane = observer(props => {
 					toggle 
 					name='theme.consolationActive' 
 					label='Use Consolation?' 
-					checked={ consolationActive } 
+					checked={ !!consolationActive } 
 					onChange={ (e, value) => setConsolationActive(value.checked) } 
 				/>
 			</Form.Group>

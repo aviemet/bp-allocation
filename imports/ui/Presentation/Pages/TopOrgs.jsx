@@ -4,7 +4,8 @@ import _ from 'lodash';
 import { Card } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { OrganizationContext, PresentationSettingsContext, ImageContext } from '/imports/context';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/stores/DataProvider';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
@@ -42,11 +43,10 @@ const CardsContainer = styled.div`
 	}
 `;
 
-const TopOrgs = () => {
-
-	const { topOrgs } = useContext(OrganizationContext);
-	const { settings } = useContext(PresentationSettingsContext);
-	const { images } = useContext(ImageContext);
+const TopOrgs = observer(() => {
+	const data = useData();
+	const { settings } = data;
+	const topOrgs = data.orgs.topOrgs;
 
 	return (
 		<TopOrgsContainer>
@@ -57,7 +57,6 @@ const TopOrgs = () => {
 						<OrgCard
 							key={ org._id }
 							org={ org }
-							image={ _.find(images, ['_id', org.image]) }
 							animateClass={ settings.animateOrgs }
 							size='big'
 						/>
@@ -66,6 +65,6 @@ const TopOrgs = () => {
 			</CardsContainer>
 		</TopOrgsContainer>
 	);
-};
+});
 
 export default TopOrgs;

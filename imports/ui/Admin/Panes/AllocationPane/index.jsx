@@ -17,7 +17,7 @@ import { ShowLeverageToggle } from '/imports/ui/Components/Toggles';
 const AllocationPane = observer(props => {
 	const data = useData();
 	const { theme } = data;
-	const topOrgs = data.orgs.values; // TODO: Change when toporgs implemented
+	const topOrgs = data.orgs.topOrgs;
 
 	const _calculateCrowdFavorite = () => {
 		let favorite = 0;
@@ -30,6 +30,8 @@ const AllocationPane = observer(props => {
 		});
 		return favorite;
 	};
+
+
 
 	return (
 		<Grid>

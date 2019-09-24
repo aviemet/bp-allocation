@@ -119,13 +119,13 @@ const AdminLayoutNew = withRouter(observer(props => {
 			>
 				<CustomMenu vertical>
 					<Header as={ 'h1' }>Menu</Header>
+					<MenuLink to={ `/admin/${data.themeId}/settings` }>Settings</MenuLink>
 					<MenuLink to={ `/admin/${data.themeId}/orgs` }>Orgs</MenuLink>
 					<MenuLink to={ `/admin/${data.themeId}/members` }>Members</MenuLink>
 					<MenuLink to={ `/admin/${data.themeId}/chits` }>Chit Votes</MenuLink>
 					<MenuLink to={ `/admin/${data.themeId}/allocation` }>Allocations</MenuLink>
 					<MenuLink to={ `/admin/${data.themeId}/leverage` }>Leverage</MenuLink>
 					<MenuLink to={ `/admin/${data.themeId}/presentation` }>Presentation</MenuLink>
-					<MenuLink to={ `/admin/${data.themeId}/settings` }>Settings</MenuLink>
 
 					<Header as={ 'h1' }>Pages</Header>
 					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>Presentation</MenuLink>

@@ -3,8 +3,14 @@ import _ from 'lodash';
 
 class TrackableCollection {
 	@observable values = [];
-	constructor(data) {
-		this.values = data;
+
+	constructor(data, parent, Store) {
+		this.parent = parent;
+		if(Store) {
+			this.values = data.map(value => new Store(value, parent));
+		} else {
+			this.values = data;
+		}
 	}
 
 	@action

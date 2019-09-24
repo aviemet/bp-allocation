@@ -4,9 +4,10 @@ import { observable, action, autorun, toJS } from 'mobx';
 
 import { Themes, PresentationSettings, Organizations, MemberThemes, Members } from '/imports/api';
 import ThemeStore from './ThemeStore';
-import OrgsStore from './OrgsStore';
+import OrgsCollection from './OrgsCollection';
+import OrgStore from './OrgStore';
 import SettingsStore from './SettingsStore';
-import MembersStore from './MembersStore';
+import MembersCollection from './MembersCollection';
 
 class DataStore {
 	@observable themeId;
@@ -55,7 +56,6 @@ class DataStore {
 				this.menuHeading = `Battery Powered Allocation Night: ${theme.title}`;
 			}));
 		} else {
-			console.log('no theme');
 			this.loading = true;
 			this.menuHeading = this.defaultMenuHeading;
 			this.theme = undefined;
@@ -73,7 +73,7 @@ class DataStore {
 			this.subscriptions.theme = Meteor.subscribe('themes', this.themeId, {
 				onReady: () => {
 					const themeCursor = Themes.find({ _id: this.themeId });
-					this.theme = new ThemeStore(themeCursor.fetch()[0]);
+					this.theme = new ThemeStore(themeCursor.fetch()[0], this);
 
 					this.observers.theme = themeCursor.observe({
 						added: theme => this.theme.refreshData(theme),
@@ -92,7 +92,7 @@ class DataStore {
 			this.subscriptions.orgs = Meteor.subscribe('organizations', this.themeId, {
 				onReady: () => {
 					const orgsCursor = Organizations.find({ theme: this.themeId });
-					this.orgs = new OrgsStore(orgsCursor.fetch());
+					this.orgs = new OrgsCollection(orgsCursor.fetch(), this, OrgStore);
 
 					this.observers.orgs = orgsCursor.observe({
 						added: orgs => this.orgs.refreshData(orgs),
@@ -127,7 +127,8 @@ class DataStore {
 								let memberTheme = _.find(memberThemes, ['member', member._id]);
 								return Object.assign({ theme: memberTheme }, member);
 							});
-							this.members = new MembersStore(membersCombined);
+							this.members = new MembersCollection(membersCombined, this);
+							this.members.parent = this;
 	
 							this.observers.members = membersCursor.observe({
 								added: members => this.members.refreshData(members),
@@ -146,61 +147,15 @@ class DataStore {
 			});
 		});
 	}
-	/*
-	_memberThemesSubscription() {
-		return new Promise((resolve, reject) => {
 
-			this.subscriptions.memberThemes = Meteor.subscribe('memberThemes', this.themeId, {
-				onReady: () => {
-					const memberThemesCursor = MemberThemes.find({ theme: this.themeId });
-					// this.memberThemes = new MemberThemesStore(memberThemesCursor.fetch());
-					const memberThemes = memberThemesCursor.fetch();
-
-					this.observers.memberThemes = memberThemesCursor.observe({
-						added: memberThemes => this.memberThemes.refreshData(memberThemes),
-						changed: memberThemes => this.memberThemes.refreshData(memberThemes)
-					});
-
-					console.log({ memberThemes });
-					resolve(memberThemes);
-				}
-			});
-		});
-	}
-
-	_membersSubscription(memberThemes) {
-		return new Promise((resolve, reject) => {
-			const memberIds = memberThemes.values.map(memberTheme => memberTheme.member);
-
-			this.subscriptions.members = Meteor.subscribe('members', memberIds, {
-				onReady: () => {
-					const membersCursor = Members.find({ _id: { $in: memberIds }});
-					const members = membersCursor.fetch();
-					let membersCombined = members.map(member => {
-						let memberTheme = _.find(memberThemes, ['member', member._id]);
-						// console.log({member, memberTheme});
-						return Object.assign({ theme: memberTheme }, member);
-					});
-					this.members = new MembersStore(membersCombined);
-
-					this.observers.members = membersCursor.observe({
-						added: members => this.members.refreshData(members),
-						changed: members => this.members.refreshData(members)
-					});
-
-					resolve(toJS(this.members));
-				}
-			});
-		});
-	}
-	*/
 	_settingsSubscription(id) {
 		return new Promise((resolve, reject) => {
 
 			this.subscriptions.settings = Meteor.subscribe('presentationSettings', id, {
 				onReady: () => {
 					const settingsCursor = PresentationSettings.find({ _id: id });
-					this.settings = new SettingsStore(settingsCursor.fetch()[0]);
+					this.settings = new SettingsStore(settingsCursor.fetch()[0], this);
+					this.settings.parent = this;
 
 					this.observers.settings = settingsCursor.observe({
 						added: settings => this.settings.refreshData(settings),
