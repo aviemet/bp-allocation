@@ -19,8 +19,9 @@ import { Table, Button, Form, Input } from 'semantic-ui-react';
 const AllocationInputs = observer(props => {
 	const { settings } = useData();
 
-	const [ votedAmount, setVotedAmount ] = useState(props.org.amountFromVotes);
+	const [ votedAmount, setVotedAmount ] = useState(props.org.votedTotal);
 
+	// Controlling input only visible if not in kiosk voting mode
 	const enterAmountFromVotes = e => {
 		OrganizationMethods.update.call({ id: props.org._id, data: {
 			amountFromVotes: parseInt(e.currentTarget.value)
@@ -63,7 +64,7 @@ const AllocationInputs = observer(props => {
 			{/* Voted Amount Input */}
 			<Table.Cell>
 				{props.hideAdminFields || settings.useKioskFundsVoting ?
-					<span>{numeral(props.org.amountFromVotes || 0).format('$0,0')}</span>
+					<span>{numeral(props.org.votedAmount || 0).format('$0,0')}</span>
 					:
 					<Input
 						fluid

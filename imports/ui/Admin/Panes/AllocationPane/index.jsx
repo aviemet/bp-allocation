@@ -21,6 +21,7 @@ const AllocationPane = observer(props => {
 	const { theme } = data;
 	const topOrgs = data.orgs.topOrgs;
 
+	/*
 	topOrgs.map(org => {
 		let newOrg = Object.assign({}, toJS(org));
 		delete newOrg.parent;
@@ -31,14 +32,14 @@ const AllocationPane = observer(props => {
 		newOrg.allocatedFunds = org.allocatedFunds;
 		newOrg.need = org.need;
 		console.log({ org: newOrg });
-	});
+	});*/
 
 	const _calculateCrowdFavorite = () => {
 		let favorite = 0;
 
 		topOrgs.map((org, i) => {
-			let favoriteAmount = topOrgs[favorite].amountFromVotes || 0;
-			if(org.amountFromVotes > favoriteAmount){
+			let favoriteAmount = topOrgs[favorite].votedAmount || 0;
+			if(org.votedAmount > favoriteAmount){
 				favorite = i;
 			}
 		});
@@ -110,7 +111,7 @@ const AllocationPane = observer(props => {
 							<Table.Row textAlign='right' className='bold'>
 								<Table.HeaderCell>Totals:</Table.HeaderCell>
 								<Table.HeaderCell>{ 
-									numeral(topOrgs.reduce((sum, org) => { return sum + org.amountFromVotes; }, 0)).format('$0,0') 
+									numeral(topOrgs.reduce((sum, org) => { return sum + org.votedAmount; }, 0)).format('$0,0') 
 								}</Table.HeaderCell>
 								<Table.HeaderCell>{
 									numeral(topOrgs.reduce((sum, org) => {

@@ -12,9 +12,10 @@ class TrackableStore {
 	// Used by root store to udpate values from DB changes
 	@action
 	refreshData(data) {
-		// TODO: Error checking? Can only update existing fields maybe?
 		for(let [ key, value ] of Object.entries(data)) {
-			this[key] = value;
+			if(this[key] !== value) {
+				this[key] = value;
+			}
 		}
 	}
 }

@@ -21,14 +21,17 @@ class TrackableCollection {
 
 	@action
 	refreshData(data) {
+		// console.log({ data });
 		let i = _.findIndex(this.values, value => value._id === data._id );
 		if(i >= 0) {
+			// console.log('Update values');
 			for(let [ key, value ] of Object.entries(data)) {
 				if(this.values[i][key] !== value) {
 					this.values[i][key] = value;
 				}
 			}
 		} else {
+			// console.log('Add values');
 			const newElement = this._store ? new this._store(data, parent) : data;
 			this.values.push(newElement);
 		}

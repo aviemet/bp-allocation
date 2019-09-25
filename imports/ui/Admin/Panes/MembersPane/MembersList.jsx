@@ -10,7 +10,6 @@ import { Table, Icon, Button } from 'semantic-ui-react';
 
 const MembersList = observer(props => {
 	const { theme, settings, members } = useData();
-	console.log({ members });
 
 	const removeMember = id => {
 		MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: theme._id });

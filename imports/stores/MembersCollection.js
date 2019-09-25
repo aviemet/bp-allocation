@@ -4,7 +4,7 @@ import { MemberThemes, Members } from '/imports/api';
 import _ from 'lodash';
 
 class MembersCollection extends TrackableCollection {
-	@action
+/*	@action
 	updateMember(member) {
 		let memberClone = _.cloneDeep(member);
 		delete memberClone.theme;
@@ -21,7 +21,7 @@ class MembersCollection extends TrackableCollection {
 				}
 			}
 		}
-	}
+	}*/
 }
 
 export default MembersCollection;

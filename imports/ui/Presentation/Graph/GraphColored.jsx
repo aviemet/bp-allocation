@@ -137,7 +137,7 @@ const Graph = observer(props => {
 		let leverage = theme.leverageTotal;
 
 		topOrgs.map((org) => {
-			leverage -= org.amountFromVotes || 0;
+			leverage -= org.votedAmount || 0;
 			leverage -= org.topOff || 0;
 		});
 		if(theme.consolationActive) {

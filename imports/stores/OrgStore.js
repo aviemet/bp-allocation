@@ -1,17 +1,13 @@
-import TrackableCollection from './TrackableCollection';
 import { computed, toJS, observable, extendObservable } from 'mobx';
-import { filterTopOrgs, roundFloat } from '/imports/utils';
+import { roundFloat } from '/imports/utils';
 import _ from 'lodash';
 
 class OrgStore {
 	constructor(org, parent) {
 		this.parent = parent;
 
-		const { amountFromVotes } = org;
-		delete org.amountFromVotes;
 		// Make all fields on the object observable
 		extendObservable(this, {
-			_amountFromVotes: amountFromVotes,
 			...org
 		});
 	}
@@ -40,12 +36,12 @@ class OrgStore {
 	}
 
 	@computed
-	get amountFromVotes() {
+	get votedTotal() {
 		if(this.parent.loading) return 0; 
 
 		// If voting with kiosk mode, get votes for this org from each member
 		// Override the model field 'amountFromVotes'
-		let amount = this._amountFromVotes;
+		let amount = this.amountFromVotes;
 		if(this.parent.settings.useKioskFundsVoting) {
 			this.parent.members.values.map(member => {
 				let vote = _.find(member.allocations, ['organization', this._id]) || false;
@@ -58,7 +54,7 @@ class OrgStore {
 	@computed
 	get allocatedFunds() {
 		// Total amount of money allocted to this org aside from leverage distribution
-		return roundFloat((this.amountFromVotes || 0) + this.pledgeTotal + this.save + this.topOff);
+		return roundFloat((this.votedTotal || 0) + this.pledgeTotal + this.save + this.topOff);
 	}
 
 	@computed
