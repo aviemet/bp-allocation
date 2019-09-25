@@ -28,7 +28,7 @@ const numberFormats = {
 /**
  * Return all orgs sorted by votes
  */
-const sortTopOrgs = (theme, orgs) => {
+/*const sortTopOrgs = (theme, orgs) => {
 	if(!theme){
 		throw new Meteor.Error('No theme provided to ThemeMethods.filterTopOrgs');
 	}
@@ -89,18 +89,18 @@ const sortTopOrgs = (theme, orgs) => {
 
 	return sortedOrgs;
 };
-
+*/
 /**
  * Get Top Orgs Sorted by chit votes
  */
-const filterTopOrgs = (theme, orgs) => {
+/*const filterTopOrgs = (theme, orgs) => {
 	const slice = theme.numTopOrgs >= theme.topOrgsManual.length ? theme.numTopOrgs : theme.topOrgsManual.length;
 
 	let sortedOrgs = sortTopOrgs(theme, orgs);
 
 	return sortedOrgs.slice(0, slice);
 };
-
+*/
 
 /**************************************
  *          PAPAPARSE METHODS         *

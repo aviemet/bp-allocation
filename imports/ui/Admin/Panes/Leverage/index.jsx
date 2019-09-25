@@ -8,6 +8,7 @@ import { roundFloat } from '/imports/utils';
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { ThemeMethods } from '/imports/api/methods';
+import LeverageObject from './Leverage';
 
 import { Header, Segment, Grid, Button } from 'semantic-ui-react';
 
@@ -19,6 +20,10 @@ const Leverage = observer(props => {
 	const { theme } = data;
 	const topOrgs = data.orgs.topOrgs;
 
+	const leverage = new LeverageObject(topOrgs, theme.leverageRemaining);
+	const rounds = leverage.getLeverageSpreadRounds();
+	console.log({ rounds });
+
 	/**
 	 * Returns array of "rounds" representing the distribution of the remaining
 	 * leverage
@@ -26,7 +31,7 @@ const Leverage = observer(props => {
 	 * @param  {Number} leverageRemaining Amount of remaining leverage
 	 * @return {Array}                    Array of Objects (rounds)
 	 */
-	const getLeverageSpreadRounds = (leverageRemaining) => {
+	/*const getLeverageSpreadRounds = (leverageRemaining) => {
 		let { orgs, sumRemainingOrgs } = _initLeverageVars();
 		let rounds = [];
 
@@ -69,7 +74,7 @@ const Leverage = observer(props => {
 	};
 
 	const _orgRoundValues = (org, nRounds, leverageRemaining, sumRemainingOrgs) => {
-		/** DEFAULTS **/
+		// DEFAULTS
 		org.roundFunds = 0; // Amount allocated to org this round
 		org.percent = 0; // Percentage of remaining pot used for allocation
 
@@ -94,13 +99,13 @@ const Leverage = observer(props => {
 
 		return org;
 	};
-
+*/
 	/**
 	 * Clone top orgs (so no reference issues)
 	 * Add an accumulator for the leverage allocation per round
 	 * Also calculate sumRemainingOrgs for first round leverage
 	 */
-	const _initLeverageVars = () => {
+	/*const _initLeverageVars = () => {
 		// Amount allocated so far to top-orgs which have not yet been fully funded
 		let sumRemainingOrgs = 0;
 
@@ -117,20 +122,20 @@ const Leverage = observer(props => {
 		return { orgs, sumRemainingOrgs };
 	};
 
-	const _numFullyFundedOrgs = (orgs) => {
+	/*const _numFullyFundedOrgs = (orgs) => {
 		return orgs.reduce((sum, org) => {
 			return sum + (org.need <= 0 ? 1 : 0);
 		}, 0);
 	};
 
-	const finalRoundAllcoation = (rounds) => {
+	/*const finalRoundAllcoation = (rounds) => {
 		let lastRound = rounds[rounds.length - 1];
 		let leverageRemaining = lastRound.leverageRemaining;
 		let funds = lastRound.orgs.reduce((sum, org) => {
 			return sum + (org.leverageFunds > 0 ? org.roundFunds : 0);
 		}, 0);
 		return roundFloat(leverageRemaining - funds);
-	};
+	};*/
 
 	const saveLeverageSpread = (lastRound) => {
 		ThemeMethods.saveLeverageSpread.call(lastRound.orgs);
@@ -140,7 +145,7 @@ const Leverage = observer(props => {
 		ThemeMethods.resetLeverage.call(topOrgs);
 	};
 
-	const rounds = getLeverageSpreadRounds(theme.leverageRemaining);
+	// const rounds = getLeverageSpreadRounds(theme.leverageRemaining);
 
 	if(rounds.length === 0) {
 		return (
@@ -165,7 +170,7 @@ const Leverage = observer(props => {
 							<Header as="h2">Final Distribution</Header>
 						</Grid.Column>
 						<Grid.Column width={ 4 }>
-							<span>Leverage Remaining: {numeral(finalRoundAllcoation(rounds)).format('$0,0.00')}</span><br/>
+							<span>Leverage Remaining: {numeral(leverage.finalRoundAllcoation(rounds)).format('$0,0.00')}</span><br/>
 						</Grid.Column>
 						<Grid.Column width={ 6 }>
 							{ !props.hideAdminFields && <React.Fragment>

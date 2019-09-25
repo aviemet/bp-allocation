@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { ThemeMethods } from '/imports/api/methods';
 
-import { sortTopOrgs } from '/imports/utils';
+// import { sortTopOrgs } from '/imports/utils';
 
 import { Table, Icon, Input, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -39,7 +39,8 @@ const TopOrgsByChitVote = observer(props => {
 		}
 	};
 
-	let sortedOrgs = sortTopOrgs(theme, orgs);
+	let sortedOrgs = data.orgs.sortTopOrgs;
+	// console.log({ sortedOrgs });
 
 	return (
 		<React.Fragment>

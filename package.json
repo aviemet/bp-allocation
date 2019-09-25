@@ -9,6 +9,7 @@
     "lint": "eslint --ext js,jsx,ts,tsx .",
     "lint:fix": "eslint --ext js,jsx,ts,tsx . --fix",
     "test": "meteor test --once --driver-package meteortesting:mocha --port 3333",
+    "test:watch": "meteor test --driver-package meteortesting:mocha --port 3333",
     "test:app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333",
     "test:server": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333 TEST_CLIENT=0",
     "test:client": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333 TEST_SERVER=0",

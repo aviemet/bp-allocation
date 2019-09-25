@@ -11,7 +11,7 @@ import SaveButton from './SaveButton';
 import UnSaveButton from './UnSaveButton';
 
 const TopOrgsRow = props => {
-	console.log({ props });
+	
 	/**
 	 * Manually pins an organization as a "Top Org"
 	 */
@@ -24,6 +24,8 @@ const TopOrgsRow = props => {
 
 	return(
 		<Table.Row positive={ props.inTopOrgs }>
+
+			{/* Title */}
 			<Table.Cell>
 				{props.org.title}
 				{!props.hideAdminFields && <React.Fragment>
@@ -36,7 +38,11 @@ const TopOrgsRow = props => {
 					</span>
 					}</React.Fragment>}
 			</Table.Cell>
+
+			{/* Votes */}
 			<Table.Cell>{ roundFloat(props.org.votes, 1) }</Table.Cell>
+
+			{/* Lock */}
 			<Table.Cell>
 				<Checkbox
 					toggle
@@ -45,6 +51,7 @@ const TopOrgsRow = props => {
 					disabled={ !!props.isSaved || false }
 				/>
 			</Table.Cell>
+			
 		</Table.Row>
 	);
 };

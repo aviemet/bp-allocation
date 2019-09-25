@@ -41,6 +41,8 @@ class OrgStore {
 
 	@computed
 	get amountFromVotes() {
+		if(this.parent.loading) return 0; 
+
 		// If voting with kiosk mode, get votes for this org from each member
 		// Override the model field 'amountFromVotes'
 		let amount = this._amountFromVotes;
@@ -64,6 +66,23 @@ class OrgStore {
 		// Amount needed to reach goal
 		let need = this.ask - this.allocatedFunds;
 		return roundFloat(need > 0 ? need : 0);
+	}
+
+	@computed
+	get votes() {
+		let votes = 0;
+		if(this.chitVotes) {
+			if(this.chitVotes.count) {
+				// Token count has higher specificity, therefor higher precedence
+				// If present, return this number
+				votes = this.chitVotes.count;	
+			} else if(this.chitVotes.weight) {
+				// Token weight must be set in theme settings
+				votes = this.chitVotes.weight / this.parent.theme.chitWeight;
+			}
+		}
+
+		return roundFloat(votes, 1);
 	}
 }
 

@@ -7,7 +7,11 @@ class TrackableCollection {
 	constructor(data, parent, Store) {
 		this.parent = parent;
 		if(Store) {
-			this.values = data.map(value => new Store(value, parent));
+			const tmp = data.map(value => { 
+				const store = new Store(value, parent); 
+				return store;
+			});
+			this.values = tmp;
 		} else {
 			this.values = data;
 		}
@@ -15,9 +19,12 @@ class TrackableCollection {
 
 	@action
 	refreshData(data) {
-		let i = _.find(this.data, value => value._id === data._id );
-		// TODO: Error checking? Can only update existing fields maybe?
-		this.values[i] = data;
+		let i = _.findIndex(this.values, value => value._id === data._id );
+		for(let [ key, value ] of Object.entries(data)) {
+			if(this.values[i][key] !== value) {
+				this.values[i][key] = value;
+			}
+		}
 	}
 }
 

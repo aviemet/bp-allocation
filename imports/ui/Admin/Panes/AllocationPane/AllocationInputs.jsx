@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
@@ -17,23 +17,14 @@ import { Table, Button, Form, Input } from 'semantic-ui-react';
  * Allocation Inputs Component
  */
 const AllocationInputs = observer(props => {
-
 	const { settings } = useData();
 
-	/*
-	const actionOptions = [
-		{ key: 'actions', text: 'Actions', value: 'actions' },
-		{ key: 'topOff', text: `${props.org.topOff > 0 ? 'Undo Top Off' : 'Top Off'}`, value: 'topoff' },
-		{ key: 'reset', text: 'Reset', value: 'reset' }
-	];
-	*/
+	const [ votedAmount, setVotedAmount ] = useState(props.org.amountFromVotes);
 
-	const enterAmountFromVotes = (e, data) => {
-		if(data.value !== props.org.amountFromVotes){
-			OrganizationMethods.update.call({ id: props.org._id, data: {
-				amountFromVotes: data.value
-			}});
-		}
+	const enterAmountFromVotes = e => {
+		OrganizationMethods.update.call({ id: props.org._id, data: {
+			amountFromVotes: parseInt(e.currentTarget.value)
+		}});
 	};
 
 	const pledge = (e, data) => {
@@ -49,22 +40,6 @@ const AllocationInputs = observer(props => {
 		// Clear the input
 		e.target.elements.valueInput.value = '';
 	};
-
-	/*
-	const handleActionSelection = (e, data) => {
-		switch(data.value){
-		case actionOptions[1].value: // topOff
-			if(props.org.topOff > 0) {
-				OrganizationMethods.topOff.call({ id: props.org._id, negate: true });
-			} else {
-				OrganizationMethods.topOff.call({ id: props.org._id });
-			}
-			break;
-		case actionOptions[2].value: // reset
-			OrganizationMethods.reset.call({ id: props.org._id });
-			break;
-		}
-	};*/
 
 	const topoff = () => {
 		const amount = props.org.topOff > 0 ? 0 : props.org.need - props.org.leverageFunds;
@@ -93,8 +68,9 @@ const AllocationInputs = observer(props => {
 					<Input
 						fluid
 						type='number'
-						value={ props.org.amountFromVotes || '' }
-						onChange={ enterAmountFromVotes }
+						value={ votedAmount || '' }
+						onChange={ e => setVotedAmount(e.currentTarget.value) }
+						onBlur={ enterAmountFromVotes }
 						tabIndex={ props.tabInfo ? props.tabInfo.index : false }
 					/>
 				}

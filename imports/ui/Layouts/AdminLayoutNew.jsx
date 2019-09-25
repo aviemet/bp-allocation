@@ -44,7 +44,14 @@ const OffsetContainer = styled.div`
 	}
 `;
 
-const CustomMenu = styled(Menu)`
+const TopbarMenu = styled(Menu)`
+	margin: 0;
+	border-radius: 0;
+	padding-left: 150px;
+	height: 61px;
+`;
+
+const SidebarMenu = styled(Menu)`
 	width: inherit !important;
 	backface-visibility: hidden;
 	transition: none;
@@ -97,7 +104,7 @@ const AdminLayoutNew = withRouter(observer(props => {
 	return(
 		<AdminContainer className='AdminContainer'>
 			
-			<Menu borderless style={ { margin: 0, borderRadius: 0, paddingLeft: '150px' } } className='Menu'>
+			<TopbarMenu borderless className='Menu'>
 				<Menu.Item>
 					<Image size='mini' src='/img/BPLogo.svg' style={ { filter: 'invert(100%)' } } />
 				</Menu.Item>
@@ -112,12 +119,12 @@ const AdminLayoutNew = withRouter(observer(props => {
 						</Dropdown.Menu>
 					</Dropdown>
 				</Menu.Menu>
-			</Menu>
+			</TopbarMenu>
 
 			<Sidebar className='Sidebar'
 				visible={ sidebarVisible }
 			>
-				<CustomMenu vertical>
+				<SidebarMenu vertical>
 					<Header as={ 'h1' }>Menu</Header>
 					<MenuLink to={ `/admin/${data.themeId}/settings` }>Settings</MenuLink>
 					<MenuLink to={ `/admin/${data.themeId}/orgs` }>Orgs</MenuLink>
@@ -131,7 +138,7 @@ const AdminLayoutNew = withRouter(observer(props => {
 					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>Presentation</MenuLink>
 					<Menu.Item as={ 'a' }>Kiosk</Menu.Item>
 					<Menu.Item as={ 'a' }>Feedback</Menu.Item>
-				</CustomMenu>
+				</SidebarMenu>
 			</Sidebar>
 
 			<OffsetContainer className={ sidebarVisible && 'offset' }>

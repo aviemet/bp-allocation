@@ -14,10 +14,24 @@ import Pledges from './Pledges';
 
 import { ShowLeverageToggle } from '/imports/ui/Components/Toggles';
 
+import { toJS } from 'mobx';
+
 const AllocationPane = observer(props => {
 	const data = useData();
 	const { theme } = data;
 	const topOrgs = data.orgs.topOrgs;
+
+	topOrgs.map(org => {
+		let newOrg = Object.assign({}, toJS(org));
+		delete newOrg.parent;
+		delete newOrg.createdAt;
+		newOrg.save = org.save;
+		newOrg.pledgeTotal = org.pledgeTotal;
+		newOrg.amountFromVotes = org.amountFromVotes;
+		newOrg.allocatedFunds = org.allocatedFunds;
+		newOrg.need = org.need;
+		console.log({ org: newOrg });
+	});
 
 	const _calculateCrowdFavorite = () => {
 		let favorite = 0;

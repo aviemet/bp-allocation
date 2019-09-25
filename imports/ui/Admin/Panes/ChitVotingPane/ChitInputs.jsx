@@ -10,16 +10,8 @@ const ChitInputs = props => {
 	const [ countVotes, setCountVotes ] = useState(props.org.chitVotes.count);
 
 	useEffect(() => {
-		setWeightVotes(props.org.chitVotes.weight);
-	}, [props.org.chitVotes.weight]);
-	/*
-	componentDidUpdate = (prevProps, prevState) => {
-		if(this.props.org.chitVotes.weight !== this.state.weightVotes && prevProps.org.chitVotes !== this.state.weightVotes) {
-			this.setState({
-				weightVotes: this.props.org.chitVotes.weight
-			});
-		}
-	};*/
+		saveVotes();
+	}, [weightVotes, countVotes]);
 
 	const saveVotes = () => {
 		OrganizationMethods.update.call({
@@ -47,10 +39,7 @@ const ChitInputs = props => {
 					tabIndex={ props.tabInfo.index }
 					fluid
 					value={ weightVotes || '' }
-					onChange={ e => {
-						setWeightVotes(e.currentTarget.value ? parseFloat(e.currentTarget.value) : 0);
-						saveVotes();
-					} }
+					onChange={ e => setWeightVotes(e.currentTarget.value ? parseFloat(e.currentTarget.value) : 0) }	
 				/>
 			</Table.Cell>
 
@@ -61,10 +50,7 @@ const ChitInputs = props => {
 					tabIndex={ props.tabInfo.index + props.tabInfo.length }
 					fluid
 					value={ countVotes || '' }
-					onChange={ e => {
-						setCountVotes(e.currentTarget.value ? parseFloat(e.currentTarget.value) : 0);
-						saveVotes();
-					} }
+					onChange={ e => setCountVotes(e.currentTarget.value ? parseFloat(e.currentTarget.value) : 0) }
 				/>
 			</Table.Cell>
 
