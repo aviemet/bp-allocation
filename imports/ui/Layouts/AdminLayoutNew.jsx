@@ -46,9 +46,12 @@ const OffsetContainer = styled.div`
 
 const TopbarMenu = styled(Menu)`
 	margin: 0;
-	border-radius: 0;
 	padding-left: 150px;
 	height: 61px;
+
+	&& {
+		border-radius: 0;
+	}
 `;
 
 const SidebarMenu = styled(Menu)`
@@ -93,7 +96,12 @@ const AdminLayoutNew = withRouter(observer(props => {
 	useEffect(() => {
 		// Hide sidebar on themes list, show when them is chosen
 		let showSidebar = true;
-		if(props.location.pathname === '/admin' || props.location.pathname === '/admin/') {
+		const regex = {
+			admin: /^\/admin[/]?$/,
+			themes: /^\/themes[/]?$/,
+		};
+
+		if(regex.admin.test(props.location.pathname) || regex.themes.test(props.location.pathname)) {
 			showSidebar = false;
 		}
 		setSidebarVisible(showSidebar);

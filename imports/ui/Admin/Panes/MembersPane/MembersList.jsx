@@ -50,7 +50,7 @@ const MembersList = observer(props => {
 				) }
 			</Table.Header>
 			<Table.Body>
-				{ members.values && members.values.map(member => {
+				{ members.values && members.values.map(member => { console.log({ member });
 					let votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount; }, 0);
 					let votesComplete = votedTotal === member.theme.amount;
 					let fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`;

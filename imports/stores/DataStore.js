@@ -96,7 +96,8 @@ class DataStore {
 
 					this.observers.orgs = orgsCursor.observe({
 						added: orgs => this.orgs.refreshData(orgs),
-						changed: orgs => this.orgs.refreshData(orgs)
+						changed: orgs => this.orgs.refreshData(orgs),
+						removed: orgs => this.orgs.deleteItem(orgs)
 					});
 
 					resolve(toJS(this.orgs));
@@ -131,13 +132,13 @@ class DataStore {
 							this.members.parent = this;
 	
 							this.observers.members = membersCursor.observe({
-								added: members => this.members.refreshData(members),
-								changed: members => this.members.refreshData(members)
+								added: member => this.members.updateMember(member),
+								changed: member => this.members.updateMember(member)
 							});
 	
 							this.observers.memberThemes = memberThemesCursor.observe({
-								added: members => this.members.refreshData(members),
-								changed: members => this.members.refreshData(members)
+								added: memberTheme=> this.members.updateMemberTheme(memberTheme),
+								changed: memberTheme=> this.members.updateMemberTheme(memberTheme)
 							});
 	
 							resolve(toJS(this.members));
