@@ -16,7 +16,7 @@ class MemberStore {
 	get theme() {
 		const theme = this.parent.theme._id;
 		const member = this._id;
-
+		
 		return _.find(this.parent.memberThemes.values, value => value.theme === theme && value.member === member);
 	}
 }

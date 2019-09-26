@@ -115,21 +115,69 @@ class DataStore {
 		});
 	}
 
+	// TODO: This is fucked and needs fixing
 	_memberThemesSubscription() {
 		return new Promise((resolve, reject) => {
 	
+			const _updateMembers = (memberTheme, remove) => {
+				remove = remove || false;
+				console.log({ memberTheme });
+				// Refresh data on MemberThemes
+				if(!remove) {
+					this.memberThemes.refreshData(memberTheme);
+				} else {
+					console.log('remove the fucker');
+					console.log({ memberTheme });
+					this.memberThemes.deleteItem(memberTheme);
+				}
+				
+				// DUPLICATE CODE APPROACHING
+
+				// Handle re-fetch of dependant Members data
+
+				// Stop subscription and observation on Members in order to change query parameters
+				if(this.subscriptions.members) this.subscriptions.members.stop();
+				if(this.observers.members) this.observers.members.stop();
+
+				// Get list of Member IDs from MemberThemes query
+				const memberIds = this.memberThemes.values.map(memberTheme => memberTheme.member);
+
+				// Re-establish the subscription for the Members query
+				this.subscriptions.members = Meteor.subscribe('members', memberIds, {
+					onReady: () => {
+						// Fetch the Members and get the cursor
+						const membersCursor = Members.find({ _id: { $in: memberIds }});
+						const members = membersCursor.fetch();
+
+						if(this.members) {
+							members.forEach(member => this.members.refreshData(member));
+
+							// Re-establish the observer for the Members cursor
+							this.observers.members = membersCursor.observe({
+								added: member => this.members.refreshData(member),
+								changed: member => this.members.refreshData(member)
+							});
+						}
+					}
+				});
+			};
+
 			// Subscribe to MemberThemes
 			this.subscriptions.memberThemes = Meteor.subscribe('memberThemes', this.themeId, {
 				onReady: () => {
-					// Fetch memberThemes and create list of _ids
+					// Define the query, save the cursor
 					const memberThemesCursor = MemberThemes.find({ theme: this.themeId });
+					// Fetch the data
 					const memberThemes = memberThemesCursor.fetch();
 	
+					// Instantiate the collection
 					this.memberThemes = new MemberThemesCollection(memberThemes, this, MemberThemeStore);
 
+					// Setup the Meteor observers on the subscription
 					this.observers.memberThemes = memberThemesCursor.observe({
-						added: memberThemes => this.memberThemes.refreshData(memberThemes),
-						changed: memberThemes => this.memberThemes.refreshData(memberThemes)
+						added: memberTheme => _updateMembers(memberTheme),
+						changed: memberTheme => _updateMembers(memberTheme),
+						removed: memberTheme => _updateMembers(memberTheme, true)
 					});
 
 					resolve(toJS(memberThemes));
