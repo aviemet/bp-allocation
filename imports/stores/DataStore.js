@@ -44,6 +44,11 @@ class DataStore {
 
 			// Theme
 			promises.push(this._themeSubscription().then(theme => {
+				if(!theme) {
+					this.loading = false;
+					return;
+				}
+
 				// Presentation Settings
 				promises.push(this._settingsSubscription(theme.presentationSettings));
 				// Organizations
@@ -82,7 +87,8 @@ class DataStore {
 			this.subscriptions.theme = Meteor.subscribe('themes', this.themeId, {
 				onReady: () => {
 					const themeCursor = Themes.find({ _id: this.themeId });
-					this.theme = new ThemeStore(themeCursor.fetch()[0], this);
+					const theme = themeCursor.fetch()[0];
+					this.theme = theme ? new ThemeStore(theme, this) : null;
 
 					this.observers.theme = themeCursor.observe({
 						added: theme => this.theme.refreshData(theme),

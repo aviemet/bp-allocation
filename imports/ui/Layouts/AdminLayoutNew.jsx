@@ -144,7 +144,7 @@ const AdminLayoutNew = withRouter(observer(props => {
 
 					<Header as={ 'h1' }>Pages</Header>
 					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>Presentation</MenuLink>
-					<Menu.Item as={ 'a' }>Kiosk</Menu.Item>
+					<MenuLink to={ `/kiosk/${data.themeId}` }>Kiosk</MenuLink>
 					<Menu.Item as={ 'a' }>Feedback</Menu.Item>
 				</SidebarMenu>
 			</Sidebar>

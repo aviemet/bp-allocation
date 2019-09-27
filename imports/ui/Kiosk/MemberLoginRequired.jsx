@@ -197,7 +197,7 @@ const MemberLoginRequired = observer(props => {
 });
 
 MemberLoginRequired.propTypes = {
-	component: PropTypes.func
+	component: PropTypes.any
 };
 
 export default MemberLoginRequired;

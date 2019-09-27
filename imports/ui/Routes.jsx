@@ -7,12 +7,13 @@ import PrivateRoute from '/imports/ui/Components/PrivateRoute';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
-// import { AppProvider } from '/imports/context';
-import { AdminLayout, AdminLayoutNew, AdminLayoutRoute, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts';
+import { AdminLayoutNew, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts';
 import Presentation from '/imports/ui/Presentation';
-// import { useApp } from '/imports/stores/AppProvider';
+
 import Login from '/imports/ui/Welcome/Login';
 import Kiosk from '/imports/ui/Kiosk';
+import UserVoting from '/imports/ui/Kiosk/UserVoting';
+import FourOhFour from './404';
 import { Loader } from 'semantic-ui-react';
 
 const LoadingRoute = observer(({ component, render, children, ...rest }) => {
@@ -21,13 +22,15 @@ const LoadingRoute = observer(({ component, render, children, ...rest }) => {
 	// Allow for any of the methods for passing components
 	const Component = render || component || children;
 	const loading = data.loading;
+	const { theme } = data;
+
+	console.log({ theme });
 
 	return (
 		<Route { ...rest } render={ matchProps => {
-			console.log({ matchProps });
 			data.themeId = matchProps.match.params.id || undefined;
 			if(loading) return <Loader active />;
-			console.log({ Component });
+			if(!loading && !theme) return <Redirect to='/404' />;
 			return <Component />;
 		} } />
 	);
@@ -56,22 +59,21 @@ const Routes = observer(() => {
 					</PresentationLayout>
 				) } />
 
+				<LoadingRoute path='/voting/:id/:member' render={ () => (
+					<KioskLayout>
+						<UserVoting />
+					</KioskLayout>
+				) } />
+
 				<LoadingRoute path='/kiosk/:id' render={ () => (
 					<KioskLayout>
 						<Kiosk />
 					</KioskLayout>
 				) } />
 
-				{/* <AdminLayoutNew>
-					<PrivateRoute exact path='/themes' component={ ThemesList } />
-					<PrivateRoute exact path='/themes/:id' component={ WelcomePage } />
+				<Route path='/404' component={ FourOhFour } />
 
-					<PrivateRoute exact path='/admin/:id' render={ matchProps => (
-						<AppProvider id={ matchProps.match.params.id }>
-							<Admin />
-						</AppProvider>
-					) } />
-				</AdminLayoutNew> 
+				{/* 
 
 				<PrivateRoute path='/simulation/:id' component={ matchProps => (
 					<AppProvider id={ matchProps.match.params.id }>
@@ -87,37 +89,7 @@ const Routes = observer(() => {
 							<Feedback />
 						</FeedbackLayout>
 					</AppProvider>
-				) } />
-
-				<Route path='/presentation/:id' render={ matchProps => (
-					<AppProvider id={ matchProps.match.params.id }>
-						<PresentationLayout>
-							<Presentation />
-						</PresentationLayout>
-					</AppProvider>
-				) } />
-
-				<Route path='/kiosk/:id' render={ matchProps => (
-					<AppProvider id={ matchProps.match.params.id }>
-						<KioskLayout>
-							<Kiosk />
-						</KioskLayout>
-					</AppProvider>
-				) } />
-
-				<Route exact path='/dev' render={ () => (
-					<Redirect to='/dev/DRbZ2ob63kpyaidMc' />
-				) } />
-
-				{/* <Route path='/dev/:id' render={ matchProps => {
-					return (
-						<AppContext themeId={ matchProps.match.params.id }>
-							<AdminLayout>
-								<StoreTest />
-							</AdminLayout>
-						</AppContext>
-					);
-				} } /> */}
+				) } /> */}
 
 			</Switch>
 		</Router>

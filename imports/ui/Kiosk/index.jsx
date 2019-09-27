@@ -47,7 +47,7 @@ const Kiosk = observer(props => {
 		} else {
 			doNavigation(KIOSK_PAGES.info);
 		}
-	});
+	}, [settings.chitVotingActive, settings.fundsVotingActive]);
 
 	const doNavigation = page => {
 		if(displayPage !== page) {
