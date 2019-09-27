@@ -20,88 +20,6 @@ const numberFormats = {
 	percent: '0.0%'
 };
 
-
-/**************************************
- *         ORGANIZATION METHODS       *
- **************************************/
-
-/**
- * Return all orgs sorted by votes
- */
-/*const sortTopOrgs = (theme, orgs) => {
-	if(!theme){
-		throw new Meteor.Error('No theme provided to ThemeMethods.filterTopOrgs');
-	}
-
-	// Save manual top orgs as key/value true/false pairs for reference
-	let manualTopOrgs = {};
-	theme.topOrgsManual.map((org) => {
-		manualTopOrgs[org] = true;
-	});
-
-	// First sort orgs by weight and vote count
-	let sortedOrgs = _.sortBy(orgs, (org) => {
-		// Calculate the votes for each org (weight/chitWeight unless there's a manual count)
-		let votes = 0;
-		if(org.chitVotes) {
-			if(org.chitVotes.count) {
-				votes = org.chitVotes.count;	
-			} else if(org.chitVotes.weight) {
-				votes = org.chitVotes.weight;
-			}
-		}
-
-		// Save the votes count for later
-		org.votes = votes;
-
-		// Sort in descending order
-		return -(votes);
-	});
-
-	//Then bubble up the manual top orgs
-	// No need to proceed if manual orgs is >= numTopOrgs
-	if(theme.numTopOrgs >= theme.topOrgsManual.length){
-		// climb up the bottom of the list looking for manually selected orgs
-		for(let i = sortedOrgs.length - 1; i >= theme.numTopOrgs; i--){
-
-			// Check if the org has been manually selected
-			if(manualTopOrgs[sortedOrgs[i]._id]){
-				// Find the closest automatically selected top org
-				let j = i - 1;
-				while(j > 0 && manualTopOrgs[sortedOrgs[j]._id]){
-					j--;
-				}
-
-				// Start swapping the auto top org down the list
-				while(j < i){
-					let tmp = sortedOrgs[i];
-					sortedOrgs[i] = sortedOrgs[j];
-					sortedOrgs[j] = tmp;
-
-					j++;
-				}
-
-				// Send the index back one in case we swapped another match into previous place
-				i++;
-			}
-		}
-	}
-
-	return sortedOrgs;
-};
-*/
-/**
- * Get Top Orgs Sorted by chit votes
- */
-/*const filterTopOrgs = (theme, orgs) => {
-	const slice = theme.numTopOrgs >= theme.topOrgsManual.length ? theme.numTopOrgs : theme.topOrgsManual.length;
-
-	let sortedOrgs = sortTopOrgs(theme, orgs);
-
-	return sortedOrgs.slice(0, slice);
-};
-*/
-
 /**************************************
  *          PAPAPARSE METHODS         *
  **************************************/
@@ -224,7 +142,7 @@ function useTraceUpdate(props) {
 			return ps;
 		}, {});
 		if (Object.keys(changedProps).length > 0) {
-			console.log('Changed props:', changedProps);
+			// console.log('Changed props:', changedProps);
 		}
 		prev.current = props;
 	});

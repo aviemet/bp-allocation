@@ -40,7 +40,6 @@ const TopOrgsByChitVote = observer(props => {
 	};
 
 	let sortedOrgs = data.orgs.sortTopOrgs;
-	// console.log({ sortedOrgs });
 
 	return (
 		<React.Fragment>

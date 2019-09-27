@@ -14,8 +14,6 @@ const Stats = observer(props => {
 	const topOrgs = data.orgs.topOrgs;
 	const members = data.members.values;
 
-	console.log({ theme, topOrgs, members });
-
 	let totals = { a: 0, b: 0, c: 0 };
 	let stats = [];
 	topOrgs.map(org => {

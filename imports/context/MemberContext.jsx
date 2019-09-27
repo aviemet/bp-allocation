@@ -22,7 +22,6 @@ const MemberProviderTemplate = props => {
 
 		let members = props.members.map(member => {
 			let memberTheme = _.find(props.memberThemes, ['member', member._id]);
-			// console.log({member, memberTheme});
 			return Object.assign({ theme: memberTheme }, member);
 		});
 		return members;

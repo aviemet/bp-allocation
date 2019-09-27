@@ -24,7 +24,8 @@ class ThemeStore extends TrackableStore {
 	*/
 	@computed
 	get consolationTotal() {
-		return (this.organizations.length - this.numTopOrgs) * this.consolationAmount;
+		if(this.consolationActive) return (this.organizations.length - this.numTopOrgs) * this.consolationAmount;
+		return 0;
 	}
 
 	/**
@@ -39,19 +40,19 @@ class ThemeStore extends TrackableStore {
 	@computed
 	get leverageRemaining() {
 		// Leverage moving forward into allocation round
-		let remainingLeverage = (this.leverageTotal) - this.consolationTotal;
+		let remainingLeverage = (this.leverageTotal) - this.consolationTotal - this.votedFunds;
 
 		// Subtract the amounts allocated to each org
 		this.parent.orgs.topOrgs.map((org, i) => {
 			// Amount from dollar voting round
-			let amountFromVotes = 0;
+			/*let amountFromVotes = 0;
 			if(this.parent.settings.useKioskFundsVoting) {
 				this.parent.members.values.map(member => {
 					let vote = _.find(member.allocations, ['organization', org._id]) || false;
 					amountFromVotes += vote.amount || 0;
 				});
 			}
-			remainingLeverage -= parseInt(amountFromVotes || 0);
+			remainingLeverage -= parseInt(amountFromVotes || 0);*/
 
 			// The topoff for the crowd favorite
 			if(org.topOff > 0){

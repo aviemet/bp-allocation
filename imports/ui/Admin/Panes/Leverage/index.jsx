@@ -6,6 +6,7 @@ import numeral from 'numeral';
 import { roundFloat } from '/imports/utils';
 
 import { observer } from 'mobx-react-lite';
+import { toJS } from 'mobx';
 import { useData } from '/imports/stores/DataProvider';
 import { ThemeMethods } from '/imports/api/methods';
 import LeverageObject from './Leverage';
@@ -22,7 +23,6 @@ const Leverage = observer(props => {
 
 	const leverage = new LeverageObject(topOrgs, theme.leverageRemaining);
 	const rounds = leverage.getLeverageSpreadRounds();
-	console.log({ rounds });
 
 	/**
 	 * Returns array of "rounds" representing the distribution of the remaining
@@ -142,7 +142,12 @@ const Leverage = observer(props => {
 	};
 
 	const resetLeverage = () => {
-		ThemeMethods.resetLeverage.call(topOrgs);
+		const orgs = topOrgs.map(org => {
+			let orgClone = toJS(org);
+			delete orgClone.parent;
+			return orgClone;
+		});
+		ThemeMethods.resetLeverage.call(orgs);
 	};
 
 	// const rounds = getLeverageSpreadRounds(theme.leverageRemaining);

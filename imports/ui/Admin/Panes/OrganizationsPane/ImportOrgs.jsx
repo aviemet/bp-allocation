@@ -50,7 +50,6 @@ const ImportOrgs = observer(props => {
 						if(formsIndex >= 0) {
 							matched = true;
 							row[acceptedValues[i].name] = acceptedValues[i].type(value);
-							console.log({ row, type: acceptedValues[i].type, value });
 						}
 					}
 				});
@@ -72,8 +71,7 @@ const ImportOrgs = observer(props => {
 
 			},
 			complete: results => {
-				console.log(results.data);
-				console.log({ uploadedOrgsList });
+				
 			}
 		});
 		return parser;

@@ -16,7 +16,6 @@ class Leverage {
 
 		let sumRemainingOrgs = 0;
 		this.orgs = _.cloneDeep(toJS(orgs)).map(org => {
-			console.log({ need: org.need });
 			let orgClone = toJS(org);
 
 			delete orgClone.parent;
@@ -35,7 +34,7 @@ class Leverage {
 
 			return orgClone;
 		});
-		console.log({ orgs: this.orgs });
+		
 		this.sumRemainingOrgs = sumRemainingOrgs;
 	}
 

@@ -121,13 +121,11 @@ class DataStore {
 	
 			const _updateMembers = (memberTheme, remove) => {
 				remove = remove || false;
-				console.log({ memberTheme });
+				
 				// Refresh data on MemberThemes
 				if(!remove) {
 					this.memberThemes.refreshData(memberTheme);
 				} else {
-					console.log('remove the fucker');
-					console.log({ memberTheme });
 					this.memberThemes.deleteItem(memberTheme);
 				}
 				

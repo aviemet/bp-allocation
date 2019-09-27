@@ -12,6 +12,7 @@ import { AdminLayout, AdminLayoutNew, AdminLayoutRoute, WelcomeLayout, Presentat
 import Presentation from '/imports/ui/Presentation';
 // import { useApp } from '/imports/stores/AppProvider';
 import Login from '/imports/ui/Welcome/Login';
+import Kiosk from '/imports/ui/Kiosk';
 import { Loader } from 'semantic-ui-react';
 
 const LoadingRoute = observer(({ component, render, children, ...rest }) => {
@@ -53,6 +54,12 @@ const Routes = observer(() => {
 					<PresentationLayout>
 						<Presentation />
 					</PresentationLayout>
+				) } />
+
+				<LoadingRoute path='/kiosk/:id' render={ () => (
+					<KioskLayout>
+						<Kiosk />
+					</KioskLayout>
 				) } />
 
 				{/* <AdminLayoutNew>

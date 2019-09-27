@@ -12,7 +12,7 @@ const Login = ({ history, location }) => {
 			scope: [ 'email' ]
 		}, err => {
 			if(err) {
-				console.log({ err });
+				console.error({ err });
 			} else {
 				let redirect = location.state && location.state.from ? location.state.from : '/';
 				history.push(redirect);

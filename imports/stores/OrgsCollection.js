@@ -12,8 +12,6 @@ class OrgsCollection extends TrackableCollection {
 		const theme = this.parent.theme;
 		const slice = theme.numTopOrgs >= theme.topOrgsManual.length ? theme.numTopOrgs : theme.topOrgsManual.length;
 
-		console.log({ sorted: this.sortTopOrgs });
-
 		// Sort orgs by total chit votes
 		return this.sortTopOrgs.slice(0, slice);
 	}

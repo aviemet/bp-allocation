@@ -15,7 +15,7 @@ const ExportCsvButton = props => {
 
 			// Prep the file information
 			let csvData = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-			console.log({ csvData });
+			
 			const filename = props.description || 'Allocation Export';
 			if (navigator.msSaveBlob) { // IE 10+
 				navigator.msSaveBlob(csvData, filename);

@@ -31,9 +31,16 @@ const Breakdown = observer(() => {
 	const { theme } = data;
 
 	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
-	const totalPot = theme.leverageTotal + saves;
 	const topOff = data.orgs.topOrgs.reduce((sum, org) => { return sum + org.topOff; }, 0);
-	const leverage = theme.leverageTotal - theme.consolationTotal - theme.votedFunds - topOff ;
+
+	// Values in order of appearance
+	const totalPot = theme.leverageTotal + saves;
+	/* theme.consolationTotal */
+	const fundsAllocated = theme.votedFunds + saves + topOff;
+	const leverage = theme.leverageTotal - theme.consolationTotal - theme.votedFunds - topOff;
+	/* theme.pledgeTotal */
+	/* theme.leverageRemaining */
+
 
 	return (
 		<BreakdownContainer>
@@ -58,7 +65,7 @@ const Breakdown = observer(() => {
 
 					{/* Subtract funds from votes and topOff */}
 					<Statistic>
-						<Statistic.Value>{numeral(theme.votedFunds + saves + topOff).format('$0,0')}</Statistic.Value>
+						<Statistic.Value>{numeral(fundsAllocated).format('$0,0')}</Statistic.Value>
 						<Statistic.Label>Votes + Topoff + Saves</Statistic.Label>
 					</Statistic>
 

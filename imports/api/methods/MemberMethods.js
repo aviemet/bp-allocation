@@ -60,7 +60,7 @@ const memberInsert = function(data) {
 			try{
 				Members.insert(newMember, (err, result) => {
 					if(err){
-						console.log({ newMember });
+						console.error({ newMember });
 						reject(err);
 					} else {
 						resolve(result);

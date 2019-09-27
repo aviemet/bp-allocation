@@ -8,7 +8,6 @@ export const useApp = () => useContext(AppContext);
 const appStore = new AppStore();
 
 const AppProvider = props => {
-	console.log('provider render');
 
 	return (
 		<AppContext.Provider value={ appStore }>
