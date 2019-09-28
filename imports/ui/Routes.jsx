@@ -12,7 +12,6 @@ import Presentation from '/imports/ui/Presentation';
 
 import Login from '/imports/ui/Welcome/Login';
 import Kiosk from '/imports/ui/Kiosk';
-import UserVoting from '/imports/ui/Kiosk/UserVoting';
 import FourOhFour from './404';
 import { Loader } from 'semantic-ui-react';
 
@@ -23,8 +22,6 @@ const LoadingRoute = observer(({ component, render, children, ...rest }) => {
 	const Component = render || component || children;
 	const loading = data.loading;
 	const { theme } = data;
-
-	console.log({ theme });
 
 	return (
 		<Route { ...rest } render={ matchProps => {
@@ -61,7 +58,7 @@ const Routes = observer(() => {
 
 				<LoadingRoute path='/voting/:id/:member' render={ () => (
 					<KioskLayout>
-						<UserVoting />
+						<Kiosk />
 					</KioskLayout>
 				) } />
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -50,31 +50,37 @@ const BackgroundImage = styled.div`
 	background-size: 1600px;
 `;
 
+const SubmitButton = styled(Button)`
+	width: 100%;
+	text-align: center;
+	background-color: ${COLORS.blue} !important;
+	color: white !important;
+	border: 2px solid #fff !important;
+	font-size: 2rem !important;
+	text-transform: uppercase !important;
+`;
+
 const MemberLoginRequired = observer(props => {
 	const data = useData();
 	const members = data.members.values;
+	console.log({ data, members });
 
 	const formRef = React.createRef();
 
-	// const [ searchInput, setSearchInput ] = useState('');
 	const [ initials, setInitials ] = useState('');
 	const [ number, setNumber ] = useState('');
 
 	const [ searchError, setSearchError ] = useState(false);
 	const [ user, setUser ] = useState(false);
-	// const [ confirmUser, setConfirmUser ] = useState(false);
-	// const [ renderCount, setRenderCount ] = useState(0);
 
+	// Check for direct link URL structure
 
-	// Debugging purposes only
-	/*if(!membersLoading && !user) {
-		setUser(members[0]);
-	}*/
-
-	// Member chosen from search bar, record for confirmation
-	/*const chooseMember = result => {
-		setConfirmUser(_.find(members, ['_id', result.id]));
-	}*/
+	useEffect(() => {
+		if(props.member) {
+			const member = _.find(members, member => member._id === props.member);
+			if(member) setUser(member);
+		}
+	}, [props.member]);
 
 	const showSearchError = () => {
 		setSearchError(true);
@@ -88,9 +94,9 @@ const MemberLoginRequired = observer(props => {
 
 		setSearchError(false);
 		const code = `${initials.trim().toUpperCase()}${number}`;
-		// const member = _.find(members, ['code', searchInput.trim().toUpperCase()]);
+		
 		const member = _.find(members, ['code', code]);
-		// setSearchInput('');
+		
 		setInitials('');
 		setNumber('');
 		if(member) {
@@ -100,31 +106,12 @@ const MemberLoginRequired = observer(props => {
 		}
 	};
 
-	const SubmitButton = styled(Button)`
-		width: 100%;
-		text-align: center;
-		background-color: ${COLORS.blue} !important;
-		color: white !important;
-		border: 2px solid #fff !important;
-		font-size: 2rem !important;
-		text-transform: uppercase !important;
-	`;
-	/*const resetMember = () => {
-		setConfirmUser(false);
-		setSearchInput('');
-	}*/
-
-	/*const displayVoting = () => {
-		setSearchInput('');
-		setUser(confirmUser);
-		setConfirmUser(false);
-	}*/
-
 	const ChildComponent = props.component;
 	const submitDisabled = initials === '' || number === '';
 
+	// props.member comes from router params
 	// Display the interface to choose a member
-	if(!user) {
+	if(!props.member || !user) {
 		return(
 			<MemberLoginContainer>
 				<BackgroundImage />
@@ -132,16 +119,6 @@ const MemberLoginRequired = observer(props => {
 					<Header as='h1' className='title'>Enter Your Initials & Member ID</Header>
 					<Container>
 						<Form onSubmit={ chooseMember } ref={ formRef }>
-							{/*<Form.Input fluid
-								value={searchInput}
-								onChange={e => setSearchInput(e.target.value.trim().toUpperCase())}
-								type="text"
-								size="massive"
-								icon="user"
-								iconPosition="left"
-								placeholder="Example: MB1234"
-								action={<Button>Search</Button>}
-							/>*/}
 							<Form.Group inline>
 								<Form.Field>
 									<Input
@@ -168,21 +145,9 @@ const MemberLoginRequired = observer(props => {
 							</Form.Group>
 						</Form>
 					</Container>
-					{/*<MemberSearch
-						key={renderCount}
-						data={members}
-						callback={chooseMember}
-						size='massive'
-					/>*/}
-					{/*confirmUser && <React.Fragment>
-
-					<Header as='h2' className='title'>Hello {confirmUser.firstName ? confirmUser.firstName : confirmUser.fullName}, ready to vote?</Header>
-					<Button size='massive' color='red' onClick={resetMember}>Oops, not me!</Button>
-					<Button size='massive' color='green' onClick={displayVoting}>Let's vote!</Button>
-
-				</React.Fragment>*/}
 
 					{searchError && <Header as='h2' className='title'>No Member Found, Try Again</Header>}
+
 				</Centered>
 			</MemberLoginContainer>
 		);

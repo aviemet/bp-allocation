@@ -8,6 +8,7 @@ import { KIOSK_PAGES } from '/imports/utils';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
+import { withRouter } from 'react-router-dom';
 
 import KioskInfo from './Info/KioskInfo';
 import KioskChitVoting from './ChitVoting/KioskChitVoting';
@@ -32,12 +33,11 @@ const PageFader = styled.div`
 `;
 
 // Kiosk Component
-const Kiosk = observer(props => {
+const Kiosk = observer(withRouter(props => {
 	const { settings } = useData();
 
 	const [ displayPage, setDisplayPage ] = useState(KIOSK_PAGES.info);
 	const [ show, setShow ] = useState(true);
-
 
 	useEffect(() => {
 		if(settings.chitVotingActive) {
@@ -60,6 +60,7 @@ const Kiosk = observer(props => {
 		}
 	};
 
+	const member = props.match.params.member;
 
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
@@ -72,14 +73,14 @@ const Kiosk = observer(props => {
 							<KioskInfo />
 						) } />
 
-						{/* Chit Voting */}
+						{/* Chit Voting 
 						<Route exact path={ KIOSK_PAGES.chit } render={ props => (
 							<MemberLoginRequired component={ KioskChitVoting } />
-						) } />
+						) } /> */}
 
 						{/* Funds Voting */}
 						<Route exact path={ KIOSK_PAGES.funds } render={ props => (
-							<MemberLoginRequired component={ FundsVotingKiosk } />
+							<MemberLoginRequired member={ member && member } component={ FundsVotingKiosk } />
 						) } />
 
 					</Switch>
@@ -88,6 +89,6 @@ const Kiosk = observer(props => {
 			)}
 		</Transition>
 	);
-});
+}));
 
 export default Kiosk;
