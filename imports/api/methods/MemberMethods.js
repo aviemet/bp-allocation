@@ -10,13 +10,14 @@ import { Members, MemberThemes } from '/imports/api';
  */
 const memberInsert = function(data) {
 	// Normalize the data
-	let { firstName, lastName, fullName, number, initials } = data;
+	let { firstName, lastName, fullName, number, initials, phone } = data;
 	let code;
 	number = parseInt(number);
 	if(!_.isUndefined(firstName)) firstName = firstName.trim();
 	if(!_.isUndefined(lastName)) lastName = lastName.trim();
 	if(!_.isUndefined(fullName)) fullName = fullName.trim();
 	if(!_.isUndefined(initials)) initials = initials.trim();
+	if(!_.isUndefined(phone)) phone = phone.trim();
 
 	// Build first/last from fullName if not present
 	if(_.isUndefined(firstName) && _.isUndefined(lastName) && !_.isUndefined(fullName)) {
@@ -56,7 +57,7 @@ const memberInsert = function(data) {
 
 	return new Promise((resolve, reject) => {
 		if(!member) {
-			const newMember = { firstName, lastName, fullName, number, initials, code };
+			const newMember = { firstName, lastName, fullName, number, initials, code, phone };
 			try{
 				Members.insert(newMember, (err, result) => {
 					if(err){
@@ -129,13 +130,13 @@ const MemberMethods = {
 		validate: null,
 
 		run(data) {
-			const { amount, themeId } = data;
+			const { amount, themeId, phone } = data;
 			// Get strange results if run on client
 			if(Meteor.isServer) {
 
 				// Create/edit member
 				memberInsert(data).then(member => {
-					const memberThemeQuery = { member, amount, theme: themeId };
+					const memberThemeQuery = { member, amount, theme: themeId, phone };
 
 					// Create/edit theme association
 					memberThemeInsert(memberThemeQuery).then(memberTheme => {

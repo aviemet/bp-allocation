@@ -30,6 +30,11 @@ const MemberSchema = new SimpleSchema({
 		label: 'Code used for signing in to kiosk voting. Initials and number combined',
 		required: false
 	},
+	phone: {
+		type: String,
+		label: 'Phone number to receive texts',
+		required: false
+	},
 	createdAt: {
 		type: Date,
 		autoValue: () => new Date()

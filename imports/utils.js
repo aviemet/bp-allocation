@@ -1,4 +1,3 @@
-import Meteor from 'meteor/meteor';
 import { useRef, useEffect } from 'react';
 import Papa from 'papaparse';
 import _ from 'lodash';
@@ -152,8 +151,6 @@ export {
 	KIOSK_PAGES,
 	roundFloat,
 	getSaveAmount,
-	sortTopOrgs,
-	filterTopOrgs,
 	readCsvWithHeadings,
 	useTraceUpdate,
 	numberFormats

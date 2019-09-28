@@ -17,6 +17,7 @@ const NewMemberInputs = observer(props => {
 	const [ initials, setInitials ] = useState('');
 	const [ memberNumber, setMemberNumber ] = useState(undefined);
 	const [ memberAmount, setMemberAmount ] = useState(0);
+	const [ phone, setPhone ] = useState('');
 
 	const saveMember = e => {
 		e.preventDefault();
@@ -27,13 +28,15 @@ const NewMemberInputs = observer(props => {
 			initials,
 			number: memberNumber,
 			themeId: theme._id,
-			amount: memberAmount
+			amount: memberAmount,
+			phone: phone
 		}, (err, res) => {
 			setFirstName('');
 			setLastName('');
 			setInitials('');
 			setMemberNumber('');
 			setMemberAmount('');
+			setPhone('');
 		});
 	};
 
@@ -41,22 +44,22 @@ const NewMemberInputs = observer(props => {
 		<Form onSubmit={ saveMember }>
 			<Form.Group>
 				<Form.Input
-					width={ 4 }
+					width={ 3 }
 					placeholder='First Name'
 					value={ firstName }
-					onChange={ e => setFirstName(e.target.value) }
-				/>
-				<Form.Input
-					width={ 4 }
-					placeholder='Last Name'
-					value={ lastName }
-					onChange={ e => setLastName(e.target.value) }
+					onChange={ e => setFirstName(e.currentTarget.value) }
 				/>
 				<Form.Input
 					width={ 3 }
+					placeholder='Last Name'
+					value={ lastName }
+					onChange={ e => setLastName(e.currentTarget.value) }
+				/>
+				<Form.Input
+					width={ 2 }
 					placeholder='Initials'
 					value={ initials || '' }
-					onChange={ e => setInitials(e.target.value) }
+					onChange={ e => setInitials(e.currentTarget.value) }
 				/>
 				<Form.Input
 					width={ 3 }
@@ -64,15 +67,23 @@ const NewMemberInputs = observer(props => {
 					icon='hashtag'
 					placeholder='Member Number'
 					value={ memberNumber || '' }
-					onChange={ e => setMemberNumber(parseInt(e.target.value)) }
+					onChange={ e => setMemberNumber(parseInt(e.currentTarget.value)) }
 				/>
 				<Form.Input
 					width={ 3 }
 					iconPosition='left'
 					icon='dollar'
 					placeholder='Amount'
-					value= { memberAmount || '' }
-					onChange={ e => setMemberAmount(roundFloat(e.target.value)) }
+					value={ memberAmount || '' }
+					onChange={ e => setMemberAmount(roundFloat(e.currentTarget.value)) }
+				/>
+				<Form.Input
+					width={ 3 }
+					iconPosition='left'
+					icon='phone'
+					placeholder='Phone Number'
+					value={ phone || '' }
+					onChange={ e => setPhone(e.currentTarget.value) }
 				/>
 				<Button width={ 2 } type='submit'>Add Member</Button>
 

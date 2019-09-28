@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { readCsvWithHeadings } from '/imports/utils';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 import { useData } from '/imports/stores/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
@@ -41,6 +42,11 @@ const ImportMembers = props => {
 			name: 'initials',
 			forms: ['initials', 'init', 'inits'],
 			type: String
+		},
+		{
+			name: 'phone',
+			forms: ['phone', 'phone number', 'phone no', 'mobile', 'mobile number', 'mobile no'],
+			type: val => parsePhoneNumberFromString(val).formatNational()
 		}
 	];
 
