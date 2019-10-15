@@ -11,13 +11,48 @@ import { MemberMethods } from '/imports/api/methods';
 import { Table, Icon, Button, Modal } from 'semantic-ui-react';
 import TablePagination from '/imports/ui/Components/TablePagination';
 
+const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction }) => {
+	console.log({ confirmAction });
+	return(
+		<Modal 
+			centered={ false }
+			open={ isModalOpen }
+			onClose={ handleClose }
+		>
+			<Modal.Header>{ header }</Modal.Header>
+			<Modal.Content>{ content }</Modal.Content>
+			<Modal.Actions>
+				<Button 
+					color='green' 
+					onClick={ handleClose }
+				>Cancel
+				</Button>
+
+				<Button 
+					color='red' 
+					onClick={ () => {
+						handleClose();
+						confirmAction();
+					} }
+				>Delete!
+				</Button>
+
+			</Modal.Actions>
+		</Modal>
+	);			
+}
+
 const MembersList = observer(props => {
 	const { theme, settings, members } = useData();
 	const [ page, setPage ] = useState(0);
 	const [ itemsPerPage, setItemsPerPage ] = useState(10);
 	const [ sortColumn, setSortColumn ] = useState();
 	const [ sortDirection, setSortDirection ] = useState();
-	const [ modalOpen, setModalOpen ] = useState();
+
+	const [ modalOpen, setModalOpen ] = useState(false);
+	const [ modalHeader, setModalHeader ] = useState('');
+	const [ modalContent, setModalContent ] = useState('');
+	const [ modalAction, setModalAction ] = useState();
 
 	const removeMember = id => {
 		MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: theme._id });
@@ -36,13 +71,8 @@ const MembersList = observer(props => {
 		}
 	};
 
-	console.log({ members: toJS(members.values) });
-
 	useEffect(() => {
-		console.log({ sortColumn, sortDirection });
-		if(sortColumn && sortDirection) {
-			members.sortBy(sortColumn, sortDirection);
-		}
+		if(sortColumn && sortDirection) members.sortBy(sortColumn, sortDirection);
 	}, [sortColumn, sortDirection]);
 
 	// Adjusts 2 row heading values for kisok voting headers
@@ -112,30 +142,12 @@ const MembersList = observer(props => {
 							</Table.HeaderCell>
 
 							<Table.HeaderCell rowSpan="2" collapsing>
-								<Modal 
-									trigger={ <Button icon='trash' color='red' onClick={ () => setModalOpen(true) } /> }
-									centered={ false }
-									open={ modalOpen }
-									onClose={ () => setModalOpen(false) }
-								>
-									<Modal.Header>Permanently Unlink All Members From This Theme?</Modal.Header>
-									<Modal.Content>This will permanently remove all member information including donated funds and vote allocations from this theme. It will not remove the Member record.</Modal.Content>
-									<Modal.Actions>
-										<Button 
-											color='green' 
-											onClick={ () => setModalOpen(false) }
-										>Cancel</Button>
-
-										<Button 
-											color='red' 
-											onClick={ () => {
-												setModalOpen(false);
-												removeAllMembers();
-											} }
-										>Delete!</Button>
-
-									</Modal.Actions>
-								</Modal>								
+								<Button icon='trash' color='red' onClick={ () => {
+									setModalHeader('Permanently Unlink All Members From This Theme?');
+									setModalContent('This will permanently remove all member information including donated funds and vote allocations from this theme. It will not remove the Member record.');
+									setModalAction( () => { return removeAllMembers } );
+									setModalOpen(true);
+								} } />
 							</Table.HeaderCell>
 						</> ) }
 
@@ -172,7 +184,12 @@ const MembersList = observer(props => {
 										{ member.code ? member.code : '' }
 									</Table.Cell>
 									<Table.Cell>
-										<Button icon='trash' onClick={ () => removeMember(member._id) } />
+										<Button icon='trash' onClick={ () => {
+											setModalHeader(`Permanently Unlink ${member.fullName} From This Theme?`);
+											setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`);
+											setModalAction( () => { return () => removeMember(member._id) } );
+											setModalOpen(true);
+										} } />
 									</Table.Cell>
 								</React.Fragment> }
 							</Table.Row>
@@ -186,6 +203,13 @@ const MembersList = observer(props => {
 				totalPages={ parseInt(members.values.length / itemsPerPage) + 1 }
 				onPageChange={ activePage => setPage(activePage) }
 			/>
+			<ConfirmationModal
+				isModalOpen={ modalOpen }
+				handleClose={ () => setModalOpen(false) }
+				header={ modalHeader }
+				content={ modalContent }
+				confirmAction={ modalAction }
+			/>
 		</>
 	);
 });
@@ -195,17 +219,3 @@ MembersList.propTypes = {
 };
 
 export default MembersList;
-
-/*
-{ members.values.length / itemsPerPage > 1 && <Pagination
-				attached='bottom'
-				style={ { width: '100%', justifyContent: 'center' } }
-				activePage={ page + 1 }
-				firstItem={null}
-				lastItem={null}
-				pointing
-				secondary
-				totalPages={ parseInt(members.values.length / itemsPerPage) + 1 } 
-				onPageChange={ (e, { activePage }) => setPage(activePage - 1) }
-			/> }
-*/
