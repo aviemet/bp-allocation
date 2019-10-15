@@ -14,7 +14,7 @@ import '/imports/api/methods';
 
 Meteor.startup(() => {
 	// Save API info to DB once (upsert)
-	/*ServiceConfiguration.configurations.upsert(
+	ServiceConfiguration.configurations.upsert(
 		{ service: 'google' },
 		{
 			$set: {
@@ -30,7 +30,7 @@ Meteor.startup(() => {
 			}
 		}
 	);
-*/
+
 	Meteor.publish('themes', (themeId) => {
 		if(themeId){
 			return Themes.find({ _id: themeId });
