@@ -73,7 +73,7 @@ const MembersList = observer(props => {
 
 	useEffect(() => {
 		if(sortColumn && sortDirection) members.sortBy(sortColumn, sortDirection);
-	}, [sortColumn, sortDirection]);
+	}, [sortColumn, sortDirection, members.values.length]);
 
 	// Adjusts 2 row heading values for kisok voting headers
 	let votingColspan = 0;
