@@ -20,7 +20,7 @@
     "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "history": "^4.7.2",
     "libphonenumber-js": "^1.7.25",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "meteor-node-stubs": "^0.4.1",
     "mobx": "^5.13.0",
     "mobx-react-lite": "^1.4.1",
