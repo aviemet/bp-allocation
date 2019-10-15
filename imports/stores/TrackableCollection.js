@@ -40,6 +40,28 @@ class TrackableCollection {
 	deleteItem(data) {
 		_.remove(this.values, value => value._id === data._id);
 	}
+
+	@action
+	sortBy(column, direction) {
+		let dir;
+		switch(direction) {
+			case 'ascending':
+				dir = 'asc';
+				break;
+			case 'descending':
+				dir = 'desc';
+				break;
+			default:
+				dir = direction; 
+		}
+
+		this.values = _.orderBy(this.values, column, dir);
+	}
+
+	@action
+	reverse() {
+		this.values.reverse();
+	}
 }
 
 export default TrackableCollection;
