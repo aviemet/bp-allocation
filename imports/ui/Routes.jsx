@@ -9,12 +9,14 @@ import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { AdminLayoutNew, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts';
 import Presentation from '/imports/ui/Presentation';
+import Simulation from '/imports/ui/Admin/Simulation';
 
 import Login from '/imports/ui/Welcome/Login';
 import Kiosk from '/imports/ui/Kiosk';
 import FourOhFour from './404';
 import { Loader } from 'semantic-ui-react';
 
+// Route which delays display of content until the data store has fully loaded
 const LoadingRoute = observer(({ component, render, children, ...rest }) => {
 	const data = useData();
 
@@ -68,18 +70,16 @@ const Routes = observer(() => {
 					</KioskLayout>
 				) } />
 
-				<Route path='/404' component={ FourOhFour } />
-
-				{/* 
-
-				<PrivateRoute path='/simulation/:id' component={ matchProps => (
-					<AppProvider id={ matchProps.match.params.id }>
-						<PresentationLayout>
-							<Simulation />
-						</PresentationLayout>
-					</AppProvider>
+				<LoadingRoute path='/simulation/:id' render={ () => (
+					<PresentationLayout>
+						<Simulation />
+					</PresentationLayout>
 				) } />
 
+				<Route path='/404' component={ FourOhFour } />
+
+
+				{/* 
 				<PrivateRoute path='/feedback/:id' component={ matchProps => (
 					<AppProvider id={ matchProps.match.params.id }>
 						<FeedbackLayout>
@@ -92,5 +92,12 @@ const Routes = observer(() => {
 		</Router>
 	);
 });
+
+LoadingRoute.propTypes = {
+	component: PropTypes.oneOfType([ PropTypes.element, PropTypes.node, PropTypes.func ]), 
+	render: PropTypes.oneOfType([ PropTypes.element, PropTypes.node, PropTypes.func ]), 
+	children: PropTypes.oneOfType([ PropTypes.element, PropTypes.node, PropTypes.func ]),
+	rest: PropTypes.any
+};
 
 export default Routes;

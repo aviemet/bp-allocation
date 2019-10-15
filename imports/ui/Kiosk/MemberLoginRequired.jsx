@@ -119,10 +119,10 @@ const MemberLoginRequired = observer(props => {
 					<Header as='h1' className='title'>Enter Your Initials & Member ID</Header>
 					<Container>
 						<Form onSubmit={ chooseMember } ref={ formRef }>
-							<Form.Group inline>
+							<Form.Group inline widths='equal'>
 								<Form.Field>
 									<Input
-										style={ { width: '325px' } }
+										fluid
 										size='huge'
 										label='Initials'
 										placeholder='Ex: MB'
@@ -132,6 +132,7 @@ const MemberLoginRequired = observer(props => {
 								</Form.Field>
 								<Form.Field>
 									<Input
+										fluid
 										size='huge'
 										label='Member #'
 										placeholder='Ex: 1234'

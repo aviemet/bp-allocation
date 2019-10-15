@@ -21,9 +21,9 @@ const PresentationContainer = styled.div`
 	}
 `;
 
-const PresentationLayout = (props) => (
+const PresentationLayout = ({ children }) => (
 	<PresentationContainer>
-		{props.children}
+		{ children }
 	</PresentationContainer>
 );
 

@@ -91,7 +91,6 @@ const FundsVotingKiosk = observer(props => {
 						<OrgCard
 							key={ org._id }
 							org={ org }
-							// image={_.find(images, ['_id', org.image])}
 							showAsk={ false }
 							size='small'
 							content={ () => (
