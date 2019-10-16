@@ -31,12 +31,16 @@ class DataStore {
 
 	@action
 	loadData = autorun(() => {
+		console.log('autorun');
 		if(this.themeId) {
+			console.log({ themeId: this.themeId });
 			this.loading = true;
-			
+			console.log({ loading: this.loading });
+
 			// Stop the subscriptions and observers which are about to be replaced
 			Object.values(this.subscriptions).forEach(subscription => subscription.stop());
 			Object.values(this.observers).forEach(observer => observer.stop());
+			console.log('Subscriptions and observers stopped');
 
 			let promises = [];
 
@@ -44,6 +48,7 @@ class DataStore {
 
 			// Theme
 			promises.push(this._themeSubscription().then(theme => {
+				console.log({ theme });
 				if(!theme) {
 					this.loading = false;
 					return;
@@ -55,10 +60,11 @@ class DataStore {
 				promises.push(this._orgsSubscription());
 				// Members
 				promises.push(this._memberThemesSubscription().then(memberThemes => {
+					console.log({ memberThemeSubscriptionReady: memberThemes });
 					const memberIds = memberThemes.map(memberTheme => memberTheme.member);
-
+					console.log({ memberIds });
 					promises.push(this._membersSubscription(memberIds).then(members => {
-
+						console.log({ membersSubscriptionReady: members });
 						// Once all subscriptions are loaded and have returned data, set loading to false
 						Promise.all(promises).then(values => {
 							this.loading = false;
@@ -124,12 +130,12 @@ class DataStore {
 	// TODO: This is fucked and needs fixing
 	_memberThemesSubscription() {
 		return new Promise((resolve, reject) => {
-	
+			console.log('memberThemesSubscription Promise');
 			const _updateMembers = (memberTheme, remove) => {
 				remove = remove || false;
 				
 				// Refresh data on MemberThemes
-				if(!remove) {
+				if(remove === false) {
 					this.memberThemes.refreshData(memberTheme);
 				} else {
 					this.memberThemes.deleteItem(memberTheme);
@@ -145,7 +151,7 @@ class DataStore {
 
 				// Get list of Member IDs from MemberThemes query
 				const memberIds = this.memberThemes.values.map(memberTheme => memberTheme.member);
-
+				
 				// Re-establish the subscription for the Members query
 				this.subscriptions.members = Meteor.subscribe('members', memberIds, {
 					onReady: () => {
@@ -169,6 +175,7 @@ class DataStore {
 			// Subscribe to MemberThemes
 			this.subscriptions.memberThemes = Meteor.subscribe('memberThemes', this.themeId, {
 				onReady: () => {
+					console.log('memberThemes subscription ready');
 					// Define the query, save the cursor
 					const memberThemesCursor = MemberThemes.find({ theme: this.themeId });
 					// Fetch the data
@@ -193,8 +200,10 @@ class DataStore {
 	_membersSubscription(memberIds) {
 		return new Promise((resolve, reject) => {
 			// Subscribe to Members
+			console.log({ memberIds });
 			this.subscriptions.members = Meteor.subscribe('members', memberIds, {
 				onReady: () => {
+					console.log('members subscription ready');
 					const membersCursor = Members.find({ _id: { $in: memberIds }});
 					const members = membersCursor.fetch();
 
@@ -204,10 +213,11 @@ class DataStore {
 						added: members => this.members.refreshData(members),
 						changed: members => this.members.refreshData(members)
 					});
-
+					console.log({ members: this.members });
 					resolve(toJS(this.members));
 				}
 			});
+			console.log({ membersSubscription: this.subscriptions.members });
 		});
 	}
 

@@ -4,10 +4,18 @@ import _ from 'lodash';
 class TrackableCollection {
 	@observable values = [];
 
+	/**
+	 * 
+	 * @param {Array} data Array of data to be stored in the collection
+	 * @param {Object} parent Reference to parent object
+	 * @param {Object} Store Mobx Store object for data being stored
+	 */
 	constructor(data, parent, Store) {
 		this._store = Store;
 		this.parent = parent;
 		
+		// If a Store was provided, instantiate a new store for each element in data
+		// Either the Store object, or the raw data variable gets stored as the values for the collection
 		if(Store) {
 			const tmp = data.map(value => { 
 				const store = new Store(value, parent); 

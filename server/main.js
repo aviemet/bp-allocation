@@ -11,10 +11,11 @@ import {
 } from '/imports/api';
 
 import '/imports/api/methods';
+// import twilio from 'twilio';
 
 Meteor.startup(() => {
 	// Save API info to DB once (upsert)
-	ServiceConfiguration.configurations.upsert(
+	/*ServiceConfiguration.configurations.upsert(
 		{ service: 'google' },
 		{
 			$set: {
@@ -29,7 +30,7 @@ Meteor.startup(() => {
 				loginStyle: 'popup',
 			}
 		}
-	);
+	);*/
 
 	Meteor.publish('themes', (themeId) => {
 		if(themeId){
@@ -165,8 +166,20 @@ Meteor.startup(() => {
 	*/
 	});
 });
+/*
+Meteor.methods({
+	sendMessage: (numbers, message) => {
+		// Force array for iteration
+		if(!Array.isArray(numbers)) numbers = [numbers];
 
+		const client = new twilio(Meteor.settings.accountSid, Meteor.settings.authToken);
 
-
-
-
+		numbers.forEach(number => {
+			client.messages.create({
+				body: message,
+				to: number,
+				from: Meteor.settings.fromNumber
+			}).then(message => console.log(message.sid));
+		});
+	}
+});*/
