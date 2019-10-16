@@ -44,11 +44,16 @@ const OffsetContainer = styled.div`
 
 const TopbarMenu = styled(Menu)`
 	margin: 0;
-	padding-left: 150px;
 	height: 61px;
+	padding-left: 0;
+	transition: padding 0.25s ease-in-out;
 
 	&& {
 		border-radius: 0;
+	}
+
+	&.offset {
+		padding-left: 150px;
 	}
 `;
 
@@ -110,7 +115,7 @@ const AdminLayout = withRouter(observer(props => {
 	return(
 		<AdminContainer className='AdminContainer'>
 			
-			<TopbarMenu borderless className='Menu'>
+			<TopbarMenu borderless className={ `Menu ${sidebarVisible && 'offset'}` }>
 				<Menu.Item>
 					<Image size='mini' src='/img/BPLogo.svg' style={ { filter: 'invert(100%)' } } />
 				</Menu.Item>

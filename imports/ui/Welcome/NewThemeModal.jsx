@@ -7,7 +7,7 @@ const NewThemeModal = props => {
 	const [ isModalOpen, setIsModalOpen ] = useState(false);
 	const [ newThemeTitle, setNewThemeTitle ] = useState('');
 	const [ newThemeQuestion, setNewThemeQuestion ] = useState('');
-	const [ newThemeQuarter, setNewThemeQuarter ] = useState('');
+	// const [ newThemeQuarter, setNewThemeQuarter ] = useState('');
 
 	const createNewTheme = e => {
 		e.preventDefault();
@@ -15,7 +15,7 @@ const NewThemeModal = props => {
 		ThemeMethods.create.call({
 			title: newThemeTitle,
 			question: newThemeQuestion,
-			quarter: newThemeQuarter
+			// quarter: newThemeQuarter
 		}, (err, res) => {
 			if(err) {
 				console.error(err);
@@ -28,7 +28,8 @@ const NewThemeModal = props => {
 	const clearInputs = () => {
 		setNewThemeTitle('');
 		setNewThemeQuestion('');
-		setNewThemeQuarter('');
+		// setNewThemeQuarter('');
+		setIsModalOpen(false);
 	};
 
 	return (
@@ -46,31 +47,22 @@ const NewThemeModal = props => {
 							<label htmlFor="newThemeTitle">Battery Powered Theme Title</label>
 							<Input 
 								placeholder='e.g. Conservation' 
-								id="newThemeTitle"
+								id='newThemeTitle'
 								value={ newThemeTitle } 
 								onChange={ e => setNewThemeTitle(e.target.value) } 
 							/>
 						</Form.Field>
 						<Form.Field>
-							<label htmlFor="newThemeQuestion">Theme Question</label>
+							<label htmlFor='newThemeQuestion'>Theme Question</label>
 							<Input 
 								placeholder='e.g.' 
-								id="newThemeQuestion"
+								id='newThemeQuestion'
 								value={ newThemeQuestion } 
 								onChange={ e => setNewThemeQuestion(e.target.value) } 
 							/>
 						</Form.Field>
-						<Form.Field>
-							<label htmlFor="newThemeQuarter">Fiscal Quarter</label>
-							<Input 
-								placeholder='e.g. 2018Q3' 
-								id="newThemeQuarter"
-								value={ newThemeQuarter } 
-								onChange={ e => setNewThemeQuarter(e.target.value) } 
-							/>
-						</Form.Field>
-						<div align="right">
-							<Button type='cancel' onClick={ clearInputs } color='red'>Cancel</Button>
+						<div align='right'>
+							<Button type='button' onClick={ clearInputs } color='red'>Cancel</Button>
 							<Button type='submit' color='green'>Save New Theme</Button>
 						</div>
 					</Form>
@@ -81,3 +73,15 @@ const NewThemeModal = props => {
 };
 
 export default NewThemeModal;
+
+/*
+<Form.Field>
+	<label htmlFor="newThemeQuarter">Fiscal Quarter</label>
+	<Input 
+		placeholder='e.g. 2018Q3' 
+		id="newThemeQuarter"
+		value={ newThemeQuarter } 
+		onChange={ e => setNewThemeQuarter(e.target.value) } 
+	/>
+</Form.Field>
+*/

@@ -16,7 +16,11 @@ const ThemesList = ({ themes }) => {
 	const [ page, setPage ] = useState(0);
 	const [ itemsPerPage, setItemsPerPage ] = useState(10);
 
-	const deleteTheme = (e, data) => ThemeMethods.remove.call(data.value);
+	const deleteTheme = id => ThemeMethods.remove.call(id);
+
+	const launchLink = page => {
+		window.open(`/${page}/`)
+	}
 
 	return (
 		<React.Fragment>
@@ -27,8 +31,7 @@ const ThemesList = ({ themes }) => {
 				<Table.Header>
 					<Table.Row>
 						<Table.HeaderCell>Title</Table.HeaderCell>
-						<Table.HeaderCell>Allocation Night Date</Table.HeaderCell>
-						<Table.HeaderCell></Table.HeaderCell>
+						<Table.HeaderCell collapsing></Table.HeaderCell>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -38,18 +41,16 @@ const ThemesList = ({ themes }) => {
 								<Table.Cell>
 									<Link to={ `/admin/${theme._id}` }>{theme.title}</Link>
 								</Table.Cell>
-								<Table.Cell>{theme.quarter}</Table.Cell>
-								<Table.Cell>
+								<Table.Cell singleLine>
 									<Dropdown text='Actions' className='link item'>
 										<Dropdown.Menu>
-											<Dropdown.Item>Launch Kiosk</Dropdown.Item>
-											<Dropdown.Item>Launch Presentation</Dropdown.Item>
-											<Dropdown.Item>Live Stats</Dropdown.Item>
+											<Dropdown.Item onClick={ () => window.open(`/kiosk/${theme._id}`) }>Launch Kiosk</Dropdown.Item>
+											<Dropdown.Item onClick={ () => window.open(`/presentation/${theme._id}`) }>Launch Presentation</Dropdown.Item>
+											{/* <Dropdown.Item>Live Stats</Dropdown.Item> */}
 											<Dropdown.Divider />
-											<Dropdown.Item>Delete Theme</Dropdown.Item>
+											<Dropdown.Item onClick={ () => deleteTheme(theme._id) }><Icon name='trash' />Delete Theme</Dropdown.Item>
 										</Dropdown.Menu>
 									</Dropdown>
-									<Button onClick={ deleteTheme } value={ theme._id }><Icon name='trash' /></Button>
 								</Table.Cell>
 							</Table.Row>
 						);
