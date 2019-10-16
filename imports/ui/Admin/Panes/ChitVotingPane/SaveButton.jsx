@@ -4,7 +4,7 @@ import numeral from 'numeral';
 
 import { Button, Modal, Form, Input } from 'semantic-ui-react';
 
-import { roundFloat } from '/imports/utils';
+import { roundFloat } from '/imports/lib/utils';
 
 import { ThemeMethods } from '/imports/api/methods';
 

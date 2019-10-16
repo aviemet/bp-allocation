@@ -4,7 +4,7 @@ import { Transition } from 'react-transition-group';
 
 import styled from 'styled-components';
 
-import { KIOSK_PAGES } from '/imports/utils';
+import { KIOSK_PAGES } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';

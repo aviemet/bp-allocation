@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { filterTopOrgs } from '/imports/utils';
+import { filterTopOrgs } from '/imports/lib/utils';
 
 import { Themes, PresentationSettings, Organizations, MemberThemes } from '/imports/api';
 

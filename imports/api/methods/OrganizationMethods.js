@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
-import { roundFloat } from '/imports/utils';
+import { roundFloat } from '/imports/lib/utils';
 
 import { Themes, Organizations } from '/imports/api';
 import ImageMethods from './ImageMethods';

@@ -1,6 +1,6 @@
 import TrackableCollection from './TrackableCollection';
 import { computed, toJS } from 'mobx';
-import { roundFloat } from '/imports/utils';
+import { roundFloat } from '/imports/lib/utils';
 import _ from 'lodash';
 
 class OrgsCollection extends TrackableCollection {

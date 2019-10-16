@@ -21,7 +21,7 @@ const Login = ({ history, location }) => {
 	};
 
 	return (
-		<Grid textAlign='center' style={ { height: '100vh' } } verticalAlign='middle'>
+		<Grid textAlign='center' verticalAlign='middle'>
 			<Grid.Column style={ { maxWidth: 450 } }>
 				<img style={ { textAlign: 'center' } } src='/img/BPLogo.svg' />
 				<h1>Battery Powered<br/>Allocation Night</h1>

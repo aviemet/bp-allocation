@@ -7,7 +7,7 @@ import PrivateRoute from '/imports/ui/Components/PrivateRoute';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
-import { AdminLayoutNew, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts';
+import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts';
 import Presentation from '/imports/ui/Presentation';
 import Simulation from '/imports/ui/Admin/Simulation';
 
@@ -50,7 +50,7 @@ const Routes = observer(() => {
 				) } />
 				
 				<Redirect exact from='/' to='/themes' />
-				<PrivateRoute path={ ['/themes', '/admin'] } component={ AdminLayoutNew } />
+				<PrivateRoute path={ ['/themes', '/admin'] } component={ AdminLayout } />
 
 				<LoadingRoute path='/presentation/:id' render={ () => (
 					<PresentationLayout>

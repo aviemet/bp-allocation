@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-
-import AppProvider from '/imports/stores/AppProvider';
+import styled, { ThemeProvider } from 'styled-components';
+import theme from '/imports/lib/theme';
 import DataProvider from '/imports/stores/DataProvider';
 import Routes from './Routes';
 
@@ -19,11 +18,13 @@ const GlobalContainer = styled.div`
 
 const App = () => {
 	return (
-		<GlobalContainer>
-			<DataProvider>
-				<Routes />
-			</DataProvider>
-		</GlobalContainer>
+		<ThemeProvider theme={theme}>
+			<GlobalContainer>
+				<DataProvider>
+					<Routes />
+				</DataProvider>
+			</GlobalContainer>
+		</ThemeProvider>
 	);
 };
 

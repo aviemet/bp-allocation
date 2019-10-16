@@ -10,7 +10,7 @@ import { Container, Form, Input, Header, Button } from 'semantic-ui-react';
 
 import { VotingContextProvider } from './VotingContext';
 
-import { COLORS } from '/imports/global';
+import { COLORS } from '/imports/lib/global';
 
 const MemberLoginContainer = styled(Container)`
 	text-align: center;

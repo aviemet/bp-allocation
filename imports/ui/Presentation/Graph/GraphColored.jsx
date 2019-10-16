@@ -10,7 +10,7 @@ import { Grid, Progress } from 'semantic-ui-react';
 import OrgInfo from '/imports/ui/Presentation/Graph/OrgInfo';
 import Bar from '/imports/ui/Presentation/Graph/Bar';
 
-import { COLORS } from '/imports/utils';
+import { COLORS } from '/imports/lib/utils';
 
 const GraphPageContainer = styled.div`
 	overflow-y: hidden;

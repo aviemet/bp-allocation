@@ -8,7 +8,7 @@ import { useData } from '/imports/stores/DataProvider';
 import { Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { COLORS } from '/imports/global';
+import { COLORS } from '/imports/lib/global';
 
 const BarContainer = styled(Grid.Column)`
 	height: 100%;

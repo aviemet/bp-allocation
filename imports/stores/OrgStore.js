@@ -1,5 +1,5 @@
 import { computed, toJS, observable, extendObservable } from 'mobx';
-import { roundFloat } from '/imports/utils';
+import { roundFloat } from '/imports/lib/utils';
 import _ from 'lodash';
 
 class OrgStore {

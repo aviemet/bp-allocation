@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import AwardEmblem from './AwardEmblem';
 
-import { COLORS } from '/imports/global';
+import { COLORS } from '/imports/lib/global';
 
 const OrgCard = styled(Card)`
 	body .ui.cards > &, && {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
 
-import { roundFloat } from '/imports/utils';
+import { roundFloat } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';

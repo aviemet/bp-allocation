@@ -5,7 +5,7 @@ import numeral from 'numeral';
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 
-import { roundFloat } from '/imports/utils';
+import { roundFloat } from '/imports/lib/utils';
 
 import { OrganizationMethods } from '/imports/api/methods';
 

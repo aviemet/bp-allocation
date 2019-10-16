@@ -5,7 +5,7 @@ import { ThemeMethods } from '/imports/api/methods';
 
 import { Table, Checkbox } from 'semantic-ui-react';
 
-import { roundFloat } from '/imports/utils';
+import { roundFloat } from '/imports/lib/utils';
 
 import SaveButton from './SaveButton';
 import UnSaveButton from './UnSaveButton';

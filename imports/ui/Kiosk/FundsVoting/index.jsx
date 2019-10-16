@@ -14,7 +14,7 @@ import VotingComplete from '../VotingComplete';
 import OrgCard from '/imports/ui/Components/OrgCard';
 import FundsSlider from './FundsSlider';
 
-import { COLORS } from '/imports/global';
+import { COLORS } from '/imports/lib/global';
 
 const OrgsContainer = styled(Container)`
 	padding-top: 20px;

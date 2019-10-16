@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { readCsvWithHeadings } from '/imports/utils';
+import { readCsvWithHeadings } from '/imports/lib/utils';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 import { useData } from '/imports/stores/DataProvider';
