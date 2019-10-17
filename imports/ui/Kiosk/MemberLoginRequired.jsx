@@ -61,9 +61,9 @@ const SubmitButton = styled(Button)`
 `;
 
 const MemberLoginRequired = observer(props => {
+	// Pull member data from Data Store
 	const data = useData();
 	const members = data.members.values;
-	console.log({ data, members });
 
 	const formRef = React.createRef();
 
@@ -71,16 +71,18 @@ const MemberLoginRequired = observer(props => {
 	const [ number, setNumber ] = useState('');
 
 	const [ searchError, setSearchError ] = useState(false);
-	const [ user, setUser ] = useState(false);
+	
+	const member = _.find(members, member => member._id === props.member);
+	const [ user, setUser ] = useState(member || false);
 
 	// Check for direct link URL structure
-
-	useEffect(() => {
+	/*useEffect(() => {
+		console.log({ props });
 		if(props.member) {
 			const member = _.find(members, member => member._id === props.member);
 			if(member) setUser(member);
 		}
-	}, [props.member]);
+	}, [props.member]);*/
 
 	const showSearchError = () => {
 		setSearchError(true);
@@ -94,8 +96,10 @@ const MemberLoginRequired = observer(props => {
 
 		setSearchError(false);
 		const code = `${initials.trim().toUpperCase()}${number}`;
+		console.log({ code });
 		
 		const member = _.find(members, ['code', code]);
+		console.log({ member });
 		
 		setInitials('');
 		setNumber('');
@@ -111,7 +115,7 @@ const MemberLoginRequired = observer(props => {
 
 	// props.member comes from router params
 	// Display the interface to choose a member
-	if(!props.member || !user) {
+	if(!user) {
 		return(
 			<MemberLoginContainer>
 				<BackgroundImage />

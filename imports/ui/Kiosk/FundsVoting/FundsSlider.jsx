@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
@@ -40,117 +40,125 @@ const BottomAlign = styled.div`
 	margin: 15px 5px -15px 5px;
 `;
 
-class FundsSliderComponent extends React.PureComponent {
-	constructor(props) {
-		super(props);
+/**
+ * Tactile slider for adjusting voting amount
+ */
+const FundsSlider = props => {
+	const { member, votes, updateVotes } = useVoting();
 
-		this.state = {
-			value: parseInt(props.votes[props.org._id]),
-			showLabel: false,
-			showInput: false
-		};
-	}
+	const context = Object.assign({ member, votes, updateVotes }, props);
 
-	componentDidRender = () => {
+	return <FundsSliderComponent { ...context }>{props.children}</FundsSliderComponent>;
+};
+
+/**
+ * Full Component containing Slider, Org Title and amount feedback
+ */
+const FundsSliderComponent = props => {
+	const [ value, setValue ] = useState(parseInt(props.votes[props.org._id]));
+	const [ showLabel, setShowLabel ] = useState(false); // Toggles showing slider percent label
+	const [ showInput, setShowInput ] = useState(false); // Toggles between text $ amount and input
+
+	const MAX = props.member.theme.amount;
+
+	useEffect(() => {
+		// Disable contextmenu for long press on mobile
 		document.oncontextmenu = () => {
 			return false;
 		};
-	}
+	}, []);
 
-	handleChange = value => {
+	const handleChange = value => {
+		// undefined value from empty DB field should be dealt with correctly
 		if(_.isNaN(value)) {
-			this.setState({ value: '' });
-			this.props.updateVotes(this.props.org._id, 0);
+			setValue(0);
+			props.updateVotes(props.org._id, 0);
 			return;
 		}
 
-		const MAX = this.props.member.theme.amount;
-
+		// Constrain value to not exceed total funds of member
 		let sum = 0;
-		_.forEach(this.props.votes,(voteAmount, key) => {
-			sum += key === this.props.org._id ? parseInt(value) : voteAmount;
+		_.forEach(props.votes, (voteAmount, key) => {
+			sum += key === props.org._id ? parseInt(value) : voteAmount;
 		});
 		const newValue = MAX - sum < 0 ? parseInt(value) + (MAX - sum) : parseInt(value);
+		setValue(newValue);
 
-		this.setState({
-			value: newValue
-		});
-		this.props.updateVotes(this.props.org._id, newValue);
+		// Save new value to DB on every change
+		props.updateVotes(props.org._id, newValue);
+	};
 
-	}
-
-	showLabel = () => {
-		this.setState({ showLabel: true });
+	// Show % label for slider on click, hide on mouseup/touchend
+	const toggleSliderLabel = () => {
+		setShowLabel(true);
 		// Hopefully fix issue where onChangeComplete doesn't fire
-		window.addEventListener('mouseup', () => this.setState({ showLabel: false }), { once: true });
-		window.addEventListener('touchend', () => this.setState({ showLabel: false }), { once: true });
-	}
+		window.addEventListener('mouseup', () => setShowLabel(false), { once: true });
+		window.addEventListener('touchend', () => setShowLabel(false), { once: true });
+	};
 
-	showInput = () => {
-		this.setState({ showInput: true });
+	// Replace $ amount with input, switch back with click outside of input
+	const toggleAmountInput = () => {
+		setShowInput(true);
 		// Wait a tic for the click/touch event to stop propagating
 		setTimeout(() => {
-			window.addEventListener('click', this.handlePageClick, false);
-			window.addEventListener('touchstart', this.handlePageClick, false);
+			window.addEventListener('click', handlePageClick, false);
+			window.addEventListener('touchstart', handlePageClick, false);
 		}, 1);
-	}
+	};
 
-	handlePageClick = e => {
+	// Listens for click outside of $ input to hide input
+	const handlePageClick = e => {
 		const inputContainer = document.getElementById('inputContainer');
 		const clickInsideInput = inputContainer.contains(e.target);
 
 		if(inputContainer && !clickInsideInput) {
-			this.hideInput();
+			hideInput();
 		}
-	}
+	};
 
-	hideInput = () => {
-		this.handleChange(_.isNaN(this.state.value) ? 0 : this.state.value);
-		this.setState({ showInput: false });
-		window.removeEventListener('click', this.handlePageClick, false);
-		window.removeEventListener('touchstart', this.handlePageClick, false);
-	}
-
-	render() {
-		const MAX = this.props.member.theme.amount;
-		const showLabelClass = this.state.showLabel ? 'visible' : false;
+	// Hide $ amount input
+	const hideInput = () => {
+		handleChange(_.isNaN(value) ? 0 : value); // Save value to DB
+		setShowInput(false);
+		window.removeEventListener('click', handlePageClick, false);
+		window.removeEventListener('touchstart', handlePageClick, false);
+	};
 		
-		return (
-			<SliderContainer>
-				{this.state.showInput ?
-					<AmountInputContainer id="inputContainer">
-						<Input fluid
-							type="number"
-							value={ this.state.value || '' }
-							onChange={ e => this.handleChange(parseInt(e.currentTarget.value)) }
-							size="massive"
-							icon="dollar"
-							iconPosition="left"
-							action={ <Button onClick={ this.hideInput }><Icon name="check" /></Button> }
-						/>
-					</AmountInputContainer>
-					:
-					<Amount onClick={ this.showInput }>
-						{numeral(this.state.value).format('$0,0')}
-					</Amount>
-				}
-				<BottomAlign className={ showLabelClass }>
-					<InputRange
-						disabled={ !this.props.member.theme.amount || this.props.member.theme.amount <= 0 }
-						minValue={ 0 }
-						maxValue={ this.props.member.theme.amount || 1 }
-						value={ this.state.value || 0 }
-						onChange={ this.handleChange }
-						onChangeStart={ this.showLabel }
-						onChangeComplete={ () => this.setState({ showLabel: false }) }
-						formatLabel={ value => numeral(value / MAX).format('0%') }
-						step={ 5 }
+	return (
+		<SliderContainer>
+			{showInput ?
+				<AmountInputContainer id="inputContainer">
+					<Input fluid
+						type="number"
+						value={ value || '' }
+						onChange={ e => handleChange(parseInt(e.currentTarget.value)) }
+						size="massive"
+						icon="dollar"
+						iconPosition="left"
+						action={ <Button onClick={ hideInput }><Icon name="check" /></Button> }
 					/>
-				</BottomAlign>
-			</SliderContainer>
-		);
-	}
-}
+				</AmountInputContainer>
+				:
+				<Amount onClick={ toggleAmountInput }>
+					{numeral(value).format('$0,0')}
+				</Amount>
+			}
+			<BottomAlign className={ showLabel ? 'visible' : '' }>
+				<InputRange
+					disabled={ !props.member.theme.amount || props.member.theme.amount <= 0 }
+					minValue={ 0 }
+					maxValue={ props.member.theme.amount || 1 }
+					value={ value || 0 }
+					onChange={ handleChange }
+					onChangeStart={ toggleSliderLabel }
+					onChangeComplete={ () => setShowLabel(false) }
+					formatLabel={ value => numeral(value / MAX).format('0%') }
+					step={ 5 }
+				/>
+			</BottomAlign>
+		</SliderContainer>
+	);
+};
 
 FundsSliderComponent.propTypes = {
 	member: PropTypes.object,
@@ -158,14 +166,6 @@ FundsSliderComponent.propTypes = {
 	updateVotes: PropTypes.func,
 	votes: PropTypes.object,
 
-};
-
-const FundsSlider = props => {
-	const { member, votes, updateVotes } = useVoting();
-
-	const context = Object.assign({ member, votes, updateVotes }, props);
-
-	return <FundsSliderComponent { ...context }>{props.children}</FundsSliderComponent>;
 };
 
 FundsSlider.propTypes = {

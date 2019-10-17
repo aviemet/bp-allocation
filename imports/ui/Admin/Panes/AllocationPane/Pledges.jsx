@@ -8,8 +8,14 @@ import { useData } from '/imports/stores/DataProvider';
 import { OrganizationMethods } from '/imports/api/methods';
 
 import { Container, Header, Table, Button } from 'semantic-ui-react';
-
+import styled from 'styled-components';
 import MemberSearch from '/imports/ui/Components/MemberSearch';
+
+const PledgesContainer = styled(Container)`
+	.ui.fluid.search .ui.icon.input {
+		width: 100%;
+	}
+`;
 
 const Pledges = observer(props => {
 	const data = useData();
@@ -21,6 +27,10 @@ const Pledges = observer(props => {
 		const orgId = data.orgid;
 
 		OrganizationMethods.removePledge.call({ orgId, pledgeId });
+	};
+
+	const searchCallback = result => {
+		console.log({ result });
 	};
 
 	let pledges = [];
@@ -36,8 +46,9 @@ const Pledges = observer(props => {
 	});
 	pledges = _.sortBy(pledges, ['createdAt']);
 
+
 	return (
-		<Container>
+		<PledgesContainer>
 			<Header as="h2">Matched Pledges</Header>
 			<Table striped>
 				<Table.Header>
@@ -61,7 +72,8 @@ const Pledges = observer(props => {
 									:
 									<MemberSearch
 										data={ members }
-										pledgeid={ pledge._id }
+										pledgeId={ pledge._id }
+										callback={ searchCallback }
 									/>
 								}
 							</Table.Cell>
@@ -81,7 +93,7 @@ const Pledges = observer(props => {
 					))}
 				</Table.Body>
 			</Table>
-		</Container>
+		</PledgesContainer>
 	);
 });
 
