@@ -23,19 +23,6 @@ import TextMembersButton from '/imports/ui/Components/TextMembersButton';
 import PresentationNavButton from './PresentationNavButton';
 
 const ButtonPanel = styled.div`
-	&& button{
-		width: 100%;
-		height: 120px;
-		margin-bottom: 10px;
-
-		.icon{
-			height: unset !important;
-		}
-
-		.label {
-			font-size: 1.2rem;
-		}
-	}
 `;
 
 const PresentationPane = observer(() => {
@@ -123,7 +110,7 @@ const PresentationPane = observer(() => {
 						<ChitVotingActiveToggle />
 						<br/>
 						<FundsVotingActiveToggle />
-						<TextMembersButton />
+						<TextMembersButton style={ { float: 'right' } } />
 
 					</Grid.Column>
 

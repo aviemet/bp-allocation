@@ -3,7 +3,7 @@ import React from 'react';
 import { useData } from '/imports/stores/DataProvider';
 import { Button } from 'semantic-ui-react';
 
-const TextMembersButton = themeId => {
+const TextMembersButton = props => {
 	const { theme, members } = useData();
 
 	const textMembers = () => {
@@ -16,9 +16,7 @@ const TextMembersButton = themeId => {
 		});
 	};
 
-	return (
-		<Button onClick={ textMembers }>Text Members</Button>
-	);
+	return <Button onClick={ textMembers } { ...props }>Text Members</Button>;
 };
 
 export default TextMembersButton;
