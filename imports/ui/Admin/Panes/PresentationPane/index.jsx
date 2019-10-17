@@ -10,7 +10,15 @@ import { PresentationSettingsMethods } from '/imports/api/methods';
 import { Grid, Icon, Label, Segment, Input } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { ChitVotingActiveToggle, FundsVotingActiveToggle, ColorizeTopOrgsToggle, AnimateTopOrgsToggle, ShowLeverageToggle, ShowSaveValuesToggle } from '/imports/ui/Components/Toggles';
+import { 
+	ChitVotingActiveToggle, 
+	FundsVotingActiveToggle, 
+	ColorizeTopOrgsToggle, 
+	AnimateTopOrgsToggle, 
+	ShowLeverageToggle, 
+	ShowSaveValuesToggle 
+} from '/imports/ui/Components/Toggles';
+import TextMembersButton from '/imports/ui/Components/TextMembersButton';
 
 import PresentationNavButton from './PresentationNavButton';
 
@@ -115,6 +123,7 @@ const PresentationPane = observer(() => {
 						<ChitVotingActiveToggle />
 						<br/>
 						<FundsVotingActiveToggle />
+						<TextMembersButton />
 
 					</Grid.Column>
 

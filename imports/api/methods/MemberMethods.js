@@ -9,7 +9,9 @@ import { Members, MemberThemes } from '/imports/api';
  * @param  {Object} data {firstName, lastName, fullName, initials, number, amount}
  */
 const memberInsert = function(data) {
-	// Normalize the data
+	/**********************
+	 * Normalize the data *
+	 **********************/
 	let { firstName, lastName, fullName, number, initials, phone } = data;
 	let code;
 	number = parseInt(number);
@@ -22,9 +24,9 @@ const memberInsert = function(data) {
 	// Build first/last from fullName if not present
 	if(_.isUndefined(firstName) && _.isUndefined(lastName) && !_.isUndefined(fullName)) {
 		const nameArr = fullName.split(' ');
-		if(nameArr.length === 2) {
+		if(nameArr.length >= 2) {
 			firstName = nameArr[0];
-			lastName = nameArr[1];
+			lastName = nameArr[nameArr.length - 1];
 		}
 	}
 
@@ -43,7 +45,11 @@ const memberInsert = function(data) {
 		code = `${initials}${String(number)}`;
 	}
 
-	// Build the query: Search by either of first/last or full name
+	/*****************
+	 * Build a Query *
+	 *****************/
+
+	// Search by either of first/last or full name
 	const memberQuery = { '$or': [] };
 	if(!_.isUndefined(firstName) && !_.isUndefined(lastName)) {
 		memberQuery.$or.push({ firstName, lastName, number });
@@ -71,11 +77,15 @@ const memberInsert = function(data) {
 				console.error(e);
 			}
 		} else {
-			if(member.initials !== initials) {
-				Members.update({ _id: member._id }, { $set: {
-					initials: initials,
-					code: code
-				}});
+			const updateData = {
+				initials,
+				code
+			};
+
+			if(phone) updateData.phone = phone;
+
+			if(member.initials !== initials || member.phone !== phone) {
+				Members.update({ _id: member._id }, { $set: updateData });
 			}
 			resolve(member._id);
 		}

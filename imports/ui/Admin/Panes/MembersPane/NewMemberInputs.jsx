@@ -22,6 +22,8 @@ const NewMemberInputs = observer(props => {
 	const saveMember = e => {
 		e.preventDefault();
 
+		console.log({ phone });
+
 		MemberMethods.upsert.call({
 			firstName,
 			lastName,
@@ -43,24 +45,28 @@ const NewMemberInputs = observer(props => {
 	return (
 		<Form onSubmit={ saveMember }>
 			<Form.Group>
+				{/* First Name */}
 				<Form.Input
 					width={ 3 }
 					placeholder='First Name'
 					value={ firstName }
 					onChange={ e => setFirstName(e.currentTarget.value) }
 				/>
+				{/* Last Name */}
 				<Form.Input
 					width={ 3 }
 					placeholder='Last Name'
 					value={ lastName }
 					onChange={ e => setLastName(e.currentTarget.value) }
 				/>
+				{/* Initials */}
 				<Form.Input
 					width={ 2 }
 					placeholder='Initials'
 					value={ initials || '' }
 					onChange={ e => setInitials(e.currentTarget.value) }
 				/>
+				{/* Member Number */}
 				<Form.Input
 					width={ 3 }
 					iconPosition='left'
@@ -69,6 +75,7 @@ const NewMemberInputs = observer(props => {
 					value={ memberNumber || '' }
 					onChange={ e => setMemberNumber(parseInt(e.currentTarget.value)) }
 				/>
+				{/* Amount */}
 				<Form.Input
 					width={ 3 }
 					iconPosition='left'
@@ -77,6 +84,7 @@ const NewMemberInputs = observer(props => {
 					value={ memberAmount || '' }
 					onChange={ e => setMemberAmount(roundFloat(e.currentTarget.value)) }
 				/>
+				{/* Phone Number */}
 				<Form.Input
 					width={ 3 }
 					iconPosition='left'

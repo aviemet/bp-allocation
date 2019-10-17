@@ -11,7 +11,7 @@ import {
 } from '/imports/api';
 
 import '/imports/api/methods';
-// import twilio from 'twilio';
+import twilio from 'twilio';
 
 Meteor.startup(() => {
 	// Save API info to DB once (upsert)
@@ -166,20 +166,16 @@ Meteor.startup(() => {
 	*/
 	});
 });
-/*
+
 Meteor.methods({
-	sendMessage: (numbers, message) => {
-		// Force array for iteration
-		if(!Array.isArray(numbers)) numbers = [numbers];
-
-		const client = new twilio(Meteor.settings.accountSid, Meteor.settings.authToken);
-
-		numbers.forEach(number => {
-			client.messages.create({
-				body: message,
-				to: number,
-				from: Meteor.settings.fromNumber
-			}).then(message => console.log(message.sid));
-		});
+	sendMessage: (number, message) => {
+		const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.authToken);
+		console.log({ number, message });
+		const text = client.messages.create({
+			body: message,
+			to: `+1${number}`,
+			from: Meteor.settings.twilio.fromNumber
+		}).then(message => console.log(message));
+		console.log({ text });
 	}
-});*/
+});
