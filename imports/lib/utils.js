@@ -147,11 +147,16 @@ function useTraceUpdate(props) {
 	});
 }
 
+function isMobileDevice() {
+	return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1);
+}
+
 export {
 	KIOSK_PAGES,
 	roundFloat,
 	getSaveAmount,
 	readCsvWithHeadings,
 	useTraceUpdate,
-	numberFormats
+	numberFormats,
+	isMobileDevice
 };
