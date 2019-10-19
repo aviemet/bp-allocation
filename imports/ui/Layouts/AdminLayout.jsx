@@ -77,6 +77,10 @@ const SidebarMenu = styled(Menu)`
 	}
 `;
 
+const Logo = styled(Image)`
+	filter: invert(100%);
+`;
+
 const MenuLink = withRouter(props => {
 	const handleNav = () => {
 		if(props.target && props.target === '_blank') {
@@ -117,9 +121,9 @@ const AdminLayout = withRouter(observer(props => {
 			
 			<TopbarMenu borderless className={ `Menu ${sidebarVisible && 'offset'}` }>
 				<Menu.Item>
-					<Image size='mini' src='/img/BPLogo.svg' style={ { filter: 'invert(100%)' } } />
+					<Logo size='mini' src='/img/BPLogo.svg'/>
 				</Menu.Item>
-				<Menu.Item header>{ data.menuHeading } { props.match.params.id && props.match.params.id }</Menu.Item>
+				<Menu.Item header style={ { paddingLeft: 0 } }>{ data.menuHeading } { props.match.params.id && props.match.params.id }</Menu.Item>
 
 				<Menu.Menu position='right'>
 					<Dropdown text='Menu' className='link item'>

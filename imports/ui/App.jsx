@@ -19,7 +19,6 @@ const GlobalContainer = styled.div`
 
 const App = () => {
 	useEffect(() => {
-		console.log({ isMobileDevice: isMobileDevice() });
 		if(isMobileDevice()) {
 			document.body.addEventListener('touchmove', function(e) { 
 				e.preventDefault(); 
