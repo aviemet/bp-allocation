@@ -211,6 +211,19 @@ const MemberMethods = {
 	}),
 
 	/**
+	 * Update MemberTheme
+	 */
+	updateTheme: new ValidatedMethod({
+		name: 'members.updateTheme',
+
+		validate: null,
+
+		run({ id, data }) {
+			return MemberThemes.update({ _id: id }, { $set: data });
+		}
+	}),
+
+	/**
 	 * Record funds allocation vote for member for org
 	 */
 	fundVote: new ValidatedMethod({

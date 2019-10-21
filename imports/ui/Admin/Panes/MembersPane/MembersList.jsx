@@ -66,6 +66,12 @@ const MembersList = observer(props => {
 		MemberMethods.update.call({ id: id, data });
 	};
 
+	const updateMemberTheme = (id, field) => value => {
+		let data = {};
+		data[field] = value;
+		MemberMethods.updateTheme.call({ id: id, data });
+	};
+
 	const sortMembersTable = clickedColumn => () => {
 		if(sortColumn !== clickedColumn) {
 			setSortColumn(clickedColumn);
@@ -190,7 +196,15 @@ const MembersList = observer(props => {
 
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'phone') }>{ phone }</EditableText>
 
-								<Table.Cell>{ numeral(member.theme.amount || 0).format('$0,0') }</Table.Cell>
+								{/* <Table.Cell>{ numeral(member.theme.amount || 0).format('$0,0') }</Table.Cell> */}
+								<EditableText 
+									as={ Table.Cell } 
+									inputType='number' 
+									onSubmit={ updateMemberTheme(member.theme._id, 'amount') }
+									format={ value => numeral(value).format('$0,0') }
+								>
+									{ member.theme.amount || 0 }
+								</EditableText>
 								
 								{ votingColspan > 0 && <React.Fragment>
 									{ settings.useKioskChitVoting && <Table.Cell></Table.Cell> }

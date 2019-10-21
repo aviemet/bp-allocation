@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Input, Button, Icon } from 'semantic-ui-react';
 
-const EditableText = ({ as, inputType, onSubmit, children }) => {
+const EditableText = ({ as, format, inputType, onSubmit, children }) => {
 	const [ value, setValue ] = useState(children);
 	const [ editing, setEditing ] = useState(false);
 
@@ -35,9 +35,11 @@ const EditableText = ({ as, inputType, onSubmit, children }) => {
 		);
 	}
 
+	if(!format) format = value => value;
+
 	return(
 		<Component onClick={ () => setEditing(true) }>
-			{ value }
+			{ format(value) }
 		</Component>
 	);
 };
@@ -50,6 +52,7 @@ EditableText.propTypes = {
 		PropTypes.func,
 		PropTypes.string, 
 	]),
+	format: PropTypes.func,
 	inputType: PropTypes.string,
 	children: PropTypes.oneOfType([
 		PropTypes.string,

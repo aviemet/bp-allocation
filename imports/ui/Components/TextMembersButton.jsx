@@ -9,7 +9,7 @@ const TextMembersButton = props => {
 	const textMembers = () => {
 		members.values.forEach(member => {
 			if(member.phone) {
-				const message = `Battery Powered Allocation Voting: Please follow the link to vote for your favorite organizations: http://www.batterysf.com/kiosk/${theme._id}/${member._id}`;
+				const message = `Battery Powered Allocation Voting: Please follow the link to vote for your favorite organizations: https://www.batterysf.com/kiosk/${theme._id}/${member._id}`;
 
 				Meteor.call('sendMessage', member.phone, message);
 			}
