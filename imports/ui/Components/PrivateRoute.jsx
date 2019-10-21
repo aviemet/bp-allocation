@@ -9,7 +9,7 @@ const PrivateRoute = ({ location, component, render, children, ...rest }) => {
 
 	return (
 		<Route { ...rest } render={ props => (
-			!Meteor.userId() 
+			process.env.NODE_ENV !== 'development' && !Meteor.userId()
 				? <Redirect to={ {
 					pathname: '/login',
 					state: { from: location }

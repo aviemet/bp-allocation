@@ -164,7 +164,7 @@ const MemberMethods = {
 	}),
 
 	/**
-	 * Update Member
+	 * Remove one Member from Theme
 	 */
 	removeMemberFromTheme: new ValidatedMethod({
 		name: 'members.removeMemberFromTheme',

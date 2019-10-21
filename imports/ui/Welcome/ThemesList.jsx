@@ -7,7 +7,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Themes } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 
-import { Button, Table, Icon, Segment, Input, Dropdown, Pagination } from 'semantic-ui-react';
+import { Table, Icon, Segment, Input, Dropdown, Pagination } from 'semantic-ui-react';
 
 import NewThemeModal from '/imports/ui/Welcome/NewThemeModal';
 
@@ -18,20 +18,16 @@ const ThemesList = ({ themes }) => {
 
 	const deleteTheme = id => ThemeMethods.remove.call(id);
 
-	const launchLink = page => {
-		window.open(`/${page}/`)
-	}
-
 	return (
 		<React.Fragment>
 
-			<Segment><Input placeholder='Search' /><NewThemeModal /></Segment>
+			{/* <Segment><Input placeholder='Search' /></Segment> */}
 			<Table celled striped
 				attached='top'>
 				<Table.Header>
 					<Table.Row>
 						<Table.HeaderCell>Title</Table.HeaderCell>
-						<Table.HeaderCell collapsing></Table.HeaderCell>
+						<Table.HeaderCell collapsing><NewThemeModal /></Table.HeaderCell>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
