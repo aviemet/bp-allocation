@@ -7,7 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext';
 
-import { Card, Container, Header, Button } from 'semantic-ui-react';
+import { Card, Container, Header, Button, Responsive } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import VotingComplete from '../VotingComplete';
@@ -70,6 +70,7 @@ const AmountRemaining = React.memo(({ value }) => {
 AmountRemaining.displayName = 'AmountRemaining'; // To slience eslint
 
 const FundsVotingKiosk = observer(props => {
+	console.log({ Responsive });
 	const data = useData();
 	const topOrgs = data.orgs.topOrgs;
 

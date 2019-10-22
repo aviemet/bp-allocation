@@ -15,6 +15,7 @@ import Login from '/imports/ui/Welcome/Login';
 import Kiosk from '/imports/ui/Kiosk';
 import FourOhFour from './404';
 import { Loader } from 'semantic-ui-react';
+import VotingComplete from './Kiosk/VotingComplete';
 
 // Route which delays display of content until the data store has fully loaded
 const LoadingRoute = observer(({ component, render, children, ...rest }) => {
@@ -77,7 +78,6 @@ const Routes = observer(() => {
 				) } />
 
 				<Route path='/404' component={ FourOhFour } />
-
 
 				{/* 
 				<PrivateRoute path='/feedback/:id' component={ matchProps => (

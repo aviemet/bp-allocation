@@ -27,12 +27,19 @@ const Amount = styled.div`
 `;
 
 const AmountInputContainer = styled.div`
-	/*height: 148px;*/
-
-	&& .ui.input {
+	&& .ui.massive.input {
 		height: 64px;
 		text-align: center;
 		font-size: 2.5rem;
+
+		input {
+			padding-left: 1.25em !important;
+			padding-right: 0.5em !important;
+		}
+
+		.icon {
+			width: 1.25em;
+		}
 	}
 `;
 
@@ -99,7 +106,7 @@ const FundsSliderComponent = props => {
 	// Replace $ amount with input, switch back with click outside of input
 	const toggleAmountInput = e => {
 		e.stopPropagation();
-		
+
 		setShowInput(true);
 		
 		window.addEventListener('click', handlePageClick, false);

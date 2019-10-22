@@ -11,7 +11,12 @@ const Centered = styled.div`
 	text-transform: uppercase;
   font-size: 6rem;
   line-height: 6rem;
-  text-align: center;
+	text-align: center;
+	color: white;
+	
+	@media screen and (max-width: ${({ theme }) => theme.media.onlyTablet.minWidth}px) {
+		font-size: 4rem !important;
+	}
 `;
 
 const VotingComplete = props => {
