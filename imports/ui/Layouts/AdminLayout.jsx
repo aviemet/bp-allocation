@@ -12,7 +12,8 @@ import {
 	Header,
 	Icon,
 	Image,
-	Menu
+	Menu,
+	Responsive
 } from 'semantic-ui-react';
 import Sidebar from '/imports/ui/Components/Sidebar';
 import styled from 'styled-components';
@@ -38,7 +39,9 @@ const OffsetContainer = styled.div`
 	transition: padding 0.25s ease-in-out;
 
 	&.offset {
-		padding-left: 150px;
+		@media only screen and (max-width: ${ Responsive.onlyTablet.minWidth }) {
+			padding-left: 150px;
+		}
 	}
 `;
 
@@ -81,49 +84,84 @@ const Logo = styled(Image)`
 	filter: invert(100%);
 `;
 
-const MenuLink = withRouter(props => {
+const MenuLink = withRouter(({ target, to, history, children, active }) => {
 	const handleNav = () => {
-		if(props.target && props.target === '_blank') {
-			window.open(props.to);
+		if(target && target === '_blank') {
+			window.open(to);
 		} else {
-			props.history.push(props.to);
+			history.push(to);
 		}
 	};
 
 	return (
-		<Menu.Item as='a' to={ props.to } onClick={ handleNav }>{ props.children }</Menu.Item>
+		<Menu.Item as='a' to={ to } onClick={ handleNav } active={ active && active }>{ children }</Menu.Item>
 	);
 });
 
 const AdminLayout = withRouter(observer(props => {
 	const [ sidebarVisible, setSidebarVisible ] = useState(false);
+	const [ documentWidth, setDocumentWidth ] = useState();
+	const [ activeMenuItem, setActiveMenuItem ] = useState();
 
 	const data = useData();
 
 	useEffect(() => {
-		// Hide sidebar on themes list, show when them is chosen
-		let showSidebar = true;
-		const regex = {
-			admin: /^\/admin[/]?$/,
-			themes: /^\/themes[/]?$/,
-		};
+		if(documentWidth >= Responsive.onlyTablet.minWidth) {
+			// Hide sidebar on themes list, show when them is chosen
+			let showSidebar = true;
+			const regex = {
+				admin: /^\/admin[/]?$/,
+				themes: /^\/themes[/]?$/,
+			};
 
-		if(regex.admin.test(props.location.pathname) || regex.themes.test(props.location.pathname)) {
-			showSidebar = false;
+			if(regex.admin.test(props.location.pathname) || regex.themes.test(props.location.pathname)) {
+				showSidebar = false;
+			}
+			setSidebarVisible(showSidebar);
+		} else {
+			if(data.theme) data.menuHeading = data.theme.title;
+			setSidebarVisible(false);
 		}
-		setSidebarVisible(showSidebar);
-	}, [ props.location.pathname ]);
+	}, [ props.location.pathname, documentWidth ]);
+
+	useEffect(() => {
+		setActiveMenuItem;
+	}, []);
+
+	const handleOnUpdate = (e, { width }) => {
+		setDocumentWidth(width);
+	};
+
+	const setActivePage = matchProps => {
+		const url = matchProps.location.pathname;
+		const filter = matchProps.match.url;
+		const page = url.substring(url.indexOf(filter) + filter.length + 1);
+		setActiveMenuItem(page);
+	};
 
 	const loading = data.loading;
-	
+
 	return(
 		<AdminContainer className='AdminContainer'>
 			
 			<TopbarMenu borderless className={ `Menu ${sidebarVisible && 'offset'}` }>
 				<Menu.Item>
-					<Logo size='mini' src='/img/BPLogo.svg'/>
+					<Responsive
+						minWidth={ Responsive.onlyTablet.minWidth }
+						as={ Logo } 
+						size='mini' 
+						src='/img/BPLogo.svg'
+					/>
+					<Responsive
+						maxWidth={ Responsive.onlyTablet.minWidth }
+						as={ Icon }
+						name='bars'
+						link
+						onClick={ () => setSidebarVisible(!sidebarVisible) }
+					/>
 				</Menu.Item>
-				<Menu.Item header style={ { paddingLeft: 0 } }>{ data.menuHeading } { props.match.params.id && props.match.params.id }</Menu.Item>
+
+				<Menu.Item header style={ { paddingLeft: 0 } }>{ data.menuHeading }</Menu.Item>
 
 				<Menu.Menu position='right'>
 					<Dropdown text='Menu' className='link item'>
@@ -136,25 +174,70 @@ const AdminLayout = withRouter(observer(props => {
 				</Menu.Menu>
 			</TopbarMenu>
 
-			<Sidebar className='Sidebar'
+			<Responsive 
+				as={ Sidebar } 
+				className='Sidebar'
 				visible={ sidebarVisible }
+				fireOnMount
+				onUpdate={ handleOnUpdate }
 			>
 				<SidebarMenu vertical>
 					<Header as={ 'h1' }>Menu</Header>
-					<MenuLink to={ `/admin/${data.themeId}/settings` }>Settings</MenuLink>
-					<MenuLink to={ `/admin/${data.themeId}/orgs` }>Orgs</MenuLink>
-					<MenuLink to={ `/admin/${data.themeId}/members` }>Members</MenuLink>
-					<MenuLink to={ `/admin/${data.themeId}/chits` }>Chit Votes</MenuLink>
-					<MenuLink to={ `/admin/${data.themeId}/allocation` }>Allocations</MenuLink>
-					<MenuLink to={ `/admin/${data.themeId}/leverage` }>Leverage</MenuLink>
-					<MenuLink to={ `/admin/${data.themeId}/presentation` }>Presentation</MenuLink>
+					<MenuLink 
+						to={ `/admin/${data.themeId}/settings` }
+						active={ activeMenuItem === 'settings' }
+					>
+						Settings
+					</MenuLink>
+
+					<MenuLink 
+						to={ `/admin/${data.themeId}/orgs` }
+						active={ activeMenuItem === 'orgs' }
+					>
+						Orgs
+					</MenuLink>
+
+					<MenuLink 
+						to={ `/admin/${data.themeId}/members` }
+						active={ activeMenuItem === 'members' }
+					>
+						Members
+					</MenuLink>
+
+					<MenuLink 
+						to={ `/admin/${data.themeId}/chits` }
+						active={ activeMenuItem === 'chits' }
+					>
+						Chit Votes
+					</MenuLink>
+
+					<MenuLink 
+						to={ `/admin/${data.themeId}/allocation` }
+						active={ activeMenuItem === 'allocation' }
+					>
+						Allocations
+					</MenuLink>
+
+					<MenuLink 
+						to={ `/admin/${data.themeId}/leverage` }
+						active={ activeMenuItem === 'leverage' }
+					>
+						Leverage
+					</MenuLink>
+
+					<MenuLink 
+						to={ `/admin/${data.themeId}/presentation` }
+						active={ activeMenuItem === 'presentation' }
+					>
+						Presentation
+					</MenuLink>
 
 					<Header as={ 'h1' }>Pages</Header>
 					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>Presentation</MenuLink>
 					<MenuLink to={ `/kiosk/${data.themeId}` }>Kiosk</MenuLink>
 					<Menu.Item as={ 'a' }>Feedback</Menu.Item>
 				</SidebarMenu>
-			</Sidebar>
+			</Responsive>
 
 			<OffsetContainer className={ sidebarVisible && 'offset' }>
 				<Container className='Container'>
@@ -166,6 +249,8 @@ const AdminLayout = withRouter(observer(props => {
 							} } />
 							<Route path='/admin/:id' render={ matchProps => {
 								data.themeId = matchProps.match.params.id;
+								setActivePage(matchProps);
+
 								if(loading) return <Loader active />;
 								return <Admin />;
 							} } />
@@ -182,7 +267,8 @@ MenuLink.propTypes = {
 	children: PropTypes.any,
 	as: PropTypes.string,
 	to: PropTypes.string,
-	target: PropTypes.any
+	target: PropTypes.any,
+	active: PropTypes.string
 };
 
 AdminLayout.propTypes = {
