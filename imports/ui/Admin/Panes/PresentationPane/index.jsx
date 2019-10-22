@@ -7,7 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { PresentationSettingsMethods } from '/imports/api/methods';
 
-import { Grid, Icon, Label, Segment, Input } from 'semantic-ui-react';
+import { Grid, Icon, Label, Segment, Input, Responsive } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { 
@@ -31,6 +31,7 @@ const PresentationPane = observer(() => {
 
 	const [ resultsOffset, setResultsOffset ] = useState(settings.resultsOffset);
 	const [ timerLength, setTimerLength ] = useState(settings.timerLength);
+	const [ gridColumns, setGridColumns ] = useState(3);
 
 	useEffect(() => {
 		let data = {};
@@ -63,9 +64,23 @@ const PresentationPane = observer(() => {
 		});
 	};*/
 
+	const handleOnUpdate = (e, { width }) => {
+		if(width > Responsive.onlyTablet.minWidth) {
+			setGridColumns(3);
+		} else {
+			setGridColumns(1);
+		}
+	};
+
 	return (
 		<ButtonPanel>
-			<Grid celled columns={ 3 }>
+			<Responsive 
+				as={ Grid } 
+				celled 
+				columns={ gridColumns }
+				fireOnMount
+				onUpdate={ handleOnUpdate }
+			>
 				<Grid.Row>
 					<Grid.Column>
 
@@ -164,9 +179,9 @@ const PresentationPane = observer(() => {
 
 					</Grid.Column>
 				</Grid.Row>
-			</Grid>
+			</Responsive>
 
-			<Segment>
+			<Responsive as={ Segment } minWidth={ Responsive.onlyTablet.minWidth }>
 				<Grid columns={ 1 }>
 					<Grid.Row>
 						<Grid.Column>
@@ -180,7 +195,7 @@ const PresentationPane = observer(() => {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-			</Segment>
+			</Responsive>
 
 		</ButtonPanel>
 	);

@@ -25,6 +25,7 @@ const AdminContainer = styled.div`
 	background: #2b4a7c;
 	width: 100%;
 	min-height: 100%;
+	padding-bottom: 15px;
 
 	.sidebar .ui.header {
 		text-align: center;
@@ -35,21 +36,29 @@ const AdminContainer = styled.div`
 const OffsetContainer = styled.div`
 	width: 100%;
 	min-height: 100%;
-	padding-top: 1em;
+	padding-top: calc(1em + 61px);
 	transition: padding 0.25s ease-in-out;
+	padding-bottom: 15px;
 
 	&.offset {
-		@media only screen and (max-width: ${ Responsive.onlyTablet.minWidth }) {
+		@media screen and (min-width: ${ ({ theme }) => theme.media.onlyTablet.minWidth }px) {
 			padding-left: 150px;
 		}
 	}
 `;
 
 const TopbarMenu = styled(Menu)`
-	margin: 0;
+	position: absolute;
+	width: 100%;
 	height: 61px;
+	margin: 0;
 	padding-left: 0;
 	transition: padding 0.25s ease-in-out;
+
+	@media screen and (max-width: ${ ({ theme }) => theme.media.onlyTablet.minWidth }px) {
+		position: fixed;
+		z-index: 999;
+	}
 
 	&& {
 		border-radius: 0;
@@ -125,7 +134,7 @@ const AdminLayout = withRouter(observer(props => {
 	}, [ props.location.pathname, documentWidth ]);
 
 	useEffect(() => {
-		setActiveMenuItem;
+		setActiveMenuItem();
 	}, []);
 
 	const handleOnUpdate = (e, { width }) => {
