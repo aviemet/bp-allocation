@@ -277,7 +277,7 @@ MenuLink.propTypes = {
 	as: PropTypes.string,
 	to: PropTypes.string,
 	target: PropTypes.any,
-	active: PropTypes.string
+	active: PropTypes.bool
 };
 
 AdminLayout.propTypes = {

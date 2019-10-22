@@ -40,15 +40,14 @@ class OrgStore {
 		if(this.parent.loading) return 0; 
 
 		// If voting with kiosk mode, get votes for this org from each member
-		// Override the model field 'amountFromVotes'
-		let amount = this.amountFromVotes;
 		if(this.parent.settings.useKioskFundsVoting) {
-			this.parent.members.values.map(member => {
-				let vote = _.find(member.allocations, ['organization', this._id]) || false;
-				amount += vote.amount || 0;
-			});
+			const amount = this.parent.members.values.reduce((sum, member) => {
+				const vote = _.find(member.theme.allocations, ['organization', this._id]);
+				return sum + (vote ? vote.amount : 0);
+			}, 0);
+			return amount;
 		}
-		return amount;
+		return this.amountFromVotes;
 	}
 
 	@computed

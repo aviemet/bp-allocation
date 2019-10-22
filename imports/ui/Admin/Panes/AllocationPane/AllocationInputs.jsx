@@ -64,7 +64,7 @@ const AllocationInputs = observer(props => {
 			{/* Voted Amount Input */}
 			<Table.Cell>
 				{props.hideAdminFields || settings.useKioskFundsVoting ?
-					<span>{numeral(props.org.votedAmount || 0).format('$0,0')}</span>
+					<span>{numeral(props.org.votedTotal || 0).format('$0,0')}</span>
 					:
 					<Input
 						fluid

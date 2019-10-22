@@ -84,10 +84,11 @@ class ThemeStore extends TrackableStore {
 			});
 		// Calculate total count if not using kiosk method
 		} else {
-			this.parent.orgs.topOrgs.map((org) => {
+			voteAllocated = this.parent.orgs.topOrgs.reduce((sum, org) => { return sum + parseFloat(org.votedTotal || 0); }, voteAllocated);
+			/*this.parent.orgs.topOrgs.map((org) => {
 				voteAllocated += parseFloat(org.votedTotal || 0);
 				// voteAllocated += parseFloat(org.topOff || 0);
-			});
+			});*/
 		}
 		return voteAllocated;
 	}

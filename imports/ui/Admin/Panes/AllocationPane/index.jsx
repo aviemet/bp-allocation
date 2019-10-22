@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import numeral from 'numeral';
@@ -18,8 +18,12 @@ import { toJS } from 'mobx';
 
 const AllocationPane = observer(props => {
 	const data = useData();
-	const { theme } = data;
-	const topOrgs = data.orgs.topOrgs;
+	const { theme, settings } = data;
+	let topOrgs = data.orgs.topOrgs;
+
+	useEffect(() => {
+		topOrgs = data.orgs.topOrgs;
+	}, [settings.useKioskFundsVoting]);
 
 	/*
 	topOrgs.map(org => {
@@ -111,7 +115,7 @@ const AllocationPane = observer(props => {
 							<Table.Row textAlign='right' className='bold'>
 								<Table.HeaderCell>Totals:</Table.HeaderCell>
 								<Table.HeaderCell>{ 
-									numeral(topOrgs.reduce((sum, org) => { return sum + org.votedAmount; }, 0)).format('$0,0') 
+									numeral(topOrgs.reduce((sum, org) => { return sum + org.votedTotal; }, 0)).format('$0,0') 
 								}</Table.HeaderCell>
 								<Table.HeaderCell>{
 									numeral(topOrgs.reduce((sum, org) => {
