@@ -196,7 +196,7 @@ const Graph = observer(props => {
 								color='green'
 								size='large'
 							/>
-							<LeverageCount>${numeral(theme.leverageRemaining).format('0,0a')}</LeverageCount>
+							<LeverageCount>${numeral(theme.leverageRemaining).format('0.00a')}</LeverageCount>
 						</Grid.Column>
 					</Grid.Row>
 				</InfoGrid>

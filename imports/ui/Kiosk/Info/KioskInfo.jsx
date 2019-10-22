@@ -40,7 +40,6 @@ const KioskInfo = observer(props => {
 	const [ itemsPerRow, setItemsPerRow ] = useState(3);
 
 	const handleScreenLayout = (e, { width }) => {
-		console.log({ width, table: Responsive.onlyTablet });
 		if(width <= Responsive.onlyMobile.maxWidth) {
 			setItemsPerRow(1);
 		} else {

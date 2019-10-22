@@ -15,16 +15,15 @@ const VotingContextProvider = observer(props => {
 	const topOrgs = data.orgs.topOrgs;
 
 	let initialVotesState = {};
-	if(!_.isUndefined(props.member)) {
-		topOrgs.map(org => {
-			const vote = _.find(props.member.theme.allocations, ['organization', org._id]);
-			initialVotesState[org._id] = vote ? vote.amount : 0;
-		});
-	}
+	topOrgs.map(org => {
+		const vote = _.find(props.member.theme.allocations, ['organization', org._id]);
+		initialVotesState[org._id] = vote ? vote.amount : 0;
+	});
 
 	const [ votes, setVotes ] = useState(initialVotesState);
 
 	const updateVotes = (org, amount) => {
+		console.log('here');
 		let newVotes = _.clone(votes);
 		newVotes[org] = amount;
 		setVotes(newVotes);
@@ -55,7 +54,7 @@ const VotingContextProvider = observer(props => {
 });
 
 VotingContextProvider.propTypes = {
-	member: PropTypes.object,
+	member: PropTypes.object.isRequired,
 	unsetUser: PropTypes.func,
 	children: PropTypes.oneOfType([
 		PropTypes.arrayOf(PropTypes.node),

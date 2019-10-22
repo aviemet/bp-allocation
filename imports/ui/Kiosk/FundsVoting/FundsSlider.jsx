@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
@@ -59,13 +59,13 @@ const FundsSliderComponent = props => {
 	const [ showLabel, setShowLabel ] = useState(false); // Toggles showing slider percent label
 	const [ showInput, setShowInput ] = useState(false); // Toggles between text $ amount and input
 
+	const inputRef = useRef();
+
 	const MAX = props.member.theme.amount;
 
 	useEffect(() => {
 		// Disable contextmenu for long press on mobile
-		document.oncontextmenu = () => {
-			return false;
-		};
+		document.oncontextmenu = () => false;
 	}, []);
 
 	const handleChange = value => {
@@ -97,21 +97,20 @@ const FundsSliderComponent = props => {
 	};
 
 	// Replace $ amount with input, switch back with click outside of input
-	const toggleAmountInput = () => {
+	const toggleAmountInput = e => {
+		e.stopPropagation();
+		
 		setShowInput(true);
-		// Wait a tic for the click/touch event to stop propagating
-		setTimeout(() => {
-			window.addEventListener('click', handlePageClick, false);
-			window.addEventListener('touchstart', handlePageClick, false);
-		}, 1);
+		
+		window.addEventListener('click', handlePageClick, false);
+		window.addEventListener('touchstart', handlePageClick, false);
 	};
 
 	// Listens for click outside of $ input to hide input
 	const handlePageClick = e => {
 		const inputContainer = document.getElementById('inputContainer');
-		const clickInsideInput = inputContainer.contains(e.target);
 
-		if(inputContainer && !clickInsideInput) {
+		if(inputContainer && !inputContainer.contains(e.target)) {
 			hideInput();
 		}
 	};
@@ -127,20 +126,20 @@ const FundsSliderComponent = props => {
 	return (
 		<SliderContainer>
 			{showInput ?
-				<AmountInputContainer id="inputContainer">
+				<AmountInputContainer id='inputContainer'>
 					<Input fluid
-						type="number"
+						type='number'
 						value={ value || '' }
 						onChange={ e => handleChange(parseInt(e.currentTarget.value)) }
-						size="massive"
-						icon="dollar"
-						iconPosition="left"
-						action={ <Button onClick={ hideInput }><Icon name="check" /></Button> }
+						size='massive'
+						icon='dollar'
+						iconPosition='left'
+						action={ <Button onClick={ hideInput }><Icon name='check' /></Button> }
 					/>
 				</AmountInputContainer>
 				:
 				<Amount onClick={ toggleAmountInput }>
-					{numeral(value).format('$0,0')}
+					{ numeral(value).format('$0,0') }
 				</Amount>
 			}
 			<BottomAlign className={ showLabel ? 'visible' : '' }>

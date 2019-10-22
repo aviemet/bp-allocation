@@ -42,8 +42,8 @@ const AllocationPane = observer(props => {
 		let favorite = 0;
 
 		topOrgs.map((org, i) => {
-			let favoriteAmount = topOrgs[favorite].votedAmount || 0;
-			if(org.votedAmount > favoriteAmount){
+			let favoriteAmount = topOrgs[favorite].votedTotal || 0;
+			if(org.votedTotal > favoriteAmount){
 				favorite = i;
 			}
 		});
