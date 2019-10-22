@@ -85,7 +85,7 @@ const FundsVotingKiosk = observer(props => {
 
 			<Header as='h1' className="title">{props.user.firstName && 'Voting for'} {memberName}</Header>
 
-			<Card.Group centered itemsPerRow={ 2 }>
+			<Card.Group doubling centered itemsPerRow={ 2 }>
 				{topOrgs.map(org => {
 					return(
 						<OrgCard

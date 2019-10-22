@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Card, Container, Header } from 'semantic-ui-react';
+import { Responsive, Card, Container, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
@@ -37,17 +37,34 @@ const KioskInfo = observer(props => {
 	const data = useData();
 	const orgs = data.orgs.values;
 
+	const [ itemsPerRow, setItemsPerRow ] = useState(3);
+
+	const handleScreenLayout = (e, { width }) => {
+		console.log({ width, table: Responsive.onlyTablet });
+		if(width <= Responsive.onlyMobile.maxWidth) {
+			setItemsPerRow(1);
+		} else {
+			setItemsPerRow(3);
+		}
+	};
+
 	return (
 		<OrgsContainer>
 			<Header as='h1' id="title">ORGANIZATIONS THIS THEME</Header>
-			<Card.Group centered itemsPerRow={ 3 }>
+			<Responsive 
+				as={ Card.Group } 
+				fireOnMount
+				onUpdate={ handleScreenLayout }
+				centered 
+				itemsPerRow={ itemsPerRow }
+			>
 				{orgs.map((org, i) => (
 					<OrgCard
 						key={ org._id }
 						org={ org }
 					/>
 				))}
-			</Card.Group>
+			</Responsive>
 		</OrgsContainer>
 	);
 });

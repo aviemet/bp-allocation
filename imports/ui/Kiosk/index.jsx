@@ -33,7 +33,7 @@ const PageFader = styled.div`
 `;
 
 // Kiosk Component
-const Kiosk = observer(withRouter(props => {
+const Kiosk = withRouter(observer(props => {
 	const { settings } = useData();
 
 	const [ displayPage, setDisplayPage ] = useState(KIOSK_PAGES.info);
