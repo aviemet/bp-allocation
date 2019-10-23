@@ -113,17 +113,10 @@ const MembersList = observer(props => {
 						</Table.HeaderCell>
 
 						<Table.HeaderCell 
-							sorted={ sortColumn === 'firstName' ? sortDirection : null }
-							onClick={ sortMembersTable('firstName') }
+							sorted={ sortColumn === 'fullName' ? sortDirection : null }
+							onClick={ sortMembersTable('fullName') }
 							rowSpan="2"
-						>First Name
-						</Table.HeaderCell>
-						
-						<Table.HeaderCell 
-							sorted={ sortColumn === 'lastName' ? sortDirection : null }
-							onClick={ sortMembersTable('lastName') }
-							rowSpan="2"
-						>Last Name
+						>Member Name
 						</Table.HeaderCell>
 
 						<Table.HeaderCell 
@@ -180,7 +173,7 @@ const MembersList = observer(props => {
 					{ members.values && members.values.slice(page * itemsPerPage, (page + 1) * itemsPerPage).map(member => { 
 						const votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount; }, 0);
 						const votesComplete = votedTotal === member.theme.amount;
-						// const fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`;
+						const fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`;
 						const phone = member.phone ? member.phone : '';
 
 						return(
@@ -190,13 +183,10 @@ const MembersList = observer(props => {
 
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'number') }>{ member.number ? member.number : '' }</EditableText>
 
-								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'firstName') }>{ member.firstName }</EditableText>
-
-								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'firstName') }>{ member.lastName }</EditableText>
+								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'fullName') }>{ fullName }</EditableText>
 
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'phone') }>{ phone }</EditableText>
 
-								{/* <Table.Cell>{ numeral(member.theme.amount || 0).format('$0,0') }</Table.Cell> */}
 								<EditableText 
 									as={ Table.Cell } 
 									inputType='number' 
