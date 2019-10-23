@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "meteor run",
-    "dev": "ROOT_URL=http://batterysf.com:3000 meteor --settings privateSettings.json run",
+    "dev": "ROOT_URL=http://localhost:3000 meteor --settings privateSettings.json run",
     "visualize": "meteor --production --extra-packages bundle-visualizer",
     "build": "meteor build --server-only --directory ../allocation",
     "lint": "eslint --ext js,jsx,ts,tsx .",

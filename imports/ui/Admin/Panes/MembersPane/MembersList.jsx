@@ -42,6 +42,7 @@ const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmA
 
 const MembersList = observer(props => {
 	const { theme, settings, members } = useData();
+	
 	const [ page, setPage ] = useState(0);
 	const [ itemsPerPage, setItemsPerPage ] = useState(10);
 	const [ sortColumn, setSortColumn ] = useState();

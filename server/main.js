@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { ServiceConfiguration } from 'meteor/service-configuration';
+import _ from 'lodash';
 
 import {
 	Themes,
@@ -15,7 +16,7 @@ import twilio from 'twilio';
 
 Meteor.startup(() => {
 	// Save API info to DB once (upsert)
-	/*ServiceConfiguration.configurations.upsert(
+	ServiceConfiguration.configurations.upsert(
 		{ service: 'google' },
 		{
 			$set: {
@@ -30,7 +31,7 @@ Meteor.startup(() => {
 				loginStyle: 'popup',
 			}
 		}
-	);*/
+	);
 
 	Meteor.publish('themes', (themeId) => {
 		if(themeId){
@@ -178,4 +179,22 @@ Meteor.methods({
 		}).then(message => console.log(message));
 		console.log({ text });
 	}
+});
+
+Accounts.validateNewUser(user => {
+	let valid = false;
+
+	if(_.has(user, 'services.google.email')) {
+		const email = user.services.google.email;
+		const emailParts = email.split('@');
+		const domain = emailParts[emailParts.length -1];
+		
+		valid = Meteor.settings.google.allowed_domains.some(check => check === domain);
+	}
+
+	if(valid) {
+		return true;
+	}
+
+	throw new Meteor.Error(403, 'Must log in using a thebatterysf.com email address');
 });
