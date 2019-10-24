@@ -11,6 +11,7 @@ import {
 	MemberThemes
 } from '/imports/api';
 
+import '/imports/api/methods';
 import twilio from 'twilio';
 
 Meteor.startup(() => {
@@ -184,8 +185,7 @@ Accounts.validateNewUser(user => {
 	let valid = false;
 
 	if(_.has(user, 'services.google.email')) {
-		const email = user.services.google.email;
-		const emailParts = email.split('@');
+		const emailParts = user.services.google.email.split('@');
 		const domain = emailParts[emailParts.length -1];
 		
 		valid = Meteor.settings.google.allowed_domains.some(check => check === domain);

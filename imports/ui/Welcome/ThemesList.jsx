@@ -10,13 +10,19 @@ import { ThemeMethods } from '/imports/api/methods';
 import { Table, Icon, Segment, Input, Dropdown, Pagination } from 'semantic-ui-react';
 
 import NewThemeModal from '/imports/ui/Welcome/NewThemeModal';
+import ConfirmationModal from '../Components/ConfirmationModal';
 
 // TODO: add pagination
 const ThemesList = ({ themes }) => {
 	const [ page, setPage ] = useState(0);
 	const [ itemsPerPage, setItemsPerPage ] = useState(10);
 
-	const deleteTheme = id => ThemeMethods.remove.call(id);
+	const [ modalOpen, setModalOpen ] = useState(false);
+	const [ modalHeader, setModalHeader ] = useState('');
+	const [ modalContent, setModalContent ] = useState('');
+	const [ modalAction, setModalAction ] = useState();
+
+	const deleteTheme = id => () => ThemeMethods.remove.call(id);
 
 	return (
 		<React.Fragment>
@@ -44,7 +50,12 @@ const ThemesList = ({ themes }) => {
 											<Dropdown.Item onClick={ () => window.open(`/presentation/${theme._id}`) }>Launch Presentation</Dropdown.Item>
 											{/* <Dropdown.Item>Live Stats</Dropdown.Item> */}
 											<Dropdown.Divider />
-											<Dropdown.Item onClick={ () => deleteTheme(theme._id) }><Icon name='trash' />Delete Theme</Dropdown.Item>
+											<Dropdown.Item onClick={ () => {
+												setModalHeader('Permanently Delete This Theme?');
+												setModalContent(`This will permanently remove ${theme.title}.`);
+												setModalAction( () => deleteTheme(theme._id) );
+												setModalOpen(true);
+											} } ><Icon name='trash' />Delete Theme</Dropdown.Item>
 										</Dropdown.Menu>
 									</Dropdown>
 								</Table.Cell>
@@ -60,6 +71,14 @@ const ThemesList = ({ themes }) => {
 				totalPages={ parseInt(themes.length / itemsPerPage) + 1 } 
 				onPageChange={ (e, { activePage }) => setPage(activePage - 1) }
 			/> }
+
+			<ConfirmationModal
+				isModalOpen={ modalOpen }
+				handleClose={ () => setModalOpen(false) }
+				header={ modalHeader }
+				content={ modalContent }
+				confirmAction={ modalAction }
+			/>
 		</React.Fragment>
 	);
 };

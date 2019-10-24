@@ -22,8 +22,6 @@ const NewMemberInputs = observer(props => {
 	const saveMember = e => {
 		e.preventDefault();
 
-		console.log({ phone });
-
 		MemberMethods.upsert.call({
 			firstName,
 			lastName,
@@ -39,6 +37,8 @@ const NewMemberInputs = observer(props => {
 			setMemberNumber('');
 			setMemberAmount('');
 			setPhone('');
+
+			if(err) console.error(err);
 		});
 	};
 

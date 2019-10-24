@@ -162,7 +162,7 @@ const MemberMethods = {
 			}
 		}
 	}),
-
+	
 	/**
 	 * Remove one Member from Theme
 	 */

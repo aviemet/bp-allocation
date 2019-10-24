@@ -6,39 +6,10 @@ import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
-import { Table, Icon, Button, Modal } from 'semantic-ui-react';
+import { Table, Icon, Button } from 'semantic-ui-react';
 import TablePagination from '/imports/ui/Components/TablePagination';
 import EditableText from '/imports/ui/Components/EditableText';
-
-const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction }) => {
-	return(
-		<Modal 
-			centered={ false }
-			open={ isModalOpen }
-			onClose={ handleClose }
-		>
-			<Modal.Header>{ header }</Modal.Header>
-			<Modal.Content>{ content }</Modal.Content>
-			<Modal.Actions>
-				<Button 
-					color='green' 
-					onClick={ handleClose }
-				>Cancel
-				</Button>
-
-				<Button 
-					color='red' 
-					onClick={ () => {
-						handleClose();
-						confirmAction();
-					} }
-				>Delete!
-				</Button>
-
-			</Modal.Actions>
-		</Modal>
-	);			
-};
+import ConfirmationModal from '/imports/ui/Components/ConfirmationModal';
 
 const MembersList = observer(props => {
 	const { theme, settings, members } = useData();
@@ -53,7 +24,7 @@ const MembersList = observer(props => {
 	const [ modalContent, setModalContent ] = useState('');
 	const [ modalAction, setModalAction ] = useState();
 
-	const removeMember = id => {
+	const removeMember = id => () => {
 		MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: theme._id });
 	};
 
@@ -211,7 +182,7 @@ const MembersList = observer(props => {
 										<Button icon='trash' onClick={ () => {
 											setModalHeader(`Permanently Unlink ${member.fullName} From This Theme?`);
 											setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`);
-											setModalAction( () => { return () => removeMember(member._id); } );
+											setModalAction( () => removeMember(member._id) );
 											setModalOpen(true);
 										} } />
 									</Table.Cell>
