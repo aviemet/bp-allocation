@@ -21,7 +21,7 @@ const CustomMessage = ({ heading, body, onDismiss }) => {
 	return createPortal(
 		<Error negative onDismiss={ onDismiss }>
 			<Message.Header>{ heading }</Message.Header>
-			<p>{ body }</p>
+			{ typeof body === 'string' ? <p>{ body }</p> : body }
 		</Error>,
 		target
 	);

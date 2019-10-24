@@ -11,7 +11,6 @@ import {
 	MemberThemes
 } from '/imports/api';
 
-import '/imports/api/methods';
 import twilio from 'twilio';
 
 Meteor.startup(() => {
