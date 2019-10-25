@@ -27,6 +27,19 @@ th.bold {
 	font-weight: bold !important;
 }
 
+// Get that specificity going
+html body {
+	.ui.fullscreen.modal {
+		width: 100% !important;
+		height: ~'calc(100% - 2rem) !important';
+
+		.scrolling.content {
+			max-height: ~'calc(100% - 2rem)';
+			font-size: 1.1em;
+		}
+	}
+}
+
 /**************
  * ANIMATIONS *
  **************/

@@ -5,6 +5,11 @@ import styled from 'styled-components';
 
 const StyledInput = styled(Input)`
 	width: 100%;
+
+	&.ui.fluid.input > input {
+		width: auto !important;
+	}
+
 `;
 
 
@@ -25,7 +30,7 @@ const EditorInput = ({ value, onChange, type, children }) => {
 	}
 
 	return (
-		<Input 
+		<StyledInput 
 			type={ type || 'text' } 
 			value={ value }
 			onChange={ onChange }
@@ -34,7 +39,7 @@ const EditorInput = ({ value, onChange, type, children }) => {
 		>
 			<input />
 			{ children }
-		</Input>
+		</StyledInput>
 	);
 };
 

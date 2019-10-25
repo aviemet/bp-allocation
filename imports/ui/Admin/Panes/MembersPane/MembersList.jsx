@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import numeral from 'numeral';
 import { paginate } from '/imports/lib/utils';
 
@@ -124,6 +125,8 @@ const MembersList = observer(props => {
 							>Code
 							</Table.HeaderCell>
 
+							<Table.HeaderCell rowSpan="2" collapsing />
+
 							<Table.HeaderCell rowSpan="2" collapsing>
 								<Button icon='trash' color='red' onClick={ () => {
 									setModalHeader('Permanently Unlink All Members From This Theme?');
@@ -169,25 +172,25 @@ const MembersList = observer(props => {
 									{ member.theme.amount || 0 }
 								</EditableText>
 								
-								{ votingColspan > 0 && <React.Fragment>
+								{ votingColspan > 0 && <>
 									{ settings.useKioskChitVoting && <Table.Cell></Table.Cell> }
 									{ settings.useKioskFundsVoting && <Table.Cell>
 										{ votesComplete && <Icon color='green' name='check' /> }
 									</Table.Cell> }
-								</React.Fragment> }
+								</> }
 
-								{ !props.hideAdminFields && <React.Fragment>
-									<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'code') }>{ member.code ? member.code : '' }</EditableText>
+								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'code') }>{ member.code ? member.code : '' }</EditableText>
 
-									<Table.Cell>
-										<Button icon='trash' onClick={ () => {
-											setModalHeader(`Permanently Unlink ${member.fullName} From This Theme?`);
-											setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`);
-											setModalAction( () => removeMember(member._id) );
-											setModalOpen(true);
-										} } />
-									</Table.Cell>
-								</React.Fragment> }
+								<Table.Cell><Link to={ `/voting/${theme._id}/${member._id}` } target='_blank'><Icon name='external' /></Link></Table.Cell>
+
+								<Table.Cell>
+									<Button icon='trash' onClick={ () => {
+										setModalHeader(`Permanently Unlink ${member.fullName} From This Theme?`);
+										setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`);
+										setModalAction( () => removeMember(member._id) );
+										setModalOpen(true);
+									} } />
+								</Table.Cell>
 
 							</Table.Row>
 						);

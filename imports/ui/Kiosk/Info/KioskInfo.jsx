@@ -33,23 +33,22 @@ const OrgsContainer = styled(Container)`
 	}
 `;
 
-const KioskInfo = observer(props => {
+const KioskInfo = observer(() => {
 	const data = useData();
-	const orgs = data.orgs.values;
+	const orgs = data.orgs.topOrgsChosen ? data.orgs.topOrgs : data.orgs.values;
 
 	const [ itemsPerRow, setItemsPerRow ] = useState(3);
 
-	const handleScreenLayout = (e, { width }) => {
-		if(width <= Responsive.onlyMobile.maxWidth) {
-			setItemsPerRow(1);
-		} else {
-			setItemsPerRow(3);
-		}
-	};
+	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 3);
 
 	return (
 		<OrgsContainer>
-			<Header as='h1' id="title">ORGANIZATIONS THIS THEME</Header>
+			<Header as='h1' id="title">
+				{ data.orgs.topOrgsChosen ? 
+					`TOP ${data.theme.numTopOrgs} ORGANIZATIONS` :
+					'ORGANIZATIONS THIS THEME'
+				}				
+			</Header>
 			<Responsive 
 				as={ Card.Group } 
 				fireOnMount
@@ -57,10 +56,11 @@ const KioskInfo = observer(props => {
 				centered 
 				itemsPerRow={ itemsPerRow }
 			>
-				{orgs.map((org, i) => (
+				{orgs.map(org => (
 					<OrgCard
 						key={ org._id }
 						org={ org }
+						info={ true }
 					/>
 				))}
 			</Responsive>

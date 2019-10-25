@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 import _ from 'lodash';
 
-import { Card } from 'semantic-ui-react';
+import { Card, Icon, Button, Modal, Responsive } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const GREEN = '#0D8744';
@@ -64,6 +64,12 @@ const CardContent = styled(Card.Content)`
 	color: '#FFF';
 `;
 
+const InfoLink = styled(Icon)`
+	position: absolute;
+	top: 10px;
+	right: 10px;
+`;
+
 /**
  * OrgCard Component
  */
@@ -75,6 +81,8 @@ const OrgCard = props => {
 	if(props.image && props.image.path){
 		imagePath = Images.link(props.image, 'original', '/');
 	}*/
+
+	const [ modalSize, setModalSize ] = useState('large');
 
 	const Overlay = props.overlay || false;
 	const Content = props.content || false;
@@ -90,18 +98,44 @@ const OrgCard = props => {
 	// Default to true, cast to boolean
 	const showAsk = _.isUndefined(props.showAsk) ? true : !!props.showAsk;
 
+	const handleOnUpdate = (e, { width }) => {
+		let size = 'large';
+		if(width <= Responsive.onlyTablet.minWidth) {
+			size = 'fullscreen';
+		}
+		setModalSize(size);
+	};
+
+	console.log({ modalSize });
+
 	return (
 		<StyledCard className={ cardClass }>
-			{Overlay && <Overlay />}
+			{ Overlay && <Overlay /> }
 
 			<CardContent bgcolor={ bgcolor } >
 
-				{props.content && <Card.Content>
+				{ props.content && <Card.Content>
 					<Content />
-				</Card.Content>}
+				</Card.Content> }
 
-				<OrgTitle><p>{props.org.title}</p></OrgTitle>
-				{showAsk && <OrgAsk>{numeral(props.org.ask).format('$0a')}</OrgAsk>}
+				{ props.info && <InfoLink>
+					<Responsive 
+						as={ Modal } 
+						trigger={ <Button compact circular size='mini' icon='info' /> } 
+						closeIcon
+						size={ modalSize }
+						fireOnMount
+						onUpdate={ handleOnUpdate }
+					>
+						<Modal.Header>{ props.org.title }</Modal.Header>
+						<Modal.Content scrolling>{ props.org.description && props.org.description.split(/\n/).map((part, i) => (
+							<p key={ i }>{ part }</p>
+						) ) }</Modal.Content>
+					</Responsive>
+				</InfoLink> }
+
+				<OrgTitle><p>{ props.org.title }</p></OrgTitle>
+				{ showAsk && <OrgAsk>{ numeral(props.org.ask).format('$0a') }</OrgAsk> }
 			</CardContent>
 		</StyledCard>
 	);
@@ -121,7 +155,8 @@ OrgCard.propTypes = {
 		PropTypes.string
 	]),
 	showAsk: PropTypes.bool,
-	animateClass: PropTypes.bool
+	animateClass: PropTypes.bool,
+	info: PropTypes.bool
 };
 
 export default OrgCard;

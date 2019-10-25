@@ -66,6 +66,15 @@ class OrgsCollection extends TrackableCollection {
 
 		return sortedOrgs;
 	}
+
+	@computed
+	get topOrgsChosen() {
+		return !this.values.some(org => {
+			if(org.chitVotes.count <= 0 && org.chitVotes.weight <= 0) {
+				return true;
+			}
+		});
+	}
 }
 
 export default OrgsCollection;
