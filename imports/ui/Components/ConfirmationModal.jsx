@@ -1,14 +1,11 @@
 import React from 'react';
-import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 
 import { Button, Modal } from 'semantic-ui-react';
-import usePortal from '../../lib/usePortal';
 
 const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction }) => {
-	const target = usePortal('modal');
 
-	return createPortal(
+	return (
 		<Modal 
 			centered={ false }
 			open={ isModalOpen }
@@ -33,8 +30,7 @@ const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmA
 				</Button>
 
 			</Modal.Actions>
-		</Modal>,
-		target
+		</Modal>
 	);			
 };
 

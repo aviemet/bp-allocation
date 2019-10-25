@@ -4,12 +4,12 @@ import { useData } from '/imports/stores/DataProvider';
 import { Button } from 'semantic-ui-react';
 
 const TextMembersButton = props => {
-	const { theme, members } = useData();
+	const { theme, members, orgs } = useData();
 
 	const textMembers = () => {
 		members.values.forEach(member => {
 			if(member.phone) {
-				const message = `Battery Powered Allocation Voting: Please follow the link to vote for your favorite organizations: https://www.batterysf.com/voting/${theme._id}/${member._id}`;
+				const message = `From Battery Powered:\n\nVoting is open for 20 minutes! Your fellow members in the room at Allocation Night have narrowed the ${orgs.values.length} finalists down to ${theme.numTopOrgs}. Use this link to allocate the funds you already donated for this theme to the organizations you want to support:\n\nhttps://www.batterysf.com/voting/${theme._id}/${member._id}`;
 
 				Meteor.call('sendMessage', member.phone, message);
 			}

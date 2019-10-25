@@ -22,14 +22,21 @@ const OrgsContainer = styled(Container)`
 		}
 	}
 
-	#title {
-		color: #FFF;
-		text-align: center;
-		font-size: 3rem;
-	}
+	& {
+		h1.ui.header.title {
+			color: #FFF;
+			text-align: center;
+			font-size: 3rem;
+		}
 
-	p {
-		line-height: 1em;
+		.subheading {
+			color: #FFF;
+			text-align: center;
+		}
+
+		p {
+			line-height: 1em;
+		}
 	}
 `;
 
@@ -43,14 +50,17 @@ const KioskInfo = observer(() => {
 
 	return (
 		<OrgsContainer>
-			<Header as='h1' id="title">
+			<Header as='h1' className="title">
 				{ data.orgs.topOrgsChosen ? 
 					`TOP ${data.theme.numTopOrgs} ORGANIZATIONS` :
 					'ORGANIZATIONS THIS THEME'
-				}				
+				}
+			</Header>
+			<Header as='h2' className='subheading'>
+				{ data.theme.votingStarted ? 'Voting has completed' : 'Voting to begin shortly' }
 			</Header>
 			<Responsive 
-				as={ Card.Group } 
+				as={ Card.Group }
 				fireOnMount
 				onUpdate={ handleScreenLayout }
 				centered 

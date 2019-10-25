@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import numeral from 'numeral';
 import { paginate } from '/imports/lib/utils';
 
@@ -8,7 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
-import { Table, Icon, Button } from 'semantic-ui-react';
+import { Table, Icon, Button, Dropdown } from 'semantic-ui-react';
 import TablePagination from '/imports/ui/Components/TablePagination';
 import EditableText from '/imports/ui/Components/EditableText';
 import ConfirmationModal from '/imports/ui/Components/ConfirmationModal';
@@ -55,6 +54,8 @@ const MembersList = observer(props => {
 		}
 	};
 
+	const resetMemberVotes = id => () => MemberMethods.resetVotes.call(id);
+
 	useEffect(() => {
 		if(sortColumn && sortDirection) members.sortBy(sortColumn, sortDirection);
 	}, [sortColumn, sortDirection, members.values.length]);
@@ -63,6 +64,8 @@ const MembersList = observer(props => {
 	let votingColspan = 0;
 	if(settings.useKioskChitVoting) votingColspan++;
 	if(settings.useKioskFundsVoting) votingColspan++;
+
+	console.log({ started: theme.votingStarted });
 
 	return (
 		<>
@@ -125,8 +128,6 @@ const MembersList = observer(props => {
 							>Code
 							</Table.HeaderCell>
 
-							<Table.HeaderCell rowSpan="2" collapsing />
-
 							<Table.HeaderCell rowSpan="2" collapsing>
 								<Button icon='trash' color='red' onClick={ () => {
 									setModalHeader('Permanently Unlink All Members From This Theme?');
@@ -148,7 +149,6 @@ const MembersList = observer(props => {
 				<Table.Body>
 					{ members.values && paginate(members.values, page, itemsPerPage).map(member => { 
 						const votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount; }, 0);
-						const votesComplete = votedTotal === member.theme.amount;
 						const fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`;
 						const phone = member.phone ? member.phone : '';
 
@@ -173,23 +173,40 @@ const MembersList = observer(props => {
 								</EditableText>
 								
 								{ votingColspan > 0 && <>
-									{ settings.useKioskChitVoting && <Table.Cell></Table.Cell> }
+									{ settings.useKioskChitVoting && <Table.Cell>
+
+									</Table.Cell> }
+
 									{ settings.useKioskFundsVoting && <Table.Cell>
-										{ votesComplete && <Icon color='green' name='check' /> }
+										{ (votedTotal === member.theme.amount) && <Icon color='green' name='check' /> }
+										{ (votedTotal < 0 || votedTotal > member.theme.amount) && <Icon color='red' name='ban' /> }
 									</Table.Cell> }
 								</> }
 
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'code') }>{ member.code ? member.code : '' }</EditableText>
 
-								<Table.Cell><Link to={ `/voting/${theme._id}/${member._id}` } target='_blank'><Icon name='external' /></Link></Table.Cell>
+								<Table.Cell singleLine>
+									
+									<Dropdown text='Actions' className='link item' direction='left'>
+										<Dropdown.Menu>
+											<Dropdown.Item onClick={ () => window.open(`/voting/${theme._id}/${member._id}`) }>Voting Screen <Icon name='external' /></Dropdown.Item>
+											<Dropdown.Divider />
+											<Dropdown.Item onClick={ () => {
+												setModalHeader(`Permanently Delete ${member.fullName}'s Votes?`);
+												setModalContent(`This will permanently delete the voting history of ${member.fullName} for this theme. This operation cannot be undone.`);
+												setModalAction( () => resetMemberVotes(member.theme._id) );
+												setModalOpen(true);
+											} }>Reset Votes</Dropdown.Item>
+											<Dropdown.Divider />
+											<Dropdown.Item onClick={ () => {
+												setModalHeader(`Permanently Unlink ${member.fullName} From This Theme?`);
+												setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`);
+												setModalAction( () => removeMember(member._id) );
+												setModalOpen(true);
+											} } ><Icon name='trash' />Delete Theme</Dropdown.Item>
+										</Dropdown.Menu>
+									</Dropdown>
 
-								<Table.Cell>
-									<Button icon='trash' onClick={ () => {
-										setModalHeader(`Permanently Unlink ${member.fullName} From This Theme?`);
-										setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`);
-										setModalAction( () => removeMember(member._id) );
-										setModalOpen(true);
-									} } />
 								</Table.Cell>
 
 							</Table.Row>

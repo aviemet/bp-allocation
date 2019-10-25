@@ -106,8 +106,6 @@ const OrgCard = props => {
 		setModalSize(size);
 	};
 
-	console.log({ modalSize });
-
 	return (
 		<StyledCard className={ cardClass }>
 			{ Overlay && <Overlay /> }

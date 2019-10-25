@@ -261,6 +261,19 @@ const MemberMethods = {
 	}),
 
 	/**
+	 * Reset all votes for member to 0
+	 */
+	resetVotes: new ValidatedMethod({
+		name: 'member.resetVotes',
+
+		validate: null,
+
+		run(id) {
+			MemberThemes.update({ _id: id }, { $set: { allocations: [] }});
+		}
+	}),
+
+	/**
 	 * Delete Member
 	 */
 	remove: new ValidatedMethod({

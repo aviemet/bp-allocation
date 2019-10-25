@@ -92,6 +92,13 @@ class ThemeStore extends TrackableStore {
 		}
 		return voteAllocated;
 	}
+
+	@computed
+	get votingStarted() {
+		return this.parent.members.values.some(member => {
+			return member.theme.allocations.some(vote => vote.amount > 0);
+		});
+	}
 }
 
 export default ThemeStore;

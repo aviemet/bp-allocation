@@ -46,7 +46,7 @@ const ThemesList = ({ themes }) => {
 										<Link to={ `/admin/${theme._id}` }>{theme.title}</Link>
 									</Table.Cell>
 									<Table.Cell singleLine>
-										<Dropdown text='Actions' className='link item'>
+										<Dropdown text='Actions' className='link item' direction='left'>
 											<Dropdown.Menu>
 												<Dropdown.Item onClick={ () => window.open(`/kiosk/${theme._id}`) }>Launch Kiosk</Dropdown.Item>
 												<Dropdown.Item onClick={ () => window.open(`/presentation/${theme._id}`) }>Launch Presentation</Dropdown.Item>
