@@ -39,6 +39,11 @@ const OrganizationSchema = new SimpleSchema({
 		type: Number,
 		label: 'Funding Request Amount'
 	},
+	description: {
+		type: String,
+		label: 'Organization Description',
+		required: false
+	},
 	image: {
 		type: SimpleSchema.RegEx.Id,
 		label: 'Organization Image',
