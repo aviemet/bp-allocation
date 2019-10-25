@@ -2,22 +2,29 @@ import { useRef, useEffect } from 'react';
 import Papa from 'papaparse';
 import _ from 'lodash';
 
-const KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds' };
+export const KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds' };
 
-const roundFloat = (value, decimal) => {
+export const roundFloat = (value, decimal) => {
 	decimal = decimal || 2;
 	return parseFloat(parseFloat(value).toFixed(decimal));
 };
 
-const getSaveAmount = (saves, org_id) => {
+export const getSaveAmount = (saves, org_id) => {
 	let save = saves.find( save => save.org === org_id);
 	return save ? save.amount : 0;
 };
 
-const numberFormats = {
+export const numberFormats = {
 	dollar: '$0,0[a]',
 	percent: '0.0%'
 };
+
+export function isMobileDevice() {
+	return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1);
+}
+
+export const paginate = (collection, page, itemsPerPage) => collection.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+
 
 /**************************************
  *          PAPAPARSE METHODS         *
@@ -87,7 +94,7 @@ const _inferHeadings = (headings, acceptedHeadings, callbacks) => {
  *                                     'onComplete(data)'
  * @return {Object}                  [description]
  */
-const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
+export const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
 	// Object for headings mapping
 	let headings = {};
 
@@ -131,7 +138,7 @@ const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
  * DEBUG METHODS *
  *****************/
 
-function useTraceUpdate(props) {
+export function useTraceUpdate(props) {
 	const prev = useRef(props);
 	useEffect(() => {
 		const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
@@ -146,17 +153,3 @@ function useTraceUpdate(props) {
 		prev.current = props;
 	});
 }
-
-function isMobileDevice() {
-	return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1);
-}
-
-export {
-	KIOSK_PAGES,
-	roundFloat,
-	getSaveAmount,
-	readCsvWithHeadings,
-	useTraceUpdate,
-	numberFormats,
-	isMobileDevice
-};

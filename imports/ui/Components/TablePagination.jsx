@@ -5,7 +5,7 @@ import { Grid, Pagination } from 'semantic-ui-react';
 const TablePagination = props => {
 	const [ page, setPage ] = useState(props.defaultActivePage || 0);
 
-	const onPageChange = (e, {activePage}) => {
+	const onPageChange = (e, { activePage }) => {
 		setPage(activePage - 1);
 		if(props.onPageChange) {
 			props.onPageChange(activePage - 1);
@@ -17,16 +17,16 @@ const TablePagination = props => {
 
 	return(
 		<Grid>
-			<Grid.Column width={4}>
+			<Grid.Column width={ 4 }>
 				<p>Showing { startRecord }-{ endRecord } of { props.totalRecords }</p>
 			</Grid.Column>
 
-			<Grid.Column width={12} textAlign='right'>
+			<Grid.Column width={ 12 } textAlign='right'>
 				{ props.totalRecords / props.itemsPerPage > 1 && 
 				<Pagination
 					activePage={ page + 1 }
-					firstItem={null}
-					lastItem={null}
+					firstItem={ null }
+					lastItem={ null }
 					pointing
 					secondary
 					totalPages={ parseInt(props.totalRecords / props.itemsPerPage) + 1 } 

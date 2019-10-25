@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
+import { paginate } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
@@ -142,7 +143,7 @@ const MembersList = observer(props => {
 					) }
 				</Table.Header>
 				<Table.Body>
-					{ members.values && members.values.slice(page * itemsPerPage, (page + 1) * itemsPerPage).map(member => { 
+					{ members.values && paginate(members.values, page, itemsPerPage).map(member => { 
 						const votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount; }, 0);
 						const votesComplete = votedTotal === member.theme.amount;
 						const fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`;
