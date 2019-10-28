@@ -24,7 +24,7 @@ const OrganizationsPane = observer(props => {
 	const orgs = data.orgs.values;
 
 	const [ orgTitle, setOrgTitle ] = useState('');
-	const [ orgAsk, setOrgAsk ]     = useState('');
+	const [ orgAsk, setOrgAsk ] = useState('');
 	const [ orgDescription, setOrgDescription ] = useState('');
 
 	const [ modalOpen, setModalOpen ] = useState(false);
@@ -39,7 +39,7 @@ const OrganizationsPane = observer(props => {
 
 		let data = {
 			title: orgTitle,
-			ask: orgAsk,
+			ask: parseFloat(orgAsk.replace(/[^\d.]/g, '')),
 			description: orgDescription,
 			theme: theme._id
 		};
