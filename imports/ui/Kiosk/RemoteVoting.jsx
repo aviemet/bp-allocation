@@ -8,7 +8,6 @@ import { useData } from '/imports/stores/DataProvider';
 import { VotingContextProvider } from './VotingContext';
 
 import FundsVotingKiosk from './FundsVoting';
-import KioskInfo from './Info/KioskInfo';
 
 const RemoteVoting = observer(props => {
 	// Pull member data from Data Store
@@ -16,15 +15,10 @@ const RemoteVoting = observer(props => {
 	const members = data.members.values;
 
 	const member = _.find(members, member => member._id === props.member);
-	const [ user, setUser ] = useState(member || false);
-
-	if(!user) {
-		return <KioskInfo />;
-	}
 
 	return (
-		<VotingContextProvider member={ user } unsetUser={ () => setUser(false) } >
-			<FundsVotingKiosk user={ user } />
+		<VotingContextProvider member={ member || false } unsetUser={ props.onVotingComplete } >
+			<FundsVotingKiosk user={ member || false } />
 		</VotingContextProvider>
 	);
 });

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 
@@ -41,6 +41,8 @@ const Kiosk = withRouter(observer(props => {
 	const [ displayPage, setDisplayPage ] = useState(activePage); // Active presentation page
 	const [ show, setShow ] = useState(true); // Transition values
 
+	const timeoutRef = useRef();
+
 	useEffect(() => {
 		let pageNav;
 		// Funds voting is active
@@ -62,14 +64,16 @@ const Kiosk = withRouter(observer(props => {
 
 		// Wait 1 minute before navigating a user away from a voting screen
 		if(displayPage === KIOSK_PAGES.funds && !settings.fundsVotingActive) {
-			setTimeout(() => doNavigation(pageNav), data.votingRedirectTimeout * 1000);
+			timeoutRef.current = setTimeout(() => doNavigation(pageNav), data.votingRedirectTimeout * 1000);
 		} else {
+			clearTimeout(timeoutRef.current);
 			doNavigation(pageNav);
 		}
 	}, [settings.fundsVotingActive, settings.resultsVisited]);
 
 	// Change the active presentation page
 	const doNavigation = page => {
+		clearTimeout(timeoutRef.current);
 		if(displayPage !== page) {
 			setShow(false);
 
@@ -97,7 +101,7 @@ const Kiosk = withRouter(observer(props => {
 						{/* Funds Voting */}
 						<Route exact path={ KIOSK_PAGES.funds } render={ () => {
 							return member ? 
-								<RemoteVoting member={ member }  /> :
+								<RemoteVoting member={ member } onVotingComplete={ () => doNavigation(KIOSK_PAGES.info) } /> :
 								<MemberLoginRequired component={ FundsVotingKiosk } />
 						 } } />
 

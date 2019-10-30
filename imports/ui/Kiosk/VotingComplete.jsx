@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useVoting } from './VotingContext';
 
 import styled from 'styled-components';
@@ -19,13 +19,15 @@ const Centered = styled.div`
 	}
 `;
 
-const VotingComplete = props => {
+const VotingComplete = () => {
 
 	const { unsetUser } = useVoting();
 
-	setTimeout(() => {
-		unsetUser();
-	}, 2000);
+	useEffect(() => {
+		setTimeout(() => {
+			unsetUser();
+		}, 2000);
+	}, []);
 
 	return (
 		<Centered>Voting Complete!</Centered>

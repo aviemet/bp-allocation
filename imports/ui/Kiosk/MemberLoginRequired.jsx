@@ -75,15 +75,6 @@ const MemberLoginRequired = observer(props => {
 	const member = _.find(members, member => member._id === props.member);
 	const [ user, setUser ] = useState(member || false);
 
-	// Check for direct link URL structure
-	/*useEffect(() => {
-		console.log({ props });
-		if(props.member) {
-			const member = _.find(members, member => member._id === props.member);
-			if(member) setUser(member);
-		}
-	}, [props.member]);*/
-
 	const showSearchError = () => {
 		setSearchError(true);
 		setTimeout(() => {
