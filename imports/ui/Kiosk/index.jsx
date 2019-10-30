@@ -4,16 +4,16 @@ import { Transition } from 'react-transition-group';
 
 import styled from 'styled-components';
 
-import { KIOSK_PAGES } from '/imports/lib/utils';
-
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
 import { withRouter } from 'react-router-dom';
+import { useData } from '/imports/stores/DataProvider';
 
 import KioskInfo from './Info/KioskInfo';
-import KioskChitVoting from './ChitVoting/KioskChitVoting';
+// import KioskChitVoting from './ChitVoting/KioskChitVoting';
 import FundsVotingKiosk from './FundsVoting';
 import MemberLoginRequired from './MemberLoginRequired';
+import RemoteVoting from './RemoteVoting';
+import Results from '/imports/ui/Presentation/Pages/Results';
 
 // Transition group definitions
 const FADE_DURATION = 300;
@@ -34,21 +34,41 @@ const PageFader = styled.div`
 
 // Kiosk Component
 const Kiosk = withRouter(observer(props => {
-	const { settings } = useData();
+	const data = useData();
+	const { theme, settings, KIOSK_PAGES } = data;
 
-	const [ displayPage, setDisplayPage ] = useState(KIOSK_PAGES.info);
-	const [ show, setShow ] = useState(true);
+	const activePage = settings.fundsVotingActive ? KIOSK_PAGES.funds : KIOSK_PAGES.info;
+	const [ displayPage, setDisplayPage ] = useState(activePage); // Active presentation page
+	const [ show, setShow ] = useState(true); // Transition values
 
 	useEffect(() => {
-		if(settings.chitVotingActive) {
-			doNavigation(KIOSK_PAGES.chit);
-		} else if(settings.fundsVotingActive) {
-			doNavigation(KIOSK_PAGES.funds);
+		let pageNav;
+		// Funds voting is active
+		if(settings.fundsVotingActive) {
+			// Show the voting page:
+			pageNav = KIOSK_PAGES.funds;
+		// Funds voting is not active
 		} else {
-			doNavigation(KIOSK_PAGES.info);
+			// Voting inactive, votes have been cast, and results have been shown
+			if(theme.votingStarted && settings.resultsVisited) {
+				// Show results page
+				pageNav = KIOSK_PAGES.results;
+			// Voting inactive and (no votes yet cast || results not yet shown)
+			} else {
+				// Show orgs page
+				pageNav =KIOSK_PAGES.info;
+			}
 		}
-	}, [settings.chitVotingActive, settings.fundsVotingActive]);
 
+		// Wait 1 minute before navigating a user away from a voting screen
+		if(displayPage === KIOSK_PAGES.funds && !settings.fundsVotingActive) {
+			setTimeout(() => doNavigation(pageNav), data.votingRedirectTimeout * 1000);
+		} else {
+			doNavigation(pageNav);
+		}
+	}, [settings.fundsVotingActive, settings.resultsVisited]);
+
+	// Change the active presentation page
 	const doNavigation = page => {
 		if(displayPage !== page) {
 			setShow(false);
@@ -60,6 +80,7 @@ const Kiosk = withRouter(observer(props => {
 		}
 	};
 
+	const voting = props.location.pathname.startsWith('/voting');
 	const member = props.match.params.member;
 
 	return (
@@ -69,19 +90,19 @@ const Kiosk = withRouter(observer(props => {
 					<Switch location={ { pathname: displayPage } }>
 
 						{/* Orgs Grid */}
-						<Route exact path={ KIOSK_PAGES.info } render={ props => (
+						<Route exact path={ KIOSK_PAGES.info } render={ () => (
 							<KioskInfo />
 						) } />
 
-						{/* Chit Voting 
-						<Route exact path={ KIOSK_PAGES.chit } render={ props => (
-							<MemberLoginRequired component={ KioskChitVoting } />
-						) } /> */}
-
 						{/* Funds Voting */}
-						<Route exact path={ KIOSK_PAGES.funds } render={ props => (
-							<MemberLoginRequired member={ member && member } component={ FundsVotingKiosk } />
-						) } />
+						<Route exact path={ KIOSK_PAGES.funds } render={ () => {
+							return member ? 
+								<RemoteVoting member={ member }  /> :
+								<MemberLoginRequired component={ FundsVotingKiosk } />
+						 } } />
+
+						{/* Voting Results */}
+						<Route exact path={ KIOSK_PAGES.results } component={ Results } />
 
 					</Switch>
 
@@ -92,3 +113,8 @@ const Kiosk = withRouter(observer(props => {
 }));
 
 export default Kiosk;
+
+/* Chit Voting 
+<Route exact path={ KIOSK_PAGES.chit } render={ props => (
+	<MemberLoginRequired component={ KioskChitVoting } />
+) } /> */

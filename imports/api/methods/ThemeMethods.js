@@ -171,9 +171,11 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run(orgs) {
+		run(theme) {
+			const orgs = Themes.find({ _id: theme }, { organizations: true }).fetch()[0].organizations;
+
 			orgs.map(org => {
-				Organizations.update({ _id: org._id }, {
+				Organizations.update({ _id: org }, {
 					$set: {
 						leverageFunds: 0
 					}

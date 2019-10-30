@@ -142,12 +142,7 @@ const Leverage = observer(props => {
 	};
 
 	const resetLeverage = () => {
-		const orgs = topOrgs.map(org => {
-			let orgClone = toJS(org);
-			delete orgClone.parent;
-			return orgClone;
-		});
-		ThemeMethods.resetLeverage.call(orgs);
+		ThemeMethods.resetLeverage.call(theme._id);
 	};
 
 	// const rounds = getLeverageSpreadRounds(theme.leverageRemaining);

@@ -59,13 +59,7 @@ const Routes = observer(() => {
 					</PresentationLayout>
 				) } />
 
-				<LoadingRoute path='/voting/:id/:member' render={ () => (
-					<KioskLayout>
-						<Kiosk />
-					</KioskLayout>
-				) } />
-
-				<LoadingRoute path='/kiosk/:id' render={ () => (
+				<LoadingRoute path={ ['/voting/:id/:member', '/kiosk/:id'] } render={ () => (
 					<KioskLayout>
 						<Kiosk />
 					</KioskLayout>

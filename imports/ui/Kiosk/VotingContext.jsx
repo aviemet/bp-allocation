@@ -23,7 +23,6 @@ const VotingContextProvider = observer(props => {
 	const [ votes, setVotes ] = useState(initialVotesState);
 
 	const updateVotes = (org, amount) => {
-		console.log('here');
 		let newVotes = _.clone(votes);
 		newVotes[org] = amount;
 		setVotes(newVotes);

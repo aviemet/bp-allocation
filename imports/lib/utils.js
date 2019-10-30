@@ -1,8 +1,6 @@
-import { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Papa from 'papaparse';
 import _ from 'lodash';
-
-export const KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds' };
 
 export const roundFloat = (value, decimal) => {
 	decimal = decimal || 2;
@@ -25,6 +23,24 @@ export function isMobileDevice() {
 
 export const paginate = (collection, page, itemsPerPage) => collection.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
+export class Queue {
+	constructor() {
+		this.queue = [];
+	}
+
+	enqueue(element) {
+		this.queue.push(element);
+	}
+
+	dequeue() {
+		if (this.isEmpty()) return 'Queue is empty' 
+		return this.queue.shift();
+	}
+
+	isEmpty() {
+		return !this.queue.length;
+	}
+}
 
 /**************************************
  *          PAPAPARSE METHODS         *

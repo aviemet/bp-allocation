@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
@@ -7,12 +7,13 @@ import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext';
 
-import { Card, Container, Header, Button, Responsive } from 'semantic-ui-react';
+import { Card, Container, Header, Button } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import VotingComplete from '../VotingComplete';
 import OrgCard from '/imports/ui/Components/OrgCard';
 import FundsSlider from './FundsSlider';
+import useInterval from '/imports/ui/Components/useInterval';
 
 import { COLORS } from '/imports/lib/global';
 
@@ -37,6 +38,12 @@ const OrgsContainer = styled(Container)`
 		text-align: center;
 		font-size: 3rem;
 		text-transform: uppercase;
+	}
+
+	&& h3.ui.header {
+		font-size: 1.5rem;
+		color: #FFF;
+		text-align: center;
 	}
 
 	&& p {
@@ -70,11 +77,28 @@ const AmountRemaining = React.memo(({ value }) => {
 AmountRemaining.displayName = 'AmountRemaining'; // To slience eslint
 
 const FundsVotingKiosk = observer(props => {
-	console.log({ Responsive });
 	const data = useData();
 	const topOrgs = data.orgs.topOrgs;
 
 	const [ votingComplete, setVotingComplete ] = useState(false);
+	const [ countdownVisible, setCountdownVisible ] = useState(false);
+	const [ count, setCount ] = useState(60);
+	const [ isCounting, setIsCounting ] = useState(false);
+	
+	useInterval(() => {
+		setCount(count - 1);
+	}, isCounting ? 1000 : null);
+
+	const displayCountDown = () => {
+		setCountdownVisible(true);
+		setCount(data.votingRedirectTimeout);
+		setIsCounting(true);
+	};
+
+	useEffect(() => {
+		// Display countdown if user is on voting screen when voting becomes disabled
+		if(!data.settings.fundsVotingActive) displayCountDown();
+	}, [data.settings.fundsVotingActive]);
 
 	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName;
 
@@ -85,6 +109,11 @@ const FundsVotingKiosk = observer(props => {
 		<OrgsContainer>
 
 			<Header as='h1' className="title">{props.user.firstName && 'Voting for'} {memberName}</Header>
+
+			{ countdownVisible && <Header as='h3' className='countdown'>
+				Voting has ended, please submit your votes. <br/>
+				This page will redirect in { count } seconds
+			</Header> }
 
 			<Card.Group doubling centered itemsPerRow={ 2 }>
 				{topOrgs.map(org => {

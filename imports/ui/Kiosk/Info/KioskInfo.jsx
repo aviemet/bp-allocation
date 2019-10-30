@@ -48,17 +48,25 @@ const KioskInfo = observer(() => {
 
 	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 3);
 
+	const title = data.orgs.topOrgsChosen ? 
+		`TOP ${data.theme.numTopOrgs} ORGANIZATIONS` :
+		'ORGANIZATIONS THIS THEME';
+
+	let subHeading = '';
+	if(data.settings.fundsVotingActive) {
+		subHeading = 'Voting In Progress';
+	} else {
+		if(data.theme.votingStarted) {
+			subHeading = 'Voting Has Completed';
+		} else {
+			subHeading = 'Voting To Begin Shortly';
+		}
+	}
+
 	return (
 		<OrgsContainer>
-			<Header as='h1' className="title">
-				{ data.orgs.topOrgsChosen ? 
-					`TOP ${data.theme.numTopOrgs} ORGANIZATIONS` :
-					'ORGANIZATIONS THIS THEME'
-				}
-			</Header>
-			<Header as='h2' className='subheading'>
-				{ data.theme.votingStarted ? 'Voting has completed' : 'Voting to begin shortly' }
-			</Header>
+			<Header as='h1' className="title">{ title }</Header>
+			<Header as='h2' className='subheading'>{ subHeading }</Header>
 			<Responsive 
 				as={ Card.Group }
 				fireOnMount

@@ -37,7 +37,7 @@ const PresentationSettingsSchema = new SimpleSchema({
 	},
 	colorizeOrgs: {
 		type: Boolean,
-		label: 'Top Org cards ahve color on all orgs page',
+		label: 'Top Org cards have color on all orgs page',
 		required: false,
 		defaultValue: false
 	},
@@ -71,11 +71,11 @@ const PresentationSettingsSchema = new SimpleSchema({
 		required: false,
 		defaultValue: false
 	},
-	formatAsDollars: {
+	resultsVisited: {
 		type: Boolean,
-		label: 'Display numbers as dollars or percentages',
+		label: 'Have the results been displayed yet',
 		required: false,
-		defaultValue: true
+		defaultValue: false
 	}
 });
 

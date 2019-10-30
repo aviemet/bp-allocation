@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
-import { PresentationSettingsMethods } from '/imports/api/methods';
+import { PresentationSettingsMethods, ThemeMethods } from '/imports/api/methods';
 
-import { Grid, Icon, Label, Segment, Input, Responsive } from 'semantic-ui-react';
+import { Grid, Icon, Label, Segment, Input, Button, Responsive } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { 
@@ -51,25 +51,42 @@ const PresentationPane = observer(() => {
 		}
 	});
 
-	/**
-	 * Reset the values for the presentation
-	 */
-	/*const resetPresentation = () => {
-		PresentationSettingsMethods.update.call({
-			id: settings._id,
-			data: {
-				leverageVisible: false,
-				animateOrgs: true,
-			}
-		});
-	};*/
-
 	const handleOnUpdate = (e, { width }) => {
 		if(width > Responsive.onlyTablet.minWidth) {
 			setGridColumns(3);
 		} else {
 			setGridColumns(1);
 		}
+	};
+
+	/**
+	 * Reset the values for the presentation
+	 */
+	const restoreDefaultSettings = () => {
+		// Reset Presentation Settings
+		PresentationSettingsMethods.update.call({
+			id: settings._id,
+			data: {
+				currentPage: 'intro',
+				animateOrgs: true,
+				leverageVisible: false,
+				savesVisible: false,
+				colorizeTopOrgs: false,
+				resultsVisited: false,
+				resultsOffset: 0,
+			}
+		});
+
+	};
+
+	const setResultsHaveBeenViewed = () => {
+		console.log('setting');
+		PresentationSettingsMethods.update.call({
+			id: settings._id,
+			data: {
+				resultsVisited: true
+			}
+		});
 	};
 
 	return (
@@ -92,6 +109,8 @@ const PresentationPane = observer(() => {
 							<Label>Title Page</Label>
 						</PresentationNavButton>
 
+						<Button onClick={ restoreDefaultSettings }>Restore Defaults</Button>
+
 					</Grid.Column>
 					<Grid.Column>
 
@@ -102,6 +121,7 @@ const PresentationPane = observer(() => {
 							<Icon name='table' size='huge' /><br/>
 							<Label>Participating Organizations</Label>
 						</PresentationNavButton>
+
 						<ColorizeTopOrgsToggle />
 
 					</Grid.Column>
@@ -114,6 +134,7 @@ const PresentationPane = observer(() => {
 							<Icon name='hourglass' size='huge' /><br/>
 							<Label>Timer</Label>
 						</PresentationNavButton>
+
 						<Input
 							type='number'
 							label='Seconds'
@@ -140,6 +161,7 @@ const PresentationPane = observer(() => {
 							<Icon name='winner' size='huge' /><br/>
 							<Label>Top Organizations</Label>
 						</PresentationNavButton>
+
 						<AnimateTopOrgsToggle />
 
 					</Grid.Column>
@@ -152,6 +174,7 @@ const PresentationPane = observer(() => {
 							<Icon name='chart bar' size='huge' /><br/>
 							<Label>Allocation</Label>
 						</PresentationNavButton>
+
 						<ShowLeverageToggle />
 						<br/>
 						<ShowSaveValuesToggle />
@@ -162,10 +185,11 @@ const PresentationPane = observer(() => {
 						{/************
 					  * Results Page
 					  ************/}
-						<PresentationNavButton page='results'>
+						<PresentationNavButton page='results' onClick={ setResultsHaveBeenViewed }>
 							<Icon name='check' size='huge' /><br/>
 							<Label>Result</Label>
 						</PresentationNavButton>
+
 						<Input
 							type='number'
 							icon='dollar sign'
@@ -187,7 +211,7 @@ const PresentationPane = observer(() => {
 						<Grid.Column>
 
 							<Link to={ `/presentation/${theme._id}` } target='_blank'>
-								<PresentationNavButton page='intro'>
+								<PresentationNavButton page='intro' active={ false }>
 									<Label>Launch Presentaion</Label>
 								</PresentationNavButton>
 							</Link>

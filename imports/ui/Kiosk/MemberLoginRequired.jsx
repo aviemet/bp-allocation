@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -96,10 +96,8 @@ const MemberLoginRequired = observer(props => {
 
 		setSearchError(false);
 		const code = `${initials.trim().toUpperCase()}${number}`;
-		console.log({ code });
 		
 		const member = _.find(members, ['code', code]);
-		console.log({ member });
 		
 		setInitials('');
 		setNumber('');
@@ -151,7 +149,7 @@ const MemberLoginRequired = observer(props => {
 						</Form>
 					</Container>
 
-					{searchError && <Header as='h2' className='title'>No Member Found, Try Again</Header>}
+					{ searchError && <Header as='h2' className='title'>No Member Found, Try Again</Header> }
 
 				</Centered>
 			</MemberLoginContainer>
