@@ -71,7 +71,7 @@ const PresentationPane = observer(() => {
 				animateOrgs: true,
 				leverageVisible: false,
 				savesVisible: false,
-				colorizeTopOrgs: false,
+				colorizeOrgs: false,
 				resultsVisited: false,
 				resultsOffset: 0,
 			}

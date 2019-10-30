@@ -8,7 +8,6 @@ import { PresentationSettingsMethods } from '/imports/api/methods';
 import { Checkbox } from 'semantic-ui-react';
 
 const ColorizeTopOrgsToggle = observer(() => {
-
 	const { settings } = useData();
 
 	const saveValue = (e, data) => {
