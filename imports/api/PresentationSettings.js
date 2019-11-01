@@ -76,6 +76,18 @@ const PresentationSettingsSchema = new SimpleSchema({
 		label: 'Have the results been displayed yet',
 		required: false,
 		defaultValue: false
+	},
+	awardsPresentation: {
+		type: Boolean,
+		label: 'Run presentation as an award rather than allocation',
+		required: false,
+		defaultValue: false
+	},
+	awardAmount: {
+		type: Number,
+		label: 'Amount to be awarded for an awards style presentation',
+		required: false,
+		defaultValue: 0
 	}
 });
 

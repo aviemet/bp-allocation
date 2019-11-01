@@ -9,23 +9,25 @@ const SettingsPane = observer(props => {
 	const data = useData();
 	const { theme, settings } = data;
 
-	const [ title, setTitle ]                          = useState(theme.title);
-	const [ question, setQuestion ]                    = useState(theme.question);
-	const [ chitWeight, setChitWeight ]                = useState(theme.chitWeight);
-	const [ matchRatio, setMatchRatio ]                = useState(theme.matchRatio);
-	const [ leverageTotal, setLeverageTotal ]          = useState(theme.leverageTotal);
-	const [ consolationAmount, setConsolationAmount ]  = useState(theme.consolationAmount);
-	const [ consolationActive, setConsolationActive ]  = useState(theme.consolationActive);
-	const [ timerLength, setTimerLength ]              = useState(settings.timerLength);
-	const [ useKioskChitVoting, setKioskChitVoting ]   = useState(settings.useKioskChitVoting);
-	const [ useKioskFundsVoting, setKioskFundsVoting ] = useState(settings.useKioskFundsVoting);
-
+	const [ title, setTitle ]                           = useState(theme.title);
+	const [ question, setQuestion ]                     = useState(theme.question);
+	const [ chitWeight, setChitWeight ]                 = useState(theme.chitWeight);
+	const [ matchRatio, setMatchRatio ]                 = useState(theme.matchRatio);
+	const [ leverageTotal, setLeverageTotal ]           = useState(theme.leverageTotal);
+	const [ consolationAmount, setConsolationAmount ]   = useState(theme.consolationAmount);
+	const [ consolationActive, setConsolationActive ]   = useState(theme.consolationActive);
+	const [ timerLength, setTimerLength ]               = useState(settings.timerLength);
+	const [ useKioskChitVoting, setKioskChitVoting ]    = useState(settings.useKioskChitVoting);
+	const [ useKioskFundsVoting, setKioskFundsVoting ]  = useState(settings.useKioskFundsVoting);
+	const [ awardsPresentation, setAwardsPresentation ] = useState(settings.awardsPresentation || false);
+	const [ awardAmount, setAwardAmount ]               = useState(settings.awardAmount || 0);
+	
 	const handleSubmit = e => {
 		e.preventDefault();
 
 		let formData = {
 			theme: { title, question, chitWeight, matchRatio, leverageTotal, consolationActive, consolationAmount },
-			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting }
+			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting, awardsPresentation, awardAmount }
 		};
 
 		// Iterate over database objects with keys to be saved
@@ -109,7 +111,7 @@ const SettingsPane = observer(props => {
 					onChange={ e => setTimerLength(e.target.value) } 
 				/>
 
-				{/* Chit Weigh */}
+				{/* Chit Weight */}
 				<Form.Input 
 					name='theme.chitWeight' 
 					type='number' 
@@ -180,6 +182,31 @@ const SettingsPane = observer(props => {
 					checked={ !!consolationActive } 
 					onChange={ (e, value) => setConsolationActive(value.checked) } 
 				/>
+			</Form.Group>
+
+			<Form.Group>
+				{/* Presentation Type */}
+				<Form.Field>
+					<label>Change Presentation Type to Awards Style</label>
+					<Label>Full Presentation</Label>
+					<Checkbox
+						slider 
+						name='settings.presentationType'
+						checked={ !!awardsPresentation }
+						onChange={ (e, value) => setAwardsPresentation(value.checked) }
+					/>
+					<Label>Awards</Label>
+				</Form.Field>
+
+				{ awardsPresentation && <Form.Input 
+					name='settings.awardAmount' 
+					type='number' 
+					placeholder='Award Amount' 
+					label='Amount being awarded' 
+					value={ awardAmount || 0 } 
+					onChange={ e => setAwardAmount(e.target.value) } 
+				/> }
+
 			</Form.Group>
 		</Form>
 	);

@@ -38,23 +38,19 @@ const AwardAmount = styled.span`
 const AwardEmblem = observer(({ type, amount }) => {
 	const data = useData();
 	const { settings } = data;
-	const members = data.members.values;
 
 	const awardImgSrc = {
 		awardee: '/img/circle_awardee.png',
 		other: '/img/circle.png'
 	};
 
-	if(!settings.formatAsDollars) {
-		const percentBase = members.length * 100;
-		amount = (amount / percentBase);
-	}
+	const formattedAmount = typeof amount === 'string' ? amount : numeral(amount).format(settings.numberFormat);
 
 	return (
 		<Award>
 			<AwardImage className='ui.card.image' style={ { backgroundImage: `url(${awardImgSrc[type || 'awardee']})`,
 				backgroundSize: type === 'awardee' ? '120%' : '100%' } }>
-				<AwardAmount style={ { fontSize: type === 'awardee' ? '3.3em' : '2.9em' } }>{numeral(amount).format(settings.numberFormat)}</AwardAmount>
+				<AwardAmount style={ { fontSize: type === 'awardee' ? '3.3em' : '2.9em' } }>{ formattedAmount }</AwardAmount>
 			</AwardImage>
 		</Award>
 	);
@@ -62,7 +58,9 @@ const AwardEmblem = observer(({ type, amount }) => {
 
 AwardEmblem.propTypes = {
 	type: PropTypes.string,
-	amount: PropTypes.number
+	amount: PropTypes.oneOfType([
+		PropTypes.number, PropTypes.string
+	])
 };
 
 export default AwardEmblem;

@@ -14,6 +14,7 @@ import FundsVotingKiosk from './FundsVoting';
 import MemberLoginRequired from './MemberLoginRequired';
 import RemoteVoting from './RemoteVoting';
 import Results from '/imports/ui/Presentation/Pages/Results';
+import Awards from './Awards';
 
 // Transition group definitions
 const FADE_DURATION = 300;
@@ -86,7 +87,7 @@ const Kiosk = withRouter(observer(props => {
 
 	const voting = props.location.pathname.startsWith('/voting');
 	const member = props.match.params.member;
-
+	
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{(state) => (
@@ -106,7 +107,7 @@ const Kiosk = withRouter(observer(props => {
 						 } } />
 
 						{/* Voting Results */}
-						<Route exact path={ KIOSK_PAGES.results } component={ Results } />
+						<Route exact path={ KIOSK_PAGES.results } component={ settings.awardsPresentation ? Awards : Results } />
 
 					</Switch>
 

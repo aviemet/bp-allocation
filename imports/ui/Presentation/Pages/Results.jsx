@@ -20,6 +20,7 @@ const ResultsPageContainer = styled.div`
 			text-transform: uppercase;
 	    letter-spacing: 1px;
 			font-family: TradeGothic;
+			text-align: center;
 		}
 		h1 {
 			font-size: 3.8em;
@@ -87,11 +88,9 @@ const Results = observer(() => {
 		<ResultsPageContainer>
 			<AwardsImage src="/img/BAT_awards.png" />
 
-			{ settings.formatAsDollars &&
-				<Header as='h1'>
+			<Header as='h1'>
 					Total amount given: {numeral(total).format('$0.[00]a')}
-				</Header>
-			}
+			</Header>
 			<br/><br/>
 			{/*<Header as='h2'>Battery Powered Awardees</Header>*/}
 

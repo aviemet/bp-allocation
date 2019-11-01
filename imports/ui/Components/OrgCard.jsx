@@ -62,6 +62,7 @@ const OrgAsk = styled.p`
 const CardContent = styled(Card.Content)`
 	background-color: ${props => props.bgcolor} !important;
 	color: '#FFF';
+	text-align: center;
 `;
 
 const InfoLink = styled(Icon)`

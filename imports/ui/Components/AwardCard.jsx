@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Card } from 'semantic-ui-react';
 import styled from 'styled-components';
+import numeral from 'numeral';
 
 import AwardEmblem from './AwardEmblem';
 
@@ -39,6 +40,7 @@ const CardImage = styled.div`
 const CardContent = styled(Card.Content)`
 	background-color: ${props => props.bgcolor} !important;
 	color: #FFF;
+	text-align: center;
 	// color: #002B45;
 `;
 
@@ -47,16 +49,20 @@ const CardContent = styled(Card.Content)`
  */
 const AwardCard = props => {
 
+	const amount = props.amount ? 
+		numeral(props.amount).format('$0,0') : 
+		props.org.allocatedFunds + props.org.leverageFunds;
+
 	return (
 		<OrgCard>
 			<CardImage>
 				<AwardEmblem
 					type={ props.award }
-					amount={ props.org.allocatedFunds + props.org.leverageFunds }
+					amount={ amount }
 				/>
 			</CardImage>
 			<CardContent>
-				<OrgTitle>{props.org.title}</OrgTitle>
+				<OrgTitle>{ props.org.title }</OrgTitle>
 			</CardContent>
 		</OrgCard>
 	);
@@ -65,6 +71,7 @@ const AwardCard = props => {
 AwardCard.propTypes = {
 	org: PropTypes.object,
 	award: PropTypes.string,
+	amount: PropTypes.number
 };
 
 export default AwardCard;
