@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { readCsvWithHeadings } from '/imports/lib/utils';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
+// import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 import { useData } from '/imports/stores/DataProvider';
 import { MemberMethods } from '/imports/api/methods';

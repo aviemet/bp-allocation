@@ -123,6 +123,7 @@ const FundsVotingKiosk = observer(props => {
 							org={ org }
 							showAsk={ false }
 							size='small'
+							info={ true }
 							content={ () => (
 								<FundsSlider
 									org={ org }

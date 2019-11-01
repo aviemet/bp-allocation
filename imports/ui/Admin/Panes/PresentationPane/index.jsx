@@ -26,8 +26,7 @@ const ButtonPanel = styled.div`
 `;
 
 const PresentationPane = observer(() => {
-
-	const { theme, settings } = useData();
+	const { theme, settings, orgs } = useData();
 
 	const [ resultsOffset, setResultsOffset ] = useState(settings.resultsOffset);
 	const [ timerLength, setTimerLength ] = useState(settings.timerLength);
@@ -146,7 +145,16 @@ const PresentationPane = observer(() => {
 						<ChitVotingActiveToggle />
 						<br/>
 						<FundsVotingActiveToggle />
-						<TextMembersButton style={ { float: 'right' } } />
+						<TextMembersButton 
+							style={ { float: 'right' } }
+							title='Text: Begin Voting'
+							message={ `From Battery Powered:\n\nVoting is open for 20 minutes! Your fellow members in the room at Allocation Night have narrowed the ${orgs.values.length} finalists down to ${theme.numTopOrgs}. Use this link to allocate the funds you already donated for this theme to the organizations you want to support:` }
+						/>
+						<TextMembersButton 
+							style={ { float: 'right' } }
+							title='Text: Voting Complete'
+							message="From Battery Powered:\n\nThe results of voting are in! Check them out here:"
+						/>
 
 					</Grid.Column>
 
