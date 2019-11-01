@@ -46,7 +46,7 @@ const ImportMembers = props => {
 		{
 			name: 'phone',
 			forms: ['phone', 'phone number', 'phone no', 'mobile', 'mobile number', 'mobile no'],
-			type: val => parsePhoneNumberFromString(val).formatNational()
+			type: String
 		}
 	];
 
