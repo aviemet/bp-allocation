@@ -171,10 +171,15 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run(theme) {
-			const orgs = Themes.find({ _id: theme }, { organizations: true }).fetch()[0].organizations;
+		run(themeId) {
+			const theme = Themes.find({ _id: themeId }, { organizations: true }).fetch();
+			if(!theme) {
+				throw new Error('Theme ID does not match records of any Themes');
+			}
 
-			orgs.map(org => {
+			const orgs = theme[0].organizations;
+
+			return orgs.map(org => {
 				Organizations.update({ _id: org }, {
 					$set: {
 						leverageFunds: 0

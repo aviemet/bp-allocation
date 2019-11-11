@@ -6,7 +6,8 @@ const AllocationSchema = new SimpleSchema({
 	amount: Number,
 	createdAt: {
 		type: Date,
-		autoValue: () => new Date()
+		required: false,
+		defaultValue: new Date()
 	}
 });
 
@@ -15,7 +16,8 @@ const ChitVoteSchema = new SimpleSchema({
 	votes: Number,
 	createdAt: {
 		type: Date,
-		autoValue: () => new Date()
+		required: false,
+		defaultValue: new Date()
 	}
 });
 
@@ -46,7 +48,8 @@ const MemberThemeSchema = new SimpleSchema({
 	'allocations.$': AllocationSchema,
 	createdAt: {
 		type: Date,
-		autoValue: () => new Date()
+		required: false,
+		defaultValue: new Date()
 	}
 });
 

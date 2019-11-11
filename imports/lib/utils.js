@@ -7,10 +7,10 @@ export const roundFloat = (value, decimal) => {
 	return parseFloat(parseFloat(value).toFixed(decimal));
 };
 
-export const getSaveAmount = (saves, org_id) => {
+/*export const getSaveAmount = (saves, org_id) => {
 	let save = saves.find( save => save.org === org_id);
 	return save ? save.amount : 0;
-};
+};*/
 
 export const numberFormats = {
 	dollar: '$0,0[a]',

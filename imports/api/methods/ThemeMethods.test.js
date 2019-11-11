@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import faker from 'faker';
-import { Random } from 'meteor/random';
+// import { Random } from 'meteor/random';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 
 import { ThemeMethods } from '/imports/api/methods';
@@ -185,7 +185,7 @@ describe("Theme Methods", async function() {
 	 * Reset Leverage Spread
 	 */
 	context("ResetLeverage", function() {
-		it("Should set leverageFunds back to 0 for all orgs in theme", function() {
+		it.skip("Should set leverageFunds back to 0 for all orgs in theme", function() {
 			const orgs = orgIds.map(id => {
 				return { _id: id };
 			});

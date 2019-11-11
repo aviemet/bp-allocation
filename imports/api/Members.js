@@ -37,7 +37,8 @@ const MemberSchema = new SimpleSchema({
 	},
 	createdAt: {
 		type: Date,
-		autoValue: () => new Date()
+		required: false,
+		defaultValue: new Date()
 	}
 
 });

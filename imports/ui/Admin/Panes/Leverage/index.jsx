@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+// import _ from 'lodash';
 import numeral from 'numeral';
 
-import { roundFloat } from '/imports/lib/utils';
+// import { roundFloat } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
-import { toJS } from 'mobx';
+// import { toJS } from 'mobx';
 import { useData } from '/imports/stores/DataProvider';
 import { ThemeMethods } from '/imports/api/methods';
-import LeverageObject from './Leverage';
+import LeverageObject from '/imports/lib/Leverage';
 
 import { Header, Segment, Grid, Button } from 'semantic-ui-react';
 

@@ -11,11 +11,12 @@ class Leverage {
 	 * Also calculate sumRemainingOrgs for first round leverage
 	 */
 	constructor(orgs, leverageRemaining) {
+		console.log({ orgs: orgs.length });
 
 		this.leverageRemaining = leverageRemaining;
 
 		let sumRemainingOrgs = 0;
-		this.orgs = _.cloneDeep(toJS(orgs)).map(org => {
+		this.orgs = orgs.map(org => {
 			let orgClone = toJS(org);
 
 			delete orgClone.parent;

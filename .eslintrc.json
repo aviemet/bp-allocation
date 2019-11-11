@@ -30,7 +30,10 @@
 	],
 	"rules": {
 		"indent": [ "error", "tab", {
-			"SwitchCase": 1
+			"SwitchCase": 1,
+			"VariableDeclarator": "first",
+			"MemberExpression": 1,
+			"ArrayExpression": 1
 		} ],
 		"linebreak-style": [ "error", "unix" ],
 		"quotes": [ "error", "single" ],

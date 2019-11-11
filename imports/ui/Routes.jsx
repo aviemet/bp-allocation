@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import { createBrowserHistory as createHistory } from 'history';
 import PrivateRoute from '/imports/ui/Components/PrivateRoute';
+import { Themes, Members } from '/imports/api';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
@@ -58,6 +59,18 @@ const Routes = observer(() => {
 						<Presentation />
 					</PresentationLayout>
 				) } />
+
+				{/* Short URL for texts */}
+				<Route path='v/:shortId/:code' render={ matchProps => {
+					const { shortId, code } = matchProps.params.id;
+					const theme = Themes.find({ shortId }, { _id: true }).fetch();
+					const member = Members.find({ code }, { _id: true }).fetch();
+
+					if(theme.length > 0 && member.length > 0) {
+						return <Redirect to={ `/voting/${theme._id}/${member._id}` } />;
+					}
+					return <Redirect to='404' />;
+				} } />
 
 				<LoadingRoute path={ ['/voting/:id/:member', '/kiosk/:id'] } render={ () => (
 					<KioskLayout>

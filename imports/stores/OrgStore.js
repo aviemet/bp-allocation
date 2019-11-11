@@ -1,4 +1,4 @@
-import { computed, toJS, observable, extendObservable } from 'mobx';
+import { computed, extendObservable } from 'mobx';
 import { roundFloat } from '/imports/lib/utils';
 import _ from 'lodash';
 

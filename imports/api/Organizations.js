@@ -23,7 +23,8 @@ const MatchPledgeSchema = new SimpleSchema({
 	},
 	createdAt: {
 		type: Date,
-		autoValue: () => new Date()
+		required: false,
+		defaultValue: new Date()
 	}
 });
 
@@ -83,7 +84,8 @@ const OrganizationSchema = new SimpleSchema({
 	theme: SimpleSchema.RegEx.Id,
 	createdAt: {
 		type: Date,
-		autoValue: () => new Date()
+		required: false,
+		defaultValue: new Date()
 	}
 });
 

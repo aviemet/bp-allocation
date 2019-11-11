@@ -87,8 +87,17 @@ const ThemeSchema = new SimpleSchema({
 	presentationSettings: SimpleSchema.RegEx.Id,
 	createdAt: {
 		type: Date,
-		autoValue: () => (new Date())
-	}
+		required: false,
+		defaultValue: new Date()
+	},
+	/*shortId: {
+		type: String,
+		required: false,
+		autoValue: function() {
+			console.log({ id: this.field('title').value, time: new Date() });
+			return crc32.str(`${this.field('title').value}${new Date()}`);
+		}
+	}*/
 });
 
 Themes.attachSchema(ThemeSchema);

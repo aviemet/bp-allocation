@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 import { PresentationSettings } from '/imports/api';
 
@@ -20,7 +20,9 @@ const settingsDefaults = {
 	resultsOffset: 0,
 	useKioskChitVoting: false,
 	useKioskFundsVoting: false,
-	formatAsDollars: true
+	resultsVisited: false,
+	awardsPresentation: false,
+	awardAmount: 0
 };
 
 let presentationSettings;
