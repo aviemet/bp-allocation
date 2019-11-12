@@ -24,9 +24,11 @@ const VotingComplete = () => {
 	const { unsetUser } = useVoting();
 
 	useEffect(() => {
-		setTimeout(() => {
-			unsetUser();
-		}, 2000);
+		if(unsetUser) {
+			setTimeout(() => {
+				unsetUser();
+			}, 3000);
+		}
 	}, []);
 
 	return (

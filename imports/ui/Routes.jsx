@@ -18,7 +18,6 @@ import Login from '/imports/ui/Welcome/Login';
 import Kiosk from '/imports/ui/Kiosk';
 import Feedback from '/imports/ui/Feedback';
 import FourOhFour from './404';
-import VotingComplete from './Kiosk/VotingComplete';
 
 // Route which delays display of content until the data store has fully loaded
 const LoadingRoute = observer(({ component, render, children, ...rest }) => {
@@ -99,15 +98,6 @@ const Routes = observer(() => {
 				) } />
 
 				<Route path='/404' component={ FourOhFour } />
-
-				{/* 
-				<PrivateRoute path='/feedback/:id' component={ matchProps => (
-					<AppProvider id={ matchProps.match.params.id }>
-						<FeedbackLayout>
-							<Feedback />
-						</FeedbackLayout>
-					</AppProvider>
-				) } /> */}
 
 			</Switch>
 		</Router>

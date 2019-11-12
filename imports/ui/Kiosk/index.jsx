@@ -102,9 +102,9 @@ const Kiosk = withRouter(observer(props => {
 						{/* Funds Voting */}
 						<Route exact path={ KIOSK_PAGES.funds } render={ () => {
 							return member ? 
-								<RemoteVoting member={ member } onVotingComplete={ () => doNavigation(KIOSK_PAGES.info) } /> :
-								<MemberLoginRequired component={ FundsVotingKiosk } />
-						 } } />
+								<RemoteVoting member={ member } /> :
+								<MemberLoginRequired component={ FundsVotingKiosk } />;
+						} } />
 
 						{/* Voting Results */}
 						<Route exact path={ KIOSK_PAGES.results } component={ settings.awardsPresentation ? Awards : Results } />
@@ -122,4 +122,7 @@ export default Kiosk;
 /* Chit Voting 
 <Route exact path={ KIOSK_PAGES.chit } render={ props => (
 	<MemberLoginRequired component={ KioskChitVoting } />
-) } /> */
+) } /> 
+
+ onVotingComplete={ () => (doNavigation(KIOSK_PAGES.info)) }
+*/
