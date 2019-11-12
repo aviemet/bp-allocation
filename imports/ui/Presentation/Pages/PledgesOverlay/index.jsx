@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useData } from '/imports/stores/DataProvider';
 import { observer } from 'mobx-react-lite';
-import { toJS } from 'mobx';
+// import { toJS } from 'mobx';
 
 const OverlayContainer = styled.div`
 	position: fixed;

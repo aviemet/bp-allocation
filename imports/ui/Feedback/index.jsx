@@ -90,8 +90,8 @@ const TABS = {
 
 // Main class for the Theme page
 const Feedback = observer(() => {
-	const defaultPage = 'orgs';
 	const { theme } = useData();
+	const defaultPage = 'orgs';
 
 	const [ activeTab, setActiveTab ] = useState(location.hash.replace(/#/, '') || TABS[defaultPage].slug);
 
@@ -141,3 +141,6 @@ const Feedback = observer(() => {
 });
 
 export default Feedback;
+
+/*
+*/

@@ -244,7 +244,8 @@ const AdminLayout = withRouter(observer(props => {
 					<Header as={ 'h1' }>Pages</Header>
 					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>Presentation</MenuLink>
 					<MenuLink to={ `/kiosk/${data.themeId}` }>Kiosk</MenuLink>
-					<Menu.Item as={ 'a' }>Feedback</Menu.Item>
+					<MenuLink to={ `/feedback/${data.themeId}` }>Feedback</MenuLink>
+					<MenuLink to={ `/pledges/${data.themeId}` } target='_blank'>Pledge Inputs</MenuLink>
 				</SidebarMenu>
 			</Responsive>
 

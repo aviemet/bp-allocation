@@ -106,14 +106,15 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ id, amount }) {
+		run({ id, amount, member }) {
 			amount = roundFloat(amount);
+
+			const saveData = { amount };
+			if(member) saveData.member = member;
 
 			return Organizations.update({ _id: id }, {
 				$push: {
-					pledges: {
-						amount: amount
-					}
+					pledges: saveData
 				}
 			});
 		}

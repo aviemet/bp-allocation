@@ -4,18 +4,20 @@ import PropTypes from 'prop-types';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import { createBrowserHistory as createHistory } from 'history';
 import PrivateRoute from '/imports/ui/Components/PrivateRoute';
+import { useData } from '/imports/stores/DataProvider';
 import { Themes, Members } from '/imports/api';
 
+import { Loader } from 'semantic-ui-react';
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+
 import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts';
 import Presentation from '/imports/ui/Presentation';
 import Simulation from '/imports/ui/Admin/Simulation';
-
+import Pledges from '/imports/ui/Pledges';
 import Login from '/imports/ui/Welcome/Login';
 import Kiosk from '/imports/ui/Kiosk';
+import Feedback from '/imports/ui/Feedback';
 import FourOhFour from './404';
-import { Loader } from 'semantic-ui-react';
 import VotingComplete from './Kiosk/VotingComplete';
 
 // Route which delays display of content until the data store has fully loaded
@@ -82,6 +84,18 @@ const Routes = observer(() => {
 					<PresentationLayout>
 						<Simulation />
 					</PresentationLayout>
+				) } />
+
+				<LoadingRoute path='/pledges/:id' render={ () => (
+					<KioskLayout>
+						<Pledges />
+					</KioskLayout>
+				) } />
+
+				<LoadingRoute path='/feedback/:id' render={ () => (
+					<FeedbackLayout>
+						<Feedback />
+					</FeedbackLayout>
 				) } />
 
 				<Route path='/404' component={ FourOhFour } />

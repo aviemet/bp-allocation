@@ -33,6 +33,10 @@ Meteor.startup(() => {
 		}
 	);
 
+	/***************************
+	 *    MODEL PUBLICATIONS   *
+	 ***************************/
+	// Themes
 	Meteor.publish('themes', (themeId) => {
 		if(themeId){
 			return Themes.find({ _id: themeId });
@@ -40,6 +44,7 @@ Meteor.startup(() => {
 		return Themes.find({});
 	});
 
+	// Presentation Settings
 	Meteor.publish('presentationSettings', (settingsId) => {
 		try{
 			return PresentationSettings.find({ _id: settingsId });
@@ -48,12 +53,14 @@ Meteor.startup(() => {
 		}
 	});
 
+	// Organizations - All orgs for theme
 	Meteor.publish('organizations', (themeId) => {
 		if(! themeId) return Organizations.find({});
 
 		return Organizations.find({ theme: themeId });
 	});
 
+	// Organization - Single org
 	Meteor.publish('organization', (orgId) => {
 		if(orgId){
 			return Organizations.find({ _id: orgId });
@@ -61,19 +68,14 @@ Meteor.startup(() => {
 		// TODO: return error
 	});
 
-	// Images need the cursor
-	Meteor.publish('image', (id) =>  {
-		if(!id) return false;
-
-		return Images.find({ _id: id }).cursor;
-	});
-
+	// Images - Images by [id]
 	Meteor.publish('images', (ids) => {
 		if(!ids) return false;
 
-		return Images.find({ _id: { $in: ids }}).cursor;
+		return Images.find({ _id: { $in: ids }}).cursor; // Images need the cursor
 	});
 
+	// Images - All images for theme
 	Meteor.publish('images.byTheme', function(themeId) {
 		if(!themeId) return Images.find({}).cursor;
 
@@ -84,90 +86,32 @@ Meteor.startup(() => {
 			imgIds.push(org.image);
 		});
 
-		return Images.find({ _id: { $in: imgIds }}).cursor;
+		return Images.find({ _id: { $in: imgIds }}).cursor; // Images need the cursor
 	});
 
-	// Find Members and associated theme values
+	// Image - Single Image
+	Meteor.publish('image', (id) =>  {
+		if(!id) return false;
+
+		return Images.find({ _id: id }).cursor; // Images need the cursor
+	});
+
+	// MemberThemes - Member activity for theme
 	Meteor.publish('memberThemes', (themeId) => {
 		if(!themeId) return MemberThemes.find({});
 		return MemberThemes.find({ theme: themeId });
 	});
 
+	// Members - All members by [id]
 	Meteor.publish('members', (ids) => {
 		if(!ids) return Members.find({});
 		return Members.find({ _id: { $in: ids }});
-	/*
-		const rawMembers = Members.rawCollection();
-		const aggregate = Meteor.wrapAsync(rawMembers.aggregate, rawMembers);
-
-		const results = aggregate([
-			{
-				$match: {
-					_id: {
-						$in: ids
-					}
-				}
-			},
-			{
-				$addFields: {
-					code: {
-						$concat: [
-							"$initials",
-							{
-								$convert: {
-									input: "$number",
-									to: "string",
-									onError: "Error",
-									onNull: ""
-								}
-							}
-						]
-					}
-				}
-			}
-		], {
-			cursor: { batchSize: 1000 }
-		});
-
-		console.log({results: results});
-		return [results];
-
-
-		const members = Members.aggregate([
-			{
-				$match: {
-					_id: {
-						$in: ids
-					}
-				}
-			},
-			{
-				$addFields: {
-					code: {
-						$concat: [
-							"$initials",
-							{
-								$convert: {
-									input: "$number",
-									to: "string",
-									onError: "Error",
-									onNull: ""
-								}
-							}
-						]
-					}
-				}
-			}
-		]);
-
-		console.log({members});
-
-		return members;
-
-	*/
 	});
 });
 
+/***************************
+ *  TWILIO SERVER METHODS  *
+ ***************************/
 Meteor.methods({
 	sendMessage: (number, message) => {
 		const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.authToken);
@@ -182,9 +126,13 @@ Meteor.methods({
 	}
 });
 
+/***************************
+ *   ACCOUNTS VALIDATION   *
+ ***************************/
 Accounts.validateNewUser(user => {
 	let valid = false;
 
+	// Restrict Google auth to emails from specific domains
 	if(_.has(user, 'services.google.email')) {
 		const emailParts = user.services.google.email.split('@');
 		const domain = emailParts[emailParts.length - 1];
@@ -196,5 +144,5 @@ Accounts.validateNewUser(user => {
 		return true;
 	}
 
-	throw new Meteor.Error(403, 'Must log in using a thebatterysf.com email address');
+	throw new Meteor.Error(403, 'Must log in using a "thebatterysf.com" email address');
 });

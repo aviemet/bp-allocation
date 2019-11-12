@@ -9,8 +9,7 @@ import ChitInputs from '/imports/ui/Admin/Panes/ChitVotingPane/ChitInputs';
 import TopOrgsByChitVote from '/imports/ui/Admin/Panes/ChitVotingPane/TopOrgsByChitVote';
 
 const ChitVotingPane = observer(() => {
-	const data = useData();
-	const { orgs }  = data.orgs.values;
+	const { orgs } = useData();
 
 	return (
 		<React.Fragment>
@@ -29,7 +28,7 @@ const ChitVotingPane = observer(() => {
 							</Table.Header>
 
 							<Table.Body>
-								{ orgs.map((org, i) => (
+								{ orgs.values.map((org, i) => (
 									<ChitInputs
 										org={ org }
 										key={ i }

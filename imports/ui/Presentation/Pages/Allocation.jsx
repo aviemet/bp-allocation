@@ -6,7 +6,7 @@ import PledgesOverlay from './PledgesOverlay';
 const Allocation = ({ simulation }) => (
 	<>
 		<Graph simulation={ simulation || false } />
-		<PledgesOverlay />
+		{ !simulation && <PledgesOverlay /> }
 	</>
 );
 

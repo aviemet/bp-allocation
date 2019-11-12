@@ -42,7 +42,7 @@ const ExportCsvButton = props => {
 
 ExportCsvButton.propTypes = {
 	settings: PropTypes.object,
-	data: PropTypes.object,
+	data: PropTypes.array,
 	description: PropTypes.string
 };
 
