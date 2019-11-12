@@ -171,13 +171,14 @@ Meteor.startup(() => {
 Meteor.methods({
 	sendMessage: (number, message) => {
 		const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.authToken);
-		console.log({ number, message });
+		// console.log({ number, message });
 		const text = client.messages.create({
 			body: message,
 			to: `+1${number}`,
-			from: Meteor.settings.twilio.fromNumber
+			messagingServiceSid: Meteor.settings.twilio.copilotSid
 		}).then(message => console.log(message));
-		console.log({ text });
+		// console.log({ text });
+		return text;
 	}
 });
 
@@ -186,7 +187,7 @@ Accounts.validateNewUser(user => {
 
 	if(_.has(user, 'services.google.email')) {
 		const emailParts = user.services.google.email.split('@');
-		const domain = emailParts[emailParts.length -1];
+		const domain = emailParts[emailParts.length - 1];
 		
 		valid = Meteor.settings.google.allowed_domains.some(check => check === domain);
 	}

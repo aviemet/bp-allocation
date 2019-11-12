@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
-import { PresentationSettingsMethods, ThemeMethods } from '/imports/api/methods';
+import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Grid, Icon, Label, Segment, Input, Button, Responsive } from 'semantic-ui-react';
 import styled from 'styled-components';

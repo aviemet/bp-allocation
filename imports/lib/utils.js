@@ -23,6 +23,9 @@ export function isMobileDevice() {
 
 export const paginate = (collection, page, itemsPerPage) => collection.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
+/**************************************
+ *      Queue class for Pledges       *
+ **************************************/
 export class Queue {
 	constructor() {
 		this.queue = [];
@@ -33,7 +36,7 @@ export class Queue {
 	}
 
 	dequeue() {
-		if (this.isEmpty()) return 'Queue is empty' 
+		if (this.isEmpty()) return 'Queue is empty';
 		return this.queue.shift();
 	}
 
@@ -154,6 +157,10 @@ export const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
  * DEBUG METHODS *
  *****************/
 
+/**
+* Hook to console.log prop changes in a useEffect block
+* @param {Object} props Props
+*/
 export function useTraceUpdate(props) {
 	const prev = useRef(props);
 	useEffect(() => {
@@ -164,7 +171,7 @@ export function useTraceUpdate(props) {
 			return ps;
 		}, {});
 		if (Object.keys(changedProps).length > 0) {
-			// console.log('Changed props:', changedProps);
+			console.log('Changed props:', changedProps);
 		}
 		prev.current = props;
 	});
