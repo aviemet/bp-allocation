@@ -36,7 +36,7 @@ Meteor.startup(() => {
 	/***************************
 	 *    MODEL PUBLICATIONS   *
 	 ***************************/
-	// Themes
+	// Theme - by id
 	Meteor.publish('themes', (themeId) => {
 		if(themeId){
 			return Themes.find({ _id: themeId });

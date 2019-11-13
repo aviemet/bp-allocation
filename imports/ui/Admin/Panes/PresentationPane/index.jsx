@@ -147,7 +147,7 @@ const PresentationPane = observer(() => {
 						<TextMembersButton 
 							style={ { float: 'right' } }
 							title='Text: Begin Voting'
-							message={ `From Battery Powered:\n\nVoting is open for 20 minutes! Your fellow members in the room at Allocation Night have narrowed the ${orgs.values.length} finalists down to ${theme.numTopOrgs}. Use this link to allocate the funds you already donated for this theme to the organizations you want to support:` }
+							message={ `From Battery Powered:\nWe have narrowed ${orgs.values.length} finalists down to ${theme.numTopOrgs}. Use this link to vote your funds for the orgs you want to support:` }
 						/>
 						<TextMembersButton 
 							style={ { float: 'right' } }

@@ -11,8 +11,8 @@ const TextMembersButton = ({ message, title, ...rest }) => {
 	const textMembers = () => {
 		members.values.forEach(member => {
 			if(member.phone) {
-				const link = `batterysf.com/voting/${theme._id}/${member._id}`;
-				const messageWithLink = `${message}\n\n${link}`;
+				const link = `www.batterysf.com/v/${theme.slug}/${member.code}`;
+				const messageWithLink = `${message}\n${link}`;
 
 				Meteor.call('sendMessage', member.phone, messageWithLink);
 			}

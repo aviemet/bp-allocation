@@ -11,6 +11,7 @@ const SettingsPane = observer(props => {
 
 	const [ title, setTitle ]                           = useState(theme.title);
 	const [ question, setQuestion ]                     = useState(theme.question);
+	const [ slug, setSlug ]                             = useState(theme.slug);
 	const [ chitWeight, setChitWeight ]                 = useState(theme.chitWeight);
 	const [ matchRatio, setMatchRatio ]                 = useState(theme.matchRatio);
 	const [ leverageTotal, setLeverageTotal ]           = useState(theme.leverageTotal);
@@ -26,7 +27,7 @@ const SettingsPane = observer(props => {
 		e.preventDefault();
 
 		let formData = {
-			theme: { title, question, chitWeight, matchRatio, leverageTotal, consolationActive, consolationAmount },
+			theme: { title, question, slug, chitWeight, matchRatio, leverageTotal, consolationActive, consolationAmount },
 			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting, awardsPresentation, awardAmount }
 		};
 
@@ -58,34 +59,49 @@ const SettingsPane = observer(props => {
 		}
 	};
 
-
 	if(!theme) return(<Loader/>);
 	return (
 		<Form onBlur={ handleSubmit } onSubmit={ handleSubmit }>
 
-			{/* Title */}
-			<Form.Field>
-				<Form.Input 
-					name='theme.title' 
-					type='text' 
-					placeholder='Title' 
-					label='Theme Title' 
-					value={ title || '' } 
-					onChange={ e => setTitle(e.target.value) }  
-				/>
-			</Form.Field>
+			<Form.Group>
 
-			{/* Question */}
-			<Form.Field>
-				<Form.Input 
-					name='theme.question' 
-					type='text' 
-					placeholder='Question' 
-					label='Theme Question' 
-					value={ question || '' } 
-					onChange={ e => setQuestion(e.target.value) } 
-				/>
-			</Form.Field>
+				{/* Title */}
+				<Form.Field>
+					<Form.Input 
+						name='theme.title' 
+						type='text' 
+						placeholder='Title' 
+						label='Theme Title' 
+						value={ title || '' } 
+						onChange={ e => setTitle(e.target.value) }  
+					/>
+				</Form.Field>
+
+				{/* Question */}
+				<Form.Field>
+					<Form.Input 
+						name='theme.question' 
+						type='text' 
+						placeholder='Question' 
+						label='Theme Question' 
+						value={ question || '' } 
+						onChange={ e => setQuestion(e.target.value) } 
+					/>
+				</Form.Field>
+
+				{/* Slug */}
+				<Form.Field>
+					<Form.Input 
+						name='theme.slug' 
+						type='text' 
+						placeholder='Slug' 
+						label='Theme Slug' 
+						value={ slug || '' } 
+						onChange={ e => setSlug(e.target.value) } 
+					/>
+				</Form.Field>
+
+			</Form.Group>
 
 			{/* Total Leverage Amount */}
 			<Form.Group>

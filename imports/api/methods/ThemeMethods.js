@@ -24,6 +24,21 @@ const ThemeMethods = {
 				data.quarter = `${moment().year()}Q${moment().quarter()}`;
 			}
 
+			if(!data.slug) {
+				const now = new Date();
+				let slug = data.title.split(' ')[0].toLowerCase();
+				slug = slug.substring(0, 3);
+				let ms = now.getMilliseconds();
+
+				let checkTheme = Themes.find({ slug: slug + ms }).fetch();
+				while(checkTheme.length > 0) {
+					ms++;
+					checkTheme = Themes.find({ slug: slug + ms }).fetch();
+				}
+
+				data.slug = slug + ms;
+			}
+
 			try {
 				let theme = Themes.insert(_.merge(data, { presentationSettings: PresentationSettingsMethods.create.call() }));
 				return theme;

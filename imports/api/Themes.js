@@ -90,14 +90,10 @@ const ThemeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: new Date()
 	},
-	/*shortId: {
+	slug: {
 		type: String,
-		required: false,
-		autoValue: function() {
-			console.log({ id: this.field('title').value, time: new Date() });
-			return crc32.str(`${this.field('title').value}${new Date()}`);
-		}
-	}*/
+		required: false
+	}
 });
 
 Themes.attachSchema(ThemeSchema);

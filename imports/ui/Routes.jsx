@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import { createBrowserHistory as createHistory } from 'history';
+import { withTracker } from 'meteor/react-meteor-data';
 import PrivateRoute from '/imports/ui/Components/PrivateRoute';
 import { useData } from '/imports/stores/DataProvider';
 import { Themes, Members } from '/imports/api';
@@ -39,6 +40,33 @@ const LoadingRoute = observer(({ component, render, children, ...rest }) => {
 
 });
 
+const ShortRoute = withTracker((matchProps) => {
+	const { themeSlug, memberCode } = matchProps.match.params;
+
+	const themeSubscription = Meteor.subscribe('themes');
+	const membersSubscription = Meteor.subscribe('members');
+
+	return {
+		loading: !themeSubscription.ready() || !membersSubscription.ready(),
+		theme: Themes.find({ slug: themeSlug }).fetch()[0],
+		member: Members.find({ code: memberCode }).fetch()[0],
+		route: matchProps
+	};
+})(props => {
+	if(props.loading) {
+		console.log({ route: props.route });
+		return <Loader active />;
+	}
+
+	if(props.theme && props.member) {
+		// TODO: This is a hack because Redirect isn't working properly
+		window.location.href = `/voting/${props.theme._id}/${props.member._id}`;
+		return <Redirect push to={ `/voting/${props.theme._id}/${props.member._id}` } />;
+	}
+
+	return <Redirect to='/404' />;
+});
+
 const browserHistory = createHistory();
 
 const Routes = observer(() => {
@@ -62,16 +90,7 @@ const Routes = observer(() => {
 				) } />
 
 				{/* Short URL for texts */}
-				<Route path='v/:shortId/:code' render={ matchProps => {
-					const { shortId, code } = matchProps.params.id;
-					const theme = Themes.find({ shortId }, { _id: true }).fetch();
-					const member = Members.find({ code }, { _id: true }).fetch();
-
-					if(theme.length > 0 && member.length > 0) {
-						return <Redirect to={ `/voting/${theme._id}/${member._id}` } />;
-					}
-					return <Redirect to='404' />;
-				} } />
+				<Route path='/v/:themeSlug/:memberCode' component={ ShortRoute } />
 
 				<LoadingRoute path={ ['/voting/:id/:member', '/kiosk/:id'] } render={ () => (
 					<KioskLayout>
