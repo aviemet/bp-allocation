@@ -105,7 +105,7 @@ const _inferHeadings = (headings, acceptedHeadings, callbacks) => {
  * Use to convert heading values in a file to useable key values for submitting to a database.
  * @param  {File} file             File object from input
  * @param  {Object} acceptedHeadings JSON object with 'name' and 'forms' fields. 'forms' is an array of potential headings in the file which should be mapped/converted to 'name' in the final return object after parsing.
- * @param  {Object} callbacks        Lifecycle callbacks. Accepted valuse are:
+ * @param  {Object} callbacks        Lifecycle callbacks. Accepted values are:
  *                                     'beforeInferHeadings(row)',
  *                                     'afterInferHeadings(headings)',
  *                                     'beforeRowParse(row)',

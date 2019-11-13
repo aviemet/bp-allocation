@@ -58,20 +58,30 @@ const ImportMembers = props => {
 		// TODO: Display loading indicator while uploading members
 		const parser = readCsvWithHeadings(file, acceptedValues, {
 			'beforeInferHeadings': headings => {
-				// console.log({beforeInferHeadings: headings});
+				// console.log({ beforeInferHeadings: headings });
 			},
 			'afterInferHeadings': headings => {
-				// console.log({afterInferHeadings: headings});
+				// console.log({ afterInferHeadings: headings });
 			},
 			'beforeRowParse': row => {
-				// console.log({beforeRowParse: row});
+				// console.log({ beforeRowParse: row });
 			},
 			'afterRowParse': row => {
-				// console.log({afterRowParse: row});
+				// console.log({ afterRowParse: row });
+				if(row.hasOwnProperty('fullName') && row.fullName.includes(',')) {
+					const split = row.fullName.split(',');
+					const newName = [];
+					for(let i = 1; i < split.length; i++) {
+						newName.push(split[i]);
+					}
+					newName.push(split[0]);
+					row.fullName = newName.join(' ');
+				}
+				// console.log({ afterRowParse: row });
 				MemberMethods.upsert.call(Object.assign({ themeId: theme._id }, row));
 			},
 			'onComplete': data => {
-				// console.log({onComplete: data});
+				// console.log({ onComplete: data });
 			}
 		});
 		return parser;
