@@ -4,47 +4,58 @@ import _ from 'lodash';
 
 import { Search, Label } from 'semantic-ui-react';
 
+/**
+ * Member search results renderer
+ * @param {object} props { title, number } of selected member 
+ */
 const resultRenderer = ({ title, number }) => (
-	<React.Fragment>
+	<>
 		{title} <Label icon='hashtag' content={ number } />
-	</React.Fragment>
+	</>
 );
 
-const MemberSearch = props => {
+/**
+ * Search input for member data
+ * @param {object} props Search props
+ */
+const MemberSearch = ({ data, onResultSelect, ...rest }) => {
 	const [ isLoading, setIsLoading ] = useState(false);
 	const [ searchResults, setSearchResults ] = useState([]);
 	const [ selectedValue, setSelectedValue ] = useState('');
 
-	const source = props.data.map(member => {
+	// Filter source data to only display what's needed in search results
+	const source = data.map(member => {
 		return ({
 			title: `${member.firstName} ${member.lastName}`,
 			number: member.number,
 			id: member._id
 		});
 	});
-
+	
+	// Handle select action with user defined method
 	const handleResultSelect = (e, { result }) => {
 		setSelectedValue(result.title);
-		if(props.callback) {
-			props.callback(Object.assign({ pledge: props.pledgeId }, result));
+		if(onResultSelect) {
+			onResultSelect(result);
 		}
 	};
 
+	// Animate searching and filter results on user input change
 	const handleSearchChange = (e, { value }) => {
 		setIsLoading(true);
 		setSelectedValue(value);
 
-		if (value.length < 1) {
+		// Wait for at least 2 characters to display search results
+		if (value.trim().length < 1) {
 			setIsLoading(false);
 			setSearchResults([]);
 			setSelectedValue('');
 			return;
 		}
 
-		const re = new RegExp(_.escapeRegExp(value), 'i');
-		const isMatch = result => re.test(result.title) || re.test(result.number);
-
-		setSearchResults(_.filter(source, isMatch));
+		// Filter search results to match input
+		const equality = new RegExp(_.escapeRegExp(value), 'i');
+		setSearchResults( _.filter( source, result => equality.test(result.title) || equality.test(result.number) ) );
 		setIsLoading(false);
 	};
 
@@ -52,14 +63,16 @@ const MemberSearch = props => {
 		<Search
 			loading={ isLoading }
 			onResultSelect={ handleResultSelect }
-			onSearchChange={ _.debounce(handleSearchChange, 500, {
+			onSearchChange={ _.debounce(handleSearchChange, 1000, {
 				leading: true,
 			}) }
 			results={ searchResults }
 			resultRenderer={ resultRenderer }
 			value={ selectedValue }
 			fluid
-			size={ props.size }
+			placeholder='Member Search'
+			minCharacters={ 1 }
+			{ ...rest }
 		/>
 	);
 };
@@ -70,10 +83,9 @@ resultRenderer.propTypes = {
 };
 
 MemberSearch.propTypes = {
-	data: PropTypes.array,
-	callback: PropTypes.func,
-	size: PropTypes.number,
-	pledgeId: PropTypes.string
+	data: PropTypes.array.isRequired,
+	onResultSelect: PropTypes.func,
+	rest: PropTypes.any,
 };
 
 export default MemberSearch;

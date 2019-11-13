@@ -29,7 +29,7 @@ const Pledges = observer(props => {
 		OrganizationMethods.removePledge.call({ orgId, pledgeId });
 	};
 
-	const searchCallback = result => {
+	const onResultSelect = result => {
 		console.log({ result });
 	};
 
@@ -72,8 +72,7 @@ const Pledges = observer(props => {
 									:
 									<MemberSearch
 										data={ members }
-										pledgeId={ pledge._id }
-										callback={ searchCallback }
+										onResultSelect={ onResultSelect }
 									/>
 								}
 							</Table.Cell>

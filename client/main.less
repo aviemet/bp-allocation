@@ -29,16 +29,26 @@ th.bold {
 
 // Get that specificity going
 html body {
-	.ui.fullscreen.modal {
-		width: 100% !important;
-		height: ~'calc(100% - 2rem) !important';
-		position: relative;
+	.ui {
+		&.fullscreen.modal {
+			width: 100% !important;
+			height: ~'calc(100% - 2rem) !important';
+			position: relative;
+	
+			.scrolling.content {
+				max-height: ~'calc(100% - 2rem)';
+				font-size: 1.1em;
+			}
+		}
 
-		.scrolling.content {
-			max-height: ~'calc(100% - 2rem)';
-			font-size: 1.1em;
+		&.search {
+			.prompt {
+				border-radius: 0.28571429rem;
+			}
 		}
 	}
+
+
 }
 
 
