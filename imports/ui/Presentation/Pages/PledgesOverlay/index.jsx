@@ -16,7 +16,7 @@ const PledgesOverlay = observer(() => {
 	const data = useData();
 
 	useEffect(() => {
-		console.log({ pledges: data.pledgeQueue });
+		// console.log({ pledges: data.pledgeQueue });
 	}, [ data.pledgeQueue ]);
 
 	return (

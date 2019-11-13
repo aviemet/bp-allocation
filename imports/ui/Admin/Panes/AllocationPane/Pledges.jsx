@@ -30,7 +30,7 @@ const Pledges = observer(props => {
 	};
 
 	const onResultSelect = result => {
-		console.log({ result });
+		// console.log({ result });
 	};
 
 	let pledges = [];

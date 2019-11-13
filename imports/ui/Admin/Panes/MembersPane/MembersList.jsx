@@ -65,7 +65,7 @@ const MembersList = observer(props => {
 	if(settings.useKioskChitVoting) votingColspan++;
 	if(settings.useKioskFundsVoting) votingColspan++;
 
-	console.log({ started: theme.votingStarted });
+	// console.log({ started: theme.votingStarted });
 
 	return (
 		<>

@@ -79,7 +79,6 @@ const PresentationPane = observer(() => {
 	};
 
 	const setResultsHaveBeenViewed = () => {
-		console.log('setting');
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {

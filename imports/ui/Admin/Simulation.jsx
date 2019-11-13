@@ -15,7 +15,6 @@ const SimulationContainer = styled.div`
 `;
 
 const Presentation = () => {
-	console.log('simulation');
 	return (
 		<SimulationContainer>
 			<Allocation simulation={ true } />

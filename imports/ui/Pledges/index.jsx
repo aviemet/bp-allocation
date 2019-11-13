@@ -42,10 +42,10 @@ const Pledges = () => {
 	};
 
 	const onResultSelect = result => {
-		console.log({ result });
+		// console.log({ result });
 	};
 
-	console.log({ selectedOrg });
+	// console.log({ selectedOrg });
 
 	return (
 		<PledgesContainer fluid textAlign='center' className={ selectedOrg !== null ? 'focused' : null }>
