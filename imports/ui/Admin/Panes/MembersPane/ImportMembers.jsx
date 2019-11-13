@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { readCsvWithHeadings } from '/imports/lib/utils';
+import { readCsvWithHeadings, sanitizeNames } from '/imports/lib/utils';
 // import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 import { useData } from '/imports/stores/DataProvider';
@@ -69,13 +69,7 @@ const ImportMembers = props => {
 			'afterRowParse': row => {
 				// console.log({ afterRowParse: row });
 				if(row.hasOwnProperty('fullName') && row.fullName.includes(',')) {
-					const split = row.fullName.split(',');
-					const newName = [];
-					for(let i = 1; i < split.length; i++) {
-						newName.push(split[i]);
-					}
-					newName.push(split[0]);
-					row.fullName = newName.join(' ');
+					row.fullName = sanitizeNames(row.fullName);
 				}
 				// console.log({ afterRowParse: row });
 				MemberMethods.upsert.call(Object.assign({ themeId: theme._id }, row));

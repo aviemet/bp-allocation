@@ -23,6 +23,16 @@ export function isMobileDevice() {
 
 export const paginate = (collection, page, itemsPerPage) => collection.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
+export const sanitizeNames = name => {
+	const split = name.split(',');
+	const newName = [];
+	for(let i = 1; i < split.length; i++) {
+		newName.push(split[i].trim());
+	}
+	newName.push(split[0]);
+	return newName.join(' ');
+};
+
 /**************************************
  *      Queue class for Pledges       *
  **************************************/
