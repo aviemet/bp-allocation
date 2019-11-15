@@ -4,13 +4,6 @@ import PropTypes from 'prop-types';
 import { Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-const KioskContainer = styled.div`
-	width: 100%;
-	height: 100%;
-	background: black;
-	color: white;
-`;
-
 const KioskLayout = (props) => (
 	<KioskContainer>
 		<Container>
@@ -18,6 +11,13 @@ const KioskLayout = (props) => (
 		</Container>
 	</KioskContainer>
 );
+
+const KioskContainer = styled.div`
+	width: 100%;
+	height: 100%;
+	background: black;
+	color: white;
+`;
 
 KioskLayout.propTypes = {
 	children: PropTypes.oneOfType([

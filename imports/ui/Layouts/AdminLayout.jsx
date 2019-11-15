@@ -21,78 +21,6 @@ import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 
-const AdminContainer = styled.div`
-	background: #2b4a7c;
-	width: 100%;
-	min-height: 100%;
-	padding-bottom: 15px;
-
-	.sidebar .ui.header {
-		text-align: center;
-		padding-top: 10px;
-	}
-`;
-
-const OffsetContainer = styled.div`
-	width: 100%;
-	min-height: 100%;
-	padding-top: calc(1em + 61px);
-	transition: padding 0.25s ease-in-out;
-	padding-bottom: 15px;
-
-	&.offset {
-		@media screen and (min-width: ${ ({ theme }) => theme.media.onlyTablet.minWidth }px) {
-			padding-left: 150px;
-		}
-	}
-`;
-
-const TopbarMenu = styled(Menu)`
-	position: absolute;
-	width: 100%;
-	height: 61px;
-	margin: 0;
-	padding-left: 0;
-	transition: padding 0.25s ease-in-out;
-
-	@media screen and (max-width: ${ ({ theme }) => theme.media.onlyTablet.minWidth }px) {
-		position: fixed;
-		z-index: 999;
-	}
-
-	&& {
-		border-radius: 0;
-	}
-
-	&.offset {
-		padding-left: 150px;
-	}
-`;
-
-const SidebarMenu = styled(Menu)`
-	width: inherit !important;
-	backface-visibility: hidden;
-	transition: none;
-	will-change: transform;
-	transform: translate3d(0, 0, 0);
-	-webkit-overflow-scrolling: touch;
-	height: 100% !important;
-	max-height: 100%;
-	border-radius: 0em !important;
-	margin: 0em !important;
-	overflow-y: auto !important;
-	z-index: 102;
-
-	& .ui.header {
-    text-align: center;
-    padding-top: 10px;
-	}
-`;
-
-const Logo = styled(Image)`
-	filter: invert(100%);
-`;
-
 const MenuLink = withRouter(({ target, to, history, children, active }) => {
 	const handleNav = () => {
 		if(target && target === '_blank') {
@@ -272,6 +200,78 @@ const AdminLayout = withRouter(observer(props => {
 		</AdminContainer>
 	);
 }));
+
+const AdminContainer = styled.div`
+	background: #2b4a7c;
+	width: 100%;
+	min-height: 100%;
+	padding-bottom: 15px;
+
+	.sidebar .ui.header {
+		text-align: center;
+		padding-top: 10px;
+	}
+`;
+
+const OffsetContainer = styled.div`
+	width: 100%;
+	min-height: 100%;
+	padding-top: calc(1em + 61px);
+	transition: padding 0.25s ease-in-out;
+	padding-bottom: 15px;
+
+	&.offset {
+		@media screen and (min-width: ${ ({ theme }) => theme.media.onlyTablet.minWidth }px) {
+			padding-left: 150px;
+		}
+	}
+`;
+
+const TopbarMenu = styled(Menu)`
+	position: absolute;
+	width: 100%;
+	height: 61px;
+	margin: 0;
+	padding-left: 0;
+	transition: padding 0.25s ease-in-out;
+
+	@media screen and (max-width: ${ ({ theme }) => theme.media.onlyTablet.minWidth }px) {
+		position: fixed;
+		z-index: 999;
+	}
+
+	&& {
+		border-radius: 0;
+	}
+
+	&.offset {
+		padding-left: 150px;
+	}
+`;
+
+const SidebarMenu = styled(Menu)`
+	width: inherit !important;
+	backface-visibility: hidden;
+	transition: none;
+	will-change: transform;
+	transform: translate3d(0, 0, 0);
+	-webkit-overflow-scrolling: touch;
+	height: 100% !important;
+	max-height: 100%;
+	border-radius: 0em !important;
+	margin: 0em !important;
+	overflow-y: auto !important;
+	z-index: 102;
+
+	& .ui.header {
+    text-align: center;
+    padding-top: 10px;
+	}
+`;
+
+const Logo = styled(Image)`
+	filter: invert(100%);
+`;
 
 MenuLink.propTypes = {
 	children: PropTypes.any,

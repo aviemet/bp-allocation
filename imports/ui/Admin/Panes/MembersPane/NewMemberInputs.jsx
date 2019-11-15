@@ -7,7 +7,6 @@ import { MemberMethods } from '/imports/api/methods';
 
 import { Form, Button } from 'semantic-ui-react';
 
-
 const NewMemberInputs = observer(props => {
 	const data = useData();
 	const { theme } = data || {};

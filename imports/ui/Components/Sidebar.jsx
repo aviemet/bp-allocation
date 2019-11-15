@@ -2,6 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+const Sidebar = props => {
+	return (
+		<SidebarContainer className={ props.visible && 'visible' }>
+			{ props.children }
+		</SidebarContainer>
+	);
+};
+
 const SidebarContainer = styled.div`
 	position: fixed;
 	top: 0;
@@ -15,14 +23,6 @@ const SidebarContainer = styled.div`
 		left: 0;
 	}
 `;
-
-const Sidebar = props => {
-	return (
-		<SidebarContainer className={ props.visible && 'visible' }>
-			{ props.children }
-		</SidebarContainer>
-	);
-};
 
 Sidebar.propTypes = {
 	children: PropTypes.any,

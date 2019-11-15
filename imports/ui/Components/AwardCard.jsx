@@ -9,6 +9,30 @@ import AwardEmblem from './AwardEmblem';
 
 import { COLORS } from '/imports/lib/global';
 
+/**
+ * OrgCard Component
+ */
+const AwardCard = props => {
+
+	const amount = props.amount ? 
+		numeral(props.amount).format('$0,0') : 
+		props.org.allocatedFunds + props.org.leverageFunds;
+
+	return (
+		<OrgCard>
+			<CardImage>
+				<AwardEmblem
+					type={ props.award }
+					amount={ amount }
+				/>
+			</CardImage>
+			<CardContent>
+				<OrgTitle>{ props.org.title }</OrgTitle>
+			</CardContent>
+		</OrgCard>
+	);
+};
+
 const OrgCard = styled(Card)`
 	body .ui.cards > &, && {
 		background-color: ${COLORS.green};
@@ -43,30 +67,6 @@ const CardContent = styled(Card.Content)`
 	text-align: center;
 	// color: #002B45;
 `;
-
-/**
- * OrgCard Component
- */
-const AwardCard = props => {
-
-	const amount = props.amount ? 
-		numeral(props.amount).format('$0,0') : 
-		props.org.allocatedFunds + props.org.leverageFunds;
-
-	return (
-		<OrgCard>
-			<CardImage>
-				<AwardEmblem
-					type={ props.award }
-					amount={ amount }
-				/>
-			</CardImage>
-			<CardContent>
-				<OrgTitle>{ props.org.title }</OrgTitle>
-			</CardContent>
-		</OrgCard>
-	);
-};
 
 AwardCard.propTypes = {
 	org: PropTypes.object,

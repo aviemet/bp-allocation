@@ -8,38 +8,6 @@ import { useData } from '/imports/stores/DataProvider';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
-const OrgsContainer = styled(Container)`
-	padding-top: 20px;
-
-	.ui.card {
-
-		.orgsImage {
-			height: 150px;
-		}
-
-		.content{
-			padding-bottom: 0.2em;
-		}
-	}
-
-	& {
-		h1.ui.header.title {
-			color: #FFF;
-			text-align: center;
-			font-size: 3rem;
-		}
-
-		.subheading {
-			color: #FFF;
-			text-align: center;
-		}
-
-		p {
-			line-height: 1em;
-		}
-	}
-`;
-
 const KioskInfo = observer(() => {
 	const data = useData();
 	const orgs = data.orgs.topOrgsChosen ? data.orgs.topOrgs : data.orgs.values;
@@ -85,5 +53,37 @@ const KioskInfo = observer(() => {
 		</OrgsContainer>
 	);
 });
+
+const OrgsContainer = styled(Container)`
+	padding-top: 20px;
+
+	.ui.card {
+
+		.orgsImage {
+			height: 150px;
+		}
+
+		.content{
+			padding-bottom: 0.2em;
+		}
+	}
+
+	& {
+		h1.ui.header.title {
+			color: #FFF;
+			text-align: center;
+			font-size: 3rem;
+		}
+
+		.subheading {
+			color: #FFF;
+			text-align: center;
+		}
+
+		p {
+			line-height: 1em;
+		}
+	}
+`;
 
 export default KioskInfo;

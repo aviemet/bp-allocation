@@ -3,11 +3,6 @@ import React from 'react';
 import { Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-const PaddedImg = styled.img`
-	margin: 15px 0;
-`;
-
-
 const Hr = (props) => (
 	<Grid.Row>
 		<Grid.Column>
@@ -15,5 +10,9 @@ const Hr = (props) => (
 		</Grid.Column>
 	</Grid.Row>
 );
+
+const PaddedImg = styled.img`
+	margin: 15px 0;
+`;
 
 export default Hr;

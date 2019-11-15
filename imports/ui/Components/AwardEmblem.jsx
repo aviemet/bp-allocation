@@ -8,30 +8,6 @@ import { useData } from '/imports/stores/DataProvider';
 import { Image } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-const Award = styled.div`
-	width: 100%;
-	height: 100%;
-	text-align: center;
-`;
-
-const AwardImage = styled(Image)`
-	width: 100%;
-	height: 100%;
-	background-position: center center;
-	position: relative;
-`;
-
-const AwardAmount = styled.span`
-	color: #fff;
-	font-family: TradeGothic;
-	z-index: 999;
-	font-weight: 700;
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	transform: translateX(-50%);
-`;
-
 /**
  * Award Emblem
  */
@@ -55,6 +31,30 @@ const AwardEmblem = observer(({ type, amount }) => {
 		</Award>
 	);
 });
+
+const Award = styled.div`
+	width: 100%;
+	height: 100%;
+	text-align: center;
+`;
+
+const AwardImage = styled(Image)`
+	width: 100%;
+	height: 100%;
+	background-position: center center;
+	position: relative;
+`;
+
+const AwardAmount = styled.span`
+	color: #fff;
+	font-family: TradeGothic;
+	z-index: 999;
+	font-weight: 700;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translateX(-50%);
+`;
 
 AwardEmblem.propTypes = {
 	type: PropTypes.string,

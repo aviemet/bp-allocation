@@ -14,19 +14,10 @@ import styled from 'styled-components';
 import TopOrgsRow from './TopOrgsRow';
 import ChitVotingActiveToggle from '/imports/ui/Components/Toggles/ChitVotingActiveToggle';
 
-
-const NumTopOrgsInput = styled(Input)`
-	width: 65px;
-
-	&& input {
-		padding: 0.3em 0.4em;
-	}
-`;
-
 const TopOrgsByChitVote = observer(props => {
 	const data = useData();
 	const { theme } = data;
-	const orgs = data.orgs.values;
+	// const orgs = data.orgs.values;
 
 	const updateNumTopOrgs = (e, data) => {
 		if(data.value !== theme.numTopOrgs){
@@ -90,6 +81,14 @@ const TopOrgsByChitVote = observer(props => {
 		</React.Fragment>
 	);
 });
+
+const NumTopOrgsInput = styled(Input)`
+	width: 65px;
+
+	&& input {
+		padding: 0.3em 0.4em;
+	}
+`;
 
 TopOrgsByChitVote.propTypes = {
 	hideAdminFields: PropTypes.bool

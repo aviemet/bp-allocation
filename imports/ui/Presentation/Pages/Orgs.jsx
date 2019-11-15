@@ -8,6 +8,42 @@ import { useData } from '/imports/stores/DataProvider';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
+const Overlay = () => (
+	<DimOverlay>
+		{/*<Image src='/img/BPLogo.svg' />*/}
+	</DimOverlay>
+);
+
+const Orgs = observer(() => {
+	const data = useData();
+	const { settings } = data;
+	const orgs = data.orgs.values;
+	const topOrgs = data.orgs.topOrgs;
+
+	let colorOrgs = {};
+	topOrgs.map((org, i) => {
+		colorOrgs[org._id] = true;
+	});
+
+	return (
+		<OrgsContainer>
+			<PageTitle>Participating Organizations</PageTitle>
+			<Container>
+				<Card.Group centered itemsPerRow={ 4 }>
+					{orgs.map((org, i) => (
+						<OrgCard
+							key={ org._id }
+							org={ org }
+							index={ i }
+							overlay={ settings.colorizeOrgs && colorOrgs[org._id] ? Overlay : false }
+						/>
+					))}
+				</Card.Group>
+			</Container>
+		</OrgsContainer>
+	);
+});
+
 const OrgsContainer = styled.div`
 	padding-top: 20px;
 
@@ -52,41 +88,5 @@ const DimOverlay = styled.div`
 	}
 
 `;
-
-const Overlay = () => (
-	<DimOverlay>
-		{/*<Image src='/img/BPLogo.svg' />*/}
-	</DimOverlay>
-);
-
-const Orgs = observer(() => {
-	const data = useData();
-	const { settings } = data;
-	const orgs = data.orgs.values;
-	const topOrgs = data.orgs.topOrgs;
-
-	let colorOrgs = {};
-	topOrgs.map((org, i) => {
-		colorOrgs[org._id] = true;
-	});
-
-	return (
-		<OrgsContainer>
-			<PageTitle>Participating Organizations</PageTitle>
-			<Container>
-				<Card.Group centered itemsPerRow={ 4 }>
-					{orgs.map((org, i) => (
-						<OrgCard
-							key={ org._id }
-							org={ org }
-							index={ i }
-							overlay={ settings.colorizeOrgs && colorOrgs[org._id] ? Overlay : false }
-						/>
-					))}
-				</Card.Group>
-			</Container>
-		</OrgsContainer>
-	);
-});
 
 export default Orgs;

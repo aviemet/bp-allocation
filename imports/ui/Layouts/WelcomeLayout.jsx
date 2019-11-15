@@ -4,6 +4,18 @@ import PropTypes from 'prop-types';
 import { Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
+const WelcomeLayout = ({ children }) => {
+	return (
+		<WelcomeContainer id="welcomeContainer">
+			<Centered id="centered">
+				<Container id="container">
+					{ children }
+				</Container>
+			</Centered>
+		</WelcomeContainer>
+	);
+};
+
 const WelcomeContainer = styled.div`
 	width: 100%;
 	height: 100%;
@@ -22,23 +34,6 @@ const Centered = styled.div`
 	top: 50%;
 	transform: translateY(-50%);
 `;
-
-const PageTitle = styled.h1`
-	color: white;
-	text-align: center;
-`;
-
-const WelcomeLayout = ({ children }) => {
-	return (
-		<WelcomeContainer id="welcomeContainer">
-			<Centered id="centered">
-				<Container id="container">
-					{ children }
-				</Container>
-			</Centered>
-		</WelcomeContainer>
-	);
-};
 
 WelcomeLayout.propTypes = {
 	children: PropTypes.oneOfType([

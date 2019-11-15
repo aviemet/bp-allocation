@@ -7,23 +7,6 @@ import { Images } from '/imports/api';
 
 import { Progress, Input, Segment } from 'semantic-ui-react';
 
-const FileUploadContainer = styled(Segment)`
-  &&{
-    padding: 0;
-    margin: 0;
-
-    input{
-      margin-top: 6px;
-      margin-bottom: 6px;
-      border: none !important;
-    }
-
-    .progress .bar{
-      min-width: 2px !important;
-    }
-  }
-`;
-
 const FileUpload = props => {
 
 	const [ uploading, setUploading ]   = useState([]);
@@ -103,6 +86,23 @@ const FileUpload = props => {
 		</FileUploadContainer>
 	);
 };
+
+const FileUploadContainer = styled(Segment)`
+  &&{
+    padding: 0;
+    margin: 0;
+
+    input{
+      margin-top: 6px;
+      margin-bottom: 6px;
+      border: none !important;
+    }
+
+    .progress .bar{
+      min-width: 2px !important;
+    }
+  }
+`;
 
 FileUpload.propTypes = {
 	image: PropTypes.object,

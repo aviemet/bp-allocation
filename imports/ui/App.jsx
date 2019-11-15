@@ -6,17 +6,6 @@ import DataProvider from '/imports/stores/DataProvider';
 import Routes from './Routes';
 import { isMobileDevice } from '/imports/lib/utils';
 
-const GlobalContainer = styled.div`
-	width: 100%;
-	height: 100vh;
-
-	table {
-		&.ui.table {
-			padding: 0;
-		}
-	}
-`;
-
 const App = () => {
 	useEffect(() => {
 		if(isMobileDevice()) {
@@ -35,6 +24,17 @@ const App = () => {
 		</ThemeProvider>
 	);
 };
+
+const GlobalContainer = styled.div`
+	width: 100%;
+	height: 100vh;
+
+	table {
+		&.ui.table {
+			padding: 0;
+		}
+	}
+`;
 
 App.propTypes = {
 	match: PropTypes.object

@@ -5,16 +5,6 @@ import { Message } from 'semantic-ui-react'
 import styled from 'styled-components';
 import usePortal from '/imports/lib/usePortal';
 
-const Error = styled(Message)`
-	&& {
-		position: fixed;
-		top: 30px;
-		left: 50%;
-		transform: translateX(-50%);
-		text-align: center;
-	}
-`;
-
 const CustomMessage = ({ heading, body, onDismiss }) => {
 	const target = usePortal('message');
 
@@ -26,6 +16,16 @@ const CustomMessage = ({ heading, body, onDismiss }) => {
 		target
 	);
 };
+
+const Error = styled(Message)`
+	&& {
+		position: fixed;
+		top: 30px;
+		left: 50%;
+		transform: translateX(-50%);
+		text-align: center;
+	}
+`;
 
 CustomMessage.propTypes = {
 	heading: PropTypes.string.isRequired,

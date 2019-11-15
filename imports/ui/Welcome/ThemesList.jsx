@@ -7,13 +7,12 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Themes } from '/imports/api';
 import { ThemeMethods } from '/imports/api/methods';
 
-import { Table, Icon, Segment, Input, Dropdown, Container } from 'semantic-ui-react';
+import { Table, Icon, Segment, Dropdown, Container } from 'semantic-ui-react';
 
 import NewThemeModal from '/imports/ui/Welcome/NewThemeModal';
 import ConfirmationModal from '/imports/ui/Components/ConfirmationModal';
 import TablePagination from '/imports/ui/Components/TablePagination';
 
-// TODO: add pagination
 const ThemesList = ({ themes }) => {
 	const [ page, setPage ] = useState(0);
 	const [ itemsPerPage, setItemsPerPage ] = useState(10);

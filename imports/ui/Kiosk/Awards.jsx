@@ -11,43 +11,6 @@ import styled from 'styled-components';
 import AwardCard from '/imports/ui/Components/AwardCard';
 import OrgCard from '/imports/ui/Components/OrgCard';
 
-const AwardsPageContainer = styled.div`
-	color: #FFF;
-	position: absolute;
-	top: 2rem;
-
-	&& {
-		h1, h2 {
-			line-height: 1em;
-			color: #FFF;
-			text-transform: uppercase;
-	    letter-spacing: 1px;
-			font-family: TradeGothic;
-			text-align: center;
-		}
-		h1 {
-			font-size: 3.8em;
-			margin: 0;
-		}
-
-		h2 {
-			font-size: 2.75em;
-			margin: 2px 0 0 0;
-		}
-	}
-
-	.ui.cards .card .content {
-		padding: 5px;
-		text-align: center;
-
-		p{
-			margin: 0;
-			font-size: 1.75em;
-			text-align: center;
-		}
-	}
-`;
-
 const Awards = observer(() => {
 	const data = useData();
 	const { settings } = data;
@@ -92,5 +55,42 @@ const Awards = observer(() => {
 		</AwardsPageContainer>
 	);
 });
+
+const AwardsPageContainer = styled.div`
+	color: #FFF;
+	position: absolute;
+	top: 2rem;
+
+	&& {
+		h1, h2 {
+			line-height: 1em;
+			color: #FFF;
+			text-transform: uppercase;
+	    letter-spacing: 1px;
+			font-family: TradeGothic;
+			text-align: center;
+		}
+		h1 {
+			font-size: 3.8em;
+			margin: 0;
+		}
+
+		h2 {
+			font-size: 2.75em;
+			margin: 2px 0 0 0;
+		}
+	}
+
+	.ui.cards .card .content {
+		padding: 5px;
+		text-align: center;
+
+		p{
+			margin: 0;
+			font-size: 1.75em;
+			text-align: center;
+		}
+	}
+`;
 
 export default Awards;

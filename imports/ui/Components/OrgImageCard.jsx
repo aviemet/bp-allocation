@@ -7,33 +7,6 @@ import styled from 'styled-components';
 
 import { Images } from '/imports/api';
 
-const OrgTitle = styled.p`
-	font-family: TradeGothic;
-	font-size: 1.5em;
-	margin: 5px;
-	font-weight: 600;
-`;
-
-const OrgAsk = styled.p`
-	font-family: TradeGothic20;
-	font-size: 2.1em;
-	font-weight: 700;
-`;
-
-const CardImage = styled.div`
-	width: 100%;
-	height: 205px;
-	background-size: cover;
-	background-repeat: no-repeat;
-	background-position: center center;
-`;
-
-const CardContent = styled(Card.Content)`
-	background-color: ${props => props.bgcolor} !important;
-	color: ${props => (props.bgcolor ? '#FFF' : '#222')};
-	// color: #002B45;
-`;
-
 /**
  * OrgCard Component
  */
@@ -65,6 +38,33 @@ const OrgImageCard = props => {
 		</Card>
 	);
 };
+
+const OrgTitle = styled.p`
+	font-family: TradeGothic;
+	font-size: 1.5em;
+	margin: 5px;
+	font-weight: 600;
+`;
+
+const OrgAsk = styled.p`
+	font-family: TradeGothic20;
+	font-size: 2.1em;
+	font-weight: 700;
+`;
+
+const CardImage = styled.div`
+	width: 100%;
+	height: 205px;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+`;
+
+const CardContent = styled(Card.Content)`
+	background-color: ${props => props.bgcolor} !important;
+	color: ${props => (props.bgcolor ? '#FFF' : '#222')};
+	// color: #002B45;
+`;
 
 OrgImageCard.propTypes = {
 	image: PropTypes.object,

@@ -5,33 +5,6 @@ import MemberSearch from '/imports/ui/Components/MemberSearch';
 import { toJS } from 'mobx';
 import styled from 'styled-components';
 
-const PledgesContainer = styled.div`
-	margin-top: 15px;
-
-	h1 {
-		text-align: center;
-		font-size: 2.5rem;
-	}
-
-	& .ui.form.disabled {
-		color: #777;
-
-		.ui.input input {
-			background: #777;
-		}
-	}
-
-	& form {
-		padding: 10px;
-		margin: 10px 0;
-		border-radius: 10px;
-	}
-
-	&.focused form:not(.disabled) {
-		background: rgba(255,255,255,0.1);
-	}
-`;
-
 const Pledges = () => {
 	const { orgs, members } = useData();
 
@@ -82,5 +55,32 @@ const Pledges = () => {
 		</PledgesContainer>
 	);
 };
+
+const PledgesContainer = styled.div`
+	margin-top: 15px;
+
+	h1 {
+		text-align: center;
+		font-size: 2.5rem;
+	}
+
+	& .ui.form.disabled {
+		color: #777;
+
+		.ui.input input {
+			background: #777;
+		}
+	}
+
+	& form {
+		padding: 10px;
+		margin: 10px 0;
+		border-radius: 10px;
+	}
+
+	&.focused form:not(.disabled) {
+		background: rgba(255,255,255,0.1);
+	}
+`;
 
 export default Pledges;

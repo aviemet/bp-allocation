@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
@@ -8,44 +8,6 @@ import { useVoting } from '/imports/ui/Kiosk/VotingContext';
 import styled from 'styled-components';
 import InputRange from 'react-input-range';
 import { Input, Button, Icon } from 'semantic-ui-react';
-
-const SliderContainer = styled.div`
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	position: relative;
-
-	.input-range {
-		margin-bottom: 15px;
-	}
-`;
-
-const Amount = styled.div`
-	font-size: 4rem;
-	text-align: center;
-	line-height: 1.15;
-`;
-
-const AmountInputContainer = styled.div`
-	&& .ui.massive.input {
-		height: 64px;
-		text-align: center;
-		font-size: 2.5rem;
-
-		input {
-			padding-left: 1.25em !important;
-			padding-right: 0.5em !important;
-		}
-
-		.icon {
-			width: 1.25em;
-		}
-	}
-`;
-
-const BottomAlign = styled.div`
-	margin: 15px 5px -15px 5px;
-`;
 
 /**
  * Tactile slider for adjusting voting amount
@@ -65,8 +27,6 @@ const FundsSliderComponent = props => {
 	const [ value, setValue ] = useState(parseInt(props.votes[props.org._id]));
 	const [ showLabel, setShowLabel ] = useState(false); // Toggles showing slider percent label
 	const [ showInput, setShowInput ] = useState(false); // Toggles between text $ amount and input
-
-	const inputRef = useRef();
 
 	const MAX = props.member.theme.amount;
 
@@ -165,6 +125,44 @@ const FundsSliderComponent = props => {
 		</SliderContainer>
 	);
 };
+
+const SliderContainer = styled.div`
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	position: relative;
+
+	.input-range {
+		margin-bottom: 15px;
+	}
+`;
+
+const Amount = styled.div`
+	font-size: 4rem;
+	text-align: center;
+	line-height: 1.15;
+`;
+
+const AmountInputContainer = styled.div`
+	&& .ui.massive.input {
+		height: 64px;
+		text-align: center;
+		font-size: 2.5rem;
+
+		input {
+			padding-left: 1.25em !important;
+			padding-right: 0.5em !important;
+		}
+
+		.icon {
+			width: 1.25em;
+		}
+	}
+`;
+
+const BottomAlign = styled.div`
+	margin: 15px 5px -15px 5px;
+`;
 
 FundsSliderComponent.propTypes = {
 	member: PropTypes.object,

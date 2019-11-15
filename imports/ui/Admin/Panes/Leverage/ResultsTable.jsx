@@ -5,7 +5,6 @@ import numeral from 'numeral';
 
 import { Table, Icon } from 'semantic-ui-react';
 
-
 const ResultsTable = props => {
 	let totals = {
 		spread: 0,

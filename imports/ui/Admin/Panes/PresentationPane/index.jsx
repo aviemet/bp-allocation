@@ -22,9 +22,6 @@ import TextMembersButton from '/imports/ui/Components/TextMembersButton';
 
 import PresentationNavButton from './PresentationNavButton';
 
-const ButtonPanel = styled.div`
-`;
-
 const PresentationPane = observer(() => {
 	const { theme, settings, orgs } = useData();
 
@@ -231,5 +228,8 @@ const PresentationPane = observer(() => {
 		</ButtonPanel>
 	);
 });
+
+const ButtonPanel = styled.div`
+`;
 
 export default PresentationPane;

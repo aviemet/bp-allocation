@@ -5,38 +5,6 @@ import styled from 'styled-components';
 
 import ReactCountdownClock from 'react-countdown-clock';
 
-const TimerContainer = styled.div`
-	.react-countdown-clock {
-		position: absolute;
-		margin: 0 auto;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
-
-		& canvas:nth-child(2){
-			position: relative !important;
-		}
-	}
-`;
-
-const FinishedContainer = styled.div`
-	position: absolute;
-	margin: 0 auto;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	font-family: TradeGothic;
-	text-transform: uppercase;
-
-	h1{
-		color: #FFF;
-		font-family: TradeGothic;
-		font-size: 6em;
-		text-align: center;
-	}
-`;
-
 const Timer = ({ seconds }) => {
 
 	const [ countdown, setCountdown ] = useState(true);
@@ -68,6 +36,38 @@ const Timer = ({ seconds }) => {
 		</TimerContainer>
 	);
 };
+
+const TimerContainer = styled.div`
+	.react-countdown-clock {
+		position: absolute;
+		margin: 0 auto;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+
+		& canvas:nth-child(2){
+			position: relative !important;
+		}
+	}
+`;
+
+const FinishedContainer = styled.div`
+	position: absolute;
+	margin: 0 auto;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-family: TradeGothic;
+	text-transform: uppercase;
+
+	h1{
+		color: #FFF;
+		font-family: TradeGothic;
+		font-size: 6em;
+		text-align: center;
+	}
+`;
 
 Timer.propTypes = {
 	seconds: PropTypes.number

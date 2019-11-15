@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import numeral from 'numeral';
@@ -16,55 +16,6 @@ import FundsSlider from './FundsSlider';
 import useInterval from '/imports/ui/Components/useInterval';
 
 import { COLORS } from '/imports/lib/global';
-
-const OrgsContainer = styled(Container)`
-	padding-top: 20px;
-
-	&& .ui.centered.two.cards {
-		margin-top: 1rem;
-		margin-bottom: 1rem;
-	}
-
-	&& .ui.card {
-		margin: 0.3rem;
-
-		.content{
-			padding: 0.2em 0.5em 1.5em;
-		}
-	}
-
-	&& h1.ui.header.title {
-		color: #FFF;
-		text-align: center;
-		font-size: 3rem;
-		text-transform: uppercase;
-	}
-
-	&& h3.ui.header {
-		font-size: 1.5rem;
-		color: #FFF;
-		text-align: center;
-	}
-
-	&& p {
-		line-height: 1em;
-	}
-`;
-
-const FinalizeButton = styled(Button)`
-	width: 100%;
-	text-align: center;
-	background-color: ${COLORS.blue} !important;
-	color: white !important;
-	border: 2px solid #fff !important;
-	font-size: 2rem !important;
-	text-transform: uppercase !important;
-`;
-
-const NumberFormat = styled.span`
-	width: 12rem;
-	display: inline-block;
-`;
 
 const AmountRemaining = React.memo(({ value }) => {
 	return (
@@ -155,6 +106,55 @@ const FundsVotingKiosk = observer(props => {
 		</OrgsContainer>
 	);
 });
+
+const OrgsContainer = styled(Container)`
+	padding-top: 20px;
+
+	&& .ui.centered.two.cards {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+	}
+
+	&& .ui.card {
+		margin: 0.3rem;
+
+		.content{
+			padding: 0.2em 0.5em 1.5em;
+		}
+	}
+
+	&& h1.ui.header.title {
+		color: #FFF;
+		text-align: center;
+		font-size: 3rem;
+		text-transform: uppercase;
+	}
+
+	&& h3.ui.header {
+		font-size: 1.5rem;
+		color: #FFF;
+		text-align: center;
+	}
+
+	&& p {
+		line-height: 1em;
+	}
+`;
+
+const FinalizeButton = styled(Button)`
+	width: 100%;
+	text-align: center;
+	background-color: ${COLORS.blue} !important;
+	color: white !important;
+	border: 2px solid #fff !important;
+	font-size: 2rem !important;
+	text-transform: uppercase !important;
+`;
+
+const NumberFormat = styled.span`
+	width: 12rem;
+	display: inline-block;
+`;
 
 FundsVotingKiosk.propTypes = {
 	user: PropTypes.object,

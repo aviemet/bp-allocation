@@ -4,6 +4,20 @@ import PropTypes from 'prop-types';
 import { Image } from 'semantic-ui-react';
 import styled from 'styled-components';
 
+const Intro = props => {
+
+	return (
+		<TitlePage>
+			<MainHeading>Allocation Night</MainHeading>
+			<ThemeTitle>{props.title}</ThemeTitle>
+			<ThemeQuestion>{props.question}</ThemeQuestion>
+			<LogoContainer>
+				<Image src='/img/BPLogoBlue.svg' />
+			</LogoContainer>
+		</TitlePage>
+	);
+};
+
 const TitlePage = styled.div`
 	margin: 0 auto;
 	top: 50%;
@@ -49,20 +63,6 @@ const LogoContainer = styled.div`
 const ThemeQuestion = styled.h2`
 	margin-bottom: 1.5em;
 `;
-
-const Intro = props => {
-
-	return (
-		<TitlePage>
-			<MainHeading>Allocation Night</MainHeading>
-			<ThemeTitle>{props.title}</ThemeTitle>
-			<ThemeQuestion>{props.question}</ThemeQuestion>
-			<LogoContainer>
-				<Image src='/img/BPLogoBlue.svg' />
-			</LogoContainer>
-		</TitlePage>
-	);
-};
 
 Intro.propTypes = {
 	title: PropTypes.string,

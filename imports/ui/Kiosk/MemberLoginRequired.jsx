@@ -12,54 +12,6 @@ import { VotingContextProvider } from './VotingContext';
 
 import { COLORS } from '/imports/lib/global';
 
-const MemberLoginContainer = styled(Container)`
-	text-align: center;
-	padding-top: 6rem;
-
-	h1.title {
-		color: #FFF;
-		text-align: center;
-		font-size: 3rem;
-		text-transform: uppercase;
-	}
-
-	& h2.ui.header {
-		color: #FFF;
-	}
-
-	.ui.search .ui.icon.input {
-		width: 100%;
-	}
-`;
-
-const Centered = styled.div`
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	z-index: 1000;
-`;
-const BackgroundImage = styled.div`
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100vh;
-	opacity: 0.1;
-	z-index: 1;
-	background: url('/img/BPLogo.svg') no-repeat 50% 50%;
-	background-size: 1600px;
-`;
-
-const SubmitButton = styled(Button)`
-	width: 100%;
-	text-align: center;
-	background-color: ${COLORS.blue} !important;
-	color: white !important;
-	border: 2px solid #fff !important;
-	font-size: 2rem !important;
-	text-transform: uppercase !important;
-`;
-
 const MemberLoginRequired = observer(props => {
 	// Pull member data from Data Store
 	const data = useData();
@@ -154,6 +106,54 @@ const MemberLoginRequired = observer(props => {
 		</VotingContextProvider>
 	);
 });
+
+const MemberLoginContainer = styled(Container)`
+	text-align: center;
+	padding-top: 6rem;
+
+	h1.title {
+		color: #FFF;
+		text-align: center;
+		font-size: 3rem;
+		text-transform: uppercase;
+	}
+
+	& h2.ui.header {
+		color: #FFF;
+	}
+
+	.ui.search .ui.icon.input {
+		width: 100%;
+	}
+`;
+
+const Centered = styled.div`
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 1000;
+`;
+const BackgroundImage = styled.div`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	opacity: 0.1;
+	z-index: 1;
+	background: url('/img/BPLogo.svg') no-repeat 50% 50%;
+	background-size: 1600px;
+`;
+
+const SubmitButton = styled(Button)`
+	width: 100%;
+	text-align: center;
+	background-color: ${COLORS.blue} !important;
+	color: white !important;
+	border: 2px solid #fff !important;
+	font-size: 2rem !important;
+	text-transform: uppercase !important;
+`;
 
 MemberLoginRequired.propTypes = {
 	component: PropTypes.any

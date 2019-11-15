@@ -4,6 +4,14 @@ import styled from 'styled-components';
 
 import { Allocation } from '/imports/ui/Presentation/Pages';
 
+const Presentation = () => {
+	return (
+		<SimulationContainer>
+			<Allocation simulation={ true } />
+		</SimulationContainer>
+	);
+};
+
 const SimulationContainer = styled.div`
 	&& #graph{
 		margin-top: 6.5em;
@@ -13,13 +21,5 @@ const SimulationContainer = styled.div`
 		font-size: 1.1em;
 	}
 `;
-
-const Presentation = () => {
-	return (
-		<SimulationContainer>
-			<Allocation simulation={ true } />
-		</SimulationContainer>
-	);
-};
 
 export default Presentation;

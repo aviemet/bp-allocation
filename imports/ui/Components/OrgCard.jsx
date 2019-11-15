@@ -6,70 +6,9 @@ import _ from 'lodash';
 import { Card, Icon, Button, Modal, Responsive } from 'semantic-ui-react';
 import styled from 'styled-components';
 
+// TODO: Use styledcomponents theme
 const GREEN = '#0D8744';
 const BLUE = '#002B43';
-
-const StyledCard = styled(Card)`
-	text-align: center;
-
-	&& {
-		border: 5px solid #FFF !important;
-
-		.content {
-			padding: 1em 0.5em;
-		}
-	}
-
-	&.big {
-		height: 23rem;
-	}
-`;
-
-const OrgTitle = styled.div`
-	font-family: TradeGothic;
-	font-size: 2.5rem;
-	margin: 5px;
-	font-weight: 600;
-	min-height: 8rem;
-	position: relative;
-	padding: 0;
-
-	.small & {
-		min-height: 3.5rem;
-	}
-
-	.big & {
-		min-height: 16rem;
-		font-size: 4rem;
-	}
-
-	& > p {
-		display: block;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
-	}
-`;
-
-const OrgAsk = styled.p`
-	font-family: TradeGothic20;
-	font-size: 3rem;
-	font-weight: 700;
-`;
-
-const CardContent = styled(Card.Content)`
-	background-color: ${props => props.bgcolor} !important;
-	color: '#FFF';
-	text-align: center;
-`;
-
-const InfoLink = styled(Icon)`
-	position: absolute;
-	top: 10px;
-	right: 10px;
-`;
 
 /**
  * OrgCard Component
@@ -139,6 +78,68 @@ const OrgCard = props => {
 		</StyledCard>
 	);
 };
+
+const StyledCard = styled(Card)`
+	text-align: center;
+
+	&& {
+		border: 5px solid #FFF !important;
+
+		.content {
+			padding: 1em 0.5em;
+		}
+	}
+
+	&.big {
+		height: 23rem;
+	}
+`;
+
+const OrgTitle = styled.div`
+	font-family: TradeGothic;
+	font-size: 2.5rem;
+	margin: 5px;
+	font-weight: 600;
+	min-height: 8rem;
+	position: relative;
+	padding: 0;
+
+	.small & {
+		min-height: 3.5rem;
+	}
+
+	.big & {
+		min-height: 16rem;
+		font-size: 4rem;
+	}
+
+	& > p {
+		display: block;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+	}
+`;
+
+const OrgAsk = styled.p`
+	font-family: TradeGothic20;
+	font-size: 3rem;
+	font-weight: 700;
+`;
+
+const CardContent = styled(Card.Content)`
+	background-color: ${props => props.bgcolor} !important;
+	color: '#FFF';
+	text-align: center;
+`;
+
+const InfoLink = styled(Icon)`
+	position: absolute;
+	top: 10px;
+	right: 10px;
+`;
 
 OrgCard.propTypes = {
 	image: PropTypes.object,

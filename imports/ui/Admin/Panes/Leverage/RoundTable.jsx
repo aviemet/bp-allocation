@@ -4,7 +4,6 @@ import numeral from 'numeral';
 
 import { Table, Icon } from 'semantic-ui-react';
 
-
 const RoundTable = props => {
 
 	let totals = {

@@ -9,6 +9,30 @@ import { useData } from '/imports/stores/DataProvider';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
+const TopOrgs = observer(() => {
+	const data = useData();
+	const { settings } = data;
+	const topOrgs = data.orgs.topOrgs;
+
+	return (
+		<TopOrgsContainer>
+			<PageTitle>Top {topOrgs.length} Organizations</PageTitle>
+			<CardsContainer>
+				<Card.Group centered itemsPerRow={ Math.ceil(topOrgs.length / 2) }>
+					{topOrgs.map((org) => (
+						<OrgCard
+							key={ org._id }
+							org={ org }
+							animateClass={ settings.animateOrgs }
+							size='big'
+						/>
+					))}
+				</Card.Group>
+			</CardsContainer>
+		</TopOrgsContainer>
+	);
+});
+
 const TopOrgsContainer = styled.div`
 	padding-top: 60px;
 
@@ -42,29 +66,5 @@ const CardsContainer = styled.div`
 		color: #FFF;
 	}
 `;
-
-const TopOrgs = observer(() => {
-	const data = useData();
-	const { settings } = data;
-	const topOrgs = data.orgs.topOrgs;
-
-	return (
-		<TopOrgsContainer>
-			<PageTitle>Top {topOrgs.length} Organizations</PageTitle>
-			<CardsContainer>
-				<Card.Group centered itemsPerRow={ Math.ceil(topOrgs.length / 2) }>
-					{topOrgs.map((org) => (
-						<OrgCard
-							key={ org._id }
-							org={ org }
-							animateClass={ settings.animateOrgs }
-							size='big'
-						/>
-					))}
-				</Card.Group>
-			</CardsContainer>
-		</TopOrgsContainer>
-	);
-});
 
 export default TopOrgs;

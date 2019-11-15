@@ -4,6 +4,12 @@ import { Link } from 'react-router-dom';
 import { Button, Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
 
+const HomeButton = () => (
+	<Link to='/'>
+		<StyledHomeButton icon><Icon name='home' /></StyledHomeButton>
+	</Link>
+);
+
 const StyledHomeButton = styled(Button)`
 	&& {
 		position: absolute;
@@ -11,11 +17,5 @@ const StyledHomeButton = styled(Button)`
 		right: 2em;
 	}
 `;
-
-const HomeButton = () => (
-	<Link to='/'>
-		<StyledHomeButton icon><Icon name='home' /></StyledHomeButton>
-	</Link>
-);
 
 export default HomeButton;

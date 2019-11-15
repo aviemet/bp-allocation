@@ -10,6 +10,45 @@ import styled from 'styled-components';
 
 import { COLORS } from '/imports/lib/global';
 
+const AwardImg = ({ show }) => {
+	if(show !== true) return <React.Fragment />;
+
+	return (
+		<Award src='/img/BAT_award_logo.svg' />
+	);
+
+};
+
+AwardImg.propTypes = {
+	show: PropTypes.bool
+};
+
+const Bar = observer(props => {
+	const data = useData();
+	const { settings } = data;
+	
+	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0);
+	if(!props.savesVisible) shownFunds -= props.org.save;
+
+	let height = Math.min(Math.round((shownFunds / props.org.ask) * 100), 100);
+	let backgroundColor = height === 100 ? COLORS.green : COLORS.blue;
+
+	if(height === 0){
+		return (
+			<Grid.Column>
+				<BarContainer />
+			</Grid.Column> );
+	}
+	return (
+		<BarContainer>
+			<AwardImg show={ height === 100 } />
+			<GraphBar style={ { height: `${height}%`, backgroundColor: backgroundColor } }>
+				<Pledged>{numeral(shownFunds).format(settings.numberFormat)}</Pledged>
+			</GraphBar>
+		</BarContainer>
+	);
+});
+
 const BarContainer = styled(Grid.Column)`
 	height: 100%;
 	padding: 0;
@@ -59,45 +98,6 @@ const Award = styled.img`
 	animation: reveal-winner-logo .8s ease 4s;
 	-webkit-animation-fill-mode: forwards;
 `;
-
-const AwardImg = ({ show }) => {
-	if(show !== true) return <React.Fragment />;
-
-	return (
-		<Award src='/img/BAT_award_logo.svg' />
-	);
-
-};
-
-AwardImg.propTypes = {
-	show: PropTypes.bool
-};
-
-const Bar = observer(props => {
-	const data = useData();
-	const { settings } = data;
-	
-	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0);
-	if(!props.savesVisible) shownFunds -= props.org.save;
-
-	let height = Math.min(Math.round((shownFunds / props.org.ask) * 100), 100);
-	let backgroundColor = height === 100 ? COLORS.green : COLORS.blue;
-
-	if(height === 0){
-		return (
-			<Grid.Column>
-				<BarContainer />
-			</Grid.Column> );
-	}
-	return (
-		<BarContainer>
-			<AwardImg show={ height === 100 } />
-			<GraphBar style={ { height: `${height}%`, backgroundColor: backgroundColor } }>
-				<Pledged>{numeral(shownFunds).format(settings.numberFormat)}</Pledged>
-			</GraphBar>
-		</BarContainer>
-	);
-});
 
 Bar.propTypes = {
 	org: PropTypes.object,

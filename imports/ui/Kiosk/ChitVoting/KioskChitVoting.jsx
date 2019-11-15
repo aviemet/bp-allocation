@@ -8,6 +8,27 @@ import { useData } from '/imports/stores/DataProvider';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
+const KioskInfo = observer(() => {
+	const data = useData();
+	const orgs = data.orgs.values;
+
+	return (
+		<OrgsContainer>
+			<Container>
+				<Header as='h1' id="title">VOTE FOR YOUR FAVORITE ORGANIZATIONS</Header>
+				<Card.Group centered itemsPerRow={ 3 }>
+					{orgs.map(org => (
+						<OrgCard
+							key={ org._id }
+							org={ org }
+						/>
+					))}
+				</Card.Group>
+			</Container>
+		</OrgsContainer>
+	);
+});
+
 const OrgsContainer = styled.div`
 	padding-top: 20px;
 
@@ -33,26 +54,5 @@ const OrgsContainer = styled.div`
 		line-height: 1em;
 	}
 `;
-
-const KioskInfo = observer(() => {
-	const data = useData();
-	const orgs = data.orgs.values;
-
-	return (
-		<OrgsContainer>
-			<Container>
-				<Header as='h1' id="title">VOTE FOR YOUR FAVORITE ORGANIZATIONS</Header>
-				<Card.Group centered itemsPerRow={ 3 }>
-					{orgs.map(org => (
-						<OrgCard
-							key={ org._id }
-							org={ org }
-						/>
-					))}
-				</Card.Group>
-			</Container>
-		</OrgsContainer>
-	);
-});
 
 export default KioskInfo;

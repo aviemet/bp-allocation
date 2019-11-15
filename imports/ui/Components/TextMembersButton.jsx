@@ -6,7 +6,7 @@ import { useData } from '/imports/stores/DataProvider';
 import { Button } from 'semantic-ui-react';
 
 const TextMembersButton = ({ message, title, ...rest }) => {
-	const { theme, members, orgs } = useData();
+	const { theme, members } = useData();
 
 	const textMembers = () => {
 		members.values.forEach(member => {

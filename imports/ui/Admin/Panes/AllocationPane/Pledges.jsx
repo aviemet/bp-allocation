@@ -11,12 +11,6 @@ import { Container, Header, Table, Button } from 'semantic-ui-react';
 import styled from 'styled-components';
 import MemberSearch from '/imports/ui/Components/MemberSearch';
 
-const PledgesContainer = styled(Container)`
-	.ui.fluid.search .ui.icon.input {
-		width: 100%;
-	}
-`;
-
 const Pledges = observer(props => {
 	const data = useData();
 	const members = data.members.values;
@@ -95,6 +89,12 @@ const Pledges = observer(props => {
 		</PledgesContainer>
 	);
 });
+
+const PledgesContainer = styled(Container)`
+	.ui.fluid.search .ui.icon.input {
+		width: 100%;
+	}
+`;
 
 Pledges.propTypes = {
 	hideAdminFields: PropTypes.bool

@@ -8,20 +8,6 @@ import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { PresentationSettingsMethods } from '/imports/api/methods';
 
-const NavButton = styled(Button)`
-	width: 100%;
-	height: 120px;
-	margin-bottom: 10px !important;
-
-	.icon{
-		height: unset !important;
-	}
-
-	.label {
-		font-size: 1.2rem;
-	}
-`;
-
 const PresentationNavButton = observer(({ page, active, onClick, children, ...rest }) => {
 	const { settings } = useData();
 
@@ -49,6 +35,20 @@ const PresentationNavButton = observer(({ page, active, onClick, children, ...re
 		</NavButton>
 	);
 });
+
+const NavButton = styled(Button)`
+	width: 100%;
+	height: 120px;
+	margin-bottom: 10px !important;
+
+	.icon{
+		height: unset !important;
+	}
+
+	.label {
+		font-size: 1.2rem;
+	}
+`;
 
 PresentationNavButton.propTypes = {
 	page: PropTypes.string,

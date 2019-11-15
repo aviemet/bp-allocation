@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
@@ -11,6 +11,87 @@ import OrgInfo from '/imports/ui/Presentation/Graph/OrgInfo';
 import Bar from '/imports/ui/Presentation/Graph/Bar';
 
 import { COLORS } from '/imports/lib/utils';
+
+const Graph = observer(() => {
+	const data = useData();
+	const { theme, settings } = useData();
+	const orgs = data.orgs.values;
+	const topOrgs = data.orgs.topOrgs;
+
+	const _calcStartingLeverage = () => {
+		let leverage = theme.leverageTotal;
+
+		topOrgs.map((org) => {
+			leverage -= org.votedAmount || 0;
+			leverage -= org.topOff || 0;
+		});
+		if(theme.consolationActive) {
+			leverage -= (theme.organizations.length - orgs.length) * theme.consolationAmount;
+		}
+		return leverage;
+	};
+
+	const visibility = settings.leverageVisible ? 'visible' : 'hidden';
+	const startingLeverage = _calcStartingLeverage();
+
+	return (
+		<GraphPageContainer>
+			<GraphContainer id='graph'>
+				<XAxis>
+					<span style={ { top: '0%' } }>100%</span>
+					<span style={ { top: '50%' } }>50%</span>
+					<span style={ { top: '100%' } }>0%</span>
+				</XAxis>
+
+				<YAxis />
+
+				<Goal style={ { top: 0 } } />
+				<Goal style={ { top: '50%' } } />
+
+				<BarsContainer columns='equal'>
+					{topOrgs.map((org, i) => (
+						<Bar
+							key={ org._id }
+							org={ org }
+							theme={ theme }
+							color={ COLORS[i % COLORS.length] }
+							savesVisible={ settings.savesVisible }
+						/>
+					))}
+				</BarsContainer>
+
+			</GraphContainer>
+
+			<InfoContainer>
+				<InfoGrid columns='equal'>
+					<Grid.Row>
+						{topOrgs.map((org) => (
+							<OrgInfo
+								org={ org }
+								theme={ theme }
+								key={ org._id }
+								showLeverage={ settings.leverageVisible }
+							/>
+						))}
+					</Grid.Row>
+
+					<Grid.Row style={ { visibility: visibility } }>
+						<Grid.Column>
+							<ProgressBar
+								value={ theme.leverageRemaining }
+								total={ startingLeverage }
+								inverted
+								color='green'
+								size='large'
+							/>
+							<LeverageCount>${numeral(theme.leverageRemaining).format('0.0a')}</LeverageCount>
+						</Grid.Column>
+					</Grid.Row>
+				</InfoGrid>
+			</InfoContainer>
+		</GraphPageContainer>
+	);
+});
 
 const GraphPageContainer = styled.div`
 	overflow-y: hidden;
@@ -126,86 +207,5 @@ const LeverageCount = styled.div`
   font-size: 2em;
   padding-right: .2em;
 `;
-
-const Graph = observer(props => {
-	const data = useData();
-	const { theme, settings } = useData();
-	const orgs = data.orgs.values;
-	const topOrgs = data.orgs.topOrgs;
-
-	const _calcStartingLeverage = () => {
-		let leverage = theme.leverageTotal;
-
-		topOrgs.map((org) => {
-			leverage -= org.votedAmount || 0;
-			leverage -= org.topOff || 0;
-		});
-		if(theme.consolationActive) {
-			leverage -= (theme.organizations.length - orgs.length) * theme.consolationAmount;
-		}
-		return leverage;
-	};
-
-	const visibility = settings.leverageVisible ? 'visible' : 'hidden';
-	const startingLeverage = _calcStartingLeverage();
-
-	return (
-		<GraphPageContainer>
-			<GraphContainer id='graph'>
-				<XAxis>
-					<span style={ { top: '0%' } }>100%</span>
-					<span style={ { top: '50%' } }>50%</span>
-					<span style={ { top: '100%' } }>0%</span>
-				</XAxis>
-
-				<YAxis />
-
-				<Goal style={ { top: 0 } } />
-				<Goal style={ { top: '50%' } } />
-
-				<BarsContainer columns='equal'>
-					{topOrgs.map((org, i) => (
-						<Bar
-							key={ org._id }
-							org={ org }
-							theme={ theme }
-							color={ COLORS[i % COLORS.length] }
-							savesVisible={ settings.savesVisible }
-						/>
-					))}
-				</BarsContainer>
-
-			</GraphContainer>
-
-			<InfoContainer>
-				<InfoGrid columns='equal'>
-					<Grid.Row>
-						{topOrgs.map((org) => (
-							<OrgInfo
-								org={ org }
-								theme={ theme }
-								key={ org._id }
-								showLeverage={ settings.leverageVisible }
-							/>
-						))}
-					</Grid.Row>
-
-					<Grid.Row style={ { visibility: visibility } }>
-						<Grid.Column>
-							<ProgressBar
-								value={ theme.leverageRemaining }
-								total={ startingLeverage }
-								inverted
-								color='green'
-								size='large'
-							/>
-							<LeverageCount>${numeral(theme.leverageRemaining).format('0.0a')}</LeverageCount>
-						</Grid.Column>
-					</Grid.Row>
-				</InfoGrid>
-			</InfoContainer>
-		</GraphPageContainer>
-	);
-});
 
 export default Graph;

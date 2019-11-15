@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 
 import styled from 'styled-components';
 
+const PresentationLayout = ({ children }) => (
+	<PresentationContainer>
+		{ children }
+	</PresentationContainer>
+);
+
 const PresentationContainer = styled.div`
 	background: #000;
 	width: 100%;
@@ -20,12 +26,6 @@ const PresentationContainer = styled.div`
 		font-family: 'TradeGothic';
 	}
 `;
-
-const PresentationLayout = ({ children }) => (
-	<PresentationContainer>
-		{ children }
-	</PresentationContainer>
-);
 
 PresentationLayout.propTypes = {
 	children: PropTypes.oneOfType([

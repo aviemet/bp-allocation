@@ -12,12 +12,6 @@ import ImportOrgs from './ImportOrgs';
 import EditableText from '/imports/ui/Components/EditableText';
 import ConfirmationModal from '/imports/ui/Components/ConfirmationModal';
 
-const OrgsContainer = styled(Container)`
-	&& h1.ui.header {
-		margin-bottom: 1rem;
-	}
-`;
-
 const OrganizationsPane = observer(props => {
 	const data = useData();
 	const { theme } = data;
@@ -154,5 +148,11 @@ const OrganizationsPane = observer(props => {
 		</>
 	);
 });
+
+const OrgsContainer = styled(Container)`
+	&& h1.ui.header {
+		margin-bottom: 1rem;
+	}
+`;
 
 export default OrganizationsPane;

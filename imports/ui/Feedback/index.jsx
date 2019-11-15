@@ -13,20 +13,6 @@ import Stats from './Stats';
 import Graph from './Graph';
 import MembersList from '/imports/ui/Admin/Panes/MembersPane/MembersList';
 
-const Title = styled(Header)`
-	&& {
-		color: #FFF;
-	}
-`;
-
-const TabMenu = styled(Menu)`
-	&&& {
-		a.item{
-			color: #FFF;
-		}
-	}
-`;
-
 /**
  * Orgs:
  *   Chit voting inputs (if not using kiosk for chits)
@@ -140,7 +126,18 @@ const Feedback = observer(() => {
 	);
 });
 
-export default Feedback;
+const Title = styled(Header)`
+	&& {
+		color: #FFF;
+	}
+`;
 
-/*
-*/
+const TabMenu = styled(Menu)`
+	&&& {
+		a.item{
+			color: #FFF;
+		}
+	}
+`;
+
+export default Feedback;

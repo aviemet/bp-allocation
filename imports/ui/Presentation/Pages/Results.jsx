@@ -10,43 +10,6 @@ import styled from 'styled-components';
 
 import AwardCard from '/imports/ui/Components/AwardCard';
 
-const ResultsPageContainer = styled.div`
-	color: #FFF;
-
-	&& {
-		h1, h2 {
-			line-height: 1em;
-			color: #FFF;
-			text-transform: uppercase;
-	    letter-spacing: 1px;
-			font-family: TradeGothic;
-			text-align: center;
-		}
-		h1 {
-			font-size: 3.8em;
-			margin: 0;
-		}
-
-		h2 {
-			font-size: 2.75em;
-			margin: 2px 0 0 0;
-		}
-	}
-
-	.ui.cards .card .content {
-		padding: 5px;
-
-		p{
-			margin: 0;
-			font-size: 1.75em;
-		}
-	}
-`;
-
-const AwardsImage = styled.img`
-	width: 10%;
-`;
-
 const Results = observer(() => {
 	const data = useData();
 	const { theme, settings } = data;
@@ -125,5 +88,42 @@ const Results = observer(() => {
 		</ResultsPageContainer>
 	);
 });
+
+const ResultsPageContainer = styled.div`
+	color: #FFF;
+
+	&& {
+		h1, h2 {
+			line-height: 1em;
+			color: #FFF;
+			text-transform: uppercase;
+	    letter-spacing: 1px;
+			font-family: TradeGothic;
+			text-align: center;
+		}
+		h1 {
+			font-size: 3.8em;
+			margin: 0;
+		}
+
+		h2 {
+			font-size: 2.75em;
+			margin: 2px 0 0 0;
+		}
+	}
+
+	.ui.cards .card .content {
+		padding: 5px;
+
+		p{
+			margin: 0;
+			font-size: 1.75em;
+		}
+	}
+`;
+
+const AwardsImage = styled.img`
+	width: 10%;
+`;
 
 export default Results;

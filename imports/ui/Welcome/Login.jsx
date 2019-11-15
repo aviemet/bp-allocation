@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Button, Grid } from 'semantic-ui-react'
+import { Button, Grid } from 'semantic-ui-react';
 import CustomMessage from '../Components/CustomMessage';
 
 const Login = ({ history, location }) => {

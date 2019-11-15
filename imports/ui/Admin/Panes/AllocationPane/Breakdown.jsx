@@ -8,24 +8,6 @@ import { useData } from '/imports/stores/DataProvider';
 import { Statistic, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-const Arithmetic = styled.span`
-	font-size: 2rem;
-	display: inline-flex;
-  flex: 0 1 auto;
-  flex-direction: column;
-  font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
-  font-weight: normal;
-  line-height: 1em;
-  color: #1b1c1d;
-  text-align: center;
-`;
-
-const BreakdownContainer = styled.div`
-	& .ui.statistics .ui.statistic {
-		margin: 0em 1em 2em;
-	}
-`;
-
 const Breakdown = observer(() => {
 	const data = useData();
 	const { theme } = data;
@@ -99,6 +81,24 @@ const Breakdown = observer(() => {
 	);
 
 });
+
+const Arithmetic = styled.span`
+	font-size: 2rem;
+	display: inline-flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  line-height: 1em;
+  color: #1b1c1d;
+  text-align: center;
+`;
+
+const BreakdownContainer = styled.div`
+	& .ui.statistics .ui.statistic {
+		margin: 0em 1em 2em;
+	}
+`;
 
 Breakdown.propTypes = {};
 

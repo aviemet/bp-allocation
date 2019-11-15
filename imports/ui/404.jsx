@@ -2,11 +2,6 @@ import React from 'react';
 import { Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-const ErrorContainer = styled(Container)`
-	color: white;
-	text-align: center;
-`;
-
 const FourOhFour = () => {
 
 	return (
@@ -17,5 +12,11 @@ const FourOhFour = () => {
 		</ErrorContainer>
 	);
 };
+
+const ErrorContainer = styled(Container)`
+	color: white;
+	text-align: center;
+`;
+
 
 export default FourOhFour;
