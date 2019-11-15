@@ -28,14 +28,17 @@ const VotingContextProvider = observer(props => {
 		setVotes(newVotes);
 	};
 
-	const saveVotes = () => {
+	const saveVotes = (source) => {
 		_.forEach(votes, (amount, org) => {
-			MemberMethods.fundVote.call({
+			const voteData = {
 				theme: theme._id,
 				member: props.member._id,
 				org: org,
 				amount: amount
-			});
+			};
+			if(typeof source === 'string') voteData.voteSource = source;
+			console.log({ voteData });
+			MemberMethods.fundVote.call(voteData);
 		});
 	};
 

@@ -146,7 +146,7 @@ const FundsVotingKiosk = observer(props => {
 							size='huge'
 							disabled={ buttonDisabled }
 							onClick={ () => {
-								saveVotes();
+								saveVotes(props.source);
 								setVotingComplete(true);
 							} }>Finalize Vote</FinalizeButton>
 					</React.Fragment>
@@ -157,7 +157,8 @@ const FundsVotingKiosk = observer(props => {
 });
 
 FundsVotingKiosk.propTypes = {
-	user: PropTypes.object
+	user: PropTypes.object,
+	source: PropTypes.string
 };
 
 AmountRemaining.propTypes = {

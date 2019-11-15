@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -7,7 +7,7 @@ import { useData } from '/imports/stores/DataProvider';
 
 import { VotingContextProvider } from './VotingContext';
 
-import FundsVotingKiosk from './FundsVoting';
+import FundsVoting from './FundsVoting';
 
 const RemoteVoting = observer(props => {
 	// Pull member data from Data Store
@@ -18,7 +18,7 @@ const RemoteVoting = observer(props => {
 
 	return (
 		<VotingContextProvider member={ member || false } unsetUser={ props.onVotingComplete } >
-			<FundsVotingKiosk user={ member || false } />
+			<FundsVoting user={ member || false } source='mobile' />
 		</VotingContextProvider>
 	);
 });

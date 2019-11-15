@@ -231,7 +231,7 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({ theme, member, org, amount }) {
+		run({ theme, member, org, amount, voteSource }) {
 			// Check for existing allocation for this org from this member
 			let allocations = MemberThemes.find({ theme, member }).fetch()[0].allocations;
 			let allocation = _.find(allocations, ['organization', org]);
@@ -240,7 +240,11 @@ const MemberMethods = {
 			if(!allocation) {
 				MemberThemes.update({ theme: theme, member: member }, {
 					$push: {
-						allocations: { organization: org, amount: amount }
+						allocations: { 
+							organization: org, 
+							amount,
+							voteSource
+						}
 					}
 				});
 			// Or insert allocation vote
@@ -253,7 +257,8 @@ const MemberMethods = {
 					}
 				}, {
 					$set: {
-						'allocations.$.amount': amount
+						'allocations.$.amount': amount,
+						'allocations.$.voteSource': voteSource
 					}
 				});
 			}

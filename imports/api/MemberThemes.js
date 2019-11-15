@@ -8,6 +8,12 @@ const AllocationSchema = new SimpleSchema({
 		type: Date,
 		required: false,
 		defaultValue: new Date()
+	},
+	voteSource: {
+		type: String,
+		required: false,
+		allowedValues: ['kiosk', 'mobile'],
+		defaultValue: 'kiosk'
 	}
 });
 
