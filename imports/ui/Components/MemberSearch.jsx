@@ -18,10 +18,10 @@ const resultRenderer = ({ title, number }) => (
  * Search input for member data
  * @param {object} props Search props
  */
-const MemberSearch = ({ data, onResultSelect, ...rest }) => {
+const MemberSearch = ({ data, value, setValue, onResultSelect, ...rest }) => {
 	const [ isLoading, setIsLoading ] = useState(false);
 	const [ searchResults, setSearchResults ] = useState([]);
-	const [ selectedValue, setSelectedValue ] = useState('');
+	// const [ selectedValue, setSelectedValue ] = useState('');
 
 	// Filter source data to only display what's needed in search results
 	const source = data.map(member => {
@@ -34,7 +34,7 @@ const MemberSearch = ({ data, onResultSelect, ...rest }) => {
 	
 	// Handle select action with user defined method
 	const handleResultSelect = (e, { result }) => {
-		setSelectedValue(result.title);
+		setValue(result.title);
 		if(onResultSelect) {
 			onResultSelect(result);
 		}
@@ -43,13 +43,13 @@ const MemberSearch = ({ data, onResultSelect, ...rest }) => {
 	// Animate searching and filter results on user input change
 	const handleSearchChange = (e, { value }) => {
 		setIsLoading(true);
-		setSelectedValue(value);
+		setValue(value);
 
 		// Wait for at least 2 characters to display search results
 		if (value.trim().length < 1) {
 			setIsLoading(false);
 			setSearchResults([]);
-			setSelectedValue('');
+			setValue('');
 			return;
 		}
 
@@ -61,6 +61,7 @@ const MemberSearch = ({ data, onResultSelect, ...rest }) => {
 
 	return (
 		<Search
+			input={ { icon: 'search', iconPosition: 'left' } }
 			loading={ isLoading }
 			onResultSelect={ handleResultSelect }
 			onSearchChange={ _.debounce(handleSearchChange, 1000, {
@@ -68,7 +69,7 @@ const MemberSearch = ({ data, onResultSelect, ...rest }) => {
 			}) }
 			results={ searchResults }
 			resultRenderer={ resultRenderer }
-			value={ selectedValue }
+			value={ value }
 			fluid
 			placeholder='Member Search'
 			minCharacters={ 1 }
@@ -84,6 +85,8 @@ resultRenderer.propTypes = {
 
 MemberSearch.propTypes = {
 	data: PropTypes.array.isRequired,
+	value: PropTypes.string.isRequired,
+	setValue: PropTypes.func.isRequired,
 	onResultSelect: PropTypes.func,
 	rest: PropTypes.any,
 };

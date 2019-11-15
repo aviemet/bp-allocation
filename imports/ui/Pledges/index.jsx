@@ -1,86 +1,140 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useData } from '/imports/stores/DataProvider';
-import { Container, Form, Input, Button } from 'semantic-ui-react';
 import MemberSearch from '/imports/ui/Components/MemberSearch';
 import { toJS } from 'mobx';
+import OrgCard from '/imports/ui/Components/OrgCard';
+
+import { Container, Form, Input, Button, Card, Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const Pledges = () => {
 	const { orgs, members } = useData();
 
 	const [ selectedOrg, setSelectedOrg ] = useState(null);
+	const [ memberInputValue, setMemberInputValue ] = useState('');
+	const [ selectedMember, setSelectedMember ] = useState(null);
+	const [ pledgeAmount, setPledgeAmount ] = useState('');
+	const [ isFormValid, setIsFormValid ] = useState(false);
 
-	const handleFormFocus = org => {
-		if(selectedOrg !== org) setSelectedOrg(org);
+	// console.log({ org: selectedOrg, member: selectedMember });
+
+	useEffect(() => {
+		const isValid = selectedOrg !== null && selectedMember !== null && pledgeAmount !== '';
+		if(isFormValid !== isValid) setIsFormValid(isValid);
+	}, [selectedOrg, selectedMember, pledgeAmount]);
+
+	const clearAllValues = () => {
+		setSelectedOrg(null);
+		setMemberInputValue('');
+		setSelectedMember(null);
+		setPledgeAmount('');
 	};
 
-	const onResultSelect = result => {
-		// console.log({ result });
+	const saveTopUp = () => {
+		console.log({ selectedOrg, selectedMember, pledgeAmount, isFormValid });
+		clearAllValues();
 	};
-
-	// console.log({ selectedOrg });
 
 	return (
-		<PledgesContainer fluid textAlign='center' className={ selectedOrg !== null ? 'focused' : null }>
+		<PledgesContainer fluid textAlign='center'>
 			<h1>Topups</h1>
-			{ orgs.topOrgs.map(org => (
-				<Form 
-					onFocus={ () => handleFormFocus(org._id) } 
-					key={ org._id }
-					className={ (selectedOrg !== null && selectedOrg !== org._id) ? 'disabled' : null }
-				>
-					<h2>{ org.title }</h2>
-					<Container>
-						<Form.Group>
-							<Form.Field width={ 9 }>
-								<MemberSearch 
-									data={ toJS(members.values) }
-									onResultSelect={ onResultSelect }
-									fluid
-								/>
-							</Form.Field>
-							<Form.Field width={ 7 }>
-								<Input placeholder='Pledge $' fluid action>
-									<input />
-									<Button 
-										disabled={ selectedOrg === null || selectedOrg !== org._id }
-										color={ (selectedOrg !== null && selectedOrg !== org._id) ? null : 'green' }
-									>Pledge!</Button>
-								</Input>
-							</Form.Field>
-						</Form.Group>
-					</Container>
-				</Form>
-			) ) }
+			<Form>
+				<Container>
+					<Form.Group>
+						<Form.Field width={ 10 }>
+							<MemberSearch fluid
+								data={ toJS(members.values) }
+								value={ memberInputValue }
+								setValue={ setMemberInputValue }
+								onResultSelect={ result => setSelectedMember(result.id) }
+								size='huge'
+							/>
+						</Form.Field>
+						<Form.Field width={ 6 }>
+							<Input fluid
+								icon='dollar'
+								iconPosition='left'
+								placeholder='Pledge Amount' 
+								type='number'
+								value={ pledgeAmount || '' }
+								onChange={ e => setPledgeAmount(e.target.value) }
+								onKeyUp={ e => setPledgeAmount(e.target.value) }
+								size='huge'
+							/>
+						</Form.Field>
+					</Form.Group>
+				</Container>
+			</Form>
+
+			<Card.Group centered itemsPerRow={ 2 }>
+				{ orgs.topOrgs.map(org => (
+					<OrgCard
+						key={ org._id }
+						org={ org }
+						showAsk={ false }
+						onClick={ () => setSelectedOrg(org._id) }
+						bgcolor={ selectedOrg === org._id ? OrgCard.colors.GREEN : OrgCard.colors.BLUE }
+					/>
+				) ) }
+			</Card.Group>
+
+			<Container>
+				<FinalizeButton
+					size='huge'
+					disabled={ !isFormValid }
+					onClick={ saveTopUp }
+				>Finalize Vote</FinalizeButton>
+			</Container>
+			
+			<BottomRight>
+				<Button 
+					onClick={ clearAllValues } 
+					color='red' 
+					content='Clear'
+					icon='cancel'
+					labelPosition='right'
+				/>
+			</BottomRight>
+
 		</PledgesContainer>
 	);
 };
 
 const PledgesContainer = styled.div`
-	margin-top: 15px;
+	height: 100vh;
+	padding-top: 3rem;
 
 	h1 {
 		text-align: center;
 		font-size: 2.5rem;
+		margin-bottom: 3rem;
 	}
 
-	& .ui.form.disabled {
-		color: #777;
-
-		.ui.input input {
-			background: #777;
-		}
+	form {
+		margin-bottom: 2rem;
 	}
 
-	& form {
-		padding: 10px;
-		margin: 10px 0;
-		border-radius: 10px;
+	.ui.cards {
+		margin-bottom: 3rem;
 	}
+`;
 
-	&.focused form:not(.disabled) {
-		background: rgba(255,255,255,0.1);
-	}
+const FinalizeButton = styled(Button)`
+	width: 100%;
+	text-align: center;
+	background-color: ${OrgCard.colors.GREEN} !important;
+	color: white !important;
+	border: 2px solid #fff !important;
+	font-size: 2rem !important;
+	text-transform: uppercase !important;
+`;
+
+const BottomRight = styled.div`
+	text-align: right;
+	align-items: flex-end;
+	display: flex;
+	justify-content: flex-end;
+	height: 150px;
 `;
 
 export default Pledges;

@@ -13,30 +13,34 @@ const BLUE = '#002B43';
 /**
  * OrgCard Component
  */
-const OrgCard = props => {
-	// Add animation class if toggled
-	// let animateClass = props.animateClass ? 'animate-orgs' : '';
-
-	/*let imagePath = '';
-	if(props.image && props.image.path){
-		imagePath = Images.link(props.image, 'original', '/');
-	}*/
+const OrgCard = ({
+	org,
+	overlay,
+	content, 
+	index,
+	size,
+	showAsk,
+	animateClass,
+	info,
+	bgcolor,
+	onClick,
+	rest
+}) => {
 
 	const [ modalSize, setModalSize ] = useState('large');
 
-	const Overlay = props.overlay || false;
-	const Content = props.content || false;
+	const Overlay = overlay || false;
+	const Content = content || false;
 
-	let bgcolor = GREEN;
-	if(props.index) {
-		const row = parseInt(props.index / 4) % 4;
-		bgcolor = (props.index + (row % 2)) % 2 === 0 ? GREEN : BLUE;
+	let localBgColor = bgcolor || GREEN;
+	if(!bgcolor && index) {
+		const row = parseInt(index / 4) % 4;
+		localBgColor = (index + (row % 2)) % 2 === 0 ? GREEN : BLUE;
 	}
 
-	const cardClass = `${props.size ? props.size : ''} ${props.animateClass ? 'animate-orgs' : ''}`;
-
-	// Default to true, cast to boolean
-	const showAsk = _.isUndefined(props.showAsk) ? true : !!props.showAsk;
+	const cardClasses = [];
+	if(size) cardClasses.push(size);
+	if(animateClass) cardClasses.push('animate-orgs');
 
 	const handleOnUpdate = (e, { width }) => {
 		let size = 'large';
@@ -47,16 +51,16 @@ const OrgCard = props => {
 	};
 
 	return (
-		<StyledCard className={ cardClass }>
+		<StyledCard link={ false } className={ cardClasses.join(' ') } onClick={ onClick } >
 			{ Overlay && <Overlay /> }
 
-			<CardContent bgcolor={ bgcolor } >
+			<CardContent bgcolor={ localBgColor } >
 
-				{ props.content && <Card.Content>
+				{ content && <Card.Content>
 					<Content />
 				</Card.Content> }
 
-				{ props.info && <InfoLink>
+				{ info && <InfoLink>
 					<Responsive 
 						as={ Modal } 
 						trigger={ <Button compact circular size='mini' icon='info' /> } 
@@ -65,19 +69,21 @@ const OrgCard = props => {
 						fireOnMount
 						onUpdate={ handleOnUpdate }
 					>
-						<Modal.Header>{ props.org.title }</Modal.Header>
-						<Modal.Content scrolling>{ props.org.description && props.org.description.split(/\n/).map((part, i) => (
+						<Modal.Header>{ org.title }</Modal.Header>
+						<Modal.Content scrolling>{ org.description && org.description.split(/\n/).map((part, i) => (
 							<p key={ i }>{ part }</p>
 						) ) }</Modal.Content>
 					</Responsive>
 				</InfoLink> }
 
-				<OrgTitle><p>{ props.org.title }</p></OrgTitle>
-				{ showAsk && <OrgAsk>{ numeral(props.org.ask).format('$0a') }</OrgAsk> }
+				<OrgTitle><p>{ org.title }</p></OrgTitle>
+				{ (_.isUndefined(showAsk) ? true : !!showAsk) && <OrgAsk>{ numeral(org.ask).format('$0a') }</OrgAsk> }
 			</CardContent>
 		</StyledCard>
 	);
 };
+
+OrgCard.colors = { GREEN, BLUE };
 
 const StyledCard = styled(Card)`
 	text-align: center;
@@ -131,8 +137,12 @@ const OrgAsk = styled.p`
 
 const CardContent = styled(Card.Content)`
 	background-color: ${props => props.bgcolor} !important;
-	color: '#FFF';
+	color: #FFF;
 	text-align: center;
+
+	& a {
+		color: #FFF;
+	}
 `;
 
 const InfoLink = styled(Icon)`
@@ -142,7 +152,6 @@ const InfoLink = styled(Icon)`
 `;
 
 OrgCard.propTypes = {
-	image: PropTypes.object,
 	org: PropTypes.object,
 	overlay: PropTypes.object,
 	content: PropTypes.oneOfType([
@@ -156,7 +165,10 @@ OrgCard.propTypes = {
 	]),
 	showAsk: PropTypes.bool,
 	animateClass: PropTypes.bool,
-	info: PropTypes.bool
+	info: PropTypes.bool,
+	bgcolor: PropTypes.string,
+	onClick: PropTypes.func,
+	rest: PropTypes.any
 };
 
 export default OrgCard;
