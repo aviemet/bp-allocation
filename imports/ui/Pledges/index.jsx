@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '/imports/stores/DataProvider';
-import MemberSearch from '/imports/ui/Components/MemberSearch';
-import { toJS } from 'mobx';
-import OrgCard from '/imports/ui/Components/OrgCard';
+import { OrganizationMethods } from '/imports/api/methods';
 
-import { Container, Form, Input, Button, Card, Grid } from 'semantic-ui-react';
+import { toJS } from 'mobx';
+import { roundFloat } from '/imports/lib/utils';
+
+import { Container, Form, Input, Button, Card } from 'semantic-ui-react';
 import styled from 'styled-components';
+
+import OrgCard from '/imports/ui/Components/OrgCard';
+import MemberSearch from '/imports/ui/Components/MemberSearch';
 
 const Pledges = () => {
 	const { orgs, members } = useData();
@@ -32,12 +36,17 @@ const Pledges = () => {
 
 	const saveTopUp = () => {
 		console.log({ selectedOrg, selectedMember, pledgeAmount, isFormValid });
+		OrganizationMethods.pledge.call({
+			id: selectedOrg,
+			member: selectedMember,
+			amount: roundFloat(pledgeAmount),
+		});
 		clearAllValues();
 	};
 
 	return (
 		<PledgesContainer fluid textAlign='center'>
-			<h1>Topups</h1>
+			<h1>Top-ups</h1>
 			<Form>
 				<Container>
 					<Form.Group>
@@ -89,7 +98,6 @@ const Pledges = () => {
 			<BottomRight>
 				<Button 
 					onClick={ clearAllValues } 
-					color='red' 
 					content='Clear'
 					icon='cancel'
 					labelPosition='right'

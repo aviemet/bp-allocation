@@ -14,7 +14,8 @@ import MemberSearch from '/imports/ui/Components/MemberSearch';
 const Pledges = observer(props => {
 	const data = useData();
 	const members = data.members.values;
-	const topOrgs = data.orgs.topOrgs;
+	const pledges = data.orgs.pledges;
+	// const topOrgs = data.orgs.topOrgs;
 
 	const deletePledge = (e, data) => {
 		const pledgeId = data.pledgeid;
@@ -27,7 +28,7 @@ const Pledges = observer(props => {
 		// console.log({ result });
 	};
 
-	let pledges = [];
+	/*let pledges = [];
 	topOrgs.map(org => {
 		org.pledges.map(pledge => {
 			pledges.push(Object.assign({
@@ -38,7 +39,7 @@ const Pledges = observer(props => {
 			}, pledge));
 		});
 	});
-	pledges = _.sortBy(pledges, ['createdAt']);
+	pledges = _.sortBy(pledges, ['createdAt']);*/
 
 
 	return (

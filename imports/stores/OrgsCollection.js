@@ -4,6 +4,17 @@ import _ from 'lodash';
 
 class OrgsCollection extends TrackableCollection {
 
+	// Cache list of pre-existing pledges to prevent animating stale data
+	constructor(data, parent, Store) {
+		super(data, parent, Store);
+
+		this.values.forEach(org => {
+			org.pledges.forEach(pledge => {
+				this.parent.displayedPledges.add(pledge._id);	
+			});
+		});
+	}
+
 	// Filter the top orgs for the theme, adding computed values
 	@computed
 	get topOrgs() {
@@ -73,6 +84,23 @@ class OrgsCollection extends TrackableCollection {
 				return true;
 			}
 		});
+	}
+
+	@computed
+	get pledges() {
+		let pledges = [];
+		this.topOrgs.map(org => {
+			org.pledges.map(pledge => {
+				pledges.push(Object.assign({
+					org: {
+						_id: org._id,
+						title: org.title
+					}
+				}, pledge));
+			});
+		});
+		pledges = _.sortBy(pledges, ['createdAt']);
+		return pledges;
 	}
 }
 

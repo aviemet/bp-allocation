@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { observable, action, autorun, toJS } from 'mobx';
-import { Queue } from '/imports/lib/utils';
+// import { Queue } from '/imports/lib/utils';
 
 import { Themes, PresentationSettings, Organizations, MemberThemes, Members } from '/imports/api';
 import ThemeStore from './ThemeStore';
@@ -18,7 +18,7 @@ class DataStore {
 	@observable sidebarOpen = false;
 	defaultMenuHeading = 'Battery Powered Allocation Night Themes!';
 	@observable menuHeading = this.defaultMenuHeading;
-	@observable pledgeQueue = new Queue();
+	@observable displayedPledges = new Set();
 
 	KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds', results: 'results' };
 	votingRedirectTimeout = 60;
