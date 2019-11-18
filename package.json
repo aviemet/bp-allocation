@@ -27,6 +27,7 @@
     "history": "^4.10.1",
     "libphonenumber-js": "^1.7.26",
     "lodash": "^4.17.15",
+    "matter-js": "^0.14.2",
     "meteor-node-stubs": "^0.4.1",
     "mobx": "^5.15.0",
     "mobx-react-lite": "^1.5.0",

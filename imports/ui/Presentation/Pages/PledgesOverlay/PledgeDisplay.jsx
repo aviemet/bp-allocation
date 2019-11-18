@@ -1,9 +1,29 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-const PledgeDisplay = props => {
+import PledgeInfo from './PledgeInfo';
+import Fireworks from '/imports/lib/Fireworks';
+ 
+const PledgeDisplay = ({ pledge }) => {
+	const canvasRef = useRef();
+	let fireworks;
+	let numFireworks = 3;
+	if(pledge.amount > 10000) numFireworks++;
+	if(pledge.amount > 50000) numFireworks++;
+	if(pledge.amount > 100000) numFireworks++;
+
+	useLayoutEffect(() => {
+		fireworks = new Fireworks(canvasRef.current);
+		fireworks.fire(numFireworks, numFireworks * 500);
+	});
+
+	console.log({ pledge });
+	
 	return (
-		<h1>{ props.pledge.org.title }</h1>
+		<>
+			<PledgeInfo pledge={ pledge } />
+			<canvas ref={ canvasRef } />
+		</>
 	);
 };
 

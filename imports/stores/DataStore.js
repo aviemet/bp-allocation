@@ -18,6 +18,7 @@ class DataStore {
 	@observable sidebarOpen = false;
 	defaultMenuHeading = 'Battery Powered Allocation Night Themes!';
 	@observable menuHeading = this.defaultMenuHeading;
+	// Set of pledges not to be animated on allocation presentation page
 	@observable displayedPledges = new Set();
 
 	KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds', results: 'results' };

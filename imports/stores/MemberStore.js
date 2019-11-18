@@ -19,6 +19,12 @@ class MemberStore {
 		
 		return _.find(this.parent.memberThemes.values, value => value.theme === theme && value.member === member);
 	}
+
+	@computed
+	get formattedName() {
+		if(this.fullName) return this.fullName;
+		return `${this.firstName} ${this.lastName}`;
+	}
 }
 
 export default MemberStore;

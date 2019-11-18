@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useData } from '/imports/stores/DataProvider';
 import { observer } from 'mobx-react-lite';
-// import { toJS } from 'mobx';
 import { Queue } from '/imports/lib/utils';
 
 import PledgeDisplay from './PledgeDisplay';
@@ -42,10 +41,8 @@ const PledgesOverlay = observer(() => {
 		setDisplayPledge(null);
 		if(!pledgesToDisplay.isEmpty()) {
 			const pledge = pledgesToDisplay.dequeue();
-			console.log({ pledgesToDisplay });
-			console.log({ pledge });
 			setDisplayPledge(pledge);
-			setTimeout(animatePledges, 5000);
+			setTimeout(animatePledges, 10000);
 		} else {
 			setAnimatingPledges(false);
 		}
@@ -53,9 +50,7 @@ const PledgesOverlay = observer(() => {
 
 	return (
 		<OverlayContainer>
-			<CenteredDisplay>
-				{ displayPledge && <PledgeDisplay pledge={ displayPledge } /> }
-			</CenteredDisplay>
+			{ displayPledge && <PledgeDisplay pledge={ displayPledge } /> }
 		</OverlayContainer>
 	);
 });
@@ -66,13 +61,6 @@ const OverlayContainer = styled.div`
 	height: 0;
 	width: 100vw;
 	height: 100vh;
-`;
-
-const CenteredDisplay = styled.div`
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%,-50%);
 `;
 
 export default PledgesOverlay;
