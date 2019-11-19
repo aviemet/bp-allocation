@@ -23,6 +23,8 @@ export function isMobileDevice() {
 
 export const paginate = (collection, page, itemsPerPage) => collection.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
+// Ensures names are in the format 'First Last'
+// Breaks apart names given as 'Last, First' and returns them as 'First Last'
 export const sanitizeNames = name => {
 	const split = name.split(',');
 	const newName = [];

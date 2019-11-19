@@ -77,7 +77,7 @@ const OrganizationsPane = observer(props => {
 						<Form.Group>
 							<Form.Input
 								name='orgTitle'
-								width={ 6 }
+								width={ 8 }
 								type='text'
 								placeholder='Organization Name'
 								value={ orgTitle }
@@ -86,7 +86,7 @@ const OrganizationsPane = observer(props => {
 
 							<Form.Input
 								name='orgAsk'
-								width={ 2 }
+								width={ 4 }
 								type='text'
 								placeholder='Ask'
 								iconPosition='left'
@@ -95,7 +95,7 @@ const OrganizationsPane = observer(props => {
 								onChange={ e => setOrgAsk(e.target.value) }
 							/>
 
-							<Form.Button width={ 2 } type='submit'>Add</Form.Button>
+							<Form.Button width={ 4 } type='submit'>Add</Form.Button>
 						</Form.Group>
 
 						<Form.TextArea

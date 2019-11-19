@@ -1,16 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Papa from 'papaparse';
 import _ from 'lodash';
+import { readCsvWithHeadings } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { OrganizationMethods } from '/imports/api/methods';
 
+import CustomMessage from '/imports/ui/Components/CustomMessage';
 import { Button, Input } from 'semantic-ui-react';
 
 const ImportOrgs = observer(props => {
 
 	const { theme } = useData();
+	
+	const [ importResponseMessageVisible, setImportResponseMessageVisible ] = useState(false);
+	const [ importReponseMessage, setImportResponseMessage ] = useState('');
+	const [ loading, setLoading ] = useState(false);
+
+
+	const showImportResponseMessage = () => {
+		setImportResponseMessageVisible(true);
+
+		setTimeout(() => setImportResponseMessageVisible(false), 10000);
+	};
+
+	const hideImportResponseMessage = () => setImportResponseMessageVisible(false);
 
 	let skipped = [];
 
@@ -26,10 +41,55 @@ const ImportOrgs = observer(props => {
 			forms: ['ask', 'amount'],
 			type: value => parseInt(value.replace(/[^0-9]+/g, ''))
 		},
+		{
+			name: 'description',
+			forms: ['description', 'desc', 'about', 'details', 'info'],
+			type: String
+		}
 	];
 
 	const clickFileInput = () => document.getElementById('fileInput').click();
 
+	const importOrgs = e => {
+		const MIN_LOADING_SECONDS = 2;
+		const start = new Date();
+		setLoading(true);
+
+		const file = e.currentTarget.files[0];
+
+		// TODO: Display error message on error
+		const parser = readCsvWithHeadings(file, acceptedValues, {
+			'beforeInferHeadings': headings => {
+				// console.log({ beforeInferHeadings: headings });
+			},
+			'afterInferHeadings': headings => {
+				// console.log({ afterInferHeadings: headings });
+			},
+			'beforeRowParse': row => {
+				// console.log({ beforeRowParse: row });
+			},
+			'afterRowParse': row => {
+				// console.log({ afterRowParse: row });
+				// console.log({ afterRowParse: row });
+				OrganizationMethods.create.call(Object.assign({ theme: theme._id }, row));
+			},
+			'onComplete': data => {
+				// Display loading icon in button for a minimum amount of time
+				let timeout = 0;
+				const now = new Date();
+				if((now - start) / 1000 < MIN_LOADING_SECONDS) {
+					timeout = (MIN_LOADING_SECONDS * 1000) - (now - start);
+				}
+				setTimeout(() => {
+					setLoading(false);
+					setImportResponseMessage(`Successfully imported ${data.length} organizations`);
+					showImportResponseMessage();
+				}, timeout);
+			}
+		});
+		return parser;
+	};
+/*
 	const parseFile = e => {
 		let file = e.currentTarget.files[0];
 
@@ -76,12 +136,13 @@ const ImportOrgs = observer(props => {
 		});
 		return parser;
 	};
-
+*/
 	return (
 		<React.Fragment>
 			<Button
 				style={ { float: 'right' } }
 				onClick={ clickFileInput }
+				loading={ loading }
 			>
 			Import List as .csv
 			</Button>
@@ -91,8 +152,14 @@ const ImportOrgs = observer(props => {
 				name='fileInput'
 				accept='.csv'
 				style={ { display: 'none' } }
-				onChange={ parseFile }
+				onChange={ importOrgs }
 			/>
+			{ importResponseMessageVisible && <CustomMessage 
+				positive 
+				onDismiss={ hideImportResponseMessage }
+				heading='Import Successful'
+				body={ importReponseMessage }
+			/> }
 		</React.Fragment>
 	);
 });
