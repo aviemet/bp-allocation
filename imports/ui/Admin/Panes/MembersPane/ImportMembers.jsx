@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { readCsvWithHeadings, sanitizeNames } from '/imports/lib/utils';
 // import { parsePhoneNumberFromString } from 'libphonenumber-js';
@@ -11,6 +11,8 @@ import { Button, Input } from 'semantic-ui-react';
 const ImportMembers = props => {
 	const data = useData();
 	const { theme } = data || {};
+
+	const [ loading, setLoading ] = useState(false);
 
 	const acceptedValues = [
 		{
@@ -53,6 +55,10 @@ const ImportMembers = props => {
 	const clickFileInput = () => document.getElementById('fileInput').click();
 
 	const importMembers = e => {
+		const MIN_LOADING_SECONDS = 3;
+		const start = new Date();
+		setLoading(true);
+
 		const file = e.currentTarget.files[0];
 
 		// TODO: Display loading indicator while uploading members
@@ -75,17 +81,28 @@ const ImportMembers = props => {
 				MemberMethods.upsert.call(Object.assign({ themeId: theme._id }, row));
 			},
 			'onComplete': data => {
-				// console.log({ onComplete: data });
+				// Display loading icon in button for a minimum amount of time
+				let timeout = 0;
+				const now = new Date();
+				if((now - start) / 1000 < MIN_LOADING_SECONDS) {
+					timeout = (MIN_LOADING_SECONDS * 1000) - (now - start);
+				}
+				setTimeout(() => {
+					setLoading(false);
+				}, timeout);
 			}
 		});
 		return parser;
 	};
+
+	console.log({ loading });
 
 	return (
 		<React.Fragment>
 			<Button
 				style={ { float: 'right' } }
 				onClick={ clickFileInput }
+				loading={ loading }
 			>
 			Import List as .csv
 			</Button>
