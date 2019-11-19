@@ -7,17 +7,15 @@ import Fireworks from 'matter-fireworks';
 const PledgeDisplay = ({ pledge }) => {
 	const canvasRef = useRef();
 	let fireworks;
-	let numFireworks = 3;
+	let numFireworks = 4;
 	if(pledge.amount > 10000) numFireworks++;
 	if(pledge.amount > 50000) numFireworks++;
-	if(pledge.amount > 100000) numFireworks++;
+	if(pledge.amount > 100000) numFireworks += 2;
 
 	useLayoutEffect(() => {
 		fireworks = new Fireworks(canvasRef.current);
-		fireworks.fire(numFireworks, numFireworks * 500);
+		fireworks.fire(numFireworks, numFireworks * 750);
 	});
-
-	console.log({ pledge });
 	
 	return (
 		<>

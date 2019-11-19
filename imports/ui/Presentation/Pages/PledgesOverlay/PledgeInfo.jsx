@@ -34,32 +34,26 @@ const AnimationContainer = styled.div`
 	justify-content: center;
 
 	h1 {
-		text-shadow: 
-			-1px -2px 0px #000, 
-			3px 2px 0px #000, 
-			-3px 2px 0px #000, 
-			2px -2px 0px #000, 
-			4px 4px 4px #FFF,
-			-3px -3px 4px #FFF,
-			-4px 3px 4px #FFF,
-			3px -4px 4px #FFF;
+		-webkit-text-stroke: 3px #000;
+		text-shadow: 2px 3px 1px #99F;
+		font-weight: 700;
 
 		&.memberName {
-			font-size: 5.5rem;
+			font-size: 6.5rem;
 		}
 
 		&.orgTitle {
-			font-size: 5.5rem;
+			font-size: 6.5rem;
 		}
 
 		&.amount {
-			font-size: 7rem;
+			font-size: 8rem;
 		}
 	}
 `;
 
 const AnimationContent = styled.div`
-	opacity: 0;
+	opacity: 1;
 	animation: fade-in-scroll-up 10s;
 `;
 

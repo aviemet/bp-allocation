@@ -28,20 +28,6 @@ const Pledges = observer(props => {
 		// console.log({ result });
 	};
 
-	/*let pledges = [];
-	topOrgs.map(org => {
-		org.pledges.map(pledge => {
-			pledges.push(Object.assign({
-				org: {
-					_id: org._id,
-					title: org.title
-				}
-			}, pledge));
-		});
-	});
-	pledges = _.sortBy(pledges, ['createdAt']);*/
-
-
 	return (
 		<PledgesContainer>
 			<Header as="h2">Matched Pledges</Header>

@@ -10,7 +10,7 @@ const pledgesToDisplay = new Queue();
 
 const PledgesOverlay = observer(() => {
 	const data = useData();
-	const [ displayPledge, setDisplayPledge ] = useState();
+	const [ displayPledge, setDisplayPledge ] = useState(data.orgs.pledges[0]);
 	const [ animatingPledges, setAnimatingPledges ] = useState(false);
 
 	// Listen for changes on the pledges Set from OrgsCollection
@@ -38,7 +38,7 @@ const PledgesOverlay = observer(() => {
 	}, [ animatingPledges ]);
 
 	const animatePledges = () => {
-		setDisplayPledge(null);
+		// setDisplayPledge(null);
 		if(!pledgesToDisplay.isEmpty()) {
 			const pledge = pledgesToDisplay.dequeue();
 			setDisplayPledge(pledge);
