@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import PledgeInfo from './PledgeInfo';
-import Fireworks from '/imports/lib/Fireworks';
+import Fireworks from 'matter-fireworks';
  
 const PledgeDisplay = ({ pledge }) => {
 	const canvasRef = useRef();
