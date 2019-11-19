@@ -6,13 +6,25 @@ import { readCsvWithHeadings, sanitizeNames } from '/imports/lib/utils';
 import { useData } from '/imports/stores/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
+import CustomMessage from '/imports/ui/Components/CustomMessage';
 import { Button, Input } from 'semantic-ui-react';
 
 const ImportMembers = props => {
 	const data = useData();
 	const { theme } = data || {};
-
+	
+	const [ importResponseMessageVisible, setImportResponseMessageVisible ] = useState(false);
+	const [ importReponseMessage, setImportResponseMessage ] = useState('');
 	const [ loading, setLoading ] = useState(false);
+
+
+	const showImportResponseMessage = () => {
+		setImportResponseMessageVisible(true);
+
+		setTimeout(() => setImportResponseMessageVisible(false), 10000);
+	};
+
+	const hideImportResponseMessage = () => setImportResponseMessageVisible(false);
 
 	const acceptedValues = [
 		{
@@ -55,13 +67,13 @@ const ImportMembers = props => {
 	const clickFileInput = () => document.getElementById('fileInput').click();
 
 	const importMembers = e => {
-		const MIN_LOADING_SECONDS = 3;
+		const MIN_LOADING_SECONDS = 2;
 		const start = new Date();
 		setLoading(true);
 
 		const file = e.currentTarget.files[0];
 
-		// TODO: Display loading indicator while uploading members
+		// TODO: Display error message on error
 		const parser = readCsvWithHeadings(file, acceptedValues, {
 			'beforeInferHeadings': headings => {
 				// console.log({ beforeInferHeadings: headings });
@@ -81,6 +93,7 @@ const ImportMembers = props => {
 				MemberMethods.upsert.call(Object.assign({ themeId: theme._id }, row));
 			},
 			'onComplete': data => {
+				console.log({ data });
 				// Display loading icon in button for a minimum amount of time
 				let timeout = 0;
 				const now = new Date();
@@ -89,13 +102,13 @@ const ImportMembers = props => {
 				}
 				setTimeout(() => {
 					setLoading(false);
+					setImportResponseMessage(`Successfully imported ${data.length} members`);
+					showImportResponseMessage();
 				}, timeout);
 			}
 		});
 		return parser;
 	};
-
-	console.log({ loading });
 
 	return (
 		<React.Fragment>
@@ -114,6 +127,12 @@ const ImportMembers = props => {
 				style={ { display: 'none' } }
 				onChange={ importMembers }
 			/>
+			{ importResponseMessageVisible && <CustomMessage 
+				positive 
+				onDismiss={ hideImportResponseMessage }
+				heading='Import Successful'
+				body={ importReponseMessage }
+			/> }
 		</React.Fragment>
 	);
 };
