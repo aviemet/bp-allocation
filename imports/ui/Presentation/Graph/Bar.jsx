@@ -43,7 +43,7 @@ const Bar = observer(props => {
 		<BarContainer>
 			<AwardImg show={ height === 100 } />
 			<GraphBar style={ { height: `${height}%`, backgroundColor: backgroundColor } }>
-				<Pledged>{numeral(shownFunds).format(settings.numberFormat)}</Pledged>
+				<Pledged>{numeral(shownFunds).format('$0,0')}</Pledged>
 			</GraphBar>
 		</BarContainer>
 	);
