@@ -18,7 +18,7 @@ describe("Leverage object", function() {
 });
 
 describe("Education Theme leverage spread", function() {
-	const orgs = new OrgsCollection(Education.orgs, { theme: Education.theme, settings: Education.settings }, OrgStore);
+	const orgs = new OrgsCollection(Education.orgs, { theme: Education.theme, settings: Education.settings, displayedPledges: new Set() }, OrgStore);
 	const leverage = new Leverage(orgs.values,  639169.6);
 	const rounds = leverage.getLeverageSpreadRounds();
 
@@ -57,7 +57,7 @@ describe("Education Theme leverage spread", function() {
 });
 
 describe("Democracy Theme leverage spread", function() {
-	const orgs = new OrgsCollection(Democracy.orgs, { theme: Democracy.theme, settings: Democracy.settings }, OrgStore);
+	const orgs = new OrgsCollection(Democracy.orgs, { theme: Democracy.theme, settings: Democracy.settings, displayedPledges: new Set() }, OrgStore);
 	const leverage = new Leverage(orgs.values, 802759);
 	const rounds = leverage.getLeverageSpreadRounds();
 

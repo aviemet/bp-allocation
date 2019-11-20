@@ -92,7 +92,7 @@ const NewMemberInputs = observer(props => {
 					value={ phone || '' }
 					onChange={ e => setPhone(e.currentTarget.value) }
 				/>
-				<Button width={ 2 } type='submit'>Add Member</Button>
+				<Button width={ 2 } type='submit' style={ { whiteSpace: 'nowrap' } }>+ Member</Button>
 
 			</Form.Group>
 		</Form>

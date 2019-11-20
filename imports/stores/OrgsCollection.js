@@ -10,7 +10,7 @@ class OrgsCollection extends TrackableCollection {
 
 		this.values.forEach(org => {
 			org.pledges.forEach(pledge => {
-				this.parent.displayedPledges.add(pledge._id);	
+				this.parent.displayedPledges.add(pledge._id);
 			});
 		});
 	}

@@ -35,6 +35,17 @@ export const sanitizeNames = name => {
 	return newName.join(' ');
 };
 
+// Format phone numbers as international numbers
+// Assume any number lacking a '+' at beginning is a US number (add +1 to start)
+export const formatPhoneNumber = number => {
+	let newPhone = number.replace(/[^0-9+]/g, ''); // Reduce number down to numbers and the + symbol
+
+	if(!/^\+/.test(newPhone)) { // Doesn't start with +
+		newPhone = '+1' + newPhone.replace(/^1/, ''); // US area codes don't start with 0 or 1
+	}
+	return newPhone;
+};
+
 /**************************************
  *      Queue class for Pledges       *
  **************************************/

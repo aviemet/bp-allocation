@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import _ from 'lodash';
+import { formatPhoneNumber } from '/imports/lib/utils';
 
 import { Members, MemberThemes } from '/imports/api';
 
@@ -19,7 +20,8 @@ const memberInsert = function(data) {
 	if(!_.isUndefined(lastName)) lastName = lastName.trim();
 	if(!_.isUndefined(fullName)) fullName = fullName.trim();
 	if(!_.isUndefined(initials)) initials = initials.trim();
-	if(!_.isUndefined(phone)) phone = phone.trim();
+	if(!_.isUndefined(phone)) phone = formatPhoneNumber(phone);
+		
 
 	// Build first/last from fullName if not present
 	if(_.isUndefined(firstName) && _.isUndefined(lastName) && !_.isUndefined(fullName)) {

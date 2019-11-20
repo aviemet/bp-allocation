@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
-import _ from 'lodash';
 import { paginate } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
-import { Input, Table, Icon, Button, Dropdown } from 'semantic-ui-react';
+import { Table, Icon, Button, Dropdown } from 'semantic-ui-react';
 import TablePagination from '/imports/ui/Components/TablePagination';
 import EditableText from '/imports/ui/Components/EditableText';
 import ConfirmationModal from '/imports/ui/Components/ConfirmationModal';
@@ -56,22 +55,6 @@ const MembersList = observer(props => {
 	};
 
 	const resetMemberVotes = id => () => MemberMethods.resetVotes.call(id);
-
-	/*const memberFilter = member => {
-		if(!filterArgument) return true;
-
-		const searchParts = filterArgument.split('');
-		const checkFields = ['firstName', 'lastName', 'fullName', 'code', 'initials', 'number', 'phone'];
-		checkFields.forEach(field => {
-			searchParts.forEach(search => {
-				const matcher = new RegExp(search);
-				if(matcher.test(member[field])) {
-					console.log({ field, matcher, value: member[field], test: matcher.test(member[field]) });
-				}
-				return matcher.test(member[field]);
-			});
-		});
-	};*/
 
 	useEffect(() => {
 		if(sortColumn && sortDirection) members.sortBy(sortColumn, sortDirection);
@@ -236,13 +219,7 @@ const MembersList = observer(props => {
 				totalRecords={ members.filteredMembers.length }
 				totalPages={ parseInt(members.filteredMembers.length / itemsPerPage) + 1 }
 				onPageChange={ activePage => setPage(activePage) }
-			>
-				<Input 
-					fluid 
-					placeholder='Filter'
-					onChange={ e => members.searchFilter = e.currentTarget.value }
-				/>
-			</TablePagination>
+			/>
 			<ConfirmationModal
 				isModalOpen={ modalOpen }
 				handleClose={ () => setModalOpen(false) }
