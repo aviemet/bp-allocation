@@ -49,6 +49,7 @@ const ThemesList = ({ themes }) => {
 											<Dropdown.Menu>
 												<Dropdown.Item onClick={ () => window.open(`/kiosk/${theme._id}`) }>Launch Kiosk</Dropdown.Item>
 												<Dropdown.Item onClick={ () => window.open(`/presentation/${theme._id}`) }>Launch Presentation</Dropdown.Item>
+												<Dropdown.Item onClick={ () => window.open(`/pledges/${theme._id}`) }>Launch Top-Ups</Dropdown.Item>
 												{/* <Dropdown.Item>Live Stats</Dropdown.Item> */}
 												<Dropdown.Divider />
 												<Dropdown.Item onClick={ () => {
