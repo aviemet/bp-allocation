@@ -55,7 +55,8 @@ const Pledges = () => {
 					<Form.Group>
 						<Form.Field width={ 10 }>
 							<MemberSearch fluid
-								data={ [ ...toJS(members.values), { fullName: 'Anonymous', _id: '00' } ] }
+								data={ toJS(members.values) }
+								stickyResults={ [{ title: 'Anonymous', fullName: 'Anonymous', _id: '00' }] }
 								value={ memberInputValue }
 								setValue={ setMemberInputValue }
 								onResultSelect={ result => setSelectedMember(result.id) }
