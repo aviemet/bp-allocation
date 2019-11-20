@@ -1,27 +1,30 @@
 import TrackableCollection from './TrackableCollection';
-import { observable, computed, action } from 'mobx';
-import { MemberThemes, Members } from '/imports/api';
-import _ from 'lodash';
+import { observable, computed } from 'mobx';
 
 class MembersCollection extends TrackableCollection {
-/*	@action
-	updateMember(member) {
-		let memberClone = _.cloneDeep(member);
-		delete memberClone.theme;
-		this.refreshData(memberClone);
-	}
+	@observable searchFilter;
 
-	@action
-	updateMemberTheme(memberTheme) {
-		let i = _.findIndex(this.values, value => value._id === memberTheme.member );
-		if(i >= 0) {
-			for(let [ key, value ] of Object.entries(memberTheme)) {
-				if(this.values[i].theme[key] !== value) {
-					this.values[i].theme[key] = value;
+	@computed
+	get filteredMembers() {
+		if(!this.searchFilter) return this.values;
+
+		const searchParts = this.searchFilter.split(' ');
+		const checkFields = ['firstName', 'lastName', 'fullName', 'code', 'initials', 'number', 'phone'];
+
+		console.log({ searchParts });
+
+		return this.values.filter(member => {
+			for(let s = 0; s < searchParts.length; s++) {
+				const matcher = new RegExp(searchParts[s], 'i');
+
+				for(let f = 0; f < checkFields.length; f++) {
+					if(matcher.test(member[checkFields[f]])) {
+						return true;
+					}
 				}
 			}
-		}
-	}*/
+		});
+	}
 }
 
 export default MembersCollection;

@@ -17,11 +17,16 @@ const TablePagination = props => {
 
 	return(
 		<Grid>
-			<Grid.Column width={ 4 }>
+			<Grid.Column width={ 3 }>
 				<p>Showing { startRecord }-{ endRecord } of { props.totalRecords }</p>
 			</Grid.Column>
 
-			<Grid.Column width={ 12 } textAlign='right'>
+			<Grid.Column width={ 7 }>
+				{ props.children }
+			</Grid.Column>
+
+
+			<Grid.Column width={ 6 } textAlign='right'>
 				{ props.totalRecords / props.itemsPerPage > 1 && 
 				<Pagination
 					activePage={ page + 1 }
@@ -41,7 +46,8 @@ TablePagination.propTypes = {
 	onPageChange: PropTypes.func,
 	defaultActivePage: PropTypes.number,
 	totalRecords: PropTypes.number.isRequired,
-	itemsPerPage: PropTypes.number.isRequired
+	itemsPerPage: PropTypes.number.isRequired,
+	children: PropTypes.any
 };
 
 export default TablePagination;

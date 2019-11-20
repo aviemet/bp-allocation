@@ -44,15 +44,18 @@ const Pledges = () => {
 		clearAllValues();
 	};
 
+	console.log({ members: [ ...toJS(members.values), { fullName: 'Anonymous', _id: '00' } ] });
+
 	return (
 		<PledgesContainer fluid textAlign='center'>
 			<h1>Top-ups</h1>
+			{/* Member name and amount input fields */}
 			<Form>
 				<Container>
 					<Form.Group>
 						<Form.Field width={ 10 }>
 							<MemberSearch fluid
-								data={ toJS(members.values) }
+								data={ [ ...toJS(members.values), { fullName: 'Anonymous', _id: '00' } ] }
 								value={ memberInputValue }
 								setValue={ setMemberInputValue }
 								onResultSelect={ result => setSelectedMember(result.id) }
@@ -75,6 +78,7 @@ const Pledges = () => {
 				</Container>
 			</Form>
 
+			{/* Selectable Cards for top orgs */}
 			<Card.Group centered itemsPerRow={ 2 }>
 				{ orgs.topOrgs.map(org => (
 					<OrgCard

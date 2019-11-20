@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
+import _ from 'lodash';
 import { paginate } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
-import { Table, Icon, Button, Dropdown } from 'semantic-ui-react';
+import { Input, Table, Icon, Button, Dropdown } from 'semantic-ui-react';
 import TablePagination from '/imports/ui/Components/TablePagination';
 import EditableText from '/imports/ui/Components/EditableText';
 import ConfirmationModal from '/imports/ui/Components/ConfirmationModal';
@@ -56,9 +57,25 @@ const MembersList = observer(props => {
 
 	const resetMemberVotes = id => () => MemberMethods.resetVotes.call(id);
 
+	/*const memberFilter = member => {
+		if(!filterArgument) return true;
+
+		const searchParts = filterArgument.split('');
+		const checkFields = ['firstName', 'lastName', 'fullName', 'code', 'initials', 'number', 'phone'];
+		checkFields.forEach(field => {
+			searchParts.forEach(search => {
+				const matcher = new RegExp(search);
+				if(matcher.test(member[field])) {
+					console.log({ field, matcher, value: member[field], test: matcher.test(member[field]) });
+				}
+				return matcher.test(member[field]);
+			});
+		});
+	};*/
+
 	useEffect(() => {
 		if(sortColumn && sortDirection) members.sortBy(sortColumn, sortDirection);
-	}, [sortColumn, sortDirection, members.values.length]);
+	}, [sortColumn, sortDirection, members.filteredMembers.length]);
 
 	// Adjusts 2 row heading values for kisok voting headers
 	let votingColspan = 0;
@@ -147,12 +164,12 @@ const MembersList = observer(props => {
 					) }
 				</Table.Header>
 				<Table.Body>
-					{ members.values && paginate(members.values, page, itemsPerPage).map(member => { 
+					{ members.filteredMembers && paginate(members.filteredMembers, page, itemsPerPage).map(member => { 
 						const votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount; }, 0);
 						const fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`;
 						const phone = member.phone ? member.phone : '';
 
-						return(
+						return (
 							<Table.Row key={ member._id }>
 
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'initials') }>{ member.initials ? member.initials : '' }</EditableText>
@@ -216,10 +233,16 @@ const MembersList = observer(props => {
 			</Table>
 			<TablePagination
 				itemsPerPage={ itemsPerPage }
-				totalRecords={ members.values.length }
-				totalPages={ parseInt(members.values.length / itemsPerPage) + 1 }
+				totalRecords={ members.filteredMembers.length }
+				totalPages={ parseInt(members.filteredMembers.length / itemsPerPage) + 1 }
 				onPageChange={ activePage => setPage(activePage) }
-			/>
+			>
+				<Input 
+					fluid 
+					placeholder='Filter'
+					onChange={ e => members.searchFilter = e.currentTarget.value }
+				/>
+			</TablePagination>
 			<ConfirmationModal
 				isModalOpen={ modalOpen }
 				handleClose={ () => setModalOpen(false) }
