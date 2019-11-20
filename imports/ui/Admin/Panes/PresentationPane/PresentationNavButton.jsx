@@ -24,6 +24,7 @@ const PresentationNavButton = observer(({ page, active, onClick, children, ...re
 	const doOnClick = (e, data) => {
 		changeCurrentPage(e, data);
 		if(onClick) onClick();
+		e.currentTarget.blur();
 	};
 
 	// Highlight the active page button
