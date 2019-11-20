@@ -38,29 +38,32 @@ const Pledges = observer(props => {
 				</Table.Header>
 
 				<Table.Body>
-					{pledges.map(pledge => (
-						<Table.Row key={ pledge._id }>
-							<Table.Cell singleLine>{pledge.org.title}</Table.Cell>
-							<Table.Cell>
-								{ pledge.member ? 
-									_.find(members, ['_id', pledge.member]).formattedName : 
-									'' 
-								}
-							</Table.Cell>
-							<Table.Cell>{numeral(pledge.amount).format('$0,0')}</Table.Cell>
-							<Table.Cell>
-								{!props.hideAdminFields &&
-								<Button
-									color='red'
-									icon='trash'
-									onClick={ deletePledge }
-									pledgeid={ pledge._id }
-									orgid={ pledge.org._id }
-								/>
-								}
-							</Table.Cell>
-						</Table.Row>
-					))}
+					{pledges.map(pledge => {
+						let member = pledge.member ? _.find(members, ['_id', pledge.member]) : '';
+						return (
+							<Table.Row key={ pledge._id }>
+								<Table.Cell singleLine>{pledge.org.title}</Table.Cell>
+								<Table.Cell>
+									{ member && member.hasOwnProperty('formattedName') ? 
+										member.formattedName :
+										''
+									}
+								</Table.Cell>
+								<Table.Cell>{numeral(pledge.amount).format('$0,0')}</Table.Cell>
+								<Table.Cell>
+									{!props.hideAdminFields &&
+									<Button
+										color='red'
+										icon='trash'
+										onClick={ deletePledge }
+										pledgeid={ pledge._id }
+										orgid={ pledge.org._id }
+									/>
+									}
+								</Table.Cell>
+							</Table.Row>
+						);
+					})}
 				</Table.Body>
 			</Table>
 		</PledgesContainer>
