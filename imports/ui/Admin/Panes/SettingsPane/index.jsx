@@ -3,6 +3,8 @@ import _ from 'lodash';
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
+
+import CustomMessage from '/imports/ui/Components/CustomMessage';
 import { Loader, Form, Checkbox, Label } from 'semantic-ui-react';
 
 const SettingsPane = observer(props => {
@@ -23,6 +25,19 @@ const SettingsPane = observer(props => {
 	const [ awardsPresentation, setAwardsPresentation ] = useState(settings.awardsPresentation || false);
 	const [ awardAmount, setAwardAmount ]               = useState(settings.awardAmount || 0);
 	
+	const [ formErrorVisible, setFormErrorVisible ] = useState(false);
+	const [ formErrorMessage, setFormErrorMessage ] = useState('');
+
+	const showFormErrorMessage = () => {
+		setFormErrorVisible(true);
+		setTimeout(hideFormErrorMessage, 10000);
+	};
+
+	const hideFormErrorMessage = () => {
+		setFormErrorVisible(false);
+		setFormErrorMessage('');
+	};
+
 	const handleSubmit = e => {
 		e.preventDefault();
 
@@ -48,6 +63,15 @@ const SettingsPane = observer(props => {
 			ThemeMethods.update.call({
 				id: theme._id,
 				data: formData.theme
+			}, (err, res) => {
+				if(err) {
+					setFormErrorMessage(err.reason.errmsg);
+					showFormErrorMessage();
+					Object.keys(formData.theme).forEach(key => {
+						const val = key.charAt(0).toUpperCase() + key.slice(1);
+						eval(`set${val}('${theme[key]}')`);
+					});
+				}
 			});
 		}
 
@@ -61,170 +85,178 @@ const SettingsPane = observer(props => {
 
 	if(!theme) return(<Loader/>);
 	return (
-		<Form onBlur={ handleSubmit } onSubmit={ handleSubmit }>
+		<>
+			<Form onBlur={ handleSubmit } onSubmit={ handleSubmit }>
 
-			<Form.Group>
+				<Form.Group>
 
-				{/* Title */}
-				<Form.Field>
+					{/* Title */}
+					<Form.Field>
+						<Form.Input 
+							name='theme.title' 
+							type='text' 
+							placeholder='Title' 
+							label='Theme Title' 
+							value={ title || '' } 
+							onChange={ e => setTitle(e.target.value) }  
+						/>
+					</Form.Field>
+
+					{/* Question */}
+					<Form.Field>
+						<Form.Input 
+							name='theme.question' 
+							type='text' 
+							placeholder='Question' 
+							label='Theme Question' 
+							value={ question || '' } 
+							onChange={ e => setQuestion(e.target.value) } 
+						/>
+					</Form.Field>
+
+					{/* Slug */}
+					<Form.Field>
+						<Form.Input 
+							name='theme.slug' 
+							type='text' 
+							placeholder='Slug' 
+							label='Theme Slug' 
+							value={ slug || '' } 
+							onChange={ e => setSlug(e.target.value) } 
+						/>
+					</Form.Field>
+
+				</Form.Group>
+
+				{/* Total Leverage Amount */}
+				<Form.Group>
 					<Form.Input 
-						name='theme.title' 
-						type='text' 
-						placeholder='Title' 
-						label='Theme Title' 
-						value={ title || '' } 
-						onChange={ e => setTitle(e.target.value) }  
+						name='theme.leverageTotal' 
+						icon='dollar sign' 
+						iconPosition='left' 
+						label='Total Pot' 
+						placeholder='Total Pot' 
+						value={ leverageTotal || 0 } 
+						onChange={ e => setLeverageTotal(e.target.value) } 
 					/>
-				</Form.Field>
+				</Form.Group>
 
-				{/* Question */}
-				<Form.Field>
+				<Form.Group>
+					{/* Timer Length */}
 					<Form.Input 
-						name='theme.question' 
-						type='text' 
-						placeholder='Question' 
-						label='Theme Question' 
-						value={ question || '' } 
-						onChange={ e => setQuestion(e.target.value) } 
+						name='presentationSettings.timerLength' 
+						type='number' 
+						placeholder='Timer Length' 
+						label='Length of Timers' 
+						value={ timerLength || 0 } 
+						onChange={ e => setTimerLength(e.target.value) } 
 					/>
-				</Form.Field>
 
-				{/* Slug */}
-				<Form.Field>
+					{/* Chit Weight */}
 					<Form.Input 
-						name='theme.slug' 
-						type='text' 
-						placeholder='Slug' 
-						label='Theme Slug' 
-						value={ slug || '' } 
-						onChange={ e => setSlug(e.target.value) } 
+						name='theme.chitWeight' 
+						type='number' 
+						placeholder='Chit Weight' 
+						label='Chit weight in ounces' 
+						value={ chitWeight || 0 } 
+						onChange={ e => setChitWeight(e.target.value) } 
 					/>
-				</Form.Field>
 
-			</Form.Group>
-
-			{/* Total Leverage Amount */}
-			<Form.Group>
-				<Form.Input 
-					name='theme.leverageTotal' 
-					icon='dollar sign' 
-					iconPosition='left' 
-					label='Total Pot' 
-					placeholder='Total Pot' 
-					value={ leverageTotal || 0 } 
-					onChange={ e => setLeverageTotal(e.target.value) } 
-				/>
-			</Form.Group>
-
-			<Form.Group>
-				{/* Timer Length */}
-				<Form.Input 
-					name='presentationSettings.timerLength' 
-					type='number' 
-					placeholder='Timer Length' 
-					label='Length of Timers' 
-					value={ timerLength || 0 } 
-					onChange={ e => setTimerLength(e.target.value) } 
-				/>
-
-				{/* Chit Weight */}
-				<Form.Input 
-					name='theme.chitWeight' 
-					type='number' 
-					placeholder='Chit Weight' 
-					label='Chit weight in ounces' 
-					value={ chitWeight || 0 } 
-					onChange={ e => setChitWeight(e.target.value) } 
-				/>
-
-				{/* Match Ratio */}
-				<Form.Input 
-					name='theme.matchRatio' 
-					type='number' 
-					placeholder='Match Ratio' 
-					label='Multiplier for matched funds' 
-					value={ matchRatio || 0 } 
-					onChange={ e => setMatchRatio(e.target.value) } 
-				/>
-
-			</Form.Group>
-
-			<Form.Group>
-				{/* Use Chit Votes Kiosk Toggle */}
-				<Form.Field>
-					<label>Chit Votes Entered Via:</label>
-					<Label>Manual</Label>
-					<Checkbox 
-						slider 
-						name='settings.useKioskChitVoting' 
-						style={ { 'verticalAlign': 'middle' } } 
-						checked={ !!useKioskChitVoting } 
-						onChange={ (e, value) => setKioskChitVoting(value.checked) } 
+					{/* Match Ratio */}
+					<Form.Input 
+						name='theme.matchRatio' 
+						type='number' 
+						placeholder='Match Ratio' 
+						label='Multiplier for matched funds' 
+						value={ matchRatio || 0 } 
+						onChange={ e => setMatchRatio(e.target.value) } 
 					/>
-					<Label>Kiosk</Label>
-				</Form.Field>
 
-				{/* Use Kiosk Votes Kiosk Toggle */}
-				<Form.Field>
-					<label>Funds Voting Entered Via:</label>
-					<Label>Manual</Label>
-					<Checkbox 
-						slider 
-						name='settings.useKioskFundsVoting' 
-						style={ { 'verticalAlign': 'middle' } } 
-						checked={ !!useKioskFundsVoting } 
-						onChange={ (e, value) => setKioskFundsVoting(value.checked) } 
+				</Form.Group>
+
+				<Form.Group>
+					{/* Use Chit Votes Kiosk Toggle */}
+					<Form.Field>
+						<label>Chit Votes Entered Via:</label>
+						<Label>Manual</Label>
+						<Checkbox 
+							slider 
+							name='settings.useKioskChitVoting' 
+							style={ { 'verticalAlign': 'middle' } } 
+							checked={ !!useKioskChitVoting } 
+							onChange={ (e, value) => setKioskChitVoting(value.checked) } 
+						/>
+						<Label>Kiosk</Label>
+					</Form.Field>
+
+					{/* Use Kiosk Votes Kiosk Toggle */}
+					<Form.Field>
+						<label>Funds Voting Entered Via:</label>
+						<Label>Manual</Label>
+						<Checkbox 
+							slider 
+							name='settings.useKioskFundsVoting' 
+							style={ { 'verticalAlign': 'middle' } } 
+							checked={ !!useKioskFundsVoting } 
+							onChange={ (e, value) => setKioskFundsVoting(value.checked) } 
+						/>
+						<Label>Kiosk</Label>
+					</Form.Field>
+				</Form.Group>
+
+				<Form.Group>
+					{/* Consolation Amount */}
+					<Form.Input 
+						name='theme.consolationAmount' 
+						type='number' 
+						placeholder='Consolation' 
+						label='Amount for bottom orgs' 
+						value={ consolationAmount || 0 } 
+						onChange={ e => setConsolationAmount(e.target.value) } 
 					/>
-					<Label>Kiosk</Label>
-				</Form.Field>
-			</Form.Group>
 
-			<Form.Group>
-				{/* Consolation Amount */}
-				<Form.Input 
-					name='theme.consolationAmount' 
-					type='number' 
-					placeholder='Consolation' 
-					label='Amount for bottom orgs' 
-					value={ consolationAmount || 0 } 
-					onChange={ e => setConsolationAmount(e.target.value) } 
-				/>
-
-				{/* Consolation Active */}
-				<Form.Checkbox 
-					toggle 
-					name='theme.consolationActive' 
-					label='Use Consolation?' 
-					checked={ !!consolationActive } 
-					onChange={ (e, value) => setConsolationActive(value.checked) } 
-				/>
-			</Form.Group>
-
-			<Form.Group>
-				{/* Presentation Type */}
-				<Form.Field>
-					<label>Change Presentation Type to Awards Style</label>
-					<Label>Full Presentation</Label>
-					<Checkbox
-						slider 
-						name='settings.presentationType'
-						checked={ !!awardsPresentation }
-						onChange={ (e, value) => setAwardsPresentation(value.checked) }
+					{/* Consolation Active */}
+					<Form.Checkbox 
+						toggle 
+						name='theme.consolationActive' 
+						label='Use Consolation?' 
+						checked={ !!consolationActive } 
+						onChange={ (e, value) => setConsolationActive(value.checked) } 
 					/>
-					<Label>Awards</Label>
-				</Form.Field>
+				</Form.Group>
 
-				{ awardsPresentation && <Form.Input 
-					name='settings.awardAmount' 
-					type='number' 
-					placeholder='Award Amount' 
-					label='Amount being awarded' 
-					value={ awardAmount || 0 } 
-					onChange={ e => setAwardAmount(e.target.value) } 
-				/> }
+				<Form.Group>
+					{/* Presentation Type */}
+					<Form.Field>
+						<label>Change Presentation Type to Awards Style</label>
+						<Label>Full Presentation</Label>
+						<Checkbox
+							slider 
+							name='settings.presentationType'
+							checked={ !!awardsPresentation }
+							onChange={ (e, value) => setAwardsPresentation(value.checked) }
+						/>
+						<Label>Awards</Label>
+					</Form.Field>
 
-			</Form.Group>
-		</Form>
+					{ awardsPresentation && <Form.Input 
+						name='settings.awardAmount' 
+						type='number' 
+						placeholder='Award Amount' 
+						label='Amount being awarded' 
+						value={ awardAmount || 0 } 
+						onChange={ e => setAwardAmount(e.target.value) } 
+					/> }
+
+				</Form.Group>
+			</Form>
+			{ formErrorVisible && <CustomMessage 
+				negative 
+				onDismiss={ hideFormErrorMessage }
+				heading='There was an error saving values'
+				body={ formErrorMessage }
+			/> }
+		</>
 	);
 });
 

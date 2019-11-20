@@ -17,7 +17,6 @@ const ImportMembers = props => {
 	const [ importReponseMessage, setImportResponseMessage ] = useState('');
 	const [ loading, setLoading ] = useState(false);
 
-
 	const showImportResponseMessage = () => {
 		setImportResponseMessageVisible(true);
 

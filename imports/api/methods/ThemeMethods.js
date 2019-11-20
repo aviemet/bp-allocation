@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
 import moment from 'moment';
@@ -59,7 +60,11 @@ const ThemeMethods = {
 		validate: null,
 
 		run({ id, data }) {
-			return Themes.update({ _id: id }, { $set: data });
+			try {
+				return Themes.update({ _id: id }, { $set: data });
+			} catch(exception) {
+				throw new Meteor.Error('500', exception);
+			}
 		}
 	}),
 

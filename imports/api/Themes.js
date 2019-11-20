@@ -92,7 +92,9 @@ const ThemeSchema = new SimpleSchema({
 	},
 	slug: {
 		type: String,
-		required: false
+		required: false,
+		index: true,
+		unique: true
 	}
 });
 

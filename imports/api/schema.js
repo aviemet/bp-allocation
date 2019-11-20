@@ -1,5 +1,5 @@
-import { ThemesSchema } from '/imports/api/Themes';
+import { ThemeSchema } from '/imports/api/Themes';
 import { PresentationSettingsSchema } from '/imports/api/PresentationSettings';
 import { OrganizationsSchema } from '/imports/api/Organizations';
 
-export { ThemesSchema, PresentationSettingsSchema, OrganizationsSchema };
+export { ThemeSchema, PresentationSettingsSchema, OrganizationsSchema };
