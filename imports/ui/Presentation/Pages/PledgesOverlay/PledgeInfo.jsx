@@ -53,7 +53,7 @@ const AnimationContainer = styled.div`
 `;
 
 const AnimationContent = styled.div`
-	opacity: 1;
+	opacity: 0;
 	animation: fade-in-scroll-up 10s;
 `;
 
