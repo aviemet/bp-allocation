@@ -78,7 +78,7 @@ const AllocationInputs = observer(props => {
 			</Table.Cell>
 
 			{/* Matched Pledges Input */}
-			<Table.Cell>
+			{/* <Table.Cell>
 				{props.hideAdminFields ?
 					numeral(props.org.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0)).format('$0,0')
 					:
@@ -92,7 +92,7 @@ const AllocationInputs = observer(props => {
 						/>
 					</Form>
 				}
-			</Table.Cell>
+			</Table.Cell> */}
 
 			{/* Funded */}
 			<Table.Cell className={ reachedGoal ? 'bold' : '' }>

@@ -9,13 +9,11 @@ import { OrganizationMethods } from '/imports/api/methods';
 
 import { Container, Header, Table, Button } from 'semantic-ui-react';
 import styled from 'styled-components';
-import MemberSearch from '/imports/ui/Components/MemberSearch';
 
 const Pledges = observer(props => {
 	const data = useData();
 	const members = data.members.values;
 	const pledges = data.orgs.pledges;
-	// const topOrgs = data.orgs.topOrgs;
 
 	const deletePledge = (e, data) => {
 		const pledgeId = data.pledgeid;
@@ -24,13 +22,9 @@ const Pledges = observer(props => {
 		OrganizationMethods.removePledge.call({ orgId, pledgeId });
 	};
 
-	const onResultSelect = result => {
-		// console.log({ result });
-	};
-
 	return (
 		<PledgesContainer>
-			<Header as="h2">Matched Pledges</Header>
+			<Header as="h2">Matched Pledges (x{ data.theme.matchRatio })</Header>
 			<Table striped>
 				<Table.Header>
 					<Table.Row>
@@ -48,13 +42,9 @@ const Pledges = observer(props => {
 						<Table.Row key={ pledge._id }>
 							<Table.Cell singleLine>{pledge.org.title}</Table.Cell>
 							<Table.Cell>
-								{props.hideAdminFields ?
-									pledge.member ? `${members[pledge.member].firstName} ${members[pledge.member].lastName}` : ''
-									:
-									<MemberSearch
-										data={ members }
-										onResultSelect={ onResultSelect }
-									/>
+								{ pledge.member ? 
+									_.find(members, ['_id', pledge.member]).formattedName : 
+									'' 
 								}
 							</Table.Cell>
 							<Table.Cell>{numeral(pledge.amount).format('$0,0')}</Table.Cell>

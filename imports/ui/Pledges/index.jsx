@@ -108,7 +108,7 @@ const Pledges = () => {
 	);
 };
 
-const PledgesContainer = styled.div`
+const PledgesContainer = styled(Container)`
 	height: 100vh;
 	padding-top: 3rem;
 
