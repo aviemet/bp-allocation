@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { ServiceConfiguration } from 'meteor/service-configuration';
 import _ from 'lodash';
+import { formatPhoneNumber } from '/imports/lib/utils';
 
 import {
 	Themes,
@@ -118,7 +119,7 @@ Meteor.methods({
 		// console.log({ number, message });
 		const text = client.messages.create({
 			body: message,
-			to: `+1${number}`,
+			to: formatPhoneNumber(number),
 			messagingServiceSid: Meteor.settings.twilio.copilotSid
 		}).then(message => console.log(message));
 		// console.log({ text });

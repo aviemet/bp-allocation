@@ -7,11 +7,6 @@ export const roundFloat = (value, decimal) => {
 	return parseFloat(parseFloat(value).toFixed(decimal));
 };
 
-/*export const getSaveAmount = (saves, org_id) => {
-	let save = saves.find( save => save.org === org_id);
-	return save ? save.amount : 0;
-};*/
-
 export const numberFormats = {
 	dollar: '$0,0[a]',
 	percent: '0.0%'
@@ -40,10 +35,17 @@ export const sanitizeNames = name => {
 export const formatPhoneNumber = number => {
 	let newPhone = number.replace(/[^0-9+]/g, ''); // Reduce number down to numbers and the + symbol
 
-	if(!/^\+/.test(newPhone)) { // Doesn't start with +
+	if(!_.isEmpty(newPhone) && !/^\+/.test(newPhone)) { // Doesn't start with +
 		newPhone = '+1' + newPhone.replace(/^1/, ''); // US area codes don't start with 0 or 1
 	}
 	return newPhone;
+};
+
+export const sanitizeString = str => {
+	if(typeof str === 'string') {
+		return str.trim();
+	}
+	return str;
 };
 
 /**************************************

@@ -22,8 +22,10 @@ describe("Name sanitizer", () => {
 
 describe("Phone formatter", () => {
 	it("Should strip all non-numeric or + characters", () => {
-		const phone = '(808) 430-3275';
-		expect(formatPhoneNumber(phone)).to.equal('+18084303275');
+		const phone1 = '(808) 430-3275';
+		const phone2 = '415.230.8099';
+		expect(formatPhoneNumber(phone1)).to.equal('+18084303275');
+		expect(formatPhoneNumber(phone2)).to.equal('+14152308099');
 	});
 
 	it("Should add +1 to numbers without an international code", () => {
@@ -32,9 +34,16 @@ describe("Phone formatter", () => {
 		expect(formatPhoneNumber('1'+phone)).to.equal('+14152308099');
 	});
 
-	it("Should not edit international (non-US) numbers", () => {
-		const phone = '+31655734926';
-		expect(formatPhoneNumber(phone)).to.equal('+31655734926');
+	it("Should not edit numbers in international format", () => {
+		const phone1 = '+31655734926';
+		const phone2 = '+14152308099';
+		expect(formatPhoneNumber(phone1)).to.equal(phone1);
+		expect(formatPhoneNumber(phone2)).to.equal(phone2);
 	});
+
+	it("Shouldn't format empty strings", () => {
+		const empty = '';
+		expect(formatPhoneNumber(empty)).to.equal('');
+	})
 
 });

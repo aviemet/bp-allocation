@@ -107,7 +107,6 @@ const OrganizationMethods = {
 		validate: null,
 
 		run({ id, amount, member }) {
-			console.log({ org: id, amount, member });
 			amount = roundFloat(amount);
 
 			const saveData = { amount };
