@@ -17,8 +17,7 @@ const Overlay = () => (
 const Orgs = observer(() => {
 	const data = useData();
 	const { settings } = data;
-	const orgs = data.orgs.values;
-	const topOrgs = data.orgs.topOrgs;
+	const { values: orgs, topOrgs } = data.orgs;
 
 	let colorOrgs = {};
 	topOrgs.map((org, i) => {
@@ -30,14 +29,15 @@ const Orgs = observer(() => {
 			<PageTitle>Participating Organizations</PageTitle>
 			<Container>
 				<Card.Group centered itemsPerRow={ 4 }>
-					{orgs.map((org, i) => (
+					{ orgs.map((org, i) => (
 						<OrgCard
 							key={ org._id }
 							org={ org }
 							index={ i }
+							size='big'
 							overlay={ settings.colorizeOrgs && colorOrgs[org._id] ? Overlay : false }
 						/>
-					))}
+					)) }
 				</Card.Group>
 			</Container>
 		</OrgsContainer>
@@ -48,13 +48,8 @@ const OrgsContainer = styled.div`
 	padding-top: 20px;
 
 	&& .ui.card {
-		.orgsImage{
-			height: 200px;
-		}
 
 		.content{
-			/*padding-bottom: 0.2em;*/
-
 			&.white{
 				color: #FFF;
 			}

@@ -1,11 +1,12 @@
+/* eslint-disable react/display-name */
 import React, { useState } from 'react';
-
+import numeral from 'numeral';
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 
 import { OrganizationMethods } from '/imports/api/methods';
 
-import { Header, Grid, Form, Container, Table, Button } from 'semantic-ui-react';
+import { Header, Grid, Form, Container, Table, Button, Popup, Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import ImportOrgs from './ImportOrgs';
@@ -25,6 +26,8 @@ const OrganizationsPane = observer(props => {
 	const [ modalHeader, setModalHeader ] = useState('');
 	const [ modalContent, setModalContent ] = useState('');
 	const [ modalAction, setModalAction ] = useState();
+
+	const MAX_ORG_CHARACTERS = 50;
 
 	const handleNewOrgSubmit = (e) => {
 		e.preventDefault();
@@ -119,21 +122,50 @@ const OrganizationsPane = observer(props => {
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{ orgs.map((org, i) => (
-							<Table.Row key={ i }>
-								<EditableText as={ Table.Cell } onSubmit={ updateOrg(org._id, 'title') }>{ org.title ? org.title : '' }</EditableText>
-								<EditableText as={ Table.Cell } onSubmit={ updateOrg(org._id, 'ask') }>{ org.ask ? org.ask : '' }</EditableText>
-								<EditableText as={ Table.Cell } onSubmit={ updateOrg(org._id, 'description') } type='textarea'>{ org.description ? org.description : '' }</EditableText>
-								<Table.Cell>
-									<Button icon='trash' onClick={ () => {
-										setModalHeader('Permanently Delete This Organization?');
-										setModalContent(`This will permanently remove ${org.title} from this theme and all associated data. This process cannot be undone.`);
-										setModalAction( () => removeOrg(org._id) );
-										setModalOpen(true);
-									} } />
-								</Table.Cell>
-							</Table.Row>
-						) ) }
+						{ orgs.map((org, i) => {
+							const titleLength = {
+								warning: {
+									test: org.title.length >= MAX_ORG_CHARACTERS - 5 && org.title.length < MAX_ORG_CHARACTERS,
+									message: () => <><p>This organization title is a little long at <b><em>{org.title.length}</em></b> characters. It may not appear correctly in the presentation. </p><p> Please reduce it to under 50 characters.</p></>
+								},
+								error: {
+									test: org.title.length >= MAX_ORG_CHARACTERS,
+									message: () => <><p>This organization title is too long at <b><em>{org.title.length}</em></b> characters. It most likely won&apos;t appear correctly in the presentation.</p><p> Please reduce it to under 50 characters.</p></>
+								}
+							};
+							return (
+								<Table.Row 
+									key={ i }
+									warning={ titleLength.warning.test }
+									error={ titleLength.error.test }
+								>
+									<Table.Cell>
+										{ titleLength.warning.test && <Popup content={ titleLength.warning.message } trigger={ <Icon name='info' float='left' /> } /> }
+										{ titleLength.error.test && <Popup content={ titleLength.error.message } trigger={ <Icon name='info' float='left' /> } /> }
+										<EditableText onSubmit={ updateOrg(org._id, 'title') }>
+											{ org.title ? org.title : '' }
+										</EditableText>
+									</Table.Cell>
+
+									<EditableText as={ Table.Cell } onSubmit={ updateOrg(org._id, 'ask') } format={ value => numeral(value).format('$0,0') }>
+										{ org.ask ? org.ask : '' }
+									</EditableText>
+
+									<EditableText as={ Table.Cell } onSubmit={ updateOrg(org._id, 'description') } type='textarea'>
+										{ org.description ? org.description : '' }
+									</EditableText>
+
+									<Table.Cell>
+										<Button icon='trash' onClick={ () => {
+											setModalHeader('Permanently Delete This Organization?');
+											setModalContent(`This will permanently remove ${org.title} from this theme and all associated data. This process cannot be undone.`);
+											setModalAction( () => removeOrg(org._id) );
+											setModalOpen(true);
+										} } />
+									</Table.Cell>
+								</Table.Row>
+							);
+						} ) }
 					</Table.Body>
 				</Table>
 

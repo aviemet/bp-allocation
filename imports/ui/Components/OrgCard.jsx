@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import { Card, Icon, Button, Modal, Responsive } from 'semantic-ui-react';
 import styled from 'styled-components';
+import { observer } from 'mobx-react-lite';
 
 // TODO: Use styledcomponents theme
 const GREEN = '#0D8744';
@@ -13,7 +14,7 @@ const BLUE = '#002B43';
 /**
  * OrgCard Component
  */
-const OrgCard = ({
+const OrgCard = observer(({
 	org,
 	overlay,
 	content, 
@@ -24,7 +25,7 @@ const OrgCard = ({
 	info,
 	bgcolor,
 	onClick,
-	rest
+	...rest
 }) => {
 
 	const [ modalSize, setModalSize ] = useState('large');
@@ -77,11 +78,11 @@ const OrgCard = ({
 				</InfoLink> }
 
 				<OrgTitle><p>{ org.title }</p></OrgTitle>
-				{ (_.isUndefined(showAsk) ? true : !!showAsk) && <OrgAsk>{ numeral(org.ask).format('$0a') }</OrgAsk> }
+				{ (_.isUndefined(showAsk) ? true : !!showAsk) && <OrgAsk>Ask: { numeral(org.ask).format('$0a') }</OrgAsk> }
 			</CardContent>
 		</StyledCard>
 	);
-};
+});
 
 OrgCard.colors = { GREEN, BLUE };
 
@@ -153,7 +154,10 @@ const InfoLink = styled(Icon)`
 
 OrgCard.propTypes = {
 	org: PropTypes.object,
-	overlay: PropTypes.object,
+	overlay: PropTypes.oneOfType([ 
+		PropTypes.object,
+		PropTypes.bool
+	]),
 	content: PropTypes.oneOfType([
 		PropTypes.object,
 		PropTypes.func

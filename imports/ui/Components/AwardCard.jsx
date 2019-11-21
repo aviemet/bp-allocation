@@ -15,7 +15,7 @@ import { COLORS } from '/imports/lib/global';
 const AwardCard = props => {
 
 	const amount = props.amount ? 
-		numeral(props.amount).format('$0,0') : 
+		numeral(props.amount).format('$0.[00]a') : 
 		props.org.allocatedFunds + props.org.leverageFunds;
 
 	return (

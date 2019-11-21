@@ -3,16 +3,6 @@ import PropTypes from 'prop-types';
 import { Form, Input, TextArea, Button, Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-const StyledInput = styled(Input)`
-	width: 100%;
-
-	&.ui.fluid.input > input {
-		width: auto !important;
-	}
-
-`;
-
-
 const EditorInput = ({ value, onChange, type, children }) => {
 
 	if(type.toLowerCase() === 'textarea') {
@@ -57,7 +47,7 @@ const EditableText = ({ as, format, type, onSubmit, children }) => {
 		setEditing(false);
 	};
 
-	const Component = as || 'div';
+	const Component = as || DisplayDiv;
 
 	if(editing) {
 		return (
@@ -83,6 +73,19 @@ const EditableText = ({ as, format, type, onSubmit, children }) => {
 		</Component>
 	);
 };
+
+const DisplayDiv = styled.div`
+	display: inline-block;
+`;
+
+const StyledInput = styled(Input)`
+	width: 100%;
+	display: block;
+
+	&.ui.fluid.input > input {
+		width: auto !important;
+	}
+`;
 
 EditorInput.propTypes = {
 	value: PropTypes.any, 
