@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useData } from '/imports/stores/DataProvider';
 
 import { Table, Input } from 'semantic-ui-react';
 
 import { OrganizationMethods } from '/imports/api/methods';
+import { observer } from 'mobx-react-lite';
 
-const ChitInputs = props => {
+const ChitInputs = observer(props => {
 	const [ weightVotes, setWeightVotes ] = useState(props.org.chitVotes.weight);
 	const [ countVotes, setCountVotes ] = useState(props.org.chitVotes.count);
+
+	const { orgs } = useData();
+	const topOrgIds = orgs.topOrgs.map(org => org._id);
 
 	useEffect(() => {
 		saveVotes();
@@ -28,11 +33,14 @@ const ChitInputs = props => {
 	return (
 		<Table.Row>
 
-			<Table.Cell collapsing>
+			<Table.Cell 
+				width={ 10 }
+				positive={ topOrgIds.includes(props.org._id) }
+			>
 				{props.org.title}
 			</Table.Cell>
 
-			<Table.Cell collapsing>
+			<Table.Cell width={ 3 }>
 				<Input
 					name='weightVotes'
 					type='number'
@@ -43,7 +51,7 @@ const ChitInputs = props => {
 				/>
 			</Table.Cell>
 
-			<Table.Cell collapsing>
+			<Table.Cell width={ 3 }>
 				<Input
 					name='countVotes'
 					type='number'
@@ -56,7 +64,7 @@ const ChitInputs = props => {
 
 		</Table.Row>
 	);
-};
+});
 
 ChitInputs.propTypes = {
 	org: PropTypes.object,
@@ -64,21 +72,3 @@ ChitInputs.propTypes = {
 };
 
 export default ChitInputs;
-
-
-/*
-	onChange={ e => {
-		this.setState({
-			countVotes:e.currentTarget.value ? parseFloat(e.currentTarget.value) : 0
-		}, this.saveVotes);
-	} }
-
-
-
-
-	onChange={ e => {
-		setState({
-			weightVotes:e.currentTarget.value ? parseFloat(e.currentTarget.value) : 0
-		}, saveVotes);
-	} }
-*/

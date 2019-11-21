@@ -27,16 +27,17 @@ const TopOrgsRow = props => {
 
 			{/* Title */}
 			<Table.Cell>
-				{props.org.title}
-				{!props.hideAdminFields && <React.Fragment>
-					{!props.inTopOrgs &&
-					<SaveButton org={ props.org } />
-					}
-					{props.isSaved &&
+				{/* Save and unsave buttons */}
+				{ !props.hideAdminFields && <React.Fragment>
+					{ !props.inTopOrgs && <SaveButton org={ props.org } /> }
+					{ props.isSaved &&
 					<span style={ { float: 'right' } }>
 						<UnSaveButton org={ props.org } />
-					</span>
-					}</React.Fragment>}
+					</span> }
+				</React.Fragment> }
+
+				{ props.org.title }
+
 			</Table.Cell>
 
 			{/* Votes */}
