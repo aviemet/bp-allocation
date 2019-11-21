@@ -21,7 +21,7 @@ import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 
-const MenuLink = withRouter(({ target, to, history, children, active }) => {
+const MenuLink = withRouter(({ target, to, history, children, active, iconPosition, ...rest }) => {
 	const handleNav = () => {
 		if(target && target === '_blank') {
 			window.open(to);
@@ -30,10 +30,33 @@ const MenuLink = withRouter(({ target, to, history, children, active }) => {
 		}
 	};
 
+	let classes = rest.classes || '';
+	if(iconPosition && iconPosition !== 'right') {
+		classes += iconPosition;
+	}
+
 	return (
-		<Menu.Item as='a' to={ to } onClick={ handleNav } active={ active && active }>{ children }</Menu.Item>
+		<MenuItem 
+			as='a' 
+			to={ to } 
+			onClick={ handleNav } 
+			active={ active && active }
+			className={ classes }
+			{ ...rest }
+		>
+			{ children }
+		</MenuItem>
 	);
 });
+
+const MenuItem = styled(Menu.Item)`
+	&&&.left {
+		i.icon {
+			float: left;
+			margin: 0 0.5em 0 0;
+		}
+	}
+`;
 
 const AdminLayout = withRouter(observer(props => {
 	const [ sidebarVisible, setSidebarVisible ] = useState(false);
@@ -119,61 +142,84 @@ const AdminLayout = withRouter(observer(props => {
 				onUpdate={ handleOnUpdate }
 			>
 				<SidebarMenu vertical>
+					{/* Menu */}
 					<Header as={ 'h1' }>Menu</Header>
-					<MenuLink 
+
+					<MenuLink
 						to={ `/admin/${data.themeId}/settings` }
 						active={ activeMenuItem === 'settings' }
+						iconPosition='left'
 					>
-						Settings
+						<Icon name='setting'/> Settings
 					</MenuLink>
 
 					<MenuLink 
 						to={ `/admin/${data.themeId}/orgs` }
 						active={ activeMenuItem === 'orgs' }
+						iconPosition='left'
 					>
-						Orgs
+						<Icon name='building' /> Orgs
 					</MenuLink>
 
 					<MenuLink 
 						to={ `/admin/${data.themeId}/members` }
 						active={ activeMenuItem === 'members' }
+						iconPosition='left'
 					>
-						Members
+						<Icon name='users' /> Members
 					</MenuLink>
 
 					<MenuLink 
 						to={ `/admin/${data.themeId}/chits` }
 						active={ activeMenuItem === 'chits' }
+						iconPosition='left'
 					>
-						Chit Votes
+						<Icon name='star' /> Chit Votes
 					</MenuLink>
 
 					<MenuLink 
 						to={ `/admin/${data.themeId}/allocation` }
 						active={ activeMenuItem === 'allocation' }
+						iconPosition='left'
 					>
-						Allocations
+						<Icon name='dollar' /> Allocations
 					</MenuLink>
 
 					<MenuLink 
 						to={ `/admin/${data.themeId}/leverage` }
 						active={ activeMenuItem === 'leverage' }
+						iconPosition='left'
 					>
-						Leverage
+						<Icon name='chart pie' /> Leverage
 					</MenuLink>
 
 					<MenuLink 
 						to={ `/admin/${data.themeId}/presentation` }
 						active={ activeMenuItem === 'presentation' }
+						iconPosition='left'
 					>
-						Presentation
+						<Icon name='chart bar' /> Presentation
 					</MenuLink>
 
+					{/* Pages */}
 					<Header as={ 'h1' }>Pages</Header>
-					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>Presentation</MenuLink>
-					<MenuLink to={ `/kiosk/${data.themeId}` }>Kiosk</MenuLink>
-					<MenuLink to={ `/feedback/${data.themeId}` }>Feedback</MenuLink>
-					<MenuLink to={ `/pledges/${data.themeId}` } target='_blank'>Pledge Inputs</MenuLink>
+
+					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>
+						<Icon name='external' size='small' /> Presentation
+					</MenuLink>
+
+					<MenuLink to={ `/kiosk/${data.themeId}` }>
+						<Icon name='external' size='small' /> Kiosk
+					</MenuLink>
+
+					<MenuLink to={ `/pledges/${data.themeId}` } target='_blank'>
+						<Icon name='external' size='small' /> Pledge Inputs
+					</MenuLink>
+
+					<MenuLink to={ `/feedback/${data.themeId}` }>
+						Feedback
+					</MenuLink>
+
 				</SidebarMenu>
 			</Responsive>
 
@@ -278,7 +324,8 @@ MenuLink.propTypes = {
 	as: PropTypes.string,
 	to: PropTypes.string,
 	target: PropTypes.any,
-	active: PropTypes.bool
+	active: PropTypes.bool,
+	iconPosition: PropTypes.oneOf(['left', 'right'])
 };
 
 AdminLayout.propTypes = {
