@@ -192,12 +192,13 @@ const ThemeMethods = {
 		validate: null,
 
 		run(themeId) {
-			const theme = Themes.find({ _id: themeId }, { organizations: true }).fetch();
+			const theme = Themes.find({ _id: themeId }, { organizations: true }).fetch()[0];
+			console.log({ theme });
 			if(!theme) {
 				throw new Error('Theme ID does not match records of any Themes');
 			}
 
-			const orgs = theme[0].organizations;
+			const orgs = theme.organizations;
 
 			return orgs.map(org => {
 				Organizations.update({ _id: org }, {

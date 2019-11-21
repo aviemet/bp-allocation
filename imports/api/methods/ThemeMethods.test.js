@@ -3,7 +3,7 @@ import faker from 'faker';
 // import { Random } from 'meteor/random';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 
-import { ThemeMethods } from '/imports/api/methods';
+import { ThemeMethods, OrganizationMethods } from '/imports/api/methods';
 import { Themes, Organizations } from '/imports/api';
 
 const themeData = {
@@ -31,7 +31,7 @@ describe("Theme Methods", async function() {
 
 			// Add some associated test Organization records
 			for(let i = 0; i < 5; i++) {
-				const orgId = await Organizations.insert({
+				const orgId = await OrganizationMethods.create.call({
 					title: faker.company.companyName(),
 					ask: faker.random.number(),
 					theme: theme._id,
@@ -185,12 +185,10 @@ describe("Theme Methods", async function() {
 	 * Reset Leverage Spread
 	 */
 	context("ResetLeverage", function() {
-		it.skip("Should set leverageFunds back to 0 for all orgs in theme", function() {
-			const orgs = orgIds.map(id => {
-				return { _id: id };
-			});
-			ThemeMethods.resetLeverage.call(orgs);
-			theme = Themes.find({ _id: theme._id }).fetch()[0];
+		it("Should set leverageFunds back to 0 for all orgs in theme", async function() {
+			await ThemeMethods.resetLeverage.call(theme._id);
+			theme = await Themes.find({ _id: theme._id }).fetch()[0];
+
 			const orgRecords = Organizations.find({ _id: { $in: orgIds } });
 			orgRecords.forEach(org => {
 				expect(org.leverageFunds).to.equal(0);
