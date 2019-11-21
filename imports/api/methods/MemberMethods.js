@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { formatPhoneNumber, sanitizeString } from '/imports/lib/utils';
 
 import { Members, MemberThemes, Organizations } from '/imports/api';
-import OrganizationMethods from './OrganizationMethods';
+import { OrganizationMethods } from '/imports/api/methods';
 
 /**
  * Sanitize the data for an insert or upsert to Members
@@ -190,6 +190,16 @@ const MemberMethods = {
 
 		// TODO: Also remove matched pledges for the member - hopefully DRY
 		run({ memberId, themeId }) {
+			const orgs = Organizations.find({ theme: themeId }).fetch();
+
+			orgs.forEach(org => {
+				org.pledges.forEach(pledge => {
+					if(pledge.member === memberId) {
+						OrganizationMethods.removePledge.call({ orgId: org._id, pledgeId: pledge._id });
+					}
+				});
+			});
+			
 			return MemberThemes.remove({ member: memberId, theme: themeId });
 		}
 	}),
@@ -211,7 +221,7 @@ const MemberMethods = {
 				members.push(memberThemes.members);
 			});
 
-			// Delete the MemberThemes first
+			// Batch delete the MemberThemes first
 			try {
 				MemberThemes.remove({ _id: { $in: ids }});
 			} catch(e) {
@@ -225,7 +235,7 @@ const MemberMethods = {
 					org.pledges.forEach(pledge => {
 						if(pledge.member && members.some(member => pledge.member === member)) {
 							try {
-								OrganizationMethods.removePledge(org._id, pledge._id);
+								OrganizationMethods.removePledge({ orgId: org._id, pledgeId: pledge._id });
 							} catch(e) {
 								console.error(e);
 							}

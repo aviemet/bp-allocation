@@ -3,8 +3,9 @@ import faker from 'faker';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 import { formatPhoneNumber } from '/imports/lib/utils';
 
-import { ThemeMethods, MemberMethods } from '/imports/api/methods';
-import { Themes, Members, MemberThemes, Organizations } from '/imports/api';
+import { ThemeMethods, MemberMethods, OrganizationMethods } from '/imports/api/methods';
+import { Themes, Members, MemberThemes } from '/imports/api';
+import { Organizations } from '../Organizations';
 
 const NUM_TEST_RECORDS = 5;
 
@@ -43,7 +44,7 @@ describe("Member Methods", async function() {
 				memberThemes.push(memberTheme);
 
 				// Add some associated test Organization records
-				const orgId = await Organizations.insert({
+				const orgId = await OrganizationMethods.create.call({
 					title: faker.company.companyName(),
 					ask: faker.random.number(),
 					theme: theme._id,
@@ -105,16 +106,28 @@ describe("Member Methods", async function() {
 
 			expect(Members.find({}).count()).to.equal(NUM_TEST_RECORDS - 1);
 			expect(MemberThemes.find({}).count()).to.equal(NUM_TEST_RECORDS - 1);
-		})
+		});
 	});
 
 	context("Delete member from theme", () => {
-		it("Should remove member from theme, remove their allocations and pledges", async () => {
+		it("Should remove member from theme", async () => {
 			const member = Members.find({}).fetch()[0];
 			await MemberMethods.removeMemberFromTheme.call({ memberId: member._id, themeId: themeData._id });
 
 			expect(Members.find({}).count()).to.equal(NUM_TEST_RECORDS);
 			expect(MemberThemes.find({}).count()).to.equal(NUM_TEST_RECORDS - 1);
+		});
+
+		it("Should remove their pledges", async () => {
+			const member = Members.find({}).fetch()[0];
+			const orgs = Organizations.find({}).fetch();
+			OrganizationMethods.pledge.call({ id: orgs[0]._id, amount: 1000, member: member._id });
+
+			await MemberMethods.removeMemberFromTheme.call({ memberId: member._id, themeId: themeData._id });
+
+			const org = Organizations.find({ _id: orgs[0]._id }).fetch()[0];
+
+			expect(org.pledges.length).to.equal(0);
 		});
 	});
 

@@ -193,7 +193,6 @@ const ThemeMethods = {
 
 		run(themeId) {
 			const theme = Themes.find({ _id: themeId }, { organizations: true }).fetch()[0];
-			console.log({ theme });
 			if(!theme) {
 				throw new Error('Theme ID does not match records of any Themes');
 			}
