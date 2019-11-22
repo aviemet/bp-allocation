@@ -21,43 +21,6 @@ import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/stores/DataProvider';
 
-const MenuLink = withRouter(({ target, to, history, children, active, iconPosition, ...rest }) => {
-	const handleNav = () => {
-		if(target && target === '_blank') {
-			window.open(to);
-		} else {
-			history.push(to);
-		}
-	};
-
-	let classes = rest.classes || '';
-	if(iconPosition && iconPosition !== 'right') {
-		classes += iconPosition;
-	}
-
-	return (
-		<MenuItem 
-			as='a' 
-			to={ to } 
-			onClick={ handleNav } 
-			active={ active && active }
-			className={ classes }
-			{ ...rest }
-		>
-			{ children }
-		</MenuItem>
-	);
-});
-
-const MenuItem = styled(Menu.Item)`
-	&&&.left {
-		i.icon {
-			float: left;
-			margin: 0 0.5em 0 0;
-		}
-	}
-`;
-
 const AdminLayout = withRouter(observer(props => {
 	const [ sidebarVisible, setSidebarVisible ] = useState(false);
 	const [ documentWidth, setDocumentWidth ] = useState();
@@ -204,20 +167,20 @@ const AdminLayout = withRouter(observer(props => {
 					{/* Pages */}
 					<Header as={ 'h1' }>Pages</Header>
 
-					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>
-						<Icon name='external' size='small' /> Presentation
-					</MenuLink>
-
 					<MenuLink to={ `/kiosk/${data.themeId}` }>
-						<Icon name='external' size='small' /> Kiosk
-					</MenuLink>
-
-					<MenuLink to={ `/pledges/${data.themeId}` } target='_blank'>
-						<Icon name='external' size='small' /> Pledge Inputs
+						Kiosk
 					</MenuLink>
 
 					<MenuLink to={ `/feedback/${data.themeId}` }>
 						Feedback
+					</MenuLink>
+
+					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>
+						Presentation
+					</MenuLink>
+
+					<MenuLink to={ `/pledges/${data.themeId}` } target='_blank'>
+						Pledge Inputs
 					</MenuLink>
 
 				</SidebarMenu>
@@ -319,15 +282,6 @@ const Logo = styled(Image)`
 	filter: invert(100%);
 `;
 
-MenuLink.propTypes = {
-	children: PropTypes.any,
-	as: PropTypes.string,
-	to: PropTypes.string,
-	target: PropTypes.any,
-	active: PropTypes.bool,
-	iconPosition: PropTypes.oneOf(['left', 'right'])
-};
-
 AdminLayout.propTypes = {
 	children: PropTypes.oneOfType([
 		PropTypes.arrayOf(PropTypes.node),
@@ -339,3 +293,54 @@ AdminLayout.propTypes = {
 };
 
 export default AdminLayout;
+
+/**
+ * MenuLink for Vertical Admin Menu
+ */
+const MenuLink = withRouter(({ target, to, history, children, active, iconPosition, className, id }) => {
+	const handleNav = () => {
+		if(target && target === '_blank') {
+			window.open(to);
+		} else {
+			history.push(to);
+		}
+	};
+
+	let classes = className || '';
+	if(iconPosition && iconPosition !== 'right') {
+		classes += iconPosition;
+	}
+
+	return (
+		<MenuItem 
+			as='a' 
+			to={ to } 
+			onClick={ handleNav } 
+			active={ active && active }
+			className={ classes }
+			id={ id ? id : '' }
+		>
+			{ target === '_blank' && <Icon name='external' size='small' /> }{ children }
+		</MenuItem>
+	);
+});
+
+MenuLink.propTypes = {
+	children: PropTypes.any,
+	as: PropTypes.string,
+	to: PropTypes.string,
+	target: PropTypes.any,
+	active: PropTypes.bool,
+	iconPosition: PropTypes.oneOf(['left', 'right']),
+	className: PropTypes.string,
+	id: PropTypes.string
+};
+
+const MenuItem = styled(Menu.Item)`
+	&&&.left {
+		i.icon {
+			float: left;
+			margin: 0 0.5em 0 0;
+		}
+	}
+`;

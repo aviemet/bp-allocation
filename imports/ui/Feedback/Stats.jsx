@@ -2,12 +2,31 @@ import React from 'react';
 import _ from 'lodash';
 
 import { observer } from 'mobx-react-lite';
+import { toJS } from 'mobx';
 import { useData } from '/imports/stores/DataProvider';
 
 import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';
 
 const Stats = observer(props => {
 	const { orgs, members } = useData();
+
+	/**
+	 * pledge = { org, memberName, memberNumber, amount, createdAt }
+	 */
+	const pledges = [];
+	orgs.topOrgs.forEach(org => {
+		org.pledges.forEach(pledge => {
+			const member = members.values.find(member => member._id === pledge.member);
+			const pledgeData = { 
+				Organization: org.title, 
+				'Member Name': member.fullName, 
+				'Member Number': member.number, 
+				Amount: pledge.amount, 
+				'Time Stamp': pledge.createdAt
+			};
+			pledges.push(pledgeData);
+		});
+	});
 
 	return (
 		<React.Fragment>
@@ -29,6 +48,11 @@ const Stats = observer(props => {
 
 				}) }
 				description='Member Information'
+			/>
+
+			<ExportCsvButton
+				data={ pledges }
+				description='Topup Pledges'
 			/>
 		</React.Fragment>
 	);

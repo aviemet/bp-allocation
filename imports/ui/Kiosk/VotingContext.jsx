@@ -28,7 +28,7 @@ const VotingContextProvider = observer(props => {
 		setVotes(newVotes);
 	};
 
-	const saveVotes = (source) => {
+	const saveVotes = source => {
 		_.forEach(votes, (amount, org) => {
 			const voteData = {
 				theme: theme._id,
@@ -37,7 +37,6 @@ const VotingContextProvider = observer(props => {
 				amount: amount
 			};
 			if(typeof source === 'string') voteData.voteSource = source;
-			console.log({ voteData });
 			MemberMethods.fundVote.call(voteData);
 		});
 	};
