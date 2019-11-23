@@ -6,6 +6,7 @@ import { useData } from '/imports/stores/DataProvider';
 
 import CustomMessage from '/imports/ui/Components/CustomMessage';
 import { Loader, Form, Checkbox, Label } from 'semantic-ui-react';
+import TextMembersButton from '/imports/ui/Components/TextMembersButton';
 
 const SettingsPane = observer(props => {
 	const data = useData();
@@ -250,6 +251,13 @@ const SettingsPane = observer(props => {
 
 				</Form.Group>
 			</Form>
+
+			<TextMembersButton
+				message="From Battery Powered: Voting for Allocation Night can be done online! You'll receive a link tonight. For now, here are the finalists: http://bit.ly/2rmdNrT"
+				title='Voting to Start Later'
+				link={ false }
+			/>
+
 			{ formErrorVisible && <CustomMessage 
 				negative 
 				onDismiss={ hideFormErrorMessage }

@@ -5,16 +5,18 @@ import PropTypes from 'prop-types';
 import { useData } from '/imports/stores/DataProvider';
 import { Button } from 'semantic-ui-react';
 
-const TextMembersButton = ({ message, title, ...rest }) => {
+const TextMembersButton = ({ message, title, link, ...rest }) => {
 	const { theme, members } = useData();
 
 	const textMembers = () => {
 		members.values.forEach(member => {
 			if(member.phone) {
-				const link = `www.batterysf.com/v/${theme.slug}/${member.code}`;
-				const messageWithLink = `${message}\n${link}`;
+				const votingLink = `www.batterysf.com/v/${theme.slug}/${member.code}`;
+				let finalMessage = message;
+				// eslint-disable-next-line quotes
+				if(link !== false) finalMessage += "\n" + votingLink;
 
-				Meteor.call('sendMessage', member.phone, messageWithLink);
+				Meteor.call('sendMessage', member.phone, finalMessage);
 			}
 		});
 	};
@@ -25,6 +27,7 @@ const TextMembersButton = ({ message, title, ...rest }) => {
 TextMembersButton.propTypes = {
 	message: PropTypes.string,
 	title: PropTypes.string,
+	link: PropTypes.bool,
 	rest: PropTypes.any
 };
 
