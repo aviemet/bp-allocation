@@ -144,12 +144,14 @@ const PresentationPane = observer(() => {
 						<TextMembersButton 
 							style={ { float: 'right' } }
 							title='Text: Begin Voting'
-							message={ `From Battery Powered:\nWe have narrowed ${orgs.values.length} finalists down to ${theme.numTopOrgs}. Use this link to vote your funds for the orgs you want to support:` }
+							// eslint-disable-next-line quotes
+							message={ "From Battery Powered:\nWe have narrowed " + orgs.values.length + " finalists down to " + theme.numTopOrgs + ". Use this link to vote your funds for the orgs you want to support:" }
 						/>
 						<TextMembersButton 
 							style={ { float: 'right' } }
 							title='Text: Voting Complete'
-							message="From Battery Powered:\n\nThe results of voting are in! Check them out here:"
+							// eslint-disable-next-line quotes
+							message={ "From Battery Powered:\nThe results of voting are in! Check them out here:" }
 						/>
 
 					</Grid.Column>
