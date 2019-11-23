@@ -80,7 +80,7 @@ const OrgCard = observer(({
 				</InfoLink> }
 
 				<OrgTitle><p>{ org.title }</p></OrgTitle>
-				{ (_.isUndefined(showAsk) ? true : !!showAsk) && <OrgAsk>Ask: { numeral(org.ask).format('$0a') }</OrgAsk> }
+				{ (_.isUndefined(showAsk) ? true : !!showAsk) && <OrgAsk>{ numeral(org.ask).format('$0a') }</OrgAsk> }
 			</CardContent>
 		</StyledCard>
 	);
