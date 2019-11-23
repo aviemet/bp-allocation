@@ -105,7 +105,7 @@ const StyledCard = styled(Card)`
 
 	&.disabled {
 		filter: opacity(0.5);
-		
+
 		& > * {
 			color: #666 !important;
 		}
@@ -114,7 +114,7 @@ const StyledCard = styled(Card)`
 
 const OrgTitle = styled.div`
 	font-family: TradeGothic;
-	font-size: 2.5rem;
+	font-size: 3rem;
 	margin: 5px;
 	font-weight: 600;
 	min-height: 8rem;
