@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
 import moment from 'moment';
 
-import { Themes, Organizations } from '/imports/api';
+import { Themes, Organizations, MemberThemes } from '/imports/api';
 import OrganizationMethods from './OrganizationMethods';
 import PresentationSettingsMethods from './PresentationSettingsMethods';
 
@@ -206,6 +206,34 @@ const ThemeMethods = {
 					}
 				});
 			});
+		}
+	}),
+
+	resetAllOrgFunds: new ValidatedMethod({
+		name: 'organizations.resetAllOrgFunds',
+
+		validate: null,
+
+		run(themeId) {
+			const theme = Themes.find({ _id: themeId }).fetch()[0];
+
+			theme.organizations.forEach(org => {
+				OrganizationMethods.update.call({ id: org, data: {
+					amountFromVotes: 0,
+					topOff: 0,
+					pledges: [],
+					leverageFunds: 0
+				}});
+			});
+
+			MemberThemes.update({ theme: themeId }, { 
+				$set: {
+					allocations: []
+				}
+			}, {
+				multi: true
+			});
+			
 		}
 	})
 };

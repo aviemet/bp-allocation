@@ -7,6 +7,7 @@ import { useData } from '/imports/stores/DataProvider';
 import CustomMessage from '/imports/ui/Components/CustomMessage';
 import { Loader, Form, Checkbox, Label } from 'semantic-ui-react';
 import TextMembersButton from '/imports/ui/Components/TextMembersButton';
+import ResetOrgFundsButton from '../../../Components/ResetOrgFundsButton';
 
 const SettingsPane = observer(props => {
 	const data = useData();
@@ -257,6 +258,10 @@ const SettingsPane = observer(props => {
 				title='Voting to Start Later'
 				link={ false }
 			/>
+
+			<hr />
+			
+			<ResetOrgFundsButton />
 
 			{ formErrorVisible && <CustomMessage 
 				negative 
