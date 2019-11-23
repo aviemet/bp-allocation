@@ -114,7 +114,7 @@ const StyledCard = styled(Card)`
 
 const OrgTitle = styled.div`
 	font-family: TradeGothic;
-	font-size: 3rem;
+	font-size: 2.5rem;
 	margin: 5px;
 	font-weight: 600;
 	min-height: 8rem;
