@@ -5,13 +5,14 @@ import { OrganizationMethods } from '/imports/api/methods';
 import { toJS } from 'mobx';
 import { roundFloat } from '/imports/lib/utils';
 
-import { Container, Form, Input, Button, Card } from 'semantic-ui-react';
+import { Container, Form, Input, Button, Card, Checkbox } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 import MemberSearch from '/imports/ui/Components/MemberSearch';
+import { observer } from 'mobx-react-lite';
 
-const Pledges = () => {
+const Pledges = observer(() => {
 	const { orgs, members } = useData();
 
 	const [ selectedOrg, setSelectedOrg ] = useState(null);
@@ -19,8 +20,7 @@ const Pledges = () => {
 	const [ selectedMember, setSelectedMember ] = useState(null);
 	const [ pledgeAmount, setPledgeAmount ] = useState('');
 	const [ isFormValid, setIsFormValid ] = useState(false);
-
-	// console.log({ org: selectedOrg, member: selectedMember });
+	const [ isAnonymous, setIsAnonymous ] = useState(false);
 
 	useEffect(() => {
 		const isValid = selectedOrg !== null && selectedMember !== null && pledgeAmount !== '';
@@ -32,19 +32,19 @@ const Pledges = () => {
 		setMemberInputValue('');
 		setSelectedMember(null);
 		setPledgeAmount('');
+		setIsAnonymous(false);
 	};
 
 	const saveTopUp = () => {
-		console.log({ selectedOrg, selectedMember, pledgeAmount, isFormValid });
 		OrganizationMethods.pledge.call({
 			id: selectedOrg,
-			member: selectedMember,
+			member: isAnonymous ? '' : selectedMember,
 			amount: roundFloat(pledgeAmount),
 		});
 		clearAllValues();
 	};
 
-	console.log({ members: [ ...toJS(members.values), { fullName: 'Anonymous', _id: '00' } ] });
+	// console.log({ members: [ ...toJS(members.values), { fullName: 'Anonymous', _id: '00' } ] });
 
 	return (
 		<PledgesContainer fluid textAlign='center'>
@@ -52,11 +52,18 @@ const Pledges = () => {
 			{/* Member name and amount input fields */}
 			<Form>
 				<Container>
+					<div  style={ { textAlign: 'right', marginBottom: '0.5rem' } }>
+						<Checkbox
+							toggle 
+							label='Anonymous'
+							checked={ isAnonymous }
+							onClick={ () => setIsAnonymous(!isAnonymous) }
+						/>
+					</div>
 					<Form.Group>
 						<Form.Field width={ 10 }>
 							<MemberSearch fluid
 								data={ toJS(members.values) }
-								stickyResults={ [{ title: 'Anonymous', fullName: 'Anonymous', _id: '00' }] }
 								value={ memberInputValue }
 								setValue={ setMemberInputValue }
 								onResultSelect={ result => setSelectedMember(result.id) }
@@ -83,10 +90,11 @@ const Pledges = () => {
 			<Card.Group centered itemsPerRow={ 2 }>
 				{ orgs.topOrgs.map(org => (
 					<OrgCard
+						disabled={ org.need <= 0 }
 						key={ org._id }
 						org={ org }
 						showAsk={ false }
-						onClick={ () => setSelectedOrg(org._id) }
+						onClick={ org.need > 0 ? () => setSelectedOrg(org._id) : null }
 						bgcolor={ selectedOrg === org._id ? OrgCard.colors.GREEN : OrgCard.colors.BLUE }
 					/>
 				) ) }
@@ -111,7 +119,7 @@ const Pledges = () => {
 
 		</PledgesContainer>
 	);
-};
+});
 
 const PledgesContainer = styled(Container)`
 	height: 100vh;
@@ -127,8 +135,16 @@ const PledgesContainer = styled(Container)`
 		margin-bottom: 2rem;
 	}
 
-	.ui.cards {
-		margin-bottom: 3rem;
+	.ui {
+		&.cards {
+			margin-bottom: 3rem;
+		}
+
+		&.toggle.checkbox {
+			label {
+				color: #FFF;
+			}
+		}
 	}
 `;
 

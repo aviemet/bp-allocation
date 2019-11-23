@@ -42,6 +42,7 @@ const Stats = observer(props => {
 					orgs.topOrgs.forEach(org => {
 						const allocation = _.find(member.theme.allocations, ['organization', org._id]);
 						newMember[org.title] = allocation ? allocation.amount : 0;
+						newMember['Source'] = allocation ? allocation.voteSource : '';
 					});
 
 					return newMember;

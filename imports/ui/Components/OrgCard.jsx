@@ -25,6 +25,7 @@ const OrgCard = observer(({
 	info,
 	bgcolor,
 	onClick,
+	disabled,
 	...rest
 }) => {
 
@@ -42,6 +43,7 @@ const OrgCard = observer(({
 	const cardClasses = [];
 	if(size) cardClasses.push(size);
 	if(animateClass) cardClasses.push('animate-orgs');
+	if(disabled) cardClasses.push('disabled');
 
 	const handleOnUpdate = (e, { width }) => {
 		let size = 'large';
@@ -98,7 +100,12 @@ const StyledCard = styled(Card)`
 	}
 
 	&.big {
-		height: 23rem;
+		height: 21rem;
+	}
+
+	&.disabled > * {
+		color: #666 !important;
+		filter: opacity(0.5);
 	}
 `;
 
@@ -116,7 +123,7 @@ const OrgTitle = styled.div`
 	}
 
 	.big & {
-		min-height: 16rem;
+		min-height: 13.5rem;
 		font-size: 4rem;
 	}
 

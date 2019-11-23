@@ -18,9 +18,9 @@ const resultRenderer = ({ title, number }) => (
  * Search input for member data
  * @param {object} props Search props
  */
-const MemberSearch = ({ data, value, setValue, onResultSelect, stickyResults, ...rest }) => {
+const MemberSearch = ({ data, value, setValue, onResultSelect, ...rest }) => {
 	const [ isLoading, setIsLoading ] = useState(false);
-	const [ searchResults, setSearchResults ] = useState([...stickyResults]);
+	const [ searchResults, setSearchResults ] = useState([]);
 	// const [ selectedValue, setSelectedValue ] = useState('');
 
 	// Filter source data to only display what's needed in search results
@@ -48,15 +48,14 @@ const MemberSearch = ({ data, value, setValue, onResultSelect, stickyResults, ..
 		// Wait for at least 2 characters to display search results
 		if (value.trim().length < 1) {
 			setIsLoading(false);
-			setSearchResults([...stickyResults]);
+			setSearchResults([]);
 			setValue('');
 			return;
 		}
 
 		// Filter search results to match input
 		const equality = new RegExp(_.escapeRegExp(value), 'i');
-		const searchResults = source.filter(result => equality.test(result.title) || equality.test(result.number));
-		setSearchResults([...searchResults, ...stickyResults]);
+		setSearchResults( _.filter( source, result => equality.test(result.title) || equality.test(result.number) ) );
 		setIsLoading(false);
 	};
 
@@ -73,7 +72,7 @@ const MemberSearch = ({ data, value, setValue, onResultSelect, stickyResults, ..
 			value={ value }
 			fluid
 			placeholder='Member Search'
-			minCharacters={ 0 }
+			minCharacters={ 1 }
 			{ ...rest }
 		/>
 	);
@@ -89,7 +88,6 @@ MemberSearch.propTypes = {
 	value: PropTypes.string.isRequired,
 	setValue: PropTypes.func.isRequired,
 	onResultSelect: PropTypes.func,
-	stickyResults: PropTypes.array,
 	rest: PropTypes.any,
 };
 
