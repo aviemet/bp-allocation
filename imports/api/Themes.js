@@ -42,12 +42,12 @@ const ThemeSchema = new SimpleSchema({
 		defaultValue: [],
 		required: false
 	},
+	'topOrgsManual.$': SimpleSchema.RegEx.Id,
 	numTopOrgs: {
 		type: Number,
 		defaultValue: 5,
 		required: false
 	},
-	'topOrgsManual.$': SimpleSchema.RegEx.Id,
 	chitWeight: {
 		type: SimpleSchema.Integer,
 		label: 'Multiplicant weight of chits vs. non-present votes',
