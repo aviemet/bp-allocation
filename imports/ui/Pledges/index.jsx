@@ -50,7 +50,7 @@ const Pledges = observer(() => {
 		<PledgesContainer fluid textAlign='center'>
 			<h1>Top-ups</h1>
 			{/* Member name and amount input fields */}
-			<Form>
+			<Form	inverted>
 				<Container>
 					<div  style={ { textAlign: 'right', marginBottom: '0.5rem' } }>
 						<Checkbox
@@ -141,8 +141,8 @@ const PledgesContainer = styled(Container)`
 		}
 
 		&.toggle.checkbox {
-			label {
-				color: #FFF;
+			input:checked ~ .box, input:checked ~ label {
+				color: #FFF !important;
 			}
 		}
 	}

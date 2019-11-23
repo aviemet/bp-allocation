@@ -103,9 +103,12 @@ const StyledCard = styled(Card)`
 		height: 21rem;
 	}
 
-	&.disabled > * {
-		color: #666 !important;
+	&.disabled {
 		filter: opacity(0.5);
+		
+		& > * {
+			color: #666 !important;
+		}
 	}
 `;
 
