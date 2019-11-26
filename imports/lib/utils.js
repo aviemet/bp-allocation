@@ -48,6 +48,31 @@ export const sanitizeString = str => {
 	return str;
 };
 
+/**
+ * 
+ * @param {array} collection Array of objects to be filtered
+ * @param {string} search Search parameter(s) to filter by
+ * @param {array} fields Optional list of fields to search (omitting others)
+ */
+export const filterCollection = (collection, search, fields) => {
+		if(!search) return collection;
+
+		// Split search terms by whitespace, discarding empty strings
+		const searchParts = search.split(/\s+/).filter(part => part.length > 0);
+		checkFields = fields || Object.keys(collection[0]);
+
+		return collection.filter(member => {
+			return searchParts.every(word => {
+				const test = new RegExp(word, 'i');
+				return checkFields.some(field => {
+					if(test.test(member[field])) {
+						return true;
+					}
+				});
+			});
+		});
+}
+
 /**************************************
  *      Queue class for Pledges       *
  **************************************/
