@@ -1,8 +1,12 @@
-import { action, observable } from 'mobx';
+import { action, observable, computed } from 'mobx';
+import { filterCollection } from '/imports/lib/utils';
 import _ from 'lodash';
 
 class TrackableCollection {
 	@observable values = [];
+	@observable searchFilter;
+	// Override with String array of field names to search against in collection filter
+	searchableFields = null;
 
 	/**
 	 * 
@@ -69,6 +73,13 @@ class TrackableCollection {
 	@action
 	reverse() {
 		this.values.reverse();
+	}
+
+	@computed
+	get filteredMembers() {
+		if(!this.searchFilter) return this.values;
+
+		return filterCollection(this.values, this.searchFilter, this.searchableFields);
 	}
 }
 
