@@ -45,7 +45,7 @@
 		"no-prototype-builtins": [ 0 ],
 		"space-infix-ops": [ "error" ],
 		"object-curly-spacing": [ "error", "always", { 
-			"objectsInObjects": false 
+			"objectsInObjects": true 
 		}],
 		"react/boolean-prop-naming": [ "error" ],
 		"react/no-typos": [ "error" ],
