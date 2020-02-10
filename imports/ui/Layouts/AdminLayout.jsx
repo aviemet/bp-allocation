@@ -30,7 +30,7 @@ const AdminLayout = withRouter(observer(props => {
 
 	useEffect(() => {
 		if(documentWidth >= Responsive.onlyTablet.minWidth) {
-			// Hide sidebar on themes list, show when them is chosen
+			// Hide sidebar on themes list, show when theme is chosen
 			let showSidebar = true;
 			const regex = {
 				admin: /^\/admin[/]?$/,

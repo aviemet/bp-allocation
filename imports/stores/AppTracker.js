@@ -4,6 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Themes, PresentationSettings, Organizations, MemberThemes, Members, Images } from '/imports/api';
 
 const AppTracker = withTracker(({ themeId }) => {
+	console.log({ themeId });
 
 	// Store all handles in one object 
 	let handles = {};
@@ -54,6 +55,8 @@ const AppTracker = withTracker(({ themeId }) => {
 			loading: handlesLoading || valuesLoading,
 			...values
 		};
+	} else {
+		console.log('no themeId');
 	}
 
 	// Return empty object if no themeId provided
