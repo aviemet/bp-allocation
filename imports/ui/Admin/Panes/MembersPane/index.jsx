@@ -1,5 +1,5 @@
 import React from 'react';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 
 import { Container, Input, Grid } from 'semantic-ui-react';
 

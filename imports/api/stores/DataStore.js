@@ -2,16 +2,12 @@ import { Meteor } from 'meteor/meteor';
 import { observable, action, autorun, toJS } from 'mobx';
 // import { Queue } from '/imports/lib/utils';
 
-import { Themes, PresentationSettings, Organizations, MemberThemes, Members } from '/imports/api';
-import ThemeStore from './ThemeStore';
-import OrgsCollection from './OrgsCollection';
-import OrgStore from './OrgStore';
-import SettingsStore from './SettingsStore';
-import MemberThemesCollection from './MemberThemesCollection';
-import MemberThemeStore from './MemberThemeStore';
-import MembersCollection from './MembersCollection';
-import MemberStore from './MemberStore';
+import { Themes, PresentationSettings, Organizations, MemberThemes, Members } from '/imports/api/db';
+import { ThemeStore, OrgsCollection, OrgStore, SettingsStore, MembersCollection, MemberThemesCollection, MemberThemeStore, MemberStore } from '/imports/api/stores';
 
+/**
+ * Top level Data Store for the application
+ */
 class DataStore {
 	@observable themeId;
 	@observable loading = true;
@@ -36,12 +32,12 @@ class DataStore {
 
 	@action
 	loadData = autorun(() => {
+		// Stop the subscriptions and observers which are about to be replaced
+		Object.values(this.subscriptions).forEach(subscription => subscription.stop());
+		Object.values(this.observers).forEach(observer => observer.stop());
+
 		if(this.themeId) {
 			this.loading = true;
-			
-			// Stop the subscriptions and observers which are about to be replaced
-			Object.values(this.subscriptions).forEach(subscription => subscription.stop());
-			Object.values(this.observers).forEach(observer => observer.stop());
 
 			let promises = [];
 

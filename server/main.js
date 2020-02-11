@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { ServiceConfiguration } from 'meteor/service-configuration';
-import _ from 'lodash';
+import { has } from 'lodash';
 import { formatPhoneNumber } from '/imports/lib/utils';
 
 import {
@@ -10,7 +10,7 @@ import {
 	Images,
 	Members,
 	MemberThemes
-} from '/imports/api';
+} from '/imports/api/db';
 
 import '/imports/api/methods';
 import twilio from 'twilio';
@@ -134,7 +134,7 @@ Accounts.validateNewUser(user => {
 	let valid = false;
 
 	// Restrict Google auth to emails from specific domains
-	if(_.has(user, 'services.google.email')) {
+	if(has(user, 'services.google.email')) {
 		const emailParts = user.services.google.email.split('@');
 		const domain = emailParts[emailParts.length - 1];
 		

@@ -1,6 +1,6 @@
-import TrackableCollection from './TrackableCollection';
+import TrackableCollection from './lib/TrackableCollection';
 import { computed } from 'mobx';
-import _ from 'lodash';
+import { sortBy } from 'lodash';
 
 class OrgsCollection extends TrackableCollection {
 
@@ -40,7 +40,7 @@ class OrgsCollection extends TrackableCollection {
 		});
 
 		// First sort orgs by weight and vote count
-		let sortedOrgs = _.sortBy(this.values, org => {
+		let sortedOrgs = sortBy(this.values, org => {
 			// Sort in descending order
 			return -(org.votes);
 		});
@@ -99,7 +99,7 @@ class OrgsCollection extends TrackableCollection {
 				}, pledge));
 			});
 		});
-		pledges = _.sortBy(pledges, ['createdAt']);
+		pledges = sortBy(pledges, ['createdAt']);
 		return pledges;
 	}
 }

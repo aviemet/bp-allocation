@@ -2,7 +2,7 @@ import React from 'react';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 
 import styled from 'styled-components';
 import { Grid, Progress } from 'semantic-ui-react';

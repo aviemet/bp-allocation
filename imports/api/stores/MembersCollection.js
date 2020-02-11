@@ -1,6 +1,4 @@
-import TrackableCollection from './TrackableCollection';
-import { observable, computed } from 'mobx';
-import { filterCollection } from '/imports/lib/utils';
+import TrackableCollection from './lib/TrackableCollection';
 
 class MembersCollection extends TrackableCollection {
 	searchableFields = ['firstName', 'lastName', 'fullName', 'code', 'initials', 'number', 'phone'];

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import AppStore from './AppStore';
+import AppStore from '../AppStore';
 
 export const AppContext = React.createContext();
 export const useApp = () => useContext(AppContext);

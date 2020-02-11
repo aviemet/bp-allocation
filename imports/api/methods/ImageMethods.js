@@ -1,6 +1,6 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
-import { Images } from '/imports/api';
+import { Images } from '/imports/api/db';
 
 const ImageMethods = {
 	remove: new ValidatedMethod({

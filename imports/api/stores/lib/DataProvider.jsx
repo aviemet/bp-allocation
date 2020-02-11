@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import DataStore from './DataStore';
+import DataStore from '/imports/api/stores/DataStore';
 import { observer } from 'mobx-react-lite';
 
 export const DataContext = React.createContext();

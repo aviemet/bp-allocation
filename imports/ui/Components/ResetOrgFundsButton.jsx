@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
 import { ThemeMethods } from '/imports/api/methods';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 
 const ResetOrgFundsButton = () => {
 	const { theme } = useData();

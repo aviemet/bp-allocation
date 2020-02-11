@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { readCsvWithHeadings, sanitizeNames } from '/imports/lib/utils';
 // import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
 import CustomMessage from '/imports/ui/Components/CustomMessage';

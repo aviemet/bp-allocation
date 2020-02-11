@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 
 import { Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';

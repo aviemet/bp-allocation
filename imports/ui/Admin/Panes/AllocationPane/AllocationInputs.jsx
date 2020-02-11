@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 
 import { roundFloat } from '/imports/lib/utils';
 
@@ -11,7 +11,7 @@ import { OrganizationMethods } from '/imports/api/methods';
 
 import CrowdFavoriteRibbon from '/imports/ui/Components/CrowdFavoriteRibbon';
 
-import { Table, Button, Form, Input } from 'semantic-ui-react';
+import { Table, Button, Input } from 'semantic-ui-react';
 
 /**
  * Allocation Inputs Component

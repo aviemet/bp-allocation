@@ -4,8 +4,8 @@ import { resetDatabase } from 'meteor/xolvio:cleaner';
 import { formatPhoneNumber } from '/imports/lib/utils';
 
 import { ThemeMethods, MemberMethods, OrganizationMethods } from '/imports/api/methods';
-import { Themes, Members, MemberThemes } from '/imports/api';
-import { Organizations } from '../Organizations';
+import { Themes, Members, MemberThemes } from '/imports/api/db';
+import { Organizations } from '../db/Organizations';
 
 const NUM_TEST_RECORDS = 5;
 

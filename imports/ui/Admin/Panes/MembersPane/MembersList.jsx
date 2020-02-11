@@ -4,7 +4,7 @@ import numeral from 'numeral';
 import { paginate } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
 import { Table, Icon, Button, Dropdown } from 'semantic-ui-react';

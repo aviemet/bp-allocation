@@ -1,4 +1,4 @@
-import TrackableStore from './TrackableStore';
+import TrackableStore from './lib/TrackableStore';
 import _ from 'lodash';
 import { computed } from 'mobx';
 

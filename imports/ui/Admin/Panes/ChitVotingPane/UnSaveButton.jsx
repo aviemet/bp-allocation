@@ -4,7 +4,7 @@ import _ from 'lodash';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { Button, Modal } from 'semantic-ui-react';

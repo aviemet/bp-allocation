@@ -2,7 +2,7 @@ import { assert, expect } from 'chai';
 import faker from 'faker';
 import { Random } from 'meteor/random';
 
-import { Members } from '/imports/api';
+import { Members } from '/imports/api/db';
 
 const memberData = {
 	number: faker.random.number(1000)

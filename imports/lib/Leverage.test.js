@@ -2,8 +2,8 @@ import { assert, expect } from 'chai';
 import _ from 'lodash';
 import Leverage from './Leverage';
 import { Youth, Education, Democracy } from './Leverage.mock';
-import OrgsCollection from '/imports/stores/OrgsCollection';
-import OrgStore from '/imports/stores/OrgStore';
+import OrgsCollection from '/imports/api/stores/OrgsCollection';
+import OrgStore from '/imports/api/stores/OrgStore';
 
 describe("Leverage object", function() {
 

@@ -7,7 +7,7 @@ import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
 // import { toJS } from 'mobx';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 import { ThemeMethods } from '/imports/api/methods';
 import LeverageObject from '/imports/lib/Leverage';
 

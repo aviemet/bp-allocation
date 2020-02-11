@@ -4,7 +4,7 @@ import _ from 'lodash';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext';
 
 import { Card, Container, Header, Button } from 'semantic-ui-react';

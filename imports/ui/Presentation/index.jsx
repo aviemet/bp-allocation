@@ -4,7 +4,7 @@ import { Route, withRouter } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 
 import styled from 'styled-components';
 

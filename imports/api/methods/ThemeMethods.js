@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
 import moment from 'moment';
 
-import { Themes, Organizations, MemberThemes } from '/imports/api';
+import { Themes, Organizations, MemberThemes } from '/imports/api/db';
 import OrganizationMethods from './OrganizationMethods';
 import PresentationSettingsMethods from './PresentationSettingsMethods';
 

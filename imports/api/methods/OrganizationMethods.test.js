@@ -3,7 +3,7 @@ import faker from 'faker';
 import { Random } from 'meteor/random';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 
-import { Organizations, Themes } from '/imports/api';
+import { Organizations, Themes } from '/imports/api/db';
 import { OrganizationMethods } from '/imports/api/methods';
 
 const OrgTestData = (id) => {

@@ -19,7 +19,7 @@ import Sidebar from '/imports/ui/Components/Sidebar';
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 
 const AdminLayout = withRouter(observer(props => {
 	const [ sidebarVisible, setSidebarVisible ] = useState(false);

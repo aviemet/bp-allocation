@@ -1,7 +1,7 @@
 import { assert, expect } from 'chai';
 import { Random } from 'meteor/random';
 import faker from 'faker';
-import { Themes } from '/imports/api';
+import { Themes } from '/imports/api/db';
 
 /** Things to test:
  * - Required fields are required

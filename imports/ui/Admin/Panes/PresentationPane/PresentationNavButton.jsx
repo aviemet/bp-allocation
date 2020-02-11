@@ -5,7 +5,7 @@ import { Button } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 import { PresentationSettingsMethods } from '/imports/api/methods';
 
 const PresentationNavButton = observer(({ page, active, onClick, children, ...rest }) => {
