@@ -152,7 +152,7 @@ class DataStore {
 					this.subscriptions.members = Meteor.subscribe('members', memberIds, {
 						onReady: () => {
 							// Fetch the Members and get the cursor
-							const membersCursor = Members.find({ _id: { $in: memberIds }});
+							const membersCursor = Members.find({ _id: { $in: memberIds } });
 							const members = membersCursor.fetch();
 
 							if(this.members) {
@@ -198,7 +198,7 @@ class DataStore {
 			// Subscribe to Members
 			this.subscriptions.members = Meteor.subscribe('members', memberIds, {
 				onReady: () => {
-					const membersCursor = Members.find({ _id: { $in: memberIds }});
+					const membersCursor = Members.find({ _id: { $in: memberIds } });
 					const members = membersCursor.fetch();
 
 					this.members = new MembersCollection(members, this, MemberStore);

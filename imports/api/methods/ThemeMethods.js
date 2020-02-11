@@ -7,7 +7,7 @@ import { Themes, Organizations, MemberThemes } from '/imports/api/db';
 import OrganizationMethods from './OrganizationMethods';
 import PresentationSettingsMethods from './PresentationSettingsMethods';
 
-import _ from 'lodash';
+import { merge } from 'lodash';
 
 const ThemeMethods = {
 	/**
@@ -41,7 +41,7 @@ const ThemeMethods = {
 			}
 
 			try {
-				let theme = Themes.insert(_.merge(data, { presentationSettings: PresentationSettingsMethods.create.call() }));
+				let theme = Themes.insert(merge(data, { presentationSettings: PresentationSettingsMethods.create.call() }));
 				return theme;
 			} catch (e) {
 				console.error(e);
@@ -223,7 +223,7 @@ const ThemeMethods = {
 					topOff: 0,
 					pledges: [],
 					leverageFunds: 0
-				}});
+				} });
 			});
 
 			MemberThemes.update({ theme: themeId }, { 

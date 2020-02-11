@@ -1,5 +1,4 @@
-import React, { useRef, useEffect } from 'react';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 
 export const roundFloat = (value, decimal) => {
 	decimal = decimal || 2;
@@ -34,7 +33,7 @@ export const sanitizeNames = name => {
 export const formatPhoneNumber = number => {
 	let newPhone = number.replace(/[^0-9+]/g, ''); // Reduce number down to numbers and the + symbol
 
-	if(!_.isEmpty(newPhone) && !/^\+/.test(newPhone)) { // Doesn't start with +
+	if(!isEmpty(newPhone) && !/^\+/.test(newPhone)) { // Doesn't start with +
 		newPhone = '+1' + newPhone.replace(/^1/, ''); // US area codes don't start with 0 or 1
 	}
 	return newPhone;
@@ -72,49 +71,3 @@ export const filterCollection = (collection, search, fields) => {
 		});
 	});
 };
-
-/**************************************
- *      Queue class for Pledges       *
- **************************************/
-export class Queue {
-	constructor() {
-		this.queue = [];
-	}
-
-	enqueue(element) {
-		this.queue.push(element);
-	}
-
-	dequeue() {
-		if (this.isEmpty()) return 'Queue is empty';
-		return this.queue.shift();
-	}
-
-	isEmpty() {
-		return !this.queue.length;
-	}
-}
-
-/*****************
- * DEBUG METHODS *
- *****************/
-
-/**
-* Hook to console.log prop changes in a useEffect block
-* @param {Object} props Props
-*/
-export function useTraceUpdate(props) {
-	const prev = useRef(props);
-	useEffect(() => {
-		const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
-			if (prev.current[k] !== v) {
-				ps[k] = [prev.current[k], v];
-			}
-			return ps;
-		}, {});
-		if (Object.keys(changedProps).length > 0) {
-			console.log('Changed props:', changedProps);
-		}
-		prev.current = props;
-	});
-}

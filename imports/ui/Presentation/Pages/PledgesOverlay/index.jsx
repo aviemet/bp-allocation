@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useData } from '/imports/api/stores/lib/DataProvider';
 import { observer } from 'mobx-react-lite';
-import { Queue } from '/imports/lib/utils';
+import Queue from '/imports/lib/Queue';
 
 import PledgeDisplay from './PledgeDisplay';
 
