@@ -1,6 +1,6 @@
 import { action, observable, computed } from 'mobx';
 import { filterCollection } from '/imports/lib/utils';
-import _ from 'lodash';
+import { findIndex, remove, orderBy } from 'lodash';
 
 class TrackableCollection {
 	@observable values = [];
@@ -33,7 +33,7 @@ class TrackableCollection {
 
 	@action
 	refreshData(data) {
-		let i = _.findIndex(this.values, value => value._id === data._id );
+		let i = findIndex(this.values, value => value._id === data._id );
 		if(i >= 0) {
 			// Update values
 			for(let [ key, value ] of Object.entries(data)) {
@@ -50,7 +50,7 @@ class TrackableCollection {
 
 	@action
 	deleteItem(data) {
-		_.remove(this.values, value => value._id === data._id);
+		remove(this.values, value => value._id === data._id);
 	}
 
 	@action
@@ -67,7 +67,7 @@ class TrackableCollection {
 				dir = direction; 
 		}
 
-		this.values = _.orderBy(this.values, column, dir);
+		this.values = orderBy(this.values, column, dir);
 	}
 
 	@action

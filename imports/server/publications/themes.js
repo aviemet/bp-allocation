@@ -1,13 +1,20 @@
 import { Meteor } from 'meteor/meteor';
 import { registerObserver, filterTopOrgs, getNumTopOrgs } from '../methods';
 
-import { Themes, Organizations } from '/imports/api/db';
+import { Themes, PresentationSettings, Organizations, MemberThemes, Members } from '/imports/api/db';
+import {  } from '../../api/db';
 
 const themeObserver = registerObserver(doc => {
-	/*const orgs = Organizations.find({ theme: doc._id }).fetch();
+	const settings = PresentationSettings.find({ theme: doc._id }).fetch();
+
+	const orgs = Organizations.find({ theme: doc._id }).fetch();
 	const topOrgs = filterTopOrgs(orgs, doc);
 
-	doc.pledgedTotal2 = function() {
+	const memberThemes = MemberThemes.find({ theme: doc._id }).fetch();
+	const memberIds = memberThemes.map(memberTheme => memberTheme.member);
+	const members = Members.find({ _id: { $in: memberIds } }).fetch();
+
+	/*doc.pledgedTotal2 = function() {
 		let total = 0;
 		topOrgs.map(org => {
 			if(org.pledges) {
@@ -59,26 +66,26 @@ const themeObserver = registerObserver(doc => {
 	/**
 	* Total amount of dollar votes
 	*/
-	/*doc.votedFunds2 = function() {
+	doc.votedFunds2 = function() {
 		let voteAllocated = 0;
 
 		// Calculate based on individual votes if using kiosk method
-		if(this.parent.settings.useKioskFundsVoting) {
-			this.parent.members.values.map(member => {
-				voteAllocated += member.theme.allocations.reduce((sum, allocation) => { return allocation.amount + sum; }, 0);
+		if(settings.useKioskFundsVoting) {
+			memberThemes.values.map(member => {
+				voteAllocated += member.allocations.reduce((sum, allocation) => { return allocation.amount + sum; }, 0);
 			});
 		// Calculate total count if not using kiosk method
 		} else {
-			voteAllocated = this.parent.orgs.topOrgs.reduce((sum, org) => { return sum + parseFloat(org.votedTotal || 0); }, voteAllocated);
+			voteAllocated = topOrgs.reduce((sum, org) => { return sum + parseFloat(org.votedTotal || 0); }, voteAllocated);
 		}
 		return voteAllocated;
-	}();*/
+	}();
 
-	/*doc.votingStarted2 = function() {
-		return this.parent.members.values.some(member => {
-			return member.theme.allocations.some(vote => vote.amount > 0);
+	doc.votingStarted2 = function() {
+		return memberThemes.some(member => {
+			return member.allocations.some(vote => vote.amount > 0);
 		});
-	}();*/
+	}();
 
 	return doc;
 });

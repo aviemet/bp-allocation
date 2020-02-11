@@ -19,7 +19,7 @@ export const registerObserver = transformer => (title, self) => {
 export const getNumTopOrgs = theme => theme.numTopOrgs >= theme.topOrgsManual.length ? theme.numTopOrgs : theme.topOrgsManual.length;
 
 // Returns the top orgs after the first round of chit voting
-export const filterTopOrgs = (orgs, theme) => {
+export const sortTopOrgs = (orgs, theme) => {
 	// Save manual top orgs as key/value true/false pairs for reference
 	let manualTopOrgs = {};
 	theme.topOrgsManual.map((org) => {
@@ -62,4 +62,9 @@ export const filterTopOrgs = (orgs, theme) => {
 	}
 
 	return sortedOrgs;
+};
+
+export const filterTopOrgs = (orgs, theme) => {
+	const sortedOrgs = sortTopOrgs(orgs, theme);
+	return sortedOrgs.slice(0, getNumTopOrgs(theme));
 };
