@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 import { OrganizationMethods } from '/imports/api/methods';
 
 import { toJS } from 'mobx';

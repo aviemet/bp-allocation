@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { sortBy } from 'underscore';
 
 // Sets Meteor publication callback events to transform data
 export const registerObserver = transformer => (title, self) => {
@@ -27,7 +27,7 @@ export const filterTopOrgs = (orgs, theme) => {
 	});
 
 	// First sort orgs by weight and vote count
-	let sortedOrgs = _.sortBy(orgs, org => {
+	let sortedOrgs = sortBy(orgs, org => {
 		// Sort in descending order
 		return -(org.votes);
 	});

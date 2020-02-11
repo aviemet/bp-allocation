@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { readCsvWithHeadings } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 import { OrganizationMethods } from '/imports/api/methods';
 
 import CustomMessage from '/imports/ui/Components/CustomMessage';

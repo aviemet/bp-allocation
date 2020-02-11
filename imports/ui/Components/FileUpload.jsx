@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import styled from 'styled-components';
 
-import { Images } from '/imports/api';
+import { Images } from '/imports/api/db';
 
 import { Progress, Input, Segment } from 'semantic-ui-react';
 

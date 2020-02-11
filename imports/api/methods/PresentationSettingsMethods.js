@@ -1,6 +1,6 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
-import { PresentationSettings } from '/imports/api';
+import { PresentationSettings } from '/imports/api/db';
 
 const PresentationSettingsMethods = {
 	/**

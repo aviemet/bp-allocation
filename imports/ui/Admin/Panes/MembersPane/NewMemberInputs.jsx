@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { roundFloat } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 import { MemberMethods } from '/imports/api/methods';
 
 import { Form, Button } from 'semantic-ui-react';

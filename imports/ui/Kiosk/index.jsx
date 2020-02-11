@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
 import { withRouter } from 'react-router-dom';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 
 import KioskInfo from './Info/KioskInfo';
 // import KioskChitVoting from './ChitVoting/KioskChitVoting';

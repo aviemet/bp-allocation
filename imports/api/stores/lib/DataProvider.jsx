@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import DataStore from './DataStore';
-import { observer } from 'mobx-react-lite';
+import DataStore from '/imports/api/stores/DataStore';
 
 export const DataContext = React.createContext();
 export const useData = () => useContext(DataContext);
@@ -10,7 +9,6 @@ export const useData = () => useContext(DataContext);
 const dataStore = new DataStore();
 
 const DataProvider = props => {
-
 	return (
 		<DataContext.Provider value={ dataStore }>
 			{ props.children }

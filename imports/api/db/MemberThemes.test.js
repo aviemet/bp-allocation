@@ -1,7 +1,7 @@
 import { assert, expect } from 'chai';
 import { Random } from 'meteor/random';
 
-import { MemberThemes } from '/imports/api';
+import { MemberThemes } from '/imports/api/db';
 
 const memberThemeData = {
 	theme: Random.id(),

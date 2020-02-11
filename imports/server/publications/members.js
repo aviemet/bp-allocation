@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
-import { Members, MemberThemes } from '/imports/api';
+import { Members, MemberThemes } from '/imports/api/db';
 
 // MemberThemes - Member activity for theme
 Meteor.publish('memberThemes', (themeId) => {
@@ -11,5 +11,5 @@ Meteor.publish('memberThemes', (themeId) => {
 // Members - All members by [id]
 Meteor.publish('members', (ids) => {
 	if(!ids) return Members.find({});
-	return Members.find({ _id: { $in: ids }});
+	return Members.find({ _id: { $in: ids } });
 });

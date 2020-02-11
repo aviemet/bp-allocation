@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { Themes } from '/imports/api';
+import { Themes } from '/imports/api/db';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { Table, Icon, Segment, Dropdown, Container } from 'semantic-ui-react';

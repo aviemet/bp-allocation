@@ -4,7 +4,7 @@ import faker from 'faker';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 
 import { ThemeMethods, OrganizationMethods } from '/imports/api/methods';
-import { Themes, Organizations } from '/imports/api';
+import { Themes, Organizations } from '/imports/api/db';
 
 const themeData = {
 	title: faker.company.bsNoun(),

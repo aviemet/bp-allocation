@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
-import { PresentationSettings } from '/imports/api';
+import { PresentationSettings } from '/imports/api/db';
 
 /** Things to test:
  * - Required fields are required

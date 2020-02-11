@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import _ from 'lodash';
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 
 import CustomMessage from '/imports/ui/Components/CustomMessage';
 import { Loader, Form, Checkbox, Label } from 'semantic-ui-react';

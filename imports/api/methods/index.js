@@ -1,8 +1,8 @@
-import OrganizationMethods from '/imports/api/methods/OrganizationMethods';
-import PresentationSettingsMethods from '/imports/api/methods/PresentationSettingsMethods';
-import ThemeMethods from '/imports/api/methods/ThemeMethods';
-import ImageMethods from '/imports/api/methods/ImageMethods';
-import MemberMethods from '/imports/api/methods/MemberMethods';
+import OrganizationMethods from './OrganizationMethods';
+import PresentationSettingsMethods from './PresentationSettingsMethods';
+import ThemeMethods from './ThemeMethods';
+import ImageMethods from './ImageMethods';
+import MemberMethods from './MemberMethods';
 
 export {
 	OrganizationMethods,

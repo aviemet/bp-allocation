@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { Link } from 'react-router-dom';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Grid, Icon, Label, Segment, Input, Button, Responsive } from 'semantic-ui-react';

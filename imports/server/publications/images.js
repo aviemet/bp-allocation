@@ -1,12 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 
-import { Images, Organizations } from '/imports/api';
+import { Images, Organizations } from '/imports/api/db';
 
 // Images - Images by [id]
 Meteor.publish('images', (ids) => {
 	if(!ids) return false;
 
-	return Images.find({ _id: { $in: ids }}).cursor; // Images need the cursor
+	return Images.find({ _id: { $in: ids } }).cursor; // Images need the cursor
 });
 
 // Images - All images for theme
@@ -20,7 +20,7 @@ Meteor.publish('images.byTheme', function(themeId) {
 		imgIds.push(org.image);
 	});
 
-	return Images.find({ _id: { $in: imgIds }}).cursor; // Images need the cursor
+	return Images.find({ _id: { $in: imgIds } }).cursor; // Images need the cursor
 });
 
 // Image - Single Image

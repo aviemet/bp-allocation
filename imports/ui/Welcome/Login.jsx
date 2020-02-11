@@ -52,7 +52,7 @@ const Login = ({ history, location }) => {
 				onDismiss={ hideMessage }
 				heading='Login Unsuccesful'
 				body={ <>
-					<p>Authentication is restricted emails with the following domains:</p>
+					<p>Authentication is restricted to emails with the following domains:</p>
 					<ul>
 						{ ['thebatterysf.com'].map((domain, i) => ( // Should be pulling from the settings file, but I ain't got time for that
 							<li key={ i }>{ domain }</li>

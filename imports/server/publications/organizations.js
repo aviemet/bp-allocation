@@ -1,10 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { isEmpty } from 'lodash';
 import { roundFloat } from '/imports/lib/utils';
-import { registerObserver } from './methods';
+import { registerObserver } from '../methods';
 
-import { Organizations, Themes, MemberThemes } from '/imports/api';
-import { PresentationSettings } from '../../api/PresentationSettings';
+import { Organizations, Themes, MemberThemes, PresentationSettings } from '/imports/api/db';
 
 const orgObserver = registerObserver(doc => {
 	if(!doc.theme) return doc;

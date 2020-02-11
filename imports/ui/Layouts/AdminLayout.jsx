@@ -19,7 +19,7 @@ import Sidebar from '/imports/ui/Components/Sidebar';
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/stores/DataProvider';
+import { useData } from '/imports/api/stores/lib/DataProvider';
 
 const AdminLayout = withRouter(observer(props => {
 	const [ sidebarVisible, setSidebarVisible ] = useState(false);
@@ -30,7 +30,7 @@ const AdminLayout = withRouter(observer(props => {
 
 	useEffect(() => {
 		if(documentWidth >= Responsive.onlyTablet.minWidth) {
-			// Hide sidebar on themes list, show when them is chosen
+			// Hide sidebar on themes list, show when theme is chosen
 			let showSidebar = true;
 			const regex = {
 				admin: /^\/admin[/]?$/,

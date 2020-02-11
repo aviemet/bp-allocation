@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
 import theme from '/imports/lib/theme';
-import DataProvider from '/imports/stores/DataProvider';
+import DataProvider from '/imports/api/stores/lib/DataProvider';
 import Routes from './Routes';
 import { isMobileDevice } from '/imports/lib/utils';
 

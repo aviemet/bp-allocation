@@ -5,8 +5,8 @@ import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import { createBrowserHistory as createHistory } from 'history';
 import { withTracker } from 'meteor/react-meteor-data';
 import PrivateRoute from '/imports/ui/Components/PrivateRoute';
-import { useData } from '/imports/stores/DataProvider';
-import { Themes, Members } from '/imports/api';
+import { useData } from '/imports/api/stores/lib/DataProvider';
+import { Themes, Members } from '/imports/api/db';
 
 import { Loader } from 'semantic-ui-react';
 import { observer } from 'mobx-react-lite';

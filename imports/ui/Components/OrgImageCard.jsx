@@ -5,7 +5,7 @@ import numeral from 'numeral';
 import { Card } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import { Images } from '/imports/api';
+import { Images } from '/imports/api/db';
 
 /**
  * OrgCard Component

@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
-import { PresentationSettings } from '/imports/api';
+import { PresentationSettings } from '/imports/api/db';
 
 Meteor.publish('presentationSettings', (settingsId) => {
 	try{

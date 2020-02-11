@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 
-import { PresentationSettings } from '/imports/api';
+import { PresentationSettings } from '/imports/api/db';
 import { PresentationSettingsMethods } from '/imports/api/methods';
 
 var settings;

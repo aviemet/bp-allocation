@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import _ from 'lodash';
 import { formatPhoneNumber, sanitizeString } from '/imports/lib/utils';
 
-import { Members, MemberThemes, Organizations } from '/imports/api';
+import { Members, MemberThemes, Organizations } from '/imports/api/db';
 import { OrganizationMethods } from '/imports/api/methods';
 
 /**
