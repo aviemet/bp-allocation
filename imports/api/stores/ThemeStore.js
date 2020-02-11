@@ -6,7 +6,7 @@ class ThemeStore extends TrackableStore {
 	/**
 	* Sum of pledges made to top orgs
 	*/
-	@computed
+	/*@computed
 	get pledgedTotal() {
 		if(_.isUndefined(this.parent.orgs.topOrgs)) return 0;
 
@@ -17,7 +17,7 @@ class ThemeStore extends TrackableStore {
 			}
 		});
 		return total;
-	}
+	}*/
 
 	/**
 	* Amount given to orgs other than top orgs
@@ -73,7 +73,7 @@ class ThemeStore extends TrackableStore {
 	/**
 	* Total amount of dollar votes
 	*/
-	@computed
+	/*@computed
 	get votedFunds() {
 		let voteAllocated = 0;
 
@@ -85,20 +85,16 @@ class ThemeStore extends TrackableStore {
 		// Calculate total count if not using kiosk method
 		} else {
 			voteAllocated = this.parent.orgs.topOrgs.reduce((sum, org) => { return sum + parseFloat(org.votedTotal || 0); }, voteAllocated);
-			/*this.parent.orgs.topOrgs.map((org) => {
-				voteAllocated += parseFloat(org.votedTotal || 0);
-				// voteAllocated += parseFloat(org.topOff || 0);
-			});*/
 		}
 		return voteAllocated;
-	}
+	}*/
 
-	@computed
+	/*@computed
 	get votingStarted() {
 		return this.parent.members.values.some(member => {
 			return member.theme.allocations.some(vote => vote.amount > 0);
 		});
-	}
+	}*/
 }
 
 export default ThemeStore;

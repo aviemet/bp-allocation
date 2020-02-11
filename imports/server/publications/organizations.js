@@ -12,7 +12,7 @@ const orgObserver = registerObserver(doc => {
 	const settings = PresentationSettings.findOne({ _id: theme.presentationSettings });
 	const memberThemes = MemberThemes.find({ theme: doc.theme }).fetch();
 
-	doc.save2 = function() {
+	doc.save = function() {
 		// Get save amount if saved
 		let save = 0;
 		if(!isEmpty(theme.saves)) {
@@ -24,7 +24,7 @@ const orgObserver = registerObserver(doc => {
 		return save;
 	}();
 
-	doc.pledgeTotal2 = function() {
+	doc.pledgeTotal = function() {
 		// Total of funds pledged for this org multiplied by the match ratio
 		let pledgeTotal = 0;
 		if(doc.pledges) {
@@ -33,7 +33,7 @@ const orgObserver = registerObserver(doc => {
 		return pledgeTotal;
 	}();
 
-	doc.votedTotal2 = function() {
+	doc.votedTotal = function() {
 		// If voting with kiosk mode, get votes for this org from each member
 		if(settings.useKioskFundsVoting) {
 			const amount = memberThemes.reduce((sum, memberTheme) => {
@@ -45,18 +45,18 @@ const orgObserver = registerObserver(doc => {
 		return this.amountFromVotes;
 	}();
 
-	doc.allocatedFunds2 = function() {
+	doc.allocatedFunds = function() {
 		// Total amount of money allocted to this org aside from leverage distribution
-		return roundFloat((doc.votedTotal2 || 0) + doc.pledgeTotal2 + doc.save2 + doc.topOff);
+		return roundFloat((doc.votedTotal || 0) + doc.pledgeTotal + doc.save + doc.topOff);
 	}();
 
-	doc.need2 = function() {
+	doc.need = function() {
 		// Amount needed to reach goal
 		let need = doc.ask - doc.allocatedFunds;
 		return roundFloat(need > 0 ? need : 0);
 	}();
 
-	doc.votes2 = function() {
+	doc.votes = function() {
 		let votes = 0;
 		if(doc.chitVotes) {
 			if(doc.chitVotes.count) {

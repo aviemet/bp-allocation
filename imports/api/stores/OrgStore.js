@@ -12,7 +12,7 @@ class OrgStore {
 		});
 	}
 
-	@computed
+	/*@computed
 	get save() {
 		// Get save amount if saved
 		let save = 0;
@@ -23,9 +23,9 @@ class OrgStore {
 			})();
 		}
 		return save;
-	}
+	}*/
 	
-	@computed
+	/*@computed
 	get pledgeTotal() {
 		// Total of funds pledged for this org multiplied by the match ratio
 		let pledgeTotal = 0;
@@ -33,9 +33,9 @@ class OrgStore {
 			pledgeTotal = this.pledges.reduce((sum, pledge) => { return sum + pledge.amount;}, 0) * this.parent.theme.matchRatio;
 		}
 		return pledgeTotal;
-	}
+	}*/
 
-	@computed
+	/*@computed
 	get votedTotal() {
 		if(this.parent.loading) return 0; 
 
@@ -48,22 +48,22 @@ class OrgStore {
 			return amount;
 		}
 		return this.amountFromVotes;
-	}
+	}*/
 
-	@computed
+	/*@computed
 	get allocatedFunds() {
 		// Total amount of money allocted to this org aside from leverage distribution
 		return roundFloat((this.votedTotal || 0) + this.pledgeTotal + this.save + this.topOff);
-	}
+	}*/
 
-	@computed
+	/*@computed
 	get need() {
 		// Amount needed to reach goal
 		let need = this.ask - this.allocatedFunds;
 		return roundFloat(need > 0 ? need : 0);
-	}
+	}*/
 
-	@computed
+	/*@computed
 	get votes() {
 		let votes = 0;
 		if(this.chitVotes) {
@@ -78,7 +78,7 @@ class OrgStore {
 		}
 
 		return roundFloat(votes, 1);
-	}
+	}*/
 }
 
 export default OrgStore;

@@ -1,8 +1,7 @@
 import { Meteor } from 'meteor/meteor';
-import { registerObserver, filterTopOrgs, getNumTopOrgs } from '../methods';
+import { registerObserver, filterTopOrgs } from '../methods';
 
-import { Themes, PresentationSettings, Organizations, MemberThemes, Members } from '/imports/api/db';
-import {  } from '../../api/db';
+import { Themes, PresentationSettings, Organizations, MemberThemes } from '/imports/api/db';
 
 const themeObserver = registerObserver(doc => {
 	const settings = PresentationSettings.find({ theme: doc._id }).fetch();
@@ -11,10 +10,10 @@ const themeObserver = registerObserver(doc => {
 	const topOrgs = filterTopOrgs(orgs, doc);
 
 	const memberThemes = MemberThemes.find({ theme: doc._id }).fetch();
-	const memberIds = memberThemes.map(memberTheme => memberTheme.member);
-	const members = Members.find({ _id: { $in: memberIds } }).fetch();
+	/*const memberIds = memberThemes.map(memberTheme => memberTheme.member);
+	const members = Members.find({ _id: { $in: memberIds } }).fetch();*/
 
-	/*doc.pledgedTotal2 = function() {
+	doc.pledgedTotal = function() {
 		let total = 0;
 		topOrgs.map(org => {
 			if(org.pledges) {
@@ -22,51 +21,12 @@ const themeObserver = registerObserver(doc => {
 			}
 		});
 		return total;
-	}();*/
-
-	/**
-	* Amount given to orgs other than top orgs
-	*/
-	/*doc.consolationTotal2 = function() {
-		if(doc.consolationActive) return (orgs.length - getNumTopOrgs(doc)) * doc.consolationAmount;
-		return 0;
-	}();*/
-
-	/**
-	* Amount of the total pot still unassigned
-	*   Total Pot
-	* - Consolation
-	* - Member Votes
-	* - Crowd Favorite Topoff
-	* - Matched Pledges
-	* = leverageRemaining
-	*/
-	/*doc.leverageRemaining2 = function() {
-		// Leverage moving forward into allocation round
-		let remainingLeverage = (this.leverageTotal) - this.consolationTotal - this.votedFunds;
-
-		// Subtract the amounts allocated to each org
-		this.parent.orgs.topOrgs.map((org, i) => {
-			// The topoff for the crowd favorite
-			if(org.topOff > 0){
-				remainingLeverage -= org.topOff;
-			}
-			
-			// Individual pledges from members
-			if(!_.isEmpty(org.pledges)) {
-				// TODO: This should be calculated based on the match ratio
-				remainingLeverage -= org.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0);
-			}
-		});
-
-		if(remainingLeverage <= 0) return 0; // Lower bounds check in case the total pot has not been set
-		return parseFloat((remainingLeverage).toFixed(2));
-	}();*/
+	}();
 
 	/**
 	* Total amount of dollar votes
 	*/
-	doc.votedFunds2 = function() {
+	doc.votedFunds = function() {
 		let voteAllocated = 0;
 
 		// Calculate based on individual votes if using kiosk method
@@ -81,7 +41,7 @@ const themeObserver = registerObserver(doc => {
 		return voteAllocated;
 	}();
 
-	doc.votingStarted2 = function() {
+	doc.votingStarted = function() {
 		return memberThemes.some(member => {
 			return member.allocations.some(vote => vote.amount > 0);
 		});
