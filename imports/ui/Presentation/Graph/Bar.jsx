@@ -2,9 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
-import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
-
 import { Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
@@ -23,10 +20,7 @@ AwardImg.propTypes = {
 	show: PropTypes.bool
 };
 
-const Bar = observer(props => {
-	const data = useData();
-	const { settings } = data;
-	
+const Bar = props => {	
 	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0);
 	if(!props.savesVisible) shownFunds -= props.org.save;
 
@@ -47,7 +41,7 @@ const Bar = observer(props => {
 			</GraphBar>
 		</BarContainer>
 	);
-});
+};
 
 const BarContainer = styled(Grid.Column)`
 	height: 100%;
@@ -80,8 +74,9 @@ const Pledged = styled.span`
 	opacity: 0;
 	font-size: 3em;
 
-	-webkit-animation: reveal-amount .5s ease 4s;
 	animation: reveal-amount .8s ease 4s;
+	-webkit-animation: reveal-amount .5s ease 4s;
+	animation-fill-mode: forwards;
 	-webkit-animation-fill-mode: forwards;
 `;
 
@@ -94,8 +89,9 @@ const Award = styled.img`
 	opacity: 0;
 	margin-top: 55px;
 
-	-webkit-animation: reveal-winner-logo .5s ease 4s;
 	animation: reveal-winner-logo .8s ease 4s;
+	-webkit-animation: reveal-winner-logo .5s ease 4s;
+	animation-fill-mode: forwards;
 	-webkit-animation-fill-mode: forwards;
 `;
 

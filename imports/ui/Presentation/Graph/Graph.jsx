@@ -185,13 +185,12 @@ const InfoGrid = styled(Grid)`
 const ProgressBar = styled(Progress)`
 	color: #FFF;
 
-	&& .bar{
+	&& .bar {
 		background: #CCCCCC;
 	}
 
-	&& .label{
+	&& .label {
 		color: #FFF;
-		font-size:
 	}
 `;
 

@@ -3,10 +3,7 @@ import numeral from 'numeral';
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/api/stores/lib/DataProvider';
 
-import { Grid, Table } from 'semantic-ui-react';
-
-import ChitInputs from '/imports/ui/Admin/Panes/ChitVotingPane/ChitInputs';
-import TopOrgsByChitVote from '/imports/ui/Admin/Panes/ChitVotingPane/TopOrgsByChitVote';
+import { Table } from 'semantic-ui-react';
 
 const ChitVotingPane = observer(() => {
 	const { orgs } = useData();

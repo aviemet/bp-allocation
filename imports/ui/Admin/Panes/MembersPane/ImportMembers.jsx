@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-import { readCsvWithHeadings, sanitizeNames } from '/imports/lib/utils';
+import { readCsvWithHeadings } from '/imports/lib/papaParseMethods';
+import { sanitizeNames } from '/imports/lib/utils';
 // import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 import { useData } from '/imports/api/stores/lib/DataProvider';

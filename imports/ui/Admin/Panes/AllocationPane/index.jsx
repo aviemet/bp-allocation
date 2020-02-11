@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import numeral from 'numeral';
@@ -13,8 +13,6 @@ import AllocationInputs from './AllocationInputs';
 import Pledges from './Pledges';
 
 import { ShowLeverageToggle } from '/imports/ui/Components/Toggles';
-
-import { toJS } from 'mobx';
 
 const AllocationPane = observer(props => {
 	const data = useData();
@@ -73,7 +71,6 @@ const AllocationPane = observer(props => {
 							<Table.Row>
 								<Table.HeaderCell></Table.HeaderCell>
 								<Table.HeaderCell>Voted Amount</Table.HeaderCell>
-								{/* <Table.HeaderCell>Matched Pledges (x{theme.matchRatio})</Table.HeaderCell> */}
 								<Table.HeaderCell>Funded</Table.HeaderCell>
 								<Table.HeaderCell>Ask</Table.HeaderCell>
 								<Table.HeaderCell>Need</Table.HeaderCell>
@@ -84,7 +81,7 @@ const AllocationPane = observer(props => {
 						</Table.Header>
 
 						<Table.Body>
-							{topOrgs.map((org, i) => (
+							{ topOrgs.map((org, i) => (
 								<AllocationInputs
 									key={ i }
 									org={ org }
@@ -93,37 +90,36 @@ const AllocationPane = observer(props => {
 									tabInfo={ { index: i + 1, length: topOrgs.length } }
 									hideAdminFields={ props.hideAdminFields || false }
 								/>
-							))}
+							)) }
 						</Table.Body>
 
 						<Table.Footer>
 							<Table.Row textAlign='right' className='bold'>
+
 								<Table.HeaderCell>Totals:</Table.HeaderCell>
+
 								{/* Voted Amount */}
 								<Table.HeaderCell>{ 
 									numeral(topOrgs.reduce((sum, org) => { return sum + org.votedTotal; }, 0)).format('$0,0') 
 								}</Table.HeaderCell>
-								{/* Matched Pledges */}
-								{/* <Table.HeaderCell>{
-									numeral(topOrgs.reduce((sum, org) => {
-										return sum + org.pledges.reduce((sum, pledge) => {
-											return sum + pledge.amount;
-										}, 0); 
-									}, 0)).format('$0,0')
-								}</Table.HeaderCell> */}
+								
 								{/* Total Allocated */}
 								<Table.HeaderCell>{
 									numeral(topOrgs.reduce((sum, org) => { return sum + org.allocatedFunds; }, 0)).format('$0,0')
 								}</Table.HeaderCell>
+
 								{/* Original Ask*/}
 								<Table.HeaderCell>{
 									numeral(topOrgs.reduce((sum, org) => { return sum + org.ask; }, 0)).format('$0,0')
 								}</Table.HeaderCell>
+
 								{/* Need (Difference remaining) */}
 								<Table.HeaderCell>{
 									numeral(topOrgs.reduce((sum, org) => { return sum + org.need - org.leverageFunds; }, 0)).format('$0,0')
 								}</Table.HeaderCell>
+
 								<Table.HeaderCell></Table.HeaderCell>
+
 							</Table.Row>
 						</Table.Footer>
 					</Table>

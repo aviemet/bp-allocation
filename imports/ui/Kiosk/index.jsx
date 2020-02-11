@@ -59,7 +59,7 @@ const Kiosk = withRouter(observer(props => {
 			// Voting inactive and (no votes yet cast || results not yet shown)
 			} else {
 				// Show orgs page
-				pageNav =KIOSK_PAGES.info;
+				pageNav = KIOSK_PAGES.info;
 			}
 		}
 
@@ -85,7 +85,7 @@ const Kiosk = withRouter(observer(props => {
 		}
 	};
 
-	const voting = props.location.pathname.startsWith('/voting');
+	// const voting = props.location.pathname.startsWith('/voting');
 	const member = props.match.params.member;
 	
 	return (

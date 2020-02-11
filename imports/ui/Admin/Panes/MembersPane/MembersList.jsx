@@ -16,7 +16,7 @@ const MembersList = observer(props => {
 	const { theme, settings, members } = useData();
 	
 	const [ page, setPage ] = useState(0);
-	const [ itemsPerPage, setItemsPerPage ] = useState(10);
+	const [ itemsPerPage/*, setItemsPerPage*/ ] = useState(10);
 	const [ sortColumn, setSortColumn ] = useState();
 	const [ sortDirection, setSortDirection ] = useState();
 
@@ -64,8 +64,6 @@ const MembersList = observer(props => {
 	let votingColspan = 0;
 	if(settings.useKioskChitVoting) votingColspan++;
 	if(settings.useKioskFundsVoting) votingColspan++;
-
-	// console.log({ started: theme.votingStarted });
 
 	return (
 		<>

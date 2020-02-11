@@ -1,4 +1,4 @@
-import { sortBy } from 'underscore';
+import { sortBy } from 'lodash';
 
 /**
  * Sets Meteor publication callback events to transform data

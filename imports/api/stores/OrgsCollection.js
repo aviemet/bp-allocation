@@ -77,6 +77,9 @@ class OrgsCollection extends TrackableCollection {
 		return sortedOrgs;
 	}
 
+	/**
+	 * Whether top orgs have been chosen yet
+	 */
 	@computed
 	get topOrgsChosen() {
 		return !this.values.some(org => {
@@ -86,6 +89,9 @@ class OrgsCollection extends TrackableCollection {
 		});
 	}
 
+	/**
+	 * Queue for displaying pledges on screen
+	 */
 	@computed
 	get pledges() {
 		let pledges = [];

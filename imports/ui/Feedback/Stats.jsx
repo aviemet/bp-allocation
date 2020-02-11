@@ -2,7 +2,6 @@ import React from 'react';
 import _ from 'lodash';
 
 import { observer } from 'mobx-react-lite';
-import { toJS } from 'mobx';
 import { useData } from '/imports/api/stores/lib/DataProvider';
 
 import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';

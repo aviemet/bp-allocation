@@ -194,7 +194,6 @@ const ProgressBar = styled(Progress)`
 
 	&& .label{
 		color: #FFF;
-		font-size:
 	}
 `;
 

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import Papa from 'papaparse';
-import _ from 'lodash';
-import { readCsvWithHeadings } from '/imports/lib/utils';
+import { readCsvWithHeadings } from '/imports/lib/papaParseMethods';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/api/stores/lib/DataProvider';
