@@ -94,10 +94,10 @@ Meteor.publish('topOrgs', function(themeId) {
 });
 
 // Organization - Single org
-Meteor.publish('organization', orgId => {
+Meteor.publish('organization', function(orgId) {
 	if(!orgId) return null;
 
-	const observer = Organizations.find({ _id: orgId }).observe(orgObserver(this));
+	const observer = Organizations.find({ _id: orgId }).observe(orgObserver('organization', this));
 	this.onStop(() => observer.stop());
 	this.ready();
 });

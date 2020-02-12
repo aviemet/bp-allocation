@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { Members, MemberThemes } from '/imports/api/db';
 import { registerObserver } from '../methods';
 
-let once = true;
+let once = false;
 
 const membersObserver = registerObserver((doc, params) => {
 	doc.theme = MemberThemes.findOne({ member: doc._id, theme: params.themeId });

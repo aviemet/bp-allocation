@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
 import theme from '/imports/ui/theme';
 import DataProvider from '/imports/api/stores/lib/DataProvider';
+import AppProvider from '/imports/api/stores/lib/AppDataProvider';
 import Routes from './Routes';
 import { isMobileDevice } from '/imports/lib/utils';
 
@@ -18,7 +19,9 @@ const App = () => {
 		<ThemeProvider theme={ theme }>
 			<GlobalContainer id="globalContainer">
 				<DataProvider>
-					<Routes />
+					<AppProvider>
+						<Routes />
+					</AppProvider>
 				</DataProvider>
 			</GlobalContainer>
 		</ThemeProvider>
