@@ -1,6 +1,4 @@
-import { computed, toJS, observable, extendObservable, action, autorun } from 'mobx';
-import { filterTopOrgs, roundFloat } from '/imports/lib/utils';
-import _ from 'lodash';
+import { extendObservable } from 'mobx';
 
 class MemberThemeStore {
 	constructor(memberTheme, parent) {

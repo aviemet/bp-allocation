@@ -2,8 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { observable, action, autorun, toJS } from 'mobx';
 // import { Queue } from '/imports/lib/utils';
 
-import { Themes, PresentationSettings, Organizations, MemberThemes, Members } from '/imports/api/db';
-import { ThemeStore, OrgsCollection, OrgStore, SettingsStore, MembersCollection, MemberThemesCollection, MemberThemeStore, MemberStore } from '/imports/api/stores';
+import { Themes, PresentationSettings, Organizations, Members } from '/imports/api/db';
+import { ThemeStore, OrgsCollection, OrgStore, SettingsStore, MembersCollection, MemberStore } from '/imports/api/stores';
 
 /**
  * Top level Data Store for the application
@@ -55,17 +55,13 @@ class DataStore {
 				// Organizations
 				promises.push(this._orgsSubscription());
 				// Members
-				promises.push(this._memberThemesSubscription().then(memberThemes => {
-					const memberIds = memberThemes.map(memberTheme => memberTheme.member);
+				promises.push(this._membersSubscription(this.themeId).then(members => {
 
-					promises.push(this._membersSubscription(memberIds).then(members => {
+					// Once all subscriptions are loaded and have returned data, set loading to false
+					Promise.all(promises).then(values => {
+						this.loading = false;
+					});
 
-						// Once all subscriptions are loaded and have returned data, set loading to false
-						Promise.all(promises).then(values => {
-							this.loading = false;
-						});
-
-					}));
 				}));
 
 				this.menuHeading = `Battery Powered Allocation Night: ${theme.title}`;
@@ -122,83 +118,12 @@ class DataStore {
 		});
 	}
 
-	// TODO: This is fucked and needs fixing
-	_memberThemesSubscription() {
-		return new Promise((resolve, reject) => {
-	
-			const _updateMembers = (memberTheme, remove) => {
-				remove = remove || false;
-				
-				// Refresh data on MemberThemes
-				if(!remove) {
-					this.memberThemes.refreshData(memberTheme);
-				} else {
-					this.memberThemes.deleteItem(memberTheme);
-				}
-				
-				// DUPLICATE CODE APPROACHING
-
-				// Handle re-fetch of dependant Members data
-
-				// Stop subscription and observation on Members in order to change query parameters
-				if(this.subscriptions.members) this.subscriptions.members.stop();
-				if(this.observers.members) this.observers.members.stop();
-
-				// Get list of Member IDs from MemberThemes query
-				const memberIds = this.memberThemes.values.map(memberTheme => memberTheme.member);
-
-				// Re-establish the subscription for the Members query
-				if(this.subscriptions.members) {
-					this.subscriptions.members = Meteor.subscribe('members', memberIds, {
-						onReady: () => {
-							// Fetch the Members and get the cursor
-							const membersCursor = Members.find({ _id: { $in: memberIds } });
-							const members = membersCursor.fetch();
-
-							if(this.members) {
-								members.forEach(member => this.members.refreshData(member));
-
-								// Re-establish the observer for the Members cursor
-								this.observers.members = membersCursor.observe({
-									added: member => this.members.refreshData(member),
-									changed: member => this.members.refreshData(member)
-								});
-							}
-						}
-					});
-				}
-			};
-
-			// Subscribe to MemberThemes
-			this.subscriptions.memberThemes = Meteor.subscribe('memberThemes', this.themeId, {
-				onReady: () => {
-					// Define the query, save the cursor
-					const memberThemesCursor = MemberThemes.find({ theme: this.themeId });
-					// Fetch the data
-					const memberThemes = memberThemesCursor.fetch();
-	
-					// Instantiate the collection
-					this.memberThemes = new MemberThemesCollection(memberThemes, this, MemberThemeStore);
-
-					// Setup the Meteor observers on the subscription
-					this.observers.memberThemes = memberThemesCursor.observe({
-						added: memberTheme => _updateMembers(memberTheme),
-						changed: memberTheme => _updateMembers(memberTheme),
-						removed: memberTheme => _updateMembers(memberTheme, true)
-					});
-
-					resolve(toJS(memberThemes));
-				}
-			});
-		});
-	}
-
-	_membersSubscription(memberIds) {
+	_membersSubscription(themeId) {
 		return new Promise((resolve, reject) => {
 			// Subscribe to Members
-			this.subscriptions.members = Meteor.subscribe('members', memberIds, {
+			this.subscriptions.members = Meteor.subscribe('members', themeId, {
 				onReady: () => {
-					const membersCursor = Members.find({ _id: { $in: memberIds } });
+					const membersCursor = Members.find({ 'theme.theme': themeId });
 					const members = membersCursor.fetch();
 
 					this.members = new MembersCollection(members, this, MemberStore);

@@ -4,13 +4,13 @@ import { sortBy } from 'lodash';
  * Sets Meteor publication callback events to transform data
  * @param {*} transformer 
  */ 
-export const registerObserver = transformer => (title, self) => {
+export const registerObserver = transformer => (title, self, params) => {
 	return {
 		added: doc => {
-			return self.added(title, doc._id, transformer(doc));
+			return self.added(title, doc._id, transformer(doc, params));
 		},
 		changed: (newDoc, oldDoc) => {
-			return self.changed(title, newDoc._id, transformer(newDoc));
+			return self.changed(title, newDoc._id, transformer(newDoc, params));
 		},
 		removed: oldDoc => {
 			return self.removed(title, oldDoc._id);

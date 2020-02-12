@@ -1,6 +1,4 @@
-import { computed, toJS, observable, extendObservable } from 'mobx';
-import { filterTopOrgs, roundFloat } from '/imports/lib/utils';
-import _ from 'lodash';
+import { computed, extendObservable } from 'mobx';
 
 class MemberStore {
 	constructor(member, parent) {
@@ -10,14 +8,6 @@ class MemberStore {
 		extendObservable(this, {
 			...member
 		});
-	}
-
-	@computed
-	get theme() {
-		const theme = this.parent.theme._id;
-		const member = this._id;
-		
-		return _.find(this.parent.memberThemes.values, value => value.theme === theme && value.member === member);
 	}
 
 	@computed
