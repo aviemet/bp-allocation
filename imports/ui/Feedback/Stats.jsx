@@ -4,10 +4,23 @@ import _ from 'lodash';
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/api/stores/lib/DataProvider';
 
+import { PieChart, Pie, Sector, Cell } from 'recharts';
+
 import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';
+
+import { toJS } from 'mobx';
 
 const Stats = observer(props => {
 	const { orgs, members } = useData();
+
+	console.log({ member: toJS(members.values[0]) });
+	console.log({ org: toJS(orgs.values[0]) });
+
+	const data = [
+		{ name: 'Group A', value: 400 }, { name: 'Group B', value: 300 },
+		{ name: 'Group C', value: 300 }, { name: 'Group D', value: 200 }
+	];
+	const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 	/**
 	 * pledge = { org, memberName, memberNumber, amount, createdAt }
@@ -54,6 +67,13 @@ const Stats = observer(props => {
 				data={ pledges }
 				description='Topup Pledges'
 			/>
+
+			<PieChart width={ 800 } height={ 400 }>
+				<Pie data={ data }>
+					{ data.map((entry, index) => <Cell key={ index } fill={ COLORS[index % COLORS.length] } />) }
+				</Pie>
+			</PieChart>
+
 		</React.Fragment>
 	);
 });

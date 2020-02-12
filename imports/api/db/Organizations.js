@@ -37,6 +37,7 @@ const OrganizationSchema = new SimpleSchema({
 		type: String,
 		label: 'Organization Name'
 	},
+	theme: SimpleSchema.RegEx.Id,
 	ask: {
 		type: Number,
 		label: 'Funding Request Amount'
@@ -82,7 +83,6 @@ const OrganizationSchema = new SimpleSchema({
 		defaultValue: 0,
 		label: 'Distribution of funds from final round of leverage assignment'
 	},
-	theme: SimpleSchema.RegEx.Id,
 	createdAt: {
 		type: Date,
 		required: false,
