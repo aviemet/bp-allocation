@@ -190,6 +190,9 @@ const AdminLayout = withRouter(observer(props => {
 				<Container className='Container'>
 					<Grid columns={ 16 } className='Grid'>
 						<Switch>
+							{/**
+							 * This is where the themeId gets set for the application
+							 */}
 							<Route exact path={ ['/themes', '/admin'] } render={ matchProps => {
 								data.themeId = undefined;
 								return <ThemesList />;
