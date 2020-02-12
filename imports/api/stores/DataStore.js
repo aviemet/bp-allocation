@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { observable, action, autorun, toJS } from 'mobx';
-// import { Queue } from '/imports/lib/utils';
 
 import { Themes, PresentationSettings, Organizations, Members } from '/imports/api/db';
 import { ThemeStore, OrgsCollection, OrgStore, SettingsStore, MembersCollection, MemberStore } from '/imports/api/stores';
@@ -23,7 +22,6 @@ class DataStore {
 	theme;
 	settings;
 	orgs;
-	memberThemes;
 	members;
 	images;
 
@@ -72,7 +70,6 @@ class DataStore {
 			this.theme = undefined;
 			this.settings = undefined;
 			this.orgs = undefined;
-			this.memberThemes = undefined;
 			this.members = undefined;
 			this.images = undefined;
 		}
