@@ -20,6 +20,8 @@ import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useAppData } from '/imports/api/stores/lib/AppDataProvider';
+import { useTheme } from '/imports/api/stores/ThemeStoreTest';
 
 const AdminLayout = withRouter(observer(props => {
 	const [ sidebarVisible, setSidebarVisible ] = useState(false);
@@ -27,6 +29,9 @@ const AdminLayout = withRouter(observer(props => {
 	const [ activeMenuItem, setActiveMenuItem ] = useState();
 
 	const data = useData();
+	const appData = useAppData();
+	const themeData = useTheme();
+	console.log({ themeData });
 
 	useEffect(() => {
 		if(documentWidth >= Responsive.onlyTablet.minWidth) {
@@ -195,10 +200,12 @@ const AdminLayout = withRouter(observer(props => {
 							 */}
 							<Route exact path={ ['/themes', '/admin'] } render={ matchProps => {
 								data.themeId = undefined;
+								appData.themeId = undefined;
 								return <ThemesList />;
 							} } />
 							<Route path='/admin/:id' render={ matchProps => {
 								data.themeId = matchProps.match.params.id;
+								appData.themeId = matchProps.match.params.id;
 								setActivePage(matchProps);
 
 								if(loading) return <Loader active />;

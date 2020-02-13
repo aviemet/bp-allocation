@@ -6,6 +6,7 @@ import { roundFloat } from '/imports/lib/utils';
 import { Themes, PresentationSettings, Organizations, MemberThemes } from '/imports/api/db';
 
 const themeObserver = registerObserver(doc => {
+	console.log({ settings: doc.presentationSettings, id: doc._id });
 	const settings = PresentationSettings.findOne({ _id: doc.presentationSettings });
 	const orgs = Organizations.find({ theme: doc._id }).fetch();
 	const topOrgs = filterTopOrgs(orgs, doc);
@@ -31,7 +32,7 @@ const themeObserver = registerObserver(doc => {
 		let voteAllocated = 0;
 
 		// Calculate based on individual votes if using kiosk method
-		if(settings.useKioskFundsVoting) {
+		if(settings && settings.useKioskFundsVoting) {
 			memberThemes.map(member => {
 				voteAllocated += member.allocations.reduce((sum, allocation) => { return allocation.amount + sum; }, 0);
 			});

@@ -35,7 +35,7 @@ const orgObserver = registerObserver(doc => {
 
 	doc.votedTotal = function() {
 		// If voting with kiosk mode, get votes for this org from each member
-		if(settings.useKioskFundsVoting) {
+		if(settings && settings.useKioskFundsVoting) {
 			const amount = memberThemes.reduce((sum, memberTheme) => {
 				const vote = memberTheme.allocations.find(allocation => allocation.organization._id === doc._id);
 				return sum + (vote ? vote.amount : 0);

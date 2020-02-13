@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import Routes from './Routes';
+
 import styled, { ThemeProvider } from 'styled-components';
 import theme from '/imports/ui/theme';
+import { isMobileDevice } from '/imports/lib/utils';
+
 import DataProvider from '/imports/api/stores/lib/DataProvider';
 import AppProvider from '/imports/api/stores/lib/AppDataProvider';
-import Routes from './Routes';
-import { isMobileDevice } from '/imports/lib/utils';
+import ThemeDataProvider from '/imports/api/stores/ThemeStoreTest';
 
 const App = () => {
 	useEffect(() => {
@@ -20,7 +23,9 @@ const App = () => {
 			<GlobalContainer id="globalContainer">
 				<DataProvider>
 					<AppProvider>
-						<Routes />
+						<ThemeDataProvider>
+							<Routes />
+						</ThemeDataProvider>
 					</AppProvider>
 				</DataProvider>
 			</GlobalContainer>
