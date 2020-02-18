@@ -1,24 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useData, useTheme } from '/imports/api/providers';
 import { Route, Redirect } from 'react-router-dom';
 import { Loader } from 'semantic-ui-react';
 
-// Route which delays display of content until the data store has fully loaded
+// Route which delays display of content until the theme data has fully loaded
 const LoadingRoute = observer(({ component, render, children, ...rest }) => {
 	const data = useData();
+	const { theme, isLoading } = useTheme();
+	console.log({ data });
 
 	// Allow for any of the methods for passing components
 	const Component = render || component || children;
-	const loading = data.loading;
-	const { theme } = data;
 
 	return (
 		<Route { ...rest } render={ matchProps => {
 			data.themeId = matchProps.match.params.id || undefined;
-			if(loading) return <Loader active />;
-			if(!loading && !theme) return <Redirect to='/404' />;
+			if(isLoading) return <Loader active />;
+			if(!isLoading && !theme) return <Redirect to='/404' />;
 			return <Component />;
 		} } />
 	);

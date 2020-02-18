@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useOrgs, useMembers } from '/imports/api/providers';
 
 import { PieChart, Pie, Sector, Cell } from 'recharts';
 
@@ -11,7 +11,8 @@ import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';
 import { toJS } from 'mobx';
 
 const Stats = observer(props => {
-	const { orgs, members } = useData();
+	const { orgs } = useOrgs();
+	const { members } = useMembers();
 
 	console.log({ member: toJS(members.values[0]) });
 	console.log({ org: toJS(orgs.values[0]) });

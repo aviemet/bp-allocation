@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import numeral from 'numeral';
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme, useOrgs } from '/imports/api/providers';
 
 import { OrganizationMethods } from '/imports/api/methods';
 
-import { Header, Grid, Form, Container, Table, Button, Popup, Icon } from 'semantic-ui-react';
+import { Header, Grid, Form, Container, Table, Button, Popup, Icon, Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import ImportOrgs from './ImportOrgs';
@@ -14,9 +14,8 @@ import EditableText from '/imports/ui/Components/EditableText';
 import ConfirmationModal from '/imports/ui/Components/ConfirmationModal';
 
 const OrganizationsPane = observer(props => {
-	const data = useData();
-	const { theme } = data;
-	const orgs = data.orgs.values;
+	const { theme } = useTheme();
+	const { orgs, isLoading: orgsLoading } = useOrgs();
 
 	const [ orgTitle, setOrgTitle ] = useState('');
 	const [ orgAsk, setOrgAsk ] = useState('');
@@ -63,6 +62,8 @@ const OrganizationsPane = observer(props => {
 			if(err) console.error(err);
 		});
 	};
+
+	if(orgsLoading) return <Loader active />;
 
 	return (
 		<>
@@ -122,7 +123,7 @@ const OrganizationsPane = observer(props => {
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{ orgs.map((org, i) => {
+						{ orgs.values.map((org, i) => {
 							const titleLength = {
 								warning: {
 									test: org.title.length >= MAX_ORG_CHARACTERS - 5 && org.title.length < MAX_ORG_CHARACTERS,

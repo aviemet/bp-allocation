@@ -4,16 +4,16 @@ import _ from 'lodash';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme, useMembers, useOrgs } from '/imports/api/providers';
 import { OrganizationMethods } from '/imports/api/methods';
 
-import { Container, Header, Table, Button } from 'semantic-ui-react';
+import { Container, Header, Table, Button, Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const Pledges = observer(props => {
-	const data = useData();
-	const members = data.members.values;
-	const pledges = data.orgs.pledges;
+	const { theme } = useTheme();
+	const { members, isLoading: membersLoading } = useMembers();
+	const { orgs, isLoading: orgsLoading } = useOrgs();
 
 	const deletePledge = (e, data) => {
 		const pledgeId = data.pledgeid;
@@ -22,9 +22,11 @@ const Pledges = observer(props => {
 		OrganizationMethods.removePledge.call({ orgId, pledgeId });
 	};
 
+	if(orgsLoading || membersLoading) return <Loader active />;
+
 	return (
 		<PledgesContainer>
-			<Header as="h2">Matched Pledges (x{ data.theme.matchRatio })</Header>
+			<Header as="h2">Matched Pledges (x{ theme.matchRatio })</Header>
 			<Table striped>
 				<Table.Header>
 					<Table.Row>
@@ -38,8 +40,8 @@ const Pledges = observer(props => {
 				</Table.Header>
 
 				<Table.Body>
-					{pledges.map(pledge => {
-						let member = pledge.member ? _.find(members, ['_id', pledge.member]) : '';
+					{orgs.pledges.map(pledge => {
+						let member = pledge.member ? _.find(members.values, ['_id', pledge.member]) : '';
 						return (
 							<Table.Row key={ pledge._id }>
 								<Table.Cell singleLine>{pledge.org.title}</Table.Cell>

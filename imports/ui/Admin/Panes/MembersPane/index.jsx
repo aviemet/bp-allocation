@@ -1,5 +1,5 @@
 import React from 'react';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useData, useMembers } from '/imports/api/providers';
 
 import { Container, Input, Grid } from 'semantic-ui-react';
 
@@ -9,7 +9,8 @@ import ImportMembers from './ImportMembers';
 import { observer } from 'mobx-react-lite';
 
 const MembersPane = observer(() => {
-	const { members } = useData();
+	const data = useData();
+	const { members } = useMembers();
 
 	const clearSearch = () => {
 		members.searchFilter = null;
@@ -33,8 +34,8 @@ const MembersPane = observer(() => {
 								iconPosition='left'
 								action={ { icon: 'cancel', onClick: clearSearch } }
 								placeholder='Filter'
-								value={ members.searchFilter || '' }
-								onChange={ e => members.searchFilter = e.currentTarget.value }
+								value={ data.memberSearchFilter || '' }
+								onChange={ e => data.memberSearchFilter = e.currentTarget.value }
 							/>
 						</Grid.Column>
 

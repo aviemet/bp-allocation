@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme, useSettings } from '/imports/api/providers';
 
 import CustomMessage from '/imports/ui/Components/CustomMessage';
 import { Loader, Form, Checkbox, Label } from 'semantic-ui-react';
 import TextMembersButton from '/imports/ui/Components/TextMembersButton';
-import ResetOrgFundsButton from '../../../Components/ResetOrgFundsButton';
+import ResetOrgFundsButton from '/imports/ui/Components/ResetOrgFundsButton';
 
 const SettingsPane = observer(props => {
-	const data = useData();
-	const { theme, settings } = data;
+	const { theme } = useTheme();
+	const { settings, isLoading: settingsLoading } = useSettings();
 
 	const [ title, setTitle ]                           = useState(theme.title);
 	const [ question, setQuestion ]                     = useState(theme.question);
@@ -21,14 +21,24 @@ const SettingsPane = observer(props => {
 	const [ leverageTotal, setLeverageTotal ]           = useState(theme.leverageTotal);
 	const [ consolationAmount, setConsolationAmount ]   = useState(theme.consolationAmount);
 	const [ consolationActive, setConsolationActive ]   = useState(theme.consolationActive);
-	const [ timerLength, setTimerLength ]               = useState(settings.timerLength);
-	const [ useKioskChitVoting, setKioskChitVoting ]    = useState(settings.useKioskChitVoting);
-	const [ useKioskFundsVoting, setKioskFundsVoting ]  = useState(settings.useKioskFundsVoting);
+	const [ timerLength, setTimerLength ]               = useState(settings.timerLength || 60);
+	const [ useKioskChitVoting, setKioskChitVoting ]    = useState(settings.useKioskChitVoting || false);
+	const [ useKioskFundsVoting, setKioskFundsVoting ]  = useState(settings.useKioskFundsVoting || false);
 	const [ awardsPresentation, setAwardsPresentation ] = useState(settings.awardsPresentation || false);
 	const [ awardAmount, setAwardAmount ]               = useState(settings.awardAmount || 0);
 	
 	const [ formErrorVisible, setFormErrorVisible ] = useState(false);
 	const [ formErrorMessage, setFormErrorMessage ] = useState('');
+
+	useEffect(() => {
+		if(!settingsLoading) {
+			setTimerLength(settings.timerLength);
+			setKioskChitVoting(settings.useKioskChitVoting);
+			setKioskFundsVoting(settings.useKioskFundsVoting);
+			setAwardsPresentation(settings.awardsPresentation);
+			setAwardAmount(settings.awardAmount);
+		}
+	}, [settingsLoading]);
 
 	const showFormErrorMessage = () => {
 		setFormErrorVisible(true);

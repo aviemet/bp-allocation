@@ -4,7 +4,7 @@ import numeral from 'numeral';
 import { paginate } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme, useSettings, useMembers } from '/imports/api/providers';
 import { MemberMethods } from '/imports/api/methods';
 
 import { Table, Icon, Button, Dropdown } from 'semantic-ui-react';
@@ -13,7 +13,9 @@ import EditableText from '/imports/ui/Components/EditableText';
 import ConfirmationModal from '/imports/ui/Components/ConfirmationModal';
 
 const MembersList = observer(props => {
-	const { theme, settings, members } = useData();
+	const { theme } = useTheme();
+	const { settings } = useSettings();
+	const { members } = useMembers();
 	
 	const [ page, setPage ] = useState(0);
 	const [ itemsPerPage/*, setItemsPerPage*/ ] = useState(10);

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useSettings } from '/imports/api/providers';
 
 import numeral from 'numeral';
 
@@ -10,7 +10,7 @@ import { Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const OrgInfo = observer(props => {
-	const { settings } = useData();
+	const { settings } = useSettings();
 
 	return (
 		<InfoContainer className='orginfo'>

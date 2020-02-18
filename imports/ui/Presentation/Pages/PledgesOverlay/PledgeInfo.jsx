@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useMembers } from '/imports/api/providers';
 import _ from 'lodash';
 import numeral from 'numeral';
 
 import styled from 'styled-components';
 
 const PledgeInfo = ({ pledge }) => {
-	const { members } = useData();
+	const { members } = useMembers();
 
 	const member = _.find(members.values, ['_id', pledge.member]);
 	console.log({ member });

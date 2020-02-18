@@ -1,7 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useState, useEffect } from 'react';
-import { Route, withRouter, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
+
+import { Route, withRouter, Switch } from 'react-router-dom';
+
 import ThemesList from '/imports/ui/Welcome/ThemesList';
 import Admin from '/imports/ui/Admin';
 import {
@@ -19,9 +21,7 @@ import Sidebar from '/imports/ui/Components/Sidebar';
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
-import { useAppData } from '/imports/api/stores/lib/AppDataProvider';
-import { useTheme } from '/imports/api/stores/ThemeStoreTest';
+import { useData, useTheme } from '/imports/api/providers';
 
 const AdminLayout = withRouter(observer(props => {
 	const [ sidebarVisible, setSidebarVisible ] = useState(false);
@@ -29,9 +29,8 @@ const AdminLayout = withRouter(observer(props => {
 	const [ activeMenuItem, setActiveMenuItem ] = useState();
 
 	const data = useData();
-	const appData = useAppData();
-	const themeData = useTheme();
-	console.log({ themeData });
+
+	const { theme, isLoading } = useTheme();
 
 	useEffect(() => {
 		if(documentWidth >= Responsive.onlyTablet.minWidth) {
@@ -47,7 +46,7 @@ const AdminLayout = withRouter(observer(props => {
 			}
 			setSidebarVisible(showSidebar);
 		} else {
-			if(data.theme) data.menuHeading = data.theme.title;
+			if(theme) data.menuHeading = theme.title;
 			setSidebarVisible(false);
 		}
 	}, [ props.location.pathname, documentWidth ]);
@@ -66,8 +65,6 @@ const AdminLayout = withRouter(observer(props => {
 		const page = url.substring(url.indexOf(filter) + filter.length + 1);
 		setActiveMenuItem(page);
 	};
-
-	const loading = data.loading;
 
 	return(
 		<AdminContainer className='AdminContainer'>
@@ -200,15 +197,13 @@ const AdminLayout = withRouter(observer(props => {
 							 */}
 							<Route exact path={ ['/themes', '/admin'] } render={ matchProps => {
 								data.themeId = undefined;
-								appData.themeId = undefined;
 								return <ThemesList />;
 							} } />
 							<Route path='/admin/:id' render={ matchProps => {
 								data.themeId = matchProps.match.params.id;
-								appData.themeId = matchProps.match.params.id;
 								setActivePage(matchProps);
 
-								if(loading) return <Loader active />;
+								if(isLoading) return <Loader active />;
 								return <Admin />;
 							} } />
 						</Switch>

@@ -4,10 +4,10 @@ import _ from 'lodash';
 import { Link } from 'react-router-dom';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme, useSettings } from '/imports/api/providers';
 import { PresentationSettingsMethods } from '/imports/api/methods';
 
-import { Grid, Icon, Label, Segment, Input, Button, Responsive } from 'semantic-ui-react';
+import { Grid, Icon, Label, Segment, Input, Button, Responsive, Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { 
@@ -23,29 +23,35 @@ import TextMembersButton from '/imports/ui/Components/TextMembersButton';
 import PresentationNavButton from './PresentationNavButton';
 
 const PresentationPane = observer(() => {
-	const { theme, settings, orgs } = useData();
+	const { theme } = useTheme();
+	const { settings, isLoading: settingsLoading } = useSettings();
 
 	const [ resultsOffset, setResultsOffset ] = useState(settings.resultsOffset);
 	const [ timerLength, setTimerLength ] = useState(settings.timerLength);
 	const [ gridColumns, setGridColumns ] = useState(3);
 
 	useEffect(() => {
-		let data = {};
-		if(resultsOffset !== settings.resultsOffset) {
-			data.resultsOffset = resultsOffset;
-		}
+		if(!settingsLoading) {
+			setResultsOffset(settings.resultsOffset);
+			setTimerLength(settings.timerLength);
 
-		if(timerLength !== settings.timerLength) {
-			data.timerLength = timerLength;
-		}
+			/*let data = {};
+			if(resultsOffset !== settings.resultsOffset) {
+				data.resultsOffset = resultsOffset;
+			}
 
-		if(!_.isEmpty(data)){
-			PresentationSettingsMethods.update.call({
-				id: theme.presentationSettings,
-				data: data
-			});
+			if(timerLength !== settings.timerLength) {
+				data.timerLength = timerLength;
+			}
+
+			if(!_.isEmpty(data)){
+				PresentationSettingsMethods.update.call({
+					id: theme.presentationSettings,
+					data: data
+				});
+			}*/
 		}
-	});
+	}, [settingsLoading]);
 
 	const handleOnUpdate = (e, { width }) => {
 		if(width > Responsive.onlyTablet.minWidth) {
@@ -83,6 +89,8 @@ const PresentationPane = observer(() => {
 			}
 		});
 	};
+
+	if(settingsLoading) return <Loader active />;
 
 	return (
 		<ButtonPanel>
@@ -145,7 +153,7 @@ const PresentationPane = observer(() => {
 							style={ { float: 'right' } }
 							title='Text: Begin Voting'
 							// eslint-disable-next-line quotes
-							message={ "From Battery Powered:\nWe have narrowed " + orgs.values.length + " finalists down to " + theme.numTopOrgs + ". Use this link to vote your funds for the orgs you want to support:" }
+							message={ "From Battery Powered:\nWe have narrowed " + theme.organizations.length + " finalists down to " + theme.numTopOrgs + ". Use this link to vote your funds for the orgs you want to support:" }
 						/>
 						<TextMembersButton 
 							style={ { float: 'right' } }

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme } from '/imports/api/providers';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { Button, Modal } from 'semantic-ui-react';
@@ -12,7 +12,7 @@ import { Button, Modal } from 'semantic-ui-react';
 const UnSaveButton = observer(props => {
 	const [ modalOpen, setModalOpen ] = useState(false);
 
-	const { theme } = useData();
+	const { theme } = useTheme();
 
 	const unSaveOrg = () => {
 		ThemeMethods.unSaveOrg.call({

@@ -1,12 +1,12 @@
 import { Meteor } from 'meteor/meteor';
-import { registerObserver, filterTopOrgs } from '../methods';
+import { registerObserver } from '../methods';
+import { filterTopOrgs } from '/imports/lib/orgsMethods';
 import { isEmpty } from 'lodash';
 import { roundFloat } from '/imports/lib/utils';
 
 import { Themes, PresentationSettings, Organizations, MemberThemes } from '/imports/api/db';
 
 const themeObserver = registerObserver(doc => {
-	console.log({ settings: doc.presentationSettings, id: doc._id });
 	const settings = PresentationSettings.findOne({ _id: doc.presentationSettings });
 	const orgs = Organizations.find({ theme: doc._id }).fetch();
 	const topOrgs = filterTopOrgs(orgs, doc);
@@ -105,7 +105,7 @@ const themeObserver = registerObserver(doc => {
 		return roundFloat(remainingLeverage);
 	}();
 
-	doc.presentationSettings = settings;
+	// doc.presentationSettings = settings;
 
 	return doc;
 });
@@ -121,9 +121,8 @@ Meteor.publish('themes', function(themeId) {
 });
 
 Meteor.publish('theme', function(themeId) {
-	if(!themeId) return null;
-
-	const observer = Themes.find({ _id: themeId }).observe(themeObserver('theme', this));
+	if(!themeId) return;
+	const observer = Themes.find({ _id: themeId }).observe(themeObserver('themes', this));
 	this.onStop(() => observer.stop());
 	this.ready();
 });

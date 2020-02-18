@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme } from '/imports/api/providers';
 
 import { Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -76,7 +76,7 @@ const TABS = {
 
 // Main class for the Theme page
 const Feedback = observer(() => {
-	const { theme } = useData();
+	const { theme } = useTheme();
 	const defaultPage = 'orgs';
 
 	const [ activeTab, setActiveTab ] = useState(location.hash.replace(/#/, '') || TABS[defaultPage].slug);

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useSettings } from '/imports/api/providers';
 
 import { roundFloat } from '/imports/lib/utils';
 
@@ -17,7 +17,7 @@ import { Table, Button, Input } from 'semantic-ui-react';
  * Allocation Inputs Component
  */
 const AllocationInputs = observer(props => {
-	const { settings } = useData();
+	const { settings } = useSettings();
 
 	const [ votedAmount, setVotedAmount ] = useState(props.org.votedTotal);
 
@@ -25,7 +25,7 @@ const AllocationInputs = observer(props => {
 	const enterAmountFromVotes = e => {
 		OrganizationMethods.update.call({ id: props.org._id, data: {
 			amountFromVotes: parseInt(e.currentTarget.value)
-		}});
+		} });
 	};
 
 	const pledge = (e, data) => {
@@ -46,7 +46,7 @@ const AllocationInputs = observer(props => {
 		const amount = props.org.topOff > 0 ? 0 : props.org.need - props.org.leverageFunds;
 		OrganizationMethods.update.call({ id: props.org._id, data: {
 			topOff: amount
-		}});
+		} });
 	};
 
 	// Boolean help for marking fully funded orgs

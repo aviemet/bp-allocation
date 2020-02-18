@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useData } from '/imports/api/stores/lib/DataProvider';
 
 import { Table, Input } from 'semantic-ui-react';
 
@@ -11,8 +10,6 @@ const ChitInputs = observer(props => {
 	const [ weightVotes, setWeightVotes ] = useState(props.org.chitVotes.weight);
 	const [ countVotes, setCountVotes ] = useState(props.org.chitVotes.count);
 
-	const { orgs } = useData();
-	const topOrgIds = orgs.topOrgs.map(org => org._id);
 
 	useEffect(() => {
 		saveVotes();
@@ -35,7 +32,7 @@ const ChitInputs = observer(props => {
 
 			<Table.Cell 
 				width={ 10 }
-				positive={ topOrgIds.includes(props.org._id) }
+				positive={ props.positive }
 			>
 				{props.org.title}
 			</Table.Cell>
@@ -55,7 +52,7 @@ const ChitInputs = observer(props => {
 				<Input
 					name='countVotes'
 					type='number'
-					tabIndex={ props.tabInfo.index + props.tabInfo.length }
+					tabIndex={ props.tabInfo.index + props.tabInfo.length || 0 }
 					fluid
 					value={ countVotes || '' }
 					onChange={ e => setCountVotes(e.currentTarget.value ? parseFloat(e.currentTarget.value) : 0) }
@@ -69,6 +66,7 @@ const ChitInputs = observer(props => {
 ChitInputs.propTypes = {
 	org: PropTypes.object,
 	tabInfo: PropTypes.object,
+	positive: PropTypes.bool
 };
 
 export default ChitInputs;

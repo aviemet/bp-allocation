@@ -1,11 +1,7 @@
-import { computed, extendObservable } from 'mobx';
-import { roundFloat } from '/imports/lib/utils';
-import _ from 'lodash';
+import { extendObservable } from 'mobx';
 
 class OrgStore {
-	constructor(org, parent) {
-		this.parent = parent;
-
+	constructor(org) {
 		// Make all fields on the object observable
 		extendObservable(this, {
 			...org

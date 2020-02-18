@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useOrgs } from '/imports/api/providers';
 
-import { Grid, Table, Responsive } from 'semantic-ui-react';
+import { Grid, Table, Responsive, Loader } from 'semantic-ui-react';
 
 import ChitInputs from './ChitInputs';
 import TopOrgsByChitVote from './TopOrgsByChitVote';
 
 const ChitVotingPane = observer(() => {
-	const data  = useData();
-	const orgs = data.orgs.values;
+	const { orgs, topOrgs, isLoading: orgsLoading } = useOrgs();
 
 	const [ gridColumns, setGridColumns ] = useState(2);
 
@@ -21,6 +20,10 @@ const ChitVotingPane = observer(() => {
 			setGridColumns(1);
 		}
 	};
+
+	if(orgsLoading) return <Loader active />;
+
+	const topOrgIds = topOrgs.map(org => org._id);
 
 	return (
 		<Responsive 
@@ -44,11 +47,12 @@ const ChitVotingPane = observer(() => {
 						</Table.Header>
 
 						<Table.Body>
-							{orgs.map((org, i) => (
+							{orgs.values.map((org, i) => (
 								<ChitInputs
 									org={ org }
 									key={ i }
 									tabInfo={ { index: i + 1, length: orgs.length } }
+									positive={ topOrgIds.includes(org._id) }
 								/>
 							))}
 						</Table.Body>

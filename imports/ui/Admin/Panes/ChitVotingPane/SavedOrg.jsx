@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme } from '/imports/api/providers';
 import { ThemeMethods } from '/imports/api/methods';
 
 import { Grid, Header, Button } from 'semantic-ui-react';
 
 const SavedOrg = observer(props => {
 
-	const { theme } = useData();
+	const { theme } = useTheme();
 
 	const unSaveOrg = () => {
 		ThemeMethods.unSaveOrg.call({

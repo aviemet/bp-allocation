@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme, useSettings, useOrgs } from '/imports/api/providers';
 
 import styled from 'styled-components';
 import { Grid, Progress } from 'semantic-ui-react';
@@ -12,10 +12,9 @@ import OrgInfo from '/imports/ui/Presentation/Graph/OrgInfo';
 import Bar from '/imports/ui/Presentation/Graph/Bar';
 
 const Graph = observer(props => {
-	const data = useData();
-	const { theme, settings } = useData();
-	const orgs = data.orgs.values;
-	const topOrgs = data.orgs.topOrgs;
+	const { theme } = useTheme();
+	const { settings } = useSettings();
+	const { orgs, topOrgs } = useOrgs();
 
 	const _calcStartingLeverage = () => {
 		let leverage = theme.leverageTotal;
@@ -25,7 +24,7 @@ const Graph = observer(props => {
 			leverage -= org.topOff || 0;
 		});
 		if(theme.consolationActive) {
-			leverage -= (theme.organizations.length - orgs.length) * theme.consolationAmount;
+			leverage -= (theme.organizations.length - orgs.values.length) * theme.consolationAmount;
 		}
 		return leverage;
 	};

@@ -2,13 +2,11 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Routes from './Routes';
 
-import styled, { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider as StyledProvider } from 'styled-components';
 import theme from '/imports/ui/theme';
 import { isMobileDevice } from '/imports/lib/utils';
 
-import DataProvider from '/imports/api/stores/lib/DataProvider';
-import AppProvider from '/imports/api/stores/lib/AppDataProvider';
-import ThemeDataProvider from '/imports/api/stores/ThemeStoreTest';
+import { DataProvider, ThemeProvider, SettingsProvider, OrgsProvider, MembersProvider } from '/imports/api/providers';
 
 const App = () => {
 	useEffect(() => {
@@ -19,17 +17,21 @@ const App = () => {
 		}
 	}, []);
 	return (
-		<ThemeProvider theme={ theme }>
+		<StyledProvider theme={ theme }>
 			<GlobalContainer id="globalContainer">
 				<DataProvider>
-					<AppProvider>
-						<ThemeDataProvider>
-							<Routes />
-						</ThemeDataProvider>
-					</AppProvider>
+					<ThemeProvider>
+						<SettingsProvider>
+							<OrgsProvider>
+								<MembersProvider>
+									<Routes />
+								</MembersProvider>
+							</OrgsProvider>
+						</SettingsProvider>
+					</ThemeProvider>
 				</DataProvider>
 			</GlobalContainer>
-		</ThemeProvider>
+		</StyledProvider>
 	);
 };
 

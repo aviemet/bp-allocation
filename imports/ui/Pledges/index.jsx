@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useOrgs, useMembers } from '/imports/api/providers';
 import { OrganizationMethods } from '/imports/api/methods';
 
 import { toJS } from 'mobx';
@@ -13,7 +13,8 @@ import MemberSearch from '/imports/ui/Components/MemberSearch';
 import { observer } from 'mobx-react-lite';
 
 const Pledges = observer(() => {
-	const { orgs, members } = useData();
+	const { members } = useMembers();
+	const { orgs } = useOrgs();
 
 	const [ selectedOrg, setSelectedOrg ] = useState(null);
 	const [ memberInputValue, setMemberInputValue ] = useState('');

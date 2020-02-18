@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
 import { ThemeMethods } from '/imports/api/methods';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme } from '/imports/api/providers';
 
 const ResetOrgFundsButton = () => {
-	const { theme } = useData();
+	const { theme } = useTheme();
 
 	const resetOrgFunds = () => {
 		ThemeMethods.resetAllOrgFunds.call(theme._id);

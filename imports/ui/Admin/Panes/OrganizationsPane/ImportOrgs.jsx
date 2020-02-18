@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { readCsvWithHeadings } from '/imports/lib/papaParseMethods';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useData } from '/imports/api/providers';
 import { OrganizationMethods } from '/imports/api/methods';
 
 import CustomMessage from '/imports/ui/Components/CustomMessage';
 import { Button, Input } from 'semantic-ui-react';
 
 const ImportOrgs = observer(props => {
-
-	const { theme } = useData();
+	const { themeId } = useData();
 	
 	const [ importResponseMessageVisible, setImportResponseMessageVisible ] = useState(false);
 	const [ importReponseMessage, setImportResponseMessage ] = useState('');
@@ -25,9 +24,9 @@ const ImportOrgs = observer(props => {
 
 	const hideImportResponseMessage = () => setImportResponseMessageVisible(false);
 
-	let skipped = [];
+	// let skipped = [];
 
-	let uploadedOrgsList = [];
+	// let uploadedOrgsList = [];
 	const acceptedValues = [
 		{
 			name: 'title',
@@ -69,7 +68,8 @@ const ImportOrgs = observer(props => {
 			'afterRowParse': row => {
 				// console.log({ afterRowParse: row });
 				// console.log({ afterRowParse: row });
-				OrganizationMethods.create.call(Object.assign({ theme: theme._id }, row));
+				// TODO: That object key can't be right... 'Id'?... hmmmmmmmm
+				OrganizationMethods.create.call(Object.assign({ Id: themeId }, row));
 			},
 			'onComplete': data => {
 				// Display loading icon in button for a minimum amount of time
@@ -87,7 +87,7 @@ const ImportOrgs = observer(props => {
 		});
 		return parser;
 	};
-/*
+	/*
 	const parseFile = e => {
 		let file = e.currentTarget.files[0];
 

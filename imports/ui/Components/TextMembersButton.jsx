@@ -2,11 +2,12 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme, useMembers } from '/imports/api/providers';
 import { Button } from 'semantic-ui-react';
 
 const TextMembersButton = ({ message, title, link, ...rest }) => {
-	const { theme, members } = useData();
+	const { theme } = useTheme();
+	const { members } = useMembers();
 
 	const textMembers = () => {
 		members.values.forEach(member => {

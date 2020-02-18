@@ -4,7 +4,7 @@ import { Route, withRouter } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useOrgs, useMembers } from '/imports/api/providers';
 
 import styled from 'styled-components';
 
@@ -28,7 +28,8 @@ const PageFader = styled.div`
 `;
 
 const Presentation = withRouter(observer(props => {
-	const { theme, settings } = useData();
+	const { theme } = useTheme();
+	const { settings } = useSettings();
 
 	const [ show, setShow ] = useState(true);
 

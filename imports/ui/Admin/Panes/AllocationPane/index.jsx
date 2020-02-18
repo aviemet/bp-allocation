@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
 
 import { Grid, Table, Button, Header } from 'semantic-ui-react';
 
@@ -13,15 +12,11 @@ import AllocationInputs from './AllocationInputs';
 import Pledges from './Pledges';
 
 import { ShowLeverageToggle } from '/imports/ui/Components/Toggles';
+import { useTheme, useOrgs } from '/imports/api/providers';
 
 const AllocationPane = observer(props => {
-	const data = useData();
-	const { theme, settings } = data;
-	let topOrgs = data.orgs.topOrgs;
-
-	useEffect(() => {
-		topOrgs = data.orgs.topOrgs;
-	}, [settings.useKioskFundsVoting]);
+	const { theme } = useTheme();
+	const { topOrgs } = useOrgs();
 
 	const _calculateCrowdFavorite = () => {
 		let favorite = 0;

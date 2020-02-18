@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
 import { ThemeMethods } from '/imports/api/methods';
+import { useTheme, useOrgs } from '/imports/api/providers';
 
 // import { sortTopOrgs } from '/imports/lib/utils';
 
@@ -13,11 +13,11 @@ import styled from 'styled-components';
 
 import TopOrgsRow from './TopOrgsRow';
 import ChitVotingActiveToggle from '/imports/ui/Components/Toggles/ChitVotingActiveToggle';
+import { sortTopOrgs } from '/imports/lib/orgsMethods';
 
 const TopOrgsByChitVote = observer(props => {
-	const data = useData();
-	const { theme } = data;
-	// const orgs = data.orgs.values;
+	const { theme } = useTheme();
+	const { orgs } = useOrgs();
 
 	const updateNumTopOrgs = (e, data) => {
 		if(data.value !== theme.numTopOrgs){
@@ -29,12 +29,11 @@ const TopOrgsByChitVote = observer(props => {
 			});
 		}
 	};
-
-	let sortedOrgs = data.orgs.sortTopOrgs;
+	
+	let sortedOrgs = sortTopOrgs(orgs.values, theme);
 
 	return (
-		<React.Fragment>
-
+		<>
 			<Header as="h3" floated="right">
 				<ChitVotingActiveToggle />
 			</Header>
@@ -77,8 +76,7 @@ const TopOrgsByChitVote = observer(props => {
 					})}
 				</Table.Body>
 			</Table>
-
-		</React.Fragment>
+		</>
 	);
 });
 

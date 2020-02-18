@@ -3,17 +3,17 @@ import React from 'react';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme, useOrgs } from '/imports/api/providers';
 
 import { Statistic, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const Breakdown = observer(() => {
-	const data = useData();
-	const { theme } = data;
+	const { theme } = useTheme();
+	const { topOrgs } = useOrgs();
 
 	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
-	const topOff = data.orgs.topOrgs.reduce((sum, org) => { return sum + org.topOff; }, 0);
+	const topOff = topOrgs.reduce((sum, org) => { return sum + org.topOff; }, 0);
 
 	// Values in order of appearance
 	const totalPot = theme.leverageTotal + saves;
