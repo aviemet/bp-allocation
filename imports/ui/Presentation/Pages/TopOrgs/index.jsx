@@ -1,18 +1,18 @@
 import React from 'react';
 
-import { Card } from 'semantic-ui-react';
+import { Card, Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useOrgs, useSettings } from '/imports/api/providers';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
 const TopOrgs = observer(() => {
-	const data = useData();
-	const { settings } = data;
-	const topOrgs = data.orgs.topOrgs;
+	const { settings, isLoading: settingsLoading } = useSettings();
+	const { topOrgs, isLoading: orgsLoading } = useOrgs();
 
+	if(settingsLoading || orgsLoading) return <Loader active />;
 	return (
 		<TopOrgsContainer>
 			<PageTitle>Top {topOrgs.length} Organizations</PageTitle>

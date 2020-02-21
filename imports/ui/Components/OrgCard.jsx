@@ -164,10 +164,7 @@ const InfoLink = styled(Icon)`
 
 OrgCard.propTypes = {
 	org: PropTypes.object,
-	overlay: PropTypes.oneOfType([ 
-		PropTypes.object,
-		PropTypes.bool
-	]),
+	overlay: PropTypes.any,
 	content: PropTypes.oneOfType([
 		PropTypes.object,
 		PropTypes.func

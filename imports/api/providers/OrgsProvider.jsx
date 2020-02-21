@@ -14,25 +14,29 @@ const OrgsContext = React.createContext('orgs');
 export const useOrgs = () => useContext(OrgsContext);
 
 const OrgsProvider = observer(function(props) {
-	const data = useData();
+	const { themeId } = useData();
 	const { theme, isLoading: themeLoading } = useTheme();
 	let subscription;
-
+	let observer;
+	let orgsCollection; // The MobX store for the settings
 
 	const orgs = useTracker(() => {
-		if(!data.themeId) return {
-			isLoading: true,
-			orgs: undefined
-		};
+		if(!themeId) {
+			if(subscription) subscription.stop();
+			if(observer) observer.stop();
 
-		let orgsCollection;
-		subscription = Meteor.subscribe('organizations', data.themeId, {
-			onReady: function() {
-				const orgsCursor = Organizations.find({ theme: data.themeId });
-				const results = orgsCursor.fetch();
-				orgsCollection = results ? new OrgsCollection(results, theme, OrgStore) : undefined;
+			return {
+				isLoading: true,
+				settings: undefined
+			};
+		}
+		
+		subscription = Meteor.subscribe('organizations', themeId, {
+			onReady: () => {
+				const cursor = Organizations.find({ theme: themeId });
+				orgsCollection = new OrgsCollection(cursor.fetch(), theme, OrgStore);
 				
-				orgsCursor.observe({
+				cursor.observe({
 					added: orgs => orgsCollection.refreshData(orgs),
 					changed: orgs => orgsCollection.refreshData(orgs),
 					removed: orgs => orgsCollection.deleteItem(orgs)
@@ -40,15 +44,13 @@ const OrgsProvider = observer(function(props) {
 			}
 		});
 
-		const topOrgs = themeLoading ? [] : filterTopOrgs(orgsCollection.values, theme);
-
 		return {
 			orgs: orgsCollection,
-			topOrgs,
+			topOrgs: themeLoading ? [] : filterTopOrgs(orgsCollection.values, theme),
 			isLoading: !subscription.ready()
 		};
 
-	}, [data.themeId]);
+	}, [themeId]);
 
 	return (
 		<OrgsContext.Provider value={ orgs }>

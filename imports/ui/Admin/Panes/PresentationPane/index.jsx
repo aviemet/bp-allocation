@@ -32,6 +32,7 @@ const PresentationPane = observer(() => {
 
 	useEffect(() => {
 		if(!settingsLoading) {
+			// TODO: Deferred loading is causing this to throw an error
 			setResultsOffset(settings.resultsOffset);
 			setTimerLength(settings.timerLength);
 

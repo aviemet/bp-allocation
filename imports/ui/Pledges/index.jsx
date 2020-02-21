@@ -5,7 +5,7 @@ import { OrganizationMethods } from '/imports/api/methods';
 import { toJS } from 'mobx';
 import { roundFloat } from '/imports/lib/utils';
 
-import { Container, Form, Input, Button, Card, Checkbox } from 'semantic-ui-react';
+import { Container, Form, Input, Button, Card, Checkbox, Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
@@ -13,8 +13,8 @@ import MemberSearch from '/imports/ui/Components/MemberSearch';
 import { observer } from 'mobx-react-lite';
 
 const Pledges = observer(() => {
-	const { members } = useMembers();
-	const { orgs } = useOrgs();
+	const { members, isLoading: membersLoading } = useMembers();
+	const { topOrgs, isLoading: orgsLoading } = useOrgs();
 
 	const [ selectedOrg, setSelectedOrg ] = useState(null);
 	const [ memberInputValue, setMemberInputValue ] = useState('');
@@ -47,6 +47,7 @@ const Pledges = observer(() => {
 
 	// console.log({ members: [ ...toJS(members.values), { fullName: 'Anonymous', _id: '00' } ] });
 
+	if(membersLoading || orgsLoading) return <Loader active />;
 	return (
 		<PledgesContainer fluid textAlign='center'>
 			<h1>Top-ups</h1>
@@ -89,7 +90,7 @@ const Pledges = observer(() => {
 
 			{/* Selectable Cards for top orgs */}
 			<Card.Group centered itemsPerRow={ 2 }>
-				{ orgs.topOrgs.map(org => (
+				{ topOrgs.map(org => (
 					<OrgCard
 						disabled={ org.need <= 0 }
 						key={ org._id }

@@ -4,7 +4,7 @@ import { Card, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useOrgs, useSettings } from '/imports/api/providers';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
@@ -15,9 +15,8 @@ const Overlay = () => (
 );
 
 const Orgs = observer(() => {
-	const data = useData();
-	const { settings } = data;
-	const { values: orgs, topOrgs } = data.orgs;
+	const { settings } = useSettings();
+	const { orgs, topOrgs }  = useOrgs();
 
 	let colorOrgs = {};
 	topOrgs.map((org, i) => {
@@ -29,7 +28,7 @@ const Orgs = observer(() => {
 			<PageTitle>Participating Organizations</PageTitle>
 			<Container>
 				<Card.Group centered itemsPerRow={ 4 }>
-					{ orgs.map((org, i) => (
+					{ orgs.values.map((org, i) => (
 						<OrgCard
 							key={ org._id }
 							org={ org }

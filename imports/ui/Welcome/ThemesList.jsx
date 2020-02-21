@@ -38,11 +38,11 @@ const ThemesList = ({ themes }) => {
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{themes.slice(page * itemsPerPage, (page + 1) * itemsPerPage).map((theme) => {
+						{ themes.slice(page * itemsPerPage, (page + 1) * itemsPerPage).map((theme) => {
 							return (
 								<Table.Row key={ theme._id }>
 									<Table.Cell>
-										<Link to={ `/admin/${theme._id}` }>{theme.title}</Link>
+										<Link to={ `/admin/${theme._id}` }>{ theme.title }</Link>
 									</Table.Cell>
 									<Table.Cell singleLine>
 										<Dropdown text='Actions' className='link item' direction='left'>
@@ -63,7 +63,7 @@ const ThemesList = ({ themes }) => {
 									</Table.Cell>
 								</Table.Row>
 							);
-						})}
+						}) }
 					</Table.Body>
 				</Table>
 				<TablePagination

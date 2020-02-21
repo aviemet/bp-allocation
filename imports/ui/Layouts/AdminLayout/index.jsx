@@ -19,6 +19,7 @@ import {
 } from 'semantic-ui-react';
 import Sidebar from '/imports/ui/Components/Sidebar';
 import styled from 'styled-components';
+import AdminLinks from './AdminLinks';
 
 import { observer } from 'mobx-react-lite';
 import { useData, useTheme } from '/imports/api/providers';
@@ -110,80 +111,7 @@ const AdminLayout = withRouter(observer(props => {
 					{/* Menu */}
 					<Header as={ 'h1' }>Menu</Header>
 
-					<MenuLink
-						to={ `/admin/${data.themeId}/settings` }
-						active={ activeMenuItem === 'settings' }
-						iconPosition='left'
-					>
-						<Icon name='setting'/> Settings
-					</MenuLink>
-
-					<MenuLink 
-						to={ `/admin/${data.themeId}/orgs` }
-						active={ activeMenuItem === 'orgs' }
-						iconPosition='left'
-					>
-						<Icon name='building' /> Orgs
-					</MenuLink>
-
-					<MenuLink 
-						to={ `/admin/${data.themeId}/members` }
-						active={ activeMenuItem === 'members' }
-						iconPosition='left'
-					>
-						<Icon name='users' /> Members
-					</MenuLink>
-
-					<MenuLink 
-						to={ `/admin/${data.themeId}/chits` }
-						active={ activeMenuItem === 'chits' }
-						iconPosition='left'
-					>
-						<Icon name='star' /> Chit Votes
-					</MenuLink>
-
-					<MenuLink 
-						to={ `/admin/${data.themeId}/allocation` }
-						active={ activeMenuItem === 'allocation' }
-						iconPosition='left'
-					>
-						<Icon name='dollar' /> Allocations
-					</MenuLink>
-
-					<MenuLink 
-						to={ `/admin/${data.themeId}/leverage` }
-						active={ activeMenuItem === 'leverage' }
-						iconPosition='left'
-					>
-						<Icon name='chart pie' /> Leverage
-					</MenuLink>
-
-					<MenuLink 
-						to={ `/admin/${data.themeId}/presentation` }
-						active={ activeMenuItem === 'presentation' }
-						iconPosition='left'
-					>
-						<Icon name='chart bar' /> Presentation
-					</MenuLink>
-
-					{/* Pages */}
-					<Header as={ 'h1' }>Pages</Header>
-
-					<MenuLink to={ `/kiosk/${data.themeId}` }>
-						Kiosk
-					</MenuLink>
-
-					<MenuLink to={ `/feedback/${data.themeId}` }>
-						Feedback
-					</MenuLink>
-
-					<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>
-						Presentation
-					</MenuLink>
-
-					<MenuLink to={ `/pledges/${data.themeId}` } target='_blank'>
-						Pledge Inputs
-					</MenuLink>
+					<AdminLinks activeMenuItem={ activeMenuItem } />
 
 				</SidebarMenu>
 			</Responsive>
@@ -298,54 +226,3 @@ AdminLayout.propTypes = {
 };
 
 export default AdminLayout;
-
-/**
- * MenuLink for Vertical Admin Menu
- */
-const MenuLink = withRouter(({ target, to, history, children, active, iconPosition, className, id }) => {
-	const handleNav = () => {
-		if(target && target === '_blank') {
-			window.open(to);
-		} else {
-			history.push(to);
-		}
-	};
-
-	let classes = className || '';
-	if(iconPosition && iconPosition !== 'right') {
-		classes += iconPosition;
-	}
-
-	return (
-		<MenuItem 
-			as='a' 
-			to={ to } 
-			onClick={ handleNav } 
-			active={ active && active }
-			className={ classes }
-			id={ id ? id : '' }
-		>
-			{ target === '_blank' && <Icon name='external' size='small' /> }{ children }
-		</MenuItem>
-	);
-});
-
-MenuLink.propTypes = {
-	children: PropTypes.any,
-	as: PropTypes.string,
-	to: PropTypes.string,
-	target: PropTypes.any,
-	active: PropTypes.bool,
-	iconPosition: PropTypes.oneOf(['left', 'right']),
-	className: PropTypes.string,
-	id: PropTypes.string
-};
-
-const MenuItem = styled(Menu.Item)`
-	&&&.left {
-		i.icon {
-			float: left;
-			margin: 0 0.5em 0 0;
-		}
-	}
-`;

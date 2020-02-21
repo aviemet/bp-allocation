@@ -12,38 +12,45 @@ import { ThemeStore } from '/imports/api/stores';
 const ThemeContext = React.createContext('theme');
 export const useTheme = () => useContext(ThemeContext);
 
+// Provider to wrap the application with
+// Observes changes on the data store to manage subscription to the theme
 const ThemeProvider = observer(props => {
-	const data = useData();
+	const { themeId } = useData();
 	let subscription;
-	// let observer;
+	let observer;
+	let themeStore; // The MobX store for the theme
 
+	// Setup Meteor tracker to subscribe to a Theme
 	const theme = useTracker(() => {
-		if(!data.themeId) {
+		if(!themeId) {
+			if(subscription) subscription.stop();
+			if(observer) observer.stop();
+
 			return {
 				isLoading: true,
-				theme: undefined
+				settings: undefined
 			};
-		} 
+		}
 
-		let themeStore;
-		subscription = Meteor.subscribe('theme', data.themeId, {
+		// Begin the subscription
+		subscription = Meteor.subscribe('theme', themeId, {
 			onReady: () => {
-				const results = Themes.findOne({ _id: data.themeId });
-				themeStore = results ? new ThemeStore(results) : undefined;
-
-				// observer = themeCursor.observe({
-				// 	added: theme => this.theme.refreshData(theme),
-				// 	changed: theme => this.theme.refreshData(theme)
-				// });
+				const cursor = Themes.find({ _id: themeId });
+				themeStore = cursor ? new ThemeStore(cursor.fetch()[0]) : undefined;
+				
+				observer = cursor.observe({
+					added: theme => themeStore.refreshData(theme),
+					changed: theme => themeStore.refreshData(theme)
+				});
 			}
 		});
 
 		return {
-			theme: themeStore,
+			theme: themeStore || {},
 			isLoading: !subscription.ready()
 		};
 
-	}, [data.themeId]);
+	}, [themeId]);
 
 	return (
 		<ThemeContext.Provider value={ theme }>

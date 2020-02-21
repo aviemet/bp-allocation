@@ -9,12 +9,6 @@ class OrgsCollection extends TrackableCollection {
 	constructor(data, theme, Store) {
 		super(data, Store);
 		this._theme = theme;
-
-		/*this.values.forEach(org => {
-			org.pledges.forEach(pledge => {
-				this.parent.displayedPledges.add(pledge._id);
-			});
-		});*/
 	}
 
 	/**

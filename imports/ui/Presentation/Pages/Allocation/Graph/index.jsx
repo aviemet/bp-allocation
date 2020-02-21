@@ -8,8 +8,8 @@ import { useTheme, useSettings, useOrgs } from '/imports/api/providers';
 import styled from 'styled-components';
 import { Grid, Progress } from 'semantic-ui-react';
 
-import OrgInfo from '/imports/ui/Presentation/Graph/OrgInfo';
-import Bar from '/imports/ui/Presentation/Graph/Bar';
+import OrgInfo from './OrgInfo';
+import Bar from './Bar';
 
 const Graph = observer(props => {
 	const { theme } = useTheme();

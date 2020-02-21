@@ -5,7 +5,7 @@ import numeral from 'numeral';
 import { observer } from 'mobx-react-lite';
 import { useSettings } from '/imports/api/providers';
 
-import { roundFloat } from '/imports/lib/utils';
+// import { roundFloat } from '/imports/lib/utils';
 
 import { OrganizationMethods } from '/imports/api/methods';
 
@@ -24,11 +24,11 @@ const AllocationInputs = observer(props => {
 	// Controlling input only visible if not in kiosk voting mode
 	const enterAmountFromVotes = e => {
 		OrganizationMethods.update.call({ id: props.org._id, data: {
-			amountFromVotes: parseInt(e.currentTarget.value)
+			amountFromVotes: parseInt(e.target.value)
 		} });
 	};
 
-	const pledge = (e, data) => {
+	/*const pledge = (e, data) => {
 		e.preventDefault();
 
 		let amount = roundFloat(e.target.elements.valueInput.value);
@@ -40,7 +40,7 @@ const AllocationInputs = observer(props => {
 
 		// Clear the input
 		e.target.elements.valueInput.value = '';
-	};
+	};*/
 
 	const topoff = () => {
 		const amount = props.org.topOff > 0 ? 0 : props.org.need - props.org.leverageFunds;
@@ -70,7 +70,7 @@ const AllocationInputs = observer(props => {
 						fluid
 						type='number'
 						value={ votedAmount || '' }
-						onChange={ e => setVotedAmount(e.currentTarget.value) }
+						onChange={ e => setVotedAmount(e.target.value === '' ? 0 : e.target.value) }
 						onBlur={ enterAmountFromVotes }
 						tabIndex={ props.tabInfo ? props.tabInfo.index : false }
 					/>

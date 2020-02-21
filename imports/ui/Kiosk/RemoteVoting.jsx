@@ -1,20 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useMembers } from '/imports/api/providers';
 
 import { VotingContextProvider } from './VotingContext';
 
 import FundsVoting from './FundsVoting';
+import { Loader } from 'semantic-ui-react';
 
 const RemoteVoting = observer(props => {
 	// Pull member data from Data Store
-	const data = useData();
-	const members = data.members.values;
+	const { members, isLoading: membersLoading } = useMembers();
 
-	const member = _.find(members, member => member._id === props.member);
+	if(membersLoading) return <Loader active />;
+
+	// TODO: This should be a subscription to a single member
+	const member = members.values.find(member => member._id === props.member);
 
 	return (
 		<VotingContextProvider member={ member || false } unsetUser={ props.onVotingComplete } >

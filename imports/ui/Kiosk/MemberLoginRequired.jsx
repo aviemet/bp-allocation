@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useMembers } from '/imports/api/providers';
 
 import styled from 'styled-components';
 import { Container, Form, Input, Header, Button } from 'semantic-ui-react';
@@ -14,8 +14,7 @@ import { COLORS } from '/imports/lib/global';
 
 const MemberLoginRequired = observer(props => {
 	// Pull member data from Data Store
-	const data = useData();
-	const members = data.members.values;
+	const { members, isLoading: membersLoading } = useMembers();
 
 	const formRef = React.createRef();
 
@@ -23,8 +22,8 @@ const MemberLoginRequired = observer(props => {
 	const [ number, setNumber ] = useState('');
 
 	const [ searchError, setSearchError ] = useState(false);
-	
-	const member = _.find(members, member => member._id === props.member);
+
+	const member = membersLoading ? { values: [] } : members.values.find(member => member._id === props.member);
 	const [ user, setUser ] = useState(member || false);
 
 	const showSearchError = () => {

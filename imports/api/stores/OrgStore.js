@@ -1,12 +1,6 @@
-import { extendObservable } from 'mobx';
+import TrackableStore from './lib/TrackableStore';
 
-class OrgStore {
-	constructor(org) {
-		// Make all fields on the object observable
-		extendObservable(this, {
-			...org
-		});
-	}
+class OrgStore extends TrackableStore {
 }
 
 export default OrgStore;

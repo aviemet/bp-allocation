@@ -1,15 +1,7 @@
-import { computed, extendObservable } from 'mobx';
+import { computed } from 'mobx';
+import TrackableStore from './lib/TrackableStore';
 
-class MemberStore {
-	constructor(member, parent) {
-		this.parent = parent;
-
-		// Make all fields on the object observable
-		extendObservable(this, {
-			...member
-		});
-	}
-
+class MemberStore extends TrackableStore {
 	@computed
 	get formattedName() {
 		if(this.fullName) return this.fullName;

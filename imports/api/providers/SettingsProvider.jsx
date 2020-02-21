@@ -8,45 +8,49 @@ import { useData } from './DataProvider';
 import { useTheme } from './ThemeProvider';
 import { PresentationSettings } from '/imports/api/db';
 import { SettingsStore } from '/imports/api/stores';
-import { toJS } from 'mobx';
 
 const SettingsContext = React.createContext('settings');
 export const useSettings = () => useContext(SettingsContext);
 
 const SettingsProvider = observer(props => {
-	const data = useData();
+	const { themeId } = useData();
 	const { theme, isLoading: themeLoading } = useTheme();
 	let subscription;
-	// let observer;
+	let observer;
+	let settingsStore; // The MobX store for the settings
 
 	const settings = useTracker(() => {
-		if(!data.themeId) return {
-			isLoading: true,
-			settings: undefined
-		};
+		if(!themeId) {
+			if(subscription) subscription.stop();
+			if(observer) observer.stop();
 
-		let settings = {};
-		subscription = Meteor.subscribe('settings', data.themeId, {
+			return {
+				isLoading: true,
+				settings: undefined
+			};
+		}
+
+		// Begin the subscription
+		subscription = Meteor.subscribe('settings', themeId, {
 			onReady: () => {
 				if(!themeLoading) {
-					const result = PresentationSettings.findOne({ _id: theme.presentationSettings });
-					// const result = cursor.fetch()[0];
-					settings = new SettingsStore(result);
+					const cursor = PresentationSettings.find({ _id: theme.presentationSettings });
+					settingsStore = new SettingsStore(cursor.fetch()[0]);
 
-					// cursor.observe({
-					// 	added: settings => settings.refreshData(result),
-					// 	changed: settings => settings.refreshData(result)
-					// });
+					cursor.observe({
+						added: settings => settingsStore.refreshData(settings),
+						changed: settings => settingsStore.refreshData(settings)
+					});
 				}
 			}
 		});
 		
 		return {
-			settings,
+			settings: settingsStore || {},
 			isLoading: !subscription.ready()
 		};
 
-	}, [data.themeId]);
+	}, [themeId]);
 
 	return (
 		<SettingsContext.Provider value={ settings }>

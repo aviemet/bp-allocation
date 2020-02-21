@@ -1,14 +1,6 @@
-import { extendObservable } from 'mobx';
+import TrackableStore from './lib/TrackableStore';
 
-class MemberThemeStore {
-	constructor(memberTheme, parent) {
-		this.parent = parent;
-
-		// Make all fields on the object observable
-		extendObservable(this, {
-			...memberTheme
-		});
-	}
+class MemberThemeStore extends TrackableStore {
 }
 
 export default MemberThemeStore;

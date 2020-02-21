@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
 
 import { Image } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -12,21 +10,17 @@ import styled from 'styled-components';
  * Award Emblem
  */
 const AwardEmblem = observer(({ type, amount }) => {
-	const data = useData();
-	const { settings } = data;
 
 	const awardImgSrc = {
 		awardee: '/img/circle_awardee.png',
 		other: '/img/circle.png'
 	};
 
-	const formattedAmount = typeof amount === 'string' ? amount : numeral(amount).format(settings.numberFormat);
-
 	return (
 		<Award>
 			<AwardImage className='ui.card.image' style={ { backgroundImage: `url(${awardImgSrc[type || 'awardee']})`,
 				backgroundSize: type === 'awardee' ? '120%' : '100%' } }>
-				<AwardAmount style={ { fontSize: type === 'awardee' ? '3.3em' : '2.9em' } }>{ formattedAmount }</AwardAmount>
+				<AwardAmount style={ { fontSize: type === 'awardee' ? '3.3em' : '2.9em' } }>{ amount }</AwardAmount>
 			</AwardImage>
 		</Award>
 	);

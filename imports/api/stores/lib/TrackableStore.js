@@ -1,4 +1,5 @@
 import { action, extendObservable } from 'mobx';
+import { isEqual } from 'lodash';
 
 class TrackableStore {
 	constructor(data) {
@@ -12,7 +13,7 @@ class TrackableStore {
 	@action
 	refreshData(data) {
 		for(let [ key, value ] of Object.entries(data)) {
-			if(this[key] !== value) {
+			if(!isEqual(this[key], value)) {
 				this[key] = value;
 			}
 		}

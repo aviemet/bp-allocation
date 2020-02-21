@@ -4,32 +4,35 @@ import { Responsive, Card, Container, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme, useSettings, useOrgs } from '/imports/api/providers';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
 const KioskInfo = observer(() => {
-	const data = useData();
-	const orgs = data.orgs.topOrgsChosen ? data.orgs.topOrgs : data.orgs.values;
+	const { theme } = useTheme();
+	const { settings } = useSettings();
+	const { orgs, topOrgs } = useOrgs();
 
 	const [ itemsPerRow, setItemsPerRow ] = useState(3);
 
 	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 3);
 
-	const title = data.orgs.topOrgsChosen ? 
-		`TOP ${data.theme.numTopOrgs} ORGANIZATIONS` :
+	const title = orgs.topOrgsChosen ? 
+		`TOP ${theme.numTopOrgs} ORGANIZATIONS` :
 		'ORGANIZATIONS THIS THEME';
 
 	let subHeading = '';
-	if(data.settings.fundsVotingActive) {
+	if(settings.fundsVotingActive) {
 		subHeading = 'Voting In Progress';
 	} else {
-		if(data.theme.votingStarted) {
+		if(theme.votingStarted) {
 			subHeading = 'Voting Has Completed';
 		} else {
 			subHeading = 'Voting To Begin Shortly';
 		}
 	}
+
+	const orgsToDisplay = orgs.topOrgsChosen ? topOrgs : orgs.values;
 
 	return (
 		<OrgsContainer>
@@ -42,7 +45,7 @@ const KioskInfo = observer(() => {
 				centered 
 				itemsPerRow={ itemsPerRow }
 			>
-				{orgs.map(org => (
+				{orgsToDisplay.map(org => (
 					<OrgCard
 						key={ org._id }
 						org={ org }

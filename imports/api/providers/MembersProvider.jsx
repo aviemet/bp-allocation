@@ -12,25 +12,31 @@ const MembersContext = React.createContext('members');
 export const useMembers = () => useContext(MembersContext);
 
 const MembersProvider = observer(props => {
-	const data = useData();
+	const { themeId } = useData();
+	let subscription;
+	let observer;
+	let membersCollection; // The MobX store for the settings
 
 	const members = useTracker(() => {
-		if(!data.themeId) return {
-			isLoading: true,
-			members: undefined
-		};
+		if(!themeId) {
+			if(subscription) subscription.stop();
+			if(observer) observer.stop();
 
-		let membersCollection;
-		const subscription = Meteor.subscribe('members', data.themeId, {
+			return {
+				isLoading: true,
+				settings: undefined
+			};
+		}
+
+		subscription = Meteor.subscribe('members', themeId, {
 			onReady: () => {
-				const membersCursor = Members.find({ 'theme.theme': data.themeId });
-				const results = membersCursor.fetch();
+				const cursor = Members.find({ 'theme.theme': themeId });
+				membersCollection = new MembersCollection(cursor.fetch(), MemberStore);
 
-				membersCollection = new MembersCollection(results, MemberStore);
-
-				membersCursor.observe({
+				cursor.observe({
 					added: members => membersCollection.refreshData(members),
-					changed: members => membersCollection.refreshData(members)
+					changed: members => membersCollection.refreshData(members),
+					removed: members => membersCollection.refreshData(members)
 				});
 			}
 		});
@@ -40,7 +46,7 @@ const MembersProvider = observer(props => {
 			isLoading: !subscription.ready()
 		};
 
-	}, [data.themeId]);
+	}, [themeId]);
 
 	return (
 		<MembersContext.Provider value={ members }>

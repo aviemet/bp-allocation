@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
 import { withRouter } from 'react-router-dom';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useData, useTheme, useSettings } from '/imports/api/providers';
 
 import KioskInfo from './Info/KioskInfo';
 // import KioskChitVoting from './ChitVoting/KioskChitVoting';
@@ -36,9 +36,10 @@ const PageFader = styled.div`
 // Kiosk Component
 const Kiosk = withRouter(observer(props => {
 	const data = useData();
-	const { theme, settings, KIOSK_PAGES } = data;
+	const { theme } = useTheme();
+	const { settings } = useSettings();
 
-	const activePage = settings.fundsVotingActive ? KIOSK_PAGES.funds : KIOSK_PAGES.info;
+	const activePage = settings.fundsVotingActive ? data.KIOSK_PAGES.funds : data.KIOSK_PAGES.info;
 	const [ displayPage, setDisplayPage ] = useState(activePage); // Active presentation page
 	const [ show, setShow ] = useState(true); // Transition values
 
@@ -49,22 +50,22 @@ const Kiosk = withRouter(observer(props => {
 		// Funds voting is active
 		if(settings.fundsVotingActive) {
 			// Show the voting page:
-			pageNav = KIOSK_PAGES.funds;
+			pageNav = data.KIOSK_PAGES.funds;
 		// Funds voting is not active
 		} else {
 			// Voting inactive, votes have been cast, and results have been shown
 			if(theme.votingStarted && settings.resultsVisited) {
 				// Show results page
-				pageNav = KIOSK_PAGES.results;
+				pageNav = data.KIOSK_PAGES.results;
 			// Voting inactive and (no votes yet cast || results not yet shown)
 			} else {
 				// Show orgs page
-				pageNav = KIOSK_PAGES.info;
+				pageNav = data.KIOSK_PAGES.info;
 			}
 		}
 
 		// Wait 1 minute before navigating a user away from a voting screen
-		if(displayPage === KIOSK_PAGES.funds && !settings.fundsVotingActive) {
+		if(displayPage === data.KIOSK_PAGES.funds && !settings.fundsVotingActive) {
 			timeoutRef.current = setTimeout(() => doNavigation(pageNav), data.votingRedirectTimeout * 1000);
 		} else {
 			clearTimeout(timeoutRef.current);
@@ -95,19 +96,19 @@ const Kiosk = withRouter(observer(props => {
 					<Switch location={ { pathname: displayPage } }>
 
 						{/* Orgs Grid */}
-						<Route exact path={ KIOSK_PAGES.info } render={ () => (
+						<Route exact path={ data.KIOSK_PAGES.info } render={ () => (
 							<KioskInfo />
 						) } />
 
 						{/* Funds Voting */}
-						<Route exact path={ KIOSK_PAGES.funds } render={ () => {
+						<Route exact path={ data.KIOSK_PAGES.funds } render={ () => {
 							return member ? 
 								<RemoteVoting member={ member } /> :
 								<MemberLoginRequired component={ FundsVotingKiosk } />;
 						} } />
 
 						{/* Voting Results */}
-						<Route exact path={ KIOSK_PAGES.results } component={ settings.awardsPresentation ? Awards : Results } />
+						<Route exact path={ data.KIOSK_PAGES.results } component={ settings.awardsPresentation ? Awards : Results } />
 
 					</Switch>
 
@@ -118,11 +119,3 @@ const Kiosk = withRouter(observer(props => {
 }));
 
 export default Kiosk;
-
-/* Chit Voting 
-<Route exact path={ KIOSK_PAGES.chit } render={ props => (
-	<MemberLoginRequired component={ KioskChitVoting } />
-) } /> 
-
- onVotingComplete={ () => (doNavigation(KIOSK_PAGES.info)) }
-*/

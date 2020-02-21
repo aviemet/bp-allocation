@@ -4,11 +4,12 @@ import { Route, withRouter } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 
 import { observer } from 'mobx-react-lite';
-import { useOrgs, useMembers } from '/imports/api/providers';
+import { useTheme, useSettings } from '/imports/api/providers';
 
 import styled from 'styled-components';
 
 import { Intro, Orgs, Timer, TopOrgs, Allocation, Results } from '/imports/ui/Presentation/Pages';
+import { Loader } from 'semantic-ui-react';
 
 // Transition group definitions
 const FADE_DURATION = 300;
@@ -28,18 +29,18 @@ const PageFader = styled.div`
 `;
 
 const Presentation = withRouter(observer(props => {
-	const { theme } = useTheme();
-	const { settings } = useSettings();
+	const { theme, isLoading: themeLoading } = useTheme();
+	const { settings, isLoading: settingsLoading } = useSettings();
 
 	const [ show, setShow ] = useState(true);
 
 	useEffect(() => {
-		doNavigation();
-	}, [settings.currentPage]);
+		if(!settingsLoading) doNavigation(settings.currentPage);
+	}, [settings.currentPage, settingsLoading]);
 
 	// TODO: wait for image load before showing page
-	const doNavigation = () => {
-		let page = `/presentation/${theme._id}/${settings.currentPage}`;
+	const doNavigation = currentPage => {
+		let page = `/presentation/${theme._id}/${currentPage}`;
 		if(location.pathname !== page && show){
 			setShow(false);
 
@@ -54,6 +55,7 @@ const Presentation = withRouter(observer(props => {
 	const title = theme.title || '';
 	const question = theme.question || '';
 
+	if(themeLoading || settingsLoading) return <Loader active />;
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{(state) => (

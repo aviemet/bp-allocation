@@ -3,16 +3,15 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme, useOrgs } from '/imports/api/providers';
 
 import { MemberMethods } from '/imports/api/methods';
 
 const FundsVoteContext = React.createContext();
 
 const VotingContextProvider = observer(props => {
-	const data = useData();
-	const { theme } = data;
-	const topOrgs = data.orgs.topOrgs;
+	const { theme } = useTheme();
+	const { topOrgs } = useOrgs();
 
 	let initialVotesState = {};
 	topOrgs.map(org => {

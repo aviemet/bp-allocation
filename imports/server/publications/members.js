@@ -1,19 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 
 import { Members, MemberThemes } from '/imports/api/db';
+import { MemberTransformer } from '/imports/server/transformers';
 import { registerObserver } from '../methods';
 
-let once = false;
-
 const membersObserver = registerObserver((doc, params) => {
-	doc.theme = MemberThemes.findOne({ member: doc._id, theme: params.themeId });
+	const memberTheme = MemberThemes.findOne({ member: doc._id, theme: params.themeId });
 
-	if(once) {
-		console.log({ doc, params });
-		once = false;
-	}
-
-	return doc;
+	return MemberTransformer(doc, memberTheme);
 });
 
 // MemberThemes - Member activity for theme

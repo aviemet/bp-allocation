@@ -1,6 +1,6 @@
 import { action, observable, computed } from 'mobx';
 import { filterCollection } from '/imports/lib/utils';
-import { findIndex, remove, orderBy } from 'lodash';
+import { findIndex, remove, orderBy, isEqual } from 'lodash';
 
 class TrackableCollection {
 	@observable values = [];
@@ -34,7 +34,7 @@ class TrackableCollection {
 		if(i >= 0) {
 			// Update values
 			for(let [ key, value ] of Object.entries(data)) {
-				if(this.values[i][key] !== value) {
+				if(!isEqual(this.values[i][key], value)) {
 					this.values[i][key] = value;
 				}
 			}

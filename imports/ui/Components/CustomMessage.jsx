@@ -8,8 +8,6 @@ import usePortal from '/imports/lib/usePortal';
 const CustomMessage = ({ heading, body, onDismiss, ...rest }) => {
 	const target = usePortal('message');
 
-	console.log({ rest });
-
 	return createPortal(
 		<FixedMessage 
 			onDismiss={ onDismiss }

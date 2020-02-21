@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Graph from '/imports/ui/Presentation/Graph/Graph';
+import Graph from './Graph';
 import PledgesOverlay from './PledgesOverlay';
 
 const Allocation = ({ simulation }) => (

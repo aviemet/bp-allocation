@@ -1,9 +1,9 @@
 import React from 'react';
-import _ from 'lodash';
+import { cloneDeep } from 'lodash';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme, useSettings, useOrgs } from '/imports/api/providers';
 
 import { Header, Card } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -11,16 +11,16 @@ import styled from 'styled-components';
 import AwardCard from '/imports/ui/Components/AwardCard';
 
 const Results = observer(() => {
-	const data = useData();
-	const { theme, settings } = data;
-	const topOrgs = data.orgs.topOrgs;
+	const { theme } = useTheme();
+	const { settings } = useSettings();
+	const { topOrgs } = useOrgs();
 
 	let awardees = [];
 	let others = [];
 	let saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
 	let total = parseFloat((theme.leverageTotal || 0) + saves + (settings.resultsOffset || 0));
 
-	_.cloneDeep(topOrgs).map((org, i) => {
+	cloneDeep(topOrgs).map((org, i) => {
 		total += org.pledgeTotal / 2;
 
 		if(settings.formatAsDollars) {
