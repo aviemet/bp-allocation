@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { observer } from 'mobx-react-lite';
 import { useOrgs, useMembers } from '/imports/api/providers';
 
-import { PieChart, Pie, Sector, Cell } from 'recharts';
+import { PieChart, Pie, Cell } from 'recharts';
 
 import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';
 

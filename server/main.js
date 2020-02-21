@@ -3,6 +3,8 @@ import { ServiceConfiguration } from 'meteor/service-configuration';
 import { has } from 'lodash';
 import { formatPhoneNumber } from '/imports/lib/utils';
 
+import { Members, MemberThemes, Themes } from '/imports/api/db';
+
 import '/imports/api/methods';
 import twilio from 'twilio';
 
@@ -28,11 +30,77 @@ Meteor.startup(() => {
 		}
 	);
 
+	// const themeId = 'iTL2SfNx9SHM3BhFq';
+	// const themeId = 'fEYxEXpMcHuhjoNzD';
+	// const memberPhoneNumbers = memberPhoneNumbersQuery(themeId);
+	// console.log({ memberPhoneNumbers });
 });
+
+const memberPhoneNumbersQuery = themeId => {
+	return MemberThemes.aggregate([
+		{
+			$match: { 
+				theme: themeId
+			}
+		},
+		{
+			$lookup: {
+				from: 'members',
+				localField: 'member',
+				foreignField: '_id',
+				as: 'member'
+			}	
+		},
+		{ $unwind: '$member' },
+		{
+			$match: {
+				'member.phone': { $ne: null }
+			}
+		},
+		{
+			$project: {
+				_id: 1,
+				phone: '$member.phone',
+				code: '$member.code'
+			}
+		}
+	]);
+};
 
 /***************************
  *  TWILIO SERVER METHODS  *
  ***************************/
+Meteor.methods({
+	textVotingLinkToMembers: ({ themeId, message, link }) => { // link: boolean
+		const theme = Themes.findOne({ _id: themeId }); // Just need the slug from the theme
+
+		const messageBuilder = member => {
+			let finalMessage = message;
+			// eslint-disable-next-line quotes
+			if(link !== false && theme.slug) finalMessage += "\n" + `www.batterysf.com/v/${theme.slug}/${member.code}`;
+			return finalMessage;
+		};
+
+		const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.authToken);
+
+		let texts = [];
+		const memberPhoneNumbers = memberPhoneNumbersQuery(themeId);
+		console.log({ memberPhoneNumbers });
+		memberPhoneNumbers.forEach(member => {
+			const message = messageBuilder(member);
+			console.log({ message });
+			const text = client.messages.create({
+				body: message,
+				to: formatPhoneNumber(member.phone),
+				messagingServiceSid: Meteor.settings.twilio.copilotSid
+			}).then(message => console.log(message));
+			texts.push(text);
+		});
+		return texts;
+	}
+});
+
+/*
 Meteor.methods({
 	sendMessage: (number, message) => {
 		const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.authToken);
@@ -46,7 +114,7 @@ Meteor.methods({
 		return text;
 	}
 });
-
+*/
 /***************************
  *   ACCOUNTS VALIDATION   *
  ***************************/

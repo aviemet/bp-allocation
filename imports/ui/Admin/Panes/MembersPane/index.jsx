@@ -1,7 +1,7 @@
 import React from 'react';
 import { useData, useMembers } from '/imports/api/providers';
 
-import { Container, Input, Grid } from 'semantic-ui-react';
+import { Container, Input, Grid, Loader } from 'semantic-ui-react';
 
 import NewMemberInputs from './NewMemberInputs';
 import MembersList from './MembersList';
@@ -10,12 +10,13 @@ import { observer } from 'mobx-react-lite';
 
 const MembersPane = observer(() => {
 	const data = useData();
-	const { members } = useMembers();
+	const { members, isLoading: membersLoading } = useMembers();
 
 	const clearSearch = () => {
 		members.searchFilter = null;
 	};
 
+	if(membersLoading) return <Loader active />;
 	return (
 		<>
 			<Container style={ { marginBottom: '0.6rem' } }>

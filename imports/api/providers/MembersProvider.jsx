@@ -1,21 +1,31 @@
 import { Meteor } from 'meteor/meteor';
+import { useTracker } from 'meteor/react-meteor-data';
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react-lite';
 
-import { useTracker } from 'meteor/react-meteor-data';
 import { useData } from './DataProvider';
 import { Members } from '/imports/api/db';
 import { MembersCollection, MemberStore } from '/imports/api/stores';
 
 const MembersContext = React.createContext('members');
-export const useMembers = () => useContext(MembersContext);
+
+export const useMember = props => {
+	return useContext(MembersContext);
+};
+
+export const useMembers = props => {
+	// console.log({ MembersContext });
+	return useContext(MembersContext);
+};
 
 const MembersProvider = observer(props => {
+	console.log({ props });
 	const { themeId } = useData();
 	let subscription;
 	let observer;
-	let membersCollection; // The MobX store for the settings
+	let membersCollection; // The MobX store for the members
+
 
 	const members = useTracker(() => {
 		if(!themeId) {
@@ -24,7 +34,7 @@ const MembersProvider = observer(props => {
 
 			return {
 				isLoading: true,
-				settings: undefined
+				members: undefined
 			};
 		}
 

@@ -2,28 +2,19 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useTheme, useMembers } from '/imports/api/providers';
+import { useData } from '/imports/api/providers';
 import { Button } from 'semantic-ui-react';
+import { observer } from 'mobx-react-lite';
 
-const TextMembersButton = ({ message, title, link, ...rest }) => {
-	const { theme } = useTheme();
-	const { members } = useMembers();
+const TextMembersButton = observer(({ message, title, link, ...rest }) => {
+	const { themeId } = useData();
 
 	const textMembers = () => {
-		members.values.forEach(member => {
-			if(member.phone) {
-				const votingLink = `www.batterysf.com/v/${theme.slug}/${member.code}`;
-				let finalMessage = message;
-				// eslint-disable-next-line quotes
-				if(link !== false) finalMessage += "\n" + votingLink;
-
-				Meteor.call('sendMessage', member.phone, finalMessage);
-			}
-		});
+		Meteor.call('textVotingLinkToMembers', { themeId, message, link });
 	};
 
 	return <Button onClick={ textMembers } { ...rest }>{ title || 'Send Text' }</Button>;
-};
+});
 
 TextMembersButton.propTypes = {
 	message: PropTypes.string,

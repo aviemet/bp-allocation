@@ -11,6 +11,7 @@ class AppStore {
 	@observable menuHeading = this.defaultMenuHeading;
 	// Set of pledges not to be animated on allocation presentation page
 	@observable displayedPledges = new Set();
+	@observable loadMembers = true;
 
 	KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds', results: 'results' };
 	votingRedirectTimeout = 60;

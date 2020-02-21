@@ -14,7 +14,7 @@ const Pledges = observer(props => {
 	const { theme } = useTheme();
 	const { members, isLoading: membersLoading } = useMembers();
 	const { orgs, isLoading: orgsLoading } = useOrgs();
-
+	
 	const deletePledge = (e, data) => {
 		const pledgeId = data.pledgeid;
 		const orgId = data.orgid;
