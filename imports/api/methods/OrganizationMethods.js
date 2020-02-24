@@ -61,7 +61,7 @@ const OrganizationMethods = {
 				return Organizations.remove(id, (err) => {
 					if(err) console.error(err);
 
-					Themes.update({ _id: org.theme }, { $pull: { organizations: id }}, (err) => {
+					Themes.update({ _id: org.theme }, { $pull: { organizations: id } }, (err) => {
 						if(err) console.error(err);
 					});
 				});
@@ -83,7 +83,7 @@ const OrganizationMethods = {
 
 		run(ids) {
 			// Get list of associated images to remove
-			var images = Organizations.find({ _id: { $in: ids }, image: { $exists: true }}, { _id: false, image: true }).map((org) => {
+			var images = Organizations.find({ _id: { $in: ids }, image: { $exists: true } }, { _id: false, image: true }).map((org) => {
 				return org.image;
 			});
 
@@ -91,7 +91,7 @@ const OrganizationMethods = {
 			ImageMethods.removeMany.call(images);
 
 			// Remove organization
-			Organizations.remove({ _id: { $in: ids }});
+			Organizations.remove({ _id: { $in: ids } });
 
 
 		}
@@ -185,7 +185,7 @@ const OrganizationMethods = {
 				topOffAmount = org.ask - org.amountFromVotes - org.pledges;
 			}
 
-			return Organizations.update({ _id: id }, { $set: { topOff: topOffAmount }});
+			return Organizations.update({ _id: id }, { $set: { topOff: topOffAmount } });
 		}
 	}),
 

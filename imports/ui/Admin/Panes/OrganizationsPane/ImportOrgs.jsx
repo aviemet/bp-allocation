@@ -69,7 +69,8 @@ const ImportOrgs = observer(props => {
 				// console.log({ afterRowParse: row });
 				// console.log({ afterRowParse: row });
 				// TODO: That object key can't be right... 'Id'?... hmmmmmmmm
-				OrganizationMethods.create.call(Object.assign({ Id: themeId }, row));
+				console.log({ row });
+				OrganizationMethods.create.call(Object.assign({ theme: themeId }, row));
 			},
 			'onComplete': data => {
 				// Display loading icon in button for a minimum amount of time
