@@ -77,9 +77,9 @@ const ThemeMethods = {
 		validate: null,
 
 		run(id) {
-			let orgs = Themes.findOne({ _id: id }, { organizations: true });
+			let orgs = Themes.findOne({ _id: id }, { organizations: 1 });
 
-			if(orgs.organizations.length > 0){
+			if(orgs.organizations && orgs.organizations.length > 0){
 				OrganizationMethods.removeMany.call(orgs.organizations);
 			}
 			return Themes.remove({ _id: id });
