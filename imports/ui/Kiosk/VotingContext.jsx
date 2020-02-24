@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { find, clone } from 'lodash';
+import { forEach, find, clone } from 'lodash';
 
 import { observer } from 'mobx-react-lite';
 import { useTheme, useOrgs } from '/imports/api/providers';
@@ -12,8 +12,6 @@ const FundsVoteContext = React.createContext();
 const VotingContextProvider = observer(props => {
 	const { theme } = useTheme();
 	const { topOrgs } = useOrgs();
-
-	console.log({ props });
 
 	let initialVotesState = {};
 	topOrgs.map(org => {
@@ -30,7 +28,8 @@ const VotingContextProvider = observer(props => {
 	};
 
 	const saveVotes = source => {
-		votes.forEach((amount, org) => {
+		console.log({ votes });
+		forEach(votes, (amount, org) => {
 			const voteData = {
 				theme: theme._id,
 				member: props.member._id,

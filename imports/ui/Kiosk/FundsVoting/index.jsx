@@ -4,7 +4,7 @@ import _ from 'lodash';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useData, useSettings, useOrgs } from '/imports/api/providers';
 import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext';
 
 import { Card, Container, Header, Button } from 'semantic-ui-react';
@@ -29,7 +29,8 @@ AmountRemaining.displayName = 'AmountRemaining'; // To slience eslint
 
 const FundsVotingKiosk = observer(props => {
 	const data = useData();
-	const topOrgs = data.orgs.topOrgs;
+	const { settings } = useSettings();
+	const { topOrgs } = useOrgs();
 
 	const [ votingComplete, setVotingComplete ] = useState(false);
 	const [ countdownVisible, setCountdownVisible ] = useState(false);
@@ -48,8 +49,8 @@ const FundsVotingKiosk = observer(props => {
 
 	useEffect(() => {
 		// Display countdown if user is on voting screen when voting becomes disabled
-		if(!data.settings.fundsVotingActive) displayCountDown();
-	}, [data.settings.fundsVotingActive]);
+		if(!settings.fundsVotingActive) displayCountDown();
+	}, [settings.fundsVotingActive]);
 
 	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName;
 

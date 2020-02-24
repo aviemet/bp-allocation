@@ -20,7 +20,6 @@ export const useMembers = props => {
 };
 
 const MembersProvider = observer(props => {
-	console.log({ props });
 	const { themeId } = useData();
 	let subscription;
 	let observer;
