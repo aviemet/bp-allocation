@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
-import { Responsive, Card, Container, Header } from 'semantic-ui-react';
+import { Responsive, Card, Container, Header, Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
-import { useTheme, useSettings, useOrgs } from '/imports/api/providers';
+import { useTheme, useSettings, useOrgs, useMembers } from '/imports/api/providers';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
@@ -12,6 +12,7 @@ const KioskInfo = observer(() => {
 	const { theme } = useTheme();
 	const { settings } = useSettings();
 	const { orgs, topOrgs } = useOrgs();
+	const { isLoading: membersLoading } = useMembers();
 
 	const [ itemsPerRow, setItemsPerRow ] = useState(3);
 
@@ -34,6 +35,7 @@ const KioskInfo = observer(() => {
 
 	const orgsToDisplay = orgs.topOrgsChosen ? topOrgs : orgs.values;
 
+	if(membersLoading) return <Loader active />;
 	return (
 		<OrgsContainer>
 			<Header as='h1' className="title">{ title }</Header>

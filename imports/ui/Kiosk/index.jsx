@@ -91,19 +91,22 @@ const Kiosk = withRouter(observer(props => {
 	
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
-			{(state) => (
+			{ state => (
 				<PageFader style={ { ...defaultStyle, ...transitionStyles[state] } }>
 					<Switch location={ { pathname: displayPage } }>
 
 						{/* Orgs Grid */}
 						<Route exact path={ data.KIOSK_PAGES.info } render={ () => (
+							// Displays when settings.fundsVotingActive is false
 							<KioskInfo />
 						) } />
 
 						{/* Funds Voting */}
 						<Route exact path={ data.KIOSK_PAGES.funds } render={ () => {
 							return member ? 
+								// If member is set, navigation comes from the short link for voting remotely
 								<RemoteVoting member={ member } /> :
+								// Otherwise kiosk voting in the room, members must login to proceed
 								<MemberLoginRequired component={ FundsVotingKiosk } />;
 						} } />
 
@@ -113,7 +116,7 @@ const Kiosk = withRouter(observer(props => {
 					</Switch>
 
 				</PageFader>
-			)}
+			) }
 		</Transition>
 	);
 }));

@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { useMembers } from '/imports/api/providers';
 
 import styled from 'styled-components';
-import { Container, Form, Input, Header, Button } from 'semantic-ui-react';
+import { Container, Form, Input, Header, Button, Loader } from 'semantic-ui-react';
 
 import { VotingContextProvider } from './VotingContext';
 
@@ -23,8 +23,10 @@ const MemberLoginRequired = observer(props => {
 
 	const [ searchError, setSearchError ] = useState(false);
 
-	const member = membersLoading ? { values: [] } : members.values.find(member => member._id === props.member);
+	const member = membersLoading ? false : members.values.find(member => member._id === props.member);
 	const [ user, setUser ] = useState(member || false);
+
+	if(membersLoading) return <Loader active />;
 
 	const showSearchError = () => {
 		setSearchError(true);
@@ -39,7 +41,7 @@ const MemberLoginRequired = observer(props => {
 		setSearchError(false);
 		const code = `${initials.trim().toUpperCase()}${number}`;
 		
-		const member = _.find(members, ['code', code]);
+		const member = _.find(members.values, ['code', code]);
 		
 		setInitials('');
 		setNumber('');
@@ -60,7 +62,7 @@ const MemberLoginRequired = observer(props => {
 			<MemberLoginContainer>
 				<BackgroundImage />
 				<Centered>
-					<Header as='h1' className='title'>Enter Your Initials & Member ID</Header>
+					<Header as='h1' className='title'>Enter Your Initials &amp; Member ID</Header>
 					<Container>
 						<Form onSubmit={ chooseMember } ref={ formRef }>
 							<Form.Group inline widths='equal'>
@@ -97,7 +99,7 @@ const MemberLoginRequired = observer(props => {
 			</MemberLoginContainer>
 		);
 	}
-
+	console.log({ user });
 	// Member is chosen, display the voting panel
 	return (
 		<VotingContextProvider member={ user } unsetUser={ () => setUser(false) }>
@@ -132,6 +134,7 @@ const Centered = styled.div`
 	transform: translateY(-50%);
 	z-index: 1000;
 `;
+
 const BackgroundImage = styled.div`
 	position: absolute;
 	top: 0;
