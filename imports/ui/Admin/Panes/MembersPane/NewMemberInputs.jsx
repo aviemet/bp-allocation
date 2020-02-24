@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { roundFloat } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme } from '/imports/api/providers';
 import { MemberMethods } from '/imports/api/methods';
 
 import { Form, Button } from 'semantic-ui-react';
 
 const NewMemberInputs = observer(props => {
-	const data = useData();
-	const { theme } = data || {};
+	const { theme } = useTheme();
 
 	const [ firstName, setFirstName ] = useState('');
 	const [ lastName, setLastName ] = useState('');

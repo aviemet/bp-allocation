@@ -133,7 +133,7 @@ const _memberThemeInsert = function(query) {
 			}
 		} else {
 			try {
-				MemberThemes.update({ _id: memberTheme._id }, { $set: { amount: query.amount }}, (err, result) => {
+				MemberThemes.update({ _id: memberTheme._id }, { $set: { amount: query.amount } }, (err, result) => {
 					if(err) {
 						reject(err);
 					} else {
@@ -162,6 +162,7 @@ const MemberMethods = {
 
 		run(data) {
 			const { amount, themeId, phone } = data;
+			console.log({ amount, themeId, phone });
 			// Get strange results if run on client
 			if(Meteor.isServer) {
 
@@ -223,7 +224,7 @@ const MemberMethods = {
 
 			// Batch delete the MemberThemes first
 			try {
-				MemberThemes.remove({ _id: { $in: ids }});
+				MemberThemes.remove({ _id: { $in: ids } });
 			} catch(e) {
 				console.error(e);
 			}
@@ -329,7 +330,7 @@ const MemberMethods = {
 		validate: null,
 
 		run(id) {
-			MemberThemes.update({ _id: id }, { $set: { allocations: [] }});
+			MemberThemes.update({ _id: id }, { $set: { allocations: [] } });
 		}
 	}),
 
