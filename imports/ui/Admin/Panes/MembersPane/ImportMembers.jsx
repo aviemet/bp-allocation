@@ -4,15 +4,14 @@ import { readCsvWithHeadings } from '/imports/lib/papaParseMethods';
 import { sanitizeNames } from '/imports/lib/utils';
 // import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useTheme } from '/imports/api/providers';
 import { MemberMethods } from '/imports/api/methods';
 
 import CustomMessage from '/imports/ui/Components/CustomMessage';
 import { Button, Input } from 'semantic-ui-react';
 
 const ImportMembers = props => {
-	const data = useData();
-	const { theme } = data || {};
+	const { theme } = useTheme();
 	
 	const [ importResponseMessageVisible, setImportResponseMessageVisible ] = useState(false);
 	const [ importReponseMessage, setImportResponseMessage ] = useState('');
@@ -93,7 +92,6 @@ const ImportMembers = props => {
 				MemberMethods.upsert.call(Object.assign({ themeId: theme._id }, row));
 			},
 			'onComplete': data => {
-				console.log({ data });
 				// Display loading icon in button for a minimum amount of time
 				let timeout = 0;
 				const now = new Date();

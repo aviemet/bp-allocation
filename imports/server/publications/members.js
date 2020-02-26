@@ -4,7 +4,7 @@ import { Members, MemberThemes } from '/imports/api/db';
 import { MemberTransformer } from '/imports/server/transformers';
 import { registerObserver } from '../methods';
 
-const membersObserver = registerObserver((doc, params) => {
+const membersTransformer = registerObserver((doc, params) => {
 	const memberTheme = MemberThemes.findOne({ member: doc._id, theme: params.themeId });
 
 	return MemberTransformer(doc, memberTheme);
@@ -18,11 +18,17 @@ Meteor.publish('memberThemes', (themeId) => {
 
 // All members for the theme
 Meteor.publish('members', function(themeId) {
-	const memberThemes = MemberThemes.find({ theme: themeId }).fetch();
+	const memberThemesCursor = MemberThemes.find({ theme: themeId });
+	const memberThemesObserver = memberThemesCursor.observe(doc => doc);
+	const memberThemes = memberThemesCursor.fetch();
 	const memberIds = memberThemes.map(memberTheme => memberTheme.member);
 	
-	const observer = Members.find({ _id: { $in: memberIds } }).observe(membersObserver('members', this, { themeId }));
-	this.onStop(() => observer.stop());
+	const membersCursor = Members.find({ _id: { $in: memberIds } });
+	const membersObserver = membersCursor.observe(membersTransformer('members', this, { themeId }));
+	this.onStop(() => {
+		membersObserver.stop();
+		memberThemesObserver.stop();
+	});
 	this.ready();
 });
 

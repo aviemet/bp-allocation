@@ -4,13 +4,12 @@ import { Card, Container, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useOrgs } from '/imports/api/providers';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
 const KioskInfo = observer(() => {
-	const data = useData();
-	const orgs = data.orgs.values;
+	const { orgs } = useOrgs();
 
 	return (
 		<OrgsContainer>

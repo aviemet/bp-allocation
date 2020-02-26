@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/stores/lib/DataProvider';
+import { useSettings, useOrgs } from '/imports/api/providers';
 
 import { Header, Card } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -9,9 +9,8 @@ import styled from 'styled-components';
 import AwardCard from '/imports/ui/Components/AwardCard';
 
 const Awards = observer(() => {
-	const data = useData();
-	const { settings } = data;
-	const topOrgs = data.orgs.topOrgs;
+	const { settings } = useSettings();
+	const { topOrgs } = useOrgs();
 
 	let winner = 0;
 	for(let i = 1; i < topOrgs.length; i++){

@@ -3,7 +3,6 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 
-// import { useData } from '/imports/api/stores/lib/DataProvider';
 import { Themes, Members } from '/imports/api/db';
 
 import { Loader } from 'semantic-ui-react';

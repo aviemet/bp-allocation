@@ -4,6 +4,11 @@ import { OrgTransformer } from '/imports/server/transformers';
 
 import { Organizations, Themes, MemberThemes, PresentationSettings } from '/imports/api/db';
 
+const aggregate = async function(collection, aggregation) {
+	const result = await collection.rawCollection().aggregate(aggregation).toArray();
+	return result;
+};
+
 const orgObserver = registerObserver(doc => {
 	if(!doc.theme) return doc;
 
@@ -14,15 +19,20 @@ const orgObserver = registerObserver(doc => {
 	return OrgTransformer(doc, theme, settings, memberThemes);
 });
 
+
 // Organizations - All orgs for theme
 Meteor.publish('organizations', function(themeId) {
 	if(!themeId) return null;
 
-	const observer = Organizations.find({ theme: themeId }).observe(orgObserver('organizations', this));
-	this.onStop(() => observer.stop());
+	const memberThemesObserver = MemberThemes.find({ theme: themeId }).observe(registerObserver(doc => doc));
+	const orgsObserver = Organizations.find({ theme: themeId }).observe(orgObserver('organizations', this));
+	this.onStop(() => { 
+		memberThemesObserver.stop();
+		orgsObserver.stop();
+	});
 	this.ready();
 });
-
+/*
 // TopOrgs - Top voted orgs from first round of voting
 Meteor.publish('topOrgs', function(themeId) {
 	if(!themeId) return null;
@@ -40,3 +50,4 @@ Meteor.publish('organization', function(orgId) {
 	this.onStop(() => observer.stop());
 	this.ready();
 });
+*/

@@ -28,7 +28,6 @@ const VotingContextProvider = observer(props => {
 	};
 
 	const saveVotes = source => {
-		console.log({ votes });
 		forEach(votes, (amount, org) => {
 			const voteData = {
 				theme: theme._id,

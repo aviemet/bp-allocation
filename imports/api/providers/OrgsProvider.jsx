@@ -38,7 +38,7 @@ const OrgsProvider = observer(function(props) {
 				
 				cursor.observe({
 					added: orgs => orgsCollection.refreshData(orgs),
-					changed: orgs => orgsCollection.refreshData(orgs),
+					changed: orgs => { console.log({ orgs }); return orgsCollection.refreshData(orgs); },
 					removed: orgs => orgsCollection.deleteItem(orgs)
 				});
 			}

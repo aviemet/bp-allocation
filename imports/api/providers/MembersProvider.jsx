@@ -15,7 +15,6 @@ export const useMember = props => {
 };
 
 export const useMembers = props => {
-	// console.log({ MembersContext });
 	return useContext(MembersContext);
 };
 

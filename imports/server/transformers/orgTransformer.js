@@ -27,7 +27,7 @@ const OrgTransformer = (doc, theme, settings, memberThemes) => {
 		// If voting with kiosk mode, get votes for this org from each member
 		if(settings.useKioskFundsVoting) {
 			const amount = memberThemes.reduce((sum, memberTheme) => {
-				const vote = memberTheme.allocations.find(allocation => allocation.organization._id === doc._id);
+				const vote = memberTheme.allocations.find(allocation => allocation.organization === doc._id);
 				return sum + (vote ? vote.amount : 0);
 			}, 0);
 			return amount;

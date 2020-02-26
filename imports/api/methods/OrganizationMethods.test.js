@@ -48,7 +48,6 @@ describe("Organization Methods", async function() {
 				title: faker.company.companyName()
 			};
 			const beforeOrg = Organizations.findOne({}, function(err, org) {
-				console.log({ org });
 				OrganizationMethods.update.call({ id: beforeOrg._id, data: orgChange });
 				const afterOrg = Organizations.findOne({ _id: beforeOrg._id });
 				expect(afterOrg).to.include(orgChange);

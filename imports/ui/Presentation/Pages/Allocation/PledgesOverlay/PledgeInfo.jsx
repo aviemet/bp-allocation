@@ -10,7 +10,6 @@ const PledgeInfo = ({ pledge }) => {
 	const { members } = useMembers();
 
 	const member = _.find(members.values, ['_id', pledge.member]);
-	console.log({ member });
 
 	return (
 		<AnimationContainer>

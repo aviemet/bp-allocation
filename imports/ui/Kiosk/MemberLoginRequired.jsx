@@ -99,7 +99,7 @@ const MemberLoginRequired = observer(props => {
 			</MemberLoginContainer>
 		);
 	}
-	console.log({ user });
+	
 	// Member is chosen, display the voting panel
 	return (
 		<VotingContextProvider member={ user } unsetUser={ () => setUser(false) }>

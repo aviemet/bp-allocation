@@ -8,14 +8,9 @@ import { PieChart, Pie, Cell } from 'recharts';
 
 import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';
 
-import { toJS } from 'mobx';
-
 const Stats = observer(props => {
 	const { orgs } = useOrgs();
 	const { members } = useMembers();
-
-	console.log({ member: toJS(members.values[0]) });
-	console.log({ org: toJS(orgs.values[0]) });
 
 	const data = [
 		{ name: 'Group A', value: 400 }, { name: 'Group B', value: 300 },

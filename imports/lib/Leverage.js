@@ -11,8 +11,6 @@ class Leverage {
 	 * Also calculate sumRemainingOrgs for first round leverage
 	 */
 	constructor(orgs, leverageRemaining) {
-		// console.log({ orgs: orgs.length });
-
 		this.leverageRemaining = leverageRemaining;
 
 		let sumRemainingOrgs = 0;

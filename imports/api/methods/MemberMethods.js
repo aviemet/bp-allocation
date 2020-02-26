@@ -115,10 +115,14 @@ const _memberInsert = function(data) {
  * @param  {Object} query
  */
 const _memberThemeInsert = function(query) {
+	console.log({ query });
 
-	let memberTheme = MemberThemes.find({ member: query.member, theme: query.theme }).fetch()[0];
+	// Check if this member is already associated with this theme
+	let memberTheme = MemberThemes.findOne({ member: query.member, theme: query.theme });
+	console.log({ memberTheme });
 
 	return new Promise((resolve, reject) => {
+		// New member/theme association
 		if(!memberTheme) {
 			try {
 				MemberThemes.insert(query, (err, result) => {
@@ -131,6 +135,7 @@ const _memberThemeInsert = function(query) {
 			} catch(e) {
 				console.error(e);
 			}
+		// Existing member/theme association
 		} else {
 			try {
 				MemberThemes.update({ _id: memberTheme._id }, { $set: { amount: query.amount } }, (err, result) => {
@@ -162,22 +167,16 @@ const MemberMethods = {
 
 		run(data) {
 			const { amount, themeId, phone } = data;
-			console.log({ amount, themeId, phone });
-			// Get strange results if run on client
-			if(Meteor.isServer) {
+			// Create/edit member
+			return _memberInsert(data).then(member => {
+				const memberThemeQuery = { member, amount, theme: themeId, phone };
 
-				// Create/edit member
-				return _memberInsert(data).then(member => {
-					const memberThemeQuery = { member, amount, theme: themeId, phone };
+				// Create/edit theme association
+				return _memberThemeInsert(memberThemeQuery);
 
-					// Create/edit theme association
-					return _memberThemeInsert(memberThemeQuery);
-
-				}, memberError => {
-					console.error({ memberError });
-				});
-
-			}
+			}, memberError => {
+				console.error({ memberError });
+			});
 		}
 	}),
 	
@@ -284,10 +283,9 @@ const MemberMethods = {
 
 		run({ theme, member, org, amount, voteSource }) {
 			if(Meteor.isServer) {
-				console.log({ theme, member, org, amount, voteSource });
 				// Check for existing allocation for this org from this member
 				let memberTheme = MemberThemes.findOne({ theme, member });
-				console.log({ memberTheme });
+				
 				let allocations = memberTheme.allocations;
 				let allocation = _.find(allocations, ['organization', org]);
 

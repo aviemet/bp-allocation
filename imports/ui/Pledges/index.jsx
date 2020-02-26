@@ -45,8 +45,6 @@ const Pledges = observer(() => {
 		clearAllValues();
 	};
 
-	// console.log({ members: [ ...toJS(members.values), { fullName: 'Anonymous', _id: '00' } ] });
-
 	if(membersLoading || orgsLoading) return <Loader active />;
 	return (
 		<PledgesContainer fluid textAlign='center'>

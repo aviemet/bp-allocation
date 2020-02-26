@@ -47,7 +47,6 @@ describe("Education Theme leverage spread", function() {
 			// Step through each org in each round
 			round.orgs.forEach(org => {
 				if(org.roundFunds !== orgSpreadByRound[org._id][nRounds]) {
-					// console.log({ org, comp: orgSpreadByRound[org._id], nRounds })
 				}
 				// Compare the org leverage funds in the round to the expected value from above
 				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id][nRounds]);
@@ -83,9 +82,6 @@ describe("Democracy Theme leverage spread", function() {
 		rounds.forEach((round, nRounds) => {
 			// Step through each org in each round
 			round.orgs.forEach(org => {
-				if(org.roundFunds !== orgSpreadByRound[org._id][nRounds]) {
-					// console.log({ org, comp: orgSpreadByRound[org._id], nRounds });
-				}
 				// Compare the org leverage funds in the round to the expected value from above
 				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id][nRounds]);
 			});
