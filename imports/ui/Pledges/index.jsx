@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useOrgs, useMembers } from '/imports/api/providers';
 import { OrganizationMethods } from '/imports/api/methods';
 
+import { isEmpty } from 'lodash';
 import { toJS } from 'mobx';
 import { roundFloat } from '/imports/lib/utils';
 
@@ -45,7 +46,7 @@ const Pledges = observer(() => {
 		clearAllValues();
 	};
 
-	if(membersLoading || orgsLoading) return <Loader active />;
+	if(membersLoading || isEmpty(members) || orgsLoading) return <Loader active />;
 	return (
 		<PledgesContainer fluid textAlign='center'>
 			<h1>Top-ups</h1>

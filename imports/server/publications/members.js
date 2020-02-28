@@ -38,6 +38,17 @@ Meteor.publish('members', function({ themeId, limit }) {
 	});
 });
 
+Meteor.publish('member', function({ memberId, themeId }) {
+	if(!memberId) {
+		this.ready();
+		return;
+	}
+	
+	const memberObserver = Members.find({ _id: memberId }).observe(membersTransformer('members', this, { themeId, debug: true }));
+
+	this.onStop(() => memberObserver.stop());
+	this.ready();
+});
 
 /*
 // All members for the theme
@@ -56,8 +67,3 @@ Meteor.publish('members', function(themeId) {
 	this.ready();
 });
 */
-// Members - All members by [id]
-Meteor.publish('membersById', (ids) => {
-	if(!ids) return Members.find({});
-	return Members.find({ _id: { $in: ids } });
-});

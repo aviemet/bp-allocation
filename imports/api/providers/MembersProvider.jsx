@@ -15,13 +15,13 @@ const MembersProvider = observer(props => {
 	let subscription;
 	let observer;
 	let membersCollection; // MobX store for members collection
-	// let memberStore; // MobX store for single member
 
 	// limit of 0 == 'return no records', limit of false == 'no limit'
 	const [ subLimit, setSubLimit ] = useState(0);
 	// const [ subIndex, setSubIndex ] = useState(0);
 
 	const [ renderCount, setRenderCount ] = useState(0);
+	const [ memberId, setMemberId ] = useState(false);
 
 	const getAllMembers = () => {
 		setSubLimit(false);
@@ -31,52 +31,58 @@ const MembersProvider = observer(props => {
 		setSubLimit(0);
 	};
 
-	const methods = { getAllMembers, hideAllMembers };
+	const methods = { getAllMembers, hideAllMembers, setMemberId };
 
-	const members = useTracker(() => {
-		console.log({ subLimit });
-		if(!themeId || subLimit === 0) {
-			if(subscription) subscription.stop();
-			if(observer) observer.stop();
+	// Method to be called when subscription is ready
+	const subscriptionReady = cursor => {
+		membersCollection = new MembersCollection(cursor.fetch(), MemberStore);
 
-			return Object.assign(methods, {
-				isLoading: subLimit === 0 ? false : true,
-				members: {}
+		cursor.observe({
+			added: members => membersCollection.refreshData(members),
+			changed: members => membersCollection.refreshData(members),
+			removed: members => membersCollection.refreshData(members)
+		});
+		// Used to force re-render
+		setRenderCount(renderCount + 1);
+	};
+
+	const members = useTracker(() => {	
+		// Return a single user if memberId is set
+		if(memberId) {
+			subscription = Meteor.subscribe('member', { memberId, themeId }, {
+				onReady: () => {
+					subscriptionReady(Members.find({ }));
+				}
+			});
+		// Return all users if no memberId
+		} else {
+			// Return loading or uninitialized placeholder data
+			if(!themeId || subLimit === 0) {
+				if(subscription) subscription.stop();
+				if(observer) observer.stop();
+
+				return Object.assign(methods, {
+					isLoading: subLimit === 0 ? false : true,
+					members: {}
+				});
+			}
+
+			subscription = Meteor.subscribe('members', { themeId, limit: subLimit }, {
+				onReady: () => {
+					subscriptionReady(Members.find(
+						{ 'theme.theme': themeId },
+						{ sort: { number: 1 } }
+					));
+				}
 			});
 		}
-		
-		subscription = Meteor.subscribe('members', { themeId, limit: subLimit }, {
-			onReady: () => {
-				const cursor = Members.find(
-					{ 'theme.theme': themeId },
-					{ sort: { number: 1 } }
-				);
-				membersCollection = new MembersCollection(cursor.fetch(), MemberStore);
-
-				cursor.observe({
-					added: members => membersCollection.refreshData(members),
-					changed: members => membersCollection.refreshData(members),
-					removed: members => membersCollection.refreshData(members)
-				});
-				// Used to force re-render
-				setRenderCount(renderCount + 1);
-			}
-		});
-
-		// subscription = Meteor.subscribe('member', { memberId }, {
-		// 	onReady: () => {
-		// 		const cursor = Members.find({ _id: memberId });
-		// 		memberStore = new MemberStore(cursor.fetch());
-		// 	}
-		// })
 
 		return Object.assign(methods, {
 			members: membersCollection,
 			isLoading: !subscription.ready()
 		});
 
-	// subIndex and subLimit changes cause subscription to update
-	}, [themeId, subLimit]);
+	}, [themeId, subLimit, memberId]);
 
 	return (
 		<MembersContext.Provider value={ members } render={ renderCount /* used to force re-render */ }>
@@ -91,9 +97,9 @@ MembersProvider.propTypes = {
 };
 
 // Get a single member
-export const useMember = ({ memberId }) => {
+export const useMember = (memberId) => {
 	const membersContext = useContext(MembersContext);
-
+	membersContext.setMemberId(memberId);
 	return membersContext;
 };
 
