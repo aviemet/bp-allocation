@@ -1,11 +1,15 @@
-
 import { isEmpty } from 'lodash';
 import { roundFloat } from '/imports/lib/utils';
 
-const ThemeTransformer = (doc, topOrgs, memberThemes, settings) => {
+/**
+ * Document transformer for records in the Theme table
+ * @param {Object} doc Object in iterating array of objects to altered
+ * @param {Object} params { topOrgs, memberThemes, settings }
+ */
+const ThemeTransformer = (doc, params) => {
 	doc.pledgedTotal = function() {
 		let total = 0;
-		topOrgs.map(org => {
+		params.topOrgs.map(org => {
 			if(org.pledges) {
 				total += org.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0);
 			}
@@ -20,13 +24,13 @@ const ThemeTransformer = (doc, topOrgs, memberThemes, settings) => {
 		let voteAllocated = 0;
 
 		// Calculate based on individual votes if using kiosk method
-		if(settings.useKioskFundsVoting) {
-			memberThemes.map(member => {
+		if(params.settings.useKioskFundsVoting) {
+			params.memberThemes.map(member => {
 				voteAllocated += member.allocations.reduce((sum, allocation) => { return allocation.amount + sum; }, 0);
 			});
 		// Calculate total count if not using kiosk method
 		} else {
-			voteAllocated = topOrgs.reduce((sum, org) => {
+			voteAllocated = params.topOrgs.reduce((sum, org) => {
 				return sum + parseFloat(org.votedTotal || 0); 
 			}, voteAllocated);
 		}
@@ -38,7 +42,7 @@ const ThemeTransformer = (doc, topOrgs, memberThemes, settings) => {
 	 * True if at least one person has cast a vote
 	 */
 	doc.votingStarted = function() {
-		return memberThemes.some(member => {
+		return params.memberThemes.some(member => {
 			return member.allocations.some(vote => vote.amount > 0);
 		});
 	}();
@@ -68,17 +72,7 @@ const ThemeTransformer = (doc, topOrgs, memberThemes, settings) => {
 		let remainingLeverage = (doc.leverageTotal) - doc.consolationTotal - doc.votedFunds;
 
 		// Subtract the amounts allocated to each org
-		topOrgs.map((org, i) => {
-			// Amount from dollar voting round
-			/*let amountFromVotes = 0;
-			if(this.parent.settings.useKioskFundsVoting) {
-				this.parent.members.values.map(member => {
-					let vote = _.find(member.allocations, ['organization', org._id]) || false;
-					amountFromVotes += vote.amount || 0;
-				});
-			}
-			remainingLeverage -= parseInt(amountFromVotes || 0);*/
-
+		params.topOrgs.map((org, i) => {
 			// The topoff for the crowd favorite
 			if(org.topOff > 0){
 				remainingLeverage -= org.topOff;

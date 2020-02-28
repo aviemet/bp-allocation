@@ -1,5 +1,6 @@
 import React from 'react';
 import { useData, useMembers } from '/imports/api/providers';
+import { isEmpty } from 'lodash';
 
 import { Container, Input, Grid, Loader } from 'semantic-ui-react';
 
@@ -16,7 +17,7 @@ const MembersPane = observer(() => {
 		members.searchFilter = null;
 	};
 
-	if(membersLoading) return <Loader active />;
+	if(membersLoading || isEmpty(members)) return <Loader active />;
 	return (
 		<>
 			<Container style={ { marginBottom: '0.6rem' } }>
@@ -54,7 +55,7 @@ const MembersPane = observer(() => {
 			</Container>
 
 			<Container>
-				<MembersList />
+				<MembersList members={ members } />
 			</Container>
 		</>
 	);

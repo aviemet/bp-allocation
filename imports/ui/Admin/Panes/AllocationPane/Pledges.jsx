@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
@@ -41,7 +40,8 @@ const Pledges = observer(props => {
 
 				<Table.Body>
 					{orgs.pledges.map(pledge => {
-						let member = pledge.member ? _.find(members.values, ['_id', pledge.member]) : '';
+						
+						let member = pledge.member ? members.values.find(value => value._id === pledge.member) : '';
 						return (
 							<Table.Row key={ pledge._id }>
 								<Table.Cell singleLine>{pledge.org.title}</Table.Cell>

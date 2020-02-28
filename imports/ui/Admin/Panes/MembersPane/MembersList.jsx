@@ -4,7 +4,7 @@ import numeral from 'numeral';
 import { paginate } from '/imports/lib/utils';
 
 import { observer } from 'mobx-react-lite';
-import { useTheme, useSettings, useMembers } from '/imports/api/providers';
+import { useTheme, useSettings } from '/imports/api/providers';
 import { MemberMethods } from '/imports/api/methods';
 
 import { Table, Icon, Button, Dropdown } from 'semantic-ui-react';
@@ -15,7 +15,6 @@ import ConfirmationModal from '/imports/ui/Components/ConfirmationModal';
 const MembersList = observer(props => {
 	const { theme } = useTheme();
 	const { settings } = useSettings();
-	const { members } = useMembers();
 	
 	const [ page, setPage ] = useState(0);
 	const [ itemsPerPage/*, setItemsPerPage*/ ] = useState(10);
@@ -26,6 +25,8 @@ const MembersList = observer(props => {
 	const [ modalHeader, setModalHeader ] = useState('');
 	const [ modalContent, setModalContent ] = useState('');
 	const [ modalAction, setModalAction ] = useState();
+
+	const { members } = props;
 
 	const removeMember = id => () => {
 		MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: theme._id });

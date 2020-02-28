@@ -68,8 +68,6 @@ const ImportOrgs = observer(props => {
 			'afterRowParse': row => {
 				// console.log({ afterRowParse: row });
 				// console.log({ afterRowParse: row });
-				// TODO: That object key can't be right... 'Id'?... hmmmmmmmm
-				console.log({ row });
 				OrganizationMethods.create.call(Object.assign({ theme: themeId }, row));
 			},
 			'onComplete': data => {

@@ -115,11 +115,8 @@ const _memberInsert = function(data) {
  * @param  {Object} query
  */
 const _memberThemeInsert = function(query) {
-	console.log({ query });
-
 	// Check if this member is already associated with this theme
 	let memberTheme = MemberThemes.findOne({ member: query.member, theme: query.theme });
-	console.log({ memberTheme });
 
 	return new Promise((resolve, reject) => {
 		// New member/theme association

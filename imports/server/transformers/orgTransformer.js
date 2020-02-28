@@ -1,13 +1,19 @@
 import { isEmpty } from 'lodash';
 import { roundFloat } from '/imports/lib/utils';
 
-const OrgTransformer = (doc, theme, settings, memberThemes) => {
+/**
+ * Document transformer for records in the Organization table
+ * @param {Ojbect} doc Object in iterating array of objects to altered
+ * @param {Object} params { theme, settings, memberThemes }
+ */
+const OrgTransformer = (doc, params) => {
+	
 	doc.save = function() {
 		// Get save amount if saved
 		let save = 0;
-		if(!isEmpty(theme.saves)) {
+		if(params.theme && !isEmpty(params.theme.saves)) {
 			save = (() => {
-				let saveObj = theme.saves.find( save => save.org === doc._id);
+				let saveObj = params.theme.saves.find( save => save.org === doc._id);
 				return saveObj ? (saveObj.amount || 0) : 0;
 			})();
 		}
@@ -17,16 +23,16 @@ const OrgTransformer = (doc, theme, settings, memberThemes) => {
 	doc.pledgeTotal = function() {
 		// Total of funds pledged for this org multiplied by the match ratio
 		let pledgeTotal = 0;
-		if(doc.pledges) {
-			pledgeTotal = doc.pledges.reduce((sum, pledge) => { return sum + pledge.amount;}, 0) * theme.matchRatio;
+		if(params.theme && doc.pledges) {
+			pledgeTotal = doc.pledges.reduce((sum, pledge) => { return sum + pledge.amount;}, 0) * params.theme.matchRatio;
 		}
 		return pledgeTotal;
 	}();
 
 	doc.votedTotal = function() {
 		// If voting with kiosk mode, get votes for this org from each member
-		if(settings.useKioskFundsVoting) {
-			const amount = memberThemes.reduce((sum, memberTheme) => {
+		if(params.settings && params.settings.useKioskFundsVoting) {
+			const amount = params.memberThemes.reduce((sum, memberTheme) => {
 				const vote = memberTheme.allocations.find(allocation => allocation.organization === doc._id);
 				return sum + (vote ? vote.amount : 0);
 			}, 0);
@@ -48,14 +54,14 @@ const OrgTransformer = (doc, theme, settings, memberThemes) => {
 
 	doc.votes = function() {
 		let votes = 0;
-		if(doc.chitVotes) {
+		if(params.theme && doc.chitVotes) {
 			if(doc.chitVotes.count) {
 				// Token count has higher specificity, therefor higher precedence
 				// If present, return this number
 				votes = doc.chitVotes.count;	
 			} else if(doc.chitVotes.weight) {
-				// Token weight must be set in theme settings
-				votes = doc.chitVotes.weight / theme.chitWeight;
+				// Token weight must be set in params.theme settings
+				votes = doc.chitVotes.weight / params.theme.chitWeight;
 			}
 		}
 

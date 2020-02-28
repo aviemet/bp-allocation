@@ -16,6 +16,30 @@ Meteor.publish('memberThemes', (themeId) => {
 	return MemberThemes.find({ theme: themeId });
 });
 
+// limit of 0 == 'return no records', limit of false == 'no limit'
+Meteor.publish('members', function({ themeId, limit }) {
+	if(limit === 0) {
+		this.ready();
+		return;
+	}
+
+	const subOptions = { sort: { number: 1 } };
+	if(limit !== false) {
+		subOptions.limit = limit;
+	}
+
+	this.autorun(function() {
+		const memberThemes = MemberThemes.find({ theme: themeId }).fetch();
+		const memberIds = memberThemes.map(memberTheme => memberTheme.member);
+
+		const membersObserver = Members.find({ _id: { $in: memberIds } },subOptions).observe(membersTransformer('members', this, { themeId }));
+		this.onStop(() => membersObserver.stop());
+		this.ready();
+	});
+});
+
+
+/*
 // All members for the theme
 Meteor.publish('members', function(themeId) {
 	const memberThemesCursor = MemberThemes.find({ theme: themeId });
@@ -31,7 +55,7 @@ Meteor.publish('members', function(themeId) {
 	});
 	this.ready();
 });
-
+*/
 // Members - All members by [id]
 Meteor.publish('membersById', (ids) => {
 	if(!ids) return Members.find({});

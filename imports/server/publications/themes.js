@@ -11,7 +11,7 @@ const themeObserver = registerObserver(doc => {
 	const orgs = Organizations.find({ theme: doc._id }).fetch().map(org => OrgTransformer(org, doc, settings, memberThemes));
 	const topOrgs = filterTopOrgs(orgs, doc);
 
-	return ThemeTransformer(doc, topOrgs, memberThemes, settings);
+	return ThemeTransformer(doc, { topOrgs, memberThemes, settings });
 });
 
 Meteor.publish('themes', function(themeId) {
@@ -26,7 +26,19 @@ Meteor.publish('themes', function(themeId) {
 
 Meteor.publish('theme', function(themeId) {
 	if(!themeId) return;
-	const observer = Themes.find({ _id: themeId }).observe(themeObserver('themes', this));
-	this.onStop(() => observer.stop());
-	this.ready();
+
+	const theme = Themes.findOne({ _id: themeId });
+
+	this.autorun(function() {
+		const settings = PresentationSettings.findOne({ _id: theme.presentationSettings });
+		const memberThemes = MemberThemes.find({ theme: themeId }).fetch();
+
+		const orgs = Organizations.find({ theme: themeId }).fetch().map(org => OrgTransformer(org, { theme, settings, memberThemes }));
+
+		const topOrgs = filterTopOrgs(orgs, theme);
+
+		const observer = Themes.find({ _id: themeId }).observe(themeObserver('themes', this, { topOrgs, memberThemes, settings }));
+		this.onStop(() => observer.stop());
+		this.ready();
+	});
 });
