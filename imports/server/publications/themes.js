@@ -31,7 +31,6 @@ Meteor.publish('theme', function(themeId) {
 		const orgs = Organizations.find({ theme: themeId }).fetch().map(org => OrgTransformer(org, { theme, settings, memberThemes }));
 
 		const topOrgs = filterTopOrgs(orgs, theme);
-		console.log({ topOrgs });
 
 		const observer = Themes.find({ _id: themeId }).observe(themeObserver('themes', this, { topOrgs, memberThemes, settings }));
 		this.onStop(() => observer.stop());

@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import _ from 'lodash';
+import React, { useState } from 'react';
 
 import { Link } from 'react-router-dom';
 
@@ -7,7 +6,8 @@ import { observer } from 'mobx-react-lite';
 import { useTheme, useSettings } from '/imports/api/providers';
 import { PresentationSettingsMethods } from '/imports/api/methods';
 
-import { Grid, Icon, Label, Segment, Input, Button, Responsive, Loader } from 'semantic-ui-react';
+import { TimerInput, ResultsOffsetInput } from '/imports/ui/Components/Inputs';
+import { Grid, Icon, Label, Segment, Button, Responsive, Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import { 
@@ -26,33 +26,7 @@ const PresentationPane = observer(() => {
 	const { theme } = useTheme();
 	const { settings, isLoading: settingsLoading } = useSettings();
 
-	const [ resultsOffset, setResultsOffset ] = useState(settings.resultsOffset);
-	const [ timerLength, setTimerLength ] = useState(settings.timerLength);
 	const [ gridColumns, setGridColumns ] = useState(3);
-
-	useEffect(() => {
-		if(!settingsLoading) {
-			// TODO: Deferred loading is causing this to throw an error
-			setResultsOffset(settings.resultsOffset);
-			setTimerLength(settings.timerLength);
-
-			/*let data = {};
-			if(resultsOffset !== settings.resultsOffset) {
-				data.resultsOffset = resultsOffset;
-			}
-
-			if(timerLength !== settings.timerLength) {
-				data.timerLength = timerLength;
-			}
-
-			if(!_.isEmpty(data)){
-				PresentationSettingsMethods.update.call({
-					id: theme.presentationSettings,
-					data: data
-				});
-			}*/
-		}
-	}, [settingsLoading]);
 
 	const handleOnUpdate = (e, { width }) => {
 		if(width > Responsive.onlyTablet.minWidth) {
@@ -139,17 +113,12 @@ const PresentationPane = observer(() => {
 							<Label>Timer</Label>
 						</PresentationNavButton>
 
-						<Input
-							type='number'
-							label='Seconds'
-							index='timerLength'
-							value={ timerLength }
-							onChange={ e => setTimerLength(parseInt(e.target.value)) }
-						/>
+						<TimerInput timerLength={ settings.timerLength } settingsId={ settings._id } />
 						<br/>
 						<ChitVotingActiveToggle />
 						<br/>
 						<FundsVotingActiveToggle />
+						<br/>
 						<TextMembersButton 
 							style={ { float: 'right' } }
 							title='Text: Begin Voting'
@@ -204,17 +173,8 @@ const PresentationPane = observer(() => {
 							<Icon name='check' size='huge' /><br/>
 							<Label>Result</Label>
 						</PresentationNavButton>
-
-						<Input
-							type='number'
-							icon='dollar sign'
-							iconPosition='left'
-							label='Offset'
-							labelPosition='right'
-							index='resultsOffset'
-							value={ resultsOffset }
-							onChange={ e => setResultsOffset(parseFloat(e.target.value)) }
-						/>
+						
+						<ResultsOffsetInput resultsOffset={ settings.resultsOffset } settingsId={ settings._id } />
 
 					</Grid.Column>
 				</Grid.Row>
