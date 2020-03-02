@@ -7,7 +7,6 @@ import { roundFloat } from '/imports/lib/utils';
  * @param {Object} params { theme, settings, memberThemes }
  */
 const OrgTransformer = (doc, params) => {
-	
 	doc.save = function() {
 		// Get save amount if saved
 		let save = 0;
@@ -24,7 +23,7 @@ const OrgTransformer = (doc, params) => {
 		// Total of funds pledged for this org multiplied by the match ratio
 		let pledgeTotal = 0;
 		if(params.theme && doc.pledges) {
-			pledgeTotal = doc.pledges.reduce((sum, pledge) => { return sum + pledge.amount;}, 0) * params.theme.matchRatio;
+			pledgeTotal = doc.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0) * params.theme.matchRatio;
 		}
 		return pledgeTotal;
 	}();

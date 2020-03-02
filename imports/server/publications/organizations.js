@@ -14,10 +14,9 @@ const orgObserver = registerObserver((doc, params) => {
 Meteor.publish('organizations', function(themeId) {
 	if(!themeId) return null;
 
-	const theme = Themes.findOne({ _id: themeId });
-
 	// Autorun recalculates enclosed document searches with any change on related data
 	this.autorun(function() {
+		const theme = Themes.findOne({ _id: themeId });
 		const settings = PresentationSettings.findOne({ _id: theme.presentationSettings });
 		const memberThemes = MemberThemes.find({ theme: themeId }).fetch();
 

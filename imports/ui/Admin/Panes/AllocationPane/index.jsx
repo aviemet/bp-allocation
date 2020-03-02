@@ -5,7 +5,7 @@ import numeral from 'numeral';
 
 import { observer } from 'mobx-react-lite';
 
-import { Grid, Table, Button, Header } from 'semantic-ui-react';
+import { Grid, Table, Button, Header, Loader } from 'semantic-ui-react';
 
 import Breakdown from './Breakdown';
 import AllocationInputs from './AllocationInputs';
@@ -15,8 +15,8 @@ import { ShowLeverageToggle } from '/imports/ui/Components/Toggles';
 import { useTheme, useOrgs } from '/imports/api/providers';
 
 const AllocationPane = observer(props => {
-	const { theme } = useTheme();
-	const { topOrgs } = useOrgs();
+	const { theme, isLoading: themeLoading } = useTheme();
+	const { topOrgs, isLoading: orgsLoading } = useOrgs();
 
 	const _calculateCrowdFavorite = () => {
 		let favorite = 0;
@@ -30,6 +30,7 @@ const AllocationPane = observer(props => {
 		return favorite;
 	};
 
+	if(themeLoading || orgsLoading) return <Loader active />;
 	return (
 		<Grid>
 
@@ -42,7 +43,7 @@ const AllocationPane = observer(props => {
 
 			<Grid.Row>
 				<Grid.Column width={ 10 }>
-					<Header as='h2'>Top {topOrgs.length} Funds Allocation</Header>
+					<Header as='h2'>Top { topOrgs.length } Funds Allocation</Header>
 				</Grid.Column>
 
 				{!props.hideAdminFields && <React.Fragment>

@@ -29,7 +29,7 @@ const MemberLoginRequired = observer(props => {
 	}
 	const [ user, setUser ] = useState(member || false);
 
-	if(membersLoading) return <Loader active />;
+	if(membersLoading || isEmpty(members)) return <Loader active />;
 
 	const showSearchError = () => {
 		setSearchError(true);

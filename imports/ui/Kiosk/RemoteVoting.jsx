@@ -15,14 +15,10 @@ const RemoteVoting = observer(props => {
 	// const { members, isLoading: membersLoading } = useMembers();
 	const { members, isLoading: membersLoading } = useMember(props.member);
 
-	console.log({ members });
-
 	if(membersLoading || isEmpty(members)) return <Loader active />;
 
 	// TODO: This should be a subscription to a single member
 	const member = members.values.find(member => member._id === props.member);
-
-	console.log({ members, member, membersLoading });
 
 	if(membersLoading) return <Loader active />;
 	if(!member) return (

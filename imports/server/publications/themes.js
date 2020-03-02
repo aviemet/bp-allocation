@@ -5,13 +5,8 @@ import { filterTopOrgs } from '/imports/lib/orgsMethods';
 import { Themes, PresentationSettings, Organizations, MemberThemes } from '/imports/api/db';
 import { ThemeTransformer, OrgTransformer } from '/imports/server/transformers';
 
-const themeObserver = registerObserver(doc => {
-	const settings = PresentationSettings.findOne({ _id: doc.presentationSettings });
-	const memberThemes = MemberThemes.find({ theme: doc._id }).fetch();
-	const orgs = Organizations.find({ theme: doc._id }).fetch().map(org => OrgTransformer(org, doc, settings, memberThemes));
-	const topOrgs = filterTopOrgs(orgs, doc);
-
-	return ThemeTransformer(doc, { topOrgs, memberThemes, settings });
+const themeObserver = registerObserver((doc, params) => {
+	return ThemeTransformer(doc, params);
 });
 
 Meteor.publish('themes', function(themeId) {
@@ -36,6 +31,7 @@ Meteor.publish('theme', function(themeId) {
 		const orgs = Organizations.find({ theme: themeId }).fetch().map(org => OrgTransformer(org, { theme, settings, memberThemes }));
 
 		const topOrgs = filterTopOrgs(orgs, theme);
+		console.log({ topOrgs });
 
 		const observer = Themes.find({ _id: themeId }).observe(themeObserver('themes', this, { topOrgs, memberThemes, settings }));
 		this.onStop(() => observer.stop());

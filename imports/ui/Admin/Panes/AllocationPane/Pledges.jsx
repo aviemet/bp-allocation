@@ -21,7 +21,7 @@ const Pledges = observer(props => {
 		OrganizationMethods.removePledge.call({ orgId, pledgeId });
 	};
 
-	if(orgsLoading || membersLoading) return <Loader active />;
+	if(orgsLoading || membersLoading || !members) return <Loader active />;
 
 	return (
 		<PledgesContainer>
@@ -39,21 +39,21 @@ const Pledges = observer(props => {
 				</Table.Header>
 
 				<Table.Body>
-					{orgs.pledges.map(pledge => {
+					{ orgs.pledges.map(pledge => {
 						
 						let member = pledge.member ? members.values.find(value => value._id === pledge.member) : '';
 						return (
 							<Table.Row key={ pledge._id }>
-								<Table.Cell singleLine>{pledge.org.title}</Table.Cell>
+								<Table.Cell singleLine>{ pledge.org.title }</Table.Cell>
 								<Table.Cell>
 									{ member && member.hasOwnProperty('formattedName') ? 
 										member.formattedName :
 										''
 									}
 								</Table.Cell>
-								<Table.Cell>{numeral(pledge.amount).format('$0,0')}</Table.Cell>
+								<Table.Cell>{ numeral(pledge.amount).format('$0,0') }</Table.Cell>
 								<Table.Cell>
-									{!props.hideAdminFields &&
+									{ !props.hideAdminFields &&
 									<Button
 										color='red'
 										icon='trash'
@@ -65,7 +65,7 @@ const Pledges = observer(props => {
 								</Table.Cell>
 							</Table.Row>
 						);
-					})}
+					}) }
 				</Table.Body>
 			</Table>
 		</PledgesContainer>

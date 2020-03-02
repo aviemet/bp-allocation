@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { observer } from 'mobx-react-lite';
 import { useOrgs, useMembers } from '/imports/api/providers';
@@ -7,10 +7,13 @@ import { useOrgs, useMembers } from '/imports/api/providers';
 import { PieChart, Pie, Cell } from 'recharts';
 
 import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';
+import { Loader } from 'semantic-ui-react';
 
 const Stats = observer(props => {
 	const { orgs } = useOrgs();
-	const { members } = useMembers();
+	const { members, isLoading: membersLoading } = useMembers();
+
+	if(membersLoading || isEmpty(members)) return <Loader active />;
 
 	const data = [
 		{ name: 'Group A', value: 400 }, { name: 'Group B', value: 300 },
@@ -48,7 +51,7 @@ const Stats = observer(props => {
 					};
 
 					orgs.topOrgs.forEach(org => {
-						const allocation = _.find(member.theme.allocations, ['organization', org._id]);
+						const allocation = member.theme.allocations.find(allocation => allocation.organization === org._id);
 						newMember[org.title] = allocation ? allocation.amount : 0;
 						newMember['Source'] = allocation ? allocation.voteSource : '';
 					});

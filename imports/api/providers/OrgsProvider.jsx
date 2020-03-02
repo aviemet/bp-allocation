@@ -9,6 +9,7 @@ import { Organizations } from '/imports/api/db';
 import { OrgsCollection, OrgStore } from '/imports/api/stores';
 import { filterTopOrgs } from '/imports/lib/orgsMethods';
 import { useTheme } from './ThemeProvider';
+import { toJS } from 'mobx';
 
 const OrgsContext = React.createContext('orgs');
 export const useOrgs = () => useContext(OrgsContext);
@@ -21,7 +22,7 @@ const OrgsProvider = observer(function(props) {
 	let orgsCollection; // The MobX store for the settings
 
 	const orgs = useTracker(() => {
-		if(!themeId) {
+		if(!themeId || themeLoading) {
 			if(subscription) subscription.stop();
 			if(observer) observer.stop();
 
@@ -43,14 +44,14 @@ const OrgsProvider = observer(function(props) {
 				});
 			}
 		});
-
+		
 		return {
 			orgs: orgsCollection,
-			topOrgs: themeLoading ? [] : filterTopOrgs(orgsCollection.values, theme),
+			topOrgs: !orgsCollection ? [] : filterTopOrgs(orgsCollection.values, theme),
 			isLoading: !subscription.ready()
 		};
 
-	}, [themeId]);
+	}, [themeId, themeLoading]);
 
 	return (
 		<OrgsContext.Provider value={ orgs }>

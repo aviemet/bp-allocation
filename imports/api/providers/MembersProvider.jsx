@@ -23,13 +23,8 @@ const MembersProvider = observer(props => {
 	const [ renderCount, setRenderCount ] = useState(0);
 	const [ memberId, setMemberId ] = useState(false);
 
-	const getAllMembers = () => {
-		setSubLimit(false);
-	};
-
-	const hideAllMembers = () => {
-		setSubLimit(0);
-	};
+	const getAllMembers = () => setSubLimit(false);
+	const hideAllMembers = () => setSubLimit(0);
 
 	const methods = { getAllMembers, hideAllMembers, setMemberId };
 
@@ -60,10 +55,10 @@ const MembersProvider = observer(props => {
 			if(!themeId || subLimit === 0) {
 				if(subscription) subscription.stop();
 				if(observer) observer.stop();
-
+				
 				return Object.assign(methods, {
 					isLoading: subLimit === 0 ? false : true,
-					members: {}
+					members: undefined
 				});
 			}
 

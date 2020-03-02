@@ -1,15 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useMembers } from '/imports/api/providers';
-import _ from 'lodash';
 import numeral from 'numeral';
 
 import styled from 'styled-components';
+import { Loader } from 'semantic-ui-react';
 
 const PledgeInfo = ({ pledge }) => {
-	const { members } = useMembers();
+	const { members, isLoading: membersLoading } = useMembers();
 
-	const member = _.find(members.values, ['_id', pledge.member]);
+	if(membersLoading || !members) return <Loader />;
+
+	const member = members.values.find(mem => mem._id === pledge.member);
 
 	return (
 		<AnimationContainer>

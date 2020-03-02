@@ -46,7 +46,7 @@ const ThemeProvider = observer(props => {
 		});
 
 		return {
-			theme: themeStore || {},
+			theme: themeStore,
 			isLoading: !subscription.ready()
 		};
 

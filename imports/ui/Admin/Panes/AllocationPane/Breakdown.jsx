@@ -5,12 +5,14 @@ import numeral from 'numeral';
 import { observer } from 'mobx-react-lite';
 import { useTheme, useOrgs } from '/imports/api/providers';
 
-import { Statistic, Segment } from 'semantic-ui-react';
+import { Statistic, Segment, Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const Breakdown = observer(() => {
-	const { theme } = useTheme();
-	const { topOrgs } = useOrgs();
+	const { theme, isLoading: themeLoading } = useTheme();
+	const { topOrgs, isLoading: orgsLoading } = useOrgs();
+
+	if(themeLoading || orgsLoading ) return <Loader active />;
 
 	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
 	const topOff = topOrgs.reduce((sum, org) => { return sum + org.topOff; }, 0);
