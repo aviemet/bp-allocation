@@ -20,7 +20,7 @@ class TrackableCollection {
 		// Either the Store object, or the raw data variable gets stored as the values for the collection
 		if(Store) {
 			this.values = data.map(value => { 
-				const store = new Store(value, parent); 
+				const store = new Store(value); 
 				return store;
 			});
 		} else {
@@ -40,7 +40,7 @@ class TrackableCollection {
 			}
 		} else {
 			// Add values
-			const newElement = this._store ? new this._store(data, this.parent) : data;
+			const newElement = this._store ? new this._store(data) : data;
 			this.values.push(newElement);
 		}
 	}

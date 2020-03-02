@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { observer } from 'mobx-react-lite';
 import { useMembers } from '/imports/api/providers';
@@ -23,7 +23,10 @@ const MemberLoginRequired = observer(props => {
 
 	const [ searchError, setSearchError ] = useState(false);
 
-	const member = membersLoading ? false : members.values.find(member => member._id === props.member);
+	let member = false;
+	if(!membersLoading && !isEmpty(members.values)) {
+		member = members.values.find(mem => mem._id === props.member);
+	}
 	const [ user, setUser ] = useState(member || false);
 
 	if(membersLoading) return <Loader active />;
@@ -41,7 +44,7 @@ const MemberLoginRequired = observer(props => {
 		setSearchError(false);
 		const code = `${initials.trim().toUpperCase()}${number}`;
 		
-		const member = _.find(members.values, ['code', code]);
+		const member = members.values.find(mem => mem.code === code);
 		
 		setInitials('');
 		setNumber('');
