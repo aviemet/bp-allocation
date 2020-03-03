@@ -9,6 +9,21 @@ const themeObserver = registerObserver((doc, params) => {
 	return ThemeTransformer(doc, params);
 });
 
+const themeObserverAutorun = (theme, publisher) => {
+	publisher.autorun(function() {
+		const settings = PresentationSettings.findOne({ _id: theme.presentationSettings });
+		const memberThemes = MemberThemes.find({ theme: theme._id }).fetch();
+
+		const orgs = Organizations.find({ theme: theme._id }).fetch().map(org => OrgTransformer(org, { theme, settings, memberThemes }));
+
+		const topOrgs = filterTopOrgs(orgs, theme);
+
+		const observer = Themes.find({ _id: theme._id }).observe(themeObserver('themes', this, { topOrgs, memberThemes, settings }));
+		this.onStop(() => observer.stop());
+		this.ready();
+	});
+};
+
 Meteor.publish('themes', function(themeId) {
 	if(themeId) {
 		const observer = Themes.find({ _id: themeId }).observe(themeObserver('themes', this));
@@ -19,21 +34,15 @@ Meteor.publish('themes', function(themeId) {
 	}
 });
 
+
 Meteor.publish('theme', function(themeId) {
 	if(!themeId) return;
 
-	const theme = Themes.findOne({ _id: themeId });
+	themeObserverAutorun(Themes.findOne({ _id: themeId }), this);
+});
 
-	this.autorun(function() {
-		const settings = PresentationSettings.findOne({ _id: theme.presentationSettings });
-		const memberThemes = MemberThemes.find({ theme: themeId }).fetch();
+Meteor.publish('themeBySlug', function(slug) {
+	if(!slug) return;
 
-		const orgs = Organizations.find({ theme: themeId }).fetch().map(org => OrgTransformer(org, { theme, settings, memberThemes }));
-
-		const topOrgs = filterTopOrgs(orgs, theme);
-
-		const observer = Themes.find({ _id: themeId }).observe(themeObserver('themes', this, { topOrgs, memberThemes, settings }));
-		this.onStop(() => observer.stop());
-		this.ready();
-	});
+	themeObserverAutorun(Themes.findOne({ slug }), this);
 });
