@@ -127,6 +127,12 @@ const PresentationPane = observer(() => {
 						/>
 						<TextMembersButton 
 							style={ { float: 'right' } }
+							title='Text: 5 Minute Warning'
+							// eslint-disable-next-line quotes
+							message={ "From Battery Powered:\nVoting is closing in 5 minutes!  Vote here:" }
+						/>
+						<TextMembersButton 
+							style={ { float: 'right' } }
 							title='Text: Voting Complete'
 							// eslint-disable-next-line quotes
 							message={ "From Battery Powered:\nThe results of voting are in! Check them out here:" }
