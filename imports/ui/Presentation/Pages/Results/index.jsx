@@ -23,25 +23,12 @@ const Results = observer(() => {
 	cloneDeep(topOrgs).map((org, i) => {
 		total += org.pledgeTotal / 2;
 
-		if(settings.formatAsDollars) {
-			if(org.allocatedFunds + org.leverageFunds >= org.ask){
-				awardees.push(org);
-			} else {
-				others.push(org);
-			}
+		if(org.allocatedFunds + org.leverageFunds >= org.ask){
+			awardees.push(org);
 		} else {
-			if(awardees.length === 0) {
-				awardees.push(org);
-			} else {
-				const compareTotal = awardees[0].allocatedFunds + awardees[0].leverageFunds;
-				if(org.allocatedFunds + org.leverageFunds > compareTotal) {
-					others.push(awardees[0]);
-					awardees[0] = org;
-				} else {
-					others.push(org);
-				}
-			}
+			others.push(org);
 		}
+		
 		return org;
 	});
 

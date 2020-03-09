@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { observer } from 'mobx-react-lite';
-import { useSettings } from '/imports/api/providers';
 
 import numeral from 'numeral';
 
@@ -10,18 +9,15 @@ import { Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const OrgInfo = observer(props => {
-	const { settings } = useSettings();
 
 	return (
 		<InfoContainer className='orginfo'>
 			<Title>{props.org.title}</Title>
 
 
-			{settings.formatAsDollars &&
-				<TotalNeed>
-					Need: {props.org.need > 0 ? `$${numeral(props.org.need).format('0,0[a]')}` : '--'}
-				</TotalNeed>
-			}
+			<TotalNeed>
+				Need: {props.org.need > 0 ? `$${numeral(props.org.need).format('0,0[a]')}` : '--'}
+			</TotalNeed>
 			
 			{props.showLeverage &&
 				<MatchNeed>
