@@ -45,6 +45,8 @@ const PresentationPane = observer(() => {
 			id: settings._id,
 			data: {
 				currentPage: 'intro',
+				fundsVotingActive: false,
+				chitVotingActive: false,
 				animateOrgs: true,
 				leverageVisible: false,
 				savesVisible: false,
