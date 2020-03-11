@@ -34,7 +34,7 @@ import MembersList from '/imports/ui/Admin/Panes/MembersPane/MembersList';
  *   Expoort buttons for information
  */
 
-const TABS_ORDER = ['orgs', 'members', 'allocation', 'graph', 'leverage', 'stats'];
+const TABS_ORDER = ['orgs', /*'members', */'allocation', 'graph', 'leverage', 'stats'];
 const TABS = {
 	orgs:{
 		slug: 'orgs',
@@ -42,12 +42,12 @@ const TABS = {
 		color: 'green',
 		component: Organizations
 	},
-	members: {
+	/*members: {
 		slug: 'members',
 		heading: 'Members',
 		color: 'teal',
 		component: MembersList
-	},
+	},*/
 	allocation: {
 		slug: 'allocation',
 		heading: 'Allocation',

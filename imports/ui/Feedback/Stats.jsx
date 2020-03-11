@@ -10,10 +10,10 @@ import ExportCsvButton from '/imports/ui/Components/ExportCsvButton';
 import { Loader } from 'semantic-ui-react';
 
 const Stats = observer(props => {
-	const { orgs } = useOrgs();
+	const { orgs, topOrgs, isLoading: orgsLoading } = useOrgs();
 	const { members, isLoading: membersLoading } = useMembers();
 
-	if(membersLoading || isEmpty(members)) return <Loader active />;
+	if(orgsLoading || membersLoading || isEmpty(members)) return <Loader active />;
 
 	const data = [
 		{ name: 'Group A', value: 400 }, { name: 'Group B', value: 300 },
@@ -24,8 +24,9 @@ const Stats = observer(props => {
 	/**
 	 * pledge = { org, memberName, memberNumber, amount, createdAt }
 	 */
+	console.log({ topOrgs });
 	const pledges = [];
-	orgs.topOrgs.forEach(org => {
+	topOrgs.forEach(org => {
 		org.pledges.forEach(pledge => {
 			const member = members.values.find(member => member._id === pledge.member);
 			const pledgeData = { 
@@ -50,7 +51,7 @@ const Stats = observer(props => {
 						'Number': member.number
 					};
 
-					orgs.topOrgs.forEach(org => {
+					topOrgs.forEach(org => {
 						const allocation = member.theme.allocations.find(allocation => allocation.organization === org._id);
 						newMember[org.title] = allocation ? allocation.amount : 0;
 						newMember['Source'] = allocation ? allocation.voteSource : '';
@@ -68,7 +69,7 @@ const Stats = observer(props => {
 			/>
 
 			<PieChart width={ 800 } height={ 400 }>
-				<Pie data={ data }>
+				<Pie data={ data } label>
 					{ data.map((entry, index) => <Cell key={ index } fill={ COLORS[index % COLORS.length] } />) }
 				</Pie>
 			</PieChart>
