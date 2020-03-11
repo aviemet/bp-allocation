@@ -287,4 +287,4 @@ export default SettingsPane;
 
 /*
 Voting for Allocation Night can be done online! You'll receive a link tonight. For now, here are the finalists
-/*
+*/
