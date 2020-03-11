@@ -264,7 +264,7 @@ const SettingsPane = observer(props => {
 			</Form>
 
 			<TextMembersButton
-				message="From Battery Powered: Voting for Allocation Night can be done online! You'll receive a link tonight. For now, here are the finalists: http://bit.ly/2TECprF"
+				message="From Battery Powered: Excuse us! We sent a bad link. The finalists can be seen here http://bit.ly/2TECprF Voting starts later tonight!"
 				title='Voting to Start Later'
 				link={ false }
 			/>
@@ -284,3 +284,7 @@ const SettingsPane = observer(props => {
 });
 
 export default SettingsPane;
+
+/*
+Voting for Allocation Night can be done online! You'll receive a link tonight. For now, here are the finalists
+/*
