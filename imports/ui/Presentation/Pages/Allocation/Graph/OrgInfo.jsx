@@ -14,7 +14,6 @@ const OrgInfo = observer(props => {
 		<InfoContainer className='orginfo'>
 			<Title>{props.org.title}</Title>
 
-
 			<TotalNeed>
 				Need: {props.org.need > 0 ? `$${numeral(props.org.need).format('0,0[a]')}` : '--'}
 			</TotalNeed>

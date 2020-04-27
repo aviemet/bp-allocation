@@ -3,7 +3,7 @@ import { ServiceConfiguration } from 'meteor/service-configuration';
 import { has } from 'lodash';
 import { formatPhoneNumber } from '/imports/lib/utils';
 
-import { Members, MemberThemes, Themes } from '/imports/api/db';
+import { MemberThemes, Themes } from '/imports/api/db';
 
 import '/imports/api/methods';
 import twilio from 'twilio';
