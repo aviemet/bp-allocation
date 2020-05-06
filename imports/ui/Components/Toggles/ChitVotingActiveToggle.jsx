@@ -20,7 +20,7 @@ const ChitVotingActiveToggle = observer(() => {
 		});
 	};
 
-	if(!settings.useKioskChitVoting) return <React.Fragment></React.Fragment>;
+	if(!settings.useKioskChitVoting) return <></>;
 
 	return(
 		<Checkbox

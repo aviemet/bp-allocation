@@ -9,69 +9,57 @@ import { withRouter } from 'react-router-dom';
 import { useData, useTheme, useSettings } from '/imports/api/providers';
 
 import KioskInfo from './Info/KioskInfo';
-// import KioskChitVoting from './ChitVoting/KioskChitVoting';
+import ChitVotingKiosk from './ChitVoting';
 import FundsVotingKiosk from './FundsVoting';
 import MemberLoginRequired from './MemberLoginRequired';
 import RemoteVoting from './RemoteVoting';
 import Results from '/imports/ui/Presentation/Pages/Results';
 import Awards from './Awards';
 
-// Transition group definitions
-const FADE_DURATION = 300;
-
-const defaultStyle = {
-	transition: `opacity ${FADE_DURATION}ms ease-in-out`,
-	opacity: 0
-};
-
-const transitionStyles = {
-	entering: { opacity: 0 },
-	entered: { opacity: 1 }
-};
-
-const PageFader = styled.div`
-	opacity: 0;
-`;
-
-// Kiosk Component
 const Kiosk = withRouter(observer(props => {
 	const data = useData();
 	const { theme } = useTheme();
 	const { settings } = useSettings();
 
 	const activePage = settings.fundsVotingActive ? data.KIOSK_PAGES.funds : data.KIOSK_PAGES.info;
+
 	const [ displayPage, setDisplayPage ] = useState(activePage); // Active presentation page
 	const [ show, setShow ] = useState(true); // Transition values
 
 	const timeoutRef = useRef();
 
-	useEffect(() => {
-		let pageNav;
-		// Funds voting is active
+	const getActivePage = () => {
 		if(settings.fundsVotingActive) {
-			// Show the voting page:
-			pageNav = data.KIOSK_PAGES.funds;
-		// Funds voting is not active
+			// Show the funds allocation voting page:
+			return data.KIOSK_PAGES.funds;
+		} else if(settings.chitVotingActive) {
+			// Show the chit voting page:
+			return data.KIOSK_PAGES.chits;
+		// Chit and Funds voting are not active
 		} else {
 			// Voting inactive, votes have been cast, and results have been shown
 			if(theme.votingStarted && settings.resultsVisited) {
 				// Show results page
-				pageNav = data.KIOSK_PAGES.results;
+				return data.KIOSK_PAGES.results;
 			// Voting inactive and (no votes yet cast || results not yet shown)
 			} else {
 				// Show orgs page
-				pageNav = data.KIOSK_PAGES.info;
+				return data.KIOSK_PAGES.info;
 			}
 		}
+	};
+
+	useEffect(() => {
+		let pageNav = getActivePage();
 
 		// Wait 1 minute before navigating a user away from a voting screen
-		if(displayPage === data.KIOSK_PAGES.funds && !settings.fundsVotingActive) {
+		if(displayPage === data.KIOSK_PAGES.funds && !settings.fundsVotingActive && !settings.chitVotingActive) {
 			timeoutRef.current = setTimeout(() => doNavigation(pageNav), data.votingRedirectTimeout * 1000);
 		} else {
 			clearTimeout(timeoutRef.current);
 			doNavigation(pageNav);
 		}
-	}, [settings.fundsVotingActive, settings.resultsVisited]);
+	}, [settings.fundsVotingActive, settings.chitVotingActive, settings.resultsVisited]);
 
 	// Change the active presentation page
 	const doNavigation = page => {
@@ -101,6 +89,15 @@ const Kiosk = withRouter(observer(props => {
 							<KioskInfo />
 						) } />
 
+						{/* Chit Voting */}
+						<Route exact path={ data.KIOSK_PAGES.chit } render={ () => {
+							return member ? 
+								// If member is set, navigation comes from the short link for voting remotely
+								<RemoteVoting member={ member } /> :
+								// Otherwise kiosk voting in the room, members must login to proceed
+								<MemberLoginRequired component={ ChitVotingKiosk } />;
+						} } />
+
 						{/* Funds Voting */}
 						<Route exact path={ data.KIOSK_PAGES.funds } render={ () => {
 							return member ? 
@@ -120,5 +117,22 @@ const Kiosk = withRouter(observer(props => {
 		</Transition>
 	);
 }));
+
+// Transition group definitions
+const FADE_DURATION = 300;
+
+const defaultStyle = {
+	transition: `opacity ${FADE_DURATION}ms ease-in-out`,
+	opacity: 0
+};
+
+const transitionStyles = {
+	entering: { opacity: 0 },
+	entered: { opacity: 1 }
+};
+
+const PageFader = styled.div`
+	opacity: 0;
+`;
 
 export default Kiosk;

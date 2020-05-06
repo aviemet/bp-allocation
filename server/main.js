@@ -85,10 +85,9 @@ Meteor.methods({
 
 		let texts = [];
 		const memberPhoneNumbers = memberPhoneNumbersQuery(themeId);
-		console.log({ memberPhoneNumbers });
+		
 		memberPhoneNumbers.forEach(member => {
 			const message = messageBuilder(member);
-			console.log({ message });
 			const text = client.messages.create({
 				body: message,
 				to: formatPhoneNumber(member.phone),

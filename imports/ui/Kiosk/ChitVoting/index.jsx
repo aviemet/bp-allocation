@@ -8,7 +8,7 @@ import { useOrgs } from '/imports/api/providers';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
 
-const KioskInfo = observer(() => {
+const KioskChitVoting = observer(() => {
 	const { orgs } = useOrgs();
 
 	return (
@@ -54,4 +54,4 @@ const OrgsContainer = styled.div`
 	}
 `;
 
-export default KioskInfo;
+export default KioskChitVoting;
