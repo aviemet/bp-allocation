@@ -14,21 +14,32 @@ const VotingContextProvider = observer(props => {
 	const { topOrgs } = useOrgs();
 
 	let initialVotesState = {};
+	let initialChitState = {};
 	topOrgs.map(org => {
-		const vote = find(props.member.theme.allocations, ['organization', org._id]);
-		initialVotesState[org._id] = vote ? vote.amount : 0;
+		const allocations = find(props.member.theme.allocations, ['organization', org._id]);
+		const chits = find(props.member.theme.chitVotes, ['organization', org._id]);
+
+		initialVotesState[org._id] = allocations ? allocations.amount : 0;
+		initialChitState[org._id] = chits ? chits.count : 0;
 	});
 
-	const [ votes, setVotes ] = useState(initialVotesState);
+	const [ allocations, setAllocations ] = useState(initialVotesState);
+	const [ chits, setChits ] = useState(initialChitState);
 
-	const updateVotes = (org, amount) => {
-		let newVotes = clone(votes);
+	const updateAllocations = (org, amount) => {
+		let newVotes = clone(allocations);
 		newVotes[org] = amount;
-		setVotes(newVotes);
+		setAllocations(newVotes);
 	};
 
-	const saveVotes = source => {
-		forEach(votes, (amount, org) => {
+	const updateChits = (org, count) => {
+		let newVotes = clone(chits);
+		newVotes[org] = count;
+		setChits(newVotes);
+	};
+
+	const saveAllocations = source => {
+		forEach(allocations, (amount, org) => {
 			const voteData = {
 				theme: theme._id,
 				member: props.member._id,
@@ -40,11 +51,27 @@ const VotingContextProvider = observer(props => {
 		});
 	};
 
+	const saveChits = source => {
+		forEach(chits, (count, org) => {
+			const voteData = {
+				theme: theme._id,
+				member: props.member._id,
+				org,
+				count
+			};
+			if(typeof source === 'string') voteData.voteSource = source;
+			MemberMethods.chitVote.call(voteData);
+		});
+	};
+
 	return (
 		<FundsVoteContext.Provider value={ {
-			votes,
-			updateVotes,
-			saveVotes,
+			allocations,
+			updateAllocations,
+			saveAllocations,
+			chits,
+			updateChits,
+			saveChits,
 			member: props.member || false,
 			unsetUser: props.unsetUser
 		} }>

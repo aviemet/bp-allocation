@@ -34,7 +34,7 @@ const Kiosk = withRouter(observer(props => {
 			return data.KIOSK_PAGES.funds;
 		} else if(settings.chitVotingActive) {
 			// Show the chit voting page:
-			return data.KIOSK_PAGES.chits;
+			return data.KIOSK_PAGES.chit;
 		// Chit and Funds voting are not active
 		} else {
 			// Voting inactive, votes have been cast, and results have been shown

@@ -85,9 +85,9 @@ const FundsVotingKiosk = observer(props => {
 				})}
 			</Card.Group>
 
-			<FundsVoteContext.Consumer>{({ votes, saveVotes, member }) => {
+			<FundsVoteContext.Consumer>{({ allocations, saveAllocations, member }) => {
 				let sum = 0;
-				_.forEach(votes, value => sum += value);
+				_.forEach(allocations, value => sum += value);
 				const remaining = member.theme.amount - sum;
 				const buttonDisabled = remaining !== 0;
 				
@@ -98,7 +98,7 @@ const FundsVotingKiosk = observer(props => {
 							size='huge'
 							disabled={ buttonDisabled }
 							onClick={ () => {
-								saveVotes(props.source);
+								saveAllocations(props.source);
 								setVotingComplete(true);
 							} }>Finalize Vote</FinalizeButton>
 					</React.Fragment>

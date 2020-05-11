@@ -24,6 +24,12 @@ const ChitVoteSchema = new SimpleSchema({
 		type: Date,
 		required: false,
 		defaultValue: new Date()
+	},
+	voteSource: {
+		type: String,
+		required: false,
+		allowedValues: ['kiosk', 'mobile'],
+		defaultValue: 'kiosk'
 	}
 });
 
@@ -36,17 +42,22 @@ const MemberThemes = new Mongo.Collection('memberThemes');
 const MemberThemeSchema = new SimpleSchema({
 	theme: SimpleSchema.RegEx.Id,
 	member: SimpleSchema.RegEx.Id,
-	amount: {
+	chits: { // Number of chits this member gets for round 1 voting
+		type: Number,
+		required: false,
+		defaultValue: 3
+	},
+	amount: { // Amount of money this member has to allocate for round 2 voting
 		type: Number,
 		required: false
 	},
-	chitVotes: {
+	chitVotes: { // Distribution of chit votes round 1
 		type: Array,
 		defaultValue: [],
 		required: false
 	},
 	'chitVotes.$': ChitVoteSchema,
-	allocations: {
+	allocations: { // Alloction of money round 2
 		type: Array,
 		defaultValue: [],
 		required: false

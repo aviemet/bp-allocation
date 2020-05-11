@@ -13,9 +13,9 @@ import { Input, Button, Icon } from 'semantic-ui-react';
  * Tactile slider for adjusting voting amount
  */
 const FundsSlider = props => {
-	const { member, votes, updateVotes } = useVoting();
+	const { member, allocations, updateAllocations } = useVoting();
 
-	const context = Object.assign({ member, votes, updateVotes }, props);
+	const context = Object.assign({ member, allocations, updateAllocations }, props);
 
 	return <FundsSliderComponent { ...context }>{props.children}</FundsSliderComponent>;
 };
@@ -24,7 +24,7 @@ const FundsSlider = props => {
  * Full Component containing Slider, Org Title and amount feedback
  */
 const FundsSliderComponent = props => {
-	const [ value, setValue ] = useState(parseInt(props.votes[props.org._id]));
+	const [ value, setValue ] = useState(parseInt(props.allocations[props.org._id]));
 	const [ showLabel, setShowLabel ] = useState(false); // Toggles showing slider percent label
 	const [ showInput, setShowInput ] = useState(false); // Toggles between text $ amount and input
 
@@ -39,20 +39,20 @@ const FundsSliderComponent = props => {
 		// undefined value from empty DB field should be dealt with correctly
 		if(_.isNaN(value)) {
 			setValue(0);
-			props.updateVotes(props.org._id, 0);
+			props.updateAllocations(props.org._id, 0);
 			return;
 		}
 
 		// Constrain value to not exceed total funds of member
 		let sum = 0;
-		_.forEach(props.votes, (voteAmount, key) => {
+		_.forEach(props.allocations, (voteAmount, key) => {
 			sum += key === props.org._id ? parseInt(value) : voteAmount;
 		});
 		const newValue = MAX - sum < 0 ? parseInt(value) + (MAX - sum) : parseInt(value);
 		setValue(newValue);
 
 		// Save new value to DB on every change
-		props.updateVotes(props.org._id, newValue);
+		props.updateAllocations(props.org._id, newValue);
 	};
 
 	// Show % label for slider on click, hide on mouseup/touchend
@@ -167,8 +167,8 @@ const BottomAlign = styled.div`
 FundsSliderComponent.propTypes = {
 	member: PropTypes.object,
 	org: PropTypes.object,
-	updateVotes: PropTypes.func,
-	votes: PropTypes.object,
+	updateAllocations: PropTypes.func,
+	allocations: PropTypes.object,
 
 };
 
