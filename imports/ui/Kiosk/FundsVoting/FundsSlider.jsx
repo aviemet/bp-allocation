@@ -36,6 +36,8 @@ const FundsSliderComponent = props => {
 	}, []);
 
 	const handleChange = value => {
+		if(value < 0 || value > MAX) return; 
+ 
 		// undefined value from empty DB field should be dealt with correctly
 		if(_.isNaN(value)) {
 			setValue(0);
@@ -48,11 +50,11 @@ const FundsSliderComponent = props => {
 		_.forEach(props.allocations, (voteAmount, key) => {
 			sum += key === props.org._id ? parseInt(value) : voteAmount;
 		});
-		const newValue = MAX - sum < 0 ? parseInt(value) + (MAX - sum) : parseInt(value);
-		setValue(newValue);
+		const constrained = MAX - sum < 0 ? parseInt(value) + (MAX - sum) : parseInt(value);
+		setValue(constrained);
 
 		// Save new value to DB on every change
-		props.updateAllocations(props.org._id, newValue);
+		props.updateAllocations(props.org._id, constrained);
 	};
 
 	// Show % label for slider on click, hide on mouseup/touchend

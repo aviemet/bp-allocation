@@ -20,7 +20,7 @@ const VotingContextProvider = observer(props => {
 		const chits = find(props.member.theme.chitVotes, ['organization', org._id]);
 
 		initialVotesState[org._id] = allocations ? allocations.amount : 0;
-		initialChitState[org._id] = chits ? chits.count : 0;
+		initialChitState[org._id] = chits ? chits.votes : 0;
 	});
 
 	const [ allocations, setAllocations ] = useState(initialVotesState);
@@ -52,12 +52,12 @@ const VotingContextProvider = observer(props => {
 	};
 
 	const saveChits = source => {
-		forEach(chits, (count, org) => {
+		forEach(chits, (votes, org) => {
 			const voteData = {
 				theme: theme._id,
 				member: props.member._id,
 				org,
-				count
+				votes
 			};
 			if(typeof source === 'string') voteData.voteSource = source;
 			MemberMethods.chitVote.call(voteData);

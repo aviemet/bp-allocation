@@ -5,10 +5,10 @@ import _ from 'lodash';
 import { useVoting } from '/imports/ui/Kiosk/VotingContext';
 
 import styled from 'styled-components';
-import { Input, Button, Icon } from 'semantic-ui-react';
+import { Button, Icon } from 'semantic-ui-react';
 
 /**
- * Tactile slider for adjusting voting amount
+ * Number incrementer for adjusting integer votes
  */
 const ChitTicker = props => {
 	const { member, chits, updateChits } = useVoting();
@@ -19,12 +19,12 @@ const ChitTicker = props => {
 };
 
 /**
- * Full Component containing Slider, Org Title and amount feedback
+ * Full Component containing Ticker, Org Title and amount feedback
  */
 const ChitTickerComponent = props => {
 	const [ value, setValue ] = useState(parseInt(props.chits[props.org._id]));
 	
-	const MAX = props.member.theme.amount;
+	const MAX = props.member.theme.chits;
 
 	useEffect(() => {
 		// Disable contextmenu for long press on mobile
@@ -32,6 +32,8 @@ const ChitTickerComponent = props => {
 	}, []);
 
 	const handleChange = value => {
+		if(value < 0 || value > MAX) return;
+
 		// undefined value from empty DB field should be dealt with correctly
 		if(_.isNaN(value)) {
 			setValue(0);
@@ -39,32 +41,26 @@ const ChitTickerComponent = props => {
 			return;
 		}
 
-		// Constrain value to not exceed total funds of member
+		// Constrain value to be between 0 and member's assigned chits
 		let sum = 0;
-		_.forEach(props.chits, (voteAmount, key) => {
-			sum += key === props.org._id ? parseInt(value) : voteAmount;
+		_.forEach(props.chits, (votes, key) => {
+			sum += key === props.org._id ? parseInt(value) : votes;
 		});
-		const newValue = MAX - sum < 0 ? parseInt(value) + (MAX - sum) : parseInt(value);
-		setValue(newValue);
+		const constrained = MAX - sum < 0 ? parseInt(value) + (MAX - sum) : parseInt(value);
+		// const constrained = Math.min(Math.max(value, 0), MAX);
+		setValue(constrained);
 
 		// Save new value to DB on every change
-		props.updateChits(props.org._id, newValue);
-	};
-		
-	const adjustValue = amount => {
-		// TODO: Fix hardcoded max value
-		if(value + amount >= 0 && value + amount <= 3) {
-			setValue(value + amount);
-		}
+		props.updateChits(props.org._id, constrained);
 	};
 
 	return (
 		<TickerContainer>
-			<Button onClick={ () => adjustValue(-1) }>-</Button>
+			<TransparentButton icon='minus' onClick={ () => handleChange(value - 1) } size='huge' />
 			<Amount>
 				{ value }
 			</Amount>
-			<Button onClick={ () => adjustValue(1) }>+</Button>
+			<TransparentButton icon='plus' onClick={ () =>  handleChange(value + 1) } size='huge' />
 		</TickerContainer>
 	);
 };
@@ -85,6 +81,16 @@ const Amount = styled.div`
 	text-align: center;
 	line-height: 1.15;
 	display: inline-block;
+	padding: 0 15px;
+`;
+
+const TransparentButton = styled(Button)`
+	&& {
+		background: none;
+		color: white;
+		vertical-align: bottom;
+		margin-bottom: 4px;
+	}
 `;
 
 ChitTickerComponent.propTypes = {

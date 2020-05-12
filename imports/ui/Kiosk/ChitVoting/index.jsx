@@ -15,6 +15,7 @@ import ChitTicker from './ChitTicker';
 import useInterval from '/imports/ui/Components/useInterval';
 
 import { COLORS } from '/imports/lib/global';
+import { toJS } from 'mobx';
 
 const VotesRemaining = React.memo(({ value }) => {
 	return (
@@ -87,7 +88,7 @@ const FundsVotingKiosk = observer(props => {
 			<FundsVoteContext.Consumer>{({ chits, saveChits, member }) => {
 				let sum = 0;
 				_.forEach(chits, value => sum += value);
-				const remaining = member.theme.amount - sum;
+				const remaining = member.theme.chits - sum;
 				const buttonDisabled = remaining !== 0;
 				
 				return(

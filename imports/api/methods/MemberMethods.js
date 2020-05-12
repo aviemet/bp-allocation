@@ -283,8 +283,7 @@ const MemberMethods = {
 				// Check for existing allocation for this org from this member
 				let memberTheme = MemberThemes.findOne({ theme, member });
 				
-				let allocations = memberTheme.allocations;
-				let allocation = _.find(allocations, ['organization', org]);
+				let allocation = _.find(memberTheme.allocations, ['organization', org]);
 
 				// Update amount
 				if(!allocation) {
@@ -309,6 +308,51 @@ const MemberMethods = {
 						$set: {
 							'allocations.$.amount': amount,
 							'allocations.$.voteSource': voteSource
+						}
+					});
+				}
+			}
+		}
+	}),
+
+	/***************************************************
+	 * Record chit votes for member for org *
+	 ***************************************************/
+	chitVote: new ValidatedMethod({
+		name: 'members.chitVote',
+
+		validate: null,
+
+		run({ theme, member, org, votes, voteSource }) {
+			if(Meteor.isServer) {
+				// Check for existing allocation for this org from this member
+				let memberTheme = MemberThemes.findOne({ theme, member });
+				
+				let chitVote = _.find(memberTheme.chitVotes, ['organization', org]);
+
+				// Update votes
+				if(!chitVote) {
+					MemberThemes.update({ theme: theme, member: member }, {
+						$push: {
+							chitVotes: { 
+								organization: org, 
+								votes,
+								voteSource
+							}
+						}
+					});
+				// Or insert chitVote vote
+				} else {
+					MemberThemes.update({
+						theme: theme, member: member, chitVotes: {
+							$elemMatch: {
+								organization: org
+							}
+						}
+					}, {
+						$set: {
+							'chitVotes.$.votes': votes,
+							'chitVotes.$.voteSource': voteSource
 						}
 					});
 				}

@@ -110,6 +110,13 @@ const MembersList = observer(props => {
 							rowSpan="2"
 						>Funds
 						</Table.HeaderCell>
+						
+						<Table.HeaderCell 
+							sorted={ sortColumn === 'theme.chits' ? sortDirection : null }
+							onClick={ sortMembersTable('theme.chits') }
+							rowSpan="2"
+						>Chits
+						</Table.HeaderCell>
 
 						{ votingColspan > 0 &&
 							<Table.HeaderCell
@@ -171,6 +178,14 @@ const MembersList = observer(props => {
 									format={ value => numeral(value).format('$0,0') }
 								>
 									{ member.theme.amount || 0 }
+								</EditableText>
+
+								<EditableText 
+									as={ Table.Cell } 
+									inputType='number' 
+									onSubmit={ updateMemberTheme(member.theme._id, 'chits') }
+								>
+									{ member.theme.chits || 0 }
 								</EditableText>
 								
 								{ votingColspan > 0 && <>
