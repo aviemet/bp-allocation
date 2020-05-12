@@ -10,7 +10,6 @@ const ChitInputs = observer(props => {
 	const [ weightVotes, setWeightVotes ] = useState(props.org.chitVotes.weight);
 	const [ countVotes, setCountVotes ] = useState(props.org.chitVotes.count);
 
-
 	useEffect(() => {
 		saveVotes();
 	}, [weightVotes, countVotes]);

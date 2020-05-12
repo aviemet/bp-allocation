@@ -30,7 +30,7 @@ VotesRemaining.displayName = 'VotesRemaining'; // To slience eslint
 const FundsVotingKiosk = observer(props => {
 	const data = useData();
 	const { settings } = useSettings();
-	const { topOrgs } = useOrgs();
+	const { orgs } = useOrgs();
 
 	const [ votingComplete, setVotingComplete ] = useState(false);
 	const [ countdownVisible, setCountdownVisible ] = useState(false);
@@ -68,7 +68,7 @@ const FundsVotingKiosk = observer(props => {
 			</Header> }
 
 			<Card.Group doubling centered itemsPerRow={ 2 }>
-				{topOrgs.map(org => {
+				{orgs.values.map(org => {
 					return(
 						<OrgCard
 							key={ org._id }

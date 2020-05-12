@@ -53,7 +53,17 @@ const OrgTransformer = (doc, params) => {
 
 	doc.votes = function() {
 		let votes = 0;
-		if(params.theme && doc.chitVotes) {
+
+		// If chit voting by kiosk, get chit votes for this org from each member
+		if(params.settings && params.settings.useKioskChitVoting) {
+			votes = params.memberThemes.reduce((sum, memberTheme) => {
+				if(!isEmpty(memberTheme.chitVotes)) {
+					const vote = memberTheme.chitVotes.find(chit => chit.organization === doc._id);
+					return sum + (vote ? vote.votes : 0);
+				}
+				return sum;
+			}, 0);
+		} else if(params.theme && doc.chitVotes) {
 			if(doc.chitVotes.count) {
 				// Token count has higher specificity, therefor higher precedence
 				// If present, return this number

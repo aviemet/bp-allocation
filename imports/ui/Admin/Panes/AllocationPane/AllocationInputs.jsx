@@ -63,8 +63,8 @@ const AllocationInputs = observer(props => {
 
 			{/* Voted Amount Input */}
 			<Table.Cell>
-				{props.hideAdminFields || settings.useKioskFundsVoting ?
-					<span>{numeral(props.org.votedTotal || 0).format('$0,0')}</span>
+				{ props.hideAdminFields || settings.useKioskFundsVoting ?
+					<span>{ numeral(props.org.votedTotal || 0).format('$0,0') }</span>
 					:
 					<Input
 						fluid
@@ -106,11 +106,11 @@ const AllocationInputs = observer(props => {
 
 			{/* Need */}
 			<Table.Cell>
-				{numeral(props.org.need - props.org.leverageFunds).format('$0,0')}
+				{ numeral(props.org.need - props.org.leverageFunds).format('$0,0') }
 			</Table.Cell>
 
 			{/* Actions */}
-			{!props.hideAdminFields &&
+			{ !props.hideAdminFields &&
 			<Table.Cell singleLine>
 				<Button onClick={ topoff } style={ { width: '100%' } }>{props.org.topOff > 0 ? 'Undo' : '' } Top Off</Button>
 				{/*<Dropdown
@@ -120,7 +120,7 @@ const AllocationInputs = observer(props => {
 					options={actionOptions}
 					onChange={handleActionSelection}
 				/>*/}
-			</Table.Cell>}
+			</Table.Cell> }
 		</Table.Row>
 	);
 });

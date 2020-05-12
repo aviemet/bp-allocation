@@ -22,7 +22,7 @@ const ChitTicker = props => {
  * Full Component containing Ticker, Org Title and amount feedback
  */
 const ChitTickerComponent = props => {
-	const [ value, setValue ] = useState(parseInt(props.chits[props.org._id]));
+	const [ value, setValue ] = useState(parseInt(props.chits[props.org._id]) || 0);
 	
 	const MAX = props.member.theme.chits;
 
