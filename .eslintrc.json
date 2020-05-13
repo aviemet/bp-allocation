@@ -49,6 +49,7 @@
 		}],
 		"react/boolean-prop-naming": [ "error" ],
 		"react/no-typos": [ "error" ],
-		"react/jsx-curly-spacing": [ "error", {"when": "always"} ]
+		"react/jsx-curly-spacing": [ "error", {"when": "always"} ],
+		"react/display-name": ["off"]
 	}
 }
