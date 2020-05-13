@@ -18,6 +18,11 @@ const MatchPledgeSchema = new SimpleSchema({
 		type: SimpleSchema.RegEx.Id,
 		required: false
 	},
+	anonymous: {
+		type: Boolean,
+		required: false,
+		defaultValue: false
+	},
 	notes: {
 		type: String,
 		required: false

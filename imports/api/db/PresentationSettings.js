@@ -53,6 +53,12 @@ const PresentationSettingsSchema = new SimpleSchema({
 		required: false,
 		defaultValue: false
 	},
+	topupsActive: {
+		type: Boolean,
+		label: 'Activate topups pledge round',
+		required: false,
+		defaultValue: false
+	},
 	resultsOffset: {
 		type: Number,
 		label: 'Amount to offset total displayed on the results page',

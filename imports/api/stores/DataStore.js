@@ -16,7 +16,7 @@ class DataStore {
 	// Set of pledges not to be animated on allocation presentation page
 	@observable displayedPledges = new Set();
 
-	KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds', results: 'results' };
+	KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds', topups: 'topups', results: 'results' };
 	votingRedirectTimeout = 60;
 
 	theme;

@@ -4,6 +4,7 @@ import ColorizeTopOrgsToggle from './ColorizeTopOrgsToggle';
 import AnimateTopOrgsToggle from './AnimateTopOrgsToggle';
 import ShowLeverageToggle from './ShowLeverageToggle';
 import ShowSaveValuesToggle from './ShowSaveValuesToggle';
+import TopupsActiveToggle from './TopupsActiveToggle';
 
 export {
 	ChitVotingActiveToggle,
@@ -11,5 +12,6 @@ export {
 	ColorizeTopOrgsToggle,
 	AnimateTopOrgsToggle,
 	ShowLeverageToggle,
-	ShowSaveValuesToggle
+	ShowSaveValuesToggle,
+	TopupsActiveToggle
 };

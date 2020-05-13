@@ -7,16 +7,16 @@ import { PresentationSettingsMethods } from '/imports/api/methods';
 
 import { Checkbox } from 'semantic-ui-react';
 
-const ChitVotingActiveToggle = observer(() => {
+const TopupsActiveToggle = observer(() => {
 	const { settings } = useSettings();
 
 	const saveValue = (e, data) => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
-				chitVotingActive: data.checked,
-				fundsVotingActive: false,
-				topupsActive: false
+				topupsActive: data.checked,
+				chitVotingActive: false,
+				fundsVotingActive: false
 			}
 		});
 	};
@@ -25,14 +25,14 @@ const ChitVotingActiveToggle = observer(() => {
 
 	return(
 		<Checkbox
-			label='Chit Voting Active'
+			label='Topups Active'
 			toggle
-			index='chitVotingActive'
+			index='topupsActive'
 			onClick={ saveValue }
-			checked={ settings.chitVotingActive || false }
+			checked={ settings.topupsActive || false }
 		/>
 	);
 
 });
 
-export default ChitVotingActiveToggle;
+export default TopupsActiveToggle;

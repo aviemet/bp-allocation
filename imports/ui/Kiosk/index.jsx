@@ -11,6 +11,7 @@ import { useData, useTheme, useSettings } from '/imports/api/providers';
 import KioskInfo from './Info/KioskInfo';
 import ChitVotingKiosk from './ChitVoting';
 import FundsVotingKiosk from './FundsVoting';
+import Topups from './Topups';
 import MemberLoginRequired from './MemberLoginRequired';
 import RemoteVoting from './RemoteVoting';
 import Results from '/imports/ui/Presentation/Pages/Results';
@@ -35,6 +36,9 @@ const Kiosk = withRouter(observer(props => {
 		} else if(settings.chitVotingActive) {
 			// Show the chit voting page:
 			return data.KIOSK_PAGES.chit;
+		} else if(member && settings.topupsActive) {
+			// Show the topups pledge screen to members
+			return data.KIOSK_PAGES.topups;
 		// Chit and Funds voting are not active
 		} else {
 			// Voting inactive, votes have been cast, and results have been shown
@@ -59,7 +63,7 @@ const Kiosk = withRouter(observer(props => {
 			clearTimeout(timeoutRef.current);
 			doNavigation(pageNav);
 		}
-	}, [settings.fundsVotingActive, settings.chitVotingActive, settings.resultsVisited]);
+	}, [settings.fundsVotingActive, settings.chitVotingActive, settings.topupsActive, settings.resultsVisited]);
 
 	// Change the active presentation page
 	const doNavigation = page => {
@@ -97,6 +101,12 @@ const Kiosk = withRouter(observer(props => {
 								// Otherwise kiosk voting in the room, members must login to proceed
 								<MemberLoginRequired component={ ChitVotingKiosk } />;
 						} } />
+
+						{/* Topups */}
+						<Route exact path={ data.KIOSK_PAGES.topups } render={ () => (
+						// If member is set, navigation comes from the short link for voting remotely
+							<RemoteVoting member={ member } component={ Topups } />
+						) } />
 
 						{/* Funds Voting */}
 						<Route exact path={ data.KIOSK_PAGES.funds } render={ () => {

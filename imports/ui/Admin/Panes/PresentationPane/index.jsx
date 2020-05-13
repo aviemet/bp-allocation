@@ -12,7 +12,8 @@ import styled from 'styled-components';
 
 import { 
 	ChitVotingActiveToggle, 
-	FundsVotingActiveToggle, 
+	FundsVotingActiveToggle,
+	TopupsActiveToggle,
 	ColorizeTopOrgsToggle, 
 	AnimateTopOrgsToggle, 
 	ShowLeverageToggle, 
@@ -170,6 +171,9 @@ const PresentationPane = observer(() => {
 						<ShowLeverageToggle />
 						<br/>
 						<ShowSaveValuesToggle />
+						<br/>
+						<hr />
+						<TopupsActiveToggle />
 
 					</Grid.Column>
 					<Grid.Column>

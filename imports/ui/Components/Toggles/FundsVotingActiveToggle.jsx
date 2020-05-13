@@ -16,7 +16,8 @@ const FundsVotingActiveToggle = observer(() => {
 			id: settings._id,
 			data: {
 				fundsVotingActive: data.checked,
-				chitVotingActive: false
+				chitVotingActive: false,
+				topupsActive: false
 			}
 		});
 	};

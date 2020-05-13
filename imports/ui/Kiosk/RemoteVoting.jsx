@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 
 import { isEmpty } from 'lodash';
 import { observer } from 'mobx-react-lite';
-import { useData, useMembers, useMember } from '/imports/api/providers';
+import { useMember } from '/imports/api/providers';
 
 import { VotingContextProvider } from './VotingContext';
 
-import FundsVoting from './FundsVoting';
 import { Loader } from 'semantic-ui-react';
 
 const RemoteVoting = observer(props => {
