@@ -150,6 +150,7 @@ const FinalizeButton = styled(Button)`
 	border: 2px solid #fff !important;
 	font-size: 2rem !important;
 	text-transform: uppercase !important;
+	margin-bottom: 10px;
 `;
 
 const NumberFormat = styled.span`

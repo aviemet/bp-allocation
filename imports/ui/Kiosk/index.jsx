@@ -93,7 +93,7 @@ const Kiosk = withRouter(observer(props => {
 						<Route exact path={ data.KIOSK_PAGES.chit } render={ () => {
 							return member ? 
 								// If member is set, navigation comes from the short link for voting remotely
-								<RemoteVoting member={ member } /> :
+								<RemoteVoting member={ member } component={ ChitVotingKiosk } /> :
 								// Otherwise kiosk voting in the room, members must login to proceed
 								<MemberLoginRequired component={ ChitVotingKiosk } />;
 						} } />
@@ -102,7 +102,7 @@ const Kiosk = withRouter(observer(props => {
 						<Route exact path={ data.KIOSK_PAGES.funds } render={ () => {
 							return member ? 
 								// If member is set, navigation comes from the short link for voting remotely
-								<RemoteVoting member={ member } /> :
+								<RemoteVoting member={ member } component={ FundsVotingKiosk } /> :
 								// Otherwise kiosk voting in the room, members must login to proceed
 								<MemberLoginRequired component={ FundsVotingKiosk } />;
 						} } />

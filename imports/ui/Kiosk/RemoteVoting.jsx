@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { isEmpty } from 'lodash';
 import { observer } from 'mobx-react-lite';
-import { useMembers, useMember } from '/imports/api/providers';
+import { useData, useMembers, useMember } from '/imports/api/providers';
 
 import { VotingContextProvider } from './VotingContext';
 
@@ -11,6 +11,8 @@ import FundsVoting from './FundsVoting';
 import { Loader } from 'semantic-ui-react';
 
 const RemoteVoting = observer(props => {
+	const Component = props.component;
+
 	// Pull member data from Data Store
 	// const { members, isLoading: membersLoading } = useMembers();
 	const { members, isLoading: membersLoading } = useMember(props.member);
@@ -26,13 +28,14 @@ const RemoteVoting = observer(props => {
 	);
 	return (
 		<VotingContextProvider member={ member || false } unsetUser={ props.onVotingComplete } >
-			<FundsVoting user={ member || false } source='mobile' />
+			<Component user={ member || false } source='mobile' />
 		</VotingContextProvider>
 	);
 });
 
 RemoteVoting.propTypes = {
-	member: PropTypes.string.isRequired
+	member: PropTypes.string.isRequired,
+	component: PropTypes.any.isRequired
 };
 
 export default RemoteVoting;
