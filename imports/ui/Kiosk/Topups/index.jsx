@@ -30,16 +30,16 @@ const Pledges = observer(props => {
 	const clearAllValues = () => {
 		setSelectedOrg(null);
 		setPledgeAmount('');
-		setIsAnonymous(false);
 	};
 
 	const saveTopUp = () => {
-		OrganizationMethods.pledge.call({
+		const data = {
 			id: selectedOrg,
 			member: props.user._id,
 			amount: roundFloat(pledgeAmount),
 			anonymous: isAnonymous
-		});
+		};
+		OrganizationMethods.pledge.call(data);
 		clearAllValues();
 	};
 

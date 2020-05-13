@@ -106,11 +106,10 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ id, amount, member }) {
+		run({ id, amount, member, anonymous }) {
 			amount = roundFloat(amount);
 
-			const saveData = { amount };
-			if(member) saveData.member = member;
+			const saveData = { amount, member, anonymous };
 
 			return Organizations.update({ _id: id }, {
 				$push: {

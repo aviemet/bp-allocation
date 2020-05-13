@@ -40,8 +40,9 @@ const Pledges = observer(() => {
 	const saveTopUp = () => {
 		OrganizationMethods.pledge.call({
 			id: selectedOrg,
-			member: isAnonymous ? '' : selectedMember,
+			member: selectedMember,
 			amount: roundFloat(pledgeAmount),
+			anonymous: isAnonymous
 		});
 		clearAllValues();
 	};

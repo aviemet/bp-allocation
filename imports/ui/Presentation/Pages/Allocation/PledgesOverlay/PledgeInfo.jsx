@@ -11,7 +11,9 @@ const PledgeInfo = ({ pledge }) => {
 
 	if(membersLoading || !members) return <Loader />;
 
-	const member = members.values.find(mem => mem._id === pledge.member);
+	const member = pledge.anonymous ? undefined : members.values.find(mem => mem._id === pledge.member);
+
+	console.log({ pledge, member })
 
 	return (
 		<AnimationContainer>
