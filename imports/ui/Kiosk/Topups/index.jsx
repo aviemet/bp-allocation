@@ -13,7 +13,6 @@ import OrgCard from '/imports/ui/Components/OrgCard';
 import { observer } from 'mobx-react-lite';
 
 const Pledges = observer(props => {
-	console.log({ props })
 	const { members, isLoading: membersLoading } = useMembers();
 	const { topOrgs, isLoading: orgsLoading } = useOrgs();
 

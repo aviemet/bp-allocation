@@ -45,7 +45,7 @@ const MemberThemeSchema = new SimpleSchema({
 	chits: { // Number of chits this member gets for round 1 voting
 		type: Number,
 		required: false,
-		defaultValue: 3
+		defaultValue: 5
 	},
 	amount: { // Amount of money this member has to allocate for round 2 voting
 		type: Number,

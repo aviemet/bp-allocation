@@ -52,13 +52,23 @@ const ImportMembers = props => {
 			type: val => typeof val === 'string' ? parseInt(val.replace(/[^0-9.]/g, '')) : val
 		},
 		{
+			name: 'chits',
+			forms: ['chits', 'votes', 'round 1', 'round one'],
+			type: val => typeof val === 'string' ? parseInt(val.replace(/[^0-9.]/g, '')) : val
+		},
+		{
 			name: 'initials',
-			forms: ['initials', 'init', 'inits'],
+			forms: ['initials', 'initial', 'init', 'inits'],
 			type: String
 		},
 		{
 			name: 'phone',
 			forms: ['phone', 'phone number', 'phone no', 'mobile', 'mobile number', 'mobile no'],
+			type: String
+		},
+		{
+			name: 'email',
+			forms: ['email', 'mail', 'e-mail'],
 			type: String
 		}
 	];

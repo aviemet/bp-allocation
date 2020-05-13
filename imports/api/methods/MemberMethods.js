@@ -163,10 +163,10 @@ const MemberMethods = {
 		validate: null,
 
 		run(data) {
-			const { amount, themeId, phone } = data;
+			const { amount, chits, themeId, phone } = data;
 			// Create/edit member
 			return _memberInsert(data).then(member => {
-				const memberThemeQuery = { member, amount, theme: themeId, phone };
+				const memberThemeQuery = { member, amount, chits, theme: themeId, phone };
 
 				// Create/edit theme association
 				return _memberThemeInsert(memberThemeQuery);
