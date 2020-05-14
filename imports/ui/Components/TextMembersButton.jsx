@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { useData } from '/imports/api/providers';
-import { Button } from 'semantic-ui-react';
+import { Button, Icon } from 'semantic-ui-react';
 import { observer } from 'mobx-react-lite';
 
 const TextMembersButton = observer(({ message, title, link, ...rest }) => {
@@ -13,7 +13,12 @@ const TextMembersButton = observer(({ message, title, link, ...rest }) => {
 		Meteor.call('textVotingLinkToMembers', { themeId, message, link });
 	};
 
-	return <Button onClick={ textMembers } { ...rest }>{ title || 'Send Text' }</Button>;
+	return (
+		<Button onClick={ textMembers } { ...rest } icon labelPosition='right'>
+			<Icon name='text telephone' />
+			{ title || 'Send Text' }
+		</Button>
+	);
 });
 
 TextMembersButton.propTypes = {

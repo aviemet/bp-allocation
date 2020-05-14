@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Email } from 'meteor/email';
 import { ServiceConfiguration } from 'meteor/service-configuration';
 import { has } from 'lodash';
 import { formatPhoneNumber } from '/imports/lib/utils';
@@ -29,6 +30,8 @@ Meteor.startup(() => {
 			}
 		}
 	);
+
+	process.env.MAIL_URL = Meteor.settings.MAIL_URL;
 
 	// const themeId = 'iTL2SfNx9SHM3BhFq';
 	// const themeId = 'fEYxEXpMcHuhjoNzD';
@@ -67,11 +70,42 @@ const memberPhoneNumbersQuery = themeId => {
 	]);
 };
 
-/***************************
- *  TWILIO SERVER METHODS  *
- ***************************/
+const memberEmailsQuery = themeId => {
+	return MemberThemes.aggregate([
+		{
+			$match: { 
+				theme: themeId
+			}
+		},
+		{
+			$lookup: {
+				from: 'members',
+				localField: 'member',
+				foreignField: '_id',
+				as: 'member'
+			}	
+		},
+		{ $unwind: '$member' },
+		{
+			$match: {
+				'member.email': { $ne: null }
+			}
+		},
+		{
+			$project: {
+				_id: 1,
+				email: '$member.email',
+				code: '$member.code'
+			}
+		}
+	]);
+};
+
 Meteor.methods({
-	textVotingLinkToMembers: ({ themeId, message, link }) => { // link: boolean
+	/***************************
+	 *  TWILIO SERVER METHOD   *
+	 ***************************/
+	textVotingLinkToMembers: ({ themeId, message, link }) => { // link: boolean		
 		const theme = Themes.findOne({ _id: themeId }); // Just need the slug from the theme
 
 		const messageBuilder = member => {
@@ -96,24 +130,39 @@ Meteor.methods({
 			texts.push(text);
 		});
 		return texts;
+	},
+
+	/***************************
+	 *  EMAIL MEMBERS METHOD   *
+	 ***************************/
+	emailVotingLinkToMembers: ({ themeId, message }) => { //(to, from, subject, text) {
+		console.log({ message });
+		const theme = Themes.findOne({ _id: themeId }); // Just need the slug from the theme
+		
+		const messageBuilder = member => {
+			let finalMessage = message.body;
+			if(message.link !== false && theme.slug) finalMessage += `<p><a href='www.batterysf.com/v/${theme.slug}/${member.code}'>Allocation Night Voting Portal Portal</a></p>`;
+			return finalMessage;
+		};
+
+		const memberEmails = memberEmailsQuery(themeId);
+
+		let emails = [];
+		memberEmails.forEach(member => {
+			console.log({ subject: message.subject })
+			const email = Email.send({ 
+				to: member.email, 
+				from: message.from || 'support@thebatterysf.com', 
+				subject: message.subject, 
+				html: messageBuilder(member) 
+			});
+			emails.push(email);
+		});
+		console.log({ emails });
+		return emails;
 	}
 });
 
-/*
-Meteor.methods({
-	sendMessage: (number, message) => {
-		const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.authToken);
-		// console.log({ number, message });
-		const text = client.messages.create({
-			body: message,
-			to: formatPhoneNumber(number),
-			messagingServiceSid: Meteor.settings.twilio.copilotSid
-		}).then(message => console.log(message));
-		// console.log({ text });
-		return text;
-	}
-});
-*/
 /***************************
  *   ACCOUNTS VALIDATION   *
  ***************************/

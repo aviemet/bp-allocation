@@ -18,6 +18,16 @@ const MessageSchema = new SimpleSchema({
 		required: true,
 		allowedValues: ['text', 'email']
 	},
+	active: {
+		type: Boolean,
+		required: false,
+		defaultValue: true
+	},
+	includeLink: {
+		type: Boolean,
+		required: false,
+		defaultValue: false
+	},
 	createdAt: {
 		type: Date,
 		required: false,

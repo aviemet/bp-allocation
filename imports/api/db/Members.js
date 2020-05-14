@@ -35,6 +35,11 @@ const MemberSchema = new SimpleSchema({
 		label: 'Phone number to receive texts',
 		required: false
 	},
+	email: {
+		type: String,
+		label: 'Email address',
+		required: false
+	},
 	createdAt: {
 		type: Date,
 		required: false,

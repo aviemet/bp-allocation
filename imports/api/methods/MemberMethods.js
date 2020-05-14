@@ -20,6 +20,7 @@ const _sanitizeMemberData = function(data) {
 	if(!_.isUndefined(data.fullName)) data.fullName = sanitizeString(data.fullName);
 	if(!_.isUndefined(data.initials)) data.initials = sanitizeString(data.initials);
 	if(!_.isEmpty(data.phone)) data.phone = formatPhoneNumber(data.phone);
+	if(!_.isUndefined(data.email)) data.email = sanitizeString(data.email);
 
 	return data;
 };
@@ -61,7 +62,7 @@ const _buildMissingData = function(data) {
  * @param  {Object} data {firstName, lastName, fullName, initials, number, amount}
  */
 const _memberInsert = function(data) {
-	const { firstName, lastName, fullName, number, initials, phone, code } = _buildMissingData(data);
+	const { firstName, lastName, fullName, number, initials, code, phone, email } = _buildMissingData(data);
 	
 	/*****************
 	 * Build a Query *
@@ -81,7 +82,7 @@ const _memberInsert = function(data) {
 
 	return new Promise((resolve, reject) => {
 		if(!member) {
-			const newMember = { firstName, lastName, fullName, number, initials, code, phone };
+			const newMember = { firstName, lastName, fullName, number, initials, code, phone, email };
 			try{
 				Members.insert(newMember, (err, result) => {
 					if(err){
@@ -163,10 +164,10 @@ const MemberMethods = {
 		validate: null,
 
 		run(data) {
-			const { amount, chits, themeId, phone } = data;
+			const { amount, chits, themeId, phone, email } = data;
 			// Create/edit member
 			return _memberInsert(data).then(member => {
-				const memberThemeQuery = { member, amount, chits, theme: themeId, phone };
+				const memberThemeQuery = { member, amount, chits, theme: themeId, phone, email };
 
 				// Create/edit theme association
 				return _memberThemeInsert(memberThemeQuery);

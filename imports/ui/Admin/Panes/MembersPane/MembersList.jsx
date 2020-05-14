@@ -105,6 +105,13 @@ const MembersList = observer(props => {
 						</Table.HeaderCell>
 
 						<Table.HeaderCell 
+							sorted={ sortColumn === 'email' ? sortDirection : null }
+							onClick={ sortMembersTable('email') }
+							rowSpan="2"
+						>Email
+						</Table.HeaderCell>
+
+						<Table.HeaderCell 
 							sorted={ sortColumn === 'theme.amount' ? sortDirection : null }
 							onClick={ sortMembersTable('theme.amount') }
 							rowSpan="2"
@@ -159,6 +166,7 @@ const MembersList = observer(props => {
 						const votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount; }, 0);
 						const fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`;
 						const phone = member.phone ? member.phone : '';
+						const email = member.email ? member.email : '';
 
 						return (
 							<Table.Row key={ member._id }>
@@ -170,6 +178,8 @@ const MembersList = observer(props => {
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'fullName') }>{ fullName }</EditableText>
 
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'phone') }>{ phone }</EditableText>
+
+								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'email') }>{ email }</EditableText>
 
 								<EditableText 
 									as={ Table.Cell } 

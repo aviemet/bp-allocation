@@ -76,7 +76,7 @@ const Editor = props => {
  */
 Editor.propTypes = {
 	placeholder: PropTypes.string,
-	content: PropTypes.string,
+	value: PropTypes.string,
 	onChange: PropTypes.any
 };
 

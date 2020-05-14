@@ -12,6 +12,11 @@ const MessageMethods = {
 		validate: null,
 
 		run(data) {
+			try {
+				return Messages.insert(data);
+			} catch(exception) {
+				throw new Meteor.Error('500', exception);
+			}
 		}
 	}),
 
