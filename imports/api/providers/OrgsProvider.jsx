@@ -9,7 +9,6 @@ import { Organizations } from '/imports/api/db';
 import { OrgsCollection, OrgStore } from '/imports/api/stores';
 import { filterTopOrgs } from '/imports/lib/orgsMethods';
 import { useTheme } from './ThemeProvider';
-import { toJS } from 'mobx';
 
 const OrgsContext = React.createContext('orgs');
 export const useOrgs = () => useContext(OrgsContext);
@@ -17,18 +16,19 @@ export const useOrgs = () => useContext(OrgsContext);
 const OrgsProvider = observer(function(props) {
 	const { themeId } = useData();
 	const { theme, isLoading: themeLoading } = useTheme();
+
 	let subscription;
-	let observer;
+	let cursorObserver;
 	let orgsCollection; // The MobX store for the settings
 
 	const orgs = useTracker(() => {
 		if(!themeId || themeLoading) {
 			if(subscription) subscription.stop();
-			if(observer) observer.stop();
+			if(cursorObserver) cursorObserver.stop();
 
 			return {
 				isLoading: true,
-				settings: undefined
+				orgs: undefined
 			};
 		}
 		
@@ -37,7 +37,7 @@ const OrgsProvider = observer(function(props) {
 				const cursor = Organizations.find({ theme: themeId });
 				orgsCollection = new OrgsCollection(cursor.fetch(), theme, OrgStore);
 				
-				cursor.observe({
+				cursorObserver = cursor.observe({
 					added: orgs => orgsCollection.refreshData(orgs),
 					changed: orgs => orgsCollection.refreshData(orgs),
 					removed: orgs => orgsCollection.deleteItem(orgs)

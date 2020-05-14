@@ -13,7 +13,7 @@ const MembersContext = React.createContext('members');
 const MembersProvider = observer(props => {
 	const { themeId } = useData();
 	let subscription;
-	let observer;
+	let cursorObserver;
 	let membersCollection; // MobX store for members collection
 
 	// limit of 0 == 'return no records', limit of false == 'no limit'
@@ -32,7 +32,7 @@ const MembersProvider = observer(props => {
 	const subscriptionReady = cursor => {
 		membersCollection = new MembersCollection(cursor.fetch(), MemberStore);
 
-		cursor.observe({
+		cursorObserver = cursor.observe({
 			added: members => membersCollection.refreshData(members),
 			changed: members => membersCollection.refreshData(members),
 			removed: members => membersCollection.refreshData(members)
@@ -54,7 +54,7 @@ const MembersProvider = observer(props => {
 			// Return loading or uninitialized placeholder data
 			if(!themeId || subLimit === 0) {
 				if(subscription) subscription.stop();
-				if(observer) observer.stop();
+				if(cursorObserver) cursorObserver.stop();
 				
 				return Object.assign(methods, {
 					isLoading: subLimit === 0 ? false : true,

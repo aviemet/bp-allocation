@@ -17,18 +17,18 @@ export const useTheme = () => useContext(ThemeContext);
 const ThemeProvider = observer(props => {
 	const { themeId } = useData();
 	let subscription;
-	let observer;
+	let cursorObserver;
 	let themeStore; // The MobX store for the theme
 
 	// Setup Meteor tracker to subscribe to a Theme
 	const theme = useTracker(() => {
 		if(!themeId) {
 			if(subscription) subscription.stop();
-			if(observer) observer.stop();
+			if(cursorObserver) cursorObserver.stop();
 
 			return {
 				isLoading: true,
-				settings: undefined
+				theme: undefined
 			};
 		}
 
@@ -38,7 +38,7 @@ const ThemeProvider = observer(props => {
 				const cursor = Themes.find({ _id: themeId });
 				themeStore = cursor ? new ThemeStore(cursor.fetch()[0]) : undefined;
 				
-				observer = cursor.observe({
+				cursorObserver = cursor.observe({
 					added: theme => themeStore.refreshData(theme),
 					changed: theme => themeStore.refreshData(theme)
 				});

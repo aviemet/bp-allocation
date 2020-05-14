@@ -6,7 +6,7 @@ import styled, { ThemeProvider as StyledProvider } from 'styled-components';
 import theme from '/imports/ui/theme';
 import { isMobileDevice } from '/imports/lib/utils';
 
-import { DataProvider, ThemeProvider, SettingsProvider, OrgsProvider, MembersProvider } from '/imports/api/providers';
+import { DataProvider, ThemeProvider, SettingsProvider, OrgsProvider, MembersProvider, MessagesProvider } from '/imports/api/providers';
 
 const App = () => {
 	useEffect(() => {
@@ -24,7 +24,9 @@ const App = () => {
 						<SettingsProvider>
 							<OrgsProvider>
 								<MembersProvider>
-									<Routes />
+									<MessagesProvider>
+										<Routes />
+									</MessagesProvider>
 								</MembersProvider>
 							</OrgsProvider>
 						</SettingsProvider>

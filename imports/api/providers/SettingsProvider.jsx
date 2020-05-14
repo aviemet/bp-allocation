@@ -16,13 +16,13 @@ const SettingsProvider = observer(props => {
 	const { themeId } = useData();
 	const { theme, isLoading: themeLoading } = useTheme();
 	let subscription;
-	let observer;
+	let cursorObserver;
 	let settingsStore; // The MobX store for the settings
 
 	const settings = useTracker(() => {
 		if(!themeId) {
 			if(subscription) subscription.stop();
-			if(observer) observer.stop();
+			if(cursorObserver) cursorObserver.stop();
 
 			return {
 				isLoading: true,
@@ -37,7 +37,7 @@ const SettingsProvider = observer(props => {
 					const cursor = PresentationSettings.find({ _id: theme.presentationSettings });
 					settingsStore = new SettingsStore(cursor.fetch()[0]);
 
-					cursor.observe({
+					cursorObserver = cursor.observe({
 						added: settings => settingsStore.refreshData(settings),
 						changed: settings => settingsStore.refreshData(settings)
 					});
