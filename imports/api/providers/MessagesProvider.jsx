@@ -22,7 +22,6 @@ const MessagesProvider = observer(function(props) {
 
 	const messages = useTracker(() => {
 		if(!themeId  || themeLoading) {
-			console.log('no theme');
 			if(subscription) subscription.stop();
 			if(handleObserver) handleObserver.stop();
 
@@ -30,13 +29,10 @@ const MessagesProvider = observer(function(props) {
 				isLoading: true,
 				messages: undefined
 			};
-		} else {
-			console.log('theme');
 		}
 		
 		subscription = Meteor.subscribe('messages', themeId, {
 			onReady: () => {
-				console.log('onReady');
 				const cursor = Messages.find({ });
 				messagesCollection = new MessagesCollection(cursor.fetch(), MessageStore);
 				

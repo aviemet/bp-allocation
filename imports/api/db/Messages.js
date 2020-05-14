@@ -5,6 +5,10 @@ const Messages = new Mongo.Collection('messages');
 
 const MessageSchema = new SimpleSchema({
 	title: String,
+	subject: {
+		type: String,
+		required: false
+	},
 	body: {
 		type: String,
 		required: false
