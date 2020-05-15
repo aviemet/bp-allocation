@@ -228,7 +228,8 @@ const ThemeMethods = {
 
 			MemberThemes.update({ theme: themeId }, { 
 				$set: {
-					allocations: []
+					allocations: [],
+					chitVotes: []
 				}
 			}, {
 				multi: true
