@@ -1,83 +1,37 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import Quill from './Quill';
+import RawEditor from './RawEditor';
+// import RTE from './RTE';
+import { Checkbox } from 'semantic-ui-react';
 
-const config = {};
+const RichTextEditor = ({ value, onChange, ...rest }) => {
+	const [ isRaw, setIsRaw ] = useState(false);
+	const [ content, setContent ] = useState(value || '');
 
-/* 
- * Quill modules to attach to editor
- * See https://quilljs.com/docs/modules/ for complete options
- */
-config.modules = {
-	toolbar: [
-		[ 
-			{ 'header': '1' }, 
-			{ 'header': '2' }, 
-			{ 'header': '3' }, 
-			{ 'font': [] } 
-		],
-		[ { size: [] } ],
-		['bold', 'italic', 'underline', 'strike', 'blockquote'],
-		[ 
-			{ 'list': 'ordered' }, 
-			{ 'list': 'bullet' }, 
-			{ 'indent': '-1' }, 
-			{ 'indent': '+1' }
-		],
-		['link', 'image'],
-		['clean']
-	],
-	clipboard: {
-		// toggle to add extra line breaks when pasting HTML:
-		matchVisual: true,
-	}
-};
+	const InputComponent = isRaw ? RawEditor : Quill;
 
-/* 
- * Quill editor formats
- * See https://quilljs.com/docs/formats/
- */
-config.formats = [
-	'header', 'font', 'size',
-	'bold', 'italic', 'underline', 'strike', 'blockquote',
-	'list', 'bullet', 'indent',
-	'link', 'image', 'video'
-];
-
-/* 
- * Simple editor component that takes placeholder text as a prop 
- */
-const Editor = props => {
-	const [ editorHtml, setEditorHtml ] = useState(props.content || '');
-
-	const handleChange = (content, delta) => {
-		setEditorHtml(content);
-		if(props.onChange) props.onChange(content);
+	const handleChange = newValue => {
+		console.log({ newValue });
+		setContent(newValue);
+		if(onChange) onChange(newValue);
 	};
-	
+
 	return (
-		<div>
-			<ReactQuill 
-				theme='snow'
+		<>
+			<Checkbox label='Raw Text' checked={ isRaw } onClick={ (e, { checked }) => setIsRaw(checked) } />
+			<InputComponent
+				value={ content }
 				onChange={ handleChange }
-				value={ editorHtml }
-				modules={ config.modules }
-				formats={ config.formats }
-				bounds={ '.app' }
-				placeholder={ props.placeholder || '' }
 			/>
-		</div>
+		</>
 	);
 };
 
-/* 
- * PropType validation
- */
-Editor.propTypes = {
+RichTextEditor.propTypes = {
 	placeholder: PropTypes.string,
 	value: PropTypes.string,
 	onChange: PropTypes.any
 };
 
-export default Editor;
+export default RichTextEditor;

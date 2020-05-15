@@ -133,7 +133,7 @@ const Messages = props => {
 									</Table.Cell>
 									<Table.Cell>{ message.title }</Table.Cell>
 									<Table.Cell>{ message.subject }</Table.Cell>
-									<Table.Cell>{ message.body }</Table.Cell>
+									<Table.Cell><div dangerouslySetInnerHTML={ { __html: message.body } } /></Table.Cell>
 									<Table.Cell>
 										<IncludeVotingLinkToggle message={ message } />
 									</Table.Cell>
@@ -142,7 +142,9 @@ const Messages = props => {
 										<Dropdown text='Actions' className='link item' direction='left'>
 											<Dropdown.Menu>
 												<Dropdown.Item><EmailEditModal message={ message } buttonText='Edit Message' /></Dropdown.Item>
-												<Dropdown.Item>Send</Dropdown.Item>
+												<Dropdown.Item onClick={ () => {
+													Meteor.call('emailVotingLinkToMembers', { themeId, message: message });
+												} }>Send</Dropdown.Item>
 												<Dropdown.Divider />
 												<Dropdown.Item onClick={ () => {
 													MessageMethods.remove.call(message._id);

@@ -31,8 +31,8 @@ Meteor.startup(() => {
 		}
 	);
 
-	process.env.MAIL_URL = Meteor.settings.MAIL_URL;
-
+	process.env.MAIL_URL = 'smtp://support%40thebatterysf.com:*batteryADMIN*@smtp.gmail.com:587'; // Meteor.settings.MAIL_URL;
+	
 	// const themeId = 'iTL2SfNx9SHM3BhFq';
 	// const themeId = 'fEYxEXpMcHuhjoNzD';
 	// const memberPhoneNumbers = memberPhoneNumbersQuery(themeId);
@@ -136,12 +136,11 @@ Meteor.methods({
 	 *  EMAIL MEMBERS METHOD   *
 	 ***************************/
 	emailVotingLinkToMembers: ({ themeId, message }) => { //(to, from, subject, text) {
-		console.log({ message });
 		const theme = Themes.findOne({ _id: themeId }); // Just need the slug from the theme
 		
 		const messageBuilder = member => {
 			let finalMessage = message.body;
-			if(message.link !== false && theme.slug) finalMessage += `<p><a href='www.batterysf.com/v/${theme.slug}/${member.code}'>Allocation Night Voting Portal Portal</a></p>`;
+			if(message.includeLink === true && theme.slug) finalMessage += `<p><a href='www.batterysf.com/v/${theme.slug}/${member.code}'>Allocation Night Voting Portal</a></p>`;
 			return finalMessage;
 		};
 
@@ -149,7 +148,6 @@ Meteor.methods({
 
 		let emails = [];
 		memberEmails.forEach(member => {
-			console.log({ subject: message.subject })
 			const email = Email.send({ 
 				to: member.email, 
 				from: message.from || 'support@thebatterysf.com', 
@@ -158,7 +156,6 @@ Meteor.methods({
 			});
 			emails.push(email);
 		});
-		console.log({ emails });
 		return emails;
 	}
 });

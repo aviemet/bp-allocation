@@ -6,6 +6,7 @@ import { Checkbox } from 'semantic-ui-react';
 
 const includeVotingLinkToggle = ({ message }) => {
 	const saveValue = (e, data) => {
+		console.log({ data })
 		MessageMethods.update.call({
 			id: message._id,
 			data: {
