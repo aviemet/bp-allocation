@@ -13,7 +13,7 @@ class AppStore {
 	@observable displayedPledges = new Set();
 	@observable loadMembers = true;
 
-	KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds', results: 'results' };
+	KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds', topups: 'topups', results: 'results' };
 	votingRedirectTimeout = 60;
 }
 

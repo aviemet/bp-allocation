@@ -88,10 +88,7 @@ const Kiosk = withRouter(observer(props => {
 					<Switch location={ { pathname: displayPage } }>
 
 						{/* Orgs Grid */}
-						<Route exact path={ data.KIOSK_PAGES.info } render={ () => (
-							// Displays when settings.fundsVotingActive is false
-							<KioskInfo />
-						) } />
+						<Route exact path={ data.KIOSK_PAGES.info } render={ () => <KioskInfo /> } />
 
 						{/* Chit Voting */}
 						<Route exact path={ data.KIOSK_PAGES.chit } render={ () => {
@@ -103,10 +100,13 @@ const Kiosk = withRouter(observer(props => {
 						} } />
 
 						{/* Topups */}
-						<Route exact path={ data.KIOSK_PAGES.topups } render={ () => (
-						// If member is set, navigation comes from the short link for voting remotely
-							<RemoteVoting member={ member } component={ Topups } />
-						) } />
+						<Route exact path={ data.KIOSK_PAGES.topups } render={ () => {
+							console.log({ page: data.KIOSK_PAGES.topups, displayPage })
+							return(
+							// If member is set, navigation comes from the short link for voting remotely
+								<RemoteVoting member={ member } component={ Topups } />
+							);
+						} } />
 
 						{/* Funds Voting */}
 						<Route exact path={ data.KIOSK_PAGES.funds } render={ () => {
