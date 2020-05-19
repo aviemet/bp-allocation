@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import RichTextEditor from 'react-rte';
@@ -24,28 +24,28 @@ const toolbarConfig = {
 	]
 };
 
-const RTE = ({ initialValue, onChange }) => {
-	const [ content, setContent ] = useState(initialValue ? 
-		RichTextEditor.createValueFromString(initialValue) : 
-		RichTextEditor.createEmptyValue()
-	);
+const RTE = ({ value, onChange }) => {
+	const [ initialized, setInitialized ] = useState(false);
 
-	const handleChange = value => {
-		setContent(value);
-		if(onChange) onChange(value.toString('html'));
-	};
+	useEffect(() => {
+		onChange(value ? 
+			RichTextEditor.createValueFromString(value) : 
+			RichTextEditor.createEmptyValue()
+		);
+		setInitialized(true);
+	}, []);
 
 	return (
 		<RichTextEditor
-			value={ content }
-			onChange={ handleChange }
+			value={ initialized ? value : RichTextEditor.createEmptyValue }
+			onChange={ onChange }
 			toolbarConfig={ toolbarConfig }
 		/>
 	);
 };
 
 RTE.propTypes = {
-	initialValue: PropTypes.string,
+	value: PropTypes.string,
 	onChange: PropTypes.func
 };
 

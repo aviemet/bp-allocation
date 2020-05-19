@@ -19,6 +19,7 @@ config.modules = {
 		],
 		[ { size: [] } ],
 		['bold', 'italic', 'underline', 'strike', 'blockquote'],
+		[ { align: [] } ],
 		[ 
 			{ 'list': 'ordered' }, 
 			{ 'list': 'bullet' }, 
@@ -30,7 +31,7 @@ config.modules = {
 	],
 	clipboard: {
 		// toggle to add extra line breaks when pasting HTML:
-		matchVisual: true,
+		matchVisual: false,
 	}
 };
 

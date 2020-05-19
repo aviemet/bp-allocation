@@ -136,12 +136,12 @@ Meteor.methods({
 	/***************************
 	 *  EMAIL MEMBERS METHOD   *
 	 ***************************/
-	emailVotingLinkToMembers: ({ themeId, message }) => { //(to, from, subject, text) {
+	emailVotingLinkToMembers: ({ themeId, message }) => { 
 		const theme = Themes.findOne({ _id: themeId }); // Just need the slug from the theme
 		
 		const messageBuilder = member => {
 			let finalMessage = message.body;
-			if(message.includeLink === true && theme.slug) finalMessage += `<p><a href='${process.env.HOST_NAME}/v/${theme.slug}/${member.code}'>Allocation Night Voting Portal</a></p>`;
+			if(message.includeLink === true && theme.slug) finalMessage += `<p style='text-align: center; height: 3.4rem;'><a style='font-size: 2rem; padding: 10px; margin-bottom: 10px; border: 1px solid #CCC; border-radius: 10px;' href='${process.env.HOST_NAME}/v/${theme.slug}/${member.code}'>Allocation Night Voting Portal</a></p>`;
 			return finalMessage;
 		};
 
@@ -149,11 +149,11 @@ Meteor.methods({
 
 		let emails = [];
 		memberEmails.forEach(member => {
-			const email = Email.send({ 
-				to: member.email, 
-				from: message.from || 'support@thebatterysf.com', 
-				subject: message.subject, 
-				html: messageBuilder(member) 
+			const email = Email.send({
+				to: member.email,
+				from: message.from || 'support@thebatterysf.com',
+				subject: message.subject,
+				html: messageBuilder(member)
 			});
 			emails.push(email);
 		});
