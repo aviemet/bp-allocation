@@ -100,13 +100,10 @@ const Kiosk = withRouter(observer(props => {
 						} } />
 
 						{/* Topups */}
-						<Route exact path={ data.KIOSK_PAGES.topups } render={ () => {
-							console.log({ page: data.KIOSK_PAGES.topups, displayPage })
-							return(
+						<Route exact path={ data.KIOSK_PAGES.topups } render={ () => (
 							// If member is set, navigation comes from the short link for voting remotely
-								<RemoteVoting member={ member } component={ Topups } />
-							);
-						} } />
+							<RemoteVoting member={ member } component={ Topups } />
+						) } />
 
 						{/* Funds Voting */}
 						<Route exact path={ data.KIOSK_PAGES.funds } render={ () => {

@@ -3,10 +3,9 @@ import { useOrgs, useMembers } from '/imports/api/providers';
 import { OrganizationMethods } from '/imports/api/methods';
 
 import { isEmpty } from 'lodash';
-import { toJS } from 'mobx';
 import { roundFloat } from '/imports/lib/utils';
 
-import { Container, Form, Input, Button, Card, Checkbox, Loader } from 'semantic-ui-react';
+import { Container, Form, Input, Button, Card, Checkbox, Responsive, Loader } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 import OrgCard from '/imports/ui/Components/OrgCard';
@@ -20,6 +19,9 @@ const Pledges = observer(props => {
 	const [ pledgeAmount, setPledgeAmount ] = useState('');
 	const [ isFormValid, setIsFormValid ] = useState(false);
 	const [ isAnonymous, setIsAnonymous ] = useState(false);
+	const [ itemsPerRow, setItemsPerRow ] = useState(2);
+
+	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 2);
 
 	useEffect(() => {
 		const isValid = selectedOrg !== null && pledgeAmount !== '';
@@ -73,7 +75,13 @@ const Pledges = observer(props => {
 			</Form>
 
 			{/* Selectable Cards for top orgs */}
-			<Card.Group centered itemsPerRow={ 2 }>
+			<Responsive 
+				as={ Card.Group }
+				fireOnMount
+				onUpdate={ handleScreenLayout }
+				centered 
+				itemsPerRow={ itemsPerRow }
+			>
 				{ topOrgs.map(org => (
 					<OrgCard
 						disabled={ org.need <= 0 }
@@ -84,7 +92,7 @@ const Pledges = observer(props => {
 						bgcolor={ selectedOrg === org._id ? OrgCard.colors.GREEN : OrgCard.colors.BLUE }
 					/>
 				) ) }
-			</Card.Group>
+			</Responsive>
 
 			<Container>
 				<FinalizeButton
