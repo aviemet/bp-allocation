@@ -16,6 +16,7 @@ const App = () => {
 			});
 		}
 	}, []);
+	
 	return (
 		<StyledProvider theme={ theme }>
 			<GlobalContainer id="globalContainer">

@@ -31,7 +31,7 @@ const AdminLayout = withRouter(observer(props => {
 
 	const data = useData();
 
-	const { theme, isLoading } = useTheme();
+	const { theme, isLoading: themeLoading } = useTheme();
 
 	useEffect(() => {
 		if(documentWidth >= Responsive.onlyTablet.minWidth) {
@@ -47,10 +47,17 @@ const AdminLayout = withRouter(observer(props => {
 			}
 			setSidebarVisible(showSidebar);
 		} else {
-			if(theme) data.menuHeading = theme.title;
 			setSidebarVisible(false);
 		}
 	}, [ props.location.pathname, documentWidth ]);
+
+	useEffect(() => {
+		if(theme) {
+			data.menuHeading = theme.title;
+		} else {
+			data.menuHeading = data.defaultMenuHeading;
+		}
+	}, [theme]);
 
 	useEffect(() => {
 		setActiveMenuItem();
@@ -131,7 +138,7 @@ const AdminLayout = withRouter(observer(props => {
 								data.themeId = matchProps.match.params.id;
 								setActivePage(matchProps);
 
-								if(isLoading) return <Loader active />;
+								if(themeLoading) return <Loader active />;
 								return <Admin />;
 							} } />
 						</Switch>
