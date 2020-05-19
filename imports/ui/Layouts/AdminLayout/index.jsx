@@ -52,11 +52,7 @@ const AdminLayout = withRouter(observer(props => {
 	}, [ props.location.pathname, documentWidth ]);
 
 	useEffect(() => {
-		if(theme) {
-			data.menuHeading = theme.title;
-		} else {
-			data.menuHeading = data.defaultMenuHeading;
-		}
+		data.menuHeading = theme ? theme.title : data.defaultMenuHeading;
 	}, [theme]);
 
 	useEffect(() => {
