@@ -94,6 +94,12 @@ const PresentationSettingsSchema = new SimpleSchema({
 		label: 'Amount to be awarded for an awards style presentation',
 		required: false,
 		defaultValue: 0
+	},
+	topupEmailConfirm: {
+		type: Boolean,
+		label: 'Whether to send a confirmation email for topups',
+		required: false,
+		defaultValue: false
 	}
 });
 

@@ -32,6 +32,7 @@ Meteor.startup(() => {
 	);
 
 	process.env.MAIL_URL = Meteor.settings.MAIL_URL;
+	process.env.HOST_NAME = Meteor.settings.HOST_NAME;
 	
 	// const themeId = 'iTL2SfNx9SHM3BhFq';
 	// const themeId = 'fEYxEXpMcHuhjoNzD';
@@ -111,7 +112,7 @@ Meteor.methods({
 		const messageBuilder = member => {
 			let finalMessage = message;
 			// eslint-disable-next-line quotes
-			if(link !== false && theme.slug) finalMessage += "\n" + `www.batterysf.com/v/${theme.slug}/${member.code}`;
+			if(link !== false && theme.slug) finalMessage += "\n" + `${process.env.HOST_NAME}/v/${theme.slug}/${member.code}`;
 			return finalMessage;
 		};
 
@@ -140,7 +141,7 @@ Meteor.methods({
 		
 		const messageBuilder = member => {
 			let finalMessage = message.body;
-			if(message.includeLink === true && theme.slug) finalMessage += `<p><a href='www.batterysf.com/v/${theme.slug}/${member.code}'>Allocation Night Voting Portal</a></p>`;
+			if(message.includeLink === true && theme.slug) finalMessage += `<p><a href='${process.env.HOST_NAME}/v/${theme.slug}/${member.code}'>Allocation Night Voting Portal</a></p>`;
 			return finalMessage;
 		};
 
