@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import TextMembersButton from '/imports/ui/Components/TextMembersButton';
 import TextEditModal from './TextEditModal';
 import EmailEditModal from './EmailEditModal';
@@ -43,7 +44,7 @@ const Messages = props => {
 			</Grid>
 
 			{/* Text Message Table */}
-			<Table>
+			<Table celled striped>
 				<Table.Header>
 					<Table.Row>
 						<Table.HeaderCell>Active</Table.HeaderCell>
@@ -63,7 +64,7 @@ const Messages = props => {
 										<ActiveToggle message={ message } />
 									</Table.Cell>
 									<Table.Cell>{ message.title }</Table.Cell>
-									<Table.Cell>{ message.body }</Table.Cell>
+									<CellWithContent>{ message.body }</CellWithContent>
 									<Table.Cell>
 										<IncludeVotingLinkToggle message={ message } />
 									</Table.Cell>
@@ -111,7 +112,7 @@ const Messages = props => {
 			</Grid>
 
 			{/* Email Message Table */}
-			<Table>
+			<Table celled striped>
 				<Table.Header>
 					<Table.Row>
 						<Table.HeaderCell>Active</Table.HeaderCell>
@@ -133,7 +134,7 @@ const Messages = props => {
 									</Table.Cell>
 									<Table.Cell>{ message.title }</Table.Cell>
 									<Table.Cell>{ message.subject }</Table.Cell>
-									<Table.Cell><div dangerouslySetInnerHTML={ { __html: message.body } } /></Table.Cell>
+									<CellWithContent><div dangerouslySetInnerHTML={ { __html: message.body } } /></CellWithContent>
 									<Table.Cell>
 										<IncludeVotingLinkToggle message={ message } />
 									</Table.Cell>
@@ -178,5 +179,11 @@ const Messages = props => {
 		</Container>
 	);
 };
+
+const CellWithContent = styled(Table.Cell)`
+	img {
+		max-width: 100%;
+	}
+`;
 
 export default Messages;

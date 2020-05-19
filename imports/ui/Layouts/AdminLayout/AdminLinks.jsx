@@ -22,6 +22,14 @@ const Links = withRouter(observer(({ activeMenuItem }) => {
 				<Icon name='setting'/> Settings
 			</MenuLink>
 
+			<MenuLink
+				to={ `/admin/${data.themeId}/messaging` }
+				active={ activeMenuItem === 'messaging' }
+				iconPosition='left'
+			>
+				<Icon name='mail'/> Messaging
+			</MenuLink>
+
 			<MenuLink 
 				to={ `/admin/${data.themeId}/orgs` }
 				active={ activeMenuItem === 'orgs' }
