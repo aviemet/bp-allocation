@@ -33,15 +33,7 @@ const EmailEditModal = ({ buttonText, message }) => {
 		setMessageBody(content);
 	};
 
-	const clearInputs = () => {
-		setMessageTitle('');
-		setMessageSubject('');
-		setMessageBody('');
-		setIsModalOpen(false);
-	};
-
 	const handleClose = () => {
-		clearInputs();
 		setIsModalOpen(false);
 	};
 
@@ -87,7 +79,7 @@ const EmailEditModal = ({ buttonText, message }) => {
 						</Form.Field>
 
 						<div align='right'>
-							<Button type='button' onClick={ clearInputs } color='red'>Cancel</Button>
+							<Button type='button' onClick={ handleClose } color='red'>Cancel</Button>
 							<Button type='submit' color='green'>Save</Button>
 						</div>
 

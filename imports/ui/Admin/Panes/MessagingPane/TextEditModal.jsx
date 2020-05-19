@@ -20,7 +20,7 @@ const TextEditModal = ({ buttonText, message }) => {
 			if(err) {
 				console.error(err);
 			} else {
-				setIsModalOpen(false);
+				handleClose();
 			}
 		});
 	};
@@ -28,7 +28,6 @@ const TextEditModal = ({ buttonText, message }) => {
 	const clearInputs = () => {
 		setMessageTitle('');
 		setMessageBody('');
-		setIsModalOpen(false);
 	};
 
 	const handleClose = () => {
@@ -51,11 +50,11 @@ const TextEditModal = ({ buttonText, message }) => {
 
 						<Form.Field>
 							<label htmlFor="messageTitle">Short but descriptive title for the message</label>
-							<Input 
-								placeholder='e.g. Voting Begins Text' 
+							<Input
+								placeholder='e.g. Voting Begins Text'
 								id='messageTitle'
-								value={ messageTitle } 
-								onChange={ e => setMessageTitle(e.target.value) } 
+								value={ messageTitle }
+								onChange={ e => setMessageTitle(e.target.value) }
 							/>
 						</Form.Field>
 
@@ -69,7 +68,7 @@ const TextEditModal = ({ buttonText, message }) => {
 						</Form.Field>
 
 						<div align='right'>
-							<Button type='button' onClick={ clearInputs } color='red'>Cancel</Button>
+							<Button type='button' onClick={ handleClose } color='red'>Cancel</Button>
 							<Button type='submit' color='green'>Save</Button>
 						</div>
 

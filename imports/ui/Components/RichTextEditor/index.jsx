@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Quill from './Quill';
 import RawEditor from './RawEditor';
+import Quill from './Quill';
+import CKEditor from './CKEditor';
 // import RTE from './RTE';
 import { Checkbox } from 'semantic-ui-react';
 
@@ -9,7 +10,7 @@ const RichTextEditor = ({ value, onChange, ...rest }) => {
 	const [ isRaw, setIsRaw ] = useState(false);
 	const [ content, setContent ] = useState(value || '');
 
-	const InputComponent = isRaw ? RawEditor : Quill;
+	const InputComponent = isRaw ? RawEditor : CKEditor;
 
 	const handleChange = newValue => {
 		console.log({ newValue });

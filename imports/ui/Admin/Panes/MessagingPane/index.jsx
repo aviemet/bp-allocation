@@ -182,7 +182,7 @@ const Messages = props => {
 
 const CellWithContent = styled(Table.Cell)`
 	img {
-		max-width: 100%;
+		max-width: 100% !important;
 	}
 `;
 
