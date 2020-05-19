@@ -110,9 +110,9 @@ const AdminLayout = withRouter(observer(props => {
 				fireOnMount
 				onUpdate={ handleOnUpdate }
 			>
-				<SidebarMenu vertical>
+				<SidebarMenu>
 					{/* Menu */}
-					<Header as={ 'h1' }>Menu</Header>
+					<Header as={ 'h1' } style={ { height: '51px' } }>Menu</Header>
 
 					<AdminLinks activeMenuItem={ activeMenuItem } />
 
@@ -194,7 +194,7 @@ const TopbarMenu = styled(Menu)`
 	}
 `;
 
-const SidebarMenu = styled(Menu)`
+const SidebarMenu = styled.div`
 	width: inherit !important;
 	backface-visibility: hidden;
 	transition: none;
@@ -207,6 +207,7 @@ const SidebarMenu = styled(Menu)`
 	margin: 0em !important;
 	overflow-y: auto !important;
 	z-index: 102;
+	background: white;
 
 	& .ui.header {
     text-align: center;
