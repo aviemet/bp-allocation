@@ -31,7 +31,7 @@ Meteor.startup(() => {
 		}
 	);
 
-	process.env.MAIL_URL = 'smtp://support%40thebatterysf.com:*batteryADMIN*@smtp.gmail.com:587'; // Meteor.settings.MAIL_URL;
+	process.env.MAIL_URL = Meteor.settings.MAIL_URL;
 	
 	// const themeId = 'iTL2SfNx9SHM3BhFq';
 	// const themeId = 'fEYxEXpMcHuhjoNzD';
