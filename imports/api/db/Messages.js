@@ -1,7 +1,7 @@
-import { Mongo } from 'meteor/mongo';
-import SimpleSchema from 'simpl-schema';
+import { Mongo } from 'meteor/mongo'
+import SimpleSchema from 'simpl-schema'
 
-const Messages = new Mongo.Collection('messages');
+const Messages = new Mongo.Collection('messages')
 
 const MessageSchema = new SimpleSchema({
 	title: String,
@@ -34,21 +34,21 @@ const MessageSchema = new SimpleSchema({
 		defaultValue: new Date()
 	}
 
-});
+})
 
-Messages.attachSchema(MessageSchema);
+Messages.attachSchema(MessageSchema)
 
 // Set permissions
 Messages.allow({
 	insert: (userId, doc) => {
-		return true;
+		return true
 	},
 	update: (userId, doc) => {
-		return true;
+		return true
 	},
 	remove: (userId, doc) => {
-		return true;
+		return true
 	},
-});
+})
 
-export { Messages, MessageSchema };
+export { Messages, MessageSchema }

@@ -1,27 +1,27 @@
-import React from 'react';
+import React from 'react'
 
-import { Card, Container } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Card, Container } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import { observer } from 'mobx-react-lite';
-import { useOrgs, useSettings } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useOrgs, useSettings } from '/imports/api/providers'
 
-import OrgCard from '/imports/ui/Components/OrgCard';
+import OrgCard from '/imports/ui/Components/OrgCard'
 
 const Overlay = () => (
 	<DimOverlay>
 		{/*<Image src='/img/BPLogo.svg' />*/}
 	</DimOverlay>
-);
+)
 
 const Orgs = observer(() => {
-	const { settings } = useSettings();
-	const { orgs, topOrgs }  = useOrgs();
+	const { settings } = useSettings()
+	const { orgs, topOrgs }  = useOrgs()
 
-	let colorOrgs = {};
+	let colorOrgs = {}
 	topOrgs.map((org, i) => {
-		colorOrgs[org._id] = true;
-	});
+		colorOrgs[org._id] = true
+	})
 
 	return (
 		<OrgsContainer>
@@ -40,8 +40,8 @@ const Orgs = observer(() => {
 				</Card.Group>
 			</Container>
 		</OrgsContainer>
-	);
-});
+	)
+})
 
 const OrgsContainer = styled.div`
 	padding-top: 20px;
@@ -58,11 +58,11 @@ const OrgsContainer = styled.div`
 	&& p{
 		line-height: 1em;
 	}
-`;
+`
 
 const PageTitle = styled.h2`
 	margin-bottom: 20px;
-`;
+`
 
 const DimOverlay = styled.div`
 	width: calc(100% + 10px);
@@ -81,6 +81,6 @@ const DimOverlay = styled.div`
 		transform: translate(-50%, -50%);
 	}
 
-`;
+`
 
-export default Orgs;
+export default Orgs

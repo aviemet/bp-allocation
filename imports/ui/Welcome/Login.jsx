@@ -1,13 +1,13 @@
-import { Meteor } from 'meteor/meteor';
-import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { Button, Grid } from 'semantic-ui-react';
-import CustomMessage from '../Components/CustomMessage';
+import { Meteor } from 'meteor/meteor'
+import React, { useState } from 'react'
+import { withRouter } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { Button, Grid } from 'semantic-ui-react'
+import CustomMessage from '../Components/CustomMessage'
 
 const Login = ({ history, location }) => {
 	
-	const [ loginErrorVisible, setLoginErrorVisible ] = useState(false);
+	const [ loginErrorVisible, setLoginErrorVisible ] = useState(false)
 
 	const handleLogin = e => {
 		Meteor.loginWithGoogle({
@@ -15,22 +15,22 @@ const Login = ({ history, location }) => {
 			scope: [ 'email' ]
 		}, err => {
 			if(err) {
-				showLoginError();
-				console.error({ err });
+				showLoginError()
+				console.error({ err })
 			} else {
-				let redirect = location.state && location.state.from ? location.state.from : '/';
-				history.push(redirect);
+				let redirect = location.state && location.state.from ? location.state.from : '/'
+				history.push(redirect)
 			}
-		});
-	};
+		})
+	}
 
 	const showLoginError = () => {
-		setLoginErrorVisible(true);
+		setLoginErrorVisible(true)
 
-		setTimeout(() => setLoginErrorVisible(false), 10000);
-	};
+		setTimeout(() => setLoginErrorVisible(false), 10000)
+	}
 
-	const hideMessage = () => setLoginErrorVisible(false);
+	const hideMessage = () => setLoginErrorVisible(false)
 
 	return (
 		<>
@@ -61,12 +61,12 @@ const Login = ({ history, location }) => {
 				</> }
 			/> }
 		</>
-	);
-};
+	)
+}
 
 Login.propTypes = {
 	history: PropTypes.object,
 	location: PropTypes.object
-};
+}
 
-export default withRouter(Login);
+export default withRouter(Login)

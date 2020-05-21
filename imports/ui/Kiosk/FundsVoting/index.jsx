@@ -1,61 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import numeral from 'numeral';
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import _ from 'lodash'
+import numeral from 'numeral'
 
-import { observer } from 'mobx-react-lite';
-import { useData, useSettings, useOrgs } from '/imports/api/providers';
-import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext';
+import { observer } from 'mobx-react-lite'
+import { useData, useSettings, useOrgs } from '/imports/api/providers'
+import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext'
 
-import { Card, Container, Header, Button } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Card, Container, Header, Button } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import VotingComplete from '../VotingComplete';
-import OrgCard from '/imports/ui/Components/OrgCard';
-import FundsSlider from './FundsSlider';
-import useInterval from '/imports/ui/Components/useInterval';
+import VotingComplete from '../VotingComplete'
+import OrgCard from '/imports/ui/Components/OrgCard'
+import FundsSlider from './FundsSlider'
+import useInterval from '/imports/ui/Components/useInterval'
 
-import { COLORS } from '/imports/lib/global';
+import { COLORS } from '/imports/lib/global'
 
 const AmountRemaining = React.memo(({ value }) => {
 	return (
 		<Header as='h1' className="title">
 			FUNDS LEFT TO ALLOCATE: <NumberFormat>{numeral(value).format('$0,0')}</NumberFormat>
 		</Header>
-	);
-});
+	)
+})
 
-AmountRemaining.displayName = 'AmountRemaining'; // To slience eslint
+AmountRemaining.displayName = 'AmountRemaining' // To slience eslint
 
 const FundsVotingKiosk = observer(props => {
-	const data = useData();
-	const { settings } = useSettings();
-	const { topOrgs } = useOrgs();
+	const data = useData()
+	const { settings } = useSettings()
+	const { topOrgs } = useOrgs()
 
-	const [ votingComplete, setVotingComplete ] = useState(false);
-	const [ countdownVisible, setCountdownVisible ] = useState(false);
-	const [ count, setCount ] = useState(60);
-	const [ isCounting, setIsCounting ] = useState(false);
+	const [ votingComplete, setVotingComplete ] = useState(false)
+	const [ countdownVisible, setCountdownVisible ] = useState(false)
+	const [ count, setCount ] = useState(60)
+	const [ isCounting, setIsCounting ] = useState(false)
 	
 	useInterval(() => {
-		setCount(count - 1);
-	}, isCounting ? 1000 : null);
+		setCount(count - 1)
+	}, isCounting ? 1000 : null)
 
 	const displayCountDown = () => {
-		setCountdownVisible(true);
-		setCount(data.votingRedirectTimeout);
-		setIsCounting(true);
-	};
+		setCountdownVisible(true)
+		setCount(data.votingRedirectTimeout)
+		setIsCounting(true)
+	}
 
 	useEffect(() => {
 		// Display countdown if user is on voting screen when voting becomes disabled
-		if(!settings.fundsVotingActive) displayCountDown();
-	}, [settings.fundsVotingActive]);
+		if(!settings.fundsVotingActive) displayCountDown()
+	}, [settings.fundsVotingActive])
 
-	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName;
+	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName
 
 	if(votingComplete) {
-		return <VotingComplete />;
+		return <VotingComplete />
 	}
 	return (
 		<OrgsContainer>
@@ -81,15 +81,15 @@ const FundsVotingKiosk = observer(props => {
 									org={ org }
 								/>
 							) }
-						/>);
+						/>)
 				})}
 			</Card.Group>
 
 			<FundsVoteContext.Consumer>{({ allocations, saveAllocations, member }) => {
-				let sum = 0;
-				_.forEach(allocations, value => sum += value);
-				const remaining = member.theme.amount - sum;
-				const buttonDisabled = remaining !== 0;
+				let sum = 0
+				_.forEach(allocations, value => sum += value)
+				const remaining = member.theme.amount - sum
+				const buttonDisabled = remaining !== 0
 				
 				return(
 					<React.Fragment>
@@ -98,15 +98,15 @@ const FundsVotingKiosk = observer(props => {
 							size='huge'
 							disabled={ buttonDisabled }
 							onClick={ () => {
-								saveAllocations(props.source);
-								setVotingComplete(true);
+								saveAllocations(props.source)
+								setVotingComplete(true)
 							} }>Finalize Vote</FinalizeButton>
 					</React.Fragment>
-				);
+				)
 			}}</FundsVoteContext.Consumer>
 		</OrgsContainer>
-	);
-});
+	)
+})
 
 const OrgsContainer = styled(Container)`
 	padding-top: 20px;
@@ -140,7 +140,7 @@ const OrgsContainer = styled(Container)`
 	&& p {
 		line-height: 1em;
 	}
-`;
+`
 
 const FinalizeButton = styled(Button)`
 	width: 100%;
@@ -150,20 +150,20 @@ const FinalizeButton = styled(Button)`
 	border: 2px solid #fff !important;
 	font-size: 2rem !important;
 	text-transform: uppercase !important;
-`;
+`
 
 const NumberFormat = styled.span`
 	width: 12rem;
 	display: inline-block;
-`;
+`
 
 FundsVotingKiosk.propTypes = {
 	user: PropTypes.object,
 	source: PropTypes.string
-};
+}
 
 AmountRemaining.propTypes = {
 	value: PropTypes.number
-};
+}
 
-export default FundsVotingKiosk;
+export default FundsVotingKiosk

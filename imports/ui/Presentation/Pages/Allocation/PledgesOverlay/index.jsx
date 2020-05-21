@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useData, useOrgs } from '/imports/api/providers';
+import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
+import { useData, useOrgs } from '/imports/api/providers'
 
-import { observer } from 'mobx-react-lite';
-import Queue from '/imports/lib/Queue';
+import { observer } from 'mobx-react-lite'
+import Queue from '/imports/lib/Queue'
 
-import PledgeDisplay from './PledgeDisplay';
+import PledgeDisplay from './PledgeDisplay'
 
-const pledgesToDisplay = new Queue();
+const pledgesToDisplay = new Queue()
 
 const PledgesOverlay = observer(() => {
-	const data = useData();
-	const { orgs } = useOrgs();
+	const data = useData()
+	const { orgs } = useOrgs()
 
-	const [ displayPledge, setDisplayPledge ] = useState();
-	const [ animatingPledges, setAnimatingPledges ] = useState(false);
+	const [ displayPledge, setDisplayPledge ] = useState()
+	const [ animatingPledges, setAnimatingPledges ] = useState(false)
 
 	// On first load, add existing pledges to observable data store
 	useEffect(() => {
 		orgs.values.forEach(org => {
 			org.pledges.forEach(pledge => {
-				data.displayedPledges.add(pledge._id);
-			});
-		});
-	}, []);
+				data.displayedPledges.add(pledge._id)
+			})
+		})
+	}, [])
 
 	// Listen for changes on the pledges Set from OrgsCollection
 	useEffect(() => {
@@ -33,38 +33,38 @@ const PledgesOverlay = observer(() => {
 			// Find any new pledges which haven't been displayed yet
 			if(!data.displayedPledges.has(pledge._id)) {
 				// Add any new pledges to local Queue
-				pledgesToDisplay.enqueue(pledge);
-				data.displayedPledges.add(pledge._id);
+				pledgesToDisplay.enqueue(pledge)
+				data.displayedPledges.add(pledge._id)
 				// Start the animation if not already running
-				if(!animatingPledges) setAnimatingPledges(true);
+				if(!animatingPledges) setAnimatingPledges(true)
 			}
-		});
-	}, [ orgs.pledges ]);
+		})
+	}, [ orgs.pledges ])
 
 	useEffect(() => {
 		// When animatingPledges becomes true, begin the animation
 		if(animatingPledges) {
-			animatePledges();
+			animatePledges()
 		}
-	}, [ animatingPledges ]);
+	}, [ animatingPledges ])
 
 	const animatePledges = () => {
-		setDisplayPledge(null);
+		setDisplayPledge(null)
 		if(!pledgesToDisplay.isEmpty()) {
-			const pledge = pledgesToDisplay.dequeue();
-			setDisplayPledge(pledge);
-			setTimeout(animatePledges, 10000);
+			const pledge = pledgesToDisplay.dequeue()
+			setDisplayPledge(pledge)
+			setTimeout(animatePledges, 10000)
 		} else {
-			setAnimatingPledges(false);
+			setAnimatingPledges(false)
 		}
-	};
+	}
 
 	return (
 		<OverlayContainer>
 			{ displayPledge && <PledgeDisplay pledge={ displayPledge } /> }
 		</OverlayContainer>
-	);
-});
+	)
+})
 
 const OverlayContainer = styled.div`
 	position: fixed;
@@ -72,6 +72,6 @@ const OverlayContainer = styled.div`
 	height: 0;
 	width: 100vw;
 	height: 100vh;
-`;
+`
 
-export default PledgesOverlay;
+export default PledgesOverlay

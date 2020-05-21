@@ -1,11 +1,11 @@
-import { Meteor } from 'meteor/meteor';
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor'
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-import { Route, withRouter, Switch } from 'react-router-dom';
+import { Route, withRouter, Switch } from 'react-router-dom'
 
-import ThemesList from '/imports/ui/Welcome/ThemesList';
-import Admin from '/imports/ui/Admin';
+import ThemesList from '/imports/ui/Welcome/ThemesList'
+import Admin from '/imports/ui/Admin'
 import {
 	Loader,
 	Container,
@@ -16,59 +16,59 @@ import {
 	Image,
 	Menu,
 	Responsive
-} from 'semantic-ui-react';
-import Sidebar from '/imports/ui/Components/Sidebar';
-import styled from 'styled-components';
-import AdminLinks from './AdminLinks';
+} from 'semantic-ui-react'
+import Sidebar from '/imports/ui/Components/Sidebar'
+import styled from 'styled-components'
+import AdminLinks from './AdminLinks'
 
-import { observer } from 'mobx-react-lite';
-import { useData, useTheme } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useData, useTheme } from '/imports/api/providers'
 
 const AdminLayout = withRouter(observer(props => {
-	const [ sidebarVisible, setSidebarVisible ] = useState(false);
-	const [ documentWidth, setDocumentWidth ] = useState();
-	const [ activeMenuItem, setActiveMenuItem ] = useState();
+	const [ sidebarVisible, setSidebarVisible ] = useState(false)
+	const [ documentWidth, setDocumentWidth ] = useState()
+	const [ activeMenuItem, setActiveMenuItem ] = useState()
 
-	const data = useData();
+	const data = useData()
 
-	const { theme, isLoading: themeLoading } = useTheme();
+	const { theme, isLoading: themeLoading } = useTheme()
 
 	useEffect(() => {
 		if(documentWidth >= Responsive.onlyTablet.minWidth) {
 			// Hide sidebar on themes list, show when theme is chosen
-			let showSidebar = true;
+			let showSidebar = true
 			const regex = {
 				admin: /^\/admin[/]?$/,
 				themes: /^\/themes[/]?$/,
-			};
+			}
 
 			if(regex.admin.test(props.location.pathname) || regex.themes.test(props.location.pathname)) {
-				showSidebar = false;
+				showSidebar = false
 			}
-			setSidebarVisible(showSidebar);
+			setSidebarVisible(showSidebar)
 		} else {
-			setSidebarVisible(false);
+			setSidebarVisible(false)
 		}
-	}, [ props.location.pathname, documentWidth ]);
+	}, [ props.location.pathname, documentWidth ])
 
 	useEffect(() => {
-		data.menuHeading = theme ? theme.title : data.defaultMenuHeading;
-	}, [theme]);
+		data.menuHeading = theme ? theme.title : data.defaultMenuHeading
+	}, [theme])
 
 	useEffect(() => {
-		setActiveMenuItem();
-	}, []);
+		setActiveMenuItem()
+	}, [])
 
 	const handleOnUpdate = (e, { width }) => {
-		setDocumentWidth(width);
-	};
+		setDocumentWidth(width)
+	}
 
 	const setActivePage = matchProps => {
-		const url = matchProps.location.pathname;
-		const filter = matchProps.match.url;
-		const page = url.substring(url.indexOf(filter) + filter.length + 1);
-		setActiveMenuItem(page);
-	};
+		const url = matchProps.location.pathname
+		const filter = matchProps.match.url
+		const page = url.substring(url.indexOf(filter) + filter.length + 1)
+		setActiveMenuItem(page)
+	}
 
 	return(
 		<AdminContainer className='AdminContainer'>
@@ -127,15 +127,15 @@ const AdminLayout = withRouter(observer(props => {
 							 * This is where the themeId gets set for the application
 							 */}
 							<Route exact path={ ['/themes', '/admin'] } render={ matchProps => {
-								data.themeId = undefined;
-								return <ThemesList />;
+								data.themeId = undefined
+								return <ThemesList />
 							} } />
 							<Route path='/admin/:id' render={ matchProps => {
-								data.themeId = matchProps.match.params.id;
-								setActivePage(matchProps);
+								data.themeId = matchProps.match.params.id
+								setActivePage(matchProps)
 
-								if(themeLoading) return <Loader active />;
-								return <Admin />;
+								if(themeLoading) return <Loader active />
+								return <Admin />
 							} } />
 						</Switch>
 					</Grid>
@@ -143,8 +143,8 @@ const AdminLayout = withRouter(observer(props => {
 			</OffsetContainer>
 
 		</AdminContainer>
-	);
-}));
+	)
+}))
 
 const AdminContainer = styled.div`
 	background: #2b4a7c;
@@ -156,7 +156,7 @@ const AdminContainer = styled.div`
 		text-align: center;
 		padding-top: 10px;
 	}
-`;
+`
 
 const OffsetContainer = styled.div`
 	width: 100%;
@@ -170,7 +170,7 @@ const OffsetContainer = styled.div`
 			padding-left: 150px;
 		}
 	}
-`;
+`
 
 const TopbarMenu = styled(Menu)`
 	position: absolute;
@@ -192,7 +192,7 @@ const TopbarMenu = styled(Menu)`
 	&.offset {
 		padding-left: 150px;
 	}
-`;
+`
 
 const SidebarMenu = styled.div`
 	width: inherit !important;
@@ -213,11 +213,11 @@ const SidebarMenu = styled.div`
     text-align: center;
     padding-top: 10px;
 	}
-`;
+`
 
 const Logo = styled(Image)`
 	filter: invert(100%);
-`;
+`
 
 AdminLayout.propTypes = {
 	children: PropTypes.oneOfType([
@@ -227,6 +227,6 @@ AdminLayout.propTypes = {
 	history: PropTypes.object,
 	location: PropTypes.object,
 	match: PropTypes.object
-};
+}
 
-export default AdminLayout;
+export default AdminLayout

@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React, { useState } from 'react'
+import { Route, Switch } from 'react-router-dom'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useTheme } from '/imports/api/providers'
 
-import { Grid, Header, Menu, Segment } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Grid, Header, Menu, Segment } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import { AllocationPane, LeveragePane } from '/imports/ui/Admin/Panes';
-import Organizations from './Organizations';
-import Stats from './Stats';
-import Graph from './Graph';
-import MembersList from '/imports/ui/Admin/Panes/MembersPane/MembersList';
+import { AllocationPane, LeveragePane } from '/imports/ui/Admin/Panes'
+import Organizations from './Organizations'
+import Stats from './Stats'
+import Graph from './Graph'
+import MembersList from '/imports/ui/Admin/Panes/MembersPane/MembersList'
 
 /**
  * Orgs:
@@ -34,7 +34,7 @@ import MembersList from '/imports/ui/Admin/Panes/MembersPane/MembersList';
  *   Expoort buttons for information
  */
 
-const TABS_ORDER = ['orgs', /*'members', */'allocation', 'graph', 'leverage', 'stats'];
+const TABS_ORDER = ['orgs', /*'members', */'allocation', 'graph', 'leverage', 'stats']
 const TABS = {
 	orgs:{
 		slug: 'orgs',
@@ -72,19 +72,19 @@ const TABS = {
 		color: 'violet',
 		component: Stats
 	}
-};
+}
 
 // Main class for the Theme page
 const Feedback = observer(() => {
-	const { theme } = useTheme();
-	const defaultPage = 'orgs';
+	const { theme } = useTheme()
+	const defaultPage = 'orgs'
 
-	const [ activeTab, setActiveTab ] = useState(location.hash.replace(/#/, '') || TABS[defaultPage].slug);
+	const [ activeTab, setActiveTab ] = useState(location.hash.replace(/#/, '') || TABS[defaultPage].slug)
 
 	const handleItemClick = (e, { slug }) => {
-		location.hash = slug;
-		setActiveTab(slug);
-	};
+		location.hash = slug
+		setActiveTab(slug)
+	}
 
 	return (
 		<React.Fragment>
@@ -111,26 +111,26 @@ const Feedback = observer(() => {
 				<Segment attached="bottom">
 					<Switch location={ { pathname: activeTab } }>
 						{TABS_ORDER.map(tab => {
-							const Component = TABS[tab].component;
+							const Component = TABS[tab].component
 							return(
 								<Route exact path={ TABS[tab].slug } key={ tab } >
 									<Component hideAdminFields={ true } />
 								</Route>
-							);})}
+							)})}
 					</Switch>
 				</Segment>
 
 			</Grid.Row>
 
 		</React.Fragment>
-	);
-});
+	)
+})
 
 const Title = styled(Header)`
 	&& {
 		color: #FFF;
 	}
-`;
+`
 
 const TabMenu = styled(Menu)`
 	&&& {
@@ -138,6 +138,6 @@ const TabMenu = styled(Menu)`
 			color: #FFF;
 		}
 	}
-`;
+`
 
-export default Feedback;
+export default Feedback

@@ -1,25 +1,25 @@
-import { expect } from 'chai';
-import { resetDatabase } from 'meteor/xolvio:cleaner';
+import { expect } from 'chai'
+import { resetDatabase } from 'meteor/xolvio:cleaner'
 
-import { PresentationSettings } from '/imports/api/db';
-import { PresentationSettingsMethods } from '/imports/api/methods';
+import { PresentationSettings } from '/imports/api/db'
+import { PresentationSettingsMethods } from '/imports/api/methods'
 
-var settings;
+var settings
 
 describe("Presentation Settings Methods", async function() {
 
 	before(async function(done) {
-		resetDatabase();
+		resetDatabase()
 
 		try {
-			const settingsId = await PresentationSettingsMethods.create.call();
-			settings = await PresentationSettings.find({ _id: settingsId }).fetch()[0];
+			const settingsId = await PresentationSettingsMethods.create.call()
+			settings = await PresentationSettings.find({ _id: settingsId }).fetch()[0]
 		} catch(e) {
-			console.error("Error: ", e);
+			console.error("Error: ", e)
 		} finally {
-			done();
+			done()
 		}
-	});
+	})
 
 	/**
 	 * Create
@@ -27,10 +27,10 @@ describe("Presentation Settings Methods", async function() {
 	context("Create", function() {
 
 		it("Should create a record", function() {
-			expect(settings).to.not.be.undefined;
-		});
+			expect(settings).to.not.be.undefined
+		})
 
-	});
+	})
 
 	/**
 	 * Update
@@ -50,13 +50,13 @@ describe("Presentation Settings Methods", async function() {
 				resultsOffset: 100,
 				useKioskChitVoting: true,
 				useKioskFundsVoting: true 
-			};
-			await PresentationSettingsMethods.update.call({ id: settings._id, data: settingsChange });
-			settings = PresentationSettings.find({ _id: settings._id }).fetch()[0];
-			expect(settings).to.include(settingsChange);
-			done();
-		});
+			}
+			await PresentationSettingsMethods.update.call({ id: settings._id, data: settingsChange })
+			settings = PresentationSettings.find({ _id: settings._id }).fetch()[0]
+			expect(settings).to.include(settingsChange)
+			done()
+		})
 
-	});
+	})
 
-});
+})

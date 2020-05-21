@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { Image } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Image } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 const Intro = props => {
 
@@ -15,8 +15,8 @@ const Intro = props => {
 				<Image src='/img/BPLogoBlue.svg' />
 			</LogoContainer>
 		</TitlePage>
-	);
-};
+	)
+}
 
 const TitlePage = styled.div`
 	margin: 0 auto;
@@ -35,7 +35,7 @@ const TitlePage = styled.div`
 		margin: 0 auto;
 		max-width:1300px;
 	}
-`;
+`
 
 const MainHeading = styled.h1`
 	font-family: 'BentonMod';
@@ -45,28 +45,28 @@ const MainHeading = styled.h1`
 	font-size: 8.5em;
 	text-transform: uppercase;
 	clear: both;
-`;
+`
 
 const ThemeTitle = styled.h2`
 	&& { /* Bump this up to a higher specificity */
 		font-size: 4em;
 		text-decoration: underline;
 	}
-`;
+`
 
 const LogoContainer = styled.div`
 	margin: 5em auto;
 	display: block;
 	width: 250px;
-`;
+`
 
 const ThemeQuestion = styled.h2`
 	margin-bottom: 1.5em;
-`;
+`
 
 Intro.propTypes = {
 	title: PropTypes.string,
 	question: PropTypes.string
-};
+}
 
-export default Intro;
+export default Intro

@@ -1,5 +1,5 @@
-import { Mongo } from 'meteor/mongo';
-import SimpleSchema from 'simpl-schema';
+import { Mongo } from 'meteor/mongo'
+import SimpleSchema from 'simpl-schema'
 
 const AllocationSchema = new SimpleSchema({
 	organization: SimpleSchema.RegEx.Id,
@@ -15,7 +15,7 @@ const AllocationSchema = new SimpleSchema({
 		allowedValues: ['kiosk', 'mobile'],
 		defaultValue: 'kiosk'
 	}
-});
+})
 
 const ChitVoteSchema = new SimpleSchema({
 	organization: SimpleSchema.RegEx.Id,
@@ -31,13 +31,13 @@ const ChitVoteSchema = new SimpleSchema({
 		allowedValues: ['kiosk', 'mobile'],
 		defaultValue: 'kiosk'
 	}
-});
+})
 
 /**
  * Voting information for a member on a specific theme
  * Members are persistent, can vote in multiple themes
  */
-const MemberThemes = new Mongo.Collection('memberThemes');
+const MemberThemes = new Mongo.Collection('memberThemes')
 
 const MemberThemeSchema = new SimpleSchema({
 	theme: SimpleSchema.RegEx.Id,
@@ -68,21 +68,21 @@ const MemberThemeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: new Date()
 	}
-});
+})
 
-MemberThemes.attachSchema(MemberThemeSchema);
+MemberThemes.attachSchema(MemberThemeSchema)
 
 // Set permissions
 MemberThemes.allow({
 	insert: (userId, doc) => {
-		return true;
+		return true
 	},
 	update: (userId, doc) => {
-		return true;
+		return true
 	},
 	remove: (userId, doc) => {
-		return true;
+		return true
 	},
-});
+})
 
-export { MemberThemes, MemberThemeSchema, AllocationSchema, ChitVoteSchema };
+export { MemberThemes, MemberThemeSchema, AllocationSchema, ChitVoteSchema }

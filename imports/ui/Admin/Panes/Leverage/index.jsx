@@ -1,36 +1,36 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-// import _ from 'lodash';
-import numeral from 'numeral';
+import React from 'react'
+import PropTypes from 'prop-types'
+// import _ from 'lodash'
+import numeral from 'numeral'
 
-// import { roundFloat } from '/imports/lib/utils';
+// import { roundFloat } from '/imports/lib/utils'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme, useOrgs } from '/imports/api/providers';
-import { ThemeMethods } from '/imports/api/methods';
-import LeverageObject from '/imports/lib/Leverage';
+import { observer } from 'mobx-react-lite'
+import { useTheme, useOrgs } from '/imports/api/providers'
+import { ThemeMethods } from '/imports/api/methods'
+import LeverageObject from '/imports/lib/Leverage'
 
-import { Header, Segment, Grid, Button } from 'semantic-ui-react';
+import { Header, Segment, Grid, Button } from 'semantic-ui-react'
 
-import RoundTable from './RoundTable';
-import ResultsTable from './ResultsTable';
+import RoundTable from './RoundTable'
+import ResultsTable from './ResultsTable'
 
 const Leverage = observer(props => {
-	const { theme } = useTheme();
-	const { topOrgs } = useOrgs();
+	const { theme } = useTheme()
+	const { topOrgs } = useOrgs()
 
-	const leverage = new LeverageObject(topOrgs, theme.leverageRemaining);
-	const rounds = leverage.getLeverageSpreadRounds();
+	const leverage = new LeverageObject(topOrgs, theme.leverageRemaining)
+	const rounds = leverage.getLeverageSpreadRounds()
 
 	const saveLeverageSpread = (lastRound) => {
-		ThemeMethods.saveLeverageSpread.call(lastRound.orgs);
-	};
+		ThemeMethods.saveLeverageSpread.call(lastRound.orgs)
+	}
 
 	const resetLeverage = () => {
-		ThemeMethods.resetLeverage.call(theme._id);
-	};
+		ThemeMethods.resetLeverage.call(theme._id)
+	}
 
-	// const rounds = getLeverageSpreadRounds(theme.leverageRemaining);
+	// const rounds = getLeverageSpreadRounds(theme.leverageRemaining)
 
 	if(rounds.length === 0) {
 		return (
@@ -38,13 +38,13 @@ const Leverage = observer(props => {
 				<Header as='h1'>Not enough leverage to assign to organizations</Header>
 				<p>Check if amount has been entered to the &apos;Total Pot&apos; field in Theme Settings</p>
 			</React.Fragment>
-		);
+		)
 	}
 
-	const orgSpreadSum = topOrgs.reduce((sum, org) => { return sum + org.leverageFunds; }, 0);
-	const roundSpreadSum = rounds[rounds.length - 1].orgs.reduce((sum, org) => { return sum + org.leverageFunds; }, 0);
+	const orgSpreadSum = topOrgs.reduce((sum, org) => { return sum + org.leverageFunds }, 0)
+	const roundSpreadSum = rounds[rounds.length - 1].orgs.reduce((sum, org) => { return sum + org.leverageFunds }, 0)
 
-	const leverageDistributed = orgSpreadSum === roundSpreadSum;
+	const leverageDistributed = orgSpreadSum === roundSpreadSum
 
 	return (
 		<React.Fragment>
@@ -108,11 +108,11 @@ const Leverage = observer(props => {
 				</Segment>
 			)) }
 		</React.Fragment>
-	);
-});
+	)
+})
 
 Leverage.propTypes = {
 	hideAdminFields: PropTypes.bool
-};
+}
 
-export default Leverage;
+export default Leverage

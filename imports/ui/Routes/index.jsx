@@ -1,24 +1,24 @@
-import { Meteor } from 'meteor/meteor';
-import React from 'react';
-import { Router, Route, Switch, Redirect } from 'react-router-dom';
-import { createBrowserHistory as createHistory } from 'history';
+import { Meteor } from 'meteor/meteor'
+import React from 'react'
+import { Router, Route, Switch, Redirect } from 'react-router-dom'
+import { createBrowserHistory as createHistory } from 'history'
 
-import PrivateRoute from './PrivateRoute';
-import LoadingRoute from './LoadingRoute';
-import ShortRoute from './ShortRoute';
+import PrivateRoute from './PrivateRoute'
+import LoadingRoute from './LoadingRoute'
+import ShortRoute from './ShortRoute'
 
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite'
 
-import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts';
-import Presentation from '/imports/ui/Presentation';
-import Simulation from '/imports/ui/Admin/Simulation';
-import Pledges from '/imports/ui/Pledges';
-import Login from '/imports/ui/Welcome/Login';
-import Kiosk from '/imports/ui/Kiosk';
-import Feedback from '/imports/ui/Feedback';
-import FourOhFour from './404';
+import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts'
+import Presentation from '/imports/ui/Presentation'
+import Simulation from '/imports/ui/Admin/Simulation'
+import Pledges from '/imports/ui/Pledges'
+import Login from '/imports/ui/Welcome/Login'
+import Kiosk from '/imports/ui/Kiosk'
+import Feedback from '/imports/ui/Feedback'
+import FourOhFour from './404'
 
-const browserHistory = createHistory();
+const browserHistory = createHistory()
 
 const Routes = observer(() => {
 	return(
@@ -71,7 +71,7 @@ const Routes = observer(() => {
 
 			</Switch>
 		</Router>
-	);
-});
+	)
+})
 
-export default Routes;
+export default Routes

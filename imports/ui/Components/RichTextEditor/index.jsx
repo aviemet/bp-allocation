@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import RawEditor from './RawEditor';
-import Quill from './Quill';
-import CKEditor from './CKEditor';
-// import RTE from './RTE';
-import { Checkbox } from 'semantic-ui-react';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import RawEditor from './RawEditor'
+import Quill from './Quill'
+import CKEditor from './CKEditor'
+// import RTE from './RTE'
+import { Checkbox } from 'semantic-ui-react'
 
 const RichTextEditor = ({ value, onChange, ...rest }, ref) => {
-	const [ isRaw, setIsRaw ] = useState(false);
-	const [ content, setContent ] = useState(value || '');
+	const [ isRaw, setIsRaw ] = useState(false)
+	const [ content, setContent ] = useState(value || '')
 
-	const InputComponent = isRaw ? RawEditor : CKEditor;
+	const InputComponent = isRaw ? RawEditor : CKEditor
 
 	const handleChange = newValue => {
-		setContent(newValue);
-		if(onChange) onChange(newValue);
-	};
+		setContent(newValue)
+		if(onChange) onChange(newValue)
+	}
 
 	return (
 		<>
@@ -25,13 +25,13 @@ const RichTextEditor = ({ value, onChange, ...rest }, ref) => {
 				onChange={ handleChange }
 			/>
 		</>
-	);
-};
+	)
+}
 
 RichTextEditor.propTypes = {
 	placeholder: PropTypes.string,
 	value: PropTypes.string,
 	onChange: PropTypes.any
-};
+}
 
-export default RichTextEditor;
+export default RichTextEditor

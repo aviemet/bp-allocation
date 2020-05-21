@@ -1,13 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 const PresentationLayout = ({ children }) => (
 	<PresentationContainer>
 		{ children }
 	</PresentationContainer>
-);
+)
 
 const PresentationContainer = styled.div`
 	background: #000;
@@ -25,13 +25,13 @@ const PresentationContainer = styled.div`
 		font-size: 3.75em;
 		font-family: 'TradeGothic';
 	}
-`;
+`
 
 PresentationLayout.propTypes = {
 	children: PropTypes.oneOfType([
 		PropTypes.arrayOf(PropTypes.node),
 		PropTypes.node
 	])
-};
+}
 
-export default PresentationLayout;
+export default PresentationLayout

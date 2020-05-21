@@ -1,14 +1,14 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-import { Button, Icon } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Button, Icon } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 const HomeButton = () => (
 	<Link to='/'>
 		<StyledHomeButton icon><Icon name='home' /></StyledHomeButton>
 	</Link>
-);
+)
 
 const StyledHomeButton = styled(Button)`
 	&& {
@@ -16,6 +16,6 @@ const StyledHomeButton = styled(Button)`
 		top: 2em;
 		right: 2em;
 	}
-`;
+`
 
-export default HomeButton;
+export default HomeButton

@@ -1,56 +1,56 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import numeral from 'numeral';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import numeral from 'numeral'
 
-import { observer } from 'mobx-react-lite';
-import { useSettings } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useSettings } from '/imports/api/providers'
 
-// import { roundFloat } from '/imports/lib/utils';
+// import { roundFloat } from '/imports/lib/utils'
 
-import { OrganizationMethods } from '/imports/api/methods';
+import { OrganizationMethods } from '/imports/api/methods'
 
-import CrowdFavoriteRibbon from '/imports/ui/Components/CrowdFavoriteRibbon';
+import CrowdFavoriteRibbon from '/imports/ui/Components/CrowdFavoriteRibbon'
 
-import { Table, Button, Input } from 'semantic-ui-react';
+import { Table, Button, Input } from 'semantic-ui-react'
 
 /**
  * Allocation Inputs Component
  */
 const AllocationInputs = observer(props => {
-	const { settings } = useSettings();
+	const { settings } = useSettings()
 
-	const [ votedAmount, setVotedAmount ] = useState(props.org.votedTotal);
+	const [ votedAmount, setVotedAmount ] = useState(props.org.votedTotal)
 
 	// Controlling input only visible if not in kiosk voting mode
 	const enterAmountFromVotes = e => {
 		OrganizationMethods.update.call({ id: props.org._id, data: {
 			amountFromVotes: parseInt(e.target.value)
-		} });
-	};
+		} })
+	}
 
 	/*const pledge = (e, data) => {
-		e.preventDefault();
+		e.preventDefault()
 
-		let amount = roundFloat(e.target.elements.valueInput.value);
+		let amount = roundFloat(e.target.elements.valueInput.value)
 
 		OrganizationMethods.pledge.call({
 			id: props.org._id,
 			amount: amount,
-		});
+		})
 
 		// Clear the input
-		e.target.elements.valueInput.value = '';
-	};*/
+		e.target.elements.valueInput.value = ''
+	}*/
 
 	const topoff = () => {
-		const amount = props.org.topOff > 0 ? 0 : props.org.need - props.org.leverageFunds;
+		const amount = props.org.topOff > 0 ? 0 : props.org.need - props.org.leverageFunds
 		OrganizationMethods.update.call({ id: props.org._id, data: {
 			topOff: amount
-		} });
-	};
+		} })
+	}
 
 	// Boolean help for marking fully funded orgs
-	const reachedGoal = props.org.need - props.org.leverageFunds <= 0;
+	const reachedGoal = props.org.need - props.org.leverageFunds <= 0
 	return (
 		<Table.Row positive={ reachedGoal }>
 
@@ -80,7 +80,7 @@ const AllocationInputs = observer(props => {
 			{/* Matched Pledges Input */}
 			{/* <Table.Cell>
 				{props.hideAdminFields ?
-					numeral(props.org.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0)).format('$0,0')
+					numeral(props.org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0)).format('$0,0')
 					:
 					<Form onSubmit={ pledge }>
 						<Form.Input
@@ -122,14 +122,14 @@ const AllocationInputs = observer(props => {
 				/>*/}
 			</Table.Cell> }
 		</Table.Row>
-	);
-});
+	)
+})
 
 AllocationInputs.propTypes = {
 	org: PropTypes.object,
 	crowdFavorite: PropTypes.bool,
 	tabInfo: PropTypes.object,
 	hideAdminFields: PropTypes.bool
-};
+}
 
-export default AllocationInputs;
+export default AllocationInputs

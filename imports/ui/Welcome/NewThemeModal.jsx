@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { Button, Modal, Form, Input } from 'semantic-ui-react';
+import React, { useState } from 'react'
+import { Button, Modal, Form, Input } from 'semantic-ui-react'
 
-import { ThemeMethods } from '/imports/api/methods';
+import { ThemeMethods } from '/imports/api/methods'
 
 const NewThemeModal = props => {
-	const [ isModalOpen, setIsModalOpen ] = useState(false);
-	const [ newThemeTitle, setNewThemeTitle ] = useState('');
-	const [ newThemeQuestion, setNewThemeQuestion ] = useState('');
-	// const [ newThemeQuarter, setNewThemeQuarter ] = useState('');
+	const [ isModalOpen, setIsModalOpen ] = useState(false)
+	const [ newThemeTitle, setNewThemeTitle ] = useState('')
+	const [ newThemeQuestion, setNewThemeQuestion ] = useState('')
+	// const [ newThemeQuarter, setNewThemeQuarter ] = useState('')
 
 	const createNewTheme = e => {
-		e.preventDefault();
+		e.preventDefault()
 
 		ThemeMethods.create.call({
 			title: newThemeTitle,
@@ -18,19 +18,19 @@ const NewThemeModal = props => {
 			// quarter: newThemeQuarter
 		}, (err, res) => {
 			if(err) {
-				console.error(err);
+				console.error(err)
 			} else {
-				setIsModalOpen(false);
+				setIsModalOpen(false)
 			}
-		});
-	};
+		})
+	}
 
 	const clearInputs = () => {
-		setNewThemeTitle('');
-		setNewThemeQuestion('');
-		// setNewThemeQuarter('');
-		setIsModalOpen(false);
-	};
+		setNewThemeTitle('')
+		setNewThemeQuestion('')
+		// setNewThemeQuarter('')
+		setIsModalOpen(false)
+	}
 
 	return (
 		<Modal 
@@ -69,10 +69,10 @@ const NewThemeModal = props => {
 				</Modal.Description>
 			</Modal.Content>
 		</Modal>
-	);
-};
+	)
+}
 
-export default NewThemeModal;
+export default NewThemeModal
 
 /*
 <Form.Field>

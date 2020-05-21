@@ -1,5 +1,5 @@
-import { Meteor } from 'meteor/meteor';
-import { FilesCollection } from 'meteor/ostrio:files';
+import { Meteor } from 'meteor/meteor'
+import { FilesCollection } from 'meteor/ostrio:files'
 
 let config = {
 	collectionName: 'images',
@@ -9,40 +9,40 @@ let config = {
 	onBeforeUpload(file) {
 		// Allow upload files under 10MB, and only in png/jpg/jpeg/gif formats
 		if (file.size <= 20971520 && /png|jpg|jpeg|gif/i.test(file.extension)) {
-			return true;
+			return true
 		}
-		return 'Please upload image, with size equal or less than 20MB';
+		return 'Please upload image, with size equal or less than 20MB'
 	}
-};
-
-if(Meteor.isServer){
-	config.storagePath = process.env.PWD + '/public/.uploads';
 }
 
-const Images = new FilesCollection(config);
+if(Meteor.isServer){
+	config.storagePath = process.env.PWD + '/public/.uploads'
+}
 
-// Images.attachSchema(FilesCollection.schema);
+const Images = new FilesCollection(config)
+
+// Images.attachSchema(FilesCollection.schema)
 
 if (Meteor.isServer) {
 	/* Allow all
 	 * @see http://docs.meteor.com/#/full/allow
 	 */
-	Images.allowClient();
+	Images.allowClient()
 
 	/* Allow per action
 	 * @see http://docs.meteor.com/#/full/allow
 	 */
 	// Images.allow({
 	//   insert: function() {
-	//     return true;
+	//     return true
 	//   },
 	//   update: function() {
-	//     return true;
+	//     return true
 	//   },
 	//   remove: function() {
-	//     return true;
+	//     return true
 	//   }
-	// });
+	// })
 }
 
-export { Images };
+export { Images }

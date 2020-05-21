@@ -1,14 +1,14 @@
-import TrackableCollection from './lib/TrackableCollection';
-import { computed } from 'mobx';
-import { sortBy } from 'lodash';
-import { filterTopOrgs } from '/imports/lib/orgsMethods';
+import TrackableCollection from './lib/TrackableCollection'
+import { computed } from 'mobx'
+import { sortBy } from 'lodash'
+import { filterTopOrgs } from '/imports/lib/orgsMethods'
 
 class OrgsCollection extends TrackableCollection {
 
 	// Cache list of pre-existing pledges to prevent animating stale data
 	constructor(data, theme, Store) {
-		super(data, Store);
-		this._theme = theme;
+		super(data, Store)
+		this._theme = theme
 	}
 
 	/**
@@ -16,8 +16,8 @@ class OrgsCollection extends TrackableCollection {
 	 */
 	@computed
 	get pledges() {
-		let pledges = [];
-		const topOrgs = filterTopOrgs(this.values, this._theme);
+		let pledges = []
+		const topOrgs = filterTopOrgs(this.values, this._theme)
 		topOrgs.forEach(org => {
 			org.pledges.forEach(pledge => {
 				pledges.push(Object.assign({
@@ -25,12 +25,12 @@ class OrgsCollection extends TrackableCollection {
 						_id: org._id,
 						title: org.title
 					}
-				}, pledge));
-			});
-		});
-		pledges = sortBy(pledges, ['createdAt']);
-		return pledges;
+				}, pledge))
+			})
+		})
+		pledges = sortBy(pledges, ['createdAt'])
+		return pledges
 	}
 }
 
-export default OrgsCollection;
+export default OrgsCollection

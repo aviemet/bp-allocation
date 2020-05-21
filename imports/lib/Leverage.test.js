@@ -1,31 +1,31 @@
-import { assert, expect } from 'chai';
-import _ from 'lodash';
-import Leverage from './Leverage';
-import { Youth, Education, Democracy } from './Leverage.mock';
-import OrgsCollection from '/imports/api/stores/OrgsCollection';
-import OrgStore from '/imports/api/stores/OrgStore';
+import { assert, expect } from 'chai'
+import _ from 'lodash'
+import Leverage from './Leverage'
+import { Youth, Education, Democracy } from './Leverage.mock'
+import OrgsCollection from '/imports/api/stores/OrgsCollection'
+import OrgStore from '/imports/api/stores/OrgStore'
 
 describe("Leverage object", function() {
 
 	context("Leverage object initalized correctly", function() {
-		const leverage = new Leverage(Youth, 100);
+		const leverage = new Leverage(Youth, 100)
 
 		it("Should have 5 orgs", function() {
-			expect(leverage.orgs.length).to.equal(5);
-		});
+			expect(leverage.orgs.length).to.equal(5)
+		})
 
-	});
-});
+	})
+})
 
 describe("Education Theme leverage spread", function() {
-	const orgs = new OrgsCollection(Education.orgs, { theme: Education.theme, settings: Education.settings, displayedPledges: new Set() }, OrgStore);
-	const leverage = new Leverage(orgs.values,  639169.6);
-	const rounds = leverage.getLeverageSpreadRounds();
+	const orgs = new OrgsCollection(Education.orgs, { theme: Education.theme, settings: Education.settings, displayedPledges: new Set() }, OrgStore)
+	const leverage = new Leverage(orgs.values,  639169.6)
+	const rounds = leverage.getLeverageSpreadRounds()
 
 	it("Should generate leverage rounds", function() {
-		expect(rounds).to.be.an('array').that.is.not.empty;
-		expect(rounds.length).to.equal(3);
-	});
+		expect(rounds).to.be.an('array').that.is.not.empty
+		expect(rounds.length).to.equal(3)
+	})
 
 	it("Should spread leverage correctly to the orgs - Education", function() {
 		const orgSpreadByRound = {
@@ -49,21 +49,21 @@ describe("Education Theme leverage spread", function() {
 				if(org.roundFunds !== orgSpreadByRound[org._id][nRounds]) {
 				}
 				// Compare the org leverage funds in the round to the expected value from above
-				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id][nRounds]);
-			});
-		});
-	});
-});
+				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id][nRounds])
+			})
+		})
+	})
+})
 
 describe("Democracy Theme leverage spread", function() {
-	const orgs = new OrgsCollection(Democracy.orgs, { theme: Democracy.theme, settings: Democracy.settings, displayedPledges: new Set() }, OrgStore);
-	const leverage = new Leverage(orgs.values, 802759);
-	const rounds = leverage.getLeverageSpreadRounds();
+	const orgs = new OrgsCollection(Democracy.orgs, { theme: Democracy.theme, settings: Democracy.settings, displayedPledges: new Set() }, OrgStore)
+	const leverage = new Leverage(orgs.values, 802759)
+	const rounds = leverage.getLeverageSpreadRounds()
 
 	it("Should generate leverage rounds", function() {
-		expect(rounds).to.be.an('array').that.is.not.empty;
-		expect(rounds.length).to.equal(4);
-	});
+		expect(rounds).to.be.an('array').that.is.not.empty
+		expect(rounds.length).to.equal(4)
+	})
 
 	it("Should spread leverage correctly to the orgs - Democracy", function() {
 		const orgSpreadByRound = {
@@ -83,8 +83,8 @@ describe("Democracy Theme leverage spread", function() {
 			// Step through each org in each round
 			round.orgs.forEach(org => {
 				// Compare the org leverage funds in the round to the expected value from above
-				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id][nRounds]);
-			});
-		});
-	});
-});
+				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id][nRounds])
+			})
+		})
+	})
+})

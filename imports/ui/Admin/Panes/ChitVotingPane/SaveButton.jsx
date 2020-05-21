@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import numeral from 'numeral';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import numeral from 'numeral'
 
-import { Button, Modal, Form, Input } from 'semantic-ui-react';
+import { Button, Modal, Form, Input } from 'semantic-ui-react'
 
-import { roundFloat } from '/imports/lib/utils';
+import { roundFloat } from '/imports/lib/utils'
 
-import { ThemeMethods } from '/imports/api/methods';
+import { ThemeMethods } from '/imports/api/methods'
 
 const SaveButton = props => {
 
-	const [ amount, setAmount ]       = useState('');
-	const [ modalOpen, setModalOpen ] = useState(false);
+	const [ amount, setAmount ]       = useState('')
+	const [ modalOpen, setModalOpen ] = useState(false)
 
 	const saveOrg = (e, el) => {
-		e.preventDefault();
+		e.preventDefault()
 
-		let input = document.getElementById('amountInput');
-		let amount = roundFloat(input.value);
+		let input = document.getElementById('amountInput')
+		let amount = roundFloat(input.value)
 
-		ThemeMethods.saveOrg.call({ id: props.org._id, amount });
+		ThemeMethods.saveOrg.call({ id: props.org._id, amount })
 
-		setModalOpen(false);
-	};
+		setModalOpen(false)
+	}
 
 	return (
 		<Modal
@@ -57,11 +57,11 @@ const SaveButton = props => {
 				</Modal.Description>
 			</Modal.Content>
 		</Modal>
-	);
-};
+	)
+}
 
 SaveButton.propTypes = {
 	org: PropTypes.object
-};
+}
 
-export default SaveButton;
+export default SaveButton

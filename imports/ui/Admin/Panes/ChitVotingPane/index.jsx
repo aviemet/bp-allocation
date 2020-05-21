@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-import { observer } from 'mobx-react-lite';
-import { useOrgs, useSettings } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useOrgs, useSettings } from '/imports/api/providers'
 
-import { Grid, Table, Responsive, Loader } from 'semantic-ui-react';
+import { Grid, Table, Responsive, Loader } from 'semantic-ui-react'
 
-import ChitInputs from './ChitInputs';
-import TopOrgsByChitVote from './TopOrgsByChitVote';
+import ChitInputs from './ChitInputs'
+import TopOrgsByChitVote from './TopOrgsByChitVote'
 
 const ChitVotingPane = observer(() => {
-	const { settings } = useSettings();
-	const { orgs, topOrgs, isLoading: orgsLoading } = useOrgs();
+	const { settings } = useSettings()
+	const { orgs, topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	const [ gridColumns, setGridColumns ] = useState(settings.useKioskChitVoting ? 1 : 2);
+	const [ gridColumns, setGridColumns ] = useState(settings.useKioskChitVoting ? 1 : 2)
 
 	const handleOnUpdate = (e, { width }) => {
 		if(!settings.useKioskChitVoting && width > Responsive.onlyTablet.minWidth) {
-			setGridColumns(2);
+			setGridColumns(2)
 		} else {
-			setGridColumns(1);
+			setGridColumns(1)
 		}
-	};
+	}
 
-	if(orgsLoading) return <Loader active />;
+	if(orgsLoading) return <Loader active />
 
-	const topOrgIds = topOrgs.map(org => org._id);
+	const topOrgIds = topOrgs.map(org => org._id)
 
 	return (
 		<Responsive 
@@ -67,9 +67,9 @@ const ChitVotingPane = observer(() => {
 
 			</Grid.Row>
 		</Responsive>
-	);
-});
+	)
+})
 
-ChitVotingPane.propTypes = {};
+ChitVotingPane.propTypes = {}
 
-export default ChitVotingPane;
+export default ChitVotingPane

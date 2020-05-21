@@ -1,12 +1,12 @@
-import React from 'react';
-import { createPortal } from 'react-dom';
-import PropTypes from 'prop-types';
+import React from 'react'
+import { createPortal } from 'react-dom'
+import PropTypes from 'prop-types'
 import { Message } from 'semantic-ui-react'
-import styled from 'styled-components';
-import usePortal from '/imports/lib/usePortal';
+import styled from 'styled-components'
+import usePortal from '/imports/lib/usePortal'
 
 const CustomMessage = ({ heading, body, onDismiss, ...rest }) => {
-	const target = usePortal('message');
+	const target = usePortal('message')
 
 	return createPortal(
 		<FixedMessage 
@@ -17,8 +17,8 @@ const CustomMessage = ({ heading, body, onDismiss, ...rest }) => {
 			{ typeof body === 'string' ? <p>{ body }</p> : body }
 		</FixedMessage>,
 		target
-	);
-};
+	)
+}
 
 const FixedMessage = styled(Message)`
 	&& {
@@ -28,7 +28,7 @@ const FixedMessage = styled(Message)`
 		transform: translateX(-50%);
 		text-align: center;
 	}
-`;
+`
 
 CustomMessage.propTypes = {
 	heading: PropTypes.string.isRequired,
@@ -39,6 +39,6 @@ CustomMessage.propTypes = {
 	]).isRequired,
 	onDismiss: PropTypes.func.isRequired,
 	rest: PropTypes.any
-};
+}
 
-export default CustomMessage;
+export default CustomMessage

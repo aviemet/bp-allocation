@@ -1,7 +1,7 @@
-import { Mongo } from 'meteor/mongo';
-import SimpleSchema from 'simpl-schema';
+import { Mongo } from 'meteor/mongo'
+import SimpleSchema from 'simpl-schema'
 
-const PresentationSettings = new Mongo.Collection('presentationSettings');
+const PresentationSettings = new Mongo.Collection('presentationSettings')
 
 const PresentationSettingsSchema = new SimpleSchema({
 	currentPage: {
@@ -101,8 +101,8 @@ const PresentationSettingsSchema = new SimpleSchema({
 		required: false,
 		defaultValue: false
 	}
-});
+})
 
-PresentationSettings.attachSchema(PresentationSettingsSchema);
+PresentationSettings.attachSchema(PresentationSettingsSchema)
 
-export { PresentationSettings, PresentationSettingsSchema };
+export { PresentationSettings, PresentationSettingsSchema }

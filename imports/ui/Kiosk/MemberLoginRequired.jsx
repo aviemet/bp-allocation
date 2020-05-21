@@ -1,62 +1,62 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { isEmpty } from 'lodash'
 
-import { observer } from 'mobx-react-lite';
-import { useMembers } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useMembers } from '/imports/api/providers'
 
-import styled from 'styled-components';
-import { Container, Form, Input, Header, Button, Loader } from 'semantic-ui-react';
+import styled from 'styled-components'
+import { Container, Form, Input, Header, Button, Loader } from 'semantic-ui-react'
 
-import { VotingContextProvider } from './VotingContext';
+import { VotingContextProvider } from './VotingContext'
 
-import { COLORS } from '/imports/lib/global';
+import { COLORS } from '/imports/lib/global'
 
 const MemberLoginRequired = observer(props => {
 	// Pull member data from Data Store
-	const { members, isLoading: membersLoading } = useMembers();
+	const { members, isLoading: membersLoading } = useMembers()
 
-	const formRef = React.createRef();
+	const formRef = React.createRef()
 
-	const [ initials, setInitials ] = useState('');
-	const [ number, setNumber ] = useState('');
+	const [ initials, setInitials ] = useState('')
+	const [ number, setNumber ] = useState('')
 
-	const [ searchError, setSearchError ] = useState(false);
+	const [ searchError, setSearchError ] = useState(false)
 
-	let member = false;
+	let member = false
 	if(!membersLoading && !isEmpty(members) && !isEmpty(members.values)) {
-		member = members.values.find(mem => mem._id === props.member);
+		member = members.values.find(mem => mem._id === props.member)
 	}
-	const [ user, setUser ] = useState(member || false);
+	const [ user, setUser ] = useState(member || false)
 
-	if(membersLoading || isEmpty(members)) return <Loader active />;
+	if(membersLoading || isEmpty(members)) return <Loader active />
 
 	const showSearchError = () => {
-		setSearchError(true);
+		setSearchError(true)
 		setTimeout(() => {
-			setSearchError(false);
-		}, 5000);
-	};
+			setSearchError(false)
+		}, 5000)
+	}
 
 	const chooseMember = e => {
-		e.preventDefault();
+		e.preventDefault()
 
-		setSearchError(false);
-		const code = `${initials.trim().toUpperCase()}${number}`;
+		setSearchError(false)
+		const code = `${initials.trim().toUpperCase()}${number}`
 		
-		const member = members.values.find(mem => mem.code === code);
+		const member = members.values.find(mem => mem.code === code)
 		
-		setInitials('');
-		setNumber('');
+		setInitials('')
+		setNumber('')
 		if(member) {
-			setUser(member);
+			setUser(member)
 		} else {
-			showSearchError();
+			showSearchError()
 		}
-	};
+	}
 
-	const ChildComponent = props.component;
-	const submitDisabled = initials === '' || number === '';
+	const ChildComponent = props.component
+	const submitDisabled = initials === '' || number === ''
 
 	// props.member comes from router params
 	// Display the interface to choose a member
@@ -100,7 +100,7 @@ const MemberLoginRequired = observer(props => {
 
 				</Centered>
 			</MemberLoginContainer>
-		);
+		)
 	}
 	
 	// Member is chosen, display the voting panel
@@ -108,8 +108,8 @@ const MemberLoginRequired = observer(props => {
 		<VotingContextProvider member={ user } unsetUser={ () => setUser(false) }>
 			<ChildComponent user={ user } />
 		</VotingContextProvider>
-	);
-});
+	)
+})
 
 const MemberLoginContainer = styled(Container)`
 	text-align: center;
@@ -129,14 +129,14 @@ const MemberLoginContainer = styled(Container)`
 	.ui.search .ui.icon.input {
 		width: 100%;
 	}
-`;
+`
 
 const Centered = styled.div`
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
 	z-index: 1000;
-`;
+`
 
 const BackgroundImage = styled.div`
 	position: absolute;
@@ -148,7 +148,7 @@ const BackgroundImage = styled.div`
 	z-index: 1;
 	background: url('/img/BPLogo.svg') no-repeat 50% 50%;
 	background-size: 1600px;
-`;
+`
 
 const SubmitButton = styled(Button)`
 	width: 100%;
@@ -158,10 +158,10 @@ const SubmitButton = styled(Button)`
 	border: 2px solid #fff !important;
 	font-size: 2rem !important;
 	text-transform: uppercase !important;
-`;
+`
 
 MemberLoginRequired.propTypes = {
 	component: PropTypes.any
-};
+}
 
-export default MemberLoginRequired;
+export default MemberLoginRequired

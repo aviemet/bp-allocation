@@ -1,15 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { Button } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Button } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import { observer } from 'mobx-react-lite';
-import { useSettings } from '/imports/api/providers';
-import { PresentationSettingsMethods } from '/imports/api/methods';
+import { observer } from 'mobx-react-lite'
+import { useSettings } from '/imports/api/providers'
+import { PresentationSettingsMethods } from '/imports/api/methods'
 
 const PresentationNavButton = observer(({ page, active, onClick, children, ...rest }) => {
-	const { settings } = useSettings();
+	const { settings } = useSettings()
 
 	const changeCurrentPage = (e, data) => {
 		PresentationSettingsMethods.update.call({
@@ -17,25 +17,25 @@ const PresentationNavButton = observer(({ page, active, onClick, children, ...re
 			data: {
 				currentPage: page
 			}
-		});
-	};
+		})
+	}
 
 	// onClick passthrough
 	const doOnClick = (e, data) => {
-		changeCurrentPage(e, data);
-		if(onClick) onClick();
-		e.currentTarget.blur();
-	};
+		changeCurrentPage(e, data)
+		if(onClick) onClick()
+		e.currentTarget.blur()
+	}
 
 	// Highlight the active page button
-	const color = active !== false && settings.currentPage === page ? 'green' : null;
+	const color = active !== false && settings.currentPage === page ? 'green' : null
 
 	return (
 		<NavButton icon onClick={ doOnClick } color={ color } { ...rest }>
 			{ children }
 		</NavButton>
-	);
-});
+	)
+})
 
 const NavButton = styled(Button)`
 	width: 100%;
@@ -49,7 +49,7 @@ const NavButton = styled(Button)`
 	.label {
 		font-size: 1.2rem;
 	}
-`;
+`
 
 PresentationNavButton.propTypes = {
 	page: PropTypes.string,
@@ -59,6 +59,6 @@ PresentationNavButton.propTypes = {
 	]),
 	onClick: PropTypes.func,
 	rest: PropTypes.any
-};
+}
 
-export default PresentationNavButton;
+export default PresentationNavButton

@@ -1,11 +1,11 @@
-import { Random } from 'meteor/random';
-import { Mongo } from 'meteor/mongo';
-import SimpleSchema from 'simpl-schema';
+import { Random } from 'meteor/random'
+import { Mongo } from 'meteor/mongo'
+import SimpleSchema from 'simpl-schema'
 
 const ChitVoteSchema = new SimpleSchema({
 	weight: Number,
 	count: Number
-});
+})
 
 const MatchPledgeSchema = new SimpleSchema({
 	_id: {
@@ -32,10 +32,10 @@ const MatchPledgeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: new Date()
 	}
-});
+})
 
 // Define Collection
-const Organizations = new Mongo.Collection('organizations');
+const Organizations = new Mongo.Collection('organizations')
 
 const OrganizationSchema = new SimpleSchema({
 	title: {
@@ -93,21 +93,21 @@ const OrganizationSchema = new SimpleSchema({
 		required: false,
 		defaultValue: new Date()
 	}
-});
+})
 
-Organizations.attachSchema(OrganizationSchema);
+Organizations.attachSchema(OrganizationSchema)
 
 // Set permissions
 Organizations.allow({
 	insert: (userId, doc) => {
-		return true;
+		return true
 	},
 	update: (userId, doc) => {
-		return true;
+		return true
 	},
 	remove: (userId, doc) => {
-		return true;
+		return true
 	},
-});
+})
 
-export { Organizations, OrganizationSchema, ChitVoteSchema };
+export { Organizations, OrganizationSchema, ChitVoteSchema }

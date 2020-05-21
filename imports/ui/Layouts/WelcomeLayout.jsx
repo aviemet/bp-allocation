@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { Container } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Container } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 const WelcomeLayout = ({ children }) => {
 	return (
@@ -13,8 +13,8 @@ const WelcomeLayout = ({ children }) => {
 				</Container>
 			</Centered>
 		</WelcomeContainer>
-	);
-};
+	)
+}
 
 const WelcomeContainer = styled.div`
 	width: 100%;
@@ -26,20 +26,20 @@ const WelcomeContainer = styled.div`
 	h1{
 		color: white;
 	}
-`;
+`
 
 const Centered = styled.div`
 	margin: 0 auto;
 	position: relative;
 	top: 50%;
 	transform: translateY(-50%);
-`;
+`
 
 WelcomeLayout.propTypes = {
 	children: PropTypes.oneOfType([
 		PropTypes.arrayOf(PropTypes.node),
 		PropTypes.node
 	])
-};
+}
 
-export default WelcomeLayout;
+export default WelcomeLayout

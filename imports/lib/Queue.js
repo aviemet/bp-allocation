@@ -3,19 +3,19 @@
  **************************************/
 export default class Queue {
 	constructor() {
-		this.queue = [];
+		this.queue = []
 	}
 
 	enqueue(element) {
-		this.queue.push(element);
+		this.queue.push(element)
 	}
 
 	dequeue() {
-		if (this.isEmpty()) return 'Queue is empty';
-		return this.queue.shift();
+		if (this.isEmpty()) return 'Queue is empty'
+		return this.queue.shift()
 	}
 
 	isEmpty() {
-		return !this.queue.length;
+		return !this.queue.length
 	}
 }

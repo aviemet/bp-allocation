@@ -1,5 +1,5 @@
-import { isEmpty } from 'lodash';
-import { roundFloat } from '/imports/lib/utils';
+import { isEmpty } from 'lodash'
+import { roundFloat } from '/imports/lib/utils'
 
 /**
  * Document transformer for records in the Theme table
@@ -8,34 +8,34 @@ import { roundFloat } from '/imports/lib/utils';
  */
 const ThemeTransformer = (doc, params) => {
 	doc.pledgedTotal = function() {
-		let total = 0;
+		let total = 0
 		params.topOrgs.map(org => {
 			if(org.pledges) {
-				total += org.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0);
+				total += org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0)
 			}
-		});
-		return total;
-	}();
+		})
+		return total
+	}()
 
 	/**
 	* Total amount of dollar votes
 	*/
 	doc.votedFunds = function() {
-		let voteAllocated = 0;
+		let voteAllocated = 0
 
 		// Calculate based on individual votes if using kiosk method
 		if(params.settings.useKioskFundsVoting) {
 			params.memberThemes.map(member => {
-				voteAllocated += member.allocations.reduce((sum, allocation) => { return allocation.amount + sum; }, 0);
-			});
+				voteAllocated += member.allocations.reduce((sum, allocation) => { return allocation.amount + sum }, 0)
+			})
 		// Calculate total count if not using kiosk method
 		} else {
 			voteAllocated = params.topOrgs.reduce((sum, org) => {
-				return sum + parseFloat(org.votedTotal || 0); 
-			}, voteAllocated);
+				return sum + parseFloat(org.votedTotal || 0) 
+			}, voteAllocated)
 		}
-		return voteAllocated;
-	}();
+		return voteAllocated
+	}()
 
 	/**
 	 * Whether voting has begun
@@ -43,9 +43,9 @@ const ThemeTransformer = (doc, params) => {
 	 */
 	doc.votingStarted = function() {
 		return params.memberThemes.some(member => {
-			return member.allocations.some(vote => vote.amount > 0);
-		});
-	}();
+			return member.allocations.some(vote => vote.amount > 0)
+		})
+	}()
 
 
 	/**
@@ -53,10 +53,10 @@ const ThemeTransformer = (doc, params) => {
 	*/
 	doc.consolationTotal = function() {
 		if(doc.consolationActive) {
-			return (doc.organizations.length - doc.numTopOrgs) * doc.consolationAmount;
+			return (doc.organizations.length - doc.numTopOrgs) * doc.consolationAmount
 		}
-		return 0;
-	}();
+		return 0
+	}()
 
 	/**
 	* Amount of the total pot still unassigned
@@ -69,29 +69,29 @@ const ThemeTransformer = (doc, params) => {
 	*/
 	doc.leverageRemaining = function() {
 		// Leverage moving forward into allocation round
-		let remainingLeverage = (doc.leverageTotal) - doc.consolationTotal - doc.votedFunds;
+		let remainingLeverage = (doc.leverageTotal) - doc.consolationTotal - doc.votedFunds
 
 		// Subtract the amounts allocated to each org
 		params.topOrgs.map((org, i) => {
 			// The topoff for the crowd favorite
 			if(org.topOff > 0){
-				remainingLeverage -= org.topOff;
+				remainingLeverage -= org.topOff
 			}
 			
 			// Individual pledges from members
 			if(!isEmpty(org.pledges)) {
 				// TODO: This should be calculated based on the match ratio
-				remainingLeverage -= org.pledges.reduce((sum, pledge) => { return sum + pledge.amount; }, 0);
+				remainingLeverage -= org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0)
 			}
-		});
+		})
 
-		if(remainingLeverage <= 0) return 0; // Lower bounds check in case the total pot has not been set
-		return roundFloat(remainingLeverage);
-	}();
+		if(remainingLeverage <= 0) return 0 // Lower bounds check in case the total pot has not been set
+		return roundFloat(remainingLeverage)
+	}()
 
-	// doc.presentationSettings = settings;
+	// doc.presentationSettings = settings
 
-	return doc;
-};
+	return doc
+}
 
-export default ThemeTransformer;
+export default ThemeTransformer

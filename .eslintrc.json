@@ -37,7 +37,7 @@
 		} ],
 		"linebreak-style": [ "error", "unix" ],
 		"quotes": [ "error", "single" ],
-		"semi": [ "error", "always" ],
+		"semi": [ "error", "never" ],
 		"no-unused-vars": [ "error", {
 				"vars": "all",
 				"args": "none"

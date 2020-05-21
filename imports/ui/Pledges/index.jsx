@@ -1,41 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { useOrgs, useMembers } from '/imports/api/providers';
-import { OrganizationMethods } from '/imports/api/methods';
+import React, { useState, useEffect } from 'react'
+import { useOrgs, useMembers } from '/imports/api/providers'
+import { OrganizationMethods } from '/imports/api/methods'
 
-import { isEmpty } from 'lodash';
-import { toJS } from 'mobx';
-import { roundFloat } from '/imports/lib/utils';
+import { isEmpty } from 'lodash'
+import { toJS } from 'mobx'
+import { roundFloat } from '/imports/lib/utils'
 
-import { Container, Form, Input, Button, Card, Checkbox, Loader } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Container, Form, Input, Button, Card, Checkbox, Loader } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import OrgCard from '/imports/ui/Components/OrgCard';
-import MemberSearch from '/imports/ui/Components/MemberSearch';
-import { observer } from 'mobx-react-lite';
+import OrgCard from '/imports/ui/Components/OrgCard'
+import MemberSearch from '/imports/ui/Components/MemberSearch'
+import { observer } from 'mobx-react-lite'
 
 const Pledges = observer(() => {
-	const { members, isLoading: membersLoading } = useMembers();
-	const { topOrgs, isLoading: orgsLoading } = useOrgs();
+	const { members, isLoading: membersLoading } = useMembers()
+	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	const [ selectedOrg, setSelectedOrg ] = useState(null);
-	const [ memberInputValue, setMemberInputValue ] = useState('');
-	const [ selectedMember, setSelectedMember ] = useState(null);
-	const [ pledgeAmount, setPledgeAmount ] = useState('');
-	const [ isFormValid, setIsFormValid ] = useState(false);
-	const [ isAnonymous, setIsAnonymous ] = useState(false);
+	const [ selectedOrg, setSelectedOrg ] = useState(null)
+	const [ memberInputValue, setMemberInputValue ] = useState('')
+	const [ selectedMember, setSelectedMember ] = useState(null)
+	const [ pledgeAmount, setPledgeAmount ] = useState('')
+	const [ isFormValid, setIsFormValid ] = useState(false)
+	const [ isAnonymous, setIsAnonymous ] = useState(false)
 
 	useEffect(() => {
-		const isValid = selectedOrg !== null && selectedMember !== null && pledgeAmount !== '';
-		if(isFormValid !== isValid) setIsFormValid(isValid);
-	}, [selectedOrg, selectedMember, pledgeAmount]);
+		const isValid = selectedOrg !== null && selectedMember !== null && pledgeAmount !== ''
+		if(isFormValid !== isValid) setIsFormValid(isValid)
+	}, [selectedOrg, selectedMember, pledgeAmount])
 
 	const clearAllValues = () => {
-		setSelectedOrg(null);
-		setMemberInputValue('');
-		setSelectedMember(null);
-		setPledgeAmount('');
-		setIsAnonymous(false);
-	};
+		setSelectedOrg(null)
+		setMemberInputValue('')
+		setSelectedMember(null)
+		setPledgeAmount('')
+		setIsAnonymous(false)
+	}
 
 	const saveTopUp = () => {
 		OrganizationMethods.pledge.call({
@@ -43,11 +43,11 @@ const Pledges = observer(() => {
 			member: selectedMember,
 			amount: roundFloat(pledgeAmount),
 			anonymous: isAnonymous
-		});
-		clearAllValues();
-	};
+		})
+		clearAllValues()
+	}
 
-	if(membersLoading || isEmpty(members) || orgsLoading) return <Loader active />;
+	if(membersLoading || isEmpty(members) || orgsLoading) return <Loader active />
 	return (
 		<PledgesContainer fluid textAlign='center'>
 			<h1>Top-ups</h1>
@@ -120,8 +120,8 @@ const Pledges = observer(() => {
 			</BottomRight>
 
 		</PledgesContainer>
-	);
-});
+	)
+})
 
 const PledgesContainer = styled(Container)`
 	height: 100vh;
@@ -148,7 +148,7 @@ const PledgesContainer = styled(Container)`
 			}
 		}
 	}
-`;
+`
 
 const FinalizeButton = styled(Button)`
 	width: 100%;
@@ -158,7 +158,7 @@ const FinalizeButton = styled(Button)`
 	border: 2px solid #fff !important;
 	font-size: 2rem !important;
 	text-transform: uppercase !important;
-`;
+`
 
 const BottomRight = styled.div`
 	text-align: right;
@@ -166,6 +166,6 @@ const BottomRight = styled.div`
 	display: flex;
 	justify-content: flex-end;
 	height: 150px;
-`;
+`
 
-export default Pledges;
+export default Pledges

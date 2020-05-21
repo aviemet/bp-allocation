@@ -1,9 +1,9 @@
-import OrganizationMethods from './OrganizationMethods';
-import PresentationSettingsMethods from './PresentationSettingsMethods';
-import ThemeMethods from './ThemeMethods';
-import ImageMethods from './ImageMethods';
-import MemberMethods from './MemberMethods';
-import MessageMethods from './MessageMethods';
+import OrganizationMethods from './OrganizationMethods'
+import PresentationSettingsMethods from './PresentationSettingsMethods'
+import ThemeMethods from './ThemeMethods'
+import ImageMethods from './ImageMethods'
+import MemberMethods from './MemberMethods'
+import MessageMethods from './MessageMethods'
 
 export {
 	OrganizationMethods,
@@ -12,4 +12,4 @@ export {
 	ImageMethods,
 	MemberMethods,
 	MessageMethods
-};
+}

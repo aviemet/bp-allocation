@@ -1,16 +1,16 @@
-import { Meteor } from 'meteor/meteor';
-import { Email } from 'meteor/email';
-import { ServiceConfiguration } from 'meteor/service-configuration';
-import { has } from 'lodash';
-import { formatPhoneNumber } from '/imports/lib/utils';
+import { Meteor } from 'meteor/meteor'
+import { Email } from 'meteor/email'
+import { ServiceConfiguration } from 'meteor/service-configuration'
+import { has } from 'lodash'
+import { formatPhoneNumber } from '/imports/lib/utils'
 
-import { MemberThemes, Themes } from '/imports/api/db';
+import { MemberThemes, Themes } from '/imports/api/db'
 
-import '/imports/api/methods';
-import twilio from 'twilio';
+import '/imports/api/methods'
+import twilio from 'twilio'
 
 // Meteor publication definitions
-import '/imports/server/publications';
+import '/imports/server/publications'
 
 Meteor.startup(() => {
 	// Save API info to DB once (upsert)
@@ -29,16 +29,16 @@ Meteor.startup(() => {
 				loginStyle: 'popup',
 			}
 		}
-	);
+	)
 
-	process.env.MAIL_URL = Meteor.settings.MAIL_URL;
-	process.env.HOST_NAME = Meteor.settings.HOST_NAME;
+	process.env.MAIL_URL = Meteor.settings.MAIL_URL
+	process.env.HOST_NAME = Meteor.settings.HOST_NAME
 	
-	// const themeId = 'iTL2SfNx9SHM3BhFq';
-	// const themeId = 'fEYxEXpMcHuhjoNzD';
-	// const memberPhoneNumbers = memberPhoneNumbersQuery(themeId);
-	// console.log({ memberPhoneNumbers });
-});
+	// const themeId = 'iTL2SfNx9SHM3BhFq'
+	// const themeId = 'fEYxEXpMcHuhjoNzD'
+	// const memberPhoneNumbers = memberPhoneNumbersQuery(themeId)
+	// console.log({ memberPhoneNumbers })
+})
 
 const memberPhoneNumbersQuery = themeId => {
 	return MemberThemes.aggregate([
@@ -68,8 +68,8 @@ const memberPhoneNumbersQuery = themeId => {
 				code: '$member.code'
 			}
 		}
-	]);
-};
+	])
+}
 
 const memberEmailsQuery = themeId => {
 	return MemberThemes.aggregate([
@@ -99,85 +99,86 @@ const memberEmailsQuery = themeId => {
 				code: '$member.code'
 			}
 		}
-	]);
-};
+	])
+}
 
 Meteor.methods({
 	/***************************
 	 *  TWILIO SERVER METHOD   *
 	 ***************************/
 	textVotingLinkToMembers: ({ themeId, message, link }) => { // link: boolean		
-		const theme = Themes.findOne({ _id: themeId }); // Just need the slug from the theme
+		const theme = Themes.findOne({ _id: themeId }) // Just need the slug from the theme
 
 		const messageBuilder = member => {
-			let finalMessage = message;
+			let finalMessage = message
 			// eslint-disable-next-line quotes
-			if(link !== false && theme.slug) finalMessage += "\n" + `${process.env.HOST_NAME}/v/${theme.slug}/${member.code}`;
-			return finalMessage;
-		};
+			if(link !== false && theme.slug) finalMessage += "\n" + `${process.env.HOST_NAME}/v/${theme.slug}/${member.code}`
+			return finalMessage
+		}
 
-		const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.authToken);
+		const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.authToken)
 
-		let texts = [];
-		const memberPhoneNumbers = memberPhoneNumbersQuery(themeId);
+		let texts = []
+		const memberPhoneNumbers = memberPhoneNumbersQuery(themeId)
 		
 		memberPhoneNumbers.forEach(member => {
-			const message = messageBuilder(member);
+			const message = messageBuilder(member)
 			const text = client.messages.create({
 				body: message,
 				to: formatPhoneNumber(member.phone),
 				messagingServiceSid: Meteor.settings.twilio.copilotSid
-			}).then(message => console.log(message));
-			texts.push(text);
-		});
-		return texts;
+			}).then(message => console.log(message))
+			texts.push(text)
+		})
+		return texts
 	},
 
 	/***************************
 	 *  EMAIL MEMBERS METHOD   *
 	 ***************************/
 	emailVotingLinkToMembers: ({ themeId, message }) => { 
-		const theme = Themes.findOne({ _id: themeId }); // Just need the slug from the theme
+		const theme = Themes.findOne({ _id: themeId }) // Just need the slug from the theme
 		
 		const messageBuilder = member => {
-			let finalMessage = message.body;
-			if(message.includeLink === true && theme.slug) finalMessage += `<p style='text-align: center; height: 3.4rem;'><a style='font-size: 2rem; padding: 10px; margin-bottom: 10px; border: 1px solid #CCC; border-radius: 10px;' href='${process.env.HOST_NAME}/v/${theme.slug}/${member.code}'>Allocation Night Voting Portal</a></p>`;
-			return finalMessage;
-		};
+			let finalMessage = message.body
+			if(message.includeLink === true && theme.slug) finalMessage += `<p style='text-align: center height: 3.4rem'><a style='font-size: 2rem padding: 10px margin-bottom: 10px border: 1px solid #CCC border-radius: 10px' href='${process.env.HOST_NAME}/v/${theme.slug}/${member.code}'>Allocation Night Voting Portal</a></p>`
+			return finalMessage
+		}
 
-		const memberEmails = memberEmailsQuery(themeId);
+		const memberEmails = memberEmailsQuery(themeId)
 
-		let emails = [];
+		let emails = []
 		memberEmails.forEach(member => {
 			const email = Email.send({
 				to: member.email,
 				from: message.from || 'support@thebatterysf.com',
 				subject: message.subject,
 				html: messageBuilder(member)
-			});
-			emails.push(email);
-		});
-		return emails;
+			})
+			emails.push(email)
+		})
+		return emails
 	}
-});
+})
 
 /***************************
  *   ACCOUNTS VALIDATION   *
  ***************************/
+// eslint-disable-next-line no-undef
 Accounts.validateNewUser(user => {
-	let valid = false;
+	let valid = false
 
 	// Restrict Google auth to emails from specific domains
 	if(has(user, 'services.google.email')) {
-		const emailParts = user.services.google.email.split('@');
-		const domain = emailParts[emailParts.length - 1];
+		const emailParts = user.services.google.email.split('@')
+		const domain = emailParts[emailParts.length - 1]
 		
-		valid = Meteor.settings.google.allowed_domains.some(check => check === domain);
+		valid = Meteor.settings.google.allowed_domains.some(check => check === domain)
 	}
 
 	if(valid) {
-		return true;
+		return true
 	}
 
-	throw new Meteor.Error(403, 'Must log in using a "thebatterysf.com" email address');
-});
+	throw new Meteor.Error(403, 'Must log in using a "thebatterysf.com" email address')
+})

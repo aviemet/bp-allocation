@@ -1,38 +1,38 @@
-import React from 'react';
-import { cloneDeep } from 'lodash';
-import numeral from 'numeral';
+import React from 'react'
+import { cloneDeep } from 'lodash'
+import numeral from 'numeral'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme, useSettings, useOrgs } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useTheme, useSettings, useOrgs } from '/imports/api/providers'
 
-import { Header, Card } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Header, Card } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import AwardCard from '/imports/ui/Components/AwardCard';
+import AwardCard from '/imports/ui/Components/AwardCard'
 
 const Results = observer(() => {
-	const { theme } = useTheme();
-	const { settings } = useSettings();
-	const { topOrgs } = useOrgs();
+	const { theme } = useTheme()
+	const { settings } = useSettings()
+	const { topOrgs } = useOrgs()
 
-	let awardees = [];
-	let others = [];
-	let saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
-	let total = parseFloat((theme.leverageTotal || 0) + saves + (settings.resultsOffset || 0));
+	let awardees = []
+	let others = []
+	let saves = theme.saves.reduce((sum, save) => {return sum + save.amount}, 0)
+	let total = parseFloat((theme.leverageTotal || 0) + saves + (settings.resultsOffset || 0))
 
 	cloneDeep(topOrgs).map((org, i) => {
-		total += org.pledgeTotal / 2;
+		total += org.pledgeTotal / 2
 
 		if(org.allocatedFunds + org.leverageFunds >= org.ask){
-			awardees.push(org);
+			awardees.push(org)
 		} else {
-			others.push(org);
+			others.push(org)
 		}
 		
-		return org;
-	});
+		return org
+	})
 
-	// let awardeesColumns = awardees.length > 3 ? parseInt(awardees.length / 2) + awardees.length % 2 : false ;
+	// let awardeesColumns = awardees.length > 3 ? parseInt(awardees.length / 2) + awardees.length % 2 : false 
 
 	return (
 		<ResultsPageContainer>
@@ -53,7 +53,7 @@ const Results = observer(() => {
 							award={ 'awardee' }
 							amount={ org.allocatedFunds + org.leverageFunds }
 						/>
-					);
+					)
 				})}
 			</Card.Group>
 			<br/>
@@ -68,13 +68,13 @@ const Results = observer(() => {
 							award={ 'other' }
 							amount={ org.allocatedFunds + org.leverageFunds }
 						/>
-					);
+					)
 				})}
 			</Card.Group>
 
 		</ResultsPageContainer>
-	);
-});
+	)
+})
 
 const ResultsPageContainer = styled.div`
 	color: #FFF;
@@ -107,10 +107,10 @@ const ResultsPageContainer = styled.div`
 			font-size: 1.75em;
 		}
 	}
-`;
+`
 
 const AwardsImage = styled.img`
 	width: 10%;
-`;
+`
 
-export default Results;
+export default Results

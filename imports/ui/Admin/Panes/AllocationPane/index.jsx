@@ -1,36 +1,36 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import numeral from 'numeral';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import numeral from 'numeral'
 
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite'
 
-import { Grid, Table, Button, Header, Loader } from 'semantic-ui-react';
+import { Grid, Table, Button, Header, Loader } from 'semantic-ui-react'
 
-import Breakdown from './Breakdown';
-import AllocationInputs from './AllocationInputs';
-import Pledges from './Pledges';
+import Breakdown from './Breakdown'
+import AllocationInputs from './AllocationInputs'
+import Pledges from './Pledges'
 
-import { ShowLeverageToggle } from '/imports/ui/Components/Toggles';
-import { useTheme, useOrgs } from '/imports/api/providers';
+import { ShowLeverageToggle } from '/imports/ui/Components/Toggles'
+import { useTheme, useOrgs } from '/imports/api/providers'
 
 const AllocationPane = observer(props => {
-	const { theme, isLoading: themeLoading } = useTheme();
-	const { topOrgs, isLoading: orgsLoading } = useOrgs();
+	const { theme, isLoading: themeLoading } = useTheme()
+	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
 	const _calculateCrowdFavorite = () => {
-		let favorite = 0;
+		let favorite = 0
 
 		topOrgs.map((org, i) => {
-			let favoriteAmount = topOrgs[favorite].votedTotal || 0;
+			let favoriteAmount = topOrgs[favorite].votedTotal || 0
 			if(org.votedTotal > favoriteAmount){
-				favorite = i;
+				favorite = i
 			}
-		});
-		return favorite;
-	};
+		})
+		return favorite
+	}
 
-	if(themeLoading || orgsLoading) return <Loader active />;
+	if(themeLoading || orgsLoading) return <Loader active />
 	return (
 		<Grid>
 
@@ -96,22 +96,22 @@ const AllocationPane = observer(props => {
 
 								{/* Voted Amount */}
 								<Table.HeaderCell>{ 
-									numeral(topOrgs.reduce((sum, org) => { return sum + org.votedTotal; }, 0)).format('$0,0') 
+									numeral(topOrgs.reduce((sum, org) => { return sum + org.votedTotal }, 0)).format('$0,0') 
 								}</Table.HeaderCell>
 								
 								{/* Total Allocated */}
 								<Table.HeaderCell>{
-									numeral(topOrgs.reduce((sum, org) => { return sum + org.allocatedFunds; }, 0)).format('$0,0')
+									numeral(topOrgs.reduce((sum, org) => { return sum + org.allocatedFunds }, 0)).format('$0,0')
 								}</Table.HeaderCell>
 
 								{/* Original Ask*/}
 								<Table.HeaderCell>{
-									numeral(topOrgs.reduce((sum, org) => { return sum + org.ask; }, 0)).format('$0,0')
+									numeral(topOrgs.reduce((sum, org) => { return sum + org.ask }, 0)).format('$0,0')
 								}</Table.HeaderCell>
 
 								{/* Need (Difference remaining) */}
 								<Table.HeaderCell>{
-									numeral(topOrgs.reduce((sum, org) => { return sum + org.need - org.leverageFunds; }, 0)).format('$0,0')
+									numeral(topOrgs.reduce((sum, org) => { return sum + org.need - org.leverageFunds }, 0)).format('$0,0')
 								}</Table.HeaderCell>
 
 								<Table.HeaderCell></Table.HeaderCell>
@@ -129,12 +129,12 @@ const AllocationPane = observer(props => {
 				</Grid.Column>
 			</Grid.Row>
 		</Grid>
-	);
+	)
 
-});
+})
 
 AllocationPane.propTypes = {
 	hideAdminFields: PropTypes.bool
-};
+}
 
-export default AllocationPane;
+export default AllocationPane

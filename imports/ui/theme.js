@@ -1,4 +1,4 @@
-import { Responsive } from 'semantic-ui-react';
+import { Responsive } from 'semantic-ui-react'
 
 
 /*
@@ -12,7 +12,7 @@ const screen = {
 	laptopL: '1440px',
 	desktop: '1920px',
 	desktopL: '2560px'
-};
+}
 
 const device = {
 	mobileS: `(min-width: ${screen.mobileS})`,
@@ -24,7 +24,7 @@ const device = {
 	laptopL: `(min-width: ${screen.laptopL})`,
 	desktop: `(min-width: ${screen.desktop})`,
 	desktopL: `(min-width: ${screen.desktopL})`
-};
+}
 
 const size = {
 
@@ -32,11 +32,11 @@ const size = {
 
 const mediaQuery = () => {
 
-	return `@media only screen ()`;
+	return `@media only screen ()`
 }*/
 
 const theme = {
 	media: Responsive
-};
+}
 
-export default theme;
+export default theme

@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
-import styled from 'styled-components';
+import styled from 'styled-components'
 
-import ReactCountdownClock from 'react-countdown-clock';
+import ReactCountdownClock from 'react-countdown-clock'
 
 const Timer = ({ seconds }) => {
 
-	const [ countdown, setCountdown ] = useState(true);
+	const [ countdown, setCountdown ] = useState(true)
 
 	const timerFinish = () => {
 		setTimeout(() => {
-			setCountdown(false);
-		}, 2000);
-	};
+			setCountdown(false)
+		}, 2000)
+	}
 
 	if(!countdown) {
 		return(
 			<FinishedContainer>
 				<h1>Thank you<br/>for voting!</h1>
 			</FinishedContainer>
-		);
+		)
 	}
 
 	return (
@@ -34,8 +34,8 @@ const Timer = ({ seconds }) => {
 				showMilliseconds={ false }
 			/>
 		</TimerContainer>
-	);
-};
+	)
+}
 
 const TimerContainer = styled.div`
 	.react-countdown-clock {
@@ -50,7 +50,7 @@ const TimerContainer = styled.div`
 			position: relative !important;
 		}
 	}
-`;
+`
 
 const FinishedContainer = styled.div`
 	position: absolute;
@@ -67,10 +67,10 @@ const FinishedContainer = styled.div`
 		font-size: 6em;
 		text-align: center;
 	}
-`;
+`
 
 Timer.propTypes = {
 	seconds: PropTypes.number
-};
+}
 
-export default Timer;
+export default Timer

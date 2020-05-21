@@ -1,27 +1,27 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import numeral from 'numeral';
+import React from 'react'
+import PropTypes from 'prop-types'
+import numeral from 'numeral'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme, useMembers, useOrgs } from '/imports/api/providers';
-import { OrganizationMethods } from '/imports/api/methods';
+import { observer } from 'mobx-react-lite'
+import { useTheme, useMembers, useOrgs } from '/imports/api/providers'
+import { OrganizationMethods } from '/imports/api/methods'
 
-import { Container, Header, Table, Button, Loader } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Container, Header, Table, Button, Loader } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 const Pledges = observer(props => {
-	const { theme } = useTheme();
-	const { members, isLoading: membersLoading } = useMembers();
-	const { orgs, isLoading: orgsLoading } = useOrgs();
+	const { theme } = useTheme()
+	const { members, isLoading: membersLoading } = useMembers()
+	const { orgs, isLoading: orgsLoading } = useOrgs()
 	
 	const deletePledge = (e, data) => {
-		const pledgeId = data.pledgeid;
-		const orgId = data.orgid;
+		const pledgeId = data.pledgeid
+		const orgId = data.orgid
 
-		OrganizationMethods.removePledge.call({ orgId, pledgeId });
-	};
+		OrganizationMethods.removePledge.call({ orgId, pledgeId })
+	}
 
-	if(orgsLoading || membersLoading || !members) return <Loader active />;
+	if(orgsLoading || membersLoading || !members) return <Loader active />
 
 	return (
 		<PledgesContainer>
@@ -41,7 +41,7 @@ const Pledges = observer(props => {
 				<Table.Body>
 					{ orgs.pledges.map(pledge => {
 						
-						let member = pledge.member ? members.values.find(value => value._id === pledge.member) : '';
+						let member = pledge.member ? members.values.find(value => value._id === pledge.member) : ''
 						return (
 							<Table.Row key={ pledge._id }>
 								<Table.Cell singleLine>{ pledge.org.title }</Table.Cell>
@@ -64,23 +64,23 @@ const Pledges = observer(props => {
 									}
 								</Table.Cell>
 							</Table.Row>
-						);
+						)
 					}) }
 				</Table.Body>
 			</Table>
 		</PledgesContainer>
-	);
-});
+	)
+})
 
 const PledgesContainer = styled(Container)`
 	.ui.fluid.search .ui.icon.input {
 		width: 100%;
 	}
-`;
+`
 
 Pledges.propTypes = {
 	hideAdminFields: PropTypes.bool
-};
+}
 
-export default Pledges;
+export default Pledges
 

@@ -1,7 +1,7 @@
 const MemberTransformer = (doc, memberTheme) => {
-	doc.theme = memberTheme;
+	doc.theme = memberTheme
 	
-	return doc;
-};
+	return doc
+}
 
-export default MemberTransformer;
+export default MemberTransformer

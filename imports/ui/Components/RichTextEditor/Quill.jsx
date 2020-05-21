@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import React from 'react'
+import PropTypes from 'prop-types'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 
-const config = {};
+const config = {}
 
 /* 
  * Quill modules to attach to editor
@@ -33,7 +33,7 @@ config.modules = {
 		// toggle to add extra line breaks when pasting HTML:
 		matchVisual: false,
 	}
-};
+}
 
 /* 
  * Quill editor formats
@@ -44,7 +44,7 @@ config.formats = [
 	'bold', 'italic', 'underline', 'strike', 'blockquote',
 	'list', 'bullet', 'indent',
 	'link', 'image', 'video'
-];
+]
 
 /* 
  * Simple editor component that takes placeholder text as a prop 
@@ -62,8 +62,8 @@ const Editor = props => {
 				placeholder={ props.placeholder || '' }
 			/>
 		</div>
-	);
-};
+	)
+}
 
 /* 
  * PropType validation
@@ -72,6 +72,6 @@ Editor.propTypes = {
 	placeholder: PropTypes.string,
 	value: PropTypes.string,
 	onChange: PropTypes.any
-};
+}
 
-export default Editor;
+export default Editor

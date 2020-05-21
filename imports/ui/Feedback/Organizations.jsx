@@ -1,12 +1,12 @@
-import React from 'react';
-import numeral from 'numeral';
-import { observer } from 'mobx-react-lite';
-import { useOrgs } from '/imports/api/providers';
+import React from 'react'
+import numeral from 'numeral'
+import { observer } from 'mobx-react-lite'
+import { useOrgs } from '/imports/api/providers'
 
-import { Table } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react'
 
 const ChitVotingPane = observer(() => {
-	const { orgs } = useOrgs();
+	const { orgs } = useOrgs()
 
 	return (
 		<React.Fragment>
@@ -36,7 +36,7 @@ const ChitVotingPane = observer(() => {
 				</Table.Body>
 			</Table>
 		</React.Fragment>
-	);
-});
+	)
+})
 
-export default ChitVotingPane;
+export default ChitVotingPane

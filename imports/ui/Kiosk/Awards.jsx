@@ -1,21 +1,21 @@
-import React from 'react';
+import React from 'react'
 
-import { observer } from 'mobx-react-lite';
-import { useSettings, useOrgs } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useSettings, useOrgs } from '/imports/api/providers'
 
-import { Header, Card } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Header, Card } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import AwardCard from '/imports/ui/Components/AwardCard';
+import AwardCard from '/imports/ui/Components/AwardCard'
 
 const Awards = observer(() => {
-	const { settings } = useSettings();
-	const { topOrgs } = useOrgs();
+	const { settings } = useSettings()
+	const { topOrgs } = useOrgs()
 
-	let winner = 0;
+	let winner = 0
 	for(let i = 1; i < topOrgs.length; i++){
 		if(topOrgs[i].allocatedFunds + topOrgs[i].leverageFunds > topOrgs[winner].allocatedFunds + topOrgs[winner].leverageFunds) {
-			winner = i;
+			winner = i
 		}
 	}
 
@@ -43,14 +43,14 @@ const Awards = observer(() => {
 								key={ org._id }
 								org={ org }
 							/>
-						);
+						)
 					}
 				}) }
 			</Card.Group> */}
 
 		</AwardsPageContainer>
-	);
-});
+	)
+})
 
 const AwardsPageContainer = styled.div`
 	color: #FFF;
@@ -87,6 +87,6 @@ const AwardsPageContainer = styled.div`
 			text-align: center;
 		}
 	}
-`;
+`
 
-export default Awards;
+export default Awards

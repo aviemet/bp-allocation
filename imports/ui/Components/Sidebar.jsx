@@ -1,14 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
 const Sidebar = props => {
 	return (
 		<SidebarContainer className={ props.visible && 'visible' }>
 			{ props.children }
 		</SidebarContainer>
-	);
-};
+	)
+}
 
 const SidebarContainer = styled.div`
 	position: fixed;
@@ -22,11 +22,11 @@ const SidebarContainer = styled.div`
 	&.visible {
 		left: 0;
 	}
-`;
+`
 
 Sidebar.propTypes = {
 	children: PropTypes.any,
 	visible: PropTypes.bool
-};
+}
 
-export default Sidebar;
+export default Sidebar

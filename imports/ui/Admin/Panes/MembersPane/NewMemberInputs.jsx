@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { roundFloat } from '/imports/lib/utils';
+import React, { useState } from 'react'
+import { roundFloat } from '/imports/lib/utils'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme } from '/imports/api/providers';
-import { MemberMethods } from '/imports/api/methods';
+import { observer } from 'mobx-react-lite'
+import { useTheme } from '/imports/api/providers'
+import { MemberMethods } from '/imports/api/methods'
 
-import { Form, Button } from 'semantic-ui-react';
+import { Form, Button } from 'semantic-ui-react'
 
 const NewMemberInputs = observer(props => {
-	const { theme } = useTheme();
+	const { theme } = useTheme()
 
-	const [ firstName, setFirstName ] = useState('');
-	const [ lastName, setLastName ] = useState('');
-	const [ initials, setInitials ] = useState('');
-	const [ memberNumber, setMemberNumber ] = useState(undefined);
-	const [ memberAmount, setMemberAmount ] = useState(0);
-	const [ phone, setPhone ] = useState('');
+	const [ firstName, setFirstName ] = useState('')
+	const [ lastName, setLastName ] = useState('')
+	const [ initials, setInitials ] = useState('')
+	const [ memberNumber, setMemberNumber ] = useState(undefined)
+	const [ memberAmount, setMemberAmount ] = useState(0)
+	const [ phone, setPhone ] = useState('')
 
 	const saveMember = e => {
-		e.preventDefault();
+		e.preventDefault()
 
 		MemberMethods.upsert.call({
 			firstName,
@@ -29,16 +29,16 @@ const NewMemberInputs = observer(props => {
 			amount: memberAmount,
 			phone: phone
 		}, (err, res) => {
-			setFirstName('');
-			setLastName('');
-			setInitials('');
-			setMemberNumber('');
-			setMemberAmount('');
-			setPhone('');
+			setFirstName('')
+			setLastName('')
+			setInitials('')
+			setMemberNumber('')
+			setMemberAmount('')
+			setPhone('')
 
-			if(err) console.error(err);
-		});
-	};
+			if(err) console.error(err)
+		})
+	}
 
 	return (
 		<Form onSubmit={ saveMember }>
@@ -95,7 +95,7 @@ const NewMemberInputs = observer(props => {
 
 			</Form.Group>
 		</Form>
-	);
-});
+	)
+})
 
-export default NewMemberInputs;
+export default NewMemberInputs

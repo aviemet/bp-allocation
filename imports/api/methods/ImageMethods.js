@@ -1,6 +1,6 @@
-import { ValidatedMethod } from 'meteor/mdg:validated-method';
+import { ValidatedMethod } from 'meteor/mdg:validated-method'
 
-import { Images } from '/imports/api/db';
+import { Images } from '/imports/api/db'
 
 const ImageMethods = {
 	remove: new ValidatedMethod({
@@ -9,7 +9,7 @@ const ImageMethods = {
 		validate: null,
 
 		run(id) {
-			Images.collection.remove({ _id: id });
+			Images.collection.remove({ _id: id })
 		}
 	}),
 
@@ -19,7 +19,7 @@ const ImageMethods = {
 		validate: null,
 
 		run(ids) {
-			Images.collection.remove({ _id: { $in: ids }});
+			Images.collection.remove({ _id: { $in: ids } })
 		}
 	}),
 
@@ -32,6 +32,6 @@ const ImageMethods = {
 
 		}
 	})
-};
+}
 
-export default ImageMethods;
+export default ImageMethods

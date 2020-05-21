@@ -1,50 +1,50 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash'
 
 export const roundFloat = (value, decimal) => {
-	decimal = decimal || 2;
-	return parseFloat(parseFloat(value).toFixed(decimal));
-};
+	decimal = decimal || 2
+	return parseFloat(parseFloat(value).toFixed(decimal))
+}
 
 export const numberFormats = {
 	dollar: '$0,0[a]',
 	percent: '0.0%'
-};
-
-export function isMobileDevice() {
-	return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1);
 }
 
-export const paginate = (collection, page, itemsPerPage) => collection.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+export function isMobileDevice() {
+	return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)
+}
+
+export const paginate = (collection, page, itemsPerPage) => collection.slice(page * itemsPerPage, (page + 1) * itemsPerPage)
 
 // Ensures names are in the format 'First Last'
 // Breaks apart names given as 'Last, First' and returns them as 'First Last'
 export const sanitizeNames = name => {
-	const split = name.split(',');
-	const newName = [];
+	const split = name.split(',')
+	const newName = []
 	for(let i = 1; i < split.length; i++) {
-		newName.push(split[i].trim());
+		newName.push(split[i].trim())
 	}
-	newName.push(split[0]);
-	return newName.join(' ');
-};
+	newName.push(split[0])
+	return newName.join(' ')
+}
 
 // Format phone numbers as international numbers
 // Assume any number lacking a '+' at beginning is a US number (add +1 to start)
 export const formatPhoneNumber = number => {
-	let newPhone = number.replace(/[^0-9+]/g, ''); // Reduce number down to numbers and the + symbol
+	let newPhone = number.replace(/[^0-9+]/g, '') // Reduce number down to numbers and the + symbol
 
 	if(!isEmpty(newPhone) && !/^\+/.test(newPhone)) { // Doesn't start with +
-		newPhone = '+1' + newPhone.replace(/^1/, ''); // US area codes don't start with 0 or 1
+		newPhone = '+1' + newPhone.replace(/^1/, '') // US area codes don't start with 0 or 1
 	}
-	return newPhone;
-};
+	return newPhone
+}
 
 export const sanitizeString = str => {
 	if(typeof str === 'string') {
-		return str.trim();
+		return str.trim()
 	}
-	return str;
-};
+	return str
+}
 
 /**
  * Returns a subset of passed collection filtered by searh terms
@@ -54,39 +54,39 @@ export const sanitizeString = str => {
  */
 // TODO: Should only search each field once ('avr avram') should not match firstName twice
 export const filterCollection = (collection, search, fields) => {
-	if(!search) return collection;
+	if(!search) return collection
 
 	// Split search terms by whitespace, discarding empty strings
-	const searchParts = search.split(/\s+/).filter(part => part.length > 0);
-	const checkFields = fields || Object.keys(collection[0]);
+	const searchParts = search.split(/\s+/).filter(part => part.length > 0)
+	const checkFields = fields || Object.keys(collection[0])
 
 	return collection.filter(member => {
 		return searchParts.every(word => {
-			const test = new RegExp(word, 'i');
+			const test = new RegExp(word, 'i')
 			return checkFields.some(field => {
 				if(test.test(member[field])) {
-					return true;
+					return true
 				}
-			});
-		});
-	});
-};
+			})
+		})
+	})
+}
 
 export const uuid = () => {
-	let timestamp = new Date().getTime();
+	let timestamp = new Date().getTime()
 	// Time in microseconds since page-load or 0 if unsupported
-	let micro = (performance && performance.now && (performance.now() * 1000)) || 0;
+	let micro = (performance && performance.now && (performance.now() * 1000)) || 0
 
 	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-		let random = Math.random() * 16; // random number between 0 and 16
-		
+		let random = Math.random() * 16 // random number between 0 and 16
+
 		if(timestamp > 0){ // Use timestamp until depleted
-			random = (timestamp + random) % 16 | 0;
-			timestamp = Math.floor(timestamp / 16);
+			random = (timestamp + random) % 16 | 0
+			timestamp = Math.floor(timestamp / 16)
 		} else { // Use microseconds since page-load if supported
-			random = (micro + random) % 16 | 0;
-			micro = Math.floor(micro / 16);
+			random = (micro + random) % 16 | 0
+			micro = Math.floor(micro / 16)
 		}
-		return (c === 'x' ? random : (random & 0x3 | 0x8)).toString(16);
-	});
-};
+		return (c === 'x' ? random : (random & 0x3 | 0x8)).toString(16)
+	})
+}

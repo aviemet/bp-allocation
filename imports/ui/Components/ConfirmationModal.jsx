@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { Button, Modal } from 'semantic-ui-react';
+import { Button, Modal } from 'semantic-ui-react'
 
 const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction }) => {
 
@@ -23,16 +23,16 @@ const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmA
 				<Button 
 					color='red' 
 					onClick={ () => {
-						handleClose();
-						confirmAction();
+						handleClose()
+						confirmAction()
 					} }
 				>Delete!
 				</Button>
 
 			</Modal.Actions>
 		</Modal>
-	);			
-};
+	)			
+}
 
 ConfirmationModal.propTypes = { 
 	header: PropTypes.string, 
@@ -40,6 +40,6 @@ ConfirmationModal.propTypes = {
 	isModalOpen: PropTypes.bool, 
 	handleClose: PropTypes.func, 
 	confirmAction: PropTypes.func
-};
+}
 
-export default ConfirmationModal;
+export default ConfirmationModal

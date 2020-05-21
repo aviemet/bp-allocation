@@ -1,16 +1,16 @@
-import React from 'react';
+import React from 'react'
 
-import styled from 'styled-components';
+import styled from 'styled-components'
 
-import { Allocation } from '/imports/ui/Presentation/Pages';
+import { Allocation } from '/imports/ui/Presentation/Pages'
 
 const Presentation = () => {
 	return (
 		<SimulationContainer>
 			<Allocation simulation={ true } />
 		</SimulationContainer>
-	);
-};
+	)
+}
 
 const SimulationContainer = styled.div`
 	&& #graph{
@@ -20,6 +20,6 @@ const SimulationContainer = styled.div`
 	&& .orginfo{
 		font-size: 1.1em;
 	}
-`;
+`
 
-export default Presentation;
+export default Presentation

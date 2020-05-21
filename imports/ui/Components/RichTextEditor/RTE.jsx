@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-import RichTextEditor from 'react-rte';
+import RichTextEditor from 'react-rte'
 
 const toolbarConfig = {
 
@@ -22,18 +22,18 @@ const toolbarConfig = {
 		{ label: 'UL', style: 'unordered-list-item' },
 		{ label: 'OL', style: 'ordered-list-item' }
 	]
-};
+}
 
 const RTE = ({ value, onChange }) => {
-	const [ initialized, setInitialized ] = useState(false);
+	const [ initialized, setInitialized ] = useState(false)
 
 	useEffect(() => {
 		onChange(value ? 
 			RichTextEditor.createValueFromString(value) : 
 			RichTextEditor.createEmptyValue()
-		);
-		setInitialized(true);
-	}, []);
+		)
+		setInitialized(true)
+	}, [])
 
 	return (
 		<RichTextEditor
@@ -41,12 +41,12 @@ const RTE = ({ value, onChange }) => {
 			onChange={ onChange }
 			toolbarConfig={ toolbarConfig }
 		/>
-	);
-};
+	)
+}
 
 RTE.propTypes = {
 	value: PropTypes.string,
 	onChange: PropTypes.func
-};
+}
 
-export default RTE;
+export default RTE

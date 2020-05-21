@@ -1,6 +1,6 @@
-import React from 'react';
-import { Container } from 'semantic-ui-react';
-import styled from 'styled-components';
+import React from 'react'
+import { Container } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 const FourOhFour = () => {
 
@@ -10,13 +10,13 @@ const FourOhFour = () => {
 			<p>The URL entered doesn&apos;t match a route on this application.</p>
 			<p>This error page does not redirect.</p>
 		</ErrorContainer>
-	);
-};
+	)
+}
 
 const ErrorContainer = styled(Container)`
 	color: white;
 	text-align: center;
-`;
+`
 
 
-export default FourOhFour;
+export default FourOhFour

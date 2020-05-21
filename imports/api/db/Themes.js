@@ -1,5 +1,5 @@
-import { Mongo } from 'meteor/mongo';
-import SimpleSchema from 'simpl-schema';
+import { Mongo } from 'meteor/mongo'
+import SimpleSchema from 'simpl-schema'
 
 const OrgSaveSchema = new SimpleSchema({
 	org: SimpleSchema.RegEx.Id,
@@ -9,10 +9,10 @@ const OrgSaveSchema = new SimpleSchema({
 		label: 'Identity of person(s) who saved this org',
 		required: false
 	}
-});
+})
 
 // Define Collection
-const Themes = new Mongo.Collection('themes');
+const Themes = new Mongo.Collection('themes')
 
 const ThemeSchema = new SimpleSchema({
 	title: {
@@ -96,15 +96,15 @@ const ThemeSchema = new SimpleSchema({
 		index: true,
 		unique: true
 	}
-});
+})
 
-Themes.attachSchema(ThemeSchema);
+Themes.attachSchema(ThemeSchema)
 
 // Set permissions
 Themes.allow({
 	insert: (userId, doc) => {
-		return true;
+		return true
 	}
-});
+})
 
-export { Themes, ThemeSchema };
+export { Themes, ThemeSchema }

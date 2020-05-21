@@ -1,21 +1,21 @@
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
-import Routes from './Routes';
+import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import Routes from './Routes'
 
-import styled, { ThemeProvider as StyledProvider } from 'styled-components';
-import theme from '/imports/ui/theme';
-import { isMobileDevice } from '/imports/lib/utils';
+import styled, { ThemeProvider as StyledProvider } from 'styled-components'
+import theme from '/imports/ui/theme'
+import { isMobileDevice } from '/imports/lib/utils'
 
-import { DataProvider, ThemeProvider, SettingsProvider, OrgsProvider, MembersProvider, MessagesProvider } from '/imports/api/providers';
+import { DataProvider, ThemeProvider, SettingsProvider, OrgsProvider, MembersProvider, MessagesProvider } from '/imports/api/providers'
 
 const App = () => {
 	useEffect(() => {
 		if(isMobileDevice()) {
 			document.body.addEventListener('touchmove', function(e) { 
-				e.preventDefault(); 
-			});
+				e.preventDefault() 
+			})
 		}
-	}, []);
+	}, [])
 	
 	return (
 		<StyledProvider theme={ theme }>
@@ -35,8 +35,8 @@ const App = () => {
 				</DataProvider>
 			</GlobalContainer>
 		</StyledProvider>
-	);
-};
+	)
+}
 
 const GlobalContainer = styled.div`
 	width: 100%;
@@ -47,10 +47,10 @@ const GlobalContainer = styled.div`
 			padding: 0;
 		}
 	}
-`;
+`
 
 App.propTypes = {
 	match: PropTypes.object
-};
+}
 
-export default App;
+export default App

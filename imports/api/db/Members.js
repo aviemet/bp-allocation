@@ -1,7 +1,7 @@
-import { Mongo } from 'meteor/mongo';
-import SimpleSchema from 'simpl-schema';
+import { Mongo } from 'meteor/mongo'
+import SimpleSchema from 'simpl-schema'
 
-const Members = new Mongo.Collection('members');
+const Members = new Mongo.Collection('members')
 
 const MemberSchema = new SimpleSchema({
 	firstName: {
@@ -46,21 +46,21 @@ const MemberSchema = new SimpleSchema({
 		defaultValue: new Date()
 	}
 
-});
+})
 
-Members.attachSchema(MemberSchema);
+Members.attachSchema(MemberSchema)
 
 // Set permissions
 Members.allow({
 	insert: (userId, doc) => {
-		return true;
+		return true
 	},
 	update: (userId, doc) => {
-		return true;
+		return true
 	},
 	remove: (userId, doc) => {
-		return true;
+		return true
 	},
-});
+})
 
-export { Members, MemberSchema };
+export { Members, MemberSchema }

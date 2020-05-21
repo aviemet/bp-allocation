@@ -1,28 +1,28 @@
-import { Meteor } from 'meteor/meteor';
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import { withTracker } from 'meteor/react-meteor-data'
 
-import { Themes } from '/imports/api/db';
-import { ThemeMethods } from '/imports/api/methods';
+import { Themes } from '/imports/api/db'
+import { ThemeMethods } from '/imports/api/methods'
 
-import { Table, Icon, Segment, Dropdown, Container } from 'semantic-ui-react';
+import { Table, Icon, Segment, Dropdown, Container } from 'semantic-ui-react'
 
-import NewThemeModal from '/imports/ui/Welcome/NewThemeModal';
-import ConfirmationModal from '/imports/ui/Components/ConfirmationModal';
-import TablePagination from '/imports/ui/Components/TablePagination';
+import NewThemeModal from '/imports/ui/Welcome/NewThemeModal'
+import ConfirmationModal from '/imports/ui/Components/ConfirmationModal'
+import TablePagination from '/imports/ui/Components/TablePagination'
 
 const ThemesList = ({ themes }) => {
-	const [ page, setPage ] = useState(0);
-	const [ itemsPerPage, setItemsPerPage ] = useState(10);
+	const [ page, setPage ] = useState(0)
+	const [ itemsPerPage, setItemsPerPage ] = useState(10)
 
-	const [ modalOpen, setModalOpen ] = useState(false);
-	const [ modalHeader, setModalHeader ] = useState('');
-	const [ modalContent, setModalContent ] = useState('');
-	const [ modalAction, setModalAction ] = useState();
+	const [ modalOpen, setModalOpen ] = useState(false)
+	const [ modalHeader, setModalHeader ] = useState('')
+	const [ modalContent, setModalContent ] = useState('')
+	const [ modalAction, setModalAction ] = useState()
 
-	const deleteTheme = id => () => ThemeMethods.remove.call(id);
+	const deleteTheme = id => () => ThemeMethods.remove.call(id)
 
 	return (
 		<Container>
@@ -53,16 +53,16 @@ const ThemesList = ({ themes }) => {
 												{/* <Dropdown.Item>Live Stats</Dropdown.Item> */}
 												<Dropdown.Divider />
 												<Dropdown.Item onClick={ () => {
-													setModalHeader('Permanently Delete This Theme?');
-													setModalContent(`This will permanently remove ${theme.title}.`);
-													setModalAction( () => deleteTheme(theme._id) );
-													setModalOpen(true);
+													setModalHeader('Permanently Delete This Theme?')
+													setModalContent(`This will permanently remove ${theme.title}.`)
+													setModalAction( () => deleteTheme(theme._id) )
+													setModalOpen(true)
 												} } ><Icon name='trash' />Delete Theme</Dropdown.Item>
 											</Dropdown.Menu>
 										</Dropdown>
 									</Table.Cell>
 								</Table.Row>
-							);
+							)
 						}) }
 					</Table.Body>
 				</Table>
@@ -82,15 +82,15 @@ const ThemesList = ({ themes }) => {
 				/>
 			</Segment>
 		</Container>
-	);
-};
+	)
+}
 
 ThemesList.propTypes = {
 	themes: PropTypes.array
-};
+}
 
 export default withTracker(() => {
-	Meteor.subscribe('themes');
+	Meteor.subscribe('themes')
 
-	return { themes: Themes.find({}, { limit: 5, sort: { createdAt: -1 }}).fetch() };
-})(ThemesList);
+	return { themes: Themes.find({}, { limit: 5, sort: { createdAt: -1 }}).fetch() }
+})(ThemesList)

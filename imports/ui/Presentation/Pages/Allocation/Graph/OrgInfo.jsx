@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite'
 
-import numeral from 'numeral';
+import numeral from 'numeral'
 
-import { Grid } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Grid } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 const OrgInfo = observer(props => {
 
@@ -25,8 +25,8 @@ const OrgInfo = observer(props => {
 			}
 
 		</InfoContainer>
-	);
-});
+	)
+})
 
 const InfoContainer = styled(Grid.Column)`
 	&&{
@@ -38,25 +38,25 @@ const InfoContainer = styled(Grid.Column)`
 		font-size: 1.5em;
 		line-height: 1em;
 	}
-`;
+`
 
 const Title = styled.div`
 	min-height: 60px;
-`;
+`
 
 const MatchNeed = styled.div`
 	color: #c31a1a;
-`;
+`
 
 const TotalNeed = styled.div`
 	color: #00853f;
-`;
+`
 
 OrgInfo.propTypes = {
 	org: PropTypes.object,
 	showLeverage: PropTypes.bool
-};
+}
 
-export default OrgInfo;
+export default OrgInfo
 
 // <Ask>Ask: ${numeral(props.org.ask).format('0.0a')}</Ask>

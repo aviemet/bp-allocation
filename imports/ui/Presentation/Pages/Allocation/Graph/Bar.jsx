@@ -1,37 +1,37 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import numeral from 'numeral';
+import React from 'react'
+import PropTypes from 'prop-types'
+import numeral from 'numeral'
 
-import { Grid } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Grid } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import { COLORS } from '/imports/lib/global';
+import { COLORS } from '/imports/lib/global'
 
 const AwardImg = ({ show }) => {
-	if(show !== true) return <React.Fragment />;
+	if(show !== true) return <React.Fragment />
 
 	return (
 		<Award src='/img/BAT_award_logo.svg' />
-	);
+	)
 
-};
+}
 
 AwardImg.propTypes = {
 	show: PropTypes.bool
-};
+}
 
 const Bar = props => {	
-	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0);
-	if(!props.savesVisible) shownFunds -= props.org.save;
+	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0)
+	if(!props.savesVisible) shownFunds -= props.org.save
 
-	let height = Math.min(Math.round((shownFunds / props.org.ask) * 100), 100);
-	let backgroundColor = height === 100 ? COLORS.green : COLORS.blue;
+	let height = Math.min(Math.round((shownFunds / props.org.ask) * 100), 100)
+	let backgroundColor = height === 100 ? COLORS.green : COLORS.blue
 
 	if(height === 0){
 		return (
 			<Grid.Column>
 				<BarContainer />
-			</Grid.Column> );
+			</Grid.Column> )
 	}
 	return (
 		<BarContainer>
@@ -40,14 +40,14 @@ const Bar = props => {
 				<Pledged>{numeral(shownFunds).format('$0,0')}</Pledged>
 			</GraphBar>
 		</BarContainer>
-	);
-};
+	)
+}
 
 const BarContainer = styled(Grid.Column)`
 	height: 100%;
 	padding: 0;
 	text-align: center;
-`;
+`
 
 const GraphBar = styled.div`
 	position: absolute;
@@ -60,7 +60,7 @@ const GraphBar = styled.div`
 	animation: animate-bar 4s 1 ease-out;
 	transition: height 4s ease-out,
 	            background-color 5s ease-in;
-`;
+`
 
 const Pledged = styled.span`
 	position: relative;
@@ -78,7 +78,7 @@ const Pledged = styled.span`
 	-webkit-animation: reveal-amount .5s ease 4s;
 	animation-fill-mode: forwards;
 	-webkit-animation-fill-mode: forwards;
-`;
+`
 
 const Award = styled.img`
 	position: absolute;
@@ -93,11 +93,11 @@ const Award = styled.img`
 	-webkit-animation: reveal-winner-logo .5s ease 4s;
 	animation-fill-mode: forwards;
 	-webkit-animation-fill-mode: forwards;
-`;
+`
 
 Bar.propTypes = {
 	org: PropTypes.object,
 	savesVisible: PropTypes.bool
-};
+}
 
-export default Bar;
+export default Bar

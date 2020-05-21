@@ -1,37 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { useOrgs, useMembers } from '/imports/api/providers';
-import { OrganizationMethods } from '/imports/api/methods';
+import React, { useState, useEffect } from 'react'
+import { useOrgs, useMembers } from '/imports/api/providers'
+import { OrganizationMethods } from '/imports/api/methods'
 
-import { isEmpty } from 'lodash';
-import { roundFloat } from '/imports/lib/utils';
+import { isEmpty } from 'lodash'
+import { roundFloat } from '/imports/lib/utils'
 
-import { Container, Form, Input, Button, Card, Checkbox, Responsive, Loader } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Container, Form, Input, Button, Card, Checkbox, Responsive, Loader } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import OrgCard from '/imports/ui/Components/OrgCard';
-import { observer } from 'mobx-react-lite';
+import OrgCard from '/imports/ui/Components/OrgCard'
+import { observer } from 'mobx-react-lite'
 
 const Pledges = observer(props => {
-	const { members, isLoading: membersLoading } = useMembers();
-	const { topOrgs, isLoading: orgsLoading } = useOrgs();
+	const { members, isLoading: membersLoading } = useMembers()
+	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	const [ selectedOrg, setSelectedOrg ] = useState(null);
-	const [ pledgeAmount, setPledgeAmount ] = useState('');
-	const [ isFormValid, setIsFormValid ] = useState(false);
-	const [ isAnonymous, setIsAnonymous ] = useState(false);
-	const [ itemsPerRow, setItemsPerRow ] = useState(2);
+	const [ selectedOrg, setSelectedOrg ] = useState(null)
+	const [ pledgeAmount, setPledgeAmount ] = useState('')
+	const [ isFormValid, setIsFormValid ] = useState(false)
+	const [ isAnonymous, setIsAnonymous ] = useState(false)
+	const [ itemsPerRow, setItemsPerRow ] = useState(2)
 
-	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 2);
+	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 2)
 
 	useEffect(() => {
-		const isValid = selectedOrg !== null && pledgeAmount !== '';
-		if(isFormValid !== isValid) setIsFormValid(isValid);
-	}, [selectedOrg, pledgeAmount]);
+		const isValid = selectedOrg !== null && pledgeAmount !== ''
+		if(isFormValid !== isValid) setIsFormValid(isValid)
+	}, [selectedOrg, pledgeAmount])
 
 	const clearAllValues = () => {
-		setSelectedOrg(null);
-		setPledgeAmount('');
-	};
+		setSelectedOrg(null)
+		setPledgeAmount('')
+	}
 
 	const saveTopUp = () => {
 		const data = {
@@ -39,12 +39,12 @@ const Pledges = observer(props => {
 			member: props.user._id,
 			amount: roundFloat(pledgeAmount),
 			anonymous: isAnonymous
-		};
-		OrganizationMethods.pledge.call(data);
-		clearAllValues();
-	};
+		}
+		OrganizationMethods.pledge.call(data)
+		clearAllValues()
+	}
 
-	if(membersLoading || isEmpty(members) || orgsLoading) return <Loader active />;
+	if(membersLoading || isEmpty(members) || orgsLoading) return <Loader active />
 	return (
 		<PledgesContainer fluid textAlign='center'>
 			<h1>If you feel like giving more</h1>
@@ -103,8 +103,8 @@ const Pledges = observer(props => {
 			</Container>
 
 		</PledgesContainer>
-	);
-});
+	)
+})
 
 const PledgesContainer = styled(Container)`
 	height: 100vh;
@@ -131,7 +131,7 @@ const PledgesContainer = styled(Container)`
 			}
 		}
 	}
-`;
+`
 
 const FinalizeButton = styled(Button)`
 	width: 100%;
@@ -141,7 +141,7 @@ const FinalizeButton = styled(Button)`
 	border: 2px solid #fff !important;
 	font-size: 2rem !important;
 	text-transform: uppercase !important;
-`;
+`
 
 const BottomRight = styled.div`
 	text-align: right;
@@ -149,6 +149,6 @@ const BottomRight = styled.div`
 	display: flex;
 	justify-content: flex-end;
 	height: 150px;
-`;
+`
 
-export default Pledges;
+export default Pledges

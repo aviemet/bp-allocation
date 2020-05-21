@@ -1,14 +1,14 @@
-import React from 'react';
+import React from 'react'
 
-import { observer } from 'mobx-react-lite';
-import { useSettings } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useSettings } from '/imports/api/providers'
 
-import { PresentationSettingsMethods } from '/imports/api/methods';
+import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react';
+import { Checkbox } from 'semantic-ui-react'
 
 const ChitVotingActiveToggle = observer(() => {
-	const { settings } = useSettings();
+	const { settings } = useSettings()
 
 	const saveValue = (e, data) => {
 		PresentationSettingsMethods.update.call({
@@ -18,10 +18,10 @@ const ChitVotingActiveToggle = observer(() => {
 				fundsVotingActive: false,
 				topupsActive: false
 			}
-		});
-	};
+		})
+	}
 
-	if(!settings.useKioskChitVoting) return <></>;
+	if(!settings.useKioskChitVoting) return <></>
 
 	return(
 		<Checkbox
@@ -31,8 +31,8 @@ const ChitVotingActiveToggle = observer(() => {
 			onClick={ saveValue }
 			checked={ settings.chitVotingActive || false }
 		/>
-	);
+	)
 
-});
+})
 
-export default ChitVotingActiveToggle;
+export default ChitVotingActiveToggle

@@ -127,7 +127,7 @@ export const Youth = [
 		votes: 162,
 		_id: 'bSnvStwQumX5DtG5f'
 	}
-];
+]
 
 
 /**
@@ -294,7 +294,7 @@ export const Education = {
 	settings: {
 		useKioskFundsVoting: false
 	}
-};
+}
 
 
 /**
@@ -432,4 +432,4 @@ export const Democracy = {
 	settings: {
 		useKioskFundsVoting: false
 	}
-};
+}

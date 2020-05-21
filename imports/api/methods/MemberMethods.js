@@ -1,10 +1,10 @@
-import { Meteor } from 'meteor/meteor';
-import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import _ from 'lodash';
-import { formatPhoneNumber, sanitizeString } from '/imports/lib/utils';
+import { Meteor } from 'meteor/meteor'
+import { ValidatedMethod } from 'meteor/mdg:validated-method'
+import _ from 'lodash'
+import { formatPhoneNumber, sanitizeString } from '/imports/lib/utils'
 
-import { Members, MemberThemes, Organizations } from '/imports/api/db';
-import { OrganizationMethods } from '/imports/api/methods';
+import { Members, MemberThemes, Organizations } from '/imports/api/db'
+import { OrganizationMethods } from '/imports/api/methods'
 
 /**
  * Sanitize the data for an insert or upsert to Members
@@ -14,102 +14,102 @@ const _sanitizeMemberData = function(data) {
 	/**********************
 	 * Normalize the data *
 	 **********************/
-	if(!_.isUndefined(data.number)) data.number = parseInt(data.number);
-	if(!_.isUndefined(data.firstName)) data.firstName = sanitizeString(data.firstName);
-	if(!_.isUndefined(data.lastName)) data.lastName = sanitizeString(data.lastName);
-	if(!_.isUndefined(data.fullName)) data.fullName = sanitizeString(data.fullName);
-	if(!_.isUndefined(data.initials)) data.initials = sanitizeString(data.initials);
-	if(!_.isEmpty(data.phone)) data.phone = formatPhoneNumber(data.phone);
-	if(!_.isUndefined(data.email)) data.email = sanitizeString(data.email);
+	if(!_.isUndefined(data.number)) data.number = parseInt(data.number)
+	if(!_.isUndefined(data.firstName)) data.firstName = sanitizeString(data.firstName)
+	if(!_.isUndefined(data.lastName)) data.lastName = sanitizeString(data.lastName)
+	if(!_.isUndefined(data.fullName)) data.fullName = sanitizeString(data.fullName)
+	if(!_.isUndefined(data.initials)) data.initials = sanitizeString(data.initials)
+	if(!_.isEmpty(data.phone)) data.phone = formatPhoneNumber(data.phone)
+	if(!_.isUndefined(data.email)) data.email = sanitizeString(data.email)
 
-	return data;
-};
+	return data
+}
 
 /**
  * Generate derived fields from given data
  * @param {object} data {firstName, lastName, fullName, initials, number, amount}
  */
 const _buildMissingData = function(data) {
-	let { firstName, lastName, fullName, number, initials, phone, code } = _sanitizeMemberData(data);
+	let { firstName, lastName, fullName, number, initials, phone, code } = _sanitizeMemberData(data)
 	// Build first/last from fullName if not present
 	if(_.isUndefined(firstName) && _.isUndefined(lastName) && !_.isUndefined(fullName)) {
-		const nameArr = fullName.split(' ');
+		const nameArr = fullName.split(' ')
 		if(nameArr.length >= 2) {
-			firstName = nameArr[0];
-			lastName = nameArr[nameArr.length - 1];
+			firstName = nameArr[0]
+			lastName = nameArr[nameArr.length - 1]
 		}
 	}
 
 	// Build fullName from first/last if not present
 	if(_.isUndefined(fullName) && !_.isUndefined(firstName) && !_.isUndefined(lastName)) {
-		fullName = firstName + ' ' + lastName;
+		fullName = firstName + ' ' + lastName
 	}
 
 	// Build initials from first/last if not present
 	if(_.isEmpty(initials) && !_.isUndefined(firstName) && !_.isUndefined(lastName)) {
-		initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+		initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
 	}
 
 	// Build code from initials and number
 	if(!_.isUndefined(initials) && !_.isUndefined(number)) {
-		code = `${initials}${String(number)}`;
+		code = `${initials}${String(number)}`
 	}
-	return { firstName, lastName, fullName, number, initials, phone, code };
-};
+	return { firstName, lastName, fullName, number, initials, phone, code }
+}
 
 /**
  * Upserts a member
  * @param  {Object} data {firstName, lastName, fullName, initials, number, amount}
  */
 const _memberInsert = function(data) {
-	const { firstName, lastName, fullName, number, initials, code, phone, email } = _buildMissingData(data);
+	const { firstName, lastName, fullName, number, initials, code, phone, email } = _buildMissingData(data)
 	
 	/*****************
 	 * Build a Query *
 	 *****************/
 
 	// Search by either of first/last or full name
-	const memberQuery = { '$or': [] };
+	const memberQuery = { '$or': [] }
 	if(!_.isUndefined(firstName) && !_.isUndefined(lastName)) {
-		memberQuery.$or.push({ firstName, lastName, number });
+		memberQuery.$or.push({ firstName, lastName, number })
 	}
 	if(!_.isUndefined(fullName)) {
-		memberQuery.$or.push({ fullName, number });
+		memberQuery.$or.push({ fullName, number })
 	}
 
 	// Check if the member already exists
-	let member = Members.find(memberQuery).fetch()[0];
+	let member = Members.find(memberQuery).fetch()[0]
 
 	return new Promise((resolve, reject) => {
 		if(!member) {
-			const newMember = { firstName, lastName, fullName, number, initials, code, phone, email };
+			const newMember = { firstName, lastName, fullName, number, initials, code, phone, email }
 			try{
 				Members.insert(newMember, (err, result) => {
 					if(err){
-						console.error({ newMember });
-						reject(err);
+						console.error({ newMember })
+						reject(err)
 					} else {
-						resolve(result);
+						resolve(result)
 					}
-				});
+				})
 			} catch(e) {
-				console.error(e);
+				console.error(e)
 			}
 		} else {
 			const updateData = {
 				initials,
 				code
-			};
+			}
 
-			if(phone) updateData.phone = phone;
+			if(phone) updateData.phone = phone
 
 			if(member.initials !== initials || member.phone !== phone) {
-				Members.update({ _id: member._id }, { $set: updateData });
+				Members.update({ _id: member._id }, { $set: updateData })
 			}
-			resolve(member._id);
+			resolve(member._id)
 		}
-	});
-};
+	})
+}
 
 /**
  * Upserts a memberTheme assocication
@@ -117,7 +117,7 @@ const _memberInsert = function(data) {
  */
 const _memberThemeInsert = function(query) {
 	// Check if this member is already associated with this theme
-	let memberTheme = MemberThemes.findOne({ member: query.member, theme: query.theme });
+	let memberTheme = MemberThemes.findOne({ member: query.member, theme: query.theme })
 
 	return new Promise((resolve, reject) => {
 		// New member/theme association
@@ -125,30 +125,30 @@ const _memberThemeInsert = function(query) {
 			try {
 				MemberThemes.insert(query, (err, result) => {
 					if(err) {
-						reject(err);
+						reject(err)
 					} else {
-						resolve(result);
+						resolve(result)
 					}
-				});
+				})
 			} catch(e) {
-				console.error(e);
+				console.error(e)
 			}
 		// Existing member/theme association
 		} else {
 			try {
 				MemberThemes.update({ _id: memberTheme._id }, { $set: { amount: query.amount } }, (err, result) => {
 					if(err) {
-						reject(err);
+						reject(err)
 					} else {
-						resolve(memberTheme._id);
+						resolve(memberTheme._id)
 					}
-				});
+				})
 			} catch(e) {
-				console.error(e);
+				console.error(e)
 			}
 		}
-	});
-};
+	})
+}
 
 /******************************************
  * BEGIN PUBLIC MEMBER METHODS DEFINITION *
@@ -164,17 +164,17 @@ const MemberMethods = {
 		validate: null,
 
 		run(data) {
-			const { amount, chits, themeId, phone, email } = data;
+			const { amount, chits, themeId, phone, email } = data
 			// Create/edit member
 			return _memberInsert(data).then(member => {
-				const memberThemeQuery = { member, amount, chits, theme: themeId, phone, email };
+				const memberThemeQuery = { member, amount, chits, theme: themeId, phone, email }
 
 				// Create/edit theme association
-				return _memberThemeInsert(memberThemeQuery);
+				return _memberThemeInsert(memberThemeQuery)
 
 			}, memberError => {
-				console.error({ memberError });
-			});
+				console.error({ memberError })
+			})
 		}
 	}),
 	
@@ -188,17 +188,17 @@ const MemberMethods = {
 
 		// TODO: Also remove matched pledges for the member - hopefully DRY
 		run({ memberId, themeId }) {
-			const orgs = Organizations.find({ theme: themeId }).fetch();
+			const orgs = Organizations.find({ theme: themeId }).fetch()
 
 			orgs.forEach(org => {
 				org.pledges.forEach(pledge => {
 					if(pledge.member === memberId) {
-						OrganizationMethods.removePledge.call({ orgId: org._id, pledgeId: pledge._id });
+						OrganizationMethods.removePledge.call({ orgId: org._id, pledgeId: pledge._id })
 					}
-				});
-			});
+				})
+			})
 			
-			return MemberThemes.remove({ member: memberId, theme: themeId });
+			return MemberThemes.remove({ member: memberId, theme: themeId })
 		}
 	}),
 
@@ -211,36 +211,36 @@ const MemberMethods = {
 		validate: null,
 
 		run(themeId) {
-			const memberThemes = MemberThemes.find({ theme: themeId }, { _id: true, member: true }).fetch();
-			const ids = [];
-			const members = [];
+			const memberThemes = MemberThemes.find({ theme: themeId }, { _id: true, member: true }).fetch()
+			const ids = []
+			const members = []
 			memberThemes.forEach(memberTheme => {
-				ids.push(memberTheme._id);
-				members.push(memberThemes.members);
-			});
+				ids.push(memberTheme._id)
+				members.push(memberThemes.members)
+			})
 
 			// Batch delete the MemberThemes first
 			try {
-				MemberThemes.remove({ _id: { $in: ids } });
+				MemberThemes.remove({ _id: { $in: ids } })
 			} catch(e) {
-				console.error(e);
+				console.error(e)
 			}
 
 			// Then delete all matched pledges from every member
-			const orgs = Organizations.find({ theme: themeId }).fetch();
+			const orgs = Organizations.find({ theme: themeId }).fetch()
 			orgs.forEach(org => {
 				if(org.pledges) {
 					org.pledges.forEach(pledge => {
 						if(pledge.member && members.some(member => pledge.member === member)) {
 							try {
-								OrganizationMethods.removePledge({ orgId: org._id, pledgeId: pledge._id });
+								OrganizationMethods.removePledge({ orgId: org._id, pledgeId: pledge._id })
 							} catch(e) {
-								console.error(e);
+								console.error(e)
 							}
 						}
-					});
+					})
 				}
-			});
+			})
 
 		}
 	}),
@@ -254,7 +254,7 @@ const MemberMethods = {
 		validate: null,
 
 		run({ id, data }) {
-			return Members.update({ _id: id }, { $set: _sanitizeMemberData(data) });
+			return Members.update({ _id: id }, { $set: _sanitizeMemberData(data) })
 		}
 	}),
 
@@ -267,7 +267,7 @@ const MemberMethods = {
 		validate: null,
 
 		run({ id, data }) {
-			return MemberThemes.update({ _id: id }, { $set: data });
+			return MemberThemes.update({ _id: id }, { $set: data })
 		}
 	}),
 
@@ -282,9 +282,9 @@ const MemberMethods = {
 		run({ theme, member, org, amount, voteSource }) {
 			if(Meteor.isServer) {
 				// Check for existing allocation for this org from this member
-				let memberTheme = MemberThemes.findOne({ theme, member });
+				let memberTheme = MemberThemes.findOne({ theme, member })
 				
-				let allocation = _.find(memberTheme.allocations, ['organization', org]);
+				let allocation = _.find(memberTheme.allocations, ['organization', org])
 
 				// Update amount
 				if(!allocation) {
@@ -296,7 +296,7 @@ const MemberMethods = {
 								voteSource
 							}
 						}
-					});
+					})
 				// Or insert allocation vote
 				} else {
 					MemberThemes.update({
@@ -310,7 +310,7 @@ const MemberMethods = {
 							'allocations.$.amount': amount,
 							'allocations.$.voteSource': voteSource
 						}
-					});
+					})
 				}
 			}
 		}
@@ -327,9 +327,9 @@ const MemberMethods = {
 		run({ theme, member, org, votes, voteSource }) {
 			if(Meteor.isServer) {
 				// Check for existing allocation for this org from this member
-				let memberTheme = MemberThemes.findOne({ theme, member });
+				let memberTheme = MemberThemes.findOne({ theme, member })
 				
-				let chitVote = _.find(memberTheme.chitVotes, ['organization', org]);
+				let chitVote = _.find(memberTheme.chitVotes, ['organization', org])
 
 				// Update votes
 				if(!chitVote) {
@@ -341,7 +341,7 @@ const MemberMethods = {
 								voteSource
 							}
 						}
-					});
+					})
 				// Or insert chitVote vote
 				} else {
 					MemberThemes.update({
@@ -355,7 +355,7 @@ const MemberMethods = {
 							'chitVotes.$.votes': votes,
 							'chitVotes.$.voteSource': voteSource
 						}
-					});
+					})
 				}
 			}
 		}
@@ -370,7 +370,7 @@ const MemberMethods = {
 		validate: null,
 
 		run(id) {
-			MemberThemes.update({ _id: id }, { $set: { allocations: [] } });
+			MemberThemes.update({ _id: id }, { $set: { allocations: [] } })
 		}
 	}),
 
@@ -383,24 +383,24 @@ const MemberMethods = {
 		validate: null,
 
 		run(id) {
-			let member = Members.findOne(id);
+			let member = Members.findOne(id)
 			if(!member){
-				throw new Meteor.Error('MemberMethods.remove', 'Member to be removed was not found');
+				throw new Meteor.Error('MemberMethods.remove', 'Member to be removed was not found')
 			}
 
 			// Delete associated MemberThemes
 			MemberThemes.remove({ member: member._id }, err => {
-				if(err) console.error(err);
-			});
+				if(err) console.error(err)
+			})
 
 			// Remove member
 			return Members.remove(id, err => {
-				if(err) console.error(err);
-			});
+				if(err) console.error(err)
+			})
 
 		}
 	}),
 
-};
+}
 
-export default MemberMethods;
+export default MemberMethods

@@ -1,23 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import React from 'react'
+import PropTypes from 'prop-types'
+import _ from 'lodash'
 
-import { observer } from 'mobx-react-lite';
-import { ThemeMethods } from '/imports/api/methods';
-import { useTheme, useOrgs } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { ThemeMethods } from '/imports/api/methods'
+import { useTheme, useOrgs } from '/imports/api/providers'
 
-// import { sortTopOrgs } from '/imports/lib/utils';
+// import { sortTopOrgs } from '/imports/lib/utils'
 
-import { Table, Icon, Input, Header } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Table, Icon, Input, Header } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import TopOrgsRow from './TopOrgsRow';
-import ChitVotingActiveToggle from '/imports/ui/Components/Toggles/ChitVotingActiveToggle';
-import { sortTopOrgs } from '/imports/lib/orgsMethods';
+import TopOrgsRow from './TopOrgsRow'
+import ChitVotingActiveToggle from '/imports/ui/Components/Toggles/ChitVotingActiveToggle'
+import { sortTopOrgs } from '/imports/lib/orgsMethods'
 
 const TopOrgsByChitVote = observer(props => {
-	const { theme } = useTheme();
-	const { orgs } = useOrgs();
+	const { theme } = useTheme()
+	const { orgs } = useOrgs()
 
 	const updateNumTopOrgs = (e, data) => {
 		if(data.value !== theme.numTopOrgs){
@@ -26,11 +26,11 @@ const TopOrgsByChitVote = observer(props => {
 				data: {
 					numTopOrgs: data.value
 				}
-			});
+			})
 		}
-	};
+	}
 	
-	let sortedOrgs = sortTopOrgs(orgs.values, theme);
+	let sortedOrgs = sortTopOrgs(orgs.values, theme)
 
 	return (
 		<>
@@ -57,9 +57,9 @@ const TopOrgsByChitVote = observer(props => {
 
 				<Table.Body>
 					{sortedOrgs.map((org, i) => {
-						const inTopOrgs = i < theme.numTopOrgs;
-						const _isLocked = theme.topOrgsManual.includes(org._id);
-						const _isSaved = (_.findIndex(theme.saves, ['org', org._id]) >= 0);
+						const inTopOrgs = i < theme.numTopOrgs
+						const _isLocked = theme.topOrgsManual.includes(org._id)
+						const _isSaved = (_.findIndex(theme.saves, ['org', org._id]) >= 0)
 
 						return(
 							<TopOrgsRow
@@ -71,14 +71,14 @@ const TopOrgsByChitVote = observer(props => {
 								org={ org }
 								hideAdminFields={ props.hideAdminFields || false }
 							/>
-						);
+						)
 
 					})}
 				</Table.Body>
 			</Table>
 		</>
-	);
-});
+	)
+})
 
 const NumTopOrgsInput = styled(Input)`
 	width: 65px;
@@ -86,10 +86,10 @@ const NumTopOrgsInput = styled(Input)`
 	&& input {
 		padding: 0.3em 0.4em;
 	}
-`;
+`
 
 TopOrgsByChitVote.propTypes = {
 	hideAdminFields: PropTypes.bool
-};
+}
 
-export default TopOrgsByChitVote;
+export default TopOrgsByChitVote

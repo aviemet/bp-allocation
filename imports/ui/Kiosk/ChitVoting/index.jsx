@@ -1,61 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import _ from 'lodash'
 
-import { observer } from 'mobx-react-lite';
-import { useData, useSettings, useOrgs } from '/imports/api/providers';
-import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext';
+import { observer } from 'mobx-react-lite'
+import { useData, useSettings, useOrgs } from '/imports/api/providers'
+import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext'
 
-import { Card, Container, Header, Button } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Card, Container, Header, Button } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import VotingComplete from '../VotingComplete';
-import OrgCard from '/imports/ui/Components/OrgCard';
-import ChitTicker from './ChitTicker';
-import useInterval from '/imports/ui/Components/useInterval';
+import VotingComplete from '../VotingComplete'
+import OrgCard from '/imports/ui/Components/OrgCard'
+import ChitTicker from './ChitTicker'
+import useInterval from '/imports/ui/Components/useInterval'
 
-import { COLORS } from '/imports/lib/global';
-import { toJS } from 'mobx';
+import { COLORS } from '/imports/lib/global'
+import { toJS } from 'mobx'
 
 const VotesRemaining = React.memo(({ value }) => {
 	return (
 		<Header as='h1' className="title">
 			ROUND 1 VOTES LEFT: <NumberFormat>{ value }</NumberFormat>
 		</Header>
-	);
-});
+	)
+})
 
-VotesRemaining.displayName = 'VotesRemaining'; // To slience eslint
+VotesRemaining.displayName = 'VotesRemaining' // To slience eslint
 
 const FundsVotingKiosk = observer(props => {
-	const data = useData();
-	const { settings } = useSettings();
-	const { orgs } = useOrgs();
+	const data = useData()
+	const { settings } = useSettings()
+	const { orgs } = useOrgs()
 
-	const [ votingComplete, setVotingComplete ] = useState(false);
-	const [ countdownVisible, setCountdownVisible ] = useState(false);
-	const [ count, setCount ] = useState(60);
-	const [ isCounting, setIsCounting ] = useState(false);
+	const [ votingComplete, setVotingComplete ] = useState(false)
+	const [ countdownVisible, setCountdownVisible ] = useState(false)
+	const [ count, setCount ] = useState(60)
+	const [ isCounting, setIsCounting ] = useState(false)
 	
 	useInterval(() => {
-		setCount(count - 1);
-	}, isCounting ? 1000 : null);
+		setCount(count - 1)
+	}, isCounting ? 1000 : null)
 
 	const displayCountDown = () => {
-		setCountdownVisible(true);
-		setCount(data.votingRedirectTimeout);
-		setIsCounting(true);
-	};
+		setCountdownVisible(true)
+		setCount(data.votingRedirectTimeout)
+		setIsCounting(true)
+	}
 
 	useEffect(() => {
 		// Display countdown if user is on voting screen when voting becomes disabled
-		if(!settings.chitVotingActive) displayCountDown();
-	}, [settings.chitVotingActive]);
+		if(!settings.chitVotingActive) displayCountDown()
+	}, [settings.chitVotingActive])
 
-	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName;
+	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName
 
 	if(votingComplete) {
-		return <VotingComplete />;
+		return <VotingComplete />
 	}
 	return (
 		<OrgsContainer>
@@ -81,15 +81,15 @@ const FundsVotingKiosk = observer(props => {
 									org={ org }
 								/>
 							) }
-						/>);
+						/>)
 				})}
 			</Card.Group>
 
 			<FundsVoteContext.Consumer>{({ chits, saveChits, member }) => {
-				let sum = 0;
-				_.forEach(chits, value => sum += value);
-				const remaining = member.theme.chits - sum;
-				const buttonDisabled = remaining !== 0;
+				let sum = 0
+				_.forEach(chits, value => sum += value)
+				const remaining = member.theme.chits - sum
+				const buttonDisabled = remaining !== 0
 				
 				return(
 					<React.Fragment>
@@ -98,15 +98,15 @@ const FundsVotingKiosk = observer(props => {
 							size='huge'
 							disabled={ buttonDisabled }
 							onClick={ () => {
-								saveChits(props.source);
-								setVotingComplete(true);
+								saveChits(props.source)
+								setVotingComplete(true)
 							} }>Finalize Vote</FinalizeButton>
 					</React.Fragment>
-				);
+				)
 			}}</FundsVoteContext.Consumer>
 		</OrgsContainer>
-	);
-});
+	)
+})
 
 const OrgsContainer = styled(Container)`
 	padding-top: 20px;
@@ -140,7 +140,7 @@ const OrgsContainer = styled(Container)`
 	&& p {
 		line-height: 1em;
 	}
-`;
+`
 
 const FinalizeButton = styled(Button)`
 	width: 100%;
@@ -151,20 +151,20 @@ const FinalizeButton = styled(Button)`
 	font-size: 2rem !important;
 	text-transform: uppercase !important;
 	margin-bottom: 10px;
-`;
+`
 
 const NumberFormat = styled.span`
 	width: 12rem;
 	display: inline-block;
-`;
+`
 
 FundsVotingKiosk.propTypes = {
 	user: PropTypes.object,
 	source: PropTypes.string
-};
+}
 
 VotesRemaining.propTypes = {
 	value: PropTypes.number
-};
+}
 
-export default FundsVotingKiosk;
+export default FundsVotingKiosk

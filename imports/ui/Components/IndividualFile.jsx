@@ -1,38 +1,38 @@
-import Meteor from 'meteor/meteor';
-import React from 'react';
-import PropTypes from 'react';
+import Meteor from 'meteor/meteor'
+import React from 'react'
+import PropTypes from 'react'
 
-import { Grid, Button } from 'semantic-ui-react';
+import { Grid, Button } from 'semantic-ui-react'
 
 const IndividualFile = props => {
 
 	const deleteFile = () => {
-		let conf = confirm('Are you sure you want to delete the file?') || false;
+		let conf = confirm('Are you sure you want to delete the file?') || false
 		if(conf) {
 			Meteor.call('images.delete', props.fileId, (err, res) => {
 				if (err)
-					console.error(err);
-			});
+					console.error(err)
+			})
 		}
-	};
+	}
 
 	const renameFile = () => {
-		let validName = /[^a-zA-Z0-9 .:+()\-_%!&]/gi;
-		let prompt    = window.prompt('New file name?', props.fileName);
+		let validName = /[^a-zA-Z0-9 .:+()\-_%!&]/gi
+		let prompt    = window.prompt('New file name?', props.fileName)
 
 		// Replace any non valid characters, also do this on the server
 		if(prompt) {
-			prompt = prompt.replace(validName, '-');
-			prompt.trim();
+			prompt = prompt.replace(validName, '-')
+			prompt.trim()
 		}
 
 		// if (!_.isEmpty(prompt)) {
 		if(typeof prompt === 'string' && prompt !== ''){
 			Meteor.call('images.rename', props.fileId, prompt, function (err, res) {
-				if(err) console.error(err);
-			});
+				if(err) console.error(err)
+			})
 		}
-	};
+	}
 
 	return (
 		<React.Fragment>
@@ -63,14 +63,14 @@ const IndividualFile = props => {
 				</Grid.Column>
 			</Grid.Row>
 		</React.Fragment>
-	);
-};
+	)
+}
 
 IndividualFile.propTypes = {
 	fileId: PropTypes.string,
 	fileName: PropTypes.string,
 	fileUrl: PropTypes.string,
 	fileSize: PropTypes.number
-};
+}
 
-export default IndividualFile;
+export default IndividualFile

@@ -1,37 +1,37 @@
-import React from 'react';
-import numeral from 'numeral';
+import React from 'react'
+import numeral from 'numeral'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme, useSettings, useOrgs } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useTheme, useSettings, useOrgs } from '/imports/api/providers'
 
-import styled from 'styled-components';
-import { Grid, Progress } from 'semantic-ui-react';
+import styled from 'styled-components'
+import { Grid, Progress } from 'semantic-ui-react'
 
-import OrgInfo from '/imports/ui/Presentation/Graph/OrgInfo';
-import Bar from '/imports/ui/Presentation/Graph/Bar';
+import OrgInfo from '/imports/ui/Presentation/Graph/OrgInfo'
+import Bar from '/imports/ui/Presentation/Graph/Bar'
 
-import { COLORS } from '/imports/lib/utils';
+import { COLORS } from '/imports/lib/utils'
 
 const Graph = observer(() => {
-	const { theme } = useTheme();
-	const { settings } = useSettings();
-	const { orgs, topOrgs } = useOrgs();
+	const { theme } = useTheme()
+	const { settings } = useSettings()
+	const { orgs, topOrgs } = useOrgs()
 
 	const _calcStartingLeverage = () => {
-		let leverage = theme.leverageTotal;
+		let leverage = theme.leverageTotal
 
 		topOrgs.map((org) => {
-			leverage -= org.votedAmount || 0;
-			leverage -= org.topOff || 0;
-		});
+			leverage -= org.votedAmount || 0
+			leverage -= org.topOff || 0
+		})
 		if(theme.consolationActive) {
-			leverage -= (theme.organizations.length - orgs.values.length) * theme.consolationAmount;
+			leverage -= (theme.organizations.length - orgs.values.length) * theme.consolationAmount
 		}
-		return leverage;
-	};
+		return leverage
+	}
 
-	const visibility = settings.leverageVisible ? 'visible' : 'hidden';
-	const startingLeverage = _calcStartingLeverage();
+	const visibility = settings.leverageVisible ? 'visible' : 'hidden'
+	const startingLeverage = _calcStartingLeverage()
 
 	return (
 		<GraphPageContainer>
@@ -89,8 +89,8 @@ const Graph = observer(() => {
 				</InfoGrid>
 			</InfoContainer>
 		</GraphPageContainer>
-	);
-});
+	)
+})
 
 const GraphPageContainer = styled.div`
 	overflow-y: hidden;
@@ -98,14 +98,14 @@ const GraphPageContainer = styled.div`
 	font-family: 'TradeGothic20';
 	color: #fff;
 	min-height: 100%;
-`;
+`
 
 const GraphContainer = styled.div`
 	width: 90%;
 	height: 48vh;
 	position: relative;
 	margin: 10em auto 0 7em;
-`;
+`
 
 const XAxis = styled.div`
 	height: 100%;
@@ -123,7 +123,7 @@ const XAxis = styled.div`
 		font-size: 2em;
 		display: block;
 	}
-`;
+`
 
 const YAxis = styled.div`
 	position: absolute;
@@ -137,7 +137,7 @@ const YAxis = styled.div`
 	border-right: 0;
 	border-style: solid;
 	background: #fff;
-`;
+`
 
 const Goal = styled.div`
 	position: absolute;
@@ -148,20 +148,20 @@ const Goal = styled.div`
 	border-bottom: 0;
 	border-right: 0;
 	border-style: dashed;
-`;
+`
 /*
 const BarsOuterContainer = styled.div`
 	width: 100%;
 	position: relative;
 	margin: 2em auto 0 auto;
 	min-height: 100%;
-`;
+`
 
 const BarsInnerContainer = styled.div`
 	width: 100%;
 	height: 100%;
 	position: absolute;
-`;
+`
 */
 const BarsContainer = styled(Grid)`
 	width: 100%;
@@ -170,19 +170,19 @@ const BarsContainer = styled(Grid)`
 	&& {
 		margin-left: 0;
 	}
-`;
+`
 
 const InfoContainer = styled.div`
 	text-align: left;
 	margin: 2em auto 0 7em;
 	width: 90%;
-`;
+`
 
 const InfoGrid = styled(Grid)`
 	&& {
 		margin-left: 0;
 	}
-`;
+`
 
 const ProgressBar = styled(Progress)`
 	color: #FFF;
@@ -194,7 +194,7 @@ const ProgressBar = styled(Progress)`
 	&& .label{
 		color: #FFF;
 	}
-`;
+`
 
 const LeverageCount = styled.div`
 	position: absolute;
@@ -204,6 +204,6 @@ const LeverageCount = styled.div`
   text-align: right;
   font-size: 2em;
   padding-right: .2em;
-`;
+`
 
-export default Graph;
+export default Graph

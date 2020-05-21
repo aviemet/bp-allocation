@@ -1,17 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useMembers } from '/imports/api/providers';
-import numeral from 'numeral';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { useMembers } from '/imports/api/providers'
+import numeral from 'numeral'
 
-import styled from 'styled-components';
-import { Loader } from 'semantic-ui-react';
+import styled from 'styled-components'
+import { Loader } from 'semantic-ui-react'
 
 const PledgeInfo = ({ pledge }) => {
-	const { members, isLoading: membersLoading } = useMembers();
+	const { members, isLoading: membersLoading } = useMembers()
 
-	if(membersLoading || !members) return <Loader />;
+	if(membersLoading || !members) return <Loader />
 
-	const member = pledge.anonymous ? undefined : members.values.find(mem => mem._id === pledge.member);
+	const member = pledge.anonymous ? undefined : members.values.find(mem => mem._id === pledge.member)
 
 	console.log({ pledge, member })
 
@@ -23,8 +23,8 @@ const PledgeInfo = ({ pledge }) => {
 				<h1 className='amount'>{ numeral(pledge.amount).format('$0,0') }</h1>
 			</AnimationContent>
 		</AnimationContainer>
-	);
-};
+	)
+}
 
 const AnimationContainer = styled.div`
 	position: fixed;
@@ -53,15 +53,15 @@ const AnimationContainer = styled.div`
 			font-size: 8rem;
 		}
 	}
-`;
+`
 
 const AnimationContent = styled.div`
 	opacity: 0;
 	animation: fade-in-scroll-up 10s;
-`;
+`
 
 PledgeInfo.propTypes = {
 	pledge: PropTypes.object
-};
+}
 
-export default PledgeInfo;
+export default PledgeInfo

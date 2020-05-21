@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import numeral from 'numeral';
+import React from 'react'
+import PropTypes from 'prop-types'
+import numeral from 'numeral'
 
-import { Table, Icon } from 'semantic-ui-react';
+import { Table, Icon } from 'semantic-ui-react'
 
 const RoundTable = props => {
 
@@ -11,14 +11,14 @@ const RoundTable = props => {
 		funds: 0,
 		total: 0,
 		needed: 0
-	};
+	}
 
 	props.orgs.map(org => {
-		totals.percent += org.percent;
-		totals.funds += org.roundFunds;
-		totals.total += org.allocatedFunds + org.leverageFunds;
-		totals.needed += org.need;
-	});
+		totals.percent += org.percent
+		totals.funds += org.roundFunds
+		totals.total += org.allocatedFunds + org.leverageFunds
+		totals.needed += org.need
+	})
 
 	return(
 		<Table>
@@ -58,11 +58,11 @@ const RoundTable = props => {
 				</Table.Row>
 			</Table.Footer>
 		</Table>
-	);
-};
+	)
+}
 
 RoundTable.propTypes = {
 	orgs: PropTypes.array
-};
+}
 
-export default RoundTable;
+export default RoundTable

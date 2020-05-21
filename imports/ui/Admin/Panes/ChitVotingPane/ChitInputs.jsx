@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-import { Table, Input } from 'semantic-ui-react';
+import { Table, Input } from 'semantic-ui-react'
 
-import { OrganizationMethods } from '/imports/api/methods';
-import { observer } from 'mobx-react-lite';
+import { OrganizationMethods } from '/imports/api/methods'
+import { observer } from 'mobx-react-lite'
 
 const ChitInputs = observer(props => {
-	const [ weightVotes, setWeightVotes ] = useState(props.org.chitVotes.weight);
-	const [ countVotes, setCountVotes ] = useState(props.org.chitVotes.count);
+	const [ weightVotes, setWeightVotes ] = useState(props.org.chitVotes.weight)
+	const [ countVotes, setCountVotes ] = useState(props.org.chitVotes.count)
 
 	useEffect(() => {
-		saveVotes();
-	}, [weightVotes, countVotes]);
+		saveVotes()
+	}, [weightVotes, countVotes])
 
 	const saveVotes = () => {
 		OrganizationMethods.update.call({
@@ -23,8 +23,8 @@ const ChitInputs = observer(props => {
 					weight: weightVotes
 				}
 			}
-		});
-	};
+		})
+	}
 
 	return (
 		<Table.Row>
@@ -59,13 +59,13 @@ const ChitInputs = observer(props => {
 			</Table.Cell>
 
 		</Table.Row>
-	);
-});
+	)
+})
 
 ChitInputs.propTypes = {
 	org: PropTypes.object,
 	tabInfo: PropTypes.object,
 	positive: PropTypes.bool
-};
+}
 
-export default ChitInputs;
+export default ChitInputs

@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-import { readCsvWithHeadings } from '/imports/lib/papaParseMethods';
-import { sanitizeNames } from '/imports/lib/utils';
-// import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { readCsvWithHeadings } from '/imports/lib/papaParseMethods'
+import { sanitizeNames } from '/imports/lib/utils'
+// import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
-import { useTheme } from '/imports/api/providers';
-import { MemberMethods } from '/imports/api/methods';
+import { useTheme } from '/imports/api/providers'
+import { MemberMethods } from '/imports/api/methods'
 
-import CustomMessage from '/imports/ui/Components/CustomMessage';
-import { Button, Input } from 'semantic-ui-react';
+import CustomMessage from '/imports/ui/Components/CustomMessage'
+import { Button, Input } from 'semantic-ui-react'
 
 const ImportMembers = props => {
-	const { theme } = useTheme();
+	const { theme } = useTheme()
 	
-	const [ importResponseMessageVisible, setImportResponseMessageVisible ] = useState(false);
-	const [ importReponseMessage, setImportResponseMessage ] = useState('');
-	const [ loading, setLoading ] = useState(false);
+	const [ importResponseMessageVisible, setImportResponseMessageVisible ] = useState(false)
+	const [ importReponseMessage, setImportResponseMessage ] = useState('')
+	const [ loading, setLoading ] = useState(false)
 
 	const showImportResponseMessage = () => {
-		setImportResponseMessageVisible(true);
+		setImportResponseMessageVisible(true)
 
-		setTimeout(() => setImportResponseMessageVisible(false), 10000);
-	};
+		setTimeout(() => setImportResponseMessageVisible(false), 10000)
+	}
 
-	const hideImportResponseMessage = () => setImportResponseMessageVisible(false);
+	const hideImportResponseMessage = () => setImportResponseMessageVisible(false)
 
 	const acceptedValues = [
 		{
@@ -71,52 +71,52 @@ const ImportMembers = props => {
 			forms: ['email', 'mail', 'e-mail'],
 			type: String
 		}
-	];
+	]
 
-	const clickFileInput = () => document.getElementById('fileInput').click();
+	const clickFileInput = () => document.getElementById('fileInput').click()
 
 	const importMembers = e => {
-		const MIN_LOADING_SECONDS = 2;
-		const start = new Date();
-		setLoading(true);
+		const MIN_LOADING_SECONDS = 2
+		const start = new Date()
+		setLoading(true)
 
-		const file = e.currentTarget.files[0];
+		const file = e.currentTarget.files[0]
 
 		// TODO: Display error message on error
 		const parser = readCsvWithHeadings(file, acceptedValues, {
 			'beforeInferHeadings': headings => {
-				// console.log({ beforeInferHeadings: headings });
+				// console.log({ beforeInferHeadings: headings })
 			},
 			'afterInferHeadings': headings => {
-				// console.log({ afterInferHeadings: headings });
+				// console.log({ afterInferHeadings: headings })
 			},
 			'beforeRowParse': row => {
-				// console.log({ beforeRowParse: row });
+				// console.log({ beforeRowParse: row })
 			},
 			'afterRowParse': row => {
-				// console.log({ afterRowParse: row });
+				// console.log({ afterRowParse: row })
 				if(row.hasOwnProperty('fullName') && row.fullName.includes(',')) {
-					row.fullName = sanitizeNames(row.fullName);
+					row.fullName = sanitizeNames(row.fullName)
 				}
-				// console.log({ afterRowParse: row });
-				MemberMethods.upsert.call(Object.assign({ themeId: theme._id }, row));
+				// console.log({ afterRowParse: row })
+				MemberMethods.upsert.call(Object.assign({ themeId: theme._id }, row))
 			},
 			'onComplete': data => {
 				// Display loading icon in button for a minimum amount of time
-				let timeout = 0;
-				const now = new Date();
+				let timeout = 0
+				const now = new Date()
 				if((now - start) / 1000 < MIN_LOADING_SECONDS) {
-					timeout = (MIN_LOADING_SECONDS * 1000) - (now - start);
+					timeout = (MIN_LOADING_SECONDS * 1000) - (now - start)
 				}
 				setTimeout(() => {
-					setLoading(false);
-					setImportResponseMessage(`Successfully imported ${data.length} members`);
-					showImportResponseMessage();
-				}, timeout);
+					setLoading(false)
+					setImportResponseMessage(`Successfully imported ${data.length} members`)
+					showImportResponseMessage()
+				}, timeout)
 			}
-		});
-		return parser;
-	};
+		})
+		return parser
+	}
 
 	return (
 		<React.Fragment>
@@ -142,9 +142,9 @@ const ImportMembers = props => {
 				body={ importReponseMessage }
 			/> }
 		</React.Fragment>
-	);
-};
+	)
+}
 
-ImportMembers.propTypes = {};
+ImportMembers.propTypes = {}
 
-export default ImportMembers;
+export default ImportMembers

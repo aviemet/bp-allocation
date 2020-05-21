@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import numeral from 'numeral';
-import _ from 'lodash';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import numeral from 'numeral'
+import _ from 'lodash'
 
-import { Card, Icon, Button, Modal, Responsive } from 'semantic-ui-react';
-import styled from 'styled-components';
-import { observer } from 'mobx-react-lite';
+import { Card, Icon, Button, Modal, Responsive } from 'semantic-ui-react'
+import styled from 'styled-components'
+import { observer } from 'mobx-react-lite'
 
 // TODO: Use styledcomponents theme
-const GREEN = '#0D8744';
-const BLUE = '#002B43';
+const GREEN = '#0D8744'
+const BLUE = '#002B43'
 
 /**
  * OrgCard Component
@@ -29,29 +29,29 @@ const OrgCard = observer(({
 	...rest
 }) => {
 
-	const [ modalSize, setModalSize ] = useState('large');
+	const [ modalSize, setModalSize ] = useState('large')
 
-	const Overlay = overlay || false;
-	const Content = content || false;
+	const Overlay = overlay || false
+	const Content = content || false
 
-	let localBgColor = bgcolor || GREEN;
+	let localBgColor = bgcolor || GREEN
 	if(!bgcolor && index) {
-		const row = parseInt(index / 4) % 4;
-		localBgColor = (index + (row % 2)) % 2 === 0 ? GREEN : BLUE;
+		const row = parseInt(index / 4) % 4
+		localBgColor = (index + (row % 2)) % 2 === 0 ? GREEN : BLUE
 	}
 
-	const cardClasses = [];
-	if(size) cardClasses.push(size);
-	if(animateClass) cardClasses.push('animate-orgs');
-	if(disabled) cardClasses.push('disabled');
+	const cardClasses = []
+	if(size) cardClasses.push(size)
+	if(animateClass) cardClasses.push('animate-orgs')
+	if(disabled) cardClasses.push('disabled')
 
 	const handleOnUpdate = (e, { width }) => {
-		let size = 'large';
+		let size = 'large'
 		if(width <= Responsive.onlyTablet.minWidth) {
-			size = 'fullscreen';
+			size = 'fullscreen'
 		}
-		setModalSize(size);
-	};
+		setModalSize(size)
+	}
 
 	return (
 		<StyledCard link={ false } className={ cardClasses.join(' ') } onClick={ onClick } >
@@ -83,10 +83,10 @@ const OrgCard = observer(({
 				{ (_.isUndefined(showAsk) ? true : !!showAsk) && <OrgAsk>{ numeral(org.ask).format('$0a') }</OrgAsk> }
 			</CardContent>
 		</StyledCard>
-	);
-});
+	)
+})
 
-OrgCard.colors = { GREEN, BLUE };
+OrgCard.colors = { GREEN, BLUE }
 
 const StyledCard = styled(Card)`
 	text-align: center;
@@ -110,57 +110,57 @@ const StyledCard = styled(Card)`
 			color: #666 !important;
 		}
 	}
-`;
+`
 
 const OrgTitle = styled.div`
-	font-family: TradeGothic;
-	font-size: 2.5rem;
-	margin: 5px;
-	font-weight: 600;
-	min-height: 8rem;
-	position: relative;
-	padding: 0;
+	font-family: TradeGothic
+	font-size: 2.5rem
+	margin: 5px
+	font-weight: 600
+	min-height: 8rem
+	position: relative
+	padding: 0
 
 	.small & {
-		min-height: 3.5rem;
+		min-height: 3.5rem
 	}
 
 	.big & {
-		min-height: 13.5rem;
-		font-size: 4rem;
+		min-height: 13.5rem
+		font-size: 4rem
 	}
 
 	& > p {
-		display: block;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
+		display: block
+		position: absolute
+		top: 50%
+		left: 50%
+		transform: translate(-50%, -50%)
+		width: 100%
 	}
-`;
+`
 
 const OrgAsk = styled.p`
-	font-family: TradeGothic20;
-	font-size: 3rem;
-	font-weight: 700;
-`;
+	font-family: TradeGothic20
+	font-size: 3rem
+	font-weight: 700
+`
 
 const CardContent = styled(Card.Content)`
-	background-color: ${props => props.bgcolor} !important;
-	color: #FFF;
-	text-align: center;
+	background-color: ${props => props.bgcolor} !important
+	color: #FFF
+	text-align: center
 
 	& a {
-		color: #FFF;
+		color: #FFF
 	}
-`;
+`
 
 const InfoLink = styled(Icon)`
-	position: absolute;
-	top: 10px;
-	right: 10px;
-`;
+	position: absolute
+	top: 10px
+	right: 10px
+`
 
 OrgCard.propTypes = {
 	org: PropTypes.object,
@@ -180,6 +180,6 @@ OrgCard.propTypes = {
 	bgcolor: PropTypes.string,
 	onClick: PropTypes.func,
 	rest: PropTypes.any
-};
+}
 
-export default OrgCard;
+export default OrgCard

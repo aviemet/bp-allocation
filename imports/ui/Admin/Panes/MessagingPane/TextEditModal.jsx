@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Button, Modal, Form, Input, TextArea } from 'semantic-ui-react';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { Button, Modal, Form, Input, TextArea } from 'semantic-ui-react'
 
-import { MessageMethods } from '/imports/api/methods';
+import { MessageMethods } from '/imports/api/methods'
 
 const TextEditModal = ({ buttonText, message }) => {
-	const [ isModalOpen, setIsModalOpen ] = useState(false);
-	const [ messageTitle, setMessageTitle ] = useState((message && message.title) || '');
-	const [ messageBody, setMessageBody ] = useState((message && message.body) || '');
+	const [ isModalOpen, setIsModalOpen ] = useState(false)
+	const [ messageTitle, setMessageTitle ] = useState((message && message.title) || '')
+	const [ messageBody, setMessageBody ] = useState((message && message.body) || '')
 
 	const createNewMessage = e => {
-		e.preventDefault();
+		e.preventDefault()
 
 		MessageMethods.create.call({
 			title: messageTitle,
@@ -18,22 +18,22 @@ const TextEditModal = ({ buttonText, message }) => {
 			type: 'text'
 		}, (err, res) => {
 			if(err) {
-				console.error(err);
+				console.error(err)
 			} else {
-				handleClose();
+				handleClose()
 			}
-		});
-	};
+		})
+	}
 
 	const clearInputs = () => {
-		setMessageTitle('');
-		setMessageBody('');
-	};
+		setMessageTitle('')
+		setMessageBody('')
+	}
 
 	const handleClose = () => {
-		clearInputs();
-		setIsModalOpen(false);
-	};
+		clearInputs()
+		setIsModalOpen(false)
+	}
 
 	return (
 		<Modal 
@@ -77,12 +77,12 @@ const TextEditModal = ({ buttonText, message }) => {
 				</Modal.Description>
 			</Modal.Content>
 		</Modal>
-	);
-};
+	)
+}
 
 TextEditModal.propTypes = {
 	buttonText: PropTypes.string.isRequired,
 	message: PropTypes.object
-};
+}
 
-export default TextEditModal;
+export default TextEditModal

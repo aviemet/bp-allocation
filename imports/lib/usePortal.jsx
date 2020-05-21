@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react'
 
 /**
  * Hook to create a React Portal.
@@ -6,23 +6,23 @@ import React, { useRef, useEffect } from 'react';
  * makes this trivial), so there is no need to ensure the parent target already
  * exists.
  * @example
- * const target = usePortal(id, [id]);
- * return createPortal(children, target);
+ * const target = usePortal(id, [id])
+ * return createPortal(children, target)
  * @param {String} id The id of the target container, e.g 'modal' or 'spotlight'
  * @returns {HTMLElement} The DOM node to use as the Portal target.
  */
 const usePortal = id => {
-	const rootElemRef = useRef(null);
+	const rootElemRef = useRef(null)
 
 	/**
 	 * Creates DOM element to be used as React root.
 	 * @returns {HTMLElement}
 	 */
 	const createRootElement = id => {
-		const rootContainer = document.createElement('div');
-		rootContainer.setAttribute('id', id);
-		return rootContainer;
-	};
+		const rootContainer = document.createElement('div')
+		rootContainer.setAttribute('id', id)
+		return rootContainer
+	}
 
 	/**
 	 * Appends element as last child of body.
@@ -32,30 +32,30 @@ const usePortal = id => {
 		document.body.insertBefore(
 			rootElem,
 			document.body.lastElementChild.nextElementSibling,
-		);
-	};
+		)
+	}
 
 	useEffect(() => {
 		// Look for existing target dom element to append to
-		const existingParent = document.querySelector(`#${id}`);
+		const existingParent = document.querySelector(`#${id}`)
 		// Parent is either a new root or the existing dom element
-		const parentElem = existingParent || createRootElement(id);
+		const parentElem = existingParent || createRootElement(id)
 
 		// If there is no existing DOM element, add a new one.
 		if (!existingParent) {
-			addRootElement(parentElem);
+			addRootElement(parentElem)
 		}
 
 		// Add the detached element to the parent
-		parentElem.appendChild(rootElemRef.current);
+		parentElem.appendChild(rootElemRef.current)
 
 		return () => {
-			rootElemRef.current.remove();
+			rootElemRef.current.remove()
 			if (parentElem.childNodes.length === -1) {
-				parentElem.remove();
+				parentElem.remove()
 			}
-		};
-	}, []);
+		}
+	}, [])
 
 	/**
 	 * It's important we evaluate this lazily:
@@ -69,12 +69,12 @@ const usePortal = id => {
 	 */
 	const getRootElem = () => {
 		if (!rootElemRef.current) {
-			rootElemRef.current = document.createElement('div');
+			rootElemRef.current = document.createElement('div')
 		}
-		return rootElemRef.current;
-	};
+		return rootElemRef.current
+	}
 
-	return getRootElem();
-};
+	return getRootElem()
+}
 
-export default usePortal;
+export default usePortal

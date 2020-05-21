@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Button, Modal, Form, Input } from 'semantic-ui-react';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { Button, Modal, Form, Input } from 'semantic-ui-react'
 
-import { MessageMethods } from '/imports/api/methods';
-import RichTextEditor from '/imports/ui/Components/RichTextEditor';
+import { MessageMethods } from '/imports/api/methods'
+import RichTextEditor from '/imports/ui/Components/RichTextEditor'
 
 const EmailEditModal = ({ buttonText, message }) => {
-	const [ isModalOpen, setIsModalOpen ] = useState(false);
-	const [ messageTitle, setMessageTitle ] = useState((message && message.title) || '');
-	const [ messageSubject, setMessageSubject ] = useState((message && message.subject) || '');
-	const [ messageBody, setMessageBody ] = useState((message && message.body) || '');
+	const [ isModalOpen, setIsModalOpen ] = useState(false)
+	const [ messageTitle, setMessageTitle ] = useState((message && message.title) || '')
+	const [ messageSubject, setMessageSubject ] = useState((message && message.subject) || '')
+	const [ messageBody, setMessageBody ] = useState((message && message.body) || '')
 
 	const createNewMessage = e => {
-		e.preventDefault();
+		e.preventDefault()
 
 		MessageMethods.create.call({
 			title: messageTitle,
@@ -21,21 +21,21 @@ const EmailEditModal = ({ buttonText, message }) => {
 			type: 'email'
 		}, (err, res) => {
 			if(err) {
-				console.error(err);
+				console.error(err)
 			} else {
-				setIsModalOpen(false);
+				setIsModalOpen(false)
 			}
-		});
-	};
+		})
+	}
 
 	// Sanitize and escape content for saving in DB
 	const handleRichContentChange = content => {
-		setMessageBody(content);
-	};
+		setMessageBody(content)
+	}
 
 	const handleClose = () => {
-		setIsModalOpen(false);
-	};
+		setIsModalOpen(false)
+	}
 
 	return (
 		<Modal 
@@ -88,12 +88,12 @@ const EmailEditModal = ({ buttonText, message }) => {
 				</Modal.Description>
 			</Modal.Content>
 		</Modal>
-	);
-};
+	)
+}
 
 EmailEditModal.propTypes = {
 	buttonText: PropTypes.string.isRequired,
 	message: PropTypes.object
-};
+}
 
-export default EmailEditModal;
+export default EmailEditModal

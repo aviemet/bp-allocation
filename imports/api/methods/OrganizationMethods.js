@@ -1,10 +1,10 @@
-import { Meteor } from 'meteor/meteor';
-import { ValidatedMethod } from 'meteor/mdg:validated-method';
+import { Meteor } from 'meteor/meteor'
+import { ValidatedMethod } from 'meteor/mdg:validated-method'
 
-import { roundFloat } from '/imports/lib/utils';
+import { roundFloat } from '/imports/lib/utils'
 
-import { Themes, Organizations } from '/imports/api/db';
-import ImageMethods from './ImageMethods';
+import { Themes, Organizations } from '/imports/api/db'
+import ImageMethods from './ImageMethods'
 
 const OrganizationMethods = {
 	/**
@@ -18,13 +18,13 @@ const OrganizationMethods = {
 		run(data) {
 			return Organizations.insert(data, (err, res) => {
 				if(err){
-					console.error(err);
+					console.error(err)
 				} else {
 					Themes.update({ _id: data.theme }, {
 						$push: { organizations: res }
-					});
+					})
 				}
-			});
+			})
 		}
 	}),
 
@@ -37,7 +37,7 @@ const OrganizationMethods = {
 		validate: null,
 
 		run({ id, data }) {
-			return Organizations.update({ _id: id }, { $set: data });
+			return Organizations.update({ _id: id }, { $set: data })
 		}
 	}),
 
@@ -50,23 +50,23 @@ const OrganizationMethods = {
 		validate: null,
 
 		run(id) {
-			let org = Organizations.findOne(id);
+			let org = Organizations.findOne(id)
 			if(org){
 				// First delete any associated images
 				if(org.image){
-					ImageMethods.remove.call(org.image);
+					ImageMethods.remove.call(org.image)
 				}
 
 				// Remove organization
 				return Organizations.remove(id, (err) => {
-					if(err) console.error(err);
+					if(err) console.error(err)
 
 					Themes.update({ _id: org.theme }, { $pull: { organizations: id } }, (err) => {
-						if(err) console.error(err);
-					});
-				});
+						if(err) console.error(err)
+					})
+				})
 			} else {
-				throw new Meteor.Error('OrganizationMethods.remove', 'Organization to be removed was not found');
+				throw new Meteor.Error('OrganizationMethods.remove', 'Organization to be removed was not found')
 			}
 
 
@@ -84,14 +84,14 @@ const OrganizationMethods = {
 		run(ids) {
 			// Get list of associated images to remove
 			var images = Organizations.find({ _id: { $in: ids }, image: { $exists: true } }, { _id: false, image: true }).map((org) => {
-				return org.image;
-			});
+				return org.image
+			})
 
 			// Remove the images
-			ImageMethods.removeMany.call(images);
+			ImageMethods.removeMany.call(images)
 
 			// Remove organization
-			Organizations.remove({ _id: { $in: ids } });
+			Organizations.remove({ _id: { $in: ids } })
 
 
 		}
@@ -107,15 +107,15 @@ const OrganizationMethods = {
 		validate: null,
 
 		run({ id, amount, member, anonymous }) {
-			amount = roundFloat(amount);
+			amount = roundFloat(amount)
 
-			const saveData = { amount, member, anonymous };
+			const saveData = { amount, member, anonymous }
 
 			return Organizations.update({ _id: id }, {
 				$push: {
 					pledges: saveData
 				}
-			});
+			})
 		}
 	}),
 
@@ -136,7 +136,7 @@ const OrganizationMethods = {
 					}
 				},
 				{ getAutoValues: false }
-			);
+			)
 		}
 	}),
 
@@ -153,15 +153,15 @@ const OrganizationMethods = {
 		validate: null,
 
 		run({id, amount, match, themeId}) {
-			amount = roundFloat(amount);
-			let theme = Themes.find({_id: themeId}).fetch()[0];
+			amount = roundFloat(amount)
+			let theme = Themes.find({_id: themeId}).fetch()[0]
 
 			// Pledge should increment org.pledged by twice the amount
 			// increment theme.leverageUsed by the amount
 
-			Themes.update({_id: themeId}, {$inc: {leverageUsed: amount}});
+			Themes.update({_id: themeId}, {$inc: {leverageUsed: amount}})
 
-			return Organizations.update({_id: id}, {$inc: {pledges: (amount * parseInt(theme.matchRatio))}});
+			return Organizations.update({_id: id}, {$inc: {pledges: (amount * parseInt(theme.matchRatio))}})
 		}
 	}),*/
 
@@ -174,17 +174,17 @@ const OrganizationMethods = {
 		validate: null,
 
 		run({ id, negate }) {
-			negate = negate || false;
+			negate = negate || false
 
-			let org = Organizations.find({ _id: id }).fetch()[0];
+			let org = Organizations.find({ _id: id }).fetch()[0]
 
-			let topOffAmount = 0;
+			let topOffAmount = 0
 
 			if(!negate)	{
-				topOffAmount = org.ask - org.amountFromVotes - org.pledges;
+				topOffAmount = org.ask - org.amountFromVotes - org.pledges
 			}
 
-			return Organizations.update({ _id: id }, { $set: { topOff: topOffAmount } });
+			return Organizations.update({ _id: id }, { $set: { topOff: topOffAmount } })
 		}
 	}),
 
@@ -198,8 +198,8 @@ const OrganizationMethods = {
 		validate: null,
 
 		run({ id }) {
-			// let org = Organizations.find({_id: id}).fetch()[0];
-			// let theme = Themes.find({_id: org.theme}).fetch()[0];
+			// let org = Organizations.find({_id: id}).fetch()[0]
+			// let theme = Themes.find({_id: org.theme}).fetch()[0]
 
 			return Organizations.update({ _id: id }, {
 				$set: {
@@ -207,10 +207,10 @@ const OrganizationMethods = {
 					amountFromVotes: 0,
 					topOff: 0
 				}
-			});
+			})
 		}
 	}),
 
-};
+}
 
-export default OrganizationMethods;
+export default OrganizationMethods

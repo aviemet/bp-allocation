@@ -1,6 +1,6 @@
-import TrackableCollection from './lib/TrackableCollection';
+import TrackableCollection from './lib/TrackableCollection'
 
 class MessagesCollection extends TrackableCollection {
 }
 
-export default MessagesCollection;
+export default MessagesCollection

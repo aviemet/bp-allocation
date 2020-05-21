@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { MessageMethods } from '/imports/api/methods';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { MessageMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react';
+import { Checkbox } from 'semantic-ui-react'
 
 const includeVotingLinkToggle = ({ message }) => {
 	const saveValue = (e, data) => {
@@ -11,8 +11,8 @@ const includeVotingLinkToggle = ({ message }) => {
 			data: {
 				active: data.checked
 			}
-		});
-	};
+		})
+	}
 
 	return(
 		<Checkbox
@@ -20,11 +20,11 @@ const includeVotingLinkToggle = ({ message }) => {
 			onClick={ saveValue }
 			checked={ message.active || false }
 		/>
-	);
-};
+	)
+}
 
 includeVotingLinkToggle.propTypes = {
 	message: PropTypes.object.isRequired
-};
+}
 
-export default includeVotingLinkToggle;
+export default includeVotingLinkToggle

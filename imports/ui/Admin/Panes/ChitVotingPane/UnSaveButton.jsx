@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import numeral from 'numeral';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import _ from 'lodash'
+import numeral from 'numeral'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme } from '/imports/api/providers';
-import { ThemeMethods } from '/imports/api/methods';
+import { observer } from 'mobx-react-lite'
+import { useTheme } from '/imports/api/providers'
+import { ThemeMethods } from '/imports/api/methods'
 
-import { Button, Modal } from 'semantic-ui-react';
+import { Button, Modal } from 'semantic-ui-react'
 
 const UnSaveButton = observer(props => {
-	const [ modalOpen, setModalOpen ] = useState(false);
+	const [ modalOpen, setModalOpen ] = useState(false)
 
-	const { theme } = useTheme();
+	const { theme } = useTheme()
 
 	const unSaveOrg = () => {
 		ThemeMethods.unSaveOrg.call({
 			theme_id: theme._id,
 			org_id: props.org._id
-		});
-		setModalOpen(false);
-	};
+		})
+		setModalOpen(false)
+	}
 
-	const save = _.find(theme.saves, ['org', props.org._id]);
+	const save = _.find(theme.saves, ['org', props.org._id])
 
 	return (
 		<Modal
@@ -56,11 +56,11 @@ const UnSaveButton = observer(props => {
 				/>
 			</Modal.Actions>
 		</Modal>
-	);
-});
+	)
+})
 
 UnSaveButton.propTypes = {
 	org: PropTypes.object
-};
+}
 
-export default UnSaveButton;
+export default UnSaveButton

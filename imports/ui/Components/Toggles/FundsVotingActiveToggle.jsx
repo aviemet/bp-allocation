@@ -1,15 +1,15 @@
-import React from 'react';
+import React from 'react'
 
-import { observer } from 'mobx-react-lite';
-import { useSettings } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useSettings } from '/imports/api/providers'
 
-import { PresentationSettingsMethods } from '/imports/api/methods';
+import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react';
+import { Checkbox } from 'semantic-ui-react'
 
 const FundsVotingActiveToggle = observer(() => {
 
-	const { settings } = useSettings();
+	const { settings } = useSettings()
 
 	const saveValue = (e, data) => {
 		PresentationSettingsMethods.update.call({
@@ -19,10 +19,10 @@ const FundsVotingActiveToggle = observer(() => {
 				chitVotingActive: false,
 				topupsActive: false
 			}
-		});
-	};
+		})
+	}
 
-	if(!settings.useKioskFundsVoting) return <></>;
+	if(!settings.useKioskFundsVoting) return <></>
 
 	return(
 		<Checkbox
@@ -32,8 +32,8 @@ const FundsVotingActiveToggle = observer(() => {
 			onClick={ saveValue }
 			checked={ settings.fundsVotingActive || false }
 		/>
-	);
+	)
 
-});
+})
 
-export default FundsVotingActiveToggle;
+export default FundsVotingActiveToggle

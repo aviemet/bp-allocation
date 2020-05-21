@@ -1,6 +1,6 @@
-import { Meteor } from 'meteor/meteor';
-import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import { Messages } from '/imports/api/db';
+import { Meteor } from 'meteor/meteor'
+import { ValidatedMethod } from 'meteor/mdg:validated-method'
+import { Messages } from '/imports/api/db'
 
 const MessageMethods = {
 	/**
@@ -13,9 +13,9 @@ const MessageMethods = {
 
 		run(data) {
 			try {
-				return Messages.insert(data);
+				return Messages.insert(data)
 			} catch(exception) {
-				throw new Meteor.Error('500', exception);
+				throw new Meteor.Error('500', exception)
 			}
 		}
 	}),
@@ -30,9 +30,9 @@ const MessageMethods = {
 
 		run({ id, data }) {
 			try {
-				return Messages.update({ _id: id }, { $set: data });
+				return Messages.update({ _id: id }, { $set: data })
 			} catch(exception) {
-				throw new Meteor.Error('500', exception);
+				throw new Meteor.Error('500', exception)
 			}
 		}
 	}),
@@ -46,10 +46,10 @@ const MessageMethods = {
 		validate: null,
 
 		run(id) {
-			return Messages.remove({ _id: id });
+			return Messages.remove({ _id: id })
 		}
 	}),
 
-};
+}
 
-export default MessageMethods;
+export default MessageMethods

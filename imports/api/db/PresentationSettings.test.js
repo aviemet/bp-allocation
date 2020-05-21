@@ -1,6 +1,6 @@
-import { expect } from 'chai';
-import { resetDatabase } from 'meteor/xolvio:cleaner';
-import { PresentationSettings } from '/imports/api/db';
+import { expect } from 'chai'
+import { resetDatabase } from 'meteor/xolvio:cleaner'
+import { PresentationSettings } from '/imports/api/db'
 
 /** Things to test:
  * - Required fields are required
@@ -23,27 +23,27 @@ const settingsDefaults = {
 	resultsVisited: false,
 	awardsPresentation: false,
 	awardAmount: 0
-};
+}
 
-let presentationSettings;
+let presentationSettings
 
 describe("PresentationSettings model", function() {
 	before(function() {
-		resetDatabase();
-		presentationSettings = PresentationSettings.insert({});
-	});
+		resetDatabase()
+		presentationSettings = PresentationSettings.insert({})
+	})
 
 	context("Creating a record", function() {
 
 
 		it("Should return an _id when succesful", function() {
-			expect(presentationSettings).to.not.be.null;
-		});
+			expect(presentationSettings).to.not.be.null
+		})
 
 		it("Should have default values", function() {
-			let settings = PresentationSettings.find({ _id: presentationSettings }).fetch()[0];
-			expect(settings).to.include(settingsDefaults);
-		});
+			let settings = PresentationSettings.find({ _id: presentationSettings }).fetch()[0]
+			expect(settings).to.include(settingsDefaults)
+		})
 
-	});
-});
+	})
+})

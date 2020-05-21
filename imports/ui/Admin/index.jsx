@@ -1,9 +1,9 @@
-import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React from 'react'
+import { Route, Switch } from 'react-router-dom'
 
-import { Segment, Container } from 'semantic-ui-react';
+import { Segment, Container } from 'semantic-ui-react'
 
-import { SettingsPane, MessagingPane, MembersPane, OrganizationsPane, ChitVotingPane, AllocationPane, LeveragePane, PresentationPane, MessageEdit } from '/imports/ui/Admin/Panes';
+import { SettingsPane, MessagingPane, MembersPane, OrganizationsPane, ChitVotingPane, AllocationPane, LeveragePane, PresentationPane, MessageEdit } from '/imports/ui/Admin/Panes'
 
 const Admin = () => {
 	return (
@@ -28,7 +28,7 @@ const Admin = () => {
 				</Switch>	
 			</Segment>
 		</Container>
-	);
-};
+	)
+}
 
-export default Admin;
+export default Admin

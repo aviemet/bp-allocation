@@ -1,74 +1,74 @@
-import React, { useState, useEffect } from 'react';
-import _ from 'lodash';
-import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods';
-import { observer } from 'mobx-react-lite';
-import { useTheme, useSettings } from '/imports/api/providers';
+import React, { useState, useEffect } from 'react'
+import _ from 'lodash'
+import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods'
+import { observer } from 'mobx-react-lite'
+import { useTheme, useSettings } from '/imports/api/providers'
 
-import CustomMessage from '/imports/ui/Components/CustomMessage';
-import { Loader, Form, Checkbox, Label } from 'semantic-ui-react';
-import TextMembersButton from '/imports/ui/Components/TextMembersButton';
-import ResetOrgFundsButton from '/imports/ui/Components/ResetOrgFundsButton';
+import CustomMessage from '/imports/ui/Components/CustomMessage'
+import { Loader, Form, Checkbox, Label } from 'semantic-ui-react'
+import TextMembersButton from '/imports/ui/Components/TextMembersButton'
+import ResetOrgFundsButton from '/imports/ui/Components/ResetOrgFundsButton'
 
 const SettingsPane = observer(props => {
-	const { theme } = useTheme();
-	const { settings, isLoading: settingsLoading } = useSettings();
+	const { theme } = useTheme()
+	const { settings, isLoading: settingsLoading } = useSettings()
 
-	const [ title, setTitle ]                           = useState(theme.title);
-	const [ question, setQuestion ]                     = useState(theme.question);
-	const [ slug, setSlug ]                             = useState(theme.slug);
-	const [ chitWeight, setChitWeight ]                 = useState(theme.chitWeight);
-	const [ matchRatio, setMatchRatio ]                 = useState(theme.matchRatio);
-	const [ leverageTotal, setLeverageTotal ]           = useState(theme.leverageTotal);
-	const [ consolationAmount, setConsolationAmount ]   = useState(theme.consolationAmount);
-	const [ consolationActive, setConsolationActive ]   = useState(theme.consolationActive);
-	const [ timerLength, setTimerLength ]               = useState(settings.timerLength || 60);
-	const [ useKioskChitVoting, setKioskChitVoting ]    = useState(settings.useKioskChitVoting || false);
-	const [ useKioskFundsVoting, setKioskFundsVoting ]  = useState(settings.useKioskFundsVoting || false);
-	const [ awardsPresentation, setAwardsPresentation ] = useState(settings.awardsPresentation || false);
-	const [ awardAmount, setAwardAmount ]               = useState(settings.awardAmount || 0);
+	const [ title, setTitle ]                           = useState(theme.title)
+	const [ question, setQuestion ]                     = useState(theme.question)
+	const [ slug, setSlug ]                             = useState(theme.slug)
+	const [ chitWeight, setChitWeight ]                 = useState(theme.chitWeight)
+	const [ matchRatio, setMatchRatio ]                 = useState(theme.matchRatio)
+	const [ leverageTotal, setLeverageTotal ]           = useState(theme.leverageTotal)
+	const [ consolationAmount, setConsolationAmount ]   = useState(theme.consolationAmount)
+	const [ consolationActive, setConsolationActive ]   = useState(theme.consolationActive)
+	const [ timerLength, setTimerLength ]               = useState(settings.timerLength || 60)
+	const [ useKioskChitVoting, setKioskChitVoting ]    = useState(settings.useKioskChitVoting || false)
+	const [ useKioskFundsVoting, setKioskFundsVoting ]  = useState(settings.useKioskFundsVoting || false)
+	const [ awardsPresentation, setAwardsPresentation ] = useState(settings.awardsPresentation || false)
+	const [ awardAmount, setAwardAmount ]               = useState(settings.awardAmount || 0)
 	
-	const [ formErrorVisible, setFormErrorVisible ] = useState(false);
-	const [ formErrorMessage, setFormErrorMessage ] = useState('');
+	const [ formErrorVisible, setFormErrorVisible ] = useState(false)
+	const [ formErrorMessage, setFormErrorMessage ] = useState('')
 
 	useEffect(() => {
 		if(!settingsLoading) {
-			setTimerLength(settings.timerLength);
-			setKioskChitVoting(settings.useKioskChitVoting);
-			setKioskFundsVoting(settings.useKioskFundsVoting);
-			setAwardsPresentation(settings.awardsPresentation);
-			setAwardAmount(settings.awardAmount);
+			setTimerLength(settings.timerLength)
+			setKioskChitVoting(settings.useKioskChitVoting)
+			setKioskFundsVoting(settings.useKioskFundsVoting)
+			setAwardsPresentation(settings.awardsPresentation)
+			setAwardAmount(settings.awardAmount)
 		}
-	}, [settingsLoading]);
+	}, [settingsLoading])
 
 	const showFormErrorMessage = () => {
-		setFormErrorVisible(true);
-		setTimeout(hideFormErrorMessage, 10000);
-	};
+		setFormErrorVisible(true)
+		setTimeout(hideFormErrorMessage, 10000)
+	}
 
 	const hideFormErrorMessage = () => {
-		setFormErrorVisible(false);
-		setFormErrorMessage('');
-	};
+		setFormErrorVisible(false)
+		setFormErrorMessage('')
+	}
 
 	const handleSubmit = e => {
-		e.preventDefault();
+		e.preventDefault()
 
 		let formData = {
 			theme: { title, question, slug, chitWeight, matchRatio, leverageTotal, consolationActive, consolationAmount },
 			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting, awardsPresentation, awardAmount }
-		};
+		}
 
 		// Iterate over database objects with keys to be saved
 		_.forEach(formData, (value, dataKey) => {
 			// In each object, delete keys which haven't changed
 			_.keys(formData[dataKey]).map(key => {
-				// I know we shouldn't use eval; Justification:
+				// I know we shouldn't use eval Justification:
 				// Values being eval'd are not from user, the only way to have dynamic variable names in JS
 				if(eval(key) === eval(dataKey)[key]) {
-					delete formData[dataKey][key];
+					delete formData[dataKey][key]
 				}
-			});
-		});
+			})
+		})
 
 		// Only update if data has changed
 		if(!_.isEmpty(formData.theme)) {
@@ -77,25 +77,25 @@ const SettingsPane = observer(props => {
 				data: formData.theme
 			}, (err, res) => {
 				if(err) {
-					setFormErrorMessage(err.reason.errmsg);
-					showFormErrorMessage();
+					setFormErrorMessage(err.reason.errmsg)
+					showFormErrorMessage()
 					Object.keys(formData.theme).forEach(key => {
-						const val = key.charAt(0).toUpperCase() + key.slice(1);
-						eval(`set${val}('${theme[key]}')`);
-					});
+						const val = key.charAt(0).toUpperCase() + key.slice(1)
+						eval(`set${val}('${theme[key]}')`)
+					})
 				}
-			});
+			})
 		}
 
 		if(!_.isEmpty(formData.settings)) {
 			PresentationSettingsMethods.update.call({
 				id: settings._id,
 				data: formData.settings
-			});
+			})
 		}
-	};
+	}
 
-	if(!theme) return(<Loader/>);
+	if(!theme) return(<Loader/>)
 	return (
 		<>
 			<Form onBlur={ handleSubmit } onSubmit={ handleSubmit }>
@@ -280,10 +280,10 @@ const SettingsPane = observer(props => {
 				body={ formErrorMessage }
 			/> }
 		</>
-	);
-});
+	)
+})
 
-export default SettingsPane;
+export default SettingsPane
 
 /*
 Voting for Allocation Night can be done online! You'll receive a link tonight. For now, here are the finalists

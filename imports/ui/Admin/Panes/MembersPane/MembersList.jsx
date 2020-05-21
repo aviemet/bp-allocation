@@ -1,72 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import numeral from 'numeral';
-import { paginate } from '/imports/lib/utils';
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import numeral from 'numeral'
+import { paginate } from '/imports/lib/utils'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme, useSettings } from '/imports/api/providers';
-import { MemberMethods } from '/imports/api/methods';
+import { observer } from 'mobx-react-lite'
+import { useTheme, useSettings } from '/imports/api/providers'
+import { MemberMethods } from '/imports/api/methods'
 
-import { Table, Icon, Button, Dropdown } from 'semantic-ui-react';
-import TablePagination from '/imports/ui/Components/TablePagination';
-import EditableText from '/imports/ui/Components/EditableText';
-import ConfirmationModal from '/imports/ui/Components/ConfirmationModal';
+import { Table, Icon, Button, Dropdown } from 'semantic-ui-react'
+import TablePagination from '/imports/ui/Components/TablePagination'
+import EditableText from '/imports/ui/Components/EditableText'
+import ConfirmationModal from '/imports/ui/Components/ConfirmationModal'
 
 const MembersList = observer(props => {
-	const { theme } = useTheme();
-	const { settings } = useSettings();
+	const { theme } = useTheme()
+	const { settings } = useSettings()
 	
-	const [ page, setPage ] = useState(0);
-	const [ itemsPerPage/*, setItemsPerPage*/ ] = useState(10);
-	const [ sortColumn, setSortColumn ] = useState();
-	const [ sortDirection, setSortDirection ] = useState();
+	const [ page, setPage ] = useState(0)
+	const [ itemsPerPage/*, setItemsPerPage*/ ] = useState(10)
+	const [ sortColumn, setSortColumn ] = useState()
+	const [ sortDirection, setSortDirection ] = useState()
 
-	const [ modalOpen, setModalOpen ] = useState(false);
-	const [ modalHeader, setModalHeader ] = useState('');
-	const [ modalContent, setModalContent ] = useState('');
-	const [ modalAction, setModalAction ] = useState();
+	const [ modalOpen, setModalOpen ] = useState(false)
+	const [ modalHeader, setModalHeader ] = useState('')
+	const [ modalContent, setModalContent ] = useState('')
+	const [ modalAction, setModalAction ] = useState()
 
-	const { members } = props;
+	const { members } = props
 
 	const removeMember = id => () => {
-		MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: theme._id });
-	};
+		MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: theme._id })
+	}
 
 	const removeAllMembers = () => {
-		MemberMethods.removeAllMembers.call(theme._id);
-	};
+		MemberMethods.removeAllMembers.call(theme._id)
+	}
 
 	const updateMember = (id, field) => value => {
-		let data = {};
-		data[field] = value;
-		MemberMethods.update.call({ id: id, data });
-	};
+		let data = {}
+		data[field] = value
+		MemberMethods.update.call({ id: id, data })
+	}
 
 	const updateMemberTheme = (id, field) => value => {
-		let data = {};
-		data[field] = value;
-		MemberMethods.updateTheme.call({ id: id, data });
-	};
+		let data = {}
+		data[field] = value
+		MemberMethods.updateTheme.call({ id: id, data })
+	}
 
 	const sortMembersTable = clickedColumn => () => {
 		if(sortColumn !== clickedColumn) {
-			setSortColumn(clickedColumn);
-			setSortDirection('ascending');
+			setSortColumn(clickedColumn)
+			setSortDirection('ascending')
 		} else {
-			setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending');
+			setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
 		}
-	};
+	}
 
-	const resetMemberVotes = id => () => MemberMethods.resetVotes.call(id);
+	const resetMemberVotes = id => () => MemberMethods.resetVotes.call(id)
 
 	useEffect(() => {
-		if(sortColumn && sortDirection) members.sortBy(sortColumn, sortDirection);
-	}, [sortColumn, sortDirection, members.filteredMembers.length]);
+		if(sortColumn && sortDirection) members.sortBy(sortColumn, sortDirection)
+	}, [sortColumn, sortDirection, members.filteredMembers.length])
 
 	// Adjusts 2 row heading values for kisok voting headers
-	let votingColspan = 0;
-	if(settings.useKioskChitVoting) votingColspan++;
-	if(settings.useKioskFundsVoting) votingColspan++;
+	let votingColspan = 0
+	if(settings.useKioskChitVoting) votingColspan++
+	if(settings.useKioskFundsVoting) votingColspan++
 
 	return (
 		<>
@@ -145,10 +145,10 @@ const MembersList = observer(props => {
 
 							<Table.HeaderCell rowSpan="2" collapsing>
 								<Button icon='trash' color='red' onClick={ () => {
-									setModalHeader('Permanently Unlink All Members From This Theme?');
-									setModalContent('This will permanently remove all member information including donated funds and vote allocations from this theme. It will not remove the Member record.');
-									setModalAction( () => { return removeAllMembers; } );
-									setModalOpen(true);
+									setModalHeader('Permanently Unlink All Members From This Theme?')
+									setModalContent('This will permanently remove all member information including donated funds and vote allocations from this theme. It will not remove the Member record.')
+									setModalAction( () => { return removeAllMembers } )
+									setModalOpen(true)
 								} } />
 							</Table.HeaderCell>
 						</> ) }
@@ -163,10 +163,10 @@ const MembersList = observer(props => {
 				</Table.Header>
 				<Table.Body>
 					{ members.filteredMembers && paginate(members.filteredMembers, page, itemsPerPage).map(member => { 
-						const votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount; }, 0);
-						const fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`;
-						const phone = member.phone ? member.phone : '';
-						const email = member.email ? member.email : '';
+						const votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount }, 0)
+						const fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`
+						const phone = member.phone ? member.phone : ''
+						const email = member.email ? member.email : ''
 
 						return (
 							<Table.Row key={ member._id }>
@@ -218,17 +218,17 @@ const MembersList = observer(props => {
 											<Dropdown.Item onClick={ () => window.open(`/voting/${theme._id}/${member._id}`) }>Voting Screen <Icon name='external' /></Dropdown.Item>
 											<Dropdown.Divider />
 											<Dropdown.Item onClick={ () => {
-												setModalHeader(`Permanently Delete ${member.fullName}'s Votes?`);
-												setModalContent(`This will permanently delete the voting history of ${member.fullName} for this theme. This operation cannot be undone.`);
-												setModalAction( () => resetMemberVotes(member.theme._id) );
-												setModalOpen(true);
+												setModalHeader(`Permanently Delete ${member.fullName}'s Votes?`)
+												setModalContent(`This will permanently delete the voting history of ${member.fullName} for this theme. This operation cannot be undone.`)
+												setModalAction( () => resetMemberVotes(member.theme._id) )
+												setModalOpen(true)
 											} }>Reset Votes</Dropdown.Item>
 											<Dropdown.Divider />
 											<Dropdown.Item onClick={ () => {
-												setModalHeader(`Permanently Unlink ${member.fullName} From This Theme?`);
-												setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`);
-												setModalAction( () => removeMember(member._id) );
-												setModalOpen(true);
+												setModalHeader(`Permanently Unlink ${member.fullName} From This Theme?`)
+												setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`)
+												setModalAction( () => removeMember(member._id) )
+												setModalOpen(true)
 											} } ><Icon name='trash' />Delete Theme</Dropdown.Item>
 										</Dropdown.Menu>
 									</Dropdown>
@@ -236,7 +236,7 @@ const MembersList = observer(props => {
 								</Table.Cell>
 
 							</Table.Row>
-						);
+						)
 					}) }
 				</Table.Body>
 			</Table>
@@ -254,12 +254,12 @@ const MembersList = observer(props => {
 				confirmAction={ modalAction }
 			/>
 		</>
-	);
-});
+	)
+})
 
 MembersList.propTypes = {
 	hideAdminFields: PropTypes.bool
-};
+}
 
 ConfirmationModal.propTypes = { 
 	header: PropTypes.string, 
@@ -267,6 +267,6 @@ ConfirmationModal.propTypes = {
 	isModalOpen: PropTypes.bool, 
 	handleClose: PropTypes.func, 
 	confirmAction: PropTypes.func
-};
+}
 
-export default MembersList;
+export default MembersList

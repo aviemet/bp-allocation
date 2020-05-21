@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { Form, Input, TextArea, Button, Icon } from 'semantic-ui-react';
-import styled from 'styled-components';
-import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/providers';
-import { uuid } from '/imports/lib/utils';
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { Form, Input, TextArea, Button, Icon } from 'semantic-ui-react'
+import styled from 'styled-components'
+import { observer } from 'mobx-react-lite'
+import { useData } from '/imports/api/providers'
+import { uuid } from '/imports/lib/utils'
 
 const EditorInput = ({ value, onChange, type, children }) => {
 	if(type.toLowerCase() === 'textarea') {
@@ -18,7 +18,7 @@ const EditorInput = ({ value, onChange, type, children }) => {
 					{ children }
 				</Form>
 			</StyledInput>
-		);
+		)
 	}
 
 	return (
@@ -32,42 +32,42 @@ const EditorInput = ({ value, onChange, type, children }) => {
 			<input />
 			{ children }
 		</StyledInput>
-	);
-};
+	)
+}
 
 const EditableText = observer(({ as, format, type, onSubmit, children }) => {
-	const [ value, setValue ] = useState(children);
-	const [ editing, setEditing ] = useState(false);
-	const [ id, ] = useState(uuid());
+	const [ value, setValue ] = useState(children)
+	const [ editing, setEditing ] = useState(false)
+	const [ id, ] = useState(uuid())
 
-	const data = useData();
+	const data = useData()
 
 	// Register current editor id with global store before activating
 	const activateEditor = () => {
-		if(editing) return;
-		data.openEditor = id;	
-		setEditing(true);
-	};
+		if(editing) return
+		data.openEditor = id	
+		setEditing(true)
+	}
 
 	// Ensure only 1 editor open at a time
 	useEffect(() => {
-		if(!editing) return;
-		if(data.openEditor !== id) handleCancel();
-	}, [data.openEditor]);
+		if(!editing) return
+		if(data.openEditor !== id) handleCancel()
+	}, [data.openEditor])
 
 	const handleSubmit = () => {
-		onSubmit(value);
-		setEditing(false);
-	};
+		onSubmit(value)
+		setEditing(false)
+	}
 
 	const handleCancel = () => {
-		setValue(children);
-		setEditing(false);
-	};
+		setValue(children)
+		setEditing(false)
+	}
 
-	if(!format) format = value => value;
+	if(!format) format = value => value
 
-	const Component = as || DisplayDiv;
+	const Component = as || DisplayDiv
 
 	return (
 		<Component onClick={ activateEditor }>
@@ -84,12 +84,12 @@ const EditableText = observer(({ as, format, type, onSubmit, children }) => {
 				: format(value)
 			}
 		</Component>
-	);
-});
+	)
+})
 
 const DisplayDiv = styled.div`
 	display: inline-block;
-`;
+`
 
 const StyledInput = styled(Input)`
 	width: 100%;
@@ -98,14 +98,14 @@ const StyledInput = styled(Input)`
 	&.ui.fluid.input > input {
 		width: auto !important;
 	}
-`;
+`
 
 EditorInput.propTypes = {
 	value: PropTypes.any, 
 	onChange: PropTypes.func, 
 	type: PropTypes.string, 
 	children: PropTypes.any
-};
+}
 
 EditableText.propTypes = {
 	as: PropTypes.oneOfType([
@@ -122,6 +122,6 @@ EditableText.propTypes = {
 		PropTypes.number
 	]),
 	onSubmit: PropTypes.func.isRequired
-};
+}
 
-export default EditableText;
+export default EditableText

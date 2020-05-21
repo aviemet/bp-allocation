@@ -1,6 +1,6 @@
-import TrackableStore from './lib/TrackableStore';
+import TrackableStore from './lib/TrackableStore'
 
 class MemberThemeStore extends TrackableStore {
 }
 
-export default MemberThemeStore;
+export default MemberThemeStore

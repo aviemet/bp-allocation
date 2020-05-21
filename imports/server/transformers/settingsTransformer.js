@@ -1,5 +1,5 @@
 const SettingsTransformer = (doc) => {
-	return doc;
-};
+	return doc
+}
 
-export default SettingsTransformer;
+export default SettingsTransformer

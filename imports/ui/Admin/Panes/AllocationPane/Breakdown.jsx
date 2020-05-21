@@ -1,27 +1,27 @@
-import React from 'react';
+import React from 'react'
 
-import numeral from 'numeral';
+import numeral from 'numeral'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme, useOrgs } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useTheme, useOrgs } from '/imports/api/providers'
 
-import { Statistic, Segment, Loader } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Statistic, Segment, Loader } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 const Breakdown = observer(() => {
-	const { theme, isLoading: themeLoading } = useTheme();
-	const { topOrgs, isLoading: orgsLoading } = useOrgs();
+	const { theme, isLoading: themeLoading } = useTheme()
+	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	if(themeLoading || orgsLoading ) return <Loader active />;
+	if(themeLoading || orgsLoading ) return <Loader active />
 
-	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount;}, 0);
-	const topOff = topOrgs.reduce((sum, org) => { return sum + org.topOff; }, 0);
+	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount}, 0)
+	const topOff = topOrgs.reduce((sum, org) => { return sum + org.topOff }, 0)
 
 	// Values in order of appearance
-	const totalPot = theme.leverageTotal + saves;
+	const totalPot = theme.leverageTotal + saves
 	/* theme.consolationTotal */
-	const fundsAllocated = theme.votedFunds + saves + topOff;
-	const leverage = theme.leverageTotal - theme.consolationTotal - theme.votedFunds - topOff;
+	const fundsAllocated = theme.votedFunds + saves + topOff
+	const leverage = theme.leverageTotal - theme.consolationTotal - theme.votedFunds - topOff
 	/* theme.pledgeTotal */
 	/* theme.leverageRemaining */
 
@@ -80,9 +80,9 @@ const Breakdown = observer(() => {
 				</Statistic.Group>
 			</Segment>
 		</BreakdownContainer>
-	);
+	)
 
-});
+})
 
 const Arithmetic = styled.span`
 	font-size: 2rem;
@@ -94,14 +94,14 @@ const Arithmetic = styled.span`
   line-height: 1em;
   color: #1b1c1d;
   text-align: center;
-`;
+`
 
 const BreakdownContainer = styled.div`
 	& .ui.statistics .ui.statistic {
 		margin: 0em 1em 2em;
 	}
-`;
+`
 
-Breakdown.propTypes = {};
+Breakdown.propTypes = {}
 
-export default Breakdown;
+export default Breakdown

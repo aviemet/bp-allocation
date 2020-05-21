@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom'
 
-import { Icon, Menu } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Icon, Menu } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 /**
  * MenuLink for Vertical Admin Menu
@@ -13,16 +13,16 @@ const MenuLink = withRouter(props => {
 	// target='_blank' attributes should open links in new tab/window
 	const handleNav = () => {
 		if(props.target && props.target === '_blank') {
-			window.open(props.to);
+			window.open(props.to)
 		} else {
-			props.history.push(props.to);
+			props.history.push(props.to)
 		}
-	};
+	}
 
 	// Append 'left' class to classes if icon position should be to the left
-	let classes = props.className || '';
+	let classes = props.className || ''
 	if(props.iconPosition && props.iconPosition !== 'right') {
-		classes += props.iconPosition;
+		classes += props.iconPosition
 	}
 
 	return (
@@ -36,8 +36,8 @@ const MenuLink = withRouter(props => {
 		>
 			{ props.target === '_blank' && <Icon name='external' size='small' /> }{ props.children }
 		</MenuItem>
-	);
-});
+	)
+})
 
 MenuLink.propTypes = {
 	children: PropTypes.any,
@@ -48,7 +48,7 @@ MenuLink.propTypes = {
 	iconPosition: PropTypes.oneOf(['left', 'right']),
 	className: PropTypes.string,
 	id: PropTypes.string
-};
+}
 
 const MenuItem = styled(Menu.Item)`
 	&&&.left {
@@ -57,6 +57,6 @@ const MenuItem = styled(Menu.Item)`
 			margin: 0 0.5em 0 0;
 		}
 	}
-`;
+`
 
-export default MenuLink;
+export default MenuLink

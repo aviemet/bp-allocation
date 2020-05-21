@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import _ from 'lodash'
 
-import { Search, Label } from 'semantic-ui-react';
+import { Search, Label } from 'semantic-ui-react'
 
 /**
  * Member search results renderer
@@ -12,16 +12,16 @@ const resultRenderer = ({ title, number }) => (
 	<>
 		{title} <Label icon='hashtag' content={ number } />
 	</>
-);
+)
 
 /**
  * Search input for member data
  * @param {object} props Search props
  */
 const MemberSearch = ({ data, value, setValue, onResultSelect, ...rest }) => {
-	const [ isLoading, setIsLoading ] = useState(false);
-	const [ searchResults, setSearchResults ] = useState([]);
-	// const [ selectedValue, setSelectedValue ] = useState('');
+	const [ isLoading, setIsLoading ] = useState(false)
+	const [ searchResults, setSearchResults ] = useState([])
+	// const [ selectedValue, setSelectedValue ] = useState('')
 
 	// Filter source data to only display what's needed in search results
 	const source = data.map(member => {
@@ -29,35 +29,35 @@ const MemberSearch = ({ data, value, setValue, onResultSelect, ...rest }) => {
 			title: `${member.firstName} ${member.lastName}`,
 			number: member.number,
 			id: member._id
-		});
-	});
+		})
+	})
 	
 	// Handle select action with user defined method
 	const handleResultSelect = (e, { result }) => {
-		setValue(result.title);
+		setValue(result.title)
 		if(onResultSelect) {
-			onResultSelect(result);
+			onResultSelect(result)
 		}
-	};
+	}
 
 	// Animate searching and filter results on user input change
 	const handleSearchChange = (e, { value }) => {
-		setIsLoading(true);
-		setValue(value);
+		setIsLoading(true)
+		setValue(value)
 
 		// Wait for at least 2 characters to display search results
 		if (value.trim().length < 1) {
-			setIsLoading(false);
-			setSearchResults([]);
-			setValue('');
-			return;
+			setIsLoading(false)
+			setSearchResults([])
+			setValue('')
+			return
 		}
 
 		// Filter search results to match input
-		const equality = new RegExp(_.escapeRegExp(value), 'i');
-		setSearchResults( _.filter( source, result => equality.test(result.title) || equality.test(result.number) ) );
-		setIsLoading(false);
-	};
+		const equality = new RegExp(_.escapeRegExp(value), 'i')
+		setSearchResults( _.filter( source, result => equality.test(result.title) || equality.test(result.number) ) )
+		setIsLoading(false)
+	}
 
 	return (
 		<Search
@@ -75,13 +75,13 @@ const MemberSearch = ({ data, value, setValue, onResultSelect, ...rest }) => {
 			minCharacters={ 1 }
 			{ ...rest }
 		/>
-	);
-};
+	)
+}
 
 resultRenderer.propTypes = {
 	title: PropTypes.string,
 	number: PropTypes.number
-};
+}
 
 MemberSearch.propTypes = {
 	data: PropTypes.array.isRequired,
@@ -89,6 +89,6 @@ MemberSearch.propTypes = {
 	setValue: PropTypes.func.isRequired,
 	onResultSelect: PropTypes.func,
 	rest: PropTypes.any,
-};
+}
 
-export default MemberSearch;
+export default MemberSearch

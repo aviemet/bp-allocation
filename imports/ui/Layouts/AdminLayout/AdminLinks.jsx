@@ -1,18 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom'
 
-import { Header, Icon, Menu } from 'semantic-ui-react';
-import MenuLink from './MenuLink';
+import { Header, Icon, Menu } from 'semantic-ui-react'
+import MenuLink from './MenuLink'
 
-import { observer } from 'mobx-react-lite';
-import { useData } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useData } from '/imports/api/providers'
 
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 const Links = withRouter(observer(({ activeMenuItem }) => {
-	const data = useData();
+	const data = useData()
 
 	return(
 		<MenuContainer>
@@ -106,8 +106,8 @@ const Links = withRouter(observer(({ activeMenuItem }) => {
 				</MenuLink>
 			</Menu>
 		</MenuContainer>
-	);
-}));
+	)
+}))
 
 const MenuContainer = styled.div`
 	& .ui.menu.vertical {
@@ -118,10 +118,10 @@ const MenuContainer = styled.div`
 			border-radius: none;
 		}
 	}
-`;
+`
 
 Links.propTypes = {
 	activeMenuItem: PropTypes.string
-};
+}
 
-export default Links;
+export default Links

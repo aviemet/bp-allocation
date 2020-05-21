@@ -1,24 +1,24 @@
-import React, { useEffect } from 'react';
-import { useVoting } from './VotingContext';
+import React, { useEffect } from 'react'
+import { useVoting } from './VotingContext'
 
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 const VotingComplete = () => {
 
-	const { unsetUser } = useVoting();
+	const { unsetUser } = useVoting()
 
 	useEffect(() => {
 		if(unsetUser) {
 			setTimeout(() => {
-				unsetUser();
-			}, 3000);
+				unsetUser()
+			}, 3000)
 		}
-	}, []);
+	}, [])
 
 	return (
 		<Centered>Voting Complete!</Centered>
-	);
-};
+	)
+}
 
 const Centered = styled.div`
 	position: fixed;
@@ -34,6 +34,6 @@ const Centered = styled.div`
 	@media screen and (max-width: ${({ theme }) => theme.media.onlyTablet.minWidth}px) {
 		font-size: 4rem !important;
 	}
-`;
+`
 
-export default VotingComplete;
+export default VotingComplete

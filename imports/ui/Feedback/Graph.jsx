@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
-import styled from 'styled-components';
+import styled from 'styled-components'
 
-import Simulation from '/imports/ui/Admin/Simulation';
+import Simulation from '/imports/ui/Admin/Simulation'
 
 const Graph = (props) => {
 	return (
@@ -11,8 +11,8 @@ const Graph = (props) => {
 				<Simulation />
 			</SimulationContainer>
 		</React.Fragment>
-	);
-};
+	)
+}
 
 const SimulationContainer = styled.div`
 	width: 100%;
@@ -22,6 +22,6 @@ const SimulationContainer = styled.div`
 	#graph, #info {
 		margin-left: 5em;
 	}
-`;
+`
 
-export default Graph;
+export default Graph

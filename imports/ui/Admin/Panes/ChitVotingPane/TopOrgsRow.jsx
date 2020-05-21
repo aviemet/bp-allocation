@@ -1,14 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { ThemeMethods } from '/imports/api/methods';
+import { ThemeMethods } from '/imports/api/methods'
 
-import { Table, Checkbox } from 'semantic-ui-react';
+import { Table, Checkbox } from 'semantic-ui-react'
 
-import { roundFloat } from '/imports/lib/utils';
+import { roundFloat } from '/imports/lib/utils'
 
-import SaveButton from './SaveButton';
-import UnSaveButton from './UnSaveButton';
+import SaveButton from './SaveButton'
+import UnSaveButton from './UnSaveButton'
 
 const TopOrgsRow = props => {
 	
@@ -19,8 +19,8 @@ const TopOrgsRow = props => {
 		ThemeMethods.topOrgToggle.call({
 			theme_id: props.themeId,
 			org_id: props.org._id
-		});
-	};
+		})
+	}
 
 	return(
 		<Table.Row positive={ props.inTopOrgs }>
@@ -54,8 +54,8 @@ const TopOrgsRow = props => {
 			</Table.Cell>
 			
 		</Table.Row>
-	);
-};
+	)
+}
 
 TopOrgsRow.propTypes = {
 	themeId: PropTypes.string,
@@ -64,6 +64,6 @@ TopOrgsRow.propTypes = {
 	hideAdminFields: PropTypes.bool,
 	isSaved: PropTypes.bool,
 	isLocked: PropTypes.bool
-};
+}
 
-export default TopOrgsRow;
+export default TopOrgsRow

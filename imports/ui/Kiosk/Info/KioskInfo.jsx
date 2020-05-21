@@ -1,41 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-import { Responsive, Card, Container, Header, Loader } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Responsive, Card, Container, Header, Loader } from 'semantic-ui-react'
+import styled from 'styled-components'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme, useSettings, useOrgs, useMembers } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useTheme, useSettings, useOrgs, useMembers } from '/imports/api/providers'
 
-import OrgCard from '/imports/ui/Components/OrgCard';
+import OrgCard from '/imports/ui/Components/OrgCard'
 
 const KioskInfo = observer(() => {
-	const { theme } = useTheme();
-	const { settings } = useSettings();
-	const { orgs, topOrgs } = useOrgs();
-	const { isLoading: membersLoading } = useMembers();
+	const { theme } = useTheme()
+	const { settings } = useSettings()
+	const { orgs, topOrgs } = useOrgs()
+	const { isLoading: membersLoading } = useMembers()
 
-	const [ itemsPerRow, setItemsPerRow ] = useState(3);
+	const [ itemsPerRow, setItemsPerRow ] = useState(3)
 
-	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 3);
+	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 3)
 
 	const title = orgs.topOrgsChosen ? 
 		`TOP ${theme.numTopOrgs} ORGANIZATIONS` :
-		'ORGANIZATIONS THIS THEME';
+		'ORGANIZATIONS THIS THEME'
 
-	let subHeading = '';
+	let subHeading = ''
 	if(settings.fundsVotingActive) {
-		subHeading = 'Voting In Progress';
+		subHeading = 'Voting In Progress'
 	} else {
 		if(theme.votingStarted) {
-			subHeading = 'Voting Has Completed';
+			subHeading = 'Voting Has Completed'
 		} else {
-			subHeading = 'Voting To Begin Shortly';
+			subHeading = 'Voting To Begin Shortly'
 		}
 	}
 
-	const orgsToDisplay = orgs.topOrgsChosen ? topOrgs : orgs.values;
+	const orgsToDisplay = orgs.topOrgsChosen ? topOrgs : orgs.values
 
-	if(membersLoading) return <Loader active />;
+	if(membersLoading) return <Loader active />
 	return (
 		<OrgsContainer>
 			<Header as='h1' className="title" style={ { fontSize: '10vw' } }>{ title }</Header>
@@ -56,8 +56,8 @@ const KioskInfo = observer(() => {
 				))}
 			</Responsive>
 		</OrgsContainer>
-	);
-});
+	)
+})
 
 const OrgsContainer = styled(Container)`
 	padding-top: 20px;
@@ -89,6 +89,6 @@ const OrgsContainer = styled(Container)`
 			line-height: 1em;
 		}
 	}
-`;
+`
 
-export default KioskInfo;
+export default KioskInfo

@@ -1,14 +1,14 @@
-import React from 'react';
+import React from 'react'
 
-import { observer } from 'mobx-react-lite';
-import { useSettings } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useSettings } from '/imports/api/providers'
 
-import { PresentationSettingsMethods } from '/imports/api/methods';
+import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react';
+import { Checkbox } from 'semantic-ui-react'
 
 const AnimateTopOrgsToggle = observer(() => {
-	const { settings } = useSettings();
+	const { settings } = useSettings()
 
 	const saveValue = (e, data) => {
 		PresentationSettingsMethods.update.call({
@@ -16,8 +16,8 @@ const AnimateTopOrgsToggle = observer(() => {
 			data: {
 				animateOrgs: data.checked
 			}
-		});
-	};
+		})
+	}
 
 	return(
 		<Checkbox
@@ -27,8 +27,8 @@ const AnimateTopOrgsToggle = observer(() => {
 			onClick={ saveValue }
 			checked={ settings.animateOrgs || false }
 		/>
-	);
+	)
 
-});
+})
 
-export default AnimateTopOrgsToggle;
+export default AnimateTopOrgsToggle

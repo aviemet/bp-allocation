@@ -1,61 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { Route, withRouter } from 'react-router-dom';
-import { Transition } from 'react-transition-group';
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { Route, withRouter } from 'react-router-dom'
+import { Transition } from 'react-transition-group'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme, useSettings } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useTheme, useSettings } from '/imports/api/providers'
 
-import styled from 'styled-components';
+import styled from 'styled-components'
 
-import { Intro, Orgs, Timer, TopOrgs, Allocation, Results } from '/imports/ui/Presentation/Pages';
-import { Loader } from 'semantic-ui-react';
+import { Intro, Orgs, Timer, TopOrgs, Allocation, Results } from '/imports/ui/Presentation/Pages'
+import { Loader } from 'semantic-ui-react'
 
 // Transition group definitions
-const FADE_DURATION = 300;
+const FADE_DURATION = 300
 
 const defaultStyle = {
 	transition: `opacity ${FADE_DURATION}ms ease-in-out`,
 	opacity: 0
-};
+}
 
 const transitionStyles = {
 	entering: { opacity: 0 },
 	entered: { opacity: 1 }
-};
+}
 
 const PageFader = styled.div`
 	opacity: 0;
-`;
+`
 
 const Presentation = withRouter(observer(props => {
-	const { theme, isLoading: themeLoading } = useTheme();
-	const { settings, isLoading: settingsLoading } = useSettings();
+	const { theme, isLoading: themeLoading } = useTheme()
+	const { settings, isLoading: settingsLoading } = useSettings()
 
-	const [ show, setShow ] = useState(true);
+	const [ show, setShow ] = useState(true)
 
 	useEffect(() => {
-		if(!settingsLoading) doNavigation(settings.currentPage);
-	}, [settings.currentPage, settingsLoading]);
+		if(!settingsLoading) doNavigation(settings.currentPage)
+	}, [settings.currentPage, settingsLoading])
 
 	// TODO: wait for image load before showing page
 	const doNavigation = currentPage => {
-		let page = `/presentation/${theme._id}/${currentPage}`;
+		let page = `/presentation/${theme._id}/${currentPage}`
 		if(location.pathname !== page && show){
-			setShow(false);
+			setShow(false)
 
 			setTimeout(() => {
-				props.history.push(page);
-				setShow(true);
-			}, FADE_DURATION);
+				props.history.push(page)
+				setShow(true)
+			}, FADE_DURATION)
 		}
-	};
+	}
 
 	// Component doesn't update from mobx changes unless they are referenced
-	const title = theme.title || '';
-	const question = theme.question || '';
+	const title = theme.title || ''
+	const question = theme.question || ''
 
-	if(themeLoading || settingsLoading) return <Loader active />;
+	if(themeLoading || settingsLoading) return <Loader active />
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{(state) => (
@@ -85,12 +85,12 @@ const Presentation = withRouter(observer(props => {
 				</PageFader>
 			)}
 		</Transition>
-	);
-}));
+	)
+}))
 
 Presentation.propTypes = {
 	history: PropTypes.object,
 	match: PropTypes.object
-};
+}
 
-export default Presentation;
+export default Presentation

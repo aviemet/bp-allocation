@@ -1,6 +1,6 @@
-import { ValidatedMethod } from 'meteor/mdg:validated-method';
+import { ValidatedMethod } from 'meteor/mdg:validated-method'
 
-import { PresentationSettings } from '/imports/api/db';
+import { PresentationSettings } from '/imports/api/db'
 
 const PresentationSettingsMethods = {
 	/**
@@ -12,7 +12,7 @@ const PresentationSettingsMethods = {
 		validate: null,
 
 		run() {
-			return PresentationSettings.insert({});
+			return PresentationSettings.insert({})
 		}
 	}),
 
@@ -25,10 +25,10 @@ const PresentationSettingsMethods = {
 		validate: null,
 
 		run({ id, data }) {
-			return PresentationSettings.update({ _id: id }, { $set: data });
+			return PresentationSettings.update({ _id: id }, { $set: data })
 		}
 	}),
 
-};
+}
 
-export default PresentationSettingsMethods;
+export default PresentationSettingsMethods

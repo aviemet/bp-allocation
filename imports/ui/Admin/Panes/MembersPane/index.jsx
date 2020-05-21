@@ -1,23 +1,23 @@
-import React from 'react';
-import { useData, useMembers } from '/imports/api/providers';
-import { isEmpty } from 'lodash';
+import React from 'react'
+import { useData, useMembers } from '/imports/api/providers'
+import { isEmpty } from 'lodash'
 
-import { Container, Input, Grid, Loader } from 'semantic-ui-react';
+import { Container, Input, Grid, Loader } from 'semantic-ui-react'
 
-import NewMemberInputs from './NewMemberInputs';
-import MembersList from './MembersList';
-import ImportMembers from './ImportMembers';
-import { observer } from 'mobx-react-lite';
+import NewMemberInputs from './NewMemberInputs'
+import MembersList from './MembersList'
+import ImportMembers from './ImportMembers'
+import { observer } from 'mobx-react-lite'
 
 const MembersPane = observer(() => {
-	const data = useData();
-	const { members, isLoading: membersLoading } = useMembers();
+	const data = useData()
+	const { members, isLoading: membersLoading } = useMembers()
 
 	const clearSearch = () => {
-		members.searchFilter = null;
-	};
+		members.searchFilter = null
+	}
 
-	if(membersLoading || isEmpty(members)) return <Loader active />;
+	if(membersLoading || isEmpty(members)) return <Loader active />
 	return (
 		<>
 			<Container style={ { marginBottom: '0.6rem' } }>
@@ -58,7 +58,7 @@ const MembersPane = observer(() => {
 				<MembersList members={ members } />
 			</Container>
 		</>
-	);
-});
+	)
+})
 
-export default MembersPane;
+export default MembersPane

@@ -1,13 +1,13 @@
-import { Meteor } from 'meteor/meteor';
-import { ValidatedMethod } from 'meteor/mdg:validated-method';
+import { Meteor } from 'meteor/meteor'
+import { ValidatedMethod } from 'meteor/mdg:validated-method'
 
-import moment from 'moment';
+import moment from 'moment'
 
-import { Themes, Organizations, MemberThemes } from '/imports/api/db';
-import OrganizationMethods from './OrganizationMethods';
-import PresentationSettingsMethods from './PresentationSettingsMethods';
+import { Themes, Organizations, MemberThemes } from '/imports/api/db'
+import OrganizationMethods from './OrganizationMethods'
+import PresentationSettingsMethods from './PresentationSettingsMethods'
 
-import { merge } from 'lodash';
+import { merge } from 'lodash'
 
 const ThemeMethods = {
 	/**
@@ -19,33 +19,33 @@ const ThemeMethods = {
 		validate: null,
 
 		run(data) {
-			if(!data) return null;
+			if(!data) return null
 
 			if(!data.quarter) {
-				data.quarter = `${moment().year()}Q${moment().quarter()}`;
+				data.quarter = `${moment().year()}Q${moment().quarter()}`
 			}
 
 			if(!data.slug) {
-				const now = new Date();
-				let slug = data.title.split(' ')[0].toLowerCase();
-				slug = slug.substring(0, 3);
-				let ms = now.getMilliseconds();
+				const now = new Date()
+				let slug = data.title.split(' ')[0].toLowerCase()
+				slug = slug.substring(0, 3)
+				let ms = now.getMilliseconds()
 
-				let checkTheme = Themes.find({ slug: slug + ms }).fetch();
+				let checkTheme = Themes.find({ slug: slug + ms }).fetch()
 				while(checkTheme.length > 0) {
-					ms++;
-					checkTheme = Themes.find({ slug: slug + ms }).fetch();
+					ms++
+					checkTheme = Themes.find({ slug: slug + ms }).fetch()
 				}
 
-				data.slug = slug + ms;
+				data.slug = slug + ms
 			}
 
 			try {
-				let theme = Themes.insert(merge(data, { presentationSettings: PresentationSettingsMethods.create.call() }));
-				return theme;
+				let theme = Themes.insert(merge(data, { presentationSettings: PresentationSettingsMethods.create.call() }))
+				return theme
 			} catch (e) {
-				console.error(e);
-				return null;
+				console.error(e)
+				return null
 			}
 
 		}
@@ -61,9 +61,9 @@ const ThemeMethods = {
 
 		run({ id, data }) {
 			try {
-				return Themes.update({ _id: id }, { $set: data });
+				return Themes.update({ _id: id }, { $set: data })
 			} catch(exception) {
-				throw new Meteor.Error('500', exception);
+				throw new Meteor.Error('500', exception)
 			}
 		}
 	}),
@@ -77,12 +77,12 @@ const ThemeMethods = {
 		validate: null,
 
 		run(id) {
-			let orgs = Themes.findOne({ _id: id }, { organizations: 1 });
+			let orgs = Themes.findOne({ _id: id }, { organizations: 1 })
 
 			if(orgs.organizations && orgs.organizations.length > 0){
-				OrganizationMethods.removeMany.call(orgs.organizations);
+				OrganizationMethods.removeMany.call(orgs.organizations)
 			}
-			return Themes.remove({ _id: id });
+			return Themes.remove({ _id: id })
 		}
 	}),
 
@@ -95,18 +95,18 @@ const ThemeMethods = {
 		validate: null,
 
 		run({ theme_id, org_id }) {
-			let theme = Themes.findOne({ _id: theme_id }, { topOrgsManual: true });
+			let theme = Themes.findOne({ _id: theme_id }, { topOrgsManual: true })
 
 			// Remove if exists
 			if(theme.topOrgsManual.includes(org_id)){
 				return Themes.update({ _id: theme_id }, {
 					$pull: { topOrgsManual: org_id }
-				});
+				})
 			}
 			// Add if not exists
 			return Themes.update({ _id: theme_id }, {
 				$addToSet: { topOrgsManual: org_id }
-			});
+			})
 		}
 	}),
 
@@ -119,14 +119,14 @@ const ThemeMethods = {
 		validate: null,
 
 		run({ id, amount, name }) {
-			if(!id || !amount) return false;
+			if(!id || !amount) return false
 
-			let org = Organizations.findOne({ _id: id });
-			let theme = Themes.findOne({ _id: org.theme });
+			let org = Organizations.findOne({ _id: id })
+			let theme = Themes.findOne({ _id: org.theme })
 
-			let data = { org: id, amount: amount };
+			let data = { org: id, amount: amount }
 			if(name) {
-				data.name = name;
+				data.name = name
 			}
 
 			let result = Themes.update({ _id: theme._id }, {
@@ -137,9 +137,9 @@ const ThemeMethods = {
 				},
 				$inc: { numTopOrgs: 1 },
 				$addToSet: { topOrgsManual: id }
-			});
+			})
 
-			return result;
+			return result
 		}
 	}),
 
@@ -152,7 +152,7 @@ const ThemeMethods = {
 		validate: null,
 
 		run({ theme_id, org_id }) {
-			if(!theme_id || !org_id) return false;
+			if(!theme_id || !org_id) return false
 
 			return Themes.update({ _id: theme_id }, {
 				$pull: {
@@ -160,7 +160,7 @@ const ThemeMethods = {
 					topOrgsManual: org_id
 				},
 				$inc: { numTopOrgs: -1 }
-			});
+			})
 		}
 	}),
 
@@ -178,8 +178,8 @@ const ThemeMethods = {
 					$set: {
 						leverageFunds: org.leverageFunds
 					}
-				});
-			});
+				})
+			})
 		}
 	}),
 
@@ -192,20 +192,20 @@ const ThemeMethods = {
 		validate: null,
 
 		run(themeId) {
-			const theme = Themes.find({ _id: themeId }, { organizations: true }).fetch()[0];
+			const theme = Themes.find({ _id: themeId }, { organizations: true }).fetch()[0]
 			if(!theme) {
-				throw new Error('Theme ID does not match records of any Themes');
+				throw new Error('Theme ID does not match records of any Themes')
 			}
 
-			const orgs = theme.organizations;
+			const orgs = theme.organizations
 
 			return orgs.map(org => {
 				Organizations.update({ _id: org }, {
 					$set: {
 						leverageFunds: 0
 					}
-				});
-			});
+				})
+			})
 		}
 	}),
 
@@ -215,7 +215,7 @@ const ThemeMethods = {
 		validate: null,
 
 		run(themeId) {
-			const theme = Themes.find({ _id: themeId }).fetch()[0];
+			const theme = Themes.find({ _id: themeId }).fetch()[0]
 
 			theme.organizations.forEach(org => {
 				OrganizationMethods.update.call({ id: org, data: {
@@ -223,8 +223,8 @@ const ThemeMethods = {
 					topOff: 0,
 					pledges: [],
 					leverageFunds: 0
-				} });
-			});
+				} })
+			})
 
 			MemberThemes.update({ theme: themeId }, { 
 				$set: {
@@ -233,10 +233,10 @@ const ThemeMethods = {
 				}
 			}, {
 				multi: true
-			});
+			})
 			
 		}
 	})
-};
+}
 
-export default ThemeMethods;
+export default ThemeMethods

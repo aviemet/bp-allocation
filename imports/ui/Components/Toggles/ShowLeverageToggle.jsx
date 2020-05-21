@@ -1,15 +1,15 @@
-import React from 'react';
+import React from 'react'
 
-import { observer } from 'mobx-react-lite';
-import { useSettings } from '/imports/api/providers';
+import { observer } from 'mobx-react-lite'
+import { useSettings } from '/imports/api/providers'
 
-import { PresentationSettingsMethods } from '/imports/api/methods';
+import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react';
+import { Checkbox } from 'semantic-ui-react'
 
 const ShowLeverageToggle = observer(() => {
 
-	const { settings, isLoading: settingsLoading } = useSettings();
+	const { settings, isLoading: settingsLoading } = useSettings()
 
 	const saveValue = (e, data) => {
 		PresentationSettingsMethods.update.call({
@@ -17,10 +17,10 @@ const ShowLeverageToggle = observer(() => {
 			data: {
 				leverageVisible: data.checked
 			}
-		});
-	};
+		})
+	}
 
-	const checked = settingsLoading ? false : settings.leverageVisible;
+	const checked = settingsLoading ? false : settings.leverageVisible
 
 	return(
 		<Checkbox
@@ -30,8 +30,8 @@ const ShowLeverageToggle = observer(() => {
 			onClick={ saveValue }
 			checked={ checked || false }
 		/>
-	);
+	)
 
-});
+})
 
-export default ShowLeverageToggle;
+export default ShowLeverageToggle

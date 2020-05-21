@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
-import { observer } from 'mobx-react-lite';
-import { useTheme, useSettings, useMessages } from '/imports/api/providers';
-import { PresentationSettingsMethods } from '/imports/api/methods';
+import { observer } from 'mobx-react-lite'
+import { useTheme, useSettings, useMessages } from '/imports/api/providers'
+import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { TimerInput, ResultsOffsetInput } from '/imports/ui/Components/Inputs';
-import { Container, Grid, Icon, Label, Segment, Button, Responsive, Loader } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { TimerInput, ResultsOffsetInput } from '/imports/ui/Components/Inputs'
+import { Container, Grid, Icon, Label, Segment, Button, Responsive, Loader } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 import { 
 	ChitVotingActiveToggle, 
@@ -18,26 +18,26 @@ import {
 	AnimateTopOrgsToggle, 
 	ShowLeverageToggle, 
 	ShowSaveValuesToggle 
-} from '/imports/ui/Components/Toggles';
-import TextMembersButton from '/imports/ui/Components/TextMembersButton';
-import EmailMembersButton from '/imports/ui/Components/EmailMembersButton';
+} from '/imports/ui/Components/Toggles'
+import TextMembersButton from '/imports/ui/Components/TextMembersButton'
+import EmailMembersButton from '/imports/ui/Components/EmailMembersButton'
 
-import PresentationNavButton from './PresentationNavButton';
+import PresentationNavButton from './PresentationNavButton'
 
 const PresentationPane = observer(() => {
-	const { theme } = useTheme();
-	const { settings, isLoading: settingsLoading } = useSettings();
-	const { messages, isLoading: messagesLoading } = useMessages();
+	const { theme } = useTheme()
+	const { settings, isLoading: settingsLoading } = useSettings()
+	const { messages, isLoading: messagesLoading } = useMessages()
 
-	const [ gridColumns, setGridColumns ] = useState(3);
+	const [ gridColumns, setGridColumns ] = useState(3)
 
 	const handleOnUpdate = (e, { width }) => {
 		if(width > Responsive.onlyTablet.minWidth) {
-			setGridColumns(3);
+			setGridColumns(3)
 		} else {
-			setGridColumns(1);
+			setGridColumns(1)
 		}
-	};
+	}
 
 	/**
 	 * Reset the values for the presentation
@@ -57,9 +57,9 @@ const PresentationPane = observer(() => {
 				resultsVisited: false,
 				resultsOffset: 0,
 			}
-		});
+		})
 
-	};
+	}
 
 	const setResultsHaveBeenViewed = () => {
 		PresentationSettingsMethods.update.call({
@@ -67,10 +67,10 @@ const PresentationPane = observer(() => {
 			data: {
 				resultsVisited: true
 			}
-		});
-	};
+		})
+	}
 
-	if(settingsLoading) return <Loader active />;
+	if(settingsLoading) return <Loader active />
 
 	return (
 		<ButtonPanel>
@@ -210,7 +210,7 @@ const PresentationPane = observer(() => {
 												message={ message.body }
 												link={ message.link }
 											/>
-										);
+										)
 									}
 								}) }
 							</Container> }
@@ -228,7 +228,7 @@ const PresentationPane = observer(() => {
 												style={ { float: 'right' } }
 												message={ message }
 											/>
-										);
+										)
 									}
 								}) }
 							</Container> }
@@ -255,10 +255,10 @@ const PresentationPane = observer(() => {
 			</Responsive>
 
 		</ButtonPanel>
-	);
-});
+	)
+})
 
 const ButtonPanel = styled.div`
-`;
+`
 
-export default PresentationPane;
+export default PresentationPane
