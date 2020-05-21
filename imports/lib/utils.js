@@ -71,3 +71,22 @@ export const filterCollection = (collection, search, fields) => {
 		});
 	});
 };
+
+export const uuid = () => {
+	let timestamp = new Date().getTime();
+	// Time in microseconds since page-load or 0 if unsupported
+	let micro = (performance && performance.now && (performance.now() * 1000)) || 0;
+
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		let random = Math.random() * 16; // random number between 0 and 16
+		
+		if(timestamp > 0){ // Use timestamp until depleted
+			random = (timestamp + random) % 16 | 0;
+			timestamp = Math.floor(timestamp / 16);
+		} else { // Use microseconds since page-load if supported
+			random = (micro + random) % 16 | 0;
+			micro = Math.floor(micro / 16);
+		}
+		return (c === 'x' ? random : (random & 0x3 | 0x8)).toString(16);
+	});
+};

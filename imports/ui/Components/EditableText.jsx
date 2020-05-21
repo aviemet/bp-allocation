@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, TextArea, Button, Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
+import { observer } from 'mobx-react-lite';
+import { useData } from '/imports/api/providers';
+import { uuid } from '/imports/lib/utils';
 
 const EditorInput = ({ value, onChange, type, children }) => {
-
 	if(type.toLowerCase() === 'textarea') {
 		return (
 			<StyledInput>
@@ -33,9 +35,25 @@ const EditorInput = ({ value, onChange, type, children }) => {
 	);
 };
 
-const EditableText = ({ as, format, type, onSubmit, children }) => {
+const EditableText = observer(({ as, format, type, onSubmit, children }) => {
 	const [ value, setValue ] = useState(children);
 	const [ editing, setEditing ] = useState(false);
+	const [ id, ] = useState(uuid());
+
+	const data = useData();
+
+	// Register current editor id with global store before activating
+	const activateEditor = () => {
+		if(editing) return;
+		data.openEditor = id;	
+		setEditing(true);
+	};
+
+	// Ensure only 1 editor open at a time
+	useEffect(() => {
+		if(!editing) return;
+		if(data.openEditor !== id) handleCancel();
+	}, [data.openEditor]);
 
 	const handleSubmit = () => {
 		onSubmit(value);
@@ -47,11 +65,13 @@ const EditableText = ({ as, format, type, onSubmit, children }) => {
 		setEditing(false);
 	};
 
+	if(!format) format = value => value;
+
 	const Component = as || DisplayDiv;
 
-	if(editing) {
-		return (
-			<Component>
+	return (
+		<Component onClick={ activateEditor }>
+			{ editing ? 
 				<EditorInput 
 					type={ type || 'text' } 
 					value={ value }
@@ -61,18 +81,11 @@ const EditableText = ({ as, format, type, onSubmit, children }) => {
 					<Button compact size='mini' onClick={ handleCancel }><Icon name='cancel' color='red' /></Button>
 					<Button compact size='mini' onClick={ handleSubmit }><Icon name='checkmark' color='green' /></Button>
 				</EditorInput>
-			</Component>
-		);
-	}
-
-	if(!format) format = value => value;
-
-	return(
-		<Component onClick={ () => setEditing(true) }>
-			{ format(value) }
+				: format(value)
+			}
 		</Component>
 	);
-};
+});
 
 const DisplayDiv = styled.div`
 	display: inline-block;

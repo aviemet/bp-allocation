@@ -38,7 +38,7 @@ const KioskInfo = observer(() => {
 	if(membersLoading) return <Loader active />;
 	return (
 		<OrgsContainer>
-			<Header as='h1' className="title">{ title }</Header>
+			<Header as='h1' className="title" style={ { fontSize: '10vw' } }>{ title }</Header>
 			<Header as='h2' className='subheading'>{ subHeading }</Header>
 			<Responsive 
 				as={ Card.Group }
