@@ -99,7 +99,7 @@ export const useMember = (memberId) => {
 };
 
 // Get all members
-export const useMembers = props => {
+export const useMembers = () => {
 	const membersContext = useContext(MembersContext);
 
 	// Unsibscribe from members upon unmounting page

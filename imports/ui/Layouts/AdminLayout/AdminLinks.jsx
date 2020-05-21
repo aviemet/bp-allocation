@@ -9,11 +9,13 @@ import MenuLink from './MenuLink';
 import { observer } from 'mobx-react-lite';
 import { useData } from '/imports/api/providers';
 
+import styled from 'styled-components';
+
 const Links = withRouter(observer(({ activeMenuItem }) => {
 	const data = useData();
 
 	return(
-		<>
+		<MenuContainer>
 			<Menu vertical>
 				<MenuLink 
 					to={ `/admin/${data.themeId}/orgs` }
@@ -103,9 +105,20 @@ const Links = withRouter(observer(({ activeMenuItem }) => {
 					Pledge Inputs
 				</MenuLink>
 			</Menu>
-		</>
+		</MenuContainer>
 	);
 }));
+
+const MenuContainer = styled.div`
+	& .ui.menu.vertical {
+		width: inherit;
+		border-radius: none;
+
+		.item {
+			border-radius: none;
+		}
+	}
+`;
 
 Links.propTypes = {
 	activeMenuItem: PropTypes.string

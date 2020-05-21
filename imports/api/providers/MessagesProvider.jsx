@@ -10,7 +10,6 @@ import { Messages } from '/imports/api/db';
 import { MessagesCollection, MessageStore } from '/imports/api/stores';
 
 const MessagesContext = React.createContext('messages');
-export const useMessages = () => useContext(MessagesContext);
 
 const MessagesProvider = observer(function(props) {
 	const { themeId } = useData();
@@ -61,6 +60,16 @@ const MessagesProvider = observer(function(props) {
 
 MessagesProvider.propTypes = {
 	children: PropTypes.any
+};
+
+export const useMessages = () => useContext(MessagesContext);
+
+export const useMessage = messageId => {
+	const { messages, isLoading } = useContext(MessagesContext);
+
+	if(isLoading) return { message: null, isLoading };
+
+	return { message: messages.values.find(message => message._id === messageId ) };
 };
 
 export default MessagesProvider;

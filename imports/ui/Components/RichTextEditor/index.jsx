@@ -6,14 +6,13 @@ import CKEditor from './CKEditor';
 // import RTE from './RTE';
 import { Checkbox } from 'semantic-ui-react';
 
-const RichTextEditor = ({ value, onChange, ...rest }) => {
+const RichTextEditor = ({ value, onChange, ...rest }, ref) => {
 	const [ isRaw, setIsRaw ] = useState(false);
 	const [ content, setContent ] = useState(value || '');
 
 	const InputComponent = isRaw ? RawEditor : CKEditor;
 
 	const handleChange = newValue => {
-		console.log({ newValue });
 		setContent(newValue);
 		if(onChange) onChange(newValue);
 	};

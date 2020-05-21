@@ -1,14 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // import RTE from './RTE';
-import { TextArea } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
+import TextareaAutosize from 'react-textarea-autosize';
 
 const Raw = ({ value, onChange, ...rest }) => {
 	return (
-		<TextArea
-			value={ value }
-			onChange={ e => onChange(e.target.value) }
-		/>
+		<Form>
+			<Form.Field
+				control={ TextareaAutosize }
+				onChange={ e => onChange(e.target.value) }
+				useCacheForDOMMeasurements
+				value={ value }
+				{ ...rest }
+			/>
+		</Form>
 	);
 };
 
