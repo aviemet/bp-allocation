@@ -16,8 +16,9 @@ class AppStore {
 	// Used to allow only one active editableInput at a time
 	@observable openEditor
 
-	KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds', topups: 'topups', thanks: 'thanks', results: 'results' }
-	votingRedirectTimeout = 60
+	KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds', topups: 'topups', results: 'results' }
+	defaultVotingRedirectTimeout = 60
+	@observable votingRedirectTimeout = this.defaultVotingRedirectTimeout
 }
 
 export default AppStore

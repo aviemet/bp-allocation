@@ -55,7 +55,7 @@ const FundsVotingKiosk = observer(props => {
 	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName
 
 	if(votingComplete) {
-		return <VotingComplete />
+		return <VotingComplete setVotingComplete={ setVotingComplete } />
 	}
 	return (
 		<OrgsContainer>

@@ -1,21 +1,33 @@
 import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { useVoting } from './VotingContext'
 import { Button } from 'semantic-ui-react'
 import { COLORS } from '/imports/lib/global'
+import { useData } from '/imports/api/providers'
 
 import styled from 'styled-components'
 
-const VotingComplete = () => {
+const VotingComplete = ({ setVotingComplete }) => {
+	const data = useData()
 
 	const { unsetUser } = useVoting()
 
 	useEffect(() => {
+		data.votingRedirectTimeout = 0
+
 		if(unsetUser) {
 			setTimeout(() => {
 				unsetUser()
 			}, 3000)
 		}
+
+		return () => data.votingRedirectTimeout = data.defaultVotingRedirectTimeout
 	}, [])
+
+	const showVotingPageAgain = () => {
+		// data.votingRedirectTimeout = data.defaultVotingRedirectTimeout
+		setVotingComplete(false)
+	}
 
 	return (
 		<>
@@ -27,7 +39,7 @@ const VotingComplete = () => {
 				<AmmendVoteButton
 					size='huge'
 					disabled={ false }
-					onClick={ () => {} }
+					onClick={ showVotingPageAgain }
 				>Ammend Vote</AmmendVoteButton>
 			</BottomAligned>
 		</>
@@ -82,5 +94,9 @@ const AmmendVoteButton = styled(Button)`
 	text-transform: uppercase !important;
 	margin-bottom: 10px;
 `
+
+VotingComplete.propTypes = {
+	setVotingComplete: PropTypes.func
+}
 
 export default VotingComplete

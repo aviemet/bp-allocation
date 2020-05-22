@@ -32,11 +32,13 @@ const FundsVotingKiosk = observer(props => {
 	const { settings } = useSettings()
 	const { orgs } = useOrgs()
 
-	const [ votingComplete, setVotingComplete ] = useState(false)
+	const voted = props.user.theme.chitVotes.some(org => org.votes > 0)
+
+	const [ votingComplete, setVotingComplete ] = useState(voted)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
 	const [ count, setCount ] = useState(data.votingRedirectTimeout)
 	const [ isCounting, setIsCounting ] = useState(false)
-	
+
 	useInterval(() => {
 		setCount(count - 1)
 	}, isCounting ? 1000 : null)
@@ -55,7 +57,7 @@ const FundsVotingKiosk = observer(props => {
 	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName
 
 	if(votingComplete) {
-		return <VotingComplete />
+		return <VotingComplete setVotingComplete={ setVotingComplete } />
 	}
 	return (
 		<OrgsContainer>
