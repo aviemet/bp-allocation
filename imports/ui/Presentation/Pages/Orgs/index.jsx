@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react-lite'
 import { useOrgs, useSettings } from '/imports/api/providers'
 
-import OrgCard from '/imports/ui/Components/OrgCard'
+import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 
 const Overlay = () => (
 	<DimOverlay>

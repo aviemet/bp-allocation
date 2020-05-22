@@ -19,8 +19,8 @@ import {
 	ShowLeverageToggle, 
 	ShowSaveValuesToggle 
 } from '/imports/ui/Components/Toggles'
-import TextMembersButton from '/imports/ui/Components/TextMembersButton'
-import EmailMembersButton from '/imports/ui/Components/EmailMembersButton'
+import TextMembersButton from '/imports/ui/Components/Buttons/TextMembersButton'
+import EmailMembersButton from '/imports/ui/Components/Buttons/EmailMembersButton'
 
 import PresentationNavButton from './PresentationNavButton'
 

@@ -35,7 +35,7 @@ const IndividualFile = props => {
 	}
 
 	return (
-		<React.Fragment>
+		<>
 			<Grid.Row>
 				<Grid.Column>
 					<strong>{props.fileName}</strong>
@@ -51,7 +51,7 @@ const IndividualFile = props => {
 
 
 				<Grid.Column>
-					<a href={ props.fileUrl } className="btn btn-outline btn-primary btn-sm" target="_blank" rel="noopener noreferrer">View</a>
+					<a href={ props.fileUrl } target="_blank" rel="noopener noreferrer">View</a>
 				</Grid.Column>
 
 				<Grid.Column>
@@ -62,7 +62,7 @@ const IndividualFile = props => {
           Size: {props.fileSize}
 				</Grid.Column>
 			</Grid.Row>
-		</React.Fragment>
+		</>
 	)
 }
 

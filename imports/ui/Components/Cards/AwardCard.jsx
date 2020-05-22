@@ -5,7 +5,7 @@ import { Card } from 'semantic-ui-react'
 import styled from 'styled-components'
 import numeral from 'numeral'
 
-import AwardEmblem from './AwardEmblem'
+import AwardEmblem from '../AwardEmblem'
 
 import { COLORS } from '/imports/lib/global'
 

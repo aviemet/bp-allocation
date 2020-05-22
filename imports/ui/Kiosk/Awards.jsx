@@ -6,7 +6,7 @@ import { useSettings, useOrgs } from '/imports/api/providers'
 import { Header, Card } from 'semantic-ui-react'
 import styled from 'styled-components'
 
-import AwardCard from '/imports/ui/Components/AwardCard'
+import AwardCard from '/imports/ui/Components/Cards/AwardCard'
 
 const Awards = observer(() => {
 	const { settings } = useSettings()

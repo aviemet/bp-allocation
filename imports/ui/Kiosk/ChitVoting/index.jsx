@@ -10,7 +10,7 @@ import { Card, Container, Header, Button } from 'semantic-ui-react'
 import styled from 'styled-components'
 
 import VotingComplete from '../VotingComplete'
-import OrgCard from '/imports/ui/Components/OrgCard'
+import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import ChitTicker from './ChitTicker'
 import useInterval from '/imports/ui/Components/useInterval'
 
@@ -34,7 +34,7 @@ const FundsVotingKiosk = observer(props => {
 
 	const [ votingComplete, setVotingComplete ] = useState(false)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
-	const [ count, setCount ] = useState(60)
+	const [ count, setCount ] = useState(data.votingRedirectTimeout)
 	const [ isCounting, setIsCounting ] = useState(false)
 	
 	useInterval(() => {
@@ -68,8 +68,8 @@ const FundsVotingKiosk = observer(props => {
 			</Header> }
 
 			<Card.Group doubling centered itemsPerRow={ 2 }>
-				{orgs.values.map(org => {
-					return(
+				{ orgs.values.map(org => {
+					return (
 						<OrgCard
 							key={ org._id }
 							org={ org }
@@ -81,18 +81,19 @@ const FundsVotingKiosk = observer(props => {
 									org={ org }
 								/>
 							) }
-						/>)
-				})}
+						/> 
+					)
+				} ) }
 			</Card.Group>
 
-			<FundsVoteContext.Consumer>{({ chits, saveChits, member }) => {
+			<FundsVoteContext.Consumer>{ ({ chits, saveChits, member }) => {
 				let sum = 0
 				_.forEach(chits, value => sum += value)
 				const remaining = member.theme.chits - sum
 				const buttonDisabled = remaining !== 0
 				
 				return(
-					<React.Fragment>
+					<>
 						<VotesRemaining value={ remaining } />
 						<FinalizeButton
 							size='huge'
@@ -101,9 +102,9 @@ const FundsVotingKiosk = observer(props => {
 								saveChits(props.source)
 								setVotingComplete(true)
 							} }>Finalize Vote</FinalizeButton>
-					</React.Fragment>
+					</>
 				)
-			}}</FundsVoteContext.Consumer>
+			} }</FundsVoteContext.Consumer>
 		</OrgsContainer>
 	)
 })

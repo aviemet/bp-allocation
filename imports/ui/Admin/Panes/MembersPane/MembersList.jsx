@@ -9,8 +9,8 @@ import { MemberMethods } from '/imports/api/methods'
 
 import { Table, Icon, Button, Dropdown } from 'semantic-ui-react'
 import TablePagination from '/imports/ui/Components/TablePagination'
-import EditableText from '/imports/ui/Components/EditableText'
-import ConfirmationModal from '/imports/ui/Components/ConfirmationModal'
+import EditableText from '/imports/ui/Components/Inputs/EditableText'
+import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
 
 const MembersList = observer(props => {
 	const { theme } = useTheme()

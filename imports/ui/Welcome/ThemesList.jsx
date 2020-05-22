@@ -10,7 +10,7 @@ import { ThemeMethods } from '/imports/api/methods'
 import { Table, Icon, Segment, Dropdown, Container } from 'semantic-ui-react'
 
 import NewThemeModal from '/imports/ui/Welcome/NewThemeModal'
-import ConfirmationModal from '/imports/ui/Components/ConfirmationModal'
+import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
 import TablePagination from '/imports/ui/Components/TablePagination'
 
 const ThemesList = ({ themes }) => {

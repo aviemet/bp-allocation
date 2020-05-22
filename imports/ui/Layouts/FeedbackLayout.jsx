@@ -4,11 +4,8 @@ import PropTypes from 'prop-types'
 import { Container, Grid } from 'semantic-ui-react'
 import styled from 'styled-components'
 
-import HomeButton from '/imports/ui/Components/HomeButton'
-
 const FeedbackLayout = (props) => (
 	<FeedbackContainer>
-		<HomeButton />
 
 		<Container>
 			<Grid columns={ 16 }>

@@ -41,9 +41,19 @@ const ThemeTransformer = (doc, params) => {
 	 * Whether voting has begun
 	 * True if at least one person has cast a vote
 	 */
-	doc.votingStarted = function() {
+	doc.fundsVotingStarted = function() {
 		return params.memberThemes.some(member => {
 			return member.allocations.some(vote => vote.amount > 0)
+		})
+	}()
+
+	/**
+	 * Whether voting has begun
+	 * True if at least one person has cast a vote
+	 */
+	doc.chitVotingStarted = function() {
+		return params.memberThemes.some(member => {
+			return member.chitVotes.some(vote => vote.votes > 0)
 		})
 	}()
 

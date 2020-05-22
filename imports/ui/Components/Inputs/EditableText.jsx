@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, TextArea, Button, Icon } from 'semantic-ui-react'
+import { Form, Input, Button, Icon } from 'semantic-ui-react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react-lite'
 import { useData } from '/imports/api/providers'
 import { uuid } from '/imports/lib/utils'
+import TextareaAutosize from 'react-textarea-autosize'
+import CKEditor from '/imports/ui/Components/RichTextEditor/CKEditor'
 
 const EditorInput = ({ value, onChange, type, children }) => {
 	if(type.toLowerCase() === 'textarea') {
 		return (
 			<StyledInput>
 				<Form style={ { width: '100%' } }>
-					<TextArea
+					<Form.Field
+						control={ TextareaAutosize }
+						onChange={ e => onChange(e.target.value) }
+						useCacheForDOMMeasurements
 						value={ value }
-						onChange={ onChange }
 					/>
 					{ children }
 				</Form>
@@ -21,11 +25,24 @@ const EditorInput = ({ value, onChange, type, children }) => {
 		)
 	}
 
+	if(type.toLowerCase() === 'rte') {
+		console.log({ onChange })
+		return (
+			<>
+				<CKEditor
+					value={ value }
+					onChange={ onChange }
+				/>
+				{ children }
+			</>
+		)
+	}
+
 	return (
 		<StyledInput 
 			type={ type || 'text' } 
 			value={ value }
-			onChange={ onChange }
+			onChange={ e => onChange(e.target.value) }
 			fluid
 			action
 		>
@@ -75,13 +92,15 @@ const EditableText = observer(({ as, format, type, onSubmit, children }) => {
 				<EditorInput 
 					type={ type || 'text' } 
 					value={ value }
-					onChange={ e => setValue(e.currentTarget.value) }
+					onChange={ data => setValue(data) }
 					action
 				>
 					<Button compact size='mini' onClick={ handleCancel }><Icon name='cancel' color='red' /></Button>
 					<Button compact size='mini' onClick={ handleSubmit }><Icon name='checkmark' color='green' /></Button>
 				</EditorInput>
-				: format(value)
+				: type === 'rte' ?
+					<div dangerouslySetInnerHTML={ { __html: value } } />
+					: format(value)
 			}
 		</Component>
 	)
@@ -116,7 +135,7 @@ EditableText.propTypes = {
 		PropTypes.string, 
 	]),
 	format: PropTypes.func,
-	type: PropTypes.string,
+	type: PropTypes.oneOf(['text', 'textarea', 'rte']),
 	children: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.number

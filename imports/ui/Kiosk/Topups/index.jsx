@@ -8,7 +8,7 @@ import { roundFloat } from '/imports/lib/utils'
 import { Container, Form, Input, Button, Card, Checkbox, Responsive, Loader } from 'semantic-ui-react'
 import styled from 'styled-components'
 
-import OrgCard from '/imports/ui/Components/OrgCard'
+import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import { observer } from 'mobx-react-lite'
 
 const Pledges = observer(props => {

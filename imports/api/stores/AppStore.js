@@ -13,10 +13,10 @@ class AppStore {
 	@observable displayedPledges = new Set()
 	@observable loadMembers = true
 
-	// Global flag used to allow only one active editableInput at a time
+	// Used to allow only one active editableInput at a time
 	@observable openEditor
 
-	KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds', topups: 'topups', results: 'results' }
+	KIOSK_PAGES = { info: 'info', chit: 'chit', funds: 'funds', topups: 'topups', thanks: 'thanks', results: 'results' }
 	votingRedirectTimeout = 60
 }
 

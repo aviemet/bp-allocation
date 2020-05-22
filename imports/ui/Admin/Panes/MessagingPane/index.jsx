@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import TextMembersButton from '/imports/ui/Components/TextMembersButton'
+import TextMembersButton from '/imports/ui/Components/Buttons/TextMembersButton'
 import TextEditModal from './TextEditModal'
 import EmailEditModal from './EmailEditModal'
 import { useData, useMessages } from '/imports/api/providers'
@@ -9,8 +9,9 @@ import { Container, Grid, Table, Dropdown, Loader, Icon, Segment } from 'semanti
 import { MessageMethods } from '/imports/api/methods'
 import IncludeVotingLinkToggle from './IncludevotingLinkToggle'
 import ActiveToggle from './ActiveToggle'
-import ConfirmationModal from '/imports/ui/Components/ConfirmationModal'
+import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
 import { Link, useLocation, useHistory } from 'react-router-dom'
+import EditableText from '/imports/ui/Components/Inputs/EditableText'
 
 const Messages = props => {
 	const { themeId } = useData()

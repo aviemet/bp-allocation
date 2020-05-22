@@ -9,7 +9,7 @@ import { roundFloat } from '/imports/lib/utils'
 import { Container, Form, Input, Button, Card, Checkbox, Loader } from 'semantic-ui-react'
 import styled from 'styled-components'
 
-import OrgCard from '/imports/ui/Components/OrgCard'
+import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import MemberSearch from '/imports/ui/Components/MemberSearch'
 import { observer } from 'mobx-react-lite'
 

@@ -42,7 +42,7 @@ const Kiosk = withRouter(observer(props => {
 		// Chit and Funds voting are not active
 		} else {
 			// Voting inactive, votes have been cast, and results have been shown
-			if(theme.votingStarted && settings.resultsVisited) {
+			if(theme.fundsVotingStarted && settings.resultsVisited) {
 				// Show results page
 				return data.KIOSK_PAGES.results
 			// Voting inactive and (no votes yet cast || results not yet shown)
@@ -57,7 +57,7 @@ const Kiosk = withRouter(observer(props => {
 		let pageNav = getActivePage()
 
 		// Wait 1 minute before navigating a user away from a voting screen
-		if(displayPage === data.KIOSK_PAGES.funds && !settings.fundsVotingActive && !settings.chitVotingActive) {
+		if((displayPage === data.KIOSK_PAGES.funds && !settings.fundsVotingActive) || (displayPage === data.KIOSK_PAGES.chit && !settings.chitVotingActive)) {
 			timeoutRef.current = setTimeout(() => doNavigation(pageNav), data.votingRedirectTimeout * 1000)
 		} else {
 			clearTimeout(timeoutRef.current)

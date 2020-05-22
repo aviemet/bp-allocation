@@ -73,9 +73,7 @@ const OrgCard = observer(({
 						onUpdate={ handleOnUpdate }
 					>
 						<Modal.Header>{ org.title }</Modal.Header>
-						<Modal.Content scrolling>{ org.description && org.description.split(/\n/).map((part, i) => (
-							<p key={ i }>{ part }</p>
-						) ) }</Modal.Content>
+						<Modal.Content scrolling>{ org.description && <div dangerouslySetInnerHTML={ { __html: org.description } } /> }</Modal.Content>
 					</Responsive>
 				</InfoLink> }
 
@@ -113,53 +111,53 @@ const StyledCard = styled(Card)`
 `
 
 const OrgTitle = styled.div`
-	font-family: TradeGothic
-	font-size: 2.5rem
-	margin: 5px
-	font-weight: 600
-	min-height: 8rem
-	position: relative
-	padding: 0
+	font-family: TradeGothic;
+	font-size: 2.5rem;
+	margin: 5px;
+	font-weight: 600;
+	min-height: 8rem;
+	position: relative;
+	padding: 0;
 
 	.small & {
-		min-height: 3.5rem
+		min-height: 3.5rem;
 	}
 
 	.big & {
-		min-height: 13.5rem
-		font-size: 4rem
+		min-height: 13.5rem;
+		font-size: 4rem;
 	}
 
 	& > p {
-		display: block
-		position: absolute
-		top: 50%
-		left: 50%
-		transform: translate(-50%, -50%)
-		width: 100%
+		display: block;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
 	}
 `
 
 const OrgAsk = styled.p`
-	font-family: TradeGothic20
-	font-size: 3rem
-	font-weight: 700
+	font-family: TradeGothic20;
+	font-size: 3rem;
+	font-weight: 700;
 `
 
 const CardContent = styled(Card.Content)`
-	background-color: ${props => props.bgcolor} !important
-	color: #FFF
-	text-align: center
+	background-color: ${props => props.bgcolor} !important;
+	color: #FFF;
+	text-align: center;
 
 	& a {
-		color: #FFF
+		color: #FFF;
 	}
 `
 
 const InfoLink = styled(Icon)`
-	position: absolute
-	top: 10px
-	right: 10px
+	position: absolute;
+	top: 10px;
+	right: 10px;
 `
 
 OrgCard.propTypes = {
@@ -183,3 +181,9 @@ OrgCard.propTypes = {
 }
 
 export default OrgCard
+
+/*
+org.description.split(/\n/).map((part, i) => (
+	<p key={ i }>{ part }</p>
+) )
+*/

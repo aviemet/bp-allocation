@@ -6,7 +6,7 @@ import { useOrgs, useMembers } from '/imports/api/providers'
 
 import { PieChart, Pie, Cell } from 'recharts'
 
-import ExportCsvButton from '/imports/ui/Components/ExportCsvButton'
+import ExportCsvButton from '/imports/ui/Components/Buttons/ExportCsvButton'
 import { Loader } from 'semantic-ui-react'
 
 const Stats = observer(props => {

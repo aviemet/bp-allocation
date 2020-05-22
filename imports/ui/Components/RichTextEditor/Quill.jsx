@@ -71,7 +71,7 @@ const Editor = props => {
 Editor.propTypes = {
 	placeholder: PropTypes.string,
 	value: PropTypes.string,
-	onChange: PropTypes.any
+	onChange: PropTypes.func
 }
 
 export default Editor

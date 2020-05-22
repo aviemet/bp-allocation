@@ -10,8 +10,8 @@ import { Header, Grid, Form, Container, Table, Button, Popup, Icon, Loader } fro
 import styled from 'styled-components'
 
 import ImportOrgs from './ImportOrgs'
-import EditableText from '/imports/ui/Components/EditableText'
-import ConfirmationModal from '/imports/ui/Components/ConfirmationModal'
+import EditableText from '/imports/ui/Components/Inputs/EditableText'
+import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
 
 const OrganizationsPane = observer(props => {
 	const { theme } = useTheme()
@@ -152,7 +152,7 @@ const OrganizationsPane = observer(props => {
 										{ org.ask ? org.ask : '' }
 									</EditableText>
 
-									<EditableText as={ Table.Cell } onSubmit={ updateOrg(org._id, 'description') } type='textarea'>
+									<EditableText as={ Table.Cell } onSubmit={ updateOrg(org._id, 'description') } type='rte'>
 										{ org.description ? org.description : '' }
 									</EditableText>
 

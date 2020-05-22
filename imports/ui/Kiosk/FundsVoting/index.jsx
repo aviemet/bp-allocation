@@ -11,7 +11,7 @@ import { Card, Container, Header, Button } from 'semantic-ui-react'
 import styled from 'styled-components'
 
 import VotingComplete from '../VotingComplete'
-import OrgCard from '/imports/ui/Components/OrgCard'
+import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import FundsSlider from './FundsSlider'
 import useInterval from '/imports/ui/Components/useInterval'
 
@@ -34,7 +34,7 @@ const FundsVotingKiosk = observer(props => {
 
 	const [ votingComplete, setVotingComplete ] = useState(false)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
-	const [ count, setCount ] = useState(60)
+	const [ count, setCount ] = useState(data.votingRedirectTimeout)
 	const [ isCounting, setIsCounting ] = useState(false)
 	
 	useInterval(() => {
@@ -92,7 +92,7 @@ const FundsVotingKiosk = observer(props => {
 				const buttonDisabled = remaining !== 0
 				
 				return(
-					<React.Fragment>
+					<>
 						<AmountRemaining value={ remaining } />
 						<FinalizeButton
 							size='huge'
@@ -101,7 +101,7 @@ const FundsVotingKiosk = observer(props => {
 								saveAllocations(props.source)
 								setVotingComplete(true)
 							} }>Finalize Vote</FinalizeButton>
-					</React.Fragment>
+					</>
 				)
 			}}</FundsVoteContext.Consumer>
 		</OrgsContainer>

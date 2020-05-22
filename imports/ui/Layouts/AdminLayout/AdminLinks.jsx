@@ -112,10 +112,10 @@ const Links = withRouter(observer(({ activeMenuItem }) => {
 const MenuContainer = styled.div`
 	& .ui.menu.vertical {
 		width: inherit;
-		border-radius: none;
+		border-radius: 0;
 
 		.item {
-			border-radius: none;
+			border-radius: 0;
 		}
 	}
 `

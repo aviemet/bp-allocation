@@ -6,7 +6,8 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings, useOrgs, useMembers } from '/imports/api/providers'
 
-import OrgCard from '/imports/ui/Components/OrgCard'
+import OrgCard from '/imports/ui/Components/Cards/OrgCard'
+import { toJS } from 'mobx'
 
 const KioskInfo = observer(() => {
 	const { theme } = useTheme()
@@ -18,28 +19,36 @@ const KioskInfo = observer(() => {
 
 	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 3)
 
-	const title = orgs.topOrgsChosen ? 
+	const title = theme.chitVotingStarted ? 
 		`TOP ${theme.numTopOrgs} ORGANIZATIONS` :
 		'ORGANIZATIONS THIS THEME'
 
 	let subHeading = ''
-	if(settings.fundsVotingActive) {
+	/*if(settings.fundsVotingActive || settings.chitVotingActive) {
 		subHeading = 'Voting In Progress'
 	} else {
-		if(theme.votingStarted) {
+		if(theme.fundsVotingStarted) {
 			subHeading = 'Voting Has Completed'
 		} else {
 			subHeading = 'Voting To Begin Shortly'
 		}
+	}*/
+
+	if(!theme.chitVotingStarted && !theme.fundsVotingStarted) {
+		subHeading = 'Round 1 Voting To Begin Shortly'
+	} else if(theme.chitVotingStarted && !theme.fundsVotingStarted) {
+		subHeading = 'Round 2 Voting To Begin Shortly'
+	} else {
+		subHeading = 'Votes Are In, Results Coming Soon'
 	}
 
-	const orgsToDisplay = orgs.topOrgsChosen ? topOrgs : orgs.values
+	const orgsToDisplay = theme.chitVotingStarted ? topOrgs : orgs.values
 
 	if(membersLoading) return <Loader active />
 	return (
 		<OrgsContainer>
-			<Header as='h1' className="title" style={ { fontSize: '10vw' } }>{ title }</Header>
-			<Header as='h2' className='subheading'>{ subHeading }</Header>
+			<FlexHeading as='h1'>{ title }</FlexHeading>
+			<Header as='h2'>{ subHeading }</Header>
 			<Responsive 
 				as={ Card.Group }
 				fireOnMount
@@ -47,13 +56,13 @@ const KioskInfo = observer(() => {
 				centered 
 				itemsPerRow={ itemsPerRow }
 			>
-				{orgsToDisplay.map(org => (
+				{ orgsToDisplay.map(org => (
 					<OrgCard
 						key={ org._id }
 						org={ org }
 						info={ true }
 					/>
-				))}
+				)) }
 			</Responsive>
 		</OrgsContainer>
 	)
@@ -73,20 +82,26 @@ const OrgsContainer = styled(Container)`
 		}
 	}
 
-	& {
-		h1.ui.header.title {
-			color: #FFF;
-			text-align: center;
-			font-size: 3rem;
-		}
-
-		.subheading {
+	&& {
+		.ui.header {
 			color: #FFF;
 			text-align: center;
 		}
 
 		p {
 			line-height: 1em;
+		}
+	}
+`
+
+const FlexHeading = styled(Header)`
+	&&& {
+		font-size: 3em;
+	}
+
+	@media only screen and (max-width: 500px) {
+		&&& {
+			font-size: 10vw !important;
 		}
 	}
 `

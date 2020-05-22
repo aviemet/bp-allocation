@@ -17,9 +17,9 @@ import {
 	Menu,
 	Responsive
 } from 'semantic-ui-react'
-import Sidebar from '/imports/ui/Components/Sidebar'
-import styled from 'styled-components'
+import Sidebar from './Sidebar'
 import AdminLinks from './AdminLinks'
+import styled from 'styled-components'
 
 import { observer } from 'mobx-react-lite'
 import { useData, useTheme } from '/imports/api/providers'
