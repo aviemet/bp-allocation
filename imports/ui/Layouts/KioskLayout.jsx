@@ -17,6 +17,7 @@ const KioskContainer = styled.div`
 	height: 100%;
 	background: black;
 	color: white;
+	touch-action: manipulation;
 `
 
 KioskLayout.propTypes = {

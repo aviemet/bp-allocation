@@ -91,6 +91,10 @@ const ResultsPageContainer = styled.div`
 		h1 {
 			font-size: 3.8em;
 			margin: 0;
+
+			@media screen and (max-width: 800px) {
+				margin-top: 50px;
+			}
 		}
 
 		h2 {
@@ -111,6 +115,11 @@ const ResultsPageContainer = styled.div`
 
 const AwardsImage = styled.img`
 	width: 10%;
+	text-align: center;
+
+	@media screen and (max-width: 800px) {
+		display: none;
+	}
 `
 
 export default Results

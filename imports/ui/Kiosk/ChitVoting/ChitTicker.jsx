@@ -1,65 +1,75 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useLayoutEffect } from 'react'
 import PropTypes from 'prop-types'
-import _ from 'lodash'
+import { isNaN, forEach } from 'lodash'
 
 import { useVoting } from '/imports/ui/Kiosk/VotingContext'
 
 import styled from 'styled-components'
-import { Button, Icon } from 'semantic-ui-react'
-
-/**
- * Number incrementer for adjusting integer votes
- */
-const ChitTicker = props => {
-	const { member, chits, updateChits } = useVoting()
-
-	const context = Object.assign({ member, chits, updateChits }, props)
-
-	return <ChitTickerComponent { ...context }>{props.children}</ChitTickerComponent>
-}
+import { Button } from 'semantic-ui-react'
 
 /**
  * Full Component containing Ticker, Org Title and amount feedback
  */
-const ChitTickerComponent = props => {
-	const [ value, setValue ] = useState(parseInt(props.chits[props.org._id]) || 0)
+const ChitTicker = ({ org }) => {
+	const { member, chits, updateChits } = useVoting()
+	const [ value, setValue ] = useState(parseInt(chits[org._id]) || 0)
 	
-	const MAX = props.member.theme.chits
+	const MAX = member.theme.chits
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		// Disable contextmenu for long press on mobile
 		document.oncontextmenu = () => false
 	}, [])
 
-	const handleChange = value => {
+	// Update voting context with total votes, constraining total across tickers
+	const handleChange1 = value => {
 		if(value < 0 || value > MAX) return
+		console.log({ value })
 
 		// undefined value from empty DB field should be dealt with correctly
-		if(_.isNaN(value)) {
+		if(isNaN(value)) {
 			setValue(0)
-			props.updateChits(props.org._id, 0)
+			updateChits(org._id, 0)
 			return
 		}
 
+		console.log({ chits })
 		// Constrain value to be between 0 and member's assigned chits
 		let sum = 0
-		_.forEach(props.chits, (votes, key) => {
-			sum += key === props.org._id ? parseInt(value) : votes
+		forEach(chits, (votes, orgId) => {
+			sum += orgId === org._id ? parseInt(value) : votes
 		})
-		const constrained = MAX - sum < 0 ? parseInt(value) + (MAX - sum) : parseInt(value)
-		// const constrained = Math.min(Math.max(value, 0), MAX)
+		// const constrained = MAX - sum <= 0 ? parseInt(value) + (MAX - sum) : parseInt(value)
+		const constrained = Math.min(Math.max(value, 0), MAX)
+		setValue(constrained)
+		console.log({ check: MAX - sum < 0, val: MAX - sum })
+		console.log({ MAX, sum, constrained })
+
+		// Save new value to DB on every change
+		updateChits(org._id, constrained)
+	}
+
+	const handleChange = value => {
+		if(value < 0 || value > MAX) return
+
+		let sumAfterThisVote = 0
+		forEach(chits, (votes, orgId) => sumAfterThisVote += orgId === org._id ? parseInt(value) : votes)
+		
+		if(sumAfterThisVote > MAX || sumAfterThisVote < 0) return
+		
+		const constrained = Math.min(Math.max(value, 0), MAX)
 		setValue(constrained)
 
 		// Save new value to DB on every change
-		props.updateChits(props.org._id, constrained)
+		updateChits(org._id, constrained)
 	}
 
 	return (
 		<TickerContainer>
 			<TransparentButton icon='minus' onClick={ () => handleChange(value - 1) } size='huge' />
-			<Amount>
-				{ value }
-			</Amount>
+
+			<Amount>{ value }</Amount>
+
 			<TransparentButton icon='plus' onClick={ () =>  handleChange(value + 1) } size='huge' />
 		</TickerContainer>
 	)
@@ -93,18 +103,8 @@ const TransparentButton = styled(Button)`
 	}
 `
 
-ChitTickerComponent.propTypes = {
-	member: PropTypes.object,
-	org: PropTypes.object,
-	updateChits: PropTypes.func,
-	chits: PropTypes.object,
-}
-
 ChitTicker.propTypes = {
-	children: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.node),
-		PropTypes.node
-	])
+	org: PropTypes.object
 }
 
 export default ChitTicker

@@ -11,15 +11,17 @@ const FundsVoteContext = React.createContext()
 
 const VotingContextProvider = observer(props => {
 	const { theme } = useTheme()
-	const { topOrgs } = useOrgs()
+	const { orgs, topOrgs } = useOrgs()
 
 	let initialVotesState = {}
-	let initialChitState = {}
 	topOrgs.map(org => {
 		const allocations = find(props.member.theme.allocations, ['organization', org._id])
-		const chits = find(props.member.theme.chitVotes, ['organization', org._id])
-
 		initialVotesState[org._id] = allocations ? allocations.amount : 0
+	})
+
+	let initialChitState = {}
+	orgs.values.map(org => {
+		const chits = find(props.member.theme.chitVotes, ['organization', org._id])
 		initialChitState[org._id] = chits ? chits.votes : 0
 	})
 

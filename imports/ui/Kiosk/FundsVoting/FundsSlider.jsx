@@ -98,6 +98,7 @@ const FundsSliderComponent = props => {
 				<AmountInputContainer id='inputContainer'>
 					<Input fluid
 						type='number'
+						pattern="[0-9]*"
 						value={ value || '' }
 						onChange={ e => handleChange(parseInt(e.currentTarget.value)) }
 						size='massive'
@@ -109,6 +110,7 @@ const FundsSliderComponent = props => {
 				:
 				<Amount onClick={ toggleAmountInput }>
 					{ numeral(value).format('$0,0') }
+					<Icon name='keyboard' size='tiny' />
 				</Amount>
 			}
 			<BottomAlign className={ showLabel ? 'visible' : '' }>
@@ -143,6 +145,16 @@ const Amount = styled.div`
 	font-size: 4rem;
 	text-align: center;
 	line-height: 1.15;
+
+	.icon {
+		position: absolute;
+		top: 25%;
+		left: 0;
+
+		&.tiny {
+			font-size: 0.3em;
+		}
+	}
 `
 
 const AmountInputContainer = styled.div`

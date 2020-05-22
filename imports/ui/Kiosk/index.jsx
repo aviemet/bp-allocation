@@ -57,7 +57,10 @@ const Kiosk = withRouter(observer(props => {
 		let pageNav = getActivePage()
 
 		// Wait 1 minute before navigating a user away from a voting screen
-		if((displayPage === data.KIOSK_PAGES.funds && !settings.fundsVotingActive) || (displayPage === data.KIOSK_PAGES.chit && !settings.chitVotingActive)) {
+		if(
+			(displayPage === data.KIOSK_PAGES.funds && !settings.fundsVotingActive) || 
+			(displayPage === data.KIOSK_PAGES.chit && !settings.chitVotingActive)
+		) {
 			timeoutRef.current = setTimeout(() => doNavigation(pageNav), data.votingRedirectTimeout * 1000)
 		} else {
 			clearTimeout(timeoutRef.current)

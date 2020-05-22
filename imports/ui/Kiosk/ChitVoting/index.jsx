@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import _ from 'lodash'
+import { forEach } from 'lodash'
 
 import { observer } from 'mobx-react-lite'
 import { useData, useSettings, useOrgs } from '/imports/api/providers'
@@ -90,7 +90,7 @@ const FundsVotingKiosk = observer(props => {
 
 			<FundsVoteContext.Consumer>{ ({ chits, saveChits, member }) => {
 				let sum = 0
-				_.forEach(chits, value => sum += value)
+				forEach(chits, value => sum += value)
 				const remaining = member.theme.chits - sum
 				const buttonDisabled = remaining !== 0
 				

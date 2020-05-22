@@ -21,48 +21,54 @@ const Links = withRouter(observer(({ activeMenuItem }) => {
 					to={ `/admin/${data.themeId}/orgs` }
 					active={ activeMenuItem === 'orgs' }
 					iconPosition='left'
+					color='teal'
 				>
-					<Icon name='building' /> Orgs
+					<Icon name='building' color='teal' /> Orgs
 				</MenuLink>
 
 				<MenuLink 
 					to={ `/admin/${data.themeId}/members` }
 					active={ activeMenuItem === 'members' }
 					iconPosition='left'
+					color='violet'
 				>
-					<Icon name='users' /> Members
+					<Icon name='users' color='violet' /> Members
 				</MenuLink>
 
 				<MenuLink 
 					to={ `/admin/${data.themeId}/chits` }
 					active={ activeMenuItem === 'chits' }
 					iconPosition='left'
+					color='brown'
 				>
-					<Icon name='star' /> Chit Votes
+					<Icon name='star' color='brown' /> Chit Votes
 				</MenuLink>
 
 				<MenuLink 
 					to={ `/admin/${data.themeId}/allocation` }
 					active={ activeMenuItem === 'allocation' }
 					iconPosition='left'
+					color='green'
 				>
-					<Icon name='dollar' /> Allocations
+					<Icon name='dollar' color='green' /> Allocations
 				</MenuLink>
 
 				<MenuLink 
 					to={ `/admin/${data.themeId}/leverage` }
 					active={ activeMenuItem === 'leverage' }
 					iconPosition='left'
+					color='orange'
 				>
-					<Icon name='chart pie' /> Leverage
+					<Icon name='chart pie' color='orange' /> Leverage
 				</MenuLink>
 
 				<MenuLink 
 					to={ `/admin/${data.themeId}/presentation` }
 					active={ activeMenuItem === 'presentation' }
 					iconPosition='left'
+					color='red'
 				>
-					<Icon name='chart bar' /> Presentation
+					<Icon name='chart bar' color='red' /> Presentation
 				</MenuLink>
 			</Menu>
 			<br />
@@ -114,7 +120,7 @@ const MenuContainer = styled.div`
 		width: inherit;
 		border-radius: 0;
 
-		.item {
+		& > .active.item:last-child, .item {
 			border-radius: 0;
 		}
 	}

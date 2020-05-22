@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { withRouter } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 import { Icon, Menu } from 'semantic-ui-react'
 import styled from 'styled-components'
@@ -9,35 +9,37 @@ import styled from 'styled-components'
 /**
  * MenuLink for Vertical Admin Menu
  */
-const MenuLink = withRouter(props => {
+const MenuLink = ({ children, as, to, target, active, iconPosition, className, ...rest }) => {
+	const history = useHistory()
+
 	// target='_blank' attributes should open links in new tab/window
 	const handleNav = () => {
-		if(props.target && props.target === '_blank') {
-			window.open(props.to)
+		if(target && target === '_blank') {
+			window.open(to)
 		} else {
-			props.history.push(props.to)
+			history.push(to)
 		}
 	}
 
 	// Append 'left' class to classes if icon position should be to the left
-	let classes = props.className || ''
-	if(props.iconPosition && props.iconPosition !== 'right') {
-		classes += props.iconPosition
+	const classes = []
+	if(iconPosition && iconPosition !== 'right') {
+		classes.push(iconPosition)
 	}
 
 	return (
 		<MenuItem 
-			as='a' 
-			to={ props.to } 
+			as={ as ? as : 'a' }
+			to={ to }
 			onClick={ handleNav } 
-			active={ props.active && props.active }
-			className={ classes }
-			id={ props.id ? props.id : '' }
+			active={ active && active }
+			className={ classes.join(' ') }
+			{ ...rest }
 		>
-			{ props.target === '_blank' && <Icon name='external' size='small' /> }{ props.children }
+			{ target === '_blank' && <Icon name='external' size='small' /> }{ children }
 		</MenuItem>
 	)
-})
+}
 
 MenuLink.propTypes = {
 	children: PropTypes.any,
@@ -47,7 +49,8 @@ MenuLink.propTypes = {
 	active: PropTypes.bool,
 	iconPosition: PropTypes.oneOf(['left', 'right']),
 	className: PropTypes.string,
-	id: PropTypes.string
+	id: PropTypes.string,
+	rest: PropTypes.any
 }
 
 const MenuItem = styled(Menu.Item)`
