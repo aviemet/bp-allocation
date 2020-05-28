@@ -30,7 +30,7 @@ const _sanitizeMemberData = function(data) {
  * @param {object} data {firstName, lastName, fullName, initials, number, amount}
  */
 const _buildMissingData = function(data) {
-	let { firstName, lastName, fullName, number, initials, phone, code } = _sanitizeMemberData(data)
+	let { firstName, lastName, fullName, number, initials, phone, email, code } = _sanitizeMemberData(data)
 	// Build first/last from fullName if not present
 	if(_.isUndefined(firstName) && _.isUndefined(lastName) && !_.isUndefined(fullName)) {
 		const nameArr = fullName.split(' ')
@@ -54,7 +54,7 @@ const _buildMissingData = function(data) {
 	if(!_.isUndefined(initials) && !_.isUndefined(number)) {
 		code = `${initials}${String(number)}`
 	}
-	return { firstName, lastName, fullName, number, initials, phone, code }
+	return { firstName, lastName, fullName, number, initials, phone, email, code }
 }
 
 /**
@@ -102,8 +102,9 @@ const _memberInsert = function(data) {
 			}
 
 			if(phone) updateData.phone = phone
+			if(email) updateData.email = email
 
-			if(member.initials !== initials || member.phone !== phone) {
+			if(member.initials !== initials || member.phone !== phone || member.email !== email) {
 				Members.update({ _id: member._id }, { $set: updateData })
 			}
 			resolve(member._id)
