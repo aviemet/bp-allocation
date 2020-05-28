@@ -26,7 +26,6 @@ const EditorInput = ({ value, onChange, type, children }) => {
 	}
 
 	if(type.toLowerCase() === 'rte') {
-		console.log({ onChange })
 		return (
 			<>
 				<CKEditor

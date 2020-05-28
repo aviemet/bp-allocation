@@ -117,28 +117,28 @@ Meteor.methods({
 	/***************************
 	 *  TWILIO SERVER METHOD   *
 	 ***************************/
-	textVotingLinkToMembers: ({ themeId, message, link }) => { // link: boolean		
+	textVotingLinkToMembers: ({ themeId, message }) => {
 		const theme = Themes.findOne({ _id: themeId }) // Just need the slug from the theme
-
 		const messageBuilder = member => {
-			let finalMessage = message
-			// eslint-disable-next-line quotes
-			if(link !== false && theme.slug) finalMessage += "\n" + `${process.env.HOST_NAME}/v/${theme.slug}/${member.code}`
+			let finalMessage = message.body
+			if(message.includeLink === true && theme.slug) {
+				// eslint-disable-next-line quotes
+				finalMessage += "\n" + `${process.env.HOST_NAME}/v/${theme.slug}/${member.code}`
+			}
 			return finalMessage
 		}
 
 		const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.authToken)
-
 		let texts = []
 		const memberPhoneNumbers = memberPhoneNumbersQuery(themeId)
 		
 		memberPhoneNumbers.forEach(member => {
-			const message = messageBuilder(member)
+			const finalMessage = messageBuilder(member)
 			const text = client.messages.create({
-				body: message,
+				body: finalMessage,
 				to: formatPhoneNumber(member.phone),
 				messagingServiceSid: Meteor.settings.twilio.copilotSid
-			}).then(message => console.log(message))
+			}).then(response => console.log(response))
 			texts.push(text)
 		})
 		return texts
@@ -147,7 +147,7 @@ Meteor.methods({
 	/***************************
 	 *  EMAIL MEMBERS METHOD   *
 	 ***************************/
-	emailVotingLinkToMembers: ({ themeId, message }) => { 
+	emailVotingLinkToMembers: ({ themeId, message }) => {
 		const theme = Themes.findOne({ _id: themeId }) // Just need the slug from the theme
 
 		const messageBuilder = member => {

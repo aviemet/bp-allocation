@@ -33,7 +33,6 @@ const MessageSchema = new SimpleSchema({
 		required: false,
 		defaultValue: new Date()
 	}
-
 })
 
 Messages.attachSchema(MessageSchema)

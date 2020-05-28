@@ -162,8 +162,9 @@ const MembersList = observer(props => {
 					) }
 				</Table.Header>
 				<Table.Body>
-					{ members.filteredMembers && paginate(members.filteredMembers, page, itemsPerPage).map(member => { 
+					{ members.filteredMembers && paginate(members.filteredMembers, page, itemsPerPage).map(member => {
 						const votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount }, 0)
+						const votedChits = member.theme.chitVotes.length > 0
 						const fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`
 						const phone = member.phone ? member.phone : ''
 						const email = member.email ? member.email : ''
@@ -200,7 +201,7 @@ const MembersList = observer(props => {
 								
 								{ votingColspan > 0 && <>
 									{ settings.useKioskChitVoting && <Table.Cell>
-
+										{ votedChits && <Icon color='green' name='check' /> }
 									</Table.Cell> }
 
 									{ settings.useKioskFundsVoting && <Table.Cell>

@@ -123,26 +123,6 @@ const PresentationPane = observer(() => {
 						<ChitVotingActiveToggle />
 						<br/>
 						<FundsVotingActiveToggle />
-						<br/>
-						<TextMembersButton 
-							style={ { float: 'right' } }
-							title='Text: Begin Voting'
-							// eslint-disable-next-line quotes
-							message={ "From Battery Powered:\nWe have narrowed " + theme.organizations.length + " finalists down to " + theme.numTopOrgs + ". Use this link to vote your funds for the orgs you want to support:" }
-						/>
-						<TextMembersButton 
-							style={ { float: 'right' } }
-							title='Text: 5 Minute Warning'
-							// eslint-disable-next-line quotes
-							message={ "From Battery Powered:\nVoting is closing in 5 minutes! Vote here if you haven't already:" }
-						/>
-						<TextMembersButton 
-							style={ { float: 'right' } }
-							title='Text: Voting Complete'
-							// eslint-disable-next-line quotes
-							message={ "From Battery Powered:\nThe results of voting are in! Check them out here:" }
-						/>
-
 					</Grid.Column>
 
 				</Grid.Row>
@@ -206,9 +186,7 @@ const PresentationPane = observer(() => {
 										return (
 											<TextMembersButton key={ i }
 												style={ { float: 'right' } }
-												title={ message.title }
-												message={ message.body }
-												link={ message.link }
+												message={ message }
 											/>
 										)
 									}

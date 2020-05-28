@@ -13,8 +13,6 @@ const PledgeInfo = ({ pledge }) => {
 
 	const member = pledge.anonymous ? undefined : members.values.find(mem => mem._id === pledge.member)
 
-	console.log({ pledge, member })
-
 	return (
 		<AnimationContainer>
 			<AnimationContent>

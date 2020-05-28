@@ -19,7 +19,7 @@ const VotingComplete = ({ clearAllValues, org, amount }) => {
 		amount: numeral(amount).format('$0,0[.]00'),
 		total: numeral(amount * theme.matchRatio).format('$0,0[.]00')
 	}
-	console.log({ formatted })
+	
 	return (
 		<>
 			<Centered>

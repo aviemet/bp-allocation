@@ -21,34 +21,6 @@ const ChitTicker = ({ org }) => {
 		document.oncontextmenu = () => false
 	}, [])
 
-	// Update voting context with total votes, constraining total across tickers
-	const handleChange1 = value => {
-		if(value < 0 || value > MAX) return
-		console.log({ value })
-
-		// undefined value from empty DB field should be dealt with correctly
-		if(isNaN(value)) {
-			setValue(0)
-			updateChits(org._id, 0)
-			return
-		}
-
-		console.log({ chits })
-		// Constrain value to be between 0 and member's assigned chits
-		let sum = 0
-		forEach(chits, (votes, orgId) => {
-			sum += orgId === org._id ? parseInt(value) : votes
-		})
-		// const constrained = MAX - sum <= 0 ? parseInt(value) + (MAX - sum) : parseInt(value)
-		const constrained = Math.min(Math.max(value, 0), MAX)
-		setValue(constrained)
-		console.log({ check: MAX - sum < 0, val: MAX - sum })
-		console.log({ MAX, sum, constrained })
-
-		// Save new value to DB on every change
-		updateChits(org._id, constrained)
-	}
-
 	const handleChange = value => {
 		if(value < 0 || value > MAX) return
 

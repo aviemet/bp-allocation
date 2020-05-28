@@ -98,11 +98,9 @@ const ImportMembers = props => {
 				if(row.hasOwnProperty('fullName') && row.fullName.includes(',')) {
 					row.fullName = sanitizeNames(row.fullName)
 				}
-				console.log({ afterRowParse: row })
 				MemberMethods.upsert.call(Object.assign({ themeId: theme._id }, row))
 			},
 			'onComplete': data => {
-				console.log({ data })
 				// Display loading icon in button for a minimum amount of time
 				let timeout = 0
 				const now = new Date()
