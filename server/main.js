@@ -152,7 +152,9 @@ Meteor.methods({
 
 		const messageBuilder = member => {
 			let finalMessage = message.body
-			if(message.includeLink === true && theme.slug) finalMessage += `<p style='text-align: center; height: 4rem;'><a style='font-family: Arial, sans-serif; font-size: 2rem; padding: 15px; margin-bottom: 10px; border: 1px solid #CCC; border-radius: 10px; background-color: green; color: white; text-decoration: none;' href='${process.env.HOST_NAME}/v/${theme.slug}/${member.code}'>Vote Here</a></p>`
+			if(message.includeLink === true && theme.slug) {
+				finalMessage += `<p style='text-align: center; height: 4rem;'><a style='font-family: Arial, sans-serif; font-size: 2rem; padding: 15px; margin-bottom: 10px; border: 1px solid #CCC; border-radius: 10px; background-color: green; color: white; text-decoration: none;' href='${process.env.HOST_NAME}/v/${theme.slug}/${member.code}'>Vote Here</a></p>`
+			}
 			return htmlEmailWrapper(finalMessage)
 		}
 

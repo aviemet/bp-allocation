@@ -9,6 +9,7 @@ import { Container, Form, Input, Button, Card, Checkbox, Responsive, Loader } fr
 import styled from 'styled-components'
 
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
+import TopupComplete from './TopupComplete'
 import { observer } from 'mobx-react-lite'
 
 const Pledges = observer(props => {
@@ -20,18 +21,20 @@ const Pledges = observer(props => {
 	const [ isFormValid, setIsFormValid ] = useState(false)
 	const [ isAnonymous, setIsAnonymous ] = useState(false)
 	const [ itemsPerRow, setItemsPerRow ] = useState(2)
+	const [ didPledge, setDidPlegde ] = useState(false)
 
 	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 2)
+
+	const clearAllValues = () => {
+		setSelectedOrg(null)
+		setPledgeAmount('')
+		setDidPlegde(false)
+	}
 
 	useEffect(() => {
 		const isValid = selectedOrg !== null && pledgeAmount !== ''
 		if(isFormValid !== isValid) setIsFormValid(isValid)
 	}, [selectedOrg, pledgeAmount])
-
-	const clearAllValues = () => {
-		setSelectedOrg(null)
-		setPledgeAmount('')
-	}
 
 	const saveTopUp = () => {
 		const data = {
@@ -41,14 +44,18 @@ const Pledges = observer(props => {
 			anonymous: isAnonymous
 		}
 		OrganizationMethods.pledge.call(data)
-		clearAllValues()
+		setDidPlegde(true)
 	}
 
 	if(membersLoading || isEmpty(members) || orgsLoading) return <Loader active />
+	if(didPledge) {
+		const votedOrg = topOrgs.find(org => org._id === selectedOrg)
+		return <TopupComplete clearAllValues={ clearAllValues } org={ votedOrg } amount={ roundFloat(pledgeAmount) } />
+	} 
 	return (
 		<PledgesContainer fluid textAlign='center'>
 			<h1>If you feel like giving more</h1>
-			<p>Pledges made during this round will be matched from the leverage remaining. If you feel strongly about an organization and want to help them achieve full funding, now is your chance.</p>
+			<p>Pledges made during this round will be matched from the leverage remaining. If you feel strongly about an organization and want to help them achieve full funding, now is your chance!</p>
 
 			{/* Member name and amount input fields */}
 			<Form	inverted>

@@ -32,7 +32,10 @@ const FundsVotingKiosk = observer(props => {
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
 
-	const [ votingComplete, setVotingComplete ] = useState(false)
+	const voted = props.user.theme.allocations.some(org => org.amount > 0)
+	console.log({ user: props.user })
+
+	const [ votingComplete, setVotingComplete ] = useState(voted)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
 	const [ count, setCount ] = useState(data.votingRedirectTimeout)
 	const [ isCounting, setIsCounting ] = useState(false)

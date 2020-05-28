@@ -1,46 +1,37 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useVoting } from './VotingContext'
-import { Button } from 'semantic-ui-react'
+import { Button, Loader } from 'semantic-ui-react'
 import { COLORS } from '/imports/lib/global'
-import { useData } from '/imports/api/providers'
+import { useTheme } from '/imports/api/providers'
+import numeral from 'numeral'
 
 import styled from 'styled-components'
 
-const VotingComplete = ({ setVotingComplete }) => {
-	const data = useData()
-
-	const { unsetUser } = useVoting()
-
-	useEffect(() => {
-		data.votingRedirectTimeout = 0
-
-		if(unsetUser) {
-			setTimeout(() => {
-				unsetUser()
-			}, 3000)
-		}
-
-		return () => data.votingRedirectTimeout = data.defaultVotingRedirectTimeout
-	}, [])
+const VotingComplete = ({ clearAllValues, org, amount }) => {
+	const { theme, isLoading: themeLoading } = useTheme()
 
 	const showVotingPageAgain = () => {
-		// data.votingRedirectTimeout = data.defaultVotingRedirectTimeout
-		setVotingComplete(false)
+		clearAllValues()
 	}
 
+	if(themeLoading) return <Loader active />
+	const formatted = {
+		amount: numeral(amount).format('$0,0[.]00'),
+		total: numeral(amount * theme.matchRatio).format('$0,0[.]00')
+	}
+	console.log({ formatted })
 	return (
 		<>
 			<Centered>
-				<h1>Thank You For Voting!</h1>
-				<p>Results will be available shortly</p>
+				<h1>Thank You For Your Pledge!</h1>
+				<p>Your generous donation to <b><u>{ org.title }</u></b> of <b>{ formatted.amount }</b> was matched by the remaining leverage for a total of <b>{ formatted.total }</b></p>
 			</Centered>
 			<BottomAligned>
 				<AmendVoteButton
 					size='huge'
 					disabled={ false }
 					onClick={ showVotingPageAgain }
-				>Amend Vote</AmendVoteButton>
+				>Pledge Again</AmendVoteButton>
 			</BottomAligned>
 		</>
 	)
@@ -96,7 +87,9 @@ const AmendVoteButton = styled(Button)`
 `
 
 VotingComplete.propTypes = {
-	setVotingComplete: PropTypes.func
+	clearAllValues: PropTypes.func,
+	org: PropTypes.object,
+	amount: PropTypes.number
 }
 
 export default VotingComplete
