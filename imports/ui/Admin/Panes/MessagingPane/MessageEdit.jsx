@@ -9,13 +9,13 @@ import RichTextEditor from '/imports/ui/Components/RichTextEditor'
 import { observer } from 'mobx-react-lite'
 import { MessageMethods } from '/imports/api/methods'
 
+import 'react-quill/dist/quill.snow.css'
+
 const MessageEdit = observer(() => {
 	const { themeId } = useData()
 	const { messageId } = useParams()
 	const history = useHistory()
 	const { message: message, isLoading: messageLoading } = useMessage(messageId)
-
-	console.log({ themeId, messageId, message, messageLoading })
 
 	const handleUpdate = body => {
 		const data = {
@@ -53,7 +53,7 @@ const MessageEdit = observer(() => {
 				value={ message.body }
 				onChange={ body => message.body = body }
 			/>
-			<Segment><div dangerouslySetInnerHTML={ { __html: message.body } } /></Segment>
+			<Preview><div dangerouslySetInnerHTML={ { __html: message.body } } /></Preview>
 
 			<Button onClick={ handleUpdate }>Save</Button>
 		</Container>
@@ -62,6 +62,22 @@ const MessageEdit = observer(() => {
 
 const RightSpan = styled.span`
 	float: right;
+`
+
+const Preview = styled(Segment)`
+	& > div {
+		max-width: 600px;
+		margin: 0 auto;
+	}
+
+	img {
+		max-width: 100% !important;
+		margin: 4px;
+		padding: 4px;
+		background-color: #FFF;
+		border: solid 1px #CCC;
+		border-radius: 2px;
+	}
 `
 
 export default MessageEdit

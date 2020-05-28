@@ -36,11 +36,11 @@ const VotingComplete = ({ setVotingComplete }) => {
 				<p>Results will be available shortly</p>
 			</Centered>
 			<BottomAligned>
-				<AmmendVoteButton
+				<AmendVoteButton
 					size='huge'
 					disabled={ false }
 					onClick={ showVotingPageAgain }
-				>Ammend Vote</AmmendVoteButton>
+				>Amend Vote</AmendVoteButton>
 			</BottomAligned>
 		</>
 	)
@@ -85,7 +85,7 @@ const BottomAligned = styled.div`
 	text-align: center;
 `
 
-const AmmendVoteButton = styled(Button)`
+const AmendVoteButton = styled(Button)`
 	text-align: center;
 	background-color: ${COLORS.blue} !important;
 	color: white !important;

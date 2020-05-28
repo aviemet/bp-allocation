@@ -36,7 +36,7 @@ const Results = observer(() => {
 
 	return (
 		<ResultsPageContainer>
-			<AwardsImage src="/img/BAT_awards.png" />
+			<AwardsImage><img src="/img/BAT_awards.png" /></AwardsImage>
 
 			<Header as='h1'>
 					Total amount given: {numeral(total).format('$0.[00]a')}
@@ -113,9 +113,12 @@ const ResultsPageContainer = styled.div`
 	}
 `
 
-const AwardsImage = styled.img`
-	width: 10%;
+const AwardsImage = styled.div`
 	text-align: center;
+
+	img {
+		width: 10%;
+	}
 
 	@media screen and (max-width: 800px) {
 		display: none;

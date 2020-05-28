@@ -102,6 +102,17 @@ const memberEmailsQuery = themeId => {
 	])
 }
 
+const htmlEmailWrapper = yeild => `<html><head><style> 
+	img { 
+		max-width: 100% !important;
+		margin: 4px;
+		padding: 4px;
+		background-color: #FFF;
+		border: solid 1px #CCC;
+		border-radius: 2px;
+	} 
+</style></head><body><div style="max-width: 600px; margin: 0 auto;">${yeild}</div></body></html>`
+
 Meteor.methods({
 	/***************************
 	 *  TWILIO SERVER METHOD   *
@@ -138,11 +149,11 @@ Meteor.methods({
 	 ***************************/
 	emailVotingLinkToMembers: ({ themeId, message }) => { 
 		const theme = Themes.findOne({ _id: themeId }) // Just need the slug from the theme
-		
+
 		const messageBuilder = member => {
 			let finalMessage = message.body
-			if(message.includeLink === true && theme.slug) finalMessage += `<p style='text-align: center height: 3.4rem'><a style='font-size: 2rem padding: 10px margin-bottom: 10px border: 1px solid #CCC border-radius: 10px' href='${process.env.HOST_NAME}/v/${theme.slug}/${member.code}'>Allocation Night Voting Portal</a></p>`
-			return finalMessage
+			if(message.includeLink === true && theme.slug) finalMessage += `<p style='text-align: center; height: 3.4rem;'><a style='font-family: Arial, sans-serif; font-size: 2rem; padding: 10px; margin-bottom: 10px; border: 1px solid #CCC; border-radius: 10px;' href='${process.env.HOST_NAME}/v/${theme.slug}/${member.code}'>Allocation Night Voting Portal</a></p>`
+			return htmlEmailWrapper(finalMessage)
 		}
 
 		const memberEmails = memberEmailsQuery(themeId)
