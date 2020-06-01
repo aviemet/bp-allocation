@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 import { useVoting } from './VotingContext'
 import { Button } from 'semantic-ui-react'
 import { COLORS } from '/imports/lib/global'
-import { useData } from '/imports/api/providers'
+import { useData, useSettings } from '/imports/api/providers'
 
 import styled from 'styled-components'
 
 const VotingComplete = ({ setVotingComplete }) => {
 	const data = useData()
+	const { settings } = useSettings()
 
 	const { unsetUser } = useVoting()
 
@@ -29,10 +30,20 @@ const VotingComplete = ({ setVotingComplete }) => {
 		setVotingComplete(false)
 	}
 
+	const getRoundNumberFeedback = () => {
+		const roundStr = ' in Round'
+		if(settings.chitVotingActive) {
+			return `${roundStr} 1`
+		} else if(settings.fundsVotingActive) {
+			return `${roundStr} 2`
+		}
+		return false
+	}
+
 	return (
 		<>
 			<Centered>
-				<h1>Thank You For Voting!</h1>
+				<h1>Thank You For Voting{ getRoundNumberFeedback() }!</h1>
 				<p>Results will be available shortly</p>
 			</Centered>
 			<BottomAligned>
