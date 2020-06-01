@@ -53,7 +53,7 @@ const ImportMembers = props => {
 		},
 		{
 			name: 'chits',
-			forms: ['chits', 'votes', 'round 1', 'round one'],
+			forms: ['chits', 'chit', 'chip', 'chips', 'chip vote', 'chip votes', 'votes', 'round 1', 'round one'],
 			type: val => typeof val === 'string' ? parseInt(val.replace(/[^0-9.]/g, '')) : val
 		},
 		{
