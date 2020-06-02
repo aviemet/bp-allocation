@@ -57,7 +57,8 @@ const MembersList = observer(props => {
 		}
 	}
 
-	const resetMemberVotes = id => () => MemberMethods.resetVotes.call(id)
+	const resetMemberChitVotes = id => () => MemberMethods.resetChitVotes.call(id)
+	const resetMemberFundsVotes = id => () => MemberMethods.resetFundsVotes.call(id)
 
 	useEffect(() => {
 		if(sortColumn && sortDirection) members.sortBy(sortColumn, sortDirection)
@@ -219,11 +220,17 @@ const MembersList = observer(props => {
 											<Dropdown.Item onClick={ () => window.open(`/voting/${theme._id}/${member._id}`) }>Voting Screen <Icon name='external' /></Dropdown.Item>
 											<Dropdown.Divider />
 											<Dropdown.Item onClick={ () => {
-												setModalHeader(`Permanently Delete ${member.fullName}'s Votes?`)
-												setModalContent(`This will permanently delete the voting history of ${member.fullName} for this theme. This operation cannot be undone.`)
-												setModalAction( () => resetMemberVotes(member.theme._id) )
+												setModalHeader(`Permanently Delete ${member.fullName}'s Chit Votes?`)
+												setModalContent(`This will permanently delete the chit votes of ${member.fullName} for this theme. This operation cannot be undone.`)
+												setModalAction( () => resetMemberChitVotes(member.theme._id) )
 												setModalOpen(true)
-											} }>Reset Votes</Dropdown.Item>
+											} }>Reset Chit Votes</Dropdown.Item>	
+											<Dropdown.Item onClick={ () => {
+												setModalHeader(`Permanently Delete ${member.fullName}'s Votes?`)
+												setModalContent(`This will permanently delete the funds votes of ${member.fullName} for this theme. This operation cannot be undone.`)
+												setModalAction( () => resetMemberFundsVotes(member.theme._id) )
+												setModalOpen(true)
+											} }>Reset Funds Votes</Dropdown.Item>
 											<Dropdown.Divider />
 											<Dropdown.Item onClick={ () => {
 												setModalHeader(`Permanently Unlink ${member.fullName} From This Theme?`)

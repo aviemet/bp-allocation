@@ -15,7 +15,6 @@ import ChitTicker from './ChitTicker'
 import useInterval from '/imports/ui/Components/useInterval'
 
 import { COLORS } from '/imports/lib/global'
-import { toJS } from 'mobx'
 
 const VotesRemaining = React.memo(({ value }) => {
 	return (

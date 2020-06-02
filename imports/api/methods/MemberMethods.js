@@ -362,11 +362,24 @@ const MemberMethods = {
 		}
 	}),
 
+	/************************************
+	 * Reset chit votes for member to 0 *
+	 ************************************/
+	resetChitVotes: new ValidatedMethod({
+		name: 'member.resetChitVotes',
+
+		validate: null,
+
+		run(id) {
+			MemberThemes.update({ _id: id }, { $set: { chitVotes: [] } })
+		}
+	}),	
+	
 	/***********************************
-	 * Reset all votes for member to 0 *
-	 ***********************************/
-	resetVotes: new ValidatedMethod({
-		name: 'member.resetVotes',
+	* Reset funds votes for member to 0 *
+	***********************************/
+	resetFundsVotes: new ValidatedMethod({
+		name: 'member.resetFundsVotes',
 
 		validate: null,
 

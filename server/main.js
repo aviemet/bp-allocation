@@ -134,16 +134,25 @@ Meteor.methods({
 		
 		memberPhoneNumbers.forEach(member => {
 			const finalMessage = messageBuilder(member)
+
 			const text = client.messages.create({
 				body: finalMessage,
 				to: formatPhoneNumber(member.phone),
 				messagingServiceSid: Meteor.settings.twilio.copilotSid
-			}).then(response => console.log(response))
+			}).then(response => {
+				console.log({
+					messageType: 'text',
+					to: response.to,
+					status: response.status
+				})
+			}).catch(error => console.error(error))
+
 			texts.push(text)
 		})
 		return texts
 	},
 
+	// TODO: This is pretty ugly
 	/***************************
 	 *  EMAIL MEMBERS METHOD   *
 	 ***************************/
@@ -160,17 +169,42 @@ Meteor.methods({
 
 		const memberEmails = memberEmailsQuery(themeId)
 
-		let emails = []
-		memberEmails.forEach(member => {
-			const email = Email.send({
-				to: member.email,
-				from: message.from || 'support@thebatterysf.com',
-				subject: message.subject,
-				html: messageBuilder(member)
-			})
-			emails.push(email)
-		})
-		return emails
+		const  ms = 500 // Minimum delay between sending
+
+		// Rate limit sending emails
+		const bound = Meteor.bindEnvironment(callback => callback())
+
+		let i = 0
+		const interval = setInterval(() => {
+			try {
+				bound(() => Email.send({
+					to: memberEmails[i].email,
+					from: message.from,
+					subject: message.subject,
+					html: messageBuilder(memberEmails[i])
+				}))
+				console.log({ messageType: 'email', to: memberEmails[i].email })
+			} catch(e) {
+				console.error(e, { to: memberEmails[i].email })
+			}
+			
+			if(++i >= memberEmails.length) clearInterval(interval)
+		}, ms)
+
+		// Original synchronous burst send
+		/*memberEmails.forEach(member => {
+			try {
+				const email = Email.send({
+					to: member.email,
+					from: message.from || 'support@thebatterysf.com',
+					subject: message.subject,
+					html: messageBuilder(member)
+				})
+			} catch(e) {
+				console.error(e, { to: member.email })
+			}
+		})*/
+
 	}
 })
 
