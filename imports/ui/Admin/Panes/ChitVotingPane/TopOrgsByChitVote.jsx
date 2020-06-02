@@ -31,7 +31,7 @@ const TopOrgsByChitVote = observer(props => {
 	}
 	
 	let sortedOrgs = sortTopOrgs(orgs.values, theme)
-
+	let totalVotes = 0
 	return (
 		<>
 			<Header as="h3" floated="right">
@@ -60,6 +60,7 @@ const TopOrgsByChitVote = observer(props => {
 						const inTopOrgs = i < theme.numTopOrgs
 						const _isLocked = theme.topOrgsManual.includes(org._id)
 						const _isSaved = (_.findIndex(theme.saves, ['org', org._id]) >= 0)
+						totalVotes += org.votes || 0
 
 						return(
 							<TopOrgsRow
@@ -75,6 +76,13 @@ const TopOrgsByChitVote = observer(props => {
 
 					})}
 				</Table.Body>
+				<Table.Footer>
+					<Table.Row>
+						<Table.HeaderCell textAlign='right'>Total Votes:</Table.HeaderCell>
+						<Table.HeaderCell>{ totalVotes }</Table.HeaderCell>
+						<Table.HeaderCell></Table.HeaderCell>
+					</Table.Row>
+				</Table.Footer>
 			</Table>
 		</>
 	)

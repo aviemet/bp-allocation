@@ -143,6 +143,7 @@ const transitionStyles = {
 
 const PageFader = styled.div`
 	opacity: 0;
+	max-width: 100vw; 
 `
 
 export default Kiosk
