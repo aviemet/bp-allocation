@@ -1,9 +1,11 @@
 import { Meteor } from 'meteor/meteor'
-import { Email } from 'meteor/email'
+// import { Email } from 'meteor/email'
 import { ServiceConfiguration } from 'meteor/service-configuration'
+import { sendMassEmail } from './email'
+
+
 import { has } from 'lodash'
 import { formatPhoneNumber } from '/imports/lib/utils'
-
 import { MemberThemes, Themes } from '/imports/api/db'
 
 import '/imports/api/methods'
@@ -11,6 +13,7 @@ import twilio from 'twilio'
 
 // Meteor publication definitions
 import '/imports/server/publications'
+import moment from 'moment'
 
 Meteor.startup(() => {
 	// Save API info to DB once (upsert)
@@ -33,6 +36,7 @@ Meteor.startup(() => {
 
 	process.env.MAIL_URL = Meteor.settings.MAIL_URL
 	process.env.HOST_NAME = Meteor.settings.HOST_NAME
+	process.env.SENDGRID_API_KEY = Meteor.settings.SENDGRID_API_KEY
 	
 	// const themeId = 'iTL2SfNx9SHM3BhFq'
 	// const themeId = 'fEYxEXpMcHuhjoNzD'
@@ -141,6 +145,7 @@ Meteor.methods({
 				messagingServiceSid: Meteor.settings.twilio.copilotSid
 			}).then(response => {
 				console.log({
+					at: moment().format('YYYY-MM-DD HH:mm:ss:SS'),
 					messageType: 'text',
 					to: response.to,
 					status: response.status
@@ -152,7 +157,6 @@ Meteor.methods({
 		return texts
 	},
 
-	// TODO: This is pretty ugly
 	/***************************
 	 *  EMAIL MEMBERS METHOD   *
 	 ***************************/
@@ -169,12 +173,25 @@ Meteor.methods({
 
 		const memberEmails = memberEmailsQuery(themeId)
 
-		const  ms = 500 // Minimum delay between sending
+		console.log({ memberEmail: memberEmails[0] })
+		const messages = memberEmails.map(member => {
+			return {
+				to: member.email,
+				from: message.from || 'powered@thebatterysf.com',
+				subject: message.subject,
+				html: messageBuilder(member)
+			}
+		})
+		console.log({ message: messages[0] })
+
+		sendMassEmail(messages)
+/************************************* ************************************/
+		const  ms = 2000 // Minimum delay between sending
 
 		// Rate limit sending emails
 		const bound = Meteor.bindEnvironment(callback => callback())
 
-		let i = 0
+		/*let i = 0
 		const interval = setInterval(() => {
 			try {
 				bound(() => Email.send({
@@ -183,13 +200,13 @@ Meteor.methods({
 					subject: message.subject,
 					html: messageBuilder(memberEmails[i])
 				}))
-				console.log({ messageType: 'email', to: memberEmails[i].email })
+				console.log({ at: moment().format('YYYY-MM-DD HH:mm:ss:SS'), messageType: 'email', to: memberEmails[i].email })
 			} catch(e) {
 				console.error(e, { to: memberEmails[i].email })
 			}
 			
 			if(++i >= memberEmails.length) clearInterval(interval)
-		}, ms)
+		}, ms)*/
 
 		// Original synchronous burst send
 		/*memberEmails.forEach(member => {
@@ -204,7 +221,24 @@ Meteor.methods({
 				console.error(e, { to: member.email })
 			}
 		})*/
-
+		
+		/*sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+		const msg1 = {
+			to: 'avram@thebatterysf.com',
+			from: 'powered@thebatterysf.com',
+			subject: 'Sending with Twilio SendGrid is Fun',
+			text: 'and easy to do anywhere, even with Node.js',
+			html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+		}
+		const msg2 = {
+			to: 'avram@thebatterysf.com',
+			from: 'support@thebatterysf.com',
+			subject: 'Sending with Twilio SendGrid is Fun YEAH',
+			text: 'and easy to do anywhere, even with Node.js',
+			html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+		}
+		const response = sgMail.send([msg1, msg2])
+		response.then(result => console.log({ result })).catch(e => console.error({ Error: e }))*/
 	}
 })
 

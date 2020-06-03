@@ -56,7 +56,7 @@ const TopOrgsByChitVote = observer(props => {
 				</Table.Header>
 
 				<Table.Body>
-					{sortedOrgs.map((org, i) => {
+					{ sortedOrgs.map((org, i) => {
 						const inTopOrgs = i < theme.numTopOrgs
 						const _isLocked = theme.topOrgsManual.includes(org._id)
 						const _isSaved = (_.findIndex(theme.saves, ['org', org._id]) >= 0)
@@ -74,7 +74,7 @@ const TopOrgsByChitVote = observer(props => {
 							/>
 						)
 
-					})}
+					}) }
 				</Table.Body>
 				<Table.Footer>
 					<Table.Row>
