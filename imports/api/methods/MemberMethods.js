@@ -281,38 +281,38 @@ const MemberMethods = {
 		validate: null,
 
 		run({ theme, member, org, amount, voteSource }) {
-			if(Meteor.isServer) {
-				// Check for existing allocation for this org from this member
-				let memberTheme = MemberThemes.findOne({ theme, member })
-				
-				let allocation = _.find(memberTheme.allocations, ['organization', org])
+			if(!Meteor.isServer) return
 
-				// Update amount
-				if(!allocation) {
-					MemberThemes.update({ theme: theme, member: member }, {
-						$push: {
-							allocations: { 
-								organization: org, 
-								amount,
-								voteSource
-							}
+			// Check for existing allocation for this org from this member
+			let memberTheme = MemberThemes.findOne({ theme, member })
+			
+			let allocation = _.find(memberTheme.allocations, ['organization', org])
+			
+			// Update amount
+			if(!allocation) {
+				MemberThemes.update({ theme: theme, member: member }, {
+					$push: {
+						allocations: { 
+							organization: org, 
+							amount,
+							voteSource
 						}
-					})
-				// Or insert allocation vote
-				} else {
-					MemberThemes.update({
-						theme: theme, member: member, allocations: {
-							$elemMatch: {
-								organization: org
-							}
+					}
+				})
+			// Or insert allocation vote
+			} else {
+				MemberThemes.update({
+					theme: theme, member: member, allocations: {
+						$elemMatch: {
+							organization: org
 						}
-					}, {
-						$set: {
-							'allocations.$.amount': amount,
-							'allocations.$.voteSource': voteSource
-						}
-					})
-				}
+					}
+				}, {
+					$set: {
+						'allocations.$.amount': amount,
+						'allocations.$.voteSource': voteSource
+					}
+				})
 			}
 		}
 	}),
