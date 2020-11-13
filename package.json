@@ -8,11 +8,11 @@
     "build": "meteor build --server-only --directory ../allocation",
     "lint": "eslint --ext js,jsx,ts,tsx .",
     "lint:fix": "eslint --ext js,jsx,ts,tsx . --fix",
-    "test": "meteor test --once --driver-package meteortesting:mocha --port 3333",
-    "test:watch": "meteor test --driver-package meteortesting:mocha --port 3333",
-    "test:app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333",
-    "test:server": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333 TEST_CLIENT=0",
-    "test:client": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha --port 3333 TEST_SERVER=0",
+    "test": "meteor --settings privateSettings.json test --once --driver-package meteortesting:mocha --port 3333",
+    "test:watch": "meteor --settings privateSettings.json test --driver-package meteortesting:mocha --port 3333",
+    "test:app": "TEST_WATCH=1 TEST_BROWSER_DRIVER=chrome meteor --settings privateSettings.json test --full-app --driver-package meteortesting:mocha --port 3333",
+    "test:server": "TEST_WATCH=1 meteor --settings privateSettings.json test --full-app --driver-package meteortesting:mocha --port 3333 TEST_CLIENT=0",
+    "test:client": "TEST_WATCH=1 meteor --settings privateSettings.json test --full-app --driver-package meteortesting:mocha --port 3333 TEST_SERVER=0",
     "notnow:posttest": "npm run lint --silent"
   },
   "dependencies": {
@@ -61,10 +61,12 @@
     "@babel/types": "^7.8.3",
     "babel-eslint": "^10.0.3",
     "chai": "^4.2.0",
+    "chromedriver": "^86.0.0",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.18.0",
     "faker": "^4.1.0",
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "selenium-webdriver": "3.0.0-beta-2"
   },
   "meteor": {
     "mainModule": {
