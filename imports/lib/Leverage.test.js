@@ -2,6 +2,7 @@ import { assert, expect } from 'chai'
 import _ from 'lodash'
 import Leverage from './Leverage'
 import { Youth, Education, Democracy } from './Leverage.mock'
+import { filterTopOrgs } from './orgsMethods'
 import OrgsCollection from '/imports/api/stores/OrgsCollection'
 import OrgStore from '/imports/api/stores/OrgStore'
 
@@ -19,7 +20,8 @@ describe("Leverage object", function() {
 
 describe("Education Theme leverage spread", function() {
 	const orgs = new OrgsCollection(Education.orgs, { theme: Education.theme, settings: Education.settings, displayedPledges: new Set() }, OrgStore)
-	const leverage = new Leverage(orgs.values,  639169.6)
+	const topOrgs = filterTopOrgs(orgs.values, Education.theme)
+	const leverage = new Leverage(topOrgs, 639169.6)
 	const rounds = leverage.getLeverageSpreadRounds()
 
 	it("Should generate leverage rounds", function() {

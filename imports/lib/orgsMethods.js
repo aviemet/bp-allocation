@@ -14,8 +14,9 @@ export const sortTopOrgs = (orgs, theme) => {
 
 	// First sort orgs by weight and vote count
 	let sortedOrgs = sortBy(orgs, org => {
+		const votes = org.votes || 0
 		// Sort in descending order
-		return -(org.votes)
+		return -(votes)
 	})
 
 	//Then bubble up the manual top orgs

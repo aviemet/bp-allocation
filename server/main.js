@@ -37,11 +37,6 @@ Meteor.startup(() => {
 	process.env.MAIL_URL = Meteor.settings.MAIL_URL
 	process.env.HOST_NAME = Meteor.settings.HOST_NAME
 	process.env.SENDGRID_API_KEY = Meteor.settings.SENDGRID_API_KEY
-	
-	// const themeId = 'iTL2SfNx9SHM3BhFq'
-	// const themeId = 'fEYxEXpMcHuhjoNzD'
-	// const memberPhoneNumbers = memberPhoneNumbersQuery(themeId)
-	// console.log({ memberPhoneNumbers })
 })
 
 const memberPhoneNumbersQuery = themeId => {
@@ -133,28 +128,60 @@ Meteor.methods({
 		}
 
 		const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.authToken)
-		let texts = []
-		const memberPhoneNumbers = memberPhoneNumbersQuery(themeId)
-		
-		memberPhoneNumbers.forEach(member => {
-			const finalMessage = messageBuilder(member)
 
-			const text = client.messages.create({
-				body: finalMessage,
-				to: formatPhoneNumber(member.phone),
-				messagingServiceSid: Meteor.settings.twilio.copilotSid
-			}).then(response => {
-				console.log({
-					at: moment().format('YYYY-MM-DD HH:mm:ss:SS'),
-					messageType: 'text',
-					to: response.to,
-					status: response.status
+		// client.messages.create returns a promise, but I've wrapped it in another promise so that I could send a 
+		// tuple back with the failure case. The catch method returns { error, member } to be used in retries
+		const smsToMember = member => {
+			return new Promise((resolve, reject) => {
+				client.messages.create({
+					body: messageBuilder(member),
+					to: formatPhoneNumber(member.phone),
+					messagingServiceSid: Meteor.settings.twilio.copilotSid
+				}).then(response => {
+					console.log({
+						at: moment().format('YYYY-MM-DD HH:mm:ss:SS'),
+						messageType: 'text',
+						to: response.to,
+						status: response.status
+					})
+					resolve(response)
+				}).catch(error => {
+					console.error(error)
+					reject({ error, member })
 				})
-			}).catch(error => console.error(error))
+			})
+		}
 
-			texts.push(text)
-		})
-		return texts
+		const memberPhoneNumbers = memberPhoneNumbersQuery(themeId)
+
+		const rateLimitMs = 50
+		const retryLimit = 2
+
+		// Uses setInterval to rate limit sending texts to Twilio
+		const sendTextsWithRetry = members => {
+			const failedTexts = []
+
+			let i = 0
+			const interval = setInterval(() => {
+				smsToMember(members[i++]).catch(({ error, member }) => {
+					const retry = member.hasOwnProperty('retry') ? member.retry + 1 : 0
+					if(retry <= retryLimit) {
+						failedTexts.push(Object.assign(member, { retry }))
+					}
+				})
+
+				if(i >= members.length) {
+					clearInterval(interval)
+
+					if(failedTexts.length > 0) {
+						sendTextsWithRetry(failedTexts)
+					}
+				}
+			}, rateLimitMs)
+		}
+
+		sendTextsWithRetry(memberPhoneNumbers)
+
 	},
 
 	/***************************
@@ -173,7 +200,6 @@ Meteor.methods({
 
 		const memberEmails = memberEmailsQuery(themeId)
 
-		console.log({ memberEmail: memberEmails[0] })
 		const messages = memberEmails.map(member => {
 			return {
 				to: member.email,
@@ -182,63 +208,8 @@ Meteor.methods({
 				html: messageBuilder(member)
 			}
 		})
-		console.log({ message: messages[0] })
 
 		sendMassEmail(messages)
-/************************************* ************************************/
-		const  ms = 2000 // Minimum delay between sending
-
-		// Rate limit sending emails
-		const bound = Meteor.bindEnvironment(callback => callback())
-
-		/*let i = 0
-		const interval = setInterval(() => {
-			try {
-				bound(() => Email.send({
-					to: memberEmails[i].email,
-					from: message.from,
-					subject: message.subject,
-					html: messageBuilder(memberEmails[i])
-				}))
-				console.log({ at: moment().format('YYYY-MM-DD HH:mm:ss:SS'), messageType: 'email', to: memberEmails[i].email })
-			} catch(e) {
-				console.error(e, { to: memberEmails[i].email })
-			}
-			
-			if(++i >= memberEmails.length) clearInterval(interval)
-		}, ms)*/
-
-		// Original synchronous burst send
-		/*memberEmails.forEach(member => {
-			try {
-				const email = Email.send({
-					to: member.email,
-					from: message.from || 'support@thebatterysf.com',
-					subject: message.subject,
-					html: messageBuilder(member)
-				})
-			} catch(e) {
-				console.error(e, { to: member.email })
-			}
-		})*/
-		
-		/*sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-		const msg1 = {
-			to: 'avram@thebatterysf.com',
-			from: 'powered@thebatterysf.com',
-			subject: 'Sending with Twilio SendGrid is Fun',
-			text: 'and easy to do anywhere, even with Node.js',
-			html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-		}
-		const msg2 = {
-			to: 'avram@thebatterysf.com',
-			from: 'support@thebatterysf.com',
-			subject: 'Sending with Twilio SendGrid is Fun YEAH',
-			text: 'and easy to do anywhere, even with Node.js',
-			html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-		}
-		const response = sgMail.send([msg1, msg2])
-		response.then(result => console.log({ result })).catch(e => console.error({ Error: e }))*/
 	}
 })
 
