@@ -37,10 +37,9 @@ const ThemeTransformer = (doc, params) => {
 		return voteAllocated
 	}()
 
-	// const votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount }, 0)
-	// const votedChits = member.theme.chitVotes.length > 0
-	// votedTotal === member.theme.amount
-
+	/**
+	 * Total amount of members who have voted their funds
+	 */
 	doc.fundsVotesCast = function() {
 		if(!params.settings.useKioskFundsVoting) return
 
@@ -49,6 +48,9 @@ const ThemeTransformer = (doc, params) => {
 		}, 0)
 	}()
 
+	/**
+	 * Total amount of members who have voted their chits
+	 */
 	doc.chitVotesCast = function() {
 		if(!params.settings.useKioskChitVoting) return
 
@@ -57,16 +59,22 @@ const ThemeTransformer = (doc, params) => {
 		}, 0)		
 	}()
 
-	doc.totalMembers = function() {
-		return params.memberThemes.length
-	}()
-
+	/**
+	 * Total amount of chits to be voted
+	 */
 	doc.totalChitVotes = function() {
 		if(!params.settings.useKioskChitVoting) return
 
 		return params.memberThemes.reduce((sum, member) => {				
 			return member.chits ? sum + member.chits : sum
 		}, 0)
+	}()
+
+	/**
+	 * Total amount of members voting in this theme
+	 */
+	doc.totalMembers = function() {
+		return params.memberThemes.length
 	}()
 
 	/**

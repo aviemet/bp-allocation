@@ -107,6 +107,7 @@ const EditableText = observer(({ as, format, type, onSubmit, children }) => {
 
 const DisplayDiv = styled.div`
 	display: inline-block;
+	width: 100%;
 `
 
 const StyledInput = styled(Input)`

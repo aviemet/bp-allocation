@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import TextMembersButton from '/imports/ui/Components/Buttons/TextMembersButton'
 import TextEditModal from './TextEditModal'
 import EmailEditModal from './EmailEditModal'
 import { useData, useMessages } from '/imports/api/providers'
@@ -26,6 +25,14 @@ const Messages = props => {
 	const history = useHistory()
 
 	const deleteMessage = id => () => MessageMethods.remove.call(id)
+
+	const handleTextEdits = (id, data) => {
+		MessageMethods.update.call({ id, data }, err => {
+			if(err) {
+				console.error(err)
+			}
+		})
+	}
 
 	if(messagesLoading) return <Loader active />
 
@@ -68,8 +75,19 @@ const Messages = props => {
 										<Table.Cell>
 											<ActiveToggle message={ message } />
 										</Table.Cell>
-										<Table.Cell>{ message.title }</Table.Cell>
-										<CellWithContent>{ message.body }</CellWithContent>
+										<Table.Cell>
+											<EditableText
+												onSubmit={ value => handleTextEdits(message._id, { title: value }) }
+											>{ message.title }</EditableText>
+										</Table.Cell>
+										<Table.Cell>
+											<EditableText 
+												type='textarea'
+												onSubmit={ value => handleTextEdits(message._id, { body: value }) }
+											>
+												{ message.body }
+											</EditableText>
+										</Table.Cell>
 										<Table.Cell>
 											<IncludeVotingLinkToggle message={ message } />
 										</Table.Cell>
@@ -77,8 +95,6 @@ const Messages = props => {
 										
 											<Dropdown text='Actions' className='link item' direction='left'>
 												<Dropdown.Menu>
-													<Dropdown.Item onClick={ () => history.push(`${pathname}/${message._id}`) }>Preview/Edit</Dropdown.Item>
-
 													<Dropdown.Item onClick={ () => {
 														Meteor.call('textVotingLinkToMembers', { themeId, message })
 													} }>Send</Dropdown.Item>
