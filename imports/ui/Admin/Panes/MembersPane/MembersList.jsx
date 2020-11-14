@@ -239,7 +239,7 @@ const MembersList = observer(props => {
 												setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`)
 												setModalAction( () => removeMember(member._id) )
 												setModalOpen(true)
-											} } ><Icon name='trash' />Delete Theme</Dropdown.Item>
+											} } ><Icon name='trash' />Remove From List</Dropdown.Item>
 										</Dropdown.Menu>
 									</Dropdown>
 
