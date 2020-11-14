@@ -30,6 +30,8 @@ const AllocationPane = observer(props => {
 		return favorite
 	}
 
+	console.log({ funds: theme.fundsVotesCast, chit: theme.chitVotesCast, totalMembers: theme.totalMembers, totalChits: theme.totalChitVotes })
+
 	if(themeLoading || orgsLoading) return <Loader active />
 	return (
 		<Grid>

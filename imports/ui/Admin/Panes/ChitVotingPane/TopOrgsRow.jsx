@@ -41,7 +41,7 @@ const TopOrgsRow = props => {
 			</Table.Cell>
 
 			{/* Votes */}
-			<Table.Cell>{ roundFloat(props.org.votes, 1) }</Table.Cell>
+			<Table.Cell textAlign='center'>{ roundFloat(props.org.votes, 1) }</Table.Cell>
 
 			{/* Lock */}
 			<Table.Cell>

@@ -172,7 +172,7 @@ const MembersList = observer(props => {
 
 						return (
 							<Table.Row key={ member._id }>
-
+								
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'initials') }>{ member.initials ? member.initials : '' }</EditableText>
 
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'number') }>{ member.number ? member.number : '' }</EditableText>
@@ -183,6 +183,7 @@ const MembersList = observer(props => {
 
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'email') }>{ email }</EditableText>
 
+								{/* Funds */}
 								<EditableText 
 									as={ Table.Cell } 
 									inputType='number' 
@@ -192,6 +193,7 @@ const MembersList = observer(props => {
 									{ member.theme.amount || 0 }
 								</EditableText>
 
+								{/* Chits */}
 								<EditableText 
 									as={ Table.Cell } 
 									inputType='number' 
