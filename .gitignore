@@ -3,3 +3,4 @@ public/.uploads
 .vscode
 privateSettings.json
 notes.txt
+.deploy
