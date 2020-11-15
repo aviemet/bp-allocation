@@ -100,6 +100,12 @@ const PresentationSettingsSchema = new SimpleSchema({
 		label: 'Whether to send a confirmation email for topups',
 		required: false,
 		defaultValue: false
+	},
+	twilioRateLimit: {
+		type: Number,
+		label: 'Miliseconds to wait between sending texts',
+		required: false,
+		defaultValue: 100
 	}
 })
 

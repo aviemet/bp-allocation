@@ -5,8 +5,7 @@ import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings } from '/imports/api/providers'
 
 import CustomMessage from '/imports/ui/Components/CustomMessage'
-import { Loader, Form, Checkbox, Label } from 'semantic-ui-react'
-import TextMembersButton from '/imports/ui/Components/Buttons/TextMembersButton'
+import { Loader, Form, Checkbox, Label, Accordion } from 'semantic-ui-react'
 import ResetOrgFundsButton from '/imports/ui/Components/Buttons/ResetOrgFundsButton'
 
 const SettingsPane = observer(props => {
@@ -26,9 +25,14 @@ const SettingsPane = observer(props => {
 	const [ useKioskFundsVoting, setKioskFundsVoting ]  = useState(settings.useKioskFundsVoting || false)
 	const [ awardsPresentation, setAwardsPresentation ] = useState(settings.awardsPresentation || false)
 	const [ awardAmount, setAwardAmount ]               = useState(settings.awardAmount || 0)
-	
+	const [ twilioRateLimit, setTwilioRateLimit ]       = useState(settings.twilioRateLimit || 100)
+
 	const [ formErrorVisible, setFormErrorVisible ] = useState(false)
 	const [ formErrorMessage, setFormErrorMessage ] = useState('')
+
+	const [ showAdvanced, setShowAdvanced ] = useState(false)
+
+	console.log({ twilioRateLimit })
 
 	useEffect(() => {
 		if(!settingsLoading) {
@@ -37,6 +41,7 @@ const SettingsPane = observer(props => {
 			setKioskFundsVoting(settings.useKioskFundsVoting)
 			setAwardsPresentation(settings.awardsPresentation)
 			setAwardAmount(settings.awardAmount)
+			setTwilioRateLimit(settings.twilioRateLimit)
 		}
 	}, [settingsLoading])
 
@@ -55,7 +60,7 @@ const SettingsPane = observer(props => {
 
 		let formData = {
 			theme: { title, question, slug, chitWeight, matchRatio, leverageTotal, consolationActive, consolationAmount },
-			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting, awardsPresentation, awardAmount }
+			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting, awardsPresentation, awardAmount, twilioRateLimit }
 		}
 
 		// Iterate over database objects with keys to be saved
@@ -104,37 +109,37 @@ const SettingsPane = observer(props => {
 
 					{/* Title */}
 					<Form.Field>
-						<Form.Input 
-							name='theme.title' 
-							type='text' 
-							placeholder='Title' 
-							label='Theme Title' 
-							value={ title || '' } 
-							onChange={ e => setTitle(e.target.value) }  
+						<Form.Input
+							name='theme.title'
+							type='text'
+							placeholder='Title'
+							label='Theme Title'
+							value={ title || '' }
+							onChange={ e => setTitle(e.target.value) }
 						/>
 					</Form.Field>
 
 					{/* Question */}
 					<Form.Field>
-						<Form.Input 
-							name='theme.question' 
-							type='text' 
-							placeholder='Question' 
-							label='Theme Question' 
-							value={ question || '' } 
-							onChange={ e => setQuestion(e.target.value) } 
+						<Form.Input
+							name='theme.question'
+							type='text'
+							placeholder='Question'
+							label='Theme Question'
+							value={ question || '' }
+							onChange={ e => setQuestion(e.target.value) }
 						/>
 					</Form.Field>
 
 					{/* Slug */}
 					<Form.Field>
-						<Form.Input 
-							name='theme.slug' 
-							type='text' 
-							placeholder='Slug' 
-							label='Theme Slug' 
-							value={ slug || '' } 
-							onChange={ e => setSlug(e.target.value) } 
+						<Form.Input
+							name='theme.slug'
+							type='text'
+							placeholder='Slug'
+							label='Theme Slug'
+							value={ slug || '' }
+							onChange={ e => setSlug(e.target.value) }
 						/>
 					</Form.Field>
 
@@ -142,46 +147,46 @@ const SettingsPane = observer(props => {
 
 				{/* Total Leverage Amount */}
 				<Form.Group>
-					<Form.Input 
-						name='theme.leverageTotal' 
-						icon='dollar sign' 
-						iconPosition='left' 
-						label='Total Pot' 
-						placeholder='Total Pot' 
-						value={ leverageTotal || 0 } 
-						onChange={ e => setLeverageTotal(e.target.value) } 
+					<Form.Input
+						name='theme.leverageTotal'
+						icon='dollar sign'
+						iconPosition='left'
+						label='Total Pot'
+						placeholder='Total Pot'
+						value={ leverageTotal || 0 }
+						onChange={ e => setLeverageTotal(e.target.value) }
 					/>
 				</Form.Group>
 
 				<Form.Group>
 					{/* Timer Length */}
-					<Form.Input 
-						name='presentationSettings.timerLength' 
-						type='number' 
-						placeholder='Timer Length' 
-						label='Length of Timers' 
-						value={ timerLength || 0 } 
-						onChange={ e => setTimerLength(e.target.value) } 
+					<Form.Input
+						name='presentationSettings.timerLength'
+						type='number'
+						placeholder='Timer Length'
+						label='Length of Timers'
+						value={ timerLength || 0 }
+						onChange={ e => setTimerLength(e.target.value) }
 					/>
 
 					{/* Chit Weight */}
-					<Form.Input 
-						name='theme.chitWeight' 
-						type='number' 
-						placeholder='Chit Weight' 
-						label='Chit weight in ounces' 
-						value={ chitWeight || 0 } 
-						onChange={ e => setChitWeight(e.target.value) } 
+					<Form.Input
+						name='theme.chitWeight'
+						type='number'
+						placeholder='Chit Weight'
+						label='Chit weight in ounces'
+						value={ chitWeight || 0 }
+						onChange={ e => setChitWeight(e.target.value) }
 					/>
 
 					{/* Match Ratio */}
-					<Form.Input 
-						name='theme.matchRatio' 
-						type='number' 
-						placeholder='Match Ratio' 
-						label='Multiplier for matched funds' 
-						value={ matchRatio || 0 } 
-						onChange={ e => setMatchRatio(e.target.value) } 
+					<Form.Input
+						name='theme.matchRatio'
+						type='number'
+						placeholder='Match Ratio'
+						label='Multiplier for matched funds'
+						value={ matchRatio || 0 }
+						onChange={ e => setMatchRatio(e.target.value) }
 					/>
 
 				</Form.Group>
@@ -191,12 +196,12 @@ const SettingsPane = observer(props => {
 					<Form.Field>
 						<label>Chit Votes Entered Via:</label>
 						<Label>Manual</Label>
-						<Checkbox 
-							slider 
-							name='settings.useKioskChitVoting' 
-							style={ { 'verticalAlign': 'middle' } } 
-							checked={ !!useKioskChitVoting } 
-							onChange={ (e, value) => setKioskChitVoting(value.checked) } 
+						<Checkbox
+							slider
+							name='settings.useKioskChitVoting'
+							style={ { 'verticalAlign': 'middle' } }
+							checked={ !!useKioskChitVoting }
+							onChange={ (e, value) => setKioskChitVoting(value.checked) }
 						/>
 						<Label>Kiosk</Label>
 					</Form.Field>
@@ -205,12 +210,12 @@ const SettingsPane = observer(props => {
 					<Form.Field>
 						<label>Funds Voting Entered Via:</label>
 						<Label>Manual</Label>
-						<Checkbox 
-							slider 
-							name='settings.useKioskFundsVoting' 
-							style={ { 'verticalAlign': 'middle' } } 
-							checked={ !!useKioskFundsVoting } 
-							onChange={ (e, value) => setKioskFundsVoting(value.checked) } 
+						<Checkbox
+							slider
+							name='settings.useKioskFundsVoting'
+							style={ { 'verticalAlign': 'middle' } }
+							checked={ !!useKioskFundsVoting }
+							onChange={ (e, value) => setKioskFundsVoting(value.checked) }
 						/>
 						<Label>Kiosk</Label>
 					</Form.Field>
@@ -218,22 +223,22 @@ const SettingsPane = observer(props => {
 
 				<Form.Group>
 					{/* Consolation Amount */}
-					<Form.Input 
-						name='theme.consolationAmount' 
-						type='number' 
-						placeholder='Consolation' 
-						label='Amount for bottom orgs' 
-						value={ consolationAmount || 0 } 
-						onChange={ e => setConsolationAmount(e.target.value) } 
+					<Form.Input
+						name='theme.consolationAmount'
+						type='number'
+						placeholder='Consolation'
+						label='Amount for bottom orgs'
+						value={ consolationAmount || 0 }
+						onChange={ e => setConsolationAmount(e.target.value) }
 					/>
 
 					{/* Consolation Active */}
-					<Form.Checkbox 
-						toggle 
-						name='theme.consolationActive' 
-						label='Use Consolation?' 
-						checked={ !!consolationActive } 
-						onChange={ (e, value) => setConsolationActive(value.checked) } 
+					<Form.Checkbox
+						toggle
+						name='theme.consolationActive'
+						label='Use Consolation?'
+						checked={ !!consolationActive }
+						onChange={ (e, value) => setConsolationActive(value.checked) }
 					/>
 				</Form.Group>
 
@@ -243,7 +248,7 @@ const SettingsPane = observer(props => {
 						<label>Change Presentation Type to Awards Style</label>
 						<Label>Full Presentation</Label>
 						<Checkbox
-							slider 
+							slider
 							name='settings.presentationType'
 							checked={ !!awardsPresentation }
 							onChange={ (e, value) => setAwardsPresentation(value.checked) }
@@ -251,24 +256,52 @@ const SettingsPane = observer(props => {
 						<Label>Awards</Label>
 					</Form.Field>
 
-					{ awardsPresentation && <Form.Input 
-						name='settings.awardAmount' 
-						type='number' 
-						placeholder='Award Amount' 
-						label='Amount being awarded' 
-						value={ awardAmount || 0 } 
-						onChange={ e => setAwardAmount(e.target.value) } 
+					{ awardsPresentation && <Form.Input
+						name='settings.awardAmount'
+						type='number'
+						placeholder='Award Amount'
+						label='Amount being awarded'
+						value={ awardAmount || 0 }
+						onChange={ e => setAwardAmount(e.target.value) }
 					/> }
 
 				</Form.Group>
+
+				<hr />
+
+				<Accordion
+					fluid
+					exclusive={ false }
+				>
+					<Accordion.Title
+						content='Advanced'
+						active={ showAdvanced }
+						onClick={ () => setShowAdvanced(!showAdvanced) }
+					/>
+					<Accordion.Content active={ showAdvanced }>
+						<Form.Group>
+							{/* Twilio Rate Limit ms */}
+							<Form.Field>
+								<Form.Input
+									name='settings.twilioRateLimit'
+									type='text'
+									placeholder='1000 is 1 second'
+									label='Rate limit in ms for sending texts'
+									value={ twilioRateLimit || '' }
+									onChange={ e => setTwilioRateLimit(e.target.value) }
+								/>
+							</Form.Field>
+						</Form.Group>
+					</Accordion.Content>
+				</Accordion>
 			</Form>
 
 			<hr />
-			
+
 			<ResetOrgFundsButton />
 
-			{ formErrorVisible && <CustomMessage 
-				negative 
+			{ formErrorVisible && <CustomMessage
+				negative
 				onDismiss={ hideFormErrorMessage }
 				heading='There was an error saving values'
 				body={ formErrorMessage }

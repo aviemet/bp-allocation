@@ -14,6 +14,7 @@ import twilio from 'twilio'
 // Meteor publication definitions
 import '/imports/server/publications'
 import moment from 'moment'
+import { PresentationSettings } from '../imports/api/db'
 
 Meteor.startup(() => {
 	// Save API info to DB once (upsert)
@@ -42,7 +43,7 @@ Meteor.startup(() => {
 const memberPhoneNumbersQuery = themeId => {
 	return MemberThemes.aggregate([
 		{
-			$match: { 
+			$match: {
 				theme: themeId
 			}
 		},
@@ -52,7 +53,7 @@ const memberPhoneNumbersQuery = themeId => {
 				localField: 'member',
 				foreignField: '_id',
 				as: 'member'
-			}	
+			}
 		},
 		{ $unwind: '$member' },
 		{
@@ -73,7 +74,7 @@ const memberPhoneNumbersQuery = themeId => {
 const memberEmailsQuery = themeId => {
 	return MemberThemes.aggregate([
 		{
-			$match: { 
+			$match: {
 				theme: themeId
 			}
 		},
@@ -83,7 +84,7 @@ const memberEmailsQuery = themeId => {
 				localField: 'member',
 				foreignField: '_id',
 				as: 'member'
-			}	
+			}
 		},
 		{ $unwind: '$member' },
 		{
@@ -129,7 +130,7 @@ Meteor.methods({
 
 		const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.authToken)
 
-		// client.messages.create returns a promise, but I've wrapped it in another promise so that I could send a 
+		// client.messages.create returns a promise, but I've wrapped it in another promise so that I could send a
 		// tuple back with the failure case. The catch method returns { error, member } to be used in retries
 		const smsToMember = member => {
 			return new Promise((resolve, reject) => {
@@ -152,10 +153,12 @@ Meteor.methods({
 			})
 		}
 
+		const settings = PresentationSettings.findOne({ theme: themeId })
+
 		const memberPhoneNumbers = memberPhoneNumbersQuery(themeId)
 
 		const rateLimitMs = 50
-		const retryLimit = 2
+		const retryLimit = settings.twilioRateLimit || 100
 
 		// Uses setInterval to rate limit sending texts to Twilio
 		const sendTextsWithRetry = members => {
@@ -181,7 +184,6 @@ Meteor.methods({
 		}
 
 		sendTextsWithRetry(memberPhoneNumbers)
-
 	},
 
 	/***************************
@@ -224,7 +226,7 @@ Accounts.validateNewUser(user => {
 	if(has(user, 'services.google.email')) {
 		const emailParts = user.services.google.email.split('@')
 		const domain = emailParts[emailParts.length - 1]
-		
+
 		valid = Meteor.settings.google.allowed_domains.some(check => check === domain)
 	}
 

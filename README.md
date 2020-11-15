@@ -8,13 +8,17 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 ## TODO
 
-- **Rate limit the texts and resend failed texts**
+- Rate limit the texts and resend failed texts
 - Show number of voted complete members
 - Remove RTF from SMS
+- Fix wording on button to remove member from theme
+
 - Move data inputs from top of page to modal
 - Add sorting to pledge inputs
 - Find a better way to display text/email buttons
-- Fix wording on button to remove member from theme
 - Add send buttons to member list for active sms/emails
 - Get tests working properly
-- Fix member import to not fail if last name or first name is not present
+- Add confirmation dialog to destructive button actions
+  -- ResetOrgFundsButton
+
+- **Fix member import to not fail if last name or first name is not present**
