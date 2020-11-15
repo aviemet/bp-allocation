@@ -147,18 +147,18 @@ Meteor.methods({
 					})
 					resolve(response)
 				}).catch(error => {
-					console.error(error)
+					console.error(error, member.phone)
 					reject({ error, member })
 				})
 			})
 		}
 
-		const settings = PresentationSettings.findOne({ theme: themeId })
+		const settings = PresentationSettings.findOne({ _id: theme.presentationSettings })
 
 		const memberPhoneNumbers = memberPhoneNumbersQuery(themeId)
 
-		const rateLimitMs = 50
-		const retryLimit = settings.twilioRateLimit || 100
+		const rateLimitMs = settings.twilioRateLimit || 100
+		const retryLimit = 2
 
 		// Uses setInterval to rate limit sending texts to Twilio
 		const sendTextsWithRetry = members => {
