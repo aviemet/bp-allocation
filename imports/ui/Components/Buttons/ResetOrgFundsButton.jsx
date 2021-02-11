@@ -3,6 +3,8 @@ import { Button } from 'semantic-ui-react'
 import { ThemeMethods } from '/imports/api/methods'
 import { useTheme } from '/imports/api/providers'
 
+// TODO: Needs a confirmation dialog
+
 const ResetOrgFundsButton = () => {
 	const { theme } = useTheme()
 

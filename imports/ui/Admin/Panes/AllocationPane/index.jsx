@@ -12,9 +12,10 @@ import AllocationInputs from './AllocationInputs'
 import Pledges from './Pledges'
 
 import { ShowLeverageToggle } from '/imports/ui/Components/Toggles'
-import { useTheme, useOrgs } from '/imports/api/providers'
+import { useSettings, useTheme, useOrgs } from '/imports/api/providers'
 
 const AllocationPane = observer(props => {
+	const { settings } = useSettings()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
@@ -29,6 +30,8 @@ const AllocationPane = observer(props => {
 		})
 		return favorite
 	}
+
+	console.log({ funds: theme.fundsVotesCast, chit: theme.chitVotesCast, totalMembers: theme.totalMembers, totalChits: theme.totalChitVotes })
 
 	if(themeLoading || orgsLoading) return <Loader active />
 	return (
@@ -114,7 +117,11 @@ const AllocationPane = observer(props => {
 									numeral(topOrgs.reduce((sum, org) => { return sum + org.need - org.leverageFunds }, 0)).format('$0,0')
 								}</Table.HeaderCell>
 
-								<Table.HeaderCell></Table.HeaderCell>
+								<Table.HeaderCell>
+									{ settings.useKioskFundsVoting && <>
+										{`(${theme.fundsVotesCast}/${theme.totalMembers})`} <span style={ { fontSize: '0.75em' } }>Members Voted</span>
+									</> }
+								</Table.HeaderCell>
 
 							</Table.Row>
 						</Table.Footer>

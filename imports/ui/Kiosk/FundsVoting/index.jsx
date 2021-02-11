@@ -87,7 +87,7 @@ const FundsVotingKiosk = observer(props => {
 				})}
 			</Card.Group>
 
-			<FundsVoteContext.Consumer>{({ allocations, saveAllocations, member }) => {
+			<FundsVoteContext.Consumer>{ ({ allocations, saveAllocations, member }) => {
 				let sum = 0
 				_.forEach(allocations, value => sum += value)
 				const remaining = member.theme.amount - sum
@@ -105,7 +105,7 @@ const FundsVotingKiosk = observer(props => {
 							} }>Finalize Vote</FinalizeButton>
 					</>
 				)
-			}}</FundsVoteContext.Consumer>
+			} }</FundsVoteContext.Consumer>
 		</OrgsContainer>
 	)
 })

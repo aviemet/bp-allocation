@@ -5,8 +5,6 @@ import numeral from 'numeral'
 import { observer } from 'mobx-react-lite'
 import { useSettings } from '/imports/api/providers'
 
-// import { roundFloat } from '/imports/lib/utils'
-
 import { OrganizationMethods } from '/imports/api/methods'
 
 import CrowdFavoriteRibbon from '/imports/ui/Components/CrowdFavoriteRibbon'
@@ -28,20 +26,6 @@ const AllocationInputs = observer(props => {
 		} })
 	}
 
-	/*const pledge = (e, data) => {
-		e.preventDefault()
-
-		let amount = roundFloat(e.target.elements.valueInput.value)
-
-		OrganizationMethods.pledge.call({
-			id: props.org._id,
-			amount: amount,
-		})
-
-		// Clear the input
-		e.target.elements.valueInput.value = ''
-	}*/
-
 	const topoff = () => {
 		const amount = props.org.topOff > 0 ? 0 : props.org.need - props.org.leverageFunds
 		OrganizationMethods.update.call({ id: props.org._id, data: {
@@ -62,7 +46,7 @@ const AllocationInputs = observer(props => {
 			</Table.Cell>
 
 			{/* Voted Amount Input */}
-			<Table.Cell>
+			<Table.Cell textAlign="right">
 				{ props.hideAdminFields || settings.useKioskFundsVoting ?
 					<span>{ numeral(props.org.votedTotal || 0).format('$0,0') }</span>
 					:
@@ -77,35 +61,18 @@ const AllocationInputs = observer(props => {
 				}
 			</Table.Cell>
 
-			{/* Matched Pledges Input */}
-			{/* <Table.Cell>
-				{props.hideAdminFields ?
-					numeral(props.org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0)).format('$0,0')
-					:
-					<Form onSubmit={ pledge }>
-						<Form.Input
-							fluid
-							type='text'
-							name='valueInput'
-							action='+'
-							tabIndex={ props.tabInfo ? props.tabInfo.index + props.tabInfo.length : false }
-						/>
-					</Form>
-				}
-			</Table.Cell> */}
-
 			{/* Funded */}
-			<Table.Cell className={ reachedGoal ? 'bold' : '' }>
+			<Table.Cell className={ reachedGoal ? 'bold' : '' } textAlign="right">
 				{numeral(props.org.allocatedFunds).format('$0,0')}
 			</Table.Cell>
 
 			{/* Ask */}
-			<Table.Cell className={ reachedGoal ? 'bold' : '' }>
+			<Table.Cell className={ reachedGoal ? 'bold' : '' } textAlign="right">
 				{numeral(props.org.ask).format('$0,0')}
 			</Table.Cell>
 
 			{/* Need */}
-			<Table.Cell>
+			<Table.Cell textAlign="right">
 				{ numeral(props.org.need - props.org.leverageFunds).format('$0,0') }
 			</Table.Cell>
 
@@ -113,13 +80,6 @@ const AllocationInputs = observer(props => {
 			{ !props.hideAdminFields &&
 			<Table.Cell singleLine>
 				<Button onClick={ topoff } style={ { width: '100%' } }>{props.org.topOff > 0 ? 'Undo' : '' } Top Off</Button>
-				{/*<Dropdown
-					floating
-					button
-					text='Actions'
-					options={actionOptions}
-					onChange={handleActionSelection}
-				/>*/}
 			</Table.Cell> }
 		</Table.Row>
 	)

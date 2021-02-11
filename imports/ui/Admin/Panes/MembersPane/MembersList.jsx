@@ -15,7 +15,7 @@ import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
 const MembersList = observer(props => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
-	
+
 	const [ page, setPage ] = useState(0)
 	const [ itemsPerPage/*, setItemsPerPage*/ ] = useState(10)
 	const [ sortColumn, setSortColumn ] = useState()
@@ -75,51 +75,51 @@ const MembersList = observer(props => {
 				<Table.Header>
 					<Table.Row>
 
-						<Table.HeaderCell 
+						<Table.HeaderCell
 							sorted={ sortColumn === 'initials' ? sortDirection : null }
 							onClick={ sortMembersTable('initials') }
-							rowSpan="2" 
+							rowSpan="2"
 							collapsing
 						>Initials
 						</Table.HeaderCell>
 
-						<Table.HeaderCell 
+						<Table.HeaderCell
 							sorted={ sortColumn === 'number' ? sortDirection : null }
 							onClick={ sortMembersTable('number') }
-							rowSpan="2" 
+							rowSpan="2"
 							collapsing
 						><Icon name='hashtag' />
 						</Table.HeaderCell>
 
-						<Table.HeaderCell 
+						<Table.HeaderCell
 							sorted={ sortColumn === 'fullName' ? sortDirection : null }
 							onClick={ sortMembersTable('fullName') }
 							rowSpan="2"
 						>Member Name
 						</Table.HeaderCell>
 
-						<Table.HeaderCell 
+						<Table.HeaderCell
 							sorted={ sortColumn === 'phone' ? sortDirection : null }
 							onClick={ sortMembersTable('phone') }
 							rowSpan="2"
 						>Phone
 						</Table.HeaderCell>
 
-						<Table.HeaderCell 
+						<Table.HeaderCell
 							sorted={ sortColumn === 'email' ? sortDirection : null }
 							onClick={ sortMembersTable('email') }
 							rowSpan="2"
 						>Email
 						</Table.HeaderCell>
 
-						<Table.HeaderCell 
+						<Table.HeaderCell
 							sorted={ sortColumn === 'theme.amount' ? sortDirection : null }
 							onClick={ sortMembersTable('theme.amount') }
 							rowSpan="2"
 						>Funds
 						</Table.HeaderCell>
-						
-						<Table.HeaderCell 
+
+						<Table.HeaderCell
 							sorted={ sortColumn === 'theme.chits' ? sortDirection : null }
 							onClick={ sortMembersTable('theme.chits') }
 							rowSpan="2"
@@ -128,8 +128,8 @@ const MembersList = observer(props => {
 
 						{ votingColspan > 0 &&
 							<Table.HeaderCell
-								colSpan={ votingColspan } 
-								collapsing 
+								colSpan={ votingColspan }
+								collapsing
 								textAlign="center"
 							>Voting
 							</Table.HeaderCell>
@@ -138,8 +138,8 @@ const MembersList = observer(props => {
 						{ !props.hideAdminFields && ( <>
 							<Table.HeaderCell
 								sorted={ sortColumn === 'code' ? sortDirection : null }
-								onClick={ sortMembersTable('code') } 
-								rowSpan="2" 
+								onClick={ sortMembersTable('code') }
+								rowSpan="2"
 								collapsing
 							>Code
 							</Table.HeaderCell>
@@ -183,23 +183,25 @@ const MembersList = observer(props => {
 
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'email') }>{ email }</EditableText>
 
-								<EditableText 
-									as={ Table.Cell } 
-									inputType='number' 
+								{/* Funds */}
+								<EditableText
+									as={ Table.Cell }
+									inputType='number'
 									onSubmit={ updateMemberTheme(member.theme._id, 'amount') }
 									format={ value => numeral(value).format('$0,0') }
 								>
 									{ member.theme.amount || 0 }
 								</EditableText>
 
-								<EditableText 
-									as={ Table.Cell } 
-									inputType='number' 
+								{/* Chits */}
+								<EditableText
+									as={ Table.Cell }
+									inputType='number'
 									onSubmit={ updateMemberTheme(member.theme._id, 'chits') }
 								>
 									{ member.theme.chits || 0 }
 								</EditableText>
-								
+
 								{ votingColspan > 0 && <>
 									{ settings.useKioskChitVoting && <Table.Cell>
 										{ votedChits && <Icon color='green' name='check' /> }
@@ -214,30 +216,34 @@ const MembersList = observer(props => {
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'code') }>{ member.code ? member.code : '' }</EditableText>
 
 								<Table.Cell singleLine>
-									
+
 									<Dropdown text='Actions' className='link item' direction='left'>
 										<Dropdown.Menu>
 											<Dropdown.Item onClick={ () => window.open(`/voting/${theme._id}/${member._id}`) }>Voting Screen <Icon name='external' /></Dropdown.Item>
+
 											<Dropdown.Divider />
+
 											<Dropdown.Item onClick={ () => {
 												setModalHeader(`Permanently Delete ${member.fullName}'s Chit Votes?`)
 												setModalContent(`This will permanently delete the chit votes of ${member.fullName} for this theme. This operation cannot be undone.`)
 												setModalAction( () => resetMemberChitVotes(member.theme._id) )
 												setModalOpen(true)
-											} }>Reset Chit Votes</Dropdown.Item>	
+											} }>Reset Chit Votes</Dropdown.Item>
 											<Dropdown.Item onClick={ () => {
 												setModalHeader(`Permanently Delete ${member.fullName}'s Votes?`)
 												setModalContent(`This will permanently delete the funds votes of ${member.fullName} for this theme. This operation cannot be undone.`)
 												setModalAction( () => resetMemberFundsVotes(member.theme._id) )
 												setModalOpen(true)
 											} }>Reset Funds Votes</Dropdown.Item>
+
 											<Dropdown.Divider />
+
 											<Dropdown.Item onClick={ () => {
 												setModalHeader(`Permanently Unlink ${member.fullName} From This Theme?`)
 												setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`)
 												setModalAction( () => removeMember(member._id) )
 												setModalOpen(true)
-											} } ><Icon name='trash' />Delete Theme</Dropdown.Item>
+											} } ><Icon name='trash' />Remove From List</Dropdown.Item>
 										</Dropdown.Menu>
 									</Dropdown>
 
@@ -269,11 +275,11 @@ MembersList.propTypes = {
 	hideAdminFields: PropTypes.bool
 }
 
-ConfirmationModal.propTypes = { 
-	header: PropTypes.string, 
-	content: PropTypes.string, 
-	isModalOpen: PropTypes.bool, 
-	handleClose: PropTypes.func, 
+ConfirmationModal.propTypes = {
+	header: PropTypes.string,
+	content: PropTypes.string,
+	isModalOpen: PropTypes.bool,
+	handleClose: PropTypes.func,
 	confirmAction: PropTypes.func
 }
 

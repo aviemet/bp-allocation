@@ -38,6 +38,46 @@ const ThemeTransformer = (doc, params) => {
 	}()
 
 	/**
+	 * Total amount of members who have voted their funds
+	 */
+	doc.fundsVotesCast = function() {
+		if(!params.settings.useKioskFundsVoting) return
+
+		return params.memberThemes.reduce((sum, member) => {
+			return member.allocations && member.allocations.length > 0 ? sum + 1 : sum
+		}, 0)
+	}()
+
+	/**
+	 * Total amount of members who have voted their chits
+	 */
+	doc.chitVotesCast = function() {
+		if(!params.settings.useKioskChitVoting) return
+
+		return params.memberThemes.reduce((sum, member) => {				
+			return member.chitVotes && member.chitVotes.length > 0 ? sum + 1 : sum
+		}, 0)		
+	}()
+
+	/**
+	 * Total amount of chits to be voted
+	 */
+	doc.totalChitVotes = function() {
+		if(!params.settings.useKioskChitVoting) return
+
+		return params.memberThemes.reduce((sum, member) => {				
+			return member.chits ? sum + member.chits : sum
+		}, 0)
+	}()
+
+	/**
+	 * Total amount of members voting in this theme
+	 */
+	doc.totalMembers = function() {
+		return params.memberThemes.length
+	}()
+
+	/**
 	 * Whether voting has begun
 	 * True if at least one person has cast a vote
 	 */

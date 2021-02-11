@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 import { observer } from 'mobx-react-lite'
 import { ThemeMethods } from '/imports/api/methods'
-import { useTheme, useOrgs } from '/imports/api/providers'
+import { useSettings, useTheme, useOrgs } from '/imports/api/providers'
 
 // import { sortTopOrgs } from '/imports/lib/utils'
 
@@ -16,6 +16,7 @@ import ChitVotingActiveToggle from '/imports/ui/Components/Toggles/ChitVotingAct
 import { sortTopOrgs } from '/imports/lib/orgsMethods'
 
 const TopOrgsByChitVote = observer(props => {
+	const { settings } = useSettings()
 	const { theme } = useTheme()
 	const { orgs } = useOrgs()
 
@@ -49,7 +50,14 @@ const TopOrgsByChitVote = observer(props => {
 			<Table celled>
 				<Table.Header>
 					<Table.Row>
-						<Table.HeaderCell>Organization</Table.HeaderCell>
+						<Table.HeaderCell>
+							<FlexHeading>
+								<span className="full">Organization</span>
+								<span>
+									{ settings.useKioskChitVoting && `(${theme.chitVotesCast}/${theme.totalMembers}) Members Have Voted` }
+								</span>
+							</FlexHeading>
+						</Table.HeaderCell>
 						<Table.HeaderCell collapsing>Votes</Table.HeaderCell>
 						<Table.HeaderCell collapsing><Icon name="lock" /></Table.HeaderCell>
 					</Table.Row>
@@ -79,7 +87,12 @@ const TopOrgsByChitVote = observer(props => {
 				<Table.Footer>
 					<Table.Row>
 						<Table.HeaderCell textAlign='right'>Total Votes:</Table.HeaderCell>
-						<Table.HeaderCell>{ totalVotes }</Table.HeaderCell>
+						<Table.HeaderCell>
+							<div style={ { whiteSpace: 'nowrap' } }>
+								<span>{ totalVotes }</span>
+								{ settings.useKioskChitVoting && ` / ${theme.totalChitVotes}`}
+							</div>
+						</Table.HeaderCell>
 						<Table.HeaderCell></Table.HeaderCell>
 					</Table.Row>
 				</Table.Footer>
@@ -93,6 +106,16 @@ const NumTopOrgsInput = styled(Input)`
 
 	&& input {
 		padding: 0.3em 0.4em;
+	}
+`
+
+const FlexHeading = styled.div`
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+
+	span.full {
+		flex: 1;
 	}
 `
 

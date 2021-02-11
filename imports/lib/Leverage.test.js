@@ -6,6 +6,7 @@ import Education from '/tests/mock/Education'
 import Democracy from '/tests/mock/Democracy'
 import Youth from '/tests/mock/Youth'
 
+import { filterTopOrgs } from './orgsMethods'
 import OrgsCollection from '/imports/api/stores/OrgsCollection'
 import OrgStore from '/imports/api/stores/OrgStore'
 
@@ -23,7 +24,8 @@ describe("Leverage object", function() {
 
 describe("Education Theme leverage spread", function() {
 	const orgs = new OrgsCollection(Education.orgs, { theme: Education.theme, settings: Education.settings, displayedPledges: new Set() }, OrgStore)
-	const leverage = new Leverage(orgs.values,  639169.6)
+	const topOrgs = filterTopOrgs(orgs.values, Education.theme)
+	const leverage = new Leverage(topOrgs, 639169.6)
 	const rounds = leverage.getLeverageSpreadRounds()
 
 	it("Should generate leverage rounds", function() {

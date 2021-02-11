@@ -19,7 +19,6 @@ static-html
 less@2.8.0
 semantic:ui
 aldeed:collection2
-meteortoys:allthings
 mdg:validated-method
 ostrio:files
 sakulstra:aggregate
@@ -37,4 +36,4 @@ react-meteor-data
 reywood:publish-composite
 peerlibrary:reactive-publish
 peerlibrary:related
-email
+email@2.0.0
