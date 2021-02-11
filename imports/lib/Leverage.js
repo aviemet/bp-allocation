@@ -29,7 +29,7 @@ class Leverage {
 			orgClone.leverageFunds = 0
 
 			// Use the loop to calculate the funding total of orgs not fully funded
-			sumRemainingOrgs = roundFloat(sumRemainingOrgs + orgClone.allocatedFunds)
+			sumRemainingOrgs = roundFloat(sumRemainingOrgs + (orgClone.allocatedFunds || 0))
 
 			return orgClone
 		})

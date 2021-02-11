@@ -1,14 +1,18 @@
-import { assert, expect } from 'chai'
+import { expect } from 'chai'
 import _ from 'lodash'
+
 import Leverage from './Leverage'
-import { Youth, Education, Democracy } from './Leverage.mock'
+import Education from '/tests/mock/Education'
+import Democracy from '/tests/mock/Democracy'
+import Youth from '/tests/mock/Youth'
+
 import OrgsCollection from '/imports/api/stores/OrgsCollection'
 import OrgStore from '/imports/api/stores/OrgStore'
 
 describe("Leverage object", function() {
 
 	context("Leverage object initalized correctly", function() {
-		const leverage = new Leverage(Youth, 100)
+		const leverage = new Leverage(Youth.orgs, 100)
 
 		it("Should have 5 orgs", function() {
 			expect(leverage.orgs.length).to.equal(5)

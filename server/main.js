@@ -185,7 +185,7 @@ Meteor.methods({
 		console.log({ message: messages[0] })
 
 		sendMassEmail(messages)
-/************************************* ************************************/
+		/************************************* ************************************/
 		const  ms = 2000 // Minimum delay between sending
 
 		// Rate limit sending emails
