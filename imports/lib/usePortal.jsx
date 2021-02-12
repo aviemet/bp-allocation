@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 
 /**
  * Hook to create a React Portal.
@@ -26,7 +26,7 @@ const usePortal = id => {
 
 	/**
 	 * Appends element as last child of body.
-	 * @param {HTMLElement} rootElem 
+	 * @param {HTMLElement} rootElem
 	 */
 	const addRootElement = rootElem => {
 		document.body.insertBefore(

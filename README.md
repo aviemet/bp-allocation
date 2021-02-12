@@ -4,7 +4,7 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 ## Project Goals
 
-- [ ] Some indication to us that the email or text messages have indeed been sent!
+- [ ] Some indication to us that the email or text messages have indeed been sent
 
 - [ ] For connected and high voltage level members that have 2 partners associated with the account, an easy way to ensure that both partners first names appear on their voting screen
 

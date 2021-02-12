@@ -88,7 +88,7 @@ class DataStore {
 						added: theme => this.theme.refreshData(theme),
 						changed: theme => this.theme.refreshData(theme)
 					})
-					
+
 					resolve(toJS(this.theme))
 				}
 			})
