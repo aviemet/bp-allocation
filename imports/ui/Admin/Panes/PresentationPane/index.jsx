@@ -10,14 +10,14 @@ import { TimerInput, ResultsOffsetInput } from '/imports/ui/Components/Inputs'
 import { Container, Grid, Icon, Label, Segment, Button, Responsive, Loader } from 'semantic-ui-react'
 import styled from 'styled-components'
 
-import { 
-	ChitVotingActiveToggle, 
+import {
+	ChitVotingActiveToggle,
 	FundsVotingActiveToggle,
 	TopupsActiveToggle,
-	ColorizeTopOrgsToggle, 
-	AnimateTopOrgsToggle, 
-	ShowLeverageToggle, 
-	ShowSaveValuesToggle 
+	ColorizeTopOrgsToggle,
+	AnimateTopOrgsToggle,
+	ShowLeverageToggle,
+	ShowSaveValuesToggle
 } from '/imports/ui/Components/Toggles'
 import TextMembersButton from '/imports/ui/Components/Buttons/TextMembersButton'
 import EmailMembersButton from '/imports/ui/Components/Buttons/EmailMembersButton'
@@ -74,9 +74,9 @@ const PresentationPane = observer(() => {
 
 	return (
 		<ButtonPanel>
-			<Responsive 
-				as={ Grid } 
-				celled 
+			<Responsive
+				as={ Grid }
+				celled
 				columns={ gridColumns }
 				fireOnMount
 				onUpdate={ handleOnUpdate }
@@ -167,7 +167,7 @@ const PresentationPane = observer(() => {
 							<Icon name='check' size='huge' /><br/>
 							<Label>Result</Label>
 						</PresentationNavButton>
-						
+
 						<ResultsOffsetInput resultsOffset={ settings.resultsOffset } settingsId={ settings._id } />
 
 					</Grid.Column>
