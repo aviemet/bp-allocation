@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState } from 'react'
-import styled from 'styled-components'
 import TextEditModal from './TextEditModal'
 import EmailEditModal from './EmailEditModal'
 import { useData, useMessages } from '/imports/api/providers'
@@ -203,11 +202,5 @@ const Messages = props => {
 		</Container>
 	)
 }
-
-const CellWithContent = styled(Table.Cell)`
-	img {
-		max-width: 100% !important;
-	}
-`
 
 export default Messages

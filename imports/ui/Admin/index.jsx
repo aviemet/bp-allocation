@@ -15,12 +15,21 @@ const Admin = () => {
 					<Route exact path='/admin/:id/chits' component={ ChitVotingPane } />
 					<Route exact path='/admin/:id/allocation' component={ AllocationPane } />
 					<Route exact path='/admin/:id/leverage' component={ LeveragePane } />
+
+					{/* Fucking with this right now */}
+					<Route path='/admin/:id/messaging' render={ ({ match: { path } }) => (
+						<>
+							<Route exact path={ `${path}/` } component={ MessagingPane } />
+							<Route exact path={ `${path}/:messageId` } component={ MessageEdit } />
+						</>
+					) } />
+
 					<Route exact path={ ['/admin/:id', '/admin/:id/presentation'] } component={ PresentationPane } />
 
 					<Route exact path='/admin/:id/settings' render={ ({ match }) => <Redirect to={ `/admin/${match.params.id}/settings/general` } /> } />
 					<Route exact path='/admin/:id/settings/:activeTab' component={ SettingsPane } />
 
-					<Route path='/admin/:id/messaging' render={ ({ match: { path } }) => (
+					<Route path='/admin/:id/settings/messages' render={ ({ match: { path } }) => (
 						<>
 							<Route exact path={ `${path}/` } component={ MessagingPane } />
 							<Route exact path={ `${path}/:messageId` } component={ MessageEdit } />
