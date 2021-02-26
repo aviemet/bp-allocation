@@ -6,6 +6,12 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 - [ ] Some indication to us that the email or text messages have indeed been sent
 
+  - [ ] Add order of messages to DB schema
+    - Display messages in order, mixing text and emails
+    - Larger visual differentiation between text and email buttons
+
+  - [ ] Add message tracking fields to PresentationSettings
+
 - [ ] Find a better way to display text/email buttons
 
 - [ ] Add send buttons to member list for active sms/emails
@@ -44,6 +50,8 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
   -- ResetOrgFundsButton
 
 - [ ] **Fix member import to not fail if last name or first name is not present**
+
+- [ ] Switch to raect-hook-form and eliminate magic numbers/strings for default values in components
 
 ## Development References
 
