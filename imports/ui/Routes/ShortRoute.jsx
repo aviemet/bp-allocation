@@ -10,7 +10,7 @@ import { Loader } from 'semantic-ui-react'
 
 const ShortRoute = matchProps => {
 	const { themeSlug, memberCode } = matchProps.match.params
-	
+
 	const data = useTracker(() => {
 		let theme
 		let member

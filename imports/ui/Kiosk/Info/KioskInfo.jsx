@@ -7,11 +7,10 @@ import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings, useOrgs, useMembers } from '/imports/api/providers'
 
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
-import { toJS } from 'mobx'
+import { Media } from '/imports/ui/MediaProvider'
 
 const KioskInfo = observer(() => {
 	const { theme } = useTheme()
-	const { settings } = useSettings()
 	const { orgs, topOrgs } = useOrgs()
 	const { isLoading: membersLoading } = useMembers()
 
@@ -19,7 +18,7 @@ const KioskInfo = observer(() => {
 
 	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 3)
 
-	const title = theme.chitVotingStarted ? 
+	const title = theme.chitVotingStarted ?
 		`TOP ${theme.numTopOrgs} ORGANIZATIONS` :
 		'ORGANIZATIONS THIS THEME'
 
@@ -49,11 +48,9 @@ const KioskInfo = observer(() => {
 		<OrgsContainer>
 			<FlexHeading as='h1'>{ title }</FlexHeading>
 			<Header as='h2'>{ subHeading }</Header>
-			<Responsive 
-				as={ Card.Group }
-				fireOnMount
-				onUpdate={ handleScreenLayout }
-				centered 
+			<Card.Group
+				// onUpdate={ handleScreenLayout }
+				centered
 				itemsPerRow={ itemsPerRow }
 			>
 				{ orgsToDisplay.map(org => (
@@ -63,7 +60,7 @@ const KioskInfo = observer(() => {
 						info={ true }
 					/>
 				)) }
-			</Responsive>
+			</Card.Group>
 		</OrgsContainer>
 	)
 })
@@ -95,14 +92,11 @@ const OrgsContainer = styled(Container)`
 `
 
 const FlexHeading = styled(Header)`
-	&&& {
-		font-size: 3em;
-	}
+	font-size: 3em;
+	text-align: center;
 
 	@media only screen and (max-width: 500px) {
-		&&& {
-			font-size: 10vw !important;
-		}
+		font-size: 10vw !important;
 	}
 `
 

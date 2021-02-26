@@ -1,12 +1,13 @@
 import { Meteor } from 'meteor/meteor'
 import React from 'react'
-import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 import { Button, Icon } from 'semantic-ui-react'
 import styled from 'styled-components'
 
-const LogoutButton = ({ history }) => {
+const LogoutButton = () => {
+	const history = useHistory()
+
 	const handleLogout = () => {
 		Meteor.logout(() => history.push('/login'))
 	}
@@ -24,8 +25,4 @@ const StyledLogoutButton = styled(Button)`
 	}
 `
 
-LogoutButton.propTypes = {
-	history: PropTypes.object
-}
-
-export default withRouter(LogoutButton)
+export default LogoutButton

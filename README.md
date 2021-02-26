@@ -6,6 +6,10 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 - [ ] Some indication to us that the email or text messages have indeed been sent
 
+- [ ] Find a better way to display text/email buttons
+
+- [ ] Add send buttons to member list for active sms/emails
+
 - [ ] For connected and high voltage level members that have 2 partners associated with the account, an easy way to ensure that both partners first names appear on their voting screen
 
 - [ ] Place a hold on displaying top ups until designated times
@@ -16,7 +20,7 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 - [ ] Tally for # who voted through the text link or the email link
 
-- [ ] Testing / runthrough mode where values aren't saved and texts/emails don't go to members
+- [ ] Testing/runthrough mode where values aren't saved and texts/emails don't go to members
 
 - [ ] Clean up the settings page
 
@@ -26,22 +30,20 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 - [ ] Update login method
 
-## TODO
+- [ ] Matched pledges sortable
 
-- Rate limit the texts and resend failed texts
-- Show number of voted complete members
-- Remove RTF from SMS
-- Fix wording on button to remove member from theme
+- [x] Rate limit the texts and resend failed texts
 
-- Move data inputs from top of page to modal
-- Add sorting to pledge inputs
-- Find a better way to display text/email buttons
-- Add send buttons to member list for active sms/emails
-- Get tests working properly
-- Add confirmation dialog to destructive button actions
+- [x] Show number of voted complete members
+
+- [x] Remove RTF from SMS
+
+- [x] Fix wording on button to remove member from theme
+
+- [ ] Add confirmation dialog to destructive button actions
   -- ResetOrgFundsButton
 
-- **Fix member import to not fail if last name or first name is not present**
+- [ ] **Fix member import to not fail if last name or first name is not present**
 
 ## Development References
 

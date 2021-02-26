@@ -2,8 +2,8 @@ import { sortBy } from 'lodash'
 
 /**
  * Sets Meteor publication callback events to transform data
- * @param {*} transformer 
- */ 
+ * @param {*} transformer
+ */
 export const registerObserver = transformer => (title, self, params) => {
 	return {
 		added: doc => {
@@ -20,8 +20,8 @@ export const registerObserver = transformer => (title, self, params) => {
 
 /**
  * Returns the top orgs after the first round of chit voting
- * @param {*} orgs 
- * @param {*} theme 
+ * @param {*} orgs
+ * @param {*} theme
  */
 export const sortTopOrgs = (orgs, theme) => {
 	// Save manual top orgs as key/value true/false pairs for reference
@@ -70,15 +70,15 @@ export const sortTopOrgs = (orgs, theme) => {
 
 /**
  * Returns the number of top orgs in the theme
- * @param {*} theme 
+ * @param {*} theme
  */
 export const getNumTopOrgs = theme => theme.numTopOrgs >= theme.topOrgsManual.length ? theme.numTopOrgs : theme.topOrgsManual.length
 
 /**
- * Gets the top x orgs by chitvote, with saves and manual locks considered 
+ * Gets the top x orgs by chitvote, with saves and manual locks considered
  * where x is the number of top orgs for the theme
- * @param {*} orgs 
- * @param {*} theme 
+ * @param {*} orgs
+ * @param {*} theme
  */
 export const filterTopOrgs = (orgs, theme) => {
 	const sortedOrgs = sortTopOrgs(orgs, theme)

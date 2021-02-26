@@ -7,34 +7,37 @@ import theme from '/imports/ui/theme'
 import { isMobileDevice } from '/imports/lib/utils'
 
 import { DataProvider, ThemeProvider, SettingsProvider, OrgsProvider, MembersProvider, MessagesProvider } from '/imports/api/providers'
+import MediaProvider from './MediaProvider'
 
 const App = () => {
 	useEffect(() => {
 		if(isMobileDevice()) {
-			document.body.addEventListener('touchmove', function(e) { 
-				e.preventDefault() 
+			document.body.addEventListener('touchmove', function(e) {
+				e.preventDefault()
 			})
 		}
 	}, [])
-	
+
 	return (
-		<StyledProvider theme={ theme }>
-			<GlobalContainer id="globalContainer">
-				<DataProvider>
-					<ThemeProvider>
-						<SettingsProvider>
-							<OrgsProvider>
-								<MembersProvider>
-									<MessagesProvider>
-										<Routes />
-									</MessagesProvider>
-								</MembersProvider>
-							</OrgsProvider>
-						</SettingsProvider>
-					</ThemeProvider>
-				</DataProvider>
-			</GlobalContainer>
-		</StyledProvider>
+		<MediaProvider>
+			<StyledProvider theme={ theme }>
+				<GlobalContainer id="globalContainer">
+					<DataProvider>
+						<ThemeProvider>
+							<SettingsProvider>
+								<OrgsProvider>
+									<MembersProvider>
+										<MessagesProvider>
+											<Routes />
+										</MessagesProvider>
+									</MembersProvider>
+								</OrgsProvider>
+							</SettingsProvider>
+						</ThemeProvider>
+					</DataProvider>
+				</GlobalContainer>
+			</StyledProvider>
+		</MediaProvider>
 	)
 }
 

@@ -31,12 +31,12 @@ const OrgsProvider = observer(function(props) {
 				orgs: undefined
 			}
 		}
-		
+
 		subscription = Meteor.subscribe('organizations', themeId, {
 			onReady: () => {
 				const cursor = Organizations.find({ theme: themeId })
 				orgsCollection = new OrgsCollection(cursor.fetch(), theme, OrgStore)
-				
+
 				cursorObserver = cursor.observe({
 					added: orgs => orgsCollection.refreshData(orgs),
 					changed: orgs => orgsCollection.refreshData(orgs),
@@ -44,7 +44,7 @@ const OrgsProvider = observer(function(props) {
 				})
 			}
 		})
-		
+
 		return {
 			orgs: orgsCollection,
 			topOrgs: !orgsCollection ? [] : filterTopOrgs(orgsCollection.values, theme),

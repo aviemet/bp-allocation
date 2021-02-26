@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { withRouter } from 'react-router-dom'
-
 import { Header, Icon, Menu } from 'semantic-ui-react'
 import MenuLink from './MenuLink'
 
@@ -11,13 +9,13 @@ import { useData } from '/imports/api/providers'
 
 import styled from 'styled-components'
 
-const Links = withRouter(observer(({ activeMenuItem }) => {
+const Links = observer(({ activeMenuItem }) => {
 	const data = useData()
 
 	return(
-		<MenuContainer>
+		<MenuContainer id="MENUCONTAINER">
 			<Menu vertical>
-				<MenuLink 
+				<MenuLink
 					to={ `/admin/${data.themeId}/orgs` }
 					active={ activeMenuItem === 'orgs' }
 					iconPosition='left'
@@ -26,7 +24,7 @@ const Links = withRouter(observer(({ activeMenuItem }) => {
 					<Icon name='building' color='teal' /> Orgs
 				</MenuLink>
 
-				<MenuLink 
+				<MenuLink
 					to={ `/admin/${data.themeId}/members` }
 					active={ activeMenuItem === 'members' }
 					iconPosition='left'
@@ -35,7 +33,7 @@ const Links = withRouter(observer(({ activeMenuItem }) => {
 					<Icon name='users' color='violet' /> Members
 				</MenuLink>
 
-				<MenuLink 
+				<MenuLink
 					to={ `/admin/${data.themeId}/chits` }
 					active={ activeMenuItem === 'chits' }
 					iconPosition='left'
@@ -44,7 +42,7 @@ const Links = withRouter(observer(({ activeMenuItem }) => {
 					<Icon name='star' color='brown' /> Chit Votes
 				</MenuLink>
 
-				<MenuLink 
+				<MenuLink
 					to={ `/admin/${data.themeId}/allocation` }
 					active={ activeMenuItem === 'allocation' }
 					iconPosition='left'
@@ -53,7 +51,7 @@ const Links = withRouter(observer(({ activeMenuItem }) => {
 					<Icon name='dollar' color='green' /> Allocations
 				</MenuLink>
 
-				<MenuLink 
+				<MenuLink
 					to={ `/admin/${data.themeId}/leverage` }
 					active={ activeMenuItem === 'leverage' }
 					iconPosition='left'
@@ -62,9 +60,9 @@ const Links = withRouter(observer(({ activeMenuItem }) => {
 					<Icon name='chart pie' color='orange' /> Leverage
 				</MenuLink>
 
-				<MenuLink 
+				<MenuLink
 					to={ `/admin/${data.themeId}/presentation` }
-					active={ activeMenuItem === 'presentation' }
+					active={ activeMenuItem === 'presentation' || activeMenuItem === '' }
 					iconPosition='left'
 					color='red'
 				>
@@ -113,7 +111,7 @@ const Links = withRouter(observer(({ activeMenuItem }) => {
 			</Menu>
 		</MenuContainer>
 	)
-}))
+})
 
 const MenuContainer = styled.div`
 	& .ui.menu.vertical {
@@ -122,6 +120,11 @@ const MenuContainer = styled.div`
 
 		& > .active.item:last-child, .item {
 			border-radius: 0;
+		}
+
+		.item.left i.icon {
+			float: left;
+			margin: 0 0.5em 0 0;
 		}
 	}
 `

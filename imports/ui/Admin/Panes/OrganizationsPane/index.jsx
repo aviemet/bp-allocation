@@ -112,7 +112,7 @@ const OrganizationsPane = observer(props => {
 					</Form>
 
 				</Grid.Row>
-				
+
 				<Table size='small' sortable striped celled structured>
 					<Table.Header>
 						<Table.Row>
@@ -135,7 +135,7 @@ const OrganizationsPane = observer(props => {
 								}
 							}
 							return (
-								<Table.Row 
+								<Table.Row
 									key={ i }
 									warning={ titleLength.warning.test }
 									error={ titleLength.error.test }

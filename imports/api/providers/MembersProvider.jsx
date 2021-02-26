@@ -41,7 +41,7 @@ const MembersProvider = observer(props => {
 		setRenderCount(renderCount + 1)
 	}
 
-	const members = useTracker(() => {	
+	const members = useTracker(() => {
 		// Return a single user if memberId is set
 		if(memberId) {
 			subscription = Meteor.subscribe('member', { memberId, themeId }, {
@@ -55,7 +55,7 @@ const MembersProvider = observer(props => {
 			if(!themeId || subLimit === 0) {
 				if(subscription) subscription.stop()
 				if(cursorObserver) cursorObserver.stop()
-				
+
 				return Object.assign(methods, {
 					isLoading: subLimit === 0 ? false : true,
 					members: undefined
@@ -109,7 +109,7 @@ export const useMembers = () => {
 			membersContext.hideAllMembers()
 		}
 	}, [])
-	
+
 	return membersContext
 }
 

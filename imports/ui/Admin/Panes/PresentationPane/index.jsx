@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { Link } from 'react-router-dom'
 
@@ -7,17 +7,17 @@ import { useTheme, useSettings, useMessages } from '/imports/api/providers'
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
 import { TimerInput, ResultsOffsetInput } from '/imports/ui/Components/Inputs'
-import { Container, Grid, Icon, Label, Segment, Button, Responsive, Loader } from 'semantic-ui-react'
+import { Container, Grid, Icon, Label, Segment, Button, Loader } from 'semantic-ui-react'
 import styled from 'styled-components'
 
-import { 
-	ChitVotingActiveToggle, 
+import {
+	ChitVotingActiveToggle,
 	FundsVotingActiveToggle,
 	TopupsActiveToggle,
-	ColorizeTopOrgsToggle, 
-	AnimateTopOrgsToggle, 
-	ShowLeverageToggle, 
-	ShowSaveValuesToggle 
+	ColorizeTopOrgsToggle,
+	AnimateTopOrgsToggle,
+	ShowLeverageToggle,
+	ShowSaveValuesToggle
 } from '/imports/ui/Components/Toggles'
 import TextMembersButton from '/imports/ui/Components/Buttons/TextMembersButton'
 import EmailMembersButton from '/imports/ui/Components/Buttons/EmailMembersButton'
@@ -28,16 +28,6 @@ const PresentationPane = observer(() => {
 	const { theme } = useTheme()
 	const { settings, isLoading: settingsLoading } = useSettings()
 	const { messages, isLoading: messagesLoading } = useMessages()
-
-	const [ gridColumns, setGridColumns ] = useState(3)
-
-	const handleOnUpdate = (e, { width }) => {
-		if(width > Responsive.onlyTablet.minWidth) {
-			setGridColumns(3)
-		} else {
-			setGridColumns(1)
-		}
-	}
 
 	/**
 	 * Reset the values for the presentation
@@ -74,107 +64,103 @@ const PresentationPane = observer(() => {
 
 	return (
 		<ButtonPanel>
-			<Responsive 
-				as={ Grid } 
-				celled 
-				columns={ gridColumns }
-				fireOnMount
-				onUpdate={ handleOnUpdate }
-			>
-				<Grid.Row>
-					<Grid.Column>
+			<Segment>
+				<Grid stackable columns={ 3 }>
+					<Grid.Row>
+						<Grid.Column>
 
-						{/************
-					  * Intro/Title Page
-					  ************/}
-						<PresentationNavButton page='intro'>
-							<Icon name='address card' size='huge' /><br/>
-							<Label>Title Page</Label>
-						</PresentationNavButton>
+							{/************
+							* Intro/Title Page
+							************/}
+							<PresentationNavButton page='intro'>
+								<Icon name='address card' size='huge' /><br/>
+								<Label>Title Page</Label>
+							</PresentationNavButton>
 
-						<Button onClick={ restoreDefaultSettings }>Restore Defaults</Button>
+							<Button onClick={ restoreDefaultSettings }>Restore Defaults</Button>
 
-					</Grid.Column>
-					<Grid.Column>
+						</Grid.Column>
+						<Grid.Column>
 
-						{/************
-					  * Participating Organizations
-					  ************/}
-						<PresentationNavButton page='orgs'>
-							<Icon name='table' size='huge' /><br/>
-							<Label>Participating Organizations</Label>
-						</PresentationNavButton>
+							{/************
+							* Participating Organizations
+							************/}
+							<PresentationNavButton page='orgs'>
+								<Icon name='table' size='huge' /><br/>
+								<Label>Participating Organizations</Label>
+							</PresentationNavButton>
 
-						<ColorizeTopOrgsToggle />
+							<ColorizeTopOrgsToggle />
 
-					</Grid.Column>
-					<Grid.Column>
+						</Grid.Column>
+						<Grid.Column>
 
-						{/************
-					  * Timer
-					  ************/}
-						<PresentationNavButton page='timer' icon>
-							<Icon name='hourglass' size='huge' /><br/>
-							<Label>Timer</Label>
-						</PresentationNavButton>
+							{/************
+							* Timer
+							************/}
+							<PresentationNavButton page='timer' icon>
+								<Icon name='hourglass' size='huge' /><br/>
+								<Label>Timer</Label>
+							</PresentationNavButton>
 
-						<TimerInput timerLength={ settings.timerLength } settingsId={ settings._id } />
-						<br/>
-						<ChitVotingActiveToggle />
-						<br/>
-						<FundsVotingActiveToggle />
-					</Grid.Column>
+							<TimerInput timerLength={ settings.timerLength } settingsId={ settings._id } />
+							<br/>
+							<ChitVotingActiveToggle />
+							<br/>
+							<FundsVotingActiveToggle />
+						</Grid.Column>
 
-				</Grid.Row>
-				<Grid.Row>
-					<Grid.Column>
+					</Grid.Row>
+					<Grid.Row>
+						<Grid.Column>
 
-						{/************
-					  * Top Organizations
-					  ************/}
-						<PresentationNavButton page='toporgs'>
-							<Icon name='winner' size='huge' /><br/>
-							<Label>Top Organizations</Label>
-						</PresentationNavButton>
+							{/************
+							* Top Organizations
+							************/}
+							<PresentationNavButton page='toporgs'>
+								<Icon name='winner' size='huge' /><br/>
+								<Label>Top Organizations</Label>
+							</PresentationNavButton>
 
-						<AnimateTopOrgsToggle />
+							<AnimateTopOrgsToggle />
 
-					</Grid.Column>
-					<Grid.Column>
+						</Grid.Column>
+						<Grid.Column>
 
-						{/************
-					  * Allocation/Evaluation
-					  ************/}
-						<PresentationNavButton page='allocation'>
-							<Icon name='chart bar' size='huge' /><br/>
-							<Label>Allocation</Label>
-						</PresentationNavButton>
+							{/************
+							* Allocation/Evaluation
+							************/}
+							<PresentationNavButton page='allocation'>
+								<Icon name='chart bar' size='huge' /><br/>
+								<Label>Allocation</Label>
+							</PresentationNavButton>
 
-						<ShowLeverageToggle />
-						<br/>
-						<ShowSaveValuesToggle />
-						<br/>
-						<hr />
-						<TopupsActiveToggle />
+							<ShowLeverageToggle />
+							<br/>
+							<ShowSaveValuesToggle />
+							<br/>
+							<hr />
+							<TopupsActiveToggle />
 
-					</Grid.Column>
-					<Grid.Column>
+						</Grid.Column>
+						<Grid.Column>
 
-						{/************
-					  * Results Page
-					  ************/}
-						<PresentationNavButton page='results' onClick={ setResultsHaveBeenViewed }>
-							<Icon name='check' size='huge' /><br/>
-							<Label>Result</Label>
-						</PresentationNavButton>
-						
-						<ResultsOffsetInput resultsOffset={ settings.resultsOffset } settingsId={ settings._id } />
+							{/************
+							* Results Page
+							************/}
+							<PresentationNavButton page='results' onClick={ setResultsHaveBeenViewed }>
+								<Icon name='check' size='huge' /><br/>
+								<Label>Result</Label>
+							</PresentationNavButton>
 
-					</Grid.Column>
-				</Grid.Row>
-			</Responsive>
+							<ResultsOffsetInput resultsOffset={ settings.resultsOffset } settingsId={ settings._id } />
 
-			<Responsive as={ Segment } minWidth={ Responsive.onlyTablet.minWidth }>
+						</Grid.Column>
+					</Grid.Row>
+				</Grid>
+			</Segment>
+
+			<Segment>
 				<Grid columns={ 2 }>
 					<Grid.Row>
 						<Grid.Column>
@@ -214,9 +200,9 @@ const PresentationPane = observer(() => {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-			</Responsive>
+			</Segment>
 
-			<Responsive as={ Segment } minWidth={ Responsive.onlyTablet.minWidth }>
+			<Segment>
 				<Grid columns={ 1 }>
 					<Grid.Row>
 						<Grid.Column>
@@ -230,7 +216,7 @@ const PresentationPane = observer(() => {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-			</Responsive>
+			</Segment>
 
 		</ButtonPanel>
 	)

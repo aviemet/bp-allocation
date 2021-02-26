@@ -71,7 +71,7 @@ const Centered = styled.div`
 		line-height: 6rem;
 		color: white;
 		
-		@media screen and (min-width: 351px) and (max-width: ${({ theme }) => theme.media.onlyTablet.minWidth}px) {
+		@media screen and (min-width: 351px) and (max-width: ${({ theme }) => theme.screen.tablet}px) {
 			font-size: 4rem !important;
 			line-height: 4.5rem;
 		}

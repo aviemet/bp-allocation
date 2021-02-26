@@ -29,12 +29,12 @@ const MessagesProvider = observer(function(props) {
 				messages: undefined
 			}
 		}
-		
+
 		subscription = Meteor.subscribe('messages', themeId, {
 			onReady: () => {
 				const cursor = Messages.find({ })
 				messagesCollection = new MessagesCollection(cursor.fetch(), MessageStore)
-				
+
 				handleObserver = cursor.observe({
 					added: messages => messagesCollection.refreshData(messages),
 					changed: messages => messagesCollection.refreshData(messages),
@@ -42,7 +42,7 @@ const MessagesProvider = observer(function(props) {
 				})
 			}
 		})
-		
+
 		return {
 			messages: messagesCollection,
 			isLoading: !subscription.ready()

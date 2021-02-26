@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import React from 'react'
-import { Router, Route, Switch, Redirect } from 'react-router-dom'
-import { createBrowserHistory as createHistory } from 'history'
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 
 import PrivateRoute from './PrivateRoute'
 import LoadingRoute from './LoadingRoute'
@@ -18,60 +17,56 @@ import Kiosk from '/imports/ui/Kiosk'
 import Feedback from '/imports/ui/Feedback'
 import FourOhFour from './404'
 
-const browserHistory = createHistory()
+const Routes = observer(() => (
+	<BrowserRouter>
+		<Switch>
 
-const Routes = observer(() => {
-	return(
-		<Router history={ browserHistory }>
-			<Switch>
+			<Route path='/login' render={ () => (
+				!Meteor.userId()
+					? <WelcomeLayout><Login /></WelcomeLayout>
+					: <Redirect to='/' />
+			) } />
 
-				<Route path='/login' render={ matchProps => (
-					!Meteor.userId() 
-						? <WelcomeLayout><Login /></WelcomeLayout>
-						: <Redirect to='/' />
-				) } />
-				
-				<Redirect exact from='/' to='/themes' />
-				<PrivateRoute path={ ['/themes', '/admin'] } component={ AdminLayout } />
+			<Redirect exact from='/' to='/themes' />
+			<PrivateRoute path={ ['/themes', '/admin'] } component={ AdminLayout } />
 
-				<LoadingRoute path='/presentation/:id' render={ () => (
-					<PresentationLayout>
-						<Presentation />
-					</PresentationLayout>
-				) } />
+			<LoadingRoute path='/presentation/:id' render={ () => (
+				<PresentationLayout>
+					<Presentation />
+				</PresentationLayout>
+			) } />
 
-				{/* Short URL for texts */}
-				<Route path='/v/:themeSlug/:memberCode' component={ ShortRoute } />
+			{/* Short URL for texts */}
+			<Route path='/v/:themeSlug/:memberCode' component={ ShortRoute } />
 
-				<LoadingRoute path={ ['/voting/:id/:member', '/kiosk/:id'] } render={ () => (
-					<KioskLayout>
-						<Kiosk />
-					</KioskLayout>
-				) } />
+			<LoadingRoute path={ ['/voting/:id/:member', '/kiosk/:id'] } render={ () => (
+				<KioskLayout>
+					<Kiosk />
+				</KioskLayout>
+			) } />
 
-				<LoadingRoute path='/simulation/:id' render={ () => (
-					<PresentationLayout>
-						<Simulation />
-					</PresentationLayout>
-				) } />
+			<LoadingRoute path='/simulation/:id' render={ () => (
+				<PresentationLayout>
+					<Simulation />
+				</PresentationLayout>
+			) } />
 
-				<LoadingRoute path='/pledges/:id' render={ () => (
-					<KioskLayout>
-						<Pledges />
-					</KioskLayout>
-				) } />
+			<LoadingRoute path='/pledges/:id' render={ () => (
+				<KioskLayout>
+					<Pledges />
+				</KioskLayout>
+			) } />
 
-				<LoadingRoute path='/feedback/:id' render={ () => (
-					<FeedbackLayout>
-						<Feedback />
-					</FeedbackLayout>
-				) } />
+			<LoadingRoute path='/feedback/:id' render={ () => (
+				<FeedbackLayout>
+					<Feedback />
+				</FeedbackLayout>
+			) } />
 
-				<Route path='/404' component={ FourOhFour } />
+			<Route path='/404' component={ FourOhFour } />
 
-			</Switch>
-		</Router>
-	)
-})
+		</Switch>
+	</BrowserRouter>
+))
 
 export default Routes

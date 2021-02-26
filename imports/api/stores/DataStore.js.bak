@@ -143,6 +143,7 @@ class DataStore {
 				onReady: () => {
 					const settingsCursor = PresentationSettings.find({ _id: id })
 					this.settings = new SettingsStore(settingsCursor.fetch()[0], this)
+					console.log({ settings: this.settings })
 
 					this.observers.settings = settingsCursor.observe({
 						added: settings => this.settings.refreshData(settings),

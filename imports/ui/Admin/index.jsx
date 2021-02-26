@@ -16,7 +16,7 @@ const Admin = () => {
 					<Route exact path='/admin/:id/allocation' component={ AllocationPane } />
 					<Route exact path='/admin/:id/leverage' component={ LeveragePane } />
 					<Route exact path={ ['/admin/:id', '/admin/:id/presentation'] } component={ PresentationPane } />
-					
+
 					<Route exact path='/admin/:id/settings' component={ SettingsPane } />
 					{/* <Route exact path='/admin/:id/messaging' component={ MessagingPane } /> */}
 					<Route path='/admin/:id/messaging' render={ ({ match: { path } }) => (
@@ -25,7 +25,7 @@ const Admin = () => {
 							<Route exact path={ `${path}/:messageId` } component={ MessageEdit } />
 						</>
 					) } />
-				</Switch>	
+				</Switch>
 			</Segment>
 		</Container>
 	)

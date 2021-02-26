@@ -32,8 +32,6 @@ const SettingsPane = observer(props => {
 
 	const [ showAdvanced, setShowAdvanced ] = useState(false)
 
-	console.log({ twilioRateLimit })
-
 	useEffect(() => {
 		if(!settingsLoading) {
 			setTimerLength(settings.timerLength)

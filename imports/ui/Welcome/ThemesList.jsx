@@ -92,5 +92,5 @@ ThemesList.propTypes = {
 export default withTracker(() => {
 	Meteor.subscribe('themes')
 
-	return { themes: Themes.find({}, { limit: 5, sort: { createdAt: -1 }}).fetch() }
+	return { themes: Themes.find({}, { limit: 5, sort: { createdAt: -1 } }).fetch() }
 })(ThemesList)

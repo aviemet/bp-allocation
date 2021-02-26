@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
 
-import { Route, withRouter, Switch } from 'react-router-dom'
+import { Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import LoadingRoute from '/imports/ui/Routes/LoadingRoute'
 
 import ThemesList from '/imports/ui/Welcome/ThemesList'
 import Admin from '/imports/ui/Admin'
@@ -14,80 +14,65 @@ import {
 	Header,
 	Icon,
 	Image,
-	Menu,
-	Responsive
+	Menu
 } from 'semantic-ui-react'
+import { Media } from '/imports/ui/MediaProvider'
 import Sidebar from './Sidebar'
 import AdminLinks from './AdminLinks'
 import styled from 'styled-components'
 
 import { observer } from 'mobx-react-lite'
 import { useData, useTheme } from '/imports/api/providers'
+import layoutTheme from '/imports/ui/theme'
 
-const AdminLayout = withRouter(observer(props => {
+const AdminLayout = observer(() => {
+	const history = useHistory()
+	const location = useLocation()
+	const match = useRouteMatch('/admin/:id/:page')
+
 	const [ sidebarVisible, setSidebarVisible ] = useState(false)
-	const [ documentWidth, setDocumentWidth ] = useState()
-	const [ activeMenuItem, setActiveMenuItem ] = useState()
 
 	const data = useData()
+	const { theme } = useTheme()
 
-	const { theme, isLoading: themeLoading } = useTheme()
+	const setSidebarVisibilty = () => {
+		let showSidebar = window.innerWidth >= layoutTheme.screen.tablet && !/^\/(admin|themes)[/]?$/.test(location.pathname)
+		setSidebarVisible(showSidebar)
+	}
 
 	useEffect(() => {
-		if(documentWidth >= Responsive.onlyTablet.minWidth) {
-			// Hide sidebar on themes list, show when theme is chosen
-			let showSidebar = true
-			const regex = {
-				admin: /^\/admin[/]?$/,
-				themes: /^\/themes[/]?$/,
-			}
+		setSidebarVisibilty()
+	}, [ location.pathname ])
 
-			if(regex.admin.test(props.location.pathname) || regex.themes.test(props.location.pathname)) {
-				showSidebar = false
-			}
-			setSidebarVisible(showSidebar)
-		} else {
-			setSidebarVisible(false)
-		}
-	}, [ props.location.pathname, documentWidth ])
+	useEffect(() => {
+		window.addEventListener('resize', setSidebarVisibilty)
+		return () => window.removeEventListener('resize', setSidebarVisibilty)
+	})
 
+	/**
+	 * Update the main page heading when the theme changes
+	 */
 	useEffect(() => {
 		data.menuHeading = theme ? theme.title : data.defaultMenuHeading
 	}, [theme])
 
-	useEffect(() => {
-		setActiveMenuItem()
-	}, [])
-
-	const handleOnUpdate = (e, { width }) => {
-		setDocumentWidth(width)
-	}
-
-	const setActivePage = matchProps => {
-		const url = matchProps.location.pathname
-		const filter = matchProps.match.url
-		const page = url.substring(url.indexOf(filter) + filter.length + 1)
-		setActiveMenuItem(page)
-	}
-
 	return(
 		<AdminContainer className='AdminContainer'>
-			
 			<TopbarMenu borderless className={ `Menu ${sidebarVisible && 'offset'}` }>
 				<Menu.Item>
-					<Responsive
-						minWidth={ Responsive.onlyTablet.minWidth }
-						as={ Logo } 
-						size='mini' 
-						src='/img/BPLogo.svg'
-					/>
-					<Responsive
-						maxWidth={ Responsive.onlyTablet.minWidth }
-						as={ Icon }
-						name='bars'
-						link
-						onClick={ () => setSidebarVisible(!sidebarVisible) }
-					/>
+					<Media greaterThanOrEqual="tablet">
+						<Logo
+							size='mini'
+							src='/img/BPLogo.svg'
+						/>
+					</Media>
+					{ !['/themes', '/admin'].includes(location.pathname) && <Media lessThan="tablet">
+						<Icon
+							name='bars'
+							link
+							onClick={ () => setSidebarVisible(!sidebarVisible) }
+						/>
+					</Media> }
 				</Menu.Item>
 
 				<Menu.Item header style={ { paddingLeft: 0 } }>{ data.menuHeading }</Menu.Item>
@@ -95,48 +80,30 @@ const AdminLayout = withRouter(observer(props => {
 				<Menu.Menu position='right'>
 					<Dropdown text='Menu' className='link item'>
 						<Dropdown.Menu>
-							<Dropdown.Item onClick={ () => props.history.push('/admin') } >Themes List</Dropdown.Item>
+							<Dropdown.Item onClick={ () => history.push('/admin') } >Themes List</Dropdown.Item>
 							<Dropdown.Divider />
-							<Dropdown.Item onClick={ () =>  Meteor.logout(() => props.history.push('/login')) } ><Icon name='sign-out' color='black'/>Sign Out</Dropdown.Item>
+							<Dropdown.Item onClick={ () =>  Meteor.logout(() => history.push('/login')) } ><Icon name='sign-out' color='black'/>Sign Out</Dropdown.Item>
 						</Dropdown.Menu>
 					</Dropdown>
 				</Menu.Menu>
 			</TopbarMenu>
 
-			<Responsive 
-				as={ Sidebar } 
-				className='Sidebar'
-				visible={ sidebarVisible }
-				fireOnMount
-				onUpdate={ handleOnUpdate }
-			>
+			<Sidebar visible={ sidebarVisible }>
 				<SidebarMenu>
 					{/* Menu */}
 					<Header as={ 'h1' } style={ { height: '51px' } }>Menu</Header>
 
-					<AdminLinks activeMenuItem={ activeMenuItem } />
+					<AdminLinks activeMenuItem={ match?.params?.page || '' } />
 
 				</SidebarMenu>
-			</Responsive>
+			</Sidebar>
 
 			<OffsetContainer className={ sidebarVisible && 'offset' }>
 				<Container className='Container'>
 					<Grid columns={ 16 } className='Grid'>
 						<Switch>
-							{/**
-							 * This is where the themeId gets set for the application
-							 */}
-							<Route exact path={ ['/themes', '/admin'] } render={ matchProps => {
-								data.themeId = undefined
-								return <ThemesList />
-							} } />
-							<Route path='/admin/:id' render={ matchProps => {
-								data.themeId = matchProps.match.params.id
-								setActivePage(matchProps)
-
-								if(themeLoading) return <Loader active />
-								return <Admin />
-							} } />
+							<LoadingRoute exact path={ ['/themes', '/admin'] } render={ () => <ThemesList /> } />
+							<LoadingRoute path='/admin/:id' component={ Admin } />
 						</Switch>
 					</Grid>
 				</Container>
@@ -144,7 +111,7 @@ const AdminLayout = withRouter(observer(props => {
 
 		</AdminContainer>
 	)
-}))
+})
 
 const AdminContainer = styled.div`
 	background: #2b4a7c;
@@ -166,7 +133,7 @@ const OffsetContainer = styled.div`
 	padding-bottom: 15px;
 
 	&.offset {
-		@media screen and (min-width: ${ ({ theme }) => theme.media.onlyTablet.minWidth }px) {
+		@media screen and (min-width: ${ ({ theme }) => theme.screen.tablet }px) {
 			padding-left: 150px;
 		}
 	}
@@ -180,7 +147,7 @@ const TopbarMenu = styled(Menu)`
 	padding-left: 0;
 	transition: padding 0.25s ease-in-out;
 
-	@media screen and (max-width: ${ ({ theme }) => theme.media.onlyTablet.minWidth }px) {
+	@media screen and (max-width: ${ ({ theme }) => theme.screen.tablet }px) {
 		position: fixed;
 		z-index: 999;
 	}
@@ -218,15 +185,5 @@ const SidebarMenu = styled.div`
 const Logo = styled(Image)`
 	filter: invert(100%);
 `
-
-AdminLayout.propTypes = {
-	children: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.node),
-		PropTypes.node
-	]),
-	history: PropTypes.object,
-	location: PropTypes.object,
-	match: PropTypes.object
-}
 
 export default AdminLayout

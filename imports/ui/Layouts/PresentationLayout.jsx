@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 
 import styled from 'styled-components'
 
-const PresentationLayout = ({ children }) => (
-	<PresentationContainer>
-		{ children }
-	</PresentationContainer>
-)
+const PresentationLayout = ({ children }) => <PresentationContainer>{ children }</PresentationContainer>
 
 const PresentationContainer = styled.div`
 	background: #000;
