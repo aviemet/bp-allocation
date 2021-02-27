@@ -57,7 +57,7 @@ const messageBuilder = (member, message, slug) => {
 const smsToMember = (member, message, slug) => {
 	return new Promise((resolve, reject) => {
 		client.messages.create({
-			body: messageBuilder(member, message, slug),
+			body: messageBuilder(member, message),
 			to: formatPhoneNumber(member.phone),
 			messagingServiceSid: Meteor.settings.twilio.copilotSid
 		}).then(response => {
@@ -75,23 +75,10 @@ const smsToMember = (member, message, slug) => {
 	})
 }
 
-const setMessageSendingFlag = async (theme, message) => {
-	if(theme.messagesStatus.find(status => status.messageId === message._id)) {
-		await Themes.update({ _id: theme._id, 'messagesStatus.messageId': message._id }, { $set: { 'messagesStatus.$':{ messageId: message._id, sending: true, sent: false } } })
-	} else {
-		await Themes.update({ _id: theme._id }, { $push: { 'messagesStatus': { messageId: message._id, sending: true, sent: false } } })
-	}
-}
-
-const setMessageSentFlag = async (theme, message) => {
-	await Themes.update({ _id: theme._id, 'messagesStatus.messageId': message._id }, { $set: { 'messagesStatus.$':{ messageId: message._id, sending: false, sent: true } } })
-}
-
 const textVotingLinkToMembers = ({ themeId, message }) => {
-	const theme = Themes.findOne({ _id: themeId })
-	const settings = PresentationSettings.findOne({ _id: theme.presentationSettings })
+	const theme = Themes.findOne({ _id: themeId }) // Just need the slug from the theme
 
-	setMessageSendingFlag(theme, message)
+	const settings = PresentationSettings.findOne({ _id: theme.presentationSettings })
 
 	const memberPhoneNumbers = memberPhoneNumbersQuery(themeId)
 
@@ -99,11 +86,11 @@ const textVotingLinkToMembers = ({ themeId, message }) => {
 	const retryLimit = 2
 
 	// Uses setInterval to rate limit sending texts to Twilio
-	const sendTextsWithRetry = async members => {
+	const sendTextsWithRetry = members => {
 		const failedTexts = []
 
 		let i = 0
-		const interval = await setInterval(() => {
+		const interval = setInterval(() => {
 			smsToMember(members[i++], message, theme.slug).catch(({ error, member }) => {
 				const retry = member.hasOwnProperty('retry') ? member.retry + 1 : 0
 				if(retry <= retryLimit) {
@@ -117,8 +104,6 @@ const textVotingLinkToMembers = ({ themeId, message }) => {
 				if(failedTexts.length > 0) {
 					sendTextsWithRetry(failedTexts)
 				}
-
-				setMessageSentFlag(theme, message)
 			}
 		}, rateLimitMs)
 	}

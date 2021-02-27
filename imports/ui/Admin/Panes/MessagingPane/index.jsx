@@ -7,7 +7,6 @@ import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedb
 
 const Messages = props => {
 	const { theme } = useTheme()
-	console.log({ theme })
 	const { messages, isLoading: messagesLoading } = useMessages()
 
 	const handleTextEdits = (id, data) => {
@@ -43,8 +42,6 @@ const Messages = props => {
 
 					<Table.Body>
 						{ messages.values.map(message => {
-							const messageStatus = theme.messagesStatus.find(status => status.messageId === message._id)
-							console.log({ messageStatus })
 							return (
 								<Table.Row key={ message._id }>
 									<Table.Cell>

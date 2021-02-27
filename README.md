@@ -53,6 +53,8 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 - [ ] Switch to raect-hook-form and eliminate magic numbers/strings for default values in components
 
+- [ ] Remove moment.js as a dependency, replace with date-fns
+
 ## Development References
 
 - [Performing Mongo transforms on the server during publish](https://stackoverflow.com/questions/18093560/meteor-collection-transform-is-it-done-on-the-server-or-on-the-client-or-it-de/28389143)
