@@ -3,12 +3,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { observer } from 'mobx-react-lite'
-import { useTheme, useSettings, useMessages } from '/imports/api/providers'
+import { useTheme, useSettings } from '/imports/api/providers'
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
 import { TimerInput, ResultsOffsetInput } from '/imports/ui/Components/Inputs'
-import { Container, Grid, Icon, Label, Segment, Button, Loader } from 'semantic-ui-react'
-import styled from 'styled-components'
+import { Grid, Icon, Label, Segment, Button, Loader } from 'semantic-ui-react'
 
 import {
 	ChitVotingActiveToggle,
@@ -19,15 +18,13 @@ import {
 	ShowLeverageToggle,
 	ShowSaveValuesToggle
 } from '/imports/ui/Components/Toggles'
-import TextMembersButton from '/imports/ui/Components/Buttons/TextMembersButton'
-import EmailMembersButton from '/imports/ui/Components/Buttons/EmailMembersButton'
+
 
 import PresentationNavButton from './PresentationNavButton'
 
 const PresentationPane = observer(() => {
 	const { theme } = useTheme()
 	const { settings, isLoading: settingsLoading } = useSettings()
-	const { messages, isLoading: messagesLoading } = useMessages()
 
 	/**
 	 * Reset the values for the presentation
@@ -63,7 +60,7 @@ const PresentationPane = observer(() => {
 	if(settingsLoading) return <Loader active />
 
 	return (
-		<ButtonPanel>
+		<div>
 			<Segment>
 				<Grid stackable columns={ 3 }>
 					<Grid.Row>
@@ -161,48 +158,6 @@ const PresentationPane = observer(() => {
 			</Segment>
 
 			<Segment>
-				<Grid columns={ 2 }>
-					<Grid.Row>
-						<Grid.Column>
-
-							<h3 style={ { textAlign: 'center' } }>Texts</h3>
-							{ !messagesLoading && <Container>
-								{ messages.values.map((message, i) => {
-									if(message.active && message.type === 'text') {
-										return (
-											<TextMembersButton key={ i }
-												style={ { float: 'right' } }
-												message={ message }
-											/>
-										)
-									}
-								}) }
-							</Container> }
-
-						</Grid.Column>
-
-						<Grid.Column>
-
-							<h3 style={ { textAlign: 'center' } }>Emails</h3>
-							{ !messagesLoading && <Container>
-								{ messages.values.map((message, i) => {
-									if(message.active && message.type === 'email') {
-										return (
-											<EmailMembersButton key={ i }
-												style={ { float: 'right' } }
-												message={ message }
-											/>
-										)
-									}
-								}) }
-							</Container> }
-
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
-			</Segment>
-
-			<Segment>
 				<Grid columns={ 1 }>
 					<Grid.Row>
 						<Grid.Column>
@@ -218,11 +173,8 @@ const PresentationPane = observer(() => {
 				</Grid>
 			</Segment>
 
-		</ButtonPanel>
+		</div>
 	)
 })
-
-const ButtonPanel = styled.div`
-`
 
 export default PresentationPane

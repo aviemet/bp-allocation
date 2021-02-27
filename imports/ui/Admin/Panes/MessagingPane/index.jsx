@@ -1,12 +1,11 @@
 import React from 'react'
-import { useTheme, useMessages } from '/imports/api/providers'
+import { useMessages } from '/imports/api/providers'
 import { Container, Grid, Table, Loader, Segment } from 'semantic-ui-react'
 import { MessageMethods } from '/imports/api/methods'
 import EditableText from '/imports/ui/Components/Inputs/EditableText'
 import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
 
 const Messages = props => {
-	const { theme } = useTheme()
 	const { messages, isLoading: messagesLoading } = useMessages()
 
 	const handleTextEdits = (id, data) => {
