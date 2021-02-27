@@ -3,11 +3,11 @@ import { useTheme, useMessages } from '/imports/api/providers'
 import { Container, Grid, Table, Loader, Segment } from 'semantic-ui-react'
 import { MessageMethods } from '/imports/api/methods'
 import EditableText from '/imports/ui/Components/Inputs/EditableText'
-import TextMembersButton from '/imports/ui/Components/Buttons/TextMembersButton'
-import EmailMembersButton from '/imports/ui/Components/Buttons/EmailMembersButton'
+import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
 
 const Messages = props => {
-	const { messagesStatus } = useTheme()
+	const { theme } = useTheme()
+	console.log({ theme })
 	const { messages, isLoading: messagesLoading } = useMessages()
 
 	const handleTextEdits = (id, data) => {
@@ -42,30 +42,33 @@ const Messages = props => {
 					</Table.Header>
 
 					<Table.Body>
-						{ messages.values.map(message => (
-							<Table.Row key={ message._id }>
-								<Table.Cell>
-									{ message.type }
-								</Table.Cell>
-								<Table.Cell>
-									<EditableText
-										onSubmit={ value => handleTextEdits(message._id, { title: value }) }
-									>{ message.title }</EditableText>
-								</Table.Cell>
-								<Table.Cell>
-									<EditableText
-										type='textarea'
-										onSubmit={ value => handleTextEdits(message._id, { body: value }) }
-									>
-										{ message.body }
-									</EditableText>
-								</Table.Cell>
-								<Table.Cell singleLine>
-									{ message.type === 'email' ? <EmailMembersButton message={ message } /> : <TextMembersButton message={ message } /> }
-								</Table.Cell>
-							</Table.Row>
-						))
-						}
+						{ messages.values.map(message => {
+							const messageStatus = theme.messagesStatus.find(status => status.messageId === message._id)
+							console.log({ messageStatus })
+							return (
+								<Table.Row key={ message._id }>
+									<Table.Cell>
+										{ message.type }
+									</Table.Cell>
+									<Table.Cell>
+										<EditableText
+											onSubmit={ value => handleTextEdits(message._id, { title: value }) }
+										>{ message.title }</EditableText>
+									</Table.Cell>
+									<Table.Cell>
+										<EditableText
+											type='textarea'
+											onSubmit={ value => handleTextEdits(message._id, { body: value }) }
+										>
+											{ message.body }
+										</EditableText>
+									</Table.Cell>
+									<Table.Cell singleLine>
+										<SendWithFeedbackButton message={ message } />
+									</Table.Cell>
+								</Table.Row>
+							)
+						}) }
 					</Table.Body>
 				</Table>
 			</Segment>

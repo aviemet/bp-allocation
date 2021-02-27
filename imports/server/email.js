@@ -77,7 +77,8 @@ const emailVotingLinkToMembers = ({ themeId, message }) => {
 	const sentMail = sgMail.send(messages)
 
 	sentMail.then(response => {
-		Messages.update({ _id: messages._id }, { sent: true })
+		// TODO: Not even close to correct
+		Messages.update({ _id: messages._id }, { $set: { sent: true } })
 	}, error => {
 		console.error(error)
 

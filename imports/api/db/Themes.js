@@ -13,6 +13,7 @@ const OrgSaveSchema = new SimpleSchema({
 
 const MessageStatusSchema = new SimpleSchema({
 	messageId: SimpleSchema.RegEx.Id,
+	sending: Boolean,
 	sent: Boolean
 })
 
