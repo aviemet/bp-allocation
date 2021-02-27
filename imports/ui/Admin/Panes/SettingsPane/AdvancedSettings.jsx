@@ -7,16 +7,12 @@ import { useTheme, useSettings } from '/imports/api/providers'
 import CustomMessage from '/imports/ui/Components/CustomMessage'
 import { Loader, Form } from 'semantic-ui-react'
 import ResetOrgFundsButton from '/imports/ui/Components/Buttons/ResetOrgFundsButton'
+import ResetMessageStatusButton from '/imports/ui/Components/Buttons/ResetMessageStatusButton'
 
 const SettingsPane = observer(props => {
 	const { theme } = useTheme()
 	const { settings, isLoading: settingsLoading } = useSettings()
 
-	const [ timerLength, setTimerLength ]               = useState(settings.timerLength || 60)
-	const [ useKioskChitVoting, setKioskChitVoting ]    = useState(settings.useKioskChitVoting || false)
-	const [ useKioskFundsVoting, setKioskFundsVoting ]  = useState(settings.useKioskFundsVoting || false)
-	const [ awardsPresentation, setAwardsPresentation ] = useState(settings.awardsPresentation || false)
-	const [ awardAmount, setAwardAmount ]               = useState(settings.awardAmount || 0)
 	const [ twilioRateLimit, setTwilioRateLimit ]       = useState(settings.twilioRateLimit || 100)
 
 	const [ formErrorVisible, setFormErrorVisible ] = useState(false)
@@ -24,11 +20,6 @@ const SettingsPane = observer(props => {
 
 	useEffect(() => {
 		if(!settingsLoading) {
-			setTimerLength(settings.timerLength)
-			setKioskChitVoting(settings.useKioskChitVoting)
-			setKioskFundsVoting(settings.useKioskFundsVoting)
-			setAwardsPresentation(settings.awardsPresentation)
-			setAwardAmount(settings.awardAmount)
 			setTwilioRateLimit(settings.twilioRateLimit)
 		}
 	}, [settingsLoading])
@@ -47,7 +38,7 @@ const SettingsPane = observer(props => {
 		e.preventDefault()
 
 		let formData = {
-			settings: { timerLength, useKioskChitVoting, useKioskFundsVoting, awardsPresentation, awardAmount, twilioRateLimit }
+			settings: { twilioRateLimit }
 		}
 
 		// Iterate over database objects with keys to be saved
@@ -110,6 +101,7 @@ const SettingsPane = observer(props => {
 			<hr />
 
 			<ResetOrgFundsButton />
+			<ResetMessageStatusButton />
 
 			{ formErrorVisible && <CustomMessage
 				negative
