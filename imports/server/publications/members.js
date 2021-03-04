@@ -43,7 +43,7 @@ Meteor.publish('member', function({ memberId, themeId }) {
 		this.ready()
 		return
 	}
-	
+
 	const memberObserver = Members.find({ _id: memberId }).observe(membersTransformer('members', this, { themeId, debug: true }))
 
 	this.onStop(() => memberObserver.stop())
@@ -57,7 +57,7 @@ Meteor.publish('members', function(themeId) {
 	const memberThemesObserver = memberThemesCursor.observe(doc => doc)
 	const memberThemes = memberThemesCursor.fetch()
 	const memberIds = memberThemes.map(memberTheme => memberTheme.member)
-	
+
 	const membersCursor = Members.find({ _id: { $in: memberIds } })
 	const membersObserver = membersCursor.observe(membersTransformer('members', this, { themeId }))
 	this.onStop(() => {

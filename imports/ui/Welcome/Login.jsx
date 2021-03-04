@@ -1,12 +1,13 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState } from 'react'
-import { withRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
+import { useHistory, useLocation } from 'react-router-dom'
 import { Button, Grid } from 'semantic-ui-react'
 import CustomMessage from '../Components/CustomMessage'
 
-const Login = ({ history, location }) => {
-	
+const Login = () => {
+	const history = useHistory()
+	const location = useLocation()
+
 	const [ loginErrorVisible, setLoginErrorVisible ] = useState(false)
 
 	const handleLogin = e => {
@@ -38,17 +39,17 @@ const Login = ({ history, location }) => {
 				<Grid.Column style={ { maxWidth: 450 } }>
 					<img style={ { textAlign: 'center' } } src='/img/BPLogo.svg' />
 					<h1>Battery Powered<br/>Allocation Night</h1>
-					<Button 
-						fluid 
-						size='large' 
+					<Button
+						fluid
+						size='large'
 						onClick={ handleLogin }
 					>
 						Login
 					</Button>
 				</Grid.Column>
 			</Grid>
-			{ loginErrorVisible && <CustomMessage 
-				negative 
+			{ loginErrorVisible && <CustomMessage
+				negative
 				onDismiss={ hideMessage }
 				heading='Login Unsuccesful'
 				body={ <>
@@ -64,9 +65,4 @@ const Login = ({ history, location }) => {
 	)
 }
 
-Login.propTypes = {
-	history: PropTypes.object,
-	location: PropTypes.object
-}
-
-export default withRouter(Login)
+export default Login

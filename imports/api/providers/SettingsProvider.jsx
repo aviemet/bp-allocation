@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react-lite'
 
@@ -44,13 +44,13 @@ const SettingsProvider = observer(props => {
 				}
 			}
 		})
-		
+
 		return {
 			settings: settingsStore || {},
 			isLoading: !subscription.ready()
 		}
 
-	}, [themeId])
+	}, [themeId, themeLoading])
 
 	return (
 		<SettingsContext.Provider value={ settings }>

@@ -1,4 +1,4 @@
-import DataStore from './DataStore'
+// import DataStore from './DataStore.js.bak'
 import ThemeStore from './ThemeStore'
 import OrgsCollection from './OrgsCollection'
 import OrgStore from './OrgStore'
@@ -10,9 +10,9 @@ import MemberStore from './MemberStore'
 import MessagesCollection from './MessagesCollection'
 import MessageStore from './MessageStore'
 
-export default DataStore
+// export default DataStore
 
-export { 
+export {
 	ThemeStore,
 	OrgsCollection,
 	OrgStore,

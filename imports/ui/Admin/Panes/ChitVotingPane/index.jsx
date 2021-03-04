@@ -7,6 +7,7 @@ import { Grid, Table, Responsive, Loader } from 'semantic-ui-react'
 
 import ChitInputs from './ChitInputs'
 import TopOrgsByChitVote from './TopOrgsByChitVote'
+import { Media } from '/imports/ui/MediaProvider'
 
 const ChitVotingPane = observer(() => {
 	const { settings } = useSettings()
@@ -27,12 +28,10 @@ const ChitVotingPane = observer(() => {
 	const topOrgIds = topOrgs.map(org => org._id)
 
 	return (
-		<Responsive 
-			as={ Grid } 
+		<Grid
 			columns={ gridColumns }
 			divided={ gridColumns > 1 }
-			fireOnMount
-			onUpdate={ handleOnUpdate }
+			// onUpdate={ handleOnUpdate }
 		>
 			<Grid.Row>
 
@@ -66,7 +65,7 @@ const ChitVotingPane = observer(() => {
 				</Grid.Column>
 
 			</Grid.Row>
-		</Responsive>
+		</Grid>
 	)
 })
 

@@ -23,6 +23,10 @@ const MessageSchema = new SimpleSchema({
 		required: false,
 		defaultValue: true
 	},
+	order: {
+		type: Number,
+		required: false
+	},
 	includeLink: {
 		type: Boolean,
 		required: false,

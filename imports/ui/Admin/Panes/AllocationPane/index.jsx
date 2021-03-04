@@ -31,8 +31,6 @@ const AllocationPane = observer(props => {
 		return favorite
 	}
 
-	console.log({ funds: theme.fundsVotesCast, chit: theme.chitVotesCast, totalMembers: theme.totalMembers, totalChits: theme.totalChitVotes })
-
 	if(themeLoading || orgsLoading) return <Loader active />
 	return (
 		<Grid>
@@ -98,10 +96,10 @@ const AllocationPane = observer(props => {
 								<Table.HeaderCell>Totals:</Table.HeaderCell>
 
 								{/* Voted Amount */}
-								<Table.HeaderCell>{ 
-									numeral(topOrgs.reduce((sum, org) => { return sum + org.votedTotal }, 0)).format('$0,0') 
+								<Table.HeaderCell>{
+									numeral(topOrgs.reduce((sum, org) => { return sum + org.votedTotal }, 0)).format('$0,0')
 								}</Table.HeaderCell>
-								
+
 								{/* Total Allocated */}
 								<Table.HeaderCell>{
 									numeral(topOrgs.reduce((sum, org) => { return sum + org.allocatedFunds }, 0)).format('$0,0')

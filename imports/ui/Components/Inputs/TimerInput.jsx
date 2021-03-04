@@ -15,6 +15,7 @@ const TimerInput = props => {
 
 	return (
 		<Input
+			fluid
 			type='number'
 			label='Seconds'
 			index='timerLength'

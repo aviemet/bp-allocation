@@ -1,14 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import classnames from 'classnames'
 
-const Sidebar = props => {
-	return (
-		<SidebarContainer className={ props.visible && 'visible' }>
-			{ props.children }
-		</SidebarContainer>
-	)
-}
+const Sidebar = ({ visible, children }) => (
+	<SidebarContainer className={ classnames({ visible }) }>
+		{ children }
+	</SidebarContainer>
+)
 
 const SidebarContainer = styled.div`
 	position: fixed;

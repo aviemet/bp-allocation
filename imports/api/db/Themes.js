@@ -11,6 +11,12 @@ const OrgSaveSchema = new SimpleSchema({
 	}
 })
 
+const MessageStatusSchema = new SimpleSchema({
+	messageId: SimpleSchema.RegEx.Id,
+	sending: Boolean,
+	sent: Boolean
+})
+
 // Define Collection
 const Themes = new Mongo.Collection('themes')
 
@@ -95,7 +101,13 @@ const ThemeSchema = new SimpleSchema({
 		required: false,
 		index: true,
 		unique: true
-	}
+	},
+	messagesStatus: {
+		type: Array,
+		defaultValue: [],
+		required: false
+	},
+	'messagesStatus.$': MessageStatusSchema
 })
 
 Themes.attachSchema(ThemeSchema)

@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, useRouteMatch } from 'react-router-dom'
 import { Transition } from 'react-transition-group'
 
 import styled from 'styled-components'
 
 import { observer } from 'mobx-react-lite'
-import { withRouter } from 'react-router-dom'
 import { useData, useTheme, useSettings } from '/imports/api/providers'
 
 import KioskInfo from './Info/KioskInfo'
@@ -17,7 +16,9 @@ import RemoteVoting from './RemoteVoting'
 import Results from '/imports/ui/Presentation/Pages/Results'
 import Awards from './Awards'
 
-const Kiosk = withRouter(observer(props => {
+const Kiosk = observer(() => {
+	const match = useRouteMatch('/voting/:id/:member')
+
 	const data = useData()
 	const { theme } = useTheme()
 	const { settings } = useSettings()
@@ -58,7 +59,7 @@ const Kiosk = withRouter(observer(props => {
 
 		// Wait 1 minute before navigating a user away from a voting screen
 		if(
-			(displayPage === data.KIOSK_PAGES.funds && !settings.fundsVotingActive) || 
+			(displayPage === data.KIOSK_PAGES.funds && !settings.fundsVotingActive) ||
 			(displayPage === data.KIOSK_PAGES.chit && !settings.chitVotingActive)
 		) {
 			timeoutRef.current = setTimeout(() => doNavigation(pageNav), data.votingRedirectTimeout * 1000)
@@ -81,9 +82,8 @@ const Kiosk = withRouter(observer(props => {
 		}
 	}
 
-	// const voting = props.location.pathname.startsWith('/voting')
-	const member = props.match.params.member
-	
+	const member = match?.params?.member
+
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{ state => (
@@ -95,7 +95,7 @@ const Kiosk = withRouter(observer(props => {
 
 						{/* Chit Voting */}
 						<Route exact path={ data.KIOSK_PAGES.chit } render={ () => {
-							return member ? 
+							return member ?
 								// If member is set, navigation comes from the short link for voting remotely
 								<RemoteVoting member={ member } component={ ChitVotingKiosk } /> :
 								// Otherwise kiosk voting in the room, members must login to proceed
@@ -110,7 +110,7 @@ const Kiosk = withRouter(observer(props => {
 
 						{/* Funds Voting */}
 						<Route exact path={ data.KIOSK_PAGES.funds } render={ () => {
-							return member ? 
+							return member ?
 								// If member is set, navigation comes from the short link for voting remotely
 								<RemoteVoting member={ member } component={ FundsVotingKiosk } /> :
 								// Otherwise kiosk voting in the room, members must login to proceed
@@ -126,7 +126,7 @@ const Kiosk = withRouter(observer(props => {
 			) }
 		</Transition>
 	)
-}))
+})
 
 // Transition group definitions
 const FADE_DURATION = 300

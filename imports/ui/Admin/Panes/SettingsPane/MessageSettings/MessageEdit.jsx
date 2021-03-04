@@ -41,7 +41,7 @@ const MessageEdit = observer(() => {
 		<Container>
 			<h1>
 				{ message.title }
-				<RightSpan><Link to={ `/admin/${themeId}/messaging` } >&lt;&lt;&nbsp;Back</Link></RightSpan>
+				{/* <RightSpan><Link to={ `/admin/${themeId}/messaging` } >&lt;&lt;&nbsp;Back</Link></RightSpan> */}
 			</h1>
 
 			<hr />

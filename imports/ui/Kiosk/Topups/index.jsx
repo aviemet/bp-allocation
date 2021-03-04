@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import TopupComplete from './TopupComplete'
 import { observer } from 'mobx-react-lite'
+import { Media } from '/imports/ui/MediaProvider'
 
 const Pledges = observer(props => {
 	const { members, isLoading: membersLoading } = useMembers()
@@ -51,7 +52,7 @@ const Pledges = observer(props => {
 	if(didPledge) {
 		const votedOrg = topOrgs.find(org => org._id === selectedOrg)
 		return <TopupComplete clearAllValues={ clearAllValues } org={ votedOrg } amount={ roundFloat(pledgeAmount) } />
-	} 
+	}
 	return (
 		<PledgesContainer fluid textAlign='center'>
 			<h1>If you feel like giving more</h1>
@@ -62,7 +63,7 @@ const Pledges = observer(props => {
 				<Container>
 					<div  style={ { textAlign: 'right', marginBottom: '0.5rem' } }>
 						<Checkbox
-							toggle 
+							toggle
 							label='Anonymous'
 							checked={ isAnonymous }
 							onClick={ () => setIsAnonymous(!isAnonymous) }
@@ -71,7 +72,7 @@ const Pledges = observer(props => {
 					<Input fluid
 						icon='dollar'
 						iconPosition='left'
-						placeholder='Pledge Amount' 
+						placeholder='Pledge Amount'
 						type='number'
 						value={ pledgeAmount || '' }
 						onChange={ e => setPledgeAmount(e.target.value) }
@@ -82,11 +83,9 @@ const Pledges = observer(props => {
 			</Form>
 
 			{/* Selectable Cards for top orgs */}
-			<Responsive 
-				as={ Card.Group }
-				fireOnMount
-				onUpdate={ handleScreenLayout }
-				centered 
+			<Card.Group
+				// onUpdate={ handleScreenLayout }
+				centered
 				itemsPerRow={ itemsPerRow }
 			>
 				{ topOrgs.map(org => (
@@ -99,7 +98,7 @@ const Pledges = observer(props => {
 						bgcolor={ selectedOrg === org._id ? OrgCard.colors.GREEN : OrgCard.colors.BLUE }
 					/>
 				) ) }
-			</Responsive>
+			</Card.Group>
 
 			<Container>
 				<FinalizeButton

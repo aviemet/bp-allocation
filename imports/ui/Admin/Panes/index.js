@@ -6,6 +6,5 @@ import LeveragePane from '/imports/ui/Admin/Panes/Leverage'
 import PresentationPane from '/imports/ui/Admin/Panes/PresentationPane'
 import SettingsPane from '/imports/ui/Admin/Panes/SettingsPane'
 import MessagingPane from '/imports/ui/Admin/Panes/MessagingPane'
-import MessageEdit from '/imports/ui/Admin/Panes/MessagingPane/MessageEdit'
 
-export { SettingsPane, OrganizationsPane, MembersPane, ChitVotingPane, AllocationPane, LeveragePane, PresentationPane, MessagingPane, MessageEdit }
+export { SettingsPane, OrganizationsPane, MembersPane, ChitVotingPane, AllocationPane, LeveragePane, PresentationPane, MessagingPane }

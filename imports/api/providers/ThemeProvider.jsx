@@ -14,7 +14,7 @@ export const useTheme = () => useContext(ThemeContext)
 
 // Provider to wrap the application with
 // Observes changes on the data store to manage subscription to the theme
-const ThemeProvider = observer(props => {
+const ThemeProvider = observer(({ children }) => {
 	const { themeId } = useData()
 	let subscription
 	let cursorObserver
@@ -37,7 +37,7 @@ const ThemeProvider = observer(props => {
 			onReady: () => {
 				const cursor = Themes.find({ _id: themeId })
 				themeStore = cursor ? new ThemeStore(cursor.fetch()[0]) : undefined
-				
+
 				cursorObserver = cursor.observe({
 					added: theme => themeStore.refreshData(theme),
 					changed: theme => themeStore.refreshData(theme)
@@ -54,10 +54,9 @@ const ThemeProvider = observer(props => {
 
 	return (
 		<ThemeContext.Provider value={ theme }>
-			{ props.children }
+			{ children }
 		</ThemeContext.Provider>
 	)
-
 })
 
 ThemeProvider.propTypes = {

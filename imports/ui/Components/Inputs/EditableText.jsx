@@ -38,8 +38,8 @@ const EditorInput = ({ value, onChange, type, children }) => {
 	}
 
 	return (
-		<StyledInput 
-			type={ type || 'text' } 
+		<StyledInput
+			type={ type || 'text' }
 			value={ value }
 			onChange={ e => onChange(e.target.value) }
 			fluid
@@ -61,7 +61,7 @@ const EditableText = observer(({ as, format, type, onSubmit, children }) => {
 	// Register current editor id with global store before activating
 	const activateEditor = () => {
 		if(editing) return
-		data.openEditor = id	
+		data.openEditor = id
 		setEditing(true)
 	}
 
@@ -87,9 +87,9 @@ const EditableText = observer(({ as, format, type, onSubmit, children }) => {
 
 	return (
 		<Component onClick={ activateEditor }>
-			{ editing ? 
-				<EditorInput 
-					type={ type || 'text' } 
+			{ editing ?
+				<EditorInput
+					type={ type || 'text' }
 					value={ value }
 					onChange={ data => setValue(data) }
 					action
@@ -120,9 +120,9 @@ const StyledInput = styled(Input)`
 `
 
 EditorInput.propTypes = {
-	value: PropTypes.any, 
-	onChange: PropTypes.func, 
-	type: PropTypes.string, 
+	value: PropTypes.any,
+	onChange: PropTypes.func,
+	type: PropTypes.string,
 	children: PropTypes.any
 }
 
@@ -132,7 +132,7 @@ EditableText.propTypes = {
 		PropTypes.node,
 		PropTypes.object,
 		PropTypes.func,
-		PropTypes.string, 
+		PropTypes.string,
 	]),
 	format: PropTypes.func,
 	type: PropTypes.oneOf(['text', 'textarea', 'rte']),

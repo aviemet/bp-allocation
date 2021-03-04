@@ -6,6 +6,7 @@ import _ from 'lodash'
 import { Card, Icon, Button, Modal, Responsive } from 'semantic-ui-react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react-lite'
+import { Media } from '/imports/ui/MediaProvider'
 
 // TODO: Use styledcomponents theme
 const GREEN = '#0D8744'
@@ -17,7 +18,7 @@ const BLUE = '#002B43'
 const OrgCard = observer(({
 	org,
 	overlay,
-	content, 
+	content,
 	index,
 	size,
 	showAsk,
@@ -64,17 +65,15 @@ const OrgCard = observer(({
 				</Card.Content> }
 
 				{ info && <InfoLink>
-					<Responsive 
-						as={ Modal } 
-						trigger={ <Button compact circular size='mini' icon='info' /> } 
+					<Modal
+						trigger={ <Button compact circular size='mini' icon='info' /> }
 						closeIcon
 						size={ modalSize }
-						fireOnMount
-						onUpdate={ handleOnUpdate }
+						// onUpdate={ handleOnUpdate }
 					>
 						<Modal.Header>{ org.title }</Modal.Header>
 						<Modal.Content scrolling>{ org.description && <div dangerouslySetInnerHTML={ { __html: org.description } } /> }</Modal.Content>
-					</Responsive>
+					</Modal>
 				</InfoLink> }
 
 				<OrgTitle><p>{ org.title }</p></OrgTitle>
@@ -166,7 +165,7 @@ OrgCard.propTypes = {
 	content: PropTypes.oneOfType([
 		PropTypes.object,
 		PropTypes.func
-	]), 
+	]),
 	index: PropTypes.number,
 	size: PropTypes.oneOfType([
 		PropTypes.number,

@@ -38,7 +38,7 @@ const FundsVotingKiosk = observer(props => {
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
 	const [ count, setCount ] = useState(data.votingRedirectTimeout)
 	const [ isCounting, setIsCounting ] = useState(false)
-	
+
 	useInterval(() => {
 		setCount(count - 1)
 	}, isCounting ? 1000 : null)
@@ -92,7 +92,7 @@ const FundsVotingKiosk = observer(props => {
 				_.forEach(allocations, value => sum += value)
 				const remaining = member.theme.amount - sum
 				const buttonDisabled = remaining !== 0
-				
+
 				return(
 					<>
 						<AmountRemaining value={ remaining } />

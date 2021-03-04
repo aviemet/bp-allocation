@@ -15,6 +15,7 @@ const ResultsOffsetInput = props => {
 
 	return (
 		<Input
+			fluid
 			type='text'
 			pattern="[0-9]*"
 			icon='dollar sign'

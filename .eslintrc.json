@@ -48,6 +48,7 @@
 		"object-curly-spacing": [ 1, "always", {
 			"objectsInObjects": true 
 		}],
+		"brace-style": ["error", "1tbs", { "allowSingleLine": true }],
 		"react/boolean-prop-naming": [ "error" ],
 		"react/no-typos": [ "error" ],
 		"react/jsx-curly-spacing": [ "error", {"when": "always"} ],
