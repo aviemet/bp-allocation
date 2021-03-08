@@ -14,7 +14,8 @@ const OrgSaveSchema = new SimpleSchema({
 const MessageStatusSchema = new SimpleSchema({
 	messageId: SimpleSchema.RegEx.Id,
 	sending: Boolean,
-	sent: Boolean
+	sent: Boolean,
+	error: Boolean
 })
 
 // Define Collection

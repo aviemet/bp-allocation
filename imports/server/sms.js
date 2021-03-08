@@ -10,6 +10,7 @@ import '/imports/server/publications'
 import moment from 'moment'
 import { PresentationSettings, MemberThemes } from '/imports/api/db'
 
+import { setMessageSendingFlag, setMessageSentFlag } from './messageMethods'
 import { textVotingLink } from '/imports/lib/utils'
 
 const memberPhoneNumbersQuery = themeId => {
@@ -74,18 +75,6 @@ const smsToMember = (member, message, slug) => {
 			reject({ error, member })
 		})
 	})
-}
-
-const setMessageSendingFlag = async (theme, message) => {
-	if(theme?.messagesStatus?.find(status => status.messageId === message._id)) {
-		await Themes.update({ _id: theme._id, 'messagesStatus.messageId': message._id }, { $set: { 'messagesStatus.$':{ messageId: message._id, sending: true, sent: false } } })
-	} else {
-		await Themes.update({ _id: theme._id }, { $push: { 'messagesStatus': { messageId: message._id, sending: true, sent: false } } })
-	}
-}
-
-const setMessageSentFlag = async (theme, message) => {
-	await Themes.update({ _id: theme._id, 'messagesStatus.messageId': message._id }, { $set: { 'messagesStatus.$':{ messageId: message._id, sending: false, sent: true } } })
 }
 
 const textVotingLinkToMembers = ({ themeId, message }) => {

@@ -6,7 +6,6 @@ import { useTheme } from '/imports/api/providers'
 import { observer } from 'mobx-react-lite'
 
 import { Button, Icon, Modal, Segment } from 'semantic-ui-react'
-
 import { emailVotingLink, textVotingLink } from '/imports/lib/utils'
 
 const buttonValues = {
@@ -23,10 +22,23 @@ const buttonValues = {
 const SendWithFeedbackButton = observer(({ message, ...rest }) => {
 	const { theme } = useTheme()
 
-	const [ modalOpen, setModalOpen ] = useState(false)
+	const [modalOpen, setModalOpen] = useState(false)
+
+	const handleSendMessage = () => {
+		setModalOpen(false)
+		Meteor.call(buttonValues[message.type].method, { themeId: theme._id, message })
+	}
 
 	const messageStatus = theme?.messagesStatus?.find(status => status.messageId === message._id)
-	let buttonContent = !messageStatus?.sending && messageStatus?.sent ? 'Send Again' : 'Send'
+	let buttonContent = 'Send'
+	let buttonColor = 'green'
+	if(messageStatus?.error) {
+		buttonContent = 'Error Sending Messages'
+		buttonColor = 'red'
+	} else if(!messageStatus?.sending && messageStatus?.sent) {
+		buttonContent = 'Send Again'
+		buttonColor = undefined
+	}
 
 	let previewMessage = message.body
 	if(message.includeLink) {
@@ -44,7 +56,7 @@ const SendWithFeedbackButton = observer(({ message, ...rest }) => {
 				icon
 				labelPosition='right'
 				loading={ messageStatus?.sending }
-				color={ !messageStatus?.sending && messageStatus?.sent ? undefined : 'green' }
+				color={ buttonColor }
 				{ ...rest }
 			>
 				<Icon name={ buttonValues[message.type].icon } />
@@ -75,10 +87,7 @@ const SendWithFeedbackButton = observer(({ message, ...rest }) => {
 
 					<Button
 						color='green'
-						onClick={ () => {
-							setModalOpen(false)
-							Meteor.call(buttonValues[message.type].method, { themeId: theme._id, message })
-						} }
+						onClick={ handleSendMessage }
 					>Send the Message
 					</Button>
 

@@ -9,7 +9,7 @@ const CustomMessage = ({ heading, body, onDismiss, ...rest }) => {
 	const target = usePortal('message')
 
 	return createPortal(
-		<FixedMessage 
+		<FixedMessage
 			onDismiss={ onDismiss }
 			{ ...rest }
 		>

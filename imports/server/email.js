@@ -1,12 +1,13 @@
+import { Meteor } from 'meteor/meteor'
 import { Themes, MemberThemes } from '/imports/api/db'
 import '/imports/api/methods'
 import '/imports/server/publications'
-import { Messages } from '/imports/api/db'
 
+import { setMessageSendingFlag, setMessageSentFlag, setMessageErrorFlag } from './messageMethods'
 import { emailVotingLink } from '/imports/lib/utils'
 
 import sgMail from '@sendgrid/mail'
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+sgMail.setApiKey(Meteor.settings.SENDGRID_API_KEY)
 
 const htmlEmailWrapper = yeild => `<html><head><style> 
 	img { 
@@ -51,7 +52,9 @@ const memberEmailsQuery = themeId => {
 }
 
 const emailVotingLinkToMembers = ({ themeId, message }) => {
-	const theme = Themes.findOne({ _id: themeId }) // Just need the slug from the theme
+	const theme = Themes.findOne({ _id: themeId })
+
+	setMessageSendingFlag(theme, message)
 
 	const messageBuilder = member => {
 		let finalMessage = message.body
@@ -75,12 +78,12 @@ const emailVotingLinkToMembers = ({ themeId, message }) => {
 	const sentMail = sgMail.send(messages)
 
 	sentMail.then(response => {
-		// TODO: Not even close to correct
-		Messages.update({ _id: messages._id }, { $set: { sent: true } })
+		setMessageSentFlag(theme, message)
 	}, error => {
 		console.error(error)
 
 		if (error.response) {
+			setMessageErrorFlag(theme, message)
 			console.error(error.response.body)
 		}
 	})
