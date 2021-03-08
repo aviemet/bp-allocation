@@ -34,7 +34,6 @@ const Messages = props => {
 						<Table.Row>
 							<Table.HeaderCell>Type</Table.HeaderCell>
 							<Table.HeaderCell>Title</Table.HeaderCell>
-							<Table.HeaderCell>Message</Table.HeaderCell>
 							<Table.HeaderCell>Actions</Table.HeaderCell>
 						</Table.Row>
 					</Table.Header>
@@ -50,14 +49,6 @@ const Messages = props => {
 										<EditableText
 											onSubmit={ value => handleTextEdits(message._id, { title: value }) }
 										>{ message.title }</EditableText>
-									</Table.Cell>
-									<Table.Cell>
-										<EditableText
-											type='textarea'
-											onSubmit={ value => handleTextEdits(message._id, { body: value }) }
-										>
-											{ message.body }
-										</EditableText>
 									</Table.Cell>
 									<Table.Cell singleLine>
 										<SendWithFeedbackButton message={ message } />

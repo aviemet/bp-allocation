@@ -10,6 +10,8 @@ import '/imports/server/publications'
 import moment from 'moment'
 import { PresentationSettings, MemberThemes } from '/imports/api/db'
 
+import { textVotingLink } from '/imports/lib/utils'
+
 const memberPhoneNumbersQuery = themeId => {
 	return MemberThemes.aggregate([
 		{
@@ -46,8 +48,7 @@ const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.
 const messageBuilder = (member, message, slug) => {
 	let finalMessage = message.body
 	if(message.includeLink === true && slug) {
-		// eslint-disable-next-line quotes
-		finalMessage += "\n" + `${process.env.HOST_NAME}/v/${slug}/${member.code}`
+		finalMessage += textVotingLink(slug, member.code)
 	}
 	return finalMessage
 }
@@ -76,7 +77,7 @@ const smsToMember = (member, message, slug) => {
 }
 
 const setMessageSendingFlag = async (theme, message) => {
-	if(theme.messagesStatus.find(status => status.messageId === message._id)) {
+	if(theme?.messagesStatus?.find(status => status.messageId === message._id)) {
 		await Themes.update({ _id: theme._id, 'messagesStatus.messageId': message._id }, { $set: { 'messagesStatus.$':{ messageId: message._id, sending: true, sent: false } } })
 	} else {
 		await Themes.update({ _id: theme._id }, { $push: { 'messagesStatus': { messageId: message._id, sending: true, sent: false } } })
