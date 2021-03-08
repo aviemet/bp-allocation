@@ -1,11 +1,13 @@
 import React from 'react'
-import { useMessages } from '/imports/api/providers'
+import { useTheme, useMessages } from '/imports/api/providers'
 import { Container, Grid, Table, Loader, Segment } from 'semantic-ui-react'
 import { MessageMethods } from '/imports/api/methods'
+import { Link } from 'react-router-dom'
 import EditableText from '/imports/ui/Components/Inputs/EditableText'
 import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
 
 const Messages = props => {
+	const { theme } = useTheme()
 	const { messages, isLoading: messagesLoading } = useMessages()
 
 	const handleTextEdits = (id, data) => {
@@ -26,6 +28,10 @@ const Messages = props => {
 						<Grid.Column width={ 8 }>
 							<h2>Messages</h2>
 						</Grid.Column>
+
+						<Grid.Column width={ 8 }>
+							<div style={ { textAlign: 'right' } }><Link to={ `/admin/${theme._id}/settings/messages` }>Message Settings</Link></div>
+						</Grid.Column>
 					</Grid.Row>
 				</Grid>
 
@@ -40,6 +46,8 @@ const Messages = props => {
 
 					<Table.Body>
 						{ messages.values.map(message => {
+							if(!message.active) return
+
 							return (
 								<Table.Row key={ message._id }>
 									<Table.Cell>

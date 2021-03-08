@@ -105,7 +105,7 @@ const Messages = props => {
 														setModalContent(`This will permanently remove ${message.title}.`)
 														setModalAction( () => deleteMessage(message._id) )
 														setModalOpen(true)
-													} } ><Icon name='trash' />Delete Theme</Dropdown.Item>
+													} } ><Icon name='trash' />Delete Message</Dropdown.Item>
 
 												</Dropdown.Menu>
 											</Dropdown>

@@ -32,6 +32,12 @@ const MessageSchema = new SimpleSchema({
 		required: false,
 		defaultValue: false
 	},
+	optOutRounds: {
+		type: Array,
+		defaultValue: [],
+		required: false,
+	},
+	'optOutRounds.$': Number,
 	createdAt: {
 		type: Date,
 		required: false,

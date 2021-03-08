@@ -8,7 +8,7 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 - [ ] If someone has entered their vote, automatically opt them out of receiving the email and text reminder for that round
 
-- [ ] Find a better way to display text/email buttons
+- [x] Find a better way to display text/email buttons
 
   - [ ] Add order of messages to DB schema
     - Display messages in order, mixing text and emails
@@ -16,6 +16,7 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 - [ ] Add send buttons to member list for active sms/emails
 
 - [ ] Add confirmation dialog to destructive button actions
+
   - [ ] ResetOrgFundsButton
   - [ ] ResetMessageStatusButton
 
