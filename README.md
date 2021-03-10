@@ -53,7 +53,7 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 - [ ] **Fix member import to not fail if last name or first name is not present**
 
-- [ ] Switch to raect-hook-form and eliminate magic numbers/strings for default values in components
+- [ ] Switch to react-hook-form and eliminate magic numbers/strings for default values in components
 
 - [ ] Remove moment.js as a dependency, replace with date-fns
 

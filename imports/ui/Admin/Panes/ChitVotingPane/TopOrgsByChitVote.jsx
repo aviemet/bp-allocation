@@ -30,7 +30,7 @@ const TopOrgsByChitVote = observer(props => {
 			})
 		}
 	}
-	
+
 	let sortedOrgs = sortTopOrgs(orgs.values, theme)
 	let totalVotes = 0
 	return (

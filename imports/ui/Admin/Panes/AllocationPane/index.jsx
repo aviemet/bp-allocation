@@ -24,7 +24,7 @@ const AllocationPane = observer(props => {
 
 		topOrgs.map((org, i) => {
 			let favoriteAmount = topOrgs[favorite].votedTotal || 0
-			if(org.votedTotal > favoriteAmount){
+			if(org.votedTotal > favoriteAmount) {
 				favorite = i
 			}
 		})
@@ -71,9 +71,7 @@ const AllocationPane = observer(props => {
 								<Table.HeaderCell>Funded</Table.HeaderCell>
 								<Table.HeaderCell>Ask</Table.HeaderCell>
 								<Table.HeaderCell>Need</Table.HeaderCell>
-								{!props.hideAdminFields &&
-								<Table.HeaderCell collapsing></Table.HeaderCell>
-								}
+								{ !props.hideAdminFields && <Table.HeaderCell collapsing></Table.HeaderCell> }
 							</Table.Row>
 						</Table.Header>
 
@@ -115,11 +113,11 @@ const AllocationPane = observer(props => {
 									numeral(topOrgs.reduce((sum, org) => { return sum + org.need - org.leverageFunds }, 0)).format('$0,0')
 								}</Table.HeaderCell>
 
-								<Table.HeaderCell>
+								{ !props.hideAdminFields &&  <Table.HeaderCell>
 									{ settings.useKioskFundsVoting && <>
 										{`(${theme.fundsVotesCast}/${theme.totalMembers})`} <span style={ { fontSize: '0.75em' } }>Members Voted</span>
 									</> }
-								</Table.HeaderCell>
+								</Table.HeaderCell> }
 
 							</Table.Row>
 						</Table.Footer>
