@@ -13,7 +13,7 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
   - [ ] Add order of messages to DB schema
     - Display messages in order, mixing text and emails
 
-- [ ] Add send buttons to member list for active sms/emails
+- [x] Add send buttons to member list for active sms/emails
 
 - [ ] Add confirmation dialog to destructive button actions
 
