@@ -4,9 +4,7 @@ import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings } from '/imports/api/providers'
 
-import CustomMessage from '/imports/ui/Components/CustomMessage'
-import { Loader, Form, Checkbox, Label, Accordion } from 'semantic-ui-react'
-import ResetOrgFundsButton from '/imports/ui/Components/Buttons/ResetOrgFundsButton'
+import { Loader, Form, Checkbox, Label } from 'semantic-ui-react'
 
 const SettingsPane = observer(props => {
 	const { theme } = useTheme()
@@ -29,8 +27,6 @@ const SettingsPane = observer(props => {
 
 	const [ formErrorVisible, setFormErrorVisible ] = useState(false)
 	const [ formErrorMessage, setFormErrorMessage ] = useState('')
-
-	const [ showAdvanced, setShowAdvanced ] = useState(false)
 
 	useEffect(() => {
 		if(!settingsLoading) {
@@ -106,7 +102,7 @@ const SettingsPane = observer(props => {
 				<Form.Group>
 
 					{/* Title */}
-					<Form.Field>
+					<Form.Field width={ 6 }>
 						<Form.Input
 							name='theme.title'
 							type='text'
@@ -118,7 +114,7 @@ const SettingsPane = observer(props => {
 					</Form.Field>
 
 					{/* Question */}
-					<Form.Field>
+					<Form.Field width={ 8 }>
 						<Form.Input
 							name='theme.question'
 							type='text'
@@ -130,7 +126,7 @@ const SettingsPane = observer(props => {
 					</Form.Field>
 
 					{/* Slug */}
-					<Form.Field>
+					<Form.Field width={ 2 }>
 						<Form.Input
 							name='theme.slug'
 							type='text'
@@ -156,7 +152,7 @@ const SettingsPane = observer(props => {
 					/>
 				</Form.Group>
 
-				<Form.Group>
+				<Form.Group width='equal'>
 					{/* Timer Length */}
 					<Form.Input
 						name='presentationSettings.timerLength'
@@ -265,45 +261,7 @@ const SettingsPane = observer(props => {
 
 				</Form.Group>
 
-				<hr />
-
-				<Accordion
-					fluid
-					exclusive={ false }
-				>
-					<Accordion.Title
-						content='Advanced'
-						active={ showAdvanced }
-						onClick={ () => setShowAdvanced(!showAdvanced) }
-					/>
-					<Accordion.Content active={ showAdvanced }>
-						<Form.Group>
-							{/* Twilio Rate Limit ms */}
-							<Form.Field>
-								<Form.Input
-									name='settings.twilioRateLimit'
-									type='text'
-									placeholder='1000 is 1 second'
-									label='Rate limit in ms for sending texts'
-									value={ twilioRateLimit || '' }
-									onChange={ e => setTwilioRateLimit(e.target.value) }
-								/>
-							</Form.Field>
-						</Form.Group>
-					</Accordion.Content>
-				</Accordion>
 			</Form>
-
-			<hr />
-
-			<ResetOrgFundsButton />
-
-			{ formErrorVisible && <CustomMessage
-				negative
-				onDismiss={ hideFormErrorMessage }
-				heading='There was an error saving values'
-				body={ formErrorMessage }
-			/> }
 		</>
 	)
 })
