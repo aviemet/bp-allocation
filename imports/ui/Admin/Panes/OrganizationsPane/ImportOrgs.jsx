@@ -8,9 +8,9 @@ import { OrganizationMethods } from '/imports/api/methods'
 import CustomMessage from '/imports/ui/Components/CustomMessage'
 import { Button, Input } from 'semantic-ui-react'
 
-const ImportOrgs = observer(props => {
+const ImportOrgs = observer(() => {
 	const { themeId } = useData()
-	
+
 	const [ importResponseMessageVisible, setImportResponseMessageVisible ] = useState(false)
 	const [ importReponseMessage, setImportResponseMessage ] = useState('')
 	const [ loading, setLoading ] = useState(false)
@@ -35,12 +35,12 @@ const ImportOrgs = observer(props => {
 		},
 		{
 			name: 'ask',
-			forms: ['ask', 'amount'],
+			forms: ['ask', 'amount', 'request'],
 			type: value => parseInt(value.replace(/[^0-9]+/g, ''))
 		},
 		{
 			name: 'description',
-			forms: ['description', 'desc', 'about', 'details', 'info'],
+			forms: ['description', 'desc', 'about', 'details', 'info', 'project overview'],
 			type: String
 		}
 	]
@@ -67,7 +67,6 @@ const ImportOrgs = observer(props => {
 			},
 			'afterRowParse': row => {
 				// console.log({ afterRowParse: row })
-				// console.log({ afterRowParse: row })
 				OrganizationMethods.create.call(Object.assign({ theme: themeId }, row))
 			},
 			'onComplete': data => {
@@ -84,6 +83,7 @@ const ImportOrgs = observer(props => {
 				}, timeout)
 			}
 		})
+
 		return parser
 	}
 	/*
@@ -128,7 +128,7 @@ const ImportOrgs = observer(props => {
 
 			},
 			complete: results => {
-				
+
 			}
 		})
 		return parser
@@ -151,8 +151,8 @@ const ImportOrgs = observer(props => {
 				style={ { display: 'none' } }
 				onChange={ importOrgs }
 			/>
-			{ importResponseMessageVisible && <CustomMessage 
-				positive 
+			{ importResponseMessageVisible && <CustomMessage
+				positive
 				onDismiss={ hideImportResponseMessage }
 				heading='Import Successful'
 				body={ importReponseMessage }
