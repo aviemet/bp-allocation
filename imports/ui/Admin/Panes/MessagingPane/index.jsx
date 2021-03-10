@@ -73,25 +73,23 @@ const Messages = props => {
 					<Table celled striped>
 						<Table.Header>
 							<Table.Row>
-								<Table.HeaderCell>Type</Table.HeaderCell>
 								<Table.HeaderCell>Title</Table.HeaderCell>
+								<Table.HeaderCell>Subject</Table.HeaderCell>
 								<Table.HeaderCell>Actions</Table.HeaderCell>
 							</Table.Row>
 						</Table.Header>
 
 						<Table.Body>
 							{ messages.values.map(message => {
-								if(!message.active) return
-
-								return (
+								if(message.active && message.type === 'email') return (
 									<Table.Row key={ message._id }>
-										<Table.Cell>
-											{ message.type }
-										</Table.Cell>
 										<Table.Cell>
 											<EditableText
 												onSubmit={ value => handleTextEdits(message._id, { title: value }) }
 											>{ message.title }</EditableText>
+										</Table.Cell>
+										<Table.Cell>
+											{ message.subject }
 										</Table.Cell>
 										<Table.Cell singleLine>
 											<SendWithFeedbackButton message={ message } />
