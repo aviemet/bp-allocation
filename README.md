@@ -22,6 +22,9 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 - [ ] Clean up the settings page
 
+  - [x] Separate into tabs
+  - [ ] Better formatting
+
 - [ ] Matched pledges sortable
 
 - [ ] Change all input forms to be either modals or have their own view. Remove inputs from above table views
