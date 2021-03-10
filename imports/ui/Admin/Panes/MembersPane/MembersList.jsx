@@ -4,17 +4,19 @@ import numeral from 'numeral'
 import { paginate } from '/imports/lib/utils'
 
 import { observer } from 'mobx-react-lite'
-import { useTheme, useSettings } from '/imports/api/providers'
+import { useTheme, useSettings, useMessages } from '/imports/api/providers'
 import { MemberMethods } from '/imports/api/methods'
 
 import { Table, Icon, Button, Dropdown } from 'semantic-ui-react'
 import TablePagination from '/imports/ui/Components/TablePagination'
 import EditableText from '/imports/ui/Components/Inputs/EditableText'
 import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
+import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
 
 const MembersList = observer(props => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
+	const { messages, isLoading: messagesLoading } = useMessages()
 
 	const [ page, setPage ] = useState(0)
 	const [ itemsPerPage/*, setItemsPerPage*/ ] = useState(10)
@@ -223,6 +225,36 @@ const MembersList = observer(props => {
 
 											<Dropdown.Divider />
 
+											<Dropdown.Item>
+												<Dropdown text='Texts'>
+													<Dropdown.Menu direction='left'>{ messages.values.map(message => {
+														if(message.active && message.type === 'text') return (
+															<Dropdown.Item>
+																<div style={ { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }>
+																	<div style={ { marginRight: '4px' } }>{ message.title }</div><div><SendWithFeedbackButton message={ message } /></div>
+																</div>
+															</Dropdown.Item>
+														)
+													}) }</Dropdown.Menu>
+												</Dropdown>
+											</Dropdown.Item>
+
+											<Dropdown.Item>
+												<Dropdown text='Emails'>
+													<Dropdown.Menu direction='left'>{ messages.values.map(message => {
+														if(message.active && message.type === 'email') return (
+															<Dropdown.Item>
+																<div style={ { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }>
+																	<div style={ { marginRight: '4px' } }>{ message.title }</div><div><SendWithFeedbackButton message={ message } /></div>
+																</div>
+															</Dropdown.Item>
+														)
+													}) }</Dropdown.Menu>
+												</Dropdown>
+											</Dropdown.Item>
+
+											<Dropdown.Divider />
+
 											<Dropdown.Item onClick={ () => {
 												setModalHeader(`Permanently Delete ${member.fullName}'s Chit Votes?`)
 												setModalContent(`This will permanently delete the chit votes of ${member.fullName} for this theme. This operation cannot be undone.`)
@@ -243,7 +275,7 @@ const MembersList = observer(props => {
 												setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`)
 												setModalAction( () => removeMember(member._id) )
 												setModalOpen(true)
-											} } ><Icon name='trash' />Remove From List</Dropdown.Item>
+											} } ><Icon name='trash' />Remove From Theme</Dropdown.Item>
 										</Dropdown.Menu>
 									</Dropdown>
 

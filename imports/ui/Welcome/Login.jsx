@@ -8,7 +8,7 @@ const Login = () => {
 	const history = useHistory()
 	const location = useLocation()
 
-	const [ loginErrorVisible, setLoginErrorVisible ] = useState(false)
+	const [loginErrorVisible, setLoginErrorVisible] = useState(false)
 
 	const handleLogin = e => {
 		Meteor.loginWithGoogle({

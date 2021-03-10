@@ -226,7 +226,7 @@ const ThemeMethods = {
 				} })
 			})
 
-			MemberThemes.update({ theme: themeId }, { 
+			MemberThemes.update({ theme: themeId }, {
 				$set: {
 					allocations: [],
 					chitVotes: []
@@ -234,7 +234,17 @@ const ThemeMethods = {
 			}, {
 				multi: true
 			})
-			
+
+		}
+	}),
+
+	resetMessageStatus: new ValidatedMethod({
+		name: 'organizations.resetMessageStatus',
+
+		validate: null,
+
+		run(themeId) {
+			Themes.update({ _id: themeId }, { $set: { messagesStatus: [] } })
 		}
 	})
 }

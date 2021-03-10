@@ -23,11 +23,21 @@ const MessageSchema = new SimpleSchema({
 		required: false,
 		defaultValue: true
 	},
+	order: {
+		type: Number,
+		required: false
+	},
 	includeLink: {
 		type: Boolean,
 		required: false,
 		defaultValue: false
 	},
+	optOutRounds: {
+		type: Array,
+		defaultValue: [],
+		required: false,
+	},
+	'optOutRounds.$': Number,
 	createdAt: {
 		type: Date,
 		required: false,

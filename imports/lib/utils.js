@@ -90,3 +90,8 @@ export const uuid = () => {
 		return (c === 'x' ? random : (random & 0x3 | 0x8)).toString(16)
 	})
 }
+
+export const emailVotingLink = (slug, code) => `<p style='text-align: center; height: 4rem;'><a style='font-family: Arial, sans-serif; font-size: 2rem; padding: 15px; margin-bottom: 10px; border: 1px solid #CCC; border-radius: 10px; background-color: green; color: white; text-decoration: none;' href='${process.env.HOST_NAME}/v/${slug}/${code}'>Vote Here</a></p>`
+
+// eslint-disable-next-line quotes
+export const textVotingLink = (slug, code) => "\n" + `${process.env.HOST_NAME}/v/${slug}/${code}`

@@ -68,6 +68,14 @@ const Links = observer(({ activeMenuItem }) => {
 				>
 					<Icon name='chart bar' color='red' /> Presentation
 				</MenuLink>
+
+				<MenuLink
+					to={ `/admin/${data.themeId}/messaging` }
+					active={ activeMenuItem === 'messaging' }
+					iconPosition='left'
+				>
+					<Icon name='mail' color='olive'/> Messaging
+				</MenuLink>
 			</Menu>
 			<br />
 
@@ -78,14 +86,6 @@ const Links = observer(({ activeMenuItem }) => {
 					iconPosition='left'
 				>
 					<Icon name='setting'/> Settings
-				</MenuLink>
-
-				<MenuLink
-					to={ `/admin/${data.themeId}/messaging` }
-					active={ activeMenuItem === 'messaging' }
-					iconPosition='left'
-				>
-					<Icon name='mail'/> Messaging
 				</MenuLink>
 			</Menu>
 
