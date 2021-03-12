@@ -16,7 +16,7 @@ import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedb
 const MembersList = observer(props => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
-	const { messages, isLoading: messagesLoading } = useMessages()
+	const { messages } = useMessages()
 
 	const [ page, setPage ] = useState(0)
 	const [ itemsPerPage/*, setItemsPerPage*/ ] = useState(10)

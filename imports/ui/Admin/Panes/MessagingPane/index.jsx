@@ -22,84 +22,82 @@ const Messages = props => {
 
 	return (
 		<Container>
+			<Grid>
+				<Grid.Row>
+					<Grid.Column width={ 8 }>
+						<h2>Messages</h2>
+					</Grid.Column>
+
+					<Grid.Column width={ 8 }>
+						<div style={ { textAlign: 'right' } }><Link to={ `/admin/${theme._id}/settings/messages` }>Message Settings</Link></div>
+					</Grid.Column>
+				</Grid.Row>
+			</Grid>
+
 			<Segment>
-				<Grid>
-					<Grid.Row>
-						<Grid.Column width={ 8 }>
-							<h2>Messages</h2>
-						</Grid.Column>
+				<h1>Texts</h1>
+				<Table celled striped>
+					<Table.Header>
+						<Table.Row>
+							<Table.HeaderCell>Title</Table.HeaderCell>
+							<Table.HeaderCell>Body</Table.HeaderCell>
+							<Table.HeaderCell>Actions</Table.HeaderCell>
+						</Table.Row>
+					</Table.Header>
 
-						<Grid.Column width={ 8 }>
-							<div style={ { textAlign: 'right' } }><Link to={ `/admin/${theme._id}/settings/messages` }>Message Settings</Link></div>
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
+					<Table.Body>
+						{ messages.values.map(message => {
+							if(message.active && message.type === 'text') return (
+								<Table.Row key={ message._id }>
+									<Table.Cell>
+										<EditableText
+											onSubmit={ value => handleTextEdits(message._id, { title: value }) }
+										>{ message.title }</EditableText>
+									</Table.Cell>
+									<Table.Cell>
+										{ message.body }
+									</Table.Cell>
+									<Table.Cell singleLine>
+										<SendWithFeedbackButton message={ message } />
+									</Table.Cell>
+								</Table.Row>
+							)
+						}) }
+					</Table.Body>
+				</Table>
+			</Segment>
 
-				<Segment>
-					<h1>Texts</h1>
-					<Table celled striped>
-						<Table.Header>
-							<Table.Row>
-								<Table.HeaderCell>Title</Table.HeaderCell>
-								<Table.HeaderCell>Body</Table.HeaderCell>
-								<Table.HeaderCell>Actions</Table.HeaderCell>
-							</Table.Row>
-						</Table.Header>
+			<Segment>
+				<h1>Emails</h1>
+				<Table celled striped>
+					<Table.Header>
+						<Table.Row>
+							<Table.HeaderCell>Title</Table.HeaderCell>
+							<Table.HeaderCell>Subject</Table.HeaderCell>
+							<Table.HeaderCell>Actions</Table.HeaderCell>
+						</Table.Row>
+					</Table.Header>
 
-						<Table.Body>
-							{ messages.values.map(message => {
-								if(message.active && message.type === 'text') return (
-									<Table.Row key={ message._id }>
-										<Table.Cell>
-											<EditableText
-												onSubmit={ value => handleTextEdits(message._id, { title: value }) }
-											>{ message.title }</EditableText>
-										</Table.Cell>
-										<Table.Cell>
-											{ message.body }
-										</Table.Cell>
-										<Table.Cell singleLine>
-											<SendWithFeedbackButton message={ message } />
-										</Table.Cell>
-									</Table.Row>
-								)
-							}) }
-						</Table.Body>
-					</Table>
-				</Segment>
-
-				<Segment>
-					<h1>Emails</h1>
-					<Table celled striped>
-						<Table.Header>
-							<Table.Row>
-								<Table.HeaderCell>Title</Table.HeaderCell>
-								<Table.HeaderCell>Subject</Table.HeaderCell>
-								<Table.HeaderCell>Actions</Table.HeaderCell>
-							</Table.Row>
-						</Table.Header>
-
-						<Table.Body>
-							{ messages.values.map(message => {
-								if(message.active && message.type === 'email') return (
-									<Table.Row key={ message._id }>
-										<Table.Cell>
-											<EditableText
-												onSubmit={ value => handleTextEdits(message._id, { title: value }) }
-											>{ message.title }</EditableText>
-										</Table.Cell>
-										<Table.Cell>
-											{ message.subject }
-										</Table.Cell>
-										<Table.Cell singleLine>
-											<SendWithFeedbackButton message={ message } />
-										</Table.Cell>
-									</Table.Row>
-								)
-							}) }
-						</Table.Body>
-					</Table>
-				</Segment>
+					<Table.Body>
+						{ messages.values.map(message => {
+							if(message.active && message.type === 'email') return (
+								<Table.Row key={ message._id }>
+									<Table.Cell>
+										<EditableText
+											onSubmit={ value => handleTextEdits(message._id, { title: value }) }
+										>{ message.title }</EditableText>
+									</Table.Cell>
+									<Table.Cell>
+										{ message.subject }
+									</Table.Cell>
+									<Table.Cell singleLine>
+										<SendWithFeedbackButton message={ message } />
+									</Table.Cell>
+								</Table.Row>
+							)
+						}) }
+					</Table.Body>
+				</Table>
 
 			</Segment>
 		</Container>

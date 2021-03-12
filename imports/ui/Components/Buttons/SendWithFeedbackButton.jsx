@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { useTheme } from '/imports/api/providers'
 import { observer } from 'mobx-react-lite'
 
+import styled from 'styled-components'
 import { Button, Icon, Modal, Segment } from 'semantic-ui-react'
 import { emailVotingLink, textVotingLink } from '/imports/lib/utils'
 
@@ -74,7 +75,7 @@ const SendWithFeedbackButton = observer(({ message, ...rest }) => {
 					<p>{ `Do you want to send the ${message.type}, "${message.title}" to every member?` }</p>
 					<p>Preview:</p>
 					<Segment>
-						<div style={ { whiteSpace: 'pre-wrap' } } dangerouslySetInnerHTML={ { __html: previewMessage } } />
+						<FormattedMessageBody dangerouslySetInnerHTML={ { __html: previewMessage } } />
 					</Segment>
 
 				</Modal.Content>
@@ -96,6 +97,19 @@ const SendWithFeedbackButton = observer(({ message, ...rest }) => {
 		</>
 	)
 })
+
+const FormattedMessageBody = styled.div`
+	white-space: 'pre-wrap';
+	
+	img { 
+		max-width: 100% !important;
+		margin: 4px;
+		padding: 4px;
+		background-color: #FFF;
+		border: solid 1px #CCC;
+		border-radius: 2px;
+	} 
+`
 
 SendWithFeedbackButton.propTypes = {
 	message: PropTypes.object.isRequired,
