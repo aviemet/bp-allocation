@@ -11,9 +11,9 @@ import styled from 'styled-components'
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import TopupComplete from './TopupComplete'
 import { observer } from 'mobx-react-lite'
-import { Media } from '/imports/ui/MediaProvider'
+import { useWindowSize, breakpoints } from '/imports/ui/MediaProvider'
 
-const Pledges = observer(props => {
+const Pledges = observer(({ user }) => {
 	const { members, isLoading: membersLoading } = useMembers()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
@@ -24,7 +24,16 @@ const Pledges = observer(props => {
 	const [ itemsPerRow, setItemsPerRow ] = useState(2)
 	const [ didPledge, setDidPlegde ] = useState(false)
 
-	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 2)
+	const { width } = useWindowSize()
+
+	useEffect(() => {
+		let n = itemsPerRow
+		if(width < breakpoints.tablet) n = 1
+		else if(width >= breakpoints.tablet && width < breakpoints.tabletL) n = 2
+		else n = 3
+
+		if(itemsPerRow !== n) setItemsPerRow(n)
+	}, [width])
 
 	const clearAllValues = () => {
 		setSelectedOrg(null)
@@ -40,7 +49,7 @@ const Pledges = observer(props => {
 	const saveTopUp = () => {
 		const data = {
 			id: selectedOrg,
-			member: props.user._id,
+			member: user._id,
 			amount: roundFloat(pledgeAmount),
 			anonymous: isAnonymous
 		}
