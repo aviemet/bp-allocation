@@ -7,6 +7,7 @@ import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings, useMessages } from '/imports/api/providers'
 import { MemberMethods } from '/imports/api/methods'
 
+import styled from 'styled-components'
 import { Table, Icon, Button, Dropdown } from 'semantic-ui-react'
 import TablePagination from '/imports/ui/Components/TablePagination'
 import EditableText from '/imports/ui/Components/Inputs/EditableText'
@@ -227,12 +228,13 @@ const MembersList = observer(props => {
 
 											<Dropdown.Item>
 												<Dropdown text='Texts'>
-													<Dropdown.Menu direction='left'>{ messages.values.map(message => {
+													<Dropdown.Menu direction='left'>{ messages.values.map((message, i) => {
 														if(message.active && message.type === 'text') return (
-															<Dropdown.Item>
-																<div style={ { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }>
-																	<div style={ { marginRight: '4px' } }>{ message.title }</div><div><SendWithFeedbackButton message={ message } /></div>
-																</div>
+															<Dropdown.Item key={ i }>
+																<MessageButtonContainer>
+																	<div style={ { marginRight: '4px' } }>{ message.title }</div>
+																	<div><SendWithFeedbackButton message={ message } /></div>
+																</MessageButtonContainer>
 															</Dropdown.Item>
 														)
 													}) }</Dropdown.Menu>
@@ -241,12 +243,13 @@ const MembersList = observer(props => {
 
 											<Dropdown.Item>
 												<Dropdown text='Emails'>
-													<Dropdown.Menu direction='left'>{ messages.values.map(message => {
+													<Dropdown.Menu direction='left'>{ messages.values.map((message, i) => {
 														if(message.active && message.type === 'email') return (
-															<Dropdown.Item>
-																<div style={ { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }>
-																	<div style={ { marginRight: '4px' } }>{ message.title }</div><div><SendWithFeedbackButton message={ message } /></div>
-																</div>
+															<Dropdown.Item key={ i }>
+																<MessageButtonContainer>
+																	<div style={ { marginRight: '4px' } }>{ message.title }</div>
+																	<div><SendWithFeedbackButton message={ message } /></div>
+																</MessageButtonContainer>
 															</Dropdown.Item>
 														)
 													}) }</Dropdown.Menu>
@@ -302,6 +305,12 @@ const MembersList = observer(props => {
 		</>
 	)
 })
+
+const MessageButtonContainer = styled.div`
+	display: 'flex'; 
+	justify-content: 'space-between';
+	align-items: 'center';
+`
 
 MembersList.propTypes = {
 	hideAdminFields: PropTypes.bool

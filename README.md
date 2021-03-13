@@ -4,9 +4,9 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 ## Project Goals
 
-- [ ] Add formatting for large images
+- [x] Add formatting for large images
 
-- [ ] Mobile formatting for voting screens (breaking changes from SemanticUI)
+- [x] Mobile formatting for voting screens (breaking changes from SemanticUI)
 
 - [ ] Topups member view no loading
 
