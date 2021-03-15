@@ -4,13 +4,15 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 ## Project Goals
 
+- [ ] Include leverage amounts in final need totals
+
 - [x] Add formatting for large images
 
 - [x] Mobile formatting for voting screens (breaking changes from SemanticUI)
 
 - [?] Topups member view not loading
 
-- [ ] Total amount given on feedback page
+- [x] Total amount given on feedback page
 
 - [x] Some indication to us that the email or text messages have indeed been sent
 

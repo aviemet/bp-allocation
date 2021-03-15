@@ -29,6 +29,10 @@ const ChitVotingPane = observer(() => {
 			<Checkbox toggle checked={ !showAllOrgs } label={ <label>Show only top orgs</label> } onClick={ () => setShowAllOrgs(!showAllOrgs) } />
 			<Table celled striped unstackable columns={ 3 } textAlign='right'>
 				<Table.Header>
+					<Table.Row>
+						<Table.Cell colSpan={ 5 } textAlign='right'>Total Pot:</Table.Cell>
+						<Table.HeaderCell>{ numeral(totalGiven).format('$0,0') }</Table.HeaderCell>
+					</Table.Row>
 					<Table.Row textAlign='left'>
 						<Table.HeaderCell>Organization</Table.HeaderCell>
 						<Table.HeaderCell collapsing>
@@ -46,7 +50,7 @@ const ChitVotingPane = observer(() => {
 								<span className="full">Voted Amount</span>
 								<span>
 									{ settings.useKioskFundsVoting && <>
-										{`(${theme.fundsVotesCast}/${theme.totalMembers})`} <span style={ { fontSize: '0.75em' } }>Members Voted</span>
+										{ `(${theme.fundsVotesCast}/${theme.totalMembers})` } <span style={ { fontSize: '0.75em' } }>Members Voted</span>
 									</> }
 								</span>
 							</FlexHeading>
@@ -93,10 +97,6 @@ const ChitVotingPane = observer(() => {
 						</Table.HeaderCell>
 						<Table.HeaderCell verticalAlign='top'>{ numeral(totalAsk).format('$0,0') }</Table.HeaderCell>
 						<Table.HeaderCell verticalAlign='top'>{ numeral(totalNeed).format('$0,0') }</Table.HeaderCell>
-					</Table.Row>
-					<Table.Row>
-						<Table.Cell colSpan={ 5 } textAlign='right'>Total Given:</Table.Cell>
-						<Table.HeaderCell>{ numeral(totalGiven).format('$0,0') }</Table.HeaderCell>
 					</Table.Row>
 				</Table.Footer>
 			</Table>
