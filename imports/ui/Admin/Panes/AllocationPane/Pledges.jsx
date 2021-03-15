@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import numeral from 'numeral'
 
 import { observer } from 'mobx-react-lite'
+import { toJS } from 'mobx'
 import { useTheme, useMembers, useOrgs } from '/imports/api/providers'
 import { OrganizationMethods } from '/imports/api/methods'
 
@@ -14,7 +15,7 @@ const Pledges = observer(props => {
 	const { members, isLoading: membersLoading } = useMembers()
 	const { orgs, isLoading: orgsLoading } = useOrgs()
 
-	console.log({ pledges: orgs.pledges })
+	console.log({ orgs: toJS(orgs.values) })
 
 	const deletePledge = (e, data) => {
 		const pledgeId = data.pledgeid

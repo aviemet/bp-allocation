@@ -4,6 +4,8 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 ## Project Goals
 
+- [ ] Topups errors after submitting
+
 - [ ] Include leverage amounts in final need totals
 
 - [x] Add formatting for large images

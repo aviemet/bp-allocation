@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import numeral from 'numeral'
 import _ from 'lodash'
 
-import { Card, Icon, Button, Modal, Responsive } from 'semantic-ui-react'
+import { Card, Icon, Button, Modal } from 'semantic-ui-react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react-lite'
-import { Media } from '/imports/ui/MediaProvider'
 
 // TODO: Use styledcomponents theme
 const GREEN = '#0D8744'
@@ -30,8 +29,6 @@ const OrgCard = observer(({
 	...rest
 }) => {
 
-	const [ modalSize, setModalSize ] = useState('large')
-
 	const Overlay = overlay || false
 	const Content = content || false
 
@@ -45,14 +42,6 @@ const OrgCard = observer(({
 	if(size) cardClasses.push(size)
 	if(animateClass) cardClasses.push('animate-orgs')
 	if(disabled) cardClasses.push('disabled')
-
-	const handleOnUpdate = (e, { width }) => {
-		let size = 'large'
-		if(width <= Responsive.onlyTablet.minWidth) {
-			size = 'fullscreen'
-		}
-		setModalSize(size)
-	}
 
 	return (
 		<StyledCard link={ false } className={ cardClasses.join(' ') } onClick={ onClick } >
@@ -68,8 +57,7 @@ const OrgCard = observer(({
 					<Modal
 						trigger={ <Button compact circular size='mini' icon='info' /> }
 						closeIcon
-						size={ modalSize }
-						// onUpdate={ handleOnUpdate }
+						size='large'
 					>
 						<Modal.Header>{ org.title }</Modal.Header>
 						<Modal.Content scrolling>{ org.description && <div dangerouslySetInnerHTML={ { __html: org.description } } /> }</Modal.Content>
@@ -180,9 +168,3 @@ OrgCard.propTypes = {
 }
 
 export default OrgCard
-
-/*
-org.description.split(/\n/).map((part, i) => (
-	<p key={ i }>{ part }</p>
-) )
-*/

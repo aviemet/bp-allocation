@@ -5,7 +5,7 @@ import { OrganizationMethods } from '/imports/api/methods'
 import { isEmpty } from 'lodash'
 import { roundFloat } from '/imports/lib/utils'
 
-import { Container, Form, Input, Button, Card, Checkbox, Responsive, Loader } from 'semantic-ui-react'
+import { Container, Form, Input, Button, Card, Checkbox, Loader } from 'semantic-ui-react'
 import styled from 'styled-components'
 
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'

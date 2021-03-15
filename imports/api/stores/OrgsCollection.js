@@ -28,9 +28,7 @@ class OrgsCollection extends TrackableCollection {
 				}, pledge))
 			})
 		})
-		console.log({ before: pledges })
 		pledges = sortBy(pledges, ['createdAt'])
-		console.log({ after: pledges })
 		return pledges
 	}
 }

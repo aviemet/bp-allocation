@@ -31,7 +31,7 @@ const ThemeTransformer = (doc, params) => {
 		// Calculate total count if not using kiosk method
 		} else {
 			voteAllocated = params.topOrgs.reduce((sum, org) => {
-				return sum + parseFloat(org.votedTotal || 0) 
+				return sum + parseFloat(org.votedTotal || 0)
 			}, voteAllocated)
 		}
 		return voteAllocated
@@ -54,9 +54,9 @@ const ThemeTransformer = (doc, params) => {
 	doc.chitVotesCast = function() {
 		if(!params.settings.useKioskChitVoting) return
 
-		return params.memberThemes.reduce((sum, member) => {				
+		return params.memberThemes.reduce((sum, member) => {
 			return member.chitVotes && member.chitVotes.length > 0 ? sum + 1 : sum
-		}, 0)		
+		}, 0)
 	}()
 
 	/**
@@ -65,7 +65,7 @@ const ThemeTransformer = (doc, params) => {
 	doc.totalChitVotes = function() {
 		if(!params.settings.useKioskChitVoting) return
 
-		return params.memberThemes.reduce((sum, member) => {				
+		return params.memberThemes.reduce((sum, member) => {
 			return member.chits ? sum + member.chits : sum
 		}, 0)
 	}()
@@ -127,11 +127,13 @@ const ThemeTransformer = (doc, params) => {
 			if(org.topOff > 0){
 				remainingLeverage -= org.topOff
 			}
-			
+
 			// Individual pledges from members
 			if(!isEmpty(org.pledges)) {
 				// TODO: This should be calculated based on the match ratio
-				remainingLeverage -= org.pledges.reduce((sum, pledge) => { return sum + pledge.amount }, 0)
+				remainingLeverage -= org.pledges.reduce((sum, pledge) => {
+					return sum + ((pledge.amount * doc.matchRatio) - pledge.amount)
+				}, 0)
 			}
 		})
 

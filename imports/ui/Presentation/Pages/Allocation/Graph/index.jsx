@@ -16,7 +16,7 @@ const Graph = observer(props => {
 	const { settings } = useSettings()
 	const { orgs, topOrgs } = useOrgs()
 
-	const _calcStartingLeverage = () => {
+	const startingLeverage = () => {
 		let leverage = theme.leverageTotal
 
 		topOrgs.map((org) => {
@@ -30,7 +30,11 @@ const Graph = observer(props => {
 	}
 
 	const visibility = settings.leverageVisible || props.simulation ? 'visible' : 'hidden'
-	const startingLeverage = _calcStartingLeverage()
+	const orgLeverage = topOrgs.reduce((sum, org) => {
+		if(org.leverageFunds) return sum + org.leverageFunds
+		return sum
+	}, 0)
+	const leverageAfterDistribution = theme.leverageRemaining - orgLeverage
 
 	return (
 		<GraphPageContainer>
@@ -75,12 +79,12 @@ const Graph = observer(props => {
 					<Grid.Row style={ { visibility: visibility } }>
 						<Grid.Column>
 							<ProgressBar
-								value={ theme.leverageRemaining }
-								total={ startingLeverage }
+								value={ leverageAfterDistribution }
+								total={ startingLeverage() }
 								color='green'
 								size='large'
 							/>
-							<LeverageCount>${numeral(theme.leverageRemaining).format('0.00a')}</LeverageCount>
+							<LeverageCount>${numeral(leverageAfterDistribution).format('0.00a')}</LeverageCount>
 						</Grid.Column>
 					</Grid.Row>
 				</InfoGrid>
@@ -186,6 +190,7 @@ const ProgressBar = styled(Progress)`
 
 	&& .bar {
 		background: #CCCCCC;
+		transition: width 4s ease-in-out;
 	}
 
 	&& .label {
