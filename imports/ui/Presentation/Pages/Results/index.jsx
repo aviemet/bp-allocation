@@ -28,11 +28,11 @@ const Results = observer(() => {
 		} else {
 			others.push(org)
 		}
-		
+
 		return org
 	})
 
-	// let awardeesColumns = awardees.length > 3 ? parseInt(awardees.length / 2) + awardees.length % 2 : false 
+	// let awardeesColumns = awardees.length > 3 ? parseInt(awardees.length / 2) + awardees.length % 2 : false
 
 	return (
 		<ResultsPageContainer>

@@ -8,7 +8,7 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
 
 - [x] Mobile formatting for voting screens (breaking changes from SemanticUI)
 
-- [ ] Topups member view not loading
+- [?] Topups member view not loading
 
 - [ ] Total amount given on feedback page
 

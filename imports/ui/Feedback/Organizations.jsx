@@ -20,6 +20,10 @@ const ChitVotingPane = observer(() => {
 	let totalPledges = 0
 	let totalAsk = 0
 	let totalNeed = 0
+	let saves = theme.saves.reduce((sum, save) => { return sum + save.amount }, 0)
+	let totalGiven = parseFloat((theme.leverageTotal || 0) + saves + (settings.resultsOffset || 0))
+	topOrgs.forEach(org => totalGiven += org.pledgeTotal / 2)
+
 	return (
 		<>
 			<Checkbox toggle checked={ !showAllOrgs } label={ <label>Show only top orgs</label> } onClick={ () => setShowAllOrgs(!showAllOrgs) } />
@@ -89,6 +93,10 @@ const ChitVotingPane = observer(() => {
 						</Table.HeaderCell>
 						<Table.HeaderCell verticalAlign='top'>{ numeral(totalAsk).format('$0,0') }</Table.HeaderCell>
 						<Table.HeaderCell verticalAlign='top'>{ numeral(totalNeed).format('$0,0') }</Table.HeaderCell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell colSpan={ 5 } textAlign='right'>Total Given:</Table.Cell>
+						<Table.HeaderCell>{ numeral(totalGiven).format('$0,0') }</Table.HeaderCell>
 					</Table.Row>
 				</Table.Footer>
 			</Table>
