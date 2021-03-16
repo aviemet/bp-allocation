@@ -33,7 +33,6 @@ const _inferHeadings = (headings, acceptedHeadings, callbacks) => {
 	// Search array of headings for matches to map
 	headings.map(heading => {
 		const matchKey = heading.trim().toLowerCase() // Normalize keys for comparisons
-		console.log({ heading, matchKey })
 
 		// Check for matches in the acceptedHeadings object
 		let matched = false

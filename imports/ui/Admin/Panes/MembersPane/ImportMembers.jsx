@@ -12,7 +12,7 @@ import { Button, Input } from 'semantic-ui-react'
 
 const ImportMembers = props => {
 	const { theme } = useTheme()
-	
+
 	const [ importResponseMessageVisible, setImportResponseMessageVisible ] = useState(false)
 	const [ importReponseMessage, setImportResponseMessage ] = useState('')
 	const [ loading, setLoading ] = useState(false)
@@ -49,7 +49,7 @@ const ImportMembers = props => {
 		{
 			name: 'amount',
 			forms: ['amount', 'money', 'donated', 'donations', 'given', 'funds', 'dollars'],
-			type: val => typeof val === 'string' ? parseInt(val.replace(/[^0-9.]/g, '')) : val
+			type: val => typeof val === 'string' ? parseFloat(val.replace(/[^0-9.]/g, '')) : val
 		},
 		{
 			name: 'chits',
@@ -134,8 +134,8 @@ const ImportMembers = props => {
 				style={ { display: 'none' } }
 				onChange={ importMembers }
 			/>
-			{ importResponseMessageVisible && <CustomMessage 
-				positive 
+			{ importResponseMessageVisible && <CustomMessage
+				positive
 				onDismiss={ hideImportResponseMessage }
 				heading='Import Successful'
 				body={ importReponseMessage }

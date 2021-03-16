@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import numeral from 'numeral'
-import { paginate } from '/imports/lib/utils'
+import { paginate, formatters } from '/imports/lib/utils'
 
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings, useMessages } from '/imports/api/providers'
@@ -191,7 +191,7 @@ const MembersList = observer(props => {
 									as={ Table.Cell }
 									inputType='number'
 									onSubmit={ updateMemberTheme(member.theme._id, 'amount') }
-									format={ value => numeral(value).format('$0,0') }
+									format={ value => formatters.currency.format(value) }
 								>
 									{ member.theme.amount || 0 }
 								</EditableText>

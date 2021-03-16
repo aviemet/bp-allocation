@@ -5,6 +5,13 @@ export const roundFloat = (value, decimal) => {
 	return parseFloat(parseFloat(value).toFixed(decimal))
 }
 
+export const formatters = {
+	currency: new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD'
+	})
+}
+
 export const numberFormats = {
 	dollar: '$0,0[a]',
 	percent: '0.0%'

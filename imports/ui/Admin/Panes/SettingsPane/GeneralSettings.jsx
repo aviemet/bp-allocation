@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import _ from 'lodash'
+import { forEach, keys, isEmpty } from 'lodash'
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings } from '/imports/api/providers'
-
+import { formatters } from '/imports/lib/utils'
 import { Loader, Form, Checkbox, Label } from 'semantic-ui-react'
 
 const SettingsPane = observer(props => {
@@ -58,9 +58,9 @@ const SettingsPane = observer(props => {
 		}
 
 		// Iterate over database objects with keys to be saved
-		_.forEach(formData, (value, dataKey) => {
+		forEach(formData, (value, dataKey) => {
 			// In each object, delete keys which haven't changed
-			_.keys(formData[dataKey]).map(key => {
+			keys(formData[dataKey]).map(key => {
 				// I know we shouldn't use eval Justification:
 				// Values being eval'd are not from user, the only way to have dynamic variable names in JS
 				if(eval(key) === eval(dataKey)[key]) {
@@ -70,7 +70,7 @@ const SettingsPane = observer(props => {
 		})
 
 		// Only update if data has changed
-		if(!_.isEmpty(formData.theme)) {
+		if(!isEmpty(formData.theme)) {
 			ThemeMethods.update.call({
 				id: theme._id,
 				data: formData.theme
@@ -86,7 +86,7 @@ const SettingsPane = observer(props => {
 			})
 		}
 
-		if(!_.isEmpty(formData.settings)) {
+		if(!isEmpty(formData.settings)) {
 			PresentationSettingsMethods.update.call({
 				id: settings._id,
 				data: formData.settings
@@ -150,6 +150,10 @@ const SettingsPane = observer(props => {
 						value={ leverageTotal || 0 }
 						onChange={ e => setLeverageTotal(e.target.value) }
 					/>
+					<Form.Field>
+						<label>Total from member funds:</label>
+						<div>{ formatters.currency.format(theme.memberFunds) }</div>
+					</Form.Field>
 				</Form.Group>
 
 				<Form.Group width='equal'>

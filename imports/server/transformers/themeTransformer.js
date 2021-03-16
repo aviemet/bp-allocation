@@ -140,7 +140,7 @@ const ThemeTransformer = (doc, params) => {
 		return roundFloat(remainingLeverage)
 	}()
 
-	// doc.presentationSettings = settings
+	doc.memberFunds = params.memberThemes.reduce((sum, member) => { return sum + (member.amount || 0) }, 0)
 
 	return doc
 }
