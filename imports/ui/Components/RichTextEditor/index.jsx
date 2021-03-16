@@ -8,20 +8,18 @@ import Quill from './Quill'
 
 const RichTextEditor = ({ value, onChange, ...rest }, ref) => {
 	const [ isRaw, setIsRaw ] = useState(false)
-	const [ content, setContent ] = useState(value || '')
 
 	const InputComponent = isRaw ? RawEditor : Quill
 
 	const handleChange = newValue => {
-		setContent(newValue)
 		if(onChange) onChange(newValue)
 	}
 
 	return (
 		<>
-			<Checkbox label='Raw Text' checked={ isRaw } onClick={ (e, { checked }) => setIsRaw(checked) } />
+			<Checkbox label='Raw HTML' checked={ isRaw } onClick={ (e, { checked }) => setIsRaw(checked) } />
 			<InputComponent
-				value={ content }
+				value={ value }
 				onChange={ handleChange }
 			/>
 		</>

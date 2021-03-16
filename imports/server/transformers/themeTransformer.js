@@ -130,7 +130,6 @@ const ThemeTransformer = (doc, params) => {
 
 			// Individual pledges from members
 			if(!isEmpty(org.pledges)) {
-				// TODO: This should be calculated based on the match ratio
 				remainingLeverage -= org.pledges.reduce((sum, pledge) => {
 					return sum + ((pledge.amount * doc.matchRatio) - pledge.amount)
 				}, 0)

@@ -11,7 +11,7 @@ import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
 import { Link, useLocation, useHistory } from 'react-router-dom'
 import EditableText from '/imports/ui/Components/Inputs/EditableText'
 
-const Messages = props => {
+const Messages = () => {
 	const { themeId } = useData()
 	const { messages, isLoading: messagesLoading } = useMessages()
 
@@ -77,7 +77,9 @@ const Messages = props => {
 										<Table.Cell>
 											<EditableText
 												onSubmit={ value => handleTextEdits(message._id, { title: value }) }
-											>{ message.title }</EditableText>
+											>
+												{ message.title }
+											</EditableText>
 										</Table.Cell>
 										<Table.Cell>
 											<EditableText
