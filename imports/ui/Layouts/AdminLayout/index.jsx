@@ -77,7 +77,7 @@ const AdminLayout = observer(() => {
 
 				<Menu.Item header style={ { paddingLeft: 0 } }>{ data.menuHeading }</Menu.Item>
 
-				<Menu.Menu position='left'>
+				<Menu.Menu position='right'>
 					<Dropdown text='Menu' className='link item'>
 						<Dropdown.Menu>
 							<Dropdown.Item onClick={ () => history.push('/admin') } >Themes List</Dropdown.Item>
