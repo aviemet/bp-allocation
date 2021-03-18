@@ -51,8 +51,14 @@ const memberEmailsQuery = themeId => {
 	])
 }
 
+const validEmail = email => {
+	if(!email) return false
+	return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)
+}
+
 const emailVotingLinkToMembers = ({ themeId, message }) => {
 	const theme = Themes.findOne({ _id: themeId })
+	const invalidEmailMembers = []
 
 	setMessageSendingFlag(theme, message)
 
@@ -66,13 +72,17 @@ const emailVotingLinkToMembers = ({ themeId, message }) => {
 
 	const memberEmails = memberEmailsQuery(themeId)
 
-	const messages = memberEmails.map(member => {
-		return {
-			to: member.email,
-			from: message.from || 'powered@thebatterysf.com',
+	const messages = memberEmails.flatMap(member => {
+		if(!validEmail(member.email)) {
+			invalidEmailMembers.push(member)
+			return []
+		}
+		return [{
+			to: member.email.trim().toLowerCase(),
+			from: message.from || 'Battery Powered <powered@thebatterysf.com>',
 			subject: message.subject,
 			html: messageBuilder(member)
-		}
+		}]
 	})
 
 	const sentMail = sgMail.send(messages)
@@ -87,6 +97,9 @@ const emailVotingLinkToMembers = ({ themeId, message }) => {
 			console.error(error.response.body)
 		}
 	})
+
+	// Log invalid emails
+	console.error({ invalidEmailMembers })
 }
 
 export default emailVotingLinkToMembers

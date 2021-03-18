@@ -46,12 +46,7 @@ export const formatPhoneNumber = number => {
 	return newPhone
 }
 
-export const sanitizeString = str => {
-	if(typeof str === 'string') {
-		return str.trim()
-	}
-	return str
-}
+export const sanitizeString = str => `${str}`.trim()
 
 /**
  * Returns a subset of passed collection filtered by searh terms
