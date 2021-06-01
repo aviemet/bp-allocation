@@ -4,15 +4,14 @@ import { Card, Container, Header, Loader } from 'semantic-ui-react'
 import styled from 'styled-components'
 
 import { observer } from 'mobx-react-lite'
-import { useTheme, useOrgs, useMembers } from '/imports/api/providers'
+import { useTheme, useOrgs } from '/imports/api/providers'
 
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import { useWindowSize, breakpoints } from '/imports/ui/MediaProvider'
 
 const KioskInfo = observer(() => {
 	const { theme } = useTheme()
-	const { orgs, topOrgs } = useOrgs()
-	const { isLoading: membersLoading } = useMembers()
+	const { orgs, topOrgs, isLoading: orgsLoading } = useOrgs()
 
 	const [ itemsPerRow, setItemsPerRow ] = useState(3)
 
@@ -42,7 +41,7 @@ const KioskInfo = observer(() => {
 
 	const orgsToDisplay = theme.chitVotingStarted ? topOrgs : orgs.values
 
-	if(membersLoading) return <Loader active />
+	if(orgsLoading) return <Loader active />
 	return (
 		<OrgsContainer>
 			<FlexHeading as='h1'>{ title }</FlexHeading>
