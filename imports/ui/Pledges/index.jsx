@@ -56,7 +56,7 @@ const Pledges = observer(() => {
 				<Container>
 					<div  style={ { textAlign: 'right', marginBottom: '0.5rem' } }>
 						<Checkbox
-							toggle 
+							toggle
 							label='Anonymous'
 							checked={ isAnonymous }
 							onClick={ () => setIsAnonymous(!isAnonymous) }
@@ -76,7 +76,7 @@ const Pledges = observer(() => {
 							<Input fluid
 								icon='dollar'
 								iconPosition='left'
-								placeholder='Pledge Amount' 
+								placeholder='Pledge Amount'
 								type='number'
 								value={ pledgeAmount || '' }
 								onChange={ e => setPledgeAmount(e.target.value) }
@@ -109,10 +109,10 @@ const Pledges = observer(() => {
 					onClick={ saveTopUp }
 				>Submit Matched Pledge</FinalizeButton>
 			</Container>
-			
+
 			<BottomRight>
-				<Button 
-					onClick={ clearAllValues } 
+				<Button
+					onClick={ clearAllValues }
 					content='Clear'
 					icon='cancel'
 					labelPosition='right'
