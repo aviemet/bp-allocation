@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { useOrgs, useMembers } from '/imports/api/providers'
+import { useOrgs } from '/imports/api/providers'
 import { OrganizationMethods } from '/imports/api/methods'
 
-import { isEmpty } from 'lodash'
 import { roundFloat } from '/imports/lib/utils'
 
 import { Container, Form, Input, Button, Card, Checkbox, Loader } from 'semantic-ui-react'
@@ -14,7 +13,6 @@ import { observer } from 'mobx-react-lite'
 import { useWindowSize, breakpoints } from '/imports/ui/MediaProvider'
 
 const Pledges = observer(({ user }) => {
-	const { members, isLoading: membersLoading } = useMembers()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
 	const [ selectedOrg, setSelectedOrg ] = useState(null)
@@ -57,7 +55,7 @@ const Pledges = observer(({ user }) => {
 		setDidPlegde(true)
 	}
 
-	if(membersLoading || isEmpty(members) || orgsLoading) return <Loader active />
+	if(orgsLoading) return <Loader active />
 	if(didPledge) {
 		const votedOrg = topOrgs.find(org => org._id === selectedOrg)
 		return <TopupComplete clearAllValues={ clearAllValues } org={ votedOrg } amount={ roundFloat(pledgeAmount) } />
@@ -93,7 +91,6 @@ const Pledges = observer(({ user }) => {
 
 			{/* Selectable Cards for top orgs */}
 			<Card.Group
-				// onUpdate={ handleScreenLayout }
 				centered
 				itemsPerRow={ itemsPerRow }
 			>
@@ -156,14 +153,6 @@ const FinalizeButton = styled(Button)`
 	border: 2px solid #fff !important;
 	font-size: 2rem !important;
 	text-transform: uppercase !important;
-`
-
-const BottomRight = styled.div`
-	text-align: right;
-	align-items: flex-end;
-	display: flex;
-	justify-content: flex-end;
-	height: 150px;
 `
 
 export default Pledges
