@@ -20,14 +20,14 @@ const buttonValues = {
 	}
 }
 
-const SendWithFeedbackButton = observer(({ message, ...rest }) => {
+const SendWithFeedbackButton = observer(({ message, members, ...rest }) => {
 	const { theme } = useTheme()
 
 	const [modalOpen, setModalOpen] = useState(false)
 
 	const handleSendMessage = () => {
 		setModalOpen(false)
-		Meteor.call(buttonValues[message.type].method, { themeId: theme._id, message })
+		Meteor.call(buttonValues[message.type].method, { themeId: theme._id, message, members })
 	}
 
 	const messageStatus = theme?.messagesStatus?.find(status => status.messageId === message._id)
@@ -50,6 +50,11 @@ const SendWithFeedbackButton = observer(({ message, ...rest }) => {
 		}
 	}
 
+	let memberCountMessage = 'every member'
+	if(Array.isArray(members)) {
+		memberCountMessage = `${members.length} member${members.length !== 1 ? 's' : ''}`
+	}
+
 	return (
 		<>
 			<Button
@@ -64,7 +69,6 @@ const SendWithFeedbackButton = observer(({ message, ...rest }) => {
 				{ buttonContent }
 			</Button>
 
-
 			<Modal
 				centered={ false }
 				open={ modalOpen }
@@ -72,7 +76,7 @@ const SendWithFeedbackButton = observer(({ message, ...rest }) => {
 			>
 				<Modal.Header>{ `Confirm sending ${message.type}` }</Modal.Header>
 				<Modal.Content>
-					<p>{ `Do you want to send the ${message.type}, "${message.title}" to every member?` }</p>
+					<p>{ `Do you want to send the ${message.type}, "${message.title}" to ${memberCountMessage}?` }</p>
 					<p>Preview:</p>
 					<Segment>
 						<FormattedMessageBody dangerouslySetInnerHTML={ { __html: previewMessage } } />
@@ -113,6 +117,7 @@ const FormattedMessageBody = styled.div`
 
 SendWithFeedbackButton.propTypes = {
 	message: PropTypes.object.isRequired,
+	members: PropTypes.array,
 	rest: PropTypes.any
 }
 

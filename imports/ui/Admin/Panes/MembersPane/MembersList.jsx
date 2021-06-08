@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import numeral from 'numeral'
 import { paginate, formatters } from '/imports/lib/utils'
 
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings, useMessages } from '/imports/api/providers'
 import { MemberMethods } from '/imports/api/methods'
 
-import styled from 'styled-components'
-import { Table, Icon, Button, Dropdown } from 'semantic-ui-react'
+import { Table, Icon, Button } from 'semantic-ui-react'
+import ActionsDropdownMenu from './ActionsDropdownMenu'
 import TablePagination from '/imports/ui/Components/TablePagination'
 import EditableText from '/imports/ui/Components/Inputs/EditableText'
 import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
-import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
 
 const MembersList = observer(props => {
 	const { theme } = useTheme()
@@ -30,10 +28,6 @@ const MembersList = observer(props => {
 	const [ modalAction, setModalAction ] = useState()
 
 	const { members } = props
-
-	const removeMember = id => () => {
-		MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: theme._id })
-	}
 
 	const removeAllMembers = () => {
 		MemberMethods.removeAllMembers.call(theme._id)
@@ -59,9 +53,6 @@ const MembersList = observer(props => {
 			setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
 		}
 	}
-
-	const resetMemberChitVotes = id => () => MemberMethods.resetChitVotes.call(id)
-	const resetMemberFundsVotes = id => () => MemberMethods.resetFundsVotes.call(id)
 
 	useEffect(() => {
 		if(sortColumn && sortDirection) members.sortBy(sortColumn, sortDirection)
@@ -219,69 +210,7 @@ const MembersList = observer(props => {
 								<EditableText as={ Table.Cell } onSubmit={ updateMember(member._id, 'code') }>{ member.code ? member.code : '' }</EditableText>
 
 								<Table.Cell singleLine>
-
-									<Dropdown text='Actions' className='link item' direction='left'>
-										<Dropdown.Menu>
-											<Dropdown.Item onClick={ () => window.open(`/voting/${theme._id}/${member._id}`) }>Voting Screen <Icon name='external' /></Dropdown.Item>
-
-											<Dropdown.Divider />
-
-											<Dropdown.Item>
-												<Dropdown text='Texts'>
-													<Dropdown.Menu direction='left'>{ messages.values.map((message, i) => {
-														if(message.active && message.type === 'text') return (
-															<Dropdown.Item key={ i }>
-																<MessageButtonContainer>
-																	<div style={ { marginRight: '4px' } }>{ message.title }</div>
-																	<div><SendWithFeedbackButton message={ message } /></div>
-																</MessageButtonContainer>
-															</Dropdown.Item>
-														)
-													}) }</Dropdown.Menu>
-												</Dropdown>
-											</Dropdown.Item>
-
-											<Dropdown.Item>
-												<Dropdown text='Emails'>
-													<Dropdown.Menu direction='left'>{ messages.values.map((message, i) => {
-														if(message.active && message.type === 'email') return (
-															<Dropdown.Item key={ i }>
-																<MessageButtonContainer>
-																	<div style={ { marginRight: '4px' } }>{ message.title }</div>
-																	<div><SendWithFeedbackButton message={ message } /></div>
-																</MessageButtonContainer>
-															</Dropdown.Item>
-														)
-													}) }</Dropdown.Menu>
-												</Dropdown>
-											</Dropdown.Item>
-
-											<Dropdown.Divider />
-
-											<Dropdown.Item onClick={ () => {
-												setModalHeader(`Permanently Delete ${member.fullName}'s Chit Votes?`)
-												setModalContent(`This will permanently delete the chit votes of ${member.fullName} for this theme. This operation cannot be undone.`)
-												setModalAction( () => resetMemberChitVotes(member.theme._id) )
-												setModalOpen(true)
-											} }>Reset Chit Votes</Dropdown.Item>
-											<Dropdown.Item onClick={ () => {
-												setModalHeader(`Permanently Delete ${member.fullName}'s Votes?`)
-												setModalContent(`This will permanently delete the funds votes of ${member.fullName} for this theme. This operation cannot be undone.`)
-												setModalAction( () => resetMemberFundsVotes(member.theme._id) )
-												setModalOpen(true)
-											} }>Reset Funds Votes</Dropdown.Item>
-
-											<Dropdown.Divider />
-
-											<Dropdown.Item onClick={ () => {
-												setModalHeader(`Permanently Unlink ${member.fullName} From This Theme?`)
-												setModalContent(`This will permanently remove ${member.fullName} from this theme. It will not remove the Member record.`)
-												setModalAction( () => removeMember(member._id) )
-												setModalOpen(true)
-											} } ><Icon name='trash' />Remove From Theme</Dropdown.Item>
-										</Dropdown.Menu>
-									</Dropdown>
-
+									<ActionsDropdownMenu theme={ theme } member={ member } messages={ messages } />
 								</Table.Cell>
 
 							</Table.Row>
@@ -305,12 +234,6 @@ const MembersList = observer(props => {
 		</>
 	)
 })
-
-const MessageButtonContainer = styled.div`
-	display: 'flex'; 
-	justify-content: 'space-between';
-	align-items: 'center';
-`
 
 MembersList.propTypes = {
 	hideAdminFields: PropTypes.bool

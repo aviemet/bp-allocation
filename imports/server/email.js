@@ -20,7 +20,24 @@ const htmlEmailWrapper = yeild => `<html><head><style>
 	} 
 </style></head><body><div style="max-width: 600px; margin: 0 auto;">${yeild}</div></body></html>`
 
-const memberEmailsQuery = themeId => {
+const memberEmailsQuery = (themeId, members) => {
+	const match = {
+		$match: {
+			'member.email': { $ne: null }
+		}
+	}
+
+	// Coerce members into an array
+	if(typeof members == 'string') members = [members]
+
+	// Constrain results to member ids if provided
+	if(Array.isArray(members)) {
+		// An empty array should return no results
+		if(members.length === 0) return []
+
+		match.$match['member._id'] = { $in: members }
+	}
+
 	return MemberThemes.aggregate([
 		{
 			$match: {
@@ -36,11 +53,7 @@ const memberEmailsQuery = themeId => {
 			}
 		},
 		{ $unwind: '$member' },
-		{
-			$match: {
-				'member.email': { $ne: null }
-			}
-		},
+		match,
 		{
 			$project: {
 				_id: 1,
@@ -56,21 +69,21 @@ const validEmail = email => {
 	return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)
 }
 
-const emailVotingLinkToMembers = ({ themeId, message }) => {
+const messageBuilder = (memberCode, body, slug, includeLink) => {
+	let finalMessage = body
+	if(includeLink === true && slug) {
+		finalMessage += emailVotingLink(slug, memberCode)
+	}
+	return htmlEmailWrapper(finalMessage)
+}
+
+const emailVotingLinkToMembers = ({ themeId, message, members }) => {
 	const theme = Themes.findOne({ _id: themeId })
 	const invalidEmailMembers = []
 
 	setMessageSendingFlag(theme, message)
 
-	const messageBuilder = member => {
-		let finalMessage = message.body
-		if(message.includeLink === true && theme.slug) {
-			finalMessage += emailVotingLink(theme.slug, member.code)
-		}
-		return htmlEmailWrapper(finalMessage)
-	}
-
-	const memberEmails = memberEmailsQuery(themeId)
+	const memberEmails = memberEmailsQuery(themeId, members)
 
 	const messages = memberEmails.flatMap(member => {
 		if(!validEmail(member.email)) {
@@ -81,7 +94,7 @@ const emailVotingLinkToMembers = ({ themeId, message }) => {
 			to: member.email.trim().toLowerCase(),
 			from: message.from || 'Battery Powered <powered@thebatterysf.com>',
 			subject: message.subject,
-			html: messageBuilder(member)
+			html: messageBuilder(member.code, message.body, theme.slug, message.includeLink)
 		}]
 	})
 

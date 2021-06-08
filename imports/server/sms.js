@@ -13,7 +13,24 @@ import { PresentationSettings, MemberThemes } from '/imports/api/db'
 import { setMessageSendingFlag, setMessageSentFlag } from './messageMethods'
 import { textVotingLink } from '/imports/lib/utils'
 
-const memberPhoneNumbersQuery = themeId => {
+const memberPhoneNumbersQuery = (themeId, members) => {
+	const match = {
+		$match: {
+			'member.email': { $ne: null }
+		}
+	}
+
+	// Coerce members into an array
+	if(typeof members == 'string') members = [members]
+
+	// Constrain results to member ids if provided
+	if(Array.isArray(members)) {
+		// An empty array should return no results
+		if(members.length === 0) return []
+
+		match.$match['member._id'] = { $in: members }
+	}
+
 	return MemberThemes.aggregate([
 		{
 			$match: {
@@ -29,11 +46,7 @@ const memberPhoneNumbersQuery = themeId => {
 			}
 		},
 		{ $unwind: '$member' },
-		{
-			$match: {
-				'member.phone': { $ne: null }
-			}
-		},
+		match,
 		{
 			$project: {
 				_id: 1,
@@ -77,13 +90,13 @@ const smsToMember = (member, message, slug) => {
 	})
 }
 
-const textVotingLinkToMembers = ({ themeId, message }) => {
+const textVotingLinkToMembers = ({ themeId, message, members }) => {
 	const theme = Themes.findOne({ _id: themeId })
 	const settings = PresentationSettings.findOne({ _id: theme.presentationSettings })
 
 	setMessageSendingFlag(theme, message)
 
-	const memberPhoneNumbers = memberPhoneNumbersQuery(themeId)
+	const memberPhoneNumbers = memberPhoneNumbersQuery(themeId, members)
 
 	const rateLimitMs = settings.twilioRateLimit || 100
 	const retryLimit = 2
