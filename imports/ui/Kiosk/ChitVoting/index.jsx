@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { forEach } from 'lodash'
+import { forEach, shuffle } from 'lodash'
 
 import { observer } from 'mobx-react-lite'
 import { useData, useSettings, useOrgs } from '/imports/api/providers'
@@ -69,7 +69,7 @@ const FundsVotingKiosk = observer(props => {
 			</Header> }
 
 			<Card.Group doubling centered itemsPerRow={ 2 }>
-				{ orgs.values.map(org => {
+				{ shuffle(orgs.values).map(org => {
 					return (
 						<OrgCard
 							key={ org._id }
@@ -82,7 +82,7 @@ const FundsVotingKiosk = observer(props => {
 									org={ org }
 								/>
 							) }
-						/> 
+						/>
 					)
 				} ) }
 			</Card.Group>
@@ -92,7 +92,7 @@ const FundsVotingKiosk = observer(props => {
 				forEach(chits, value => sum += value)
 				const remaining = member.theme.chits - sum
 				const buttonDisabled = remaining !== 0
-				
+
 				return(
 					<>
 						<VotesRemaining value={ remaining } />
