@@ -23,7 +23,7 @@ const ActionsDropdownMenu = ({ theme, member, messages }) => {
 
 	return (
 		<>
-			<Dropdown text='Actions' className='link item' direction='left'>
+			<Dropdown text='Actions' direction='left'>
 				<Dropdown.Menu>
 					<Dropdown.Item onClick={ () => window.open(`/voting/${theme._id}/${member._id}`) }>Voting Screen <Icon name='external' /></Dropdown.Item>
 
@@ -31,9 +31,9 @@ const ActionsDropdownMenu = ({ theme, member, messages }) => {
 
 					<Dropdown.Item>
 						<Dropdown text='Texts'>
-							<Dropdown.Menu>{ messages.values.map((message, i) => {
+							<Dropdown.Menu>{ messages.values.map((message) => {
 								if(message.active && message.type === 'text') return (
-									<Dropdown.Item key={ i }>
+									<Dropdown.Item key={ message._id }>
 										<MessageButtonContainer>
 											<div style={ { marginRight: '4px' } }>{ message.title }</div>
 											<div><SendWithFeedbackButton message={ message } members={ [member._id] } /></div>
@@ -46,9 +46,9 @@ const ActionsDropdownMenu = ({ theme, member, messages }) => {
 
 					<Dropdown.Item>
 						<Dropdown text='Emails'>
-							<Dropdown.Menu direction='left'>{ messages.values.map((message, i) => {
+							<Dropdown.Menu direction='left'>{ messages.values.map((message) => {
 								if(message.active && message.type === 'email') return (
-									<Dropdown.Item key={ i }>
+									<Dropdown.Item key={ message._id }>
 										<MessageButtonContainer>
 											<div style={ { marginRight: '4px' } }>{ message.title }</div>
 											<div><SendWithFeedbackButton message={ message } members={ [member._id] } /></div>
@@ -103,9 +103,13 @@ ActionsDropdownMenu.propTypes = {
 }
 
 const MessageButtonContainer = styled.div`
-	display: 'flex'; 
-	justify-content: 'space-between';
-	align-items: 'center';
+	display: flex; 
+	justify-content: space-between;
+	align-items: center;
+
+	div {
+		flex: 1;
+	}
 `
 
 export default ActionsDropdownMenu
