@@ -30,7 +30,6 @@ const _inferHeadings = (headings, acceptedHeadings, callbacks) => {
 	let headingsMap = {}
 
 	_dispatchCallback(callbacks.beforeInferHeadings, headings)
-
 	// Search array of headings for matches to map
 	headings.map(heading => {
 		const matchKey = heading.trim().toLowerCase() // Normalize keys for comparisons
@@ -76,6 +75,7 @@ export const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
 	let data = []
 	const parser = Papa.parse(file, {
 		header: true,
+		delimiter: ',',
 		dynamicTyping: true,
 		skipEmptyLines: true,
 		step: (results, parser) => {

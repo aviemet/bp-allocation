@@ -1,27 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { observer } from 'mobx-react-lite'
 import { useOrgs, useSettings } from '/imports/api/providers'
 
-import { Grid, Table, Responsive, Loader } from 'semantic-ui-react'
+import { Grid, Table, Loader } from 'semantic-ui-react'
 
 import ChitInputs from './ChitInputs'
 import TopOrgsByChitVote from './TopOrgsByChitVote'
-import { Media } from '/imports/ui/MediaProvider'
+import { useWindowSize, breakpoints } from '/imports/ui/MediaProvider'
 
 const ChitVotingPane = observer(() => {
 	const { settings } = useSettings()
 	const { orgs, topOrgs, isLoading: orgsLoading } = useOrgs()
+	const { width } = useWindowSize()
 
 	const [ gridColumns, setGridColumns ] = useState(settings.useKioskChitVoting ? 1 : 2)
 
-	const handleOnUpdate = (e, { width }) => {
-		if(!settings.useKioskChitVoting && width > Responsive.onlyTablet.minWidth) {
-			setGridColumns(2)
-		} else {
+	useEffect(() => {
+		if(settings.useKioskChitVoting || width < breakpoints.tablet) {
 			setGridColumns(1)
+		} else {
+			setGridColumns(2)
 		}
-	}
+	}, [settings.useKioskChitVoting, width])
 
 	if(orgsLoading) return <Loader active />
 
@@ -31,7 +32,6 @@ const ChitVotingPane = observer(() => {
 		<Grid
 			columns={ gridColumns }
 			divided={ gridColumns > 1 }
-			// onUpdate={ handleOnUpdate }
 		>
 			<Grid.Row>
 

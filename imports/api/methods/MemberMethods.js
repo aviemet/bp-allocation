@@ -63,7 +63,7 @@ const _buildMissingData = function(data) {
  */
 const _memberInsert = function(data) {
 	const { firstName, lastName, fullName, number, initials, code, phone, email } = _buildMissingData(data)
-	
+
 	/*****************
 	 * Build a Query *
 	 *****************/
@@ -79,7 +79,6 @@ const _memberInsert = function(data) {
 
 	// Check if the member already exists
 	let member = Members.find(memberQuery).fetch()[0]
-
 	return new Promise((resolve, reject) => {
 		if(!member) {
 			const newMember = { firstName, lastName, fullName, number, initials, code, phone, email }
@@ -178,7 +177,7 @@ const MemberMethods = {
 			})
 		}
 	}),
-	
+
 	/********************************
 	 * Remove one Member from Theme *
 	 ********************************/
@@ -198,7 +197,7 @@ const MemberMethods = {
 					}
 				})
 			})
-			
+
 			return MemberThemes.remove({ member: memberId, theme: themeId })
 		}
 	}),
@@ -247,7 +246,7 @@ const MemberMethods = {
 	}),
 
 	/*****************
-	 * Update Member * 
+	 * Update Member *
 	 *****************/
 	update: new ValidatedMethod({
 		name: 'members.update',
@@ -285,15 +284,15 @@ const MemberMethods = {
 
 			// Check for existing allocation for this org from this member
 			let memberTheme = MemberThemes.findOne({ theme, member })
-			
+
 			let allocation = _.find(memberTheme.allocations, ['organization', org])
-			
+
 			// Update amount
 			if(!allocation) {
 				MemberThemes.update({ theme: theme, member: member }, {
 					$push: {
-						allocations: { 
-							organization: org, 
+						allocations: {
+							organization: org,
 							amount,
 							voteSource
 						}
@@ -329,15 +328,15 @@ const MemberMethods = {
 			if(Meteor.isServer) {
 				// Check for existing allocation for this org from this member
 				let memberTheme = MemberThemes.findOne({ theme, member })
-				
+
 				let chitVote = _.find(memberTheme.chitVotes, ['organization', org])
 
 				// Update votes
 				if(!chitVote) {
 					MemberThemes.update({ theme: theme, member: member }, {
 						$push: {
-							chitVotes: { 
-								organization: org, 
+							chitVotes: {
+								organization: org,
 								votes,
 								voteSource
 							}
@@ -373,8 +372,8 @@ const MemberMethods = {
 		run(id) {
 			MemberThemes.update({ _id: id }, { $set: { chitVotes: [] } })
 		}
-	}),	
-	
+	}),
+
 	/***********************************
 	* Reset funds votes for member to 0 *
 	***********************************/
@@ -389,7 +388,7 @@ const MemberMethods = {
 	}),
 
 	/*****************
-	 * Delete Member * 
+	 * Delete Member *
 	 *****************/
 	remove: new ValidatedMethod({
 		name: 'members.remove',

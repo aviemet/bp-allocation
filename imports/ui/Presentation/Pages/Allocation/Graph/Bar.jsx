@@ -9,18 +9,14 @@ import { COLORS } from '/imports/lib/global'
 
 const AwardImg = ({ show }) => {
 	if(show !== true) return <React.Fragment />
-
-	return (
-		<Award src='/img/BAT_award_logo.svg' />
-	)
-
+	return <Award src='/img/BAT_award_logo.svg' />
 }
 
 AwardImg.propTypes = {
 	show: PropTypes.bool
 }
 
-const Bar = props => {	
+const Bar = props => {
 	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0)
 	if(!props.savesVisible) shownFunds -= props.org.save
 

@@ -1,38 +1,36 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Responsive, Card, Container, Header, Loader } from 'semantic-ui-react'
+import { Card, Container, Header, Loader } from 'semantic-ui-react'
 import styled from 'styled-components'
 
 import { observer } from 'mobx-react-lite'
-import { useTheme, useSettings, useOrgs, useMembers } from '/imports/api/providers'
+import { useTheme, useOrgs } from '/imports/api/providers'
 
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
-import { Media } from '/imports/ui/MediaProvider'
+import { useWindowSize, breakpoints } from '/imports/ui/MediaProvider'
 
 const KioskInfo = observer(() => {
 	const { theme } = useTheme()
-	const { orgs, topOrgs } = useOrgs()
-	const { isLoading: membersLoading } = useMembers()
+	const { orgs, topOrgs, isLoading: orgsLoading } = useOrgs()
 
 	const [ itemsPerRow, setItemsPerRow ] = useState(3)
 
-	const handleScreenLayout = (e, { width }) => setItemsPerRow(width <= Responsive.onlyMobile.maxWidth ? 1 : 3)
+	const { width } = useWindowSize()
+
+	useEffect(() => {
+		let n = itemsPerRow
+		if(width < breakpoints.tablet) n = 1
+		else if(width >= breakpoints.tablet && width < breakpoints.tabletL) n = 2
+		else n = 3
+
+		if(itemsPerRow !== n) setItemsPerRow(n)
+	}, [width])
 
 	const title = theme.chitVotingStarted ?
 		`TOP ${theme.numTopOrgs} ORGANIZATIONS` :
 		'ORGANIZATIONS THIS THEME'
 
 	let subHeading = ''
-	/*if(settings.fundsVotingActive || settings.chitVotingActive) {
-		subHeading = 'Voting In Progress'
-	} else {
-		if(theme.fundsVotingStarted) {
-			subHeading = 'Voting Has Completed'
-		} else {
-			subHeading = 'Voting To Begin Shortly'
-		}
-	}*/
-
 	if(!theme.chitVotingStarted && !theme.fundsVotingStarted) {
 		subHeading = 'Round 1 Voting To Begin Shortly'
 	} else if(theme.chitVotingStarted && !theme.fundsVotingStarted) {
@@ -43,7 +41,7 @@ const KioskInfo = observer(() => {
 
 	const orgsToDisplay = theme.chitVotingStarted ? topOrgs : orgs.values
 
-	if(membersLoading) return <Loader active />
+	if(orgsLoading) return <Loader active />
 	return (
 		<OrgsContainer>
 			<FlexHeading as='h1'>{ title }</FlexHeading>

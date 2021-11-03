@@ -33,7 +33,7 @@ class Leverage {
 
 			return orgClone
 		})
-		
+
 		this.sumRemainingOrgs = sumRemainingOrgs
 	}
 

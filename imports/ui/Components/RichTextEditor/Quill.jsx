@@ -52,26 +52,26 @@ Quill.register(SizeStyle,true)
 // fonts.whitelist = ['Arial', 'Ubuntu', 'Raleway', 'Roboto', 'Courier', 'Garamond', 'Tahoma', 'Times New Roman', 'Verdana']
 // Quill.register(fonts, true)
 
-/* 
+/*
  * Quill modules to attach to editor
  * See https://quilljs.com/docs/modules/ for complete options
  */
 const config = {
 	modules: {
 		toolbar: [
-			[ 
-				{ 'header': '1' }, 
-				{ 'header': '2' }, 
-				{ 'header': '3' }, 
-				{ 'font': FontStyle.whitelist } 
+			[
+				{ 'header': '1' },
+				{ 'header': '2' },
+				{ 'header': '3' },
+				{ 'font': FontStyle.whitelist }
 			],
 			[ { size: SizeStyle.whitelist } ],
 			['bold', 'italic', 'underline', 'strike', 'blockquote'],
 			[ { align: [] } ],
-			[ 
-				{ 'list': 'ordered' }, 
-				{ 'list': 'bullet' }, 
-				{ 'indent': '-1' }, 
+			[
+				{ 'list': 'ordered' },
+				{ 'list': 'bullet' },
+				{ 'indent': '-1' },
 				{ 'indent': '+1' }
 			],
 			['link', 'image'],
@@ -83,7 +83,7 @@ const config = {
 		}
 	},
 
-	/* 
+	/*
 	* Quill editor formats
 	* See https://quilljs.com/docs/formats/
 	*/
@@ -96,13 +96,13 @@ const config = {
 	]
 }
 
-/* 
- * Simple editor component that takes placeholder text as a prop 
+/*
+ * Simple editor component that takes placeholder text as a prop
  */
-const Editor = props => {	
+const Editor = props => {
 	return (
 		<QuillWrapper>
-			<ReactQuill 
+			<ReactQuill
 				theme='snow'
 				onChange={ props.onChange }
 				value={ props.value }
@@ -115,7 +115,7 @@ const Editor = props => {
 	)
 }
 
-/* 
+/*
  * PropType validation
  */
 Editor.propTypes = {

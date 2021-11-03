@@ -5,6 +5,13 @@ export const roundFloat = (value, decimal) => {
 	return parseFloat(parseFloat(value).toFixed(decimal))
 }
 
+export const formatters = {
+	currency: new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD'
+	})
+}
+
 export const numberFormats = {
 	dollar: '$0,0[a]',
 	percent: '0.0%'
@@ -39,12 +46,7 @@ export const formatPhoneNumber = number => {
 	return newPhone
 }
 
-export const sanitizeString = str => {
-	if(typeof str === 'string') {
-		return str.trim()
-	}
-	return str
-}
+export const sanitizeString = str => `${str}`.trim()
 
 /**
  * Returns a subset of passed collection filtered by searh terms
@@ -90,3 +92,8 @@ export const uuid = () => {
 		return (c === 'x' ? random : (random & 0x3 | 0x8)).toString(16)
 	})
 }
+
+export const emailVotingLink = (slug, code) => `<p style='text-align: center; height: 4rem;'><a style='font-family: Arial, sans-serif; font-size: 2rem; padding: 15px; margin-bottom: 10px; border: 1px solid #CCC; border-radius: 10px; background-color: green; color: white; text-decoration: none;' href='${process.env.HOST_NAME}/v/${slug}/${code}'>Vote Here</a></p>`
+
+// eslint-disable-next-line quotes
+export const textVotingLink = (slug, code) => "\n" + `${process.env.HOST_NAME}/v/${slug}/${code}`

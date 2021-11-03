@@ -29,8 +29,8 @@ const MembersPane = observer(() => {
 						</Grid.Column>
 
 						<Grid.Column width={ 10 }>
-							<Input 
-								fluid 
+							<Input
+								fluid
 								icon='search'
 								iconPosition='left'
 								action={ { icon: 'cancel', onClick: clearSearch } }

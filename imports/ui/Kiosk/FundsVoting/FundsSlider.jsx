@@ -36,8 +36,8 @@ const FundsSliderComponent = props => {
 	}, [])
 
 	const handleChange = value => {
-		if(value < 0 || value > MAX) return 
- 
+		if(value < 0 || value > MAX) return
+
 		// undefined value from empty DB field should be dealt with correctly
 		if(_.isNaN(value)) {
 			setValue(0)
@@ -70,7 +70,7 @@ const FundsSliderComponent = props => {
 		e.stopPropagation()
 
 		setShowInput(true)
-		
+
 		window.addEventListener('click', handlePageClick, false)
 		window.addEventListener('touchstart', handlePageClick, false)
 	}
@@ -91,7 +91,7 @@ const FundsSliderComponent = props => {
 		window.removeEventListener('click', handlePageClick, false)
 		window.removeEventListener('touchstart', handlePageClick, false)
 	}
-		
+
 	return (
 		<SliderContainer>
 			{showInput ?
