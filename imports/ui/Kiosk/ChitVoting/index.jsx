@@ -24,6 +24,24 @@ const VotesRemaining = React.memo(({ value }) => {
 	)
 })
 
+const ShuffledOrgs = React.memo(({ orgs }) => <>{
+	shuffle(orgs.values).map(org => (
+		<OrgCard
+			key={ org._id }
+			org={ org }
+			showAsk={ false }
+			size='small'
+			info={ true }
+			content={ () => (
+				<ChitTicker
+					org={ org }
+				/>
+			) }
+		/>
+	))
+}</>, (prev, next) => prev.orgs.values.every((org, i) => next.orgs.values[i]._id === org._id))
+
+
 VotesRemaining.displayName = 'VotesRemaining' // To slience eslint
 
 const FundsVotingKiosk = observer(props => {
@@ -69,7 +87,7 @@ const FundsVotingKiosk = observer(props => {
 			</Header> }
 
 			<Card.Group doubling centered itemsPerRow={ 2 }>
-				{ shuffle(orgs.values).map(org => {
+				{/* { shuffle(orgs.values).map(org => {
 					return (
 						<OrgCard
 							key={ org._id }
@@ -84,7 +102,8 @@ const FundsVotingKiosk = observer(props => {
 							) }
 						/>
 					)
-				} ) }
+				} ) } */}
+				<ShuffledOrgs orgs={ orgs } />
 			</Card.Group>
 
 			<FundsVoteContext.Consumer>{ ({ chits, saveChits, member }) => {
@@ -167,6 +186,10 @@ FundsVotingKiosk.propTypes = {
 
 VotesRemaining.propTypes = {
 	value: PropTypes.number
+}
+
+ShuffledOrgs.propTypes = {
+	orgs: PropTypes.object
 }
 
 export default FundsVotingKiosk
