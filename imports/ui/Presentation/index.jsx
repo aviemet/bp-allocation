@@ -6,10 +6,10 @@ import { Transition } from 'react-transition-group'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings } from '/imports/api/providers'
 
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 import { Intro, Orgs, Timer, TopOrgs, Allocation, Results } from '/imports/ui/Presentation/Pages'
-import { Loader } from 'semantic-ui-react'
+import { CircularProgress } from '@mui/material'
 
 // Transition group definitions
 const FADE_DURATION = 300
@@ -55,7 +55,7 @@ const Presentation = withRouter(observer(props => {
 	const title = theme.title || ''
 	const question = theme.question || ''
 
-	if(themeLoading || settingsLoading) return <Loader active />
+	if(themeLoading || settingsLoading) return <CircularProgress />
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{(state) => (

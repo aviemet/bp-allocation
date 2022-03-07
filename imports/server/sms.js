@@ -1,13 +1,13 @@
 import { Meteor } from 'meteor/meteor'
+import { format } from 'date-fns'
 import { formatPhoneNumber } from '/imports/lib/utils'
-import { Themes } from '/imports/api/db'
+import { Themes, Members } from '/imports/api/db'
 
 import '/imports/api/methods'
 import twilio from 'twilio'
 
 // Meteor publication definitions
 import '/imports/server/publications'
-import moment from 'moment'
 import { PresentationSettings, MemberThemes } from '/imports/api/db'
 
 import { setMessageSendingFlag, setMessageSentFlag } from './messageMethods'
@@ -77,7 +77,7 @@ const smsToMember = (member, message, slug) => {
 			messagingServiceSid: Meteor.settings.twilio.copilotSid
 		}).then(response => {
 			console.log({
-				at: moment().format('YYYY-MM-DD HH:mm:ss:SS'),
+				at: format(new Date(), 'y-MM-dd HH:mm:ss:SS'),
 				messageType: 'text',
 				to: response.to,
 				status: response.status
@@ -90,7 +90,15 @@ const smsToMember = (member, message, slug) => {
 	})
 }
 
+// TODO: Unhandled promise rejection errors
 const textVotingLinkToMembers = ({ themeId, message, members }) => {
+	if(members === undefined) {
+		members = Members.find(
+			{ 'theme.theme': themeId },
+			{ sort: { number: 1 } }
+		)
+	}
+
 	const theme = Themes.findOne({ _id: themeId })
 	const settings = PresentationSettings.findOne({ _id: theme.presentationSettings })
 
@@ -102,19 +110,19 @@ const textVotingLinkToMembers = ({ themeId, message, members }) => {
 	const retryLimit = 2
 
 	// Uses setInterval to rate limit sending texts to Twilio
-	const sendTextsWithRetry = async members => {
+	const sendTextsWithRetry = async numbers => {
 		const failedTexts = []
 
 		let i = 0
 		const interval = await setInterval(() => {
-			smsToMember(members[i++], message, theme.slug).catch(({ error, member }) => {
-				const retry = member.hasOwnProperty('retry') ? member.retry + 1 : 0
+			smsToMember(numbers[i++], message, theme.slug).catch(({ error, number }) => {
+				const retry = number.hasOwnProperty('retry') ? number.retry + 1 : 0
 				if(retry <= retryLimit) {
-					failedTexts.push(Object.assign(member, { retry }))
+					failedTexts.push(Object.assign(number, { retry }))
 				}
 			})
 
-			if(i >= members.length) {
+			if(i >= numbers.length) {
 				clearInterval(interval)
 
 				if(failedTexts.length > 0) {

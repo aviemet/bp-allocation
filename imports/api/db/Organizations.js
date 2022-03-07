@@ -40,7 +40,9 @@ const Organizations = new Mongo.Collection('organizations')
 const OrganizationSchema = new SimpleSchema({
 	title: {
 		type: String,
-		label: 'Organization Name'
+		label: 'Organization Name',
+		min: 3,
+		max: 50
 	},
 	theme: SimpleSchema.RegEx.Id,
 	ask: {

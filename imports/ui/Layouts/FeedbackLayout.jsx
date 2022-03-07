@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { Container, Grid } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 const FeedbackLayout = (props) => (
 	<FeedbackContainer>

@@ -5,7 +5,9 @@ import { Random } from 'meteor/random'
 import { Members } from '/imports/api/db'
 
 const memberData = {
-	number: faker.random.number(1000)
+	number: faker.random.number(1000),
+	firstName: faker.name.firstName(),
+	lastName: faker.name.lastName(),
 }
 
 describe("Members model", function() {

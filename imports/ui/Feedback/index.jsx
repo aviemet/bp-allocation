@@ -5,13 +5,13 @@ import { observer } from 'mobx-react-lite'
 import { useTheme } from '/imports/api/providers'
 
 import { Grid, Header, Menu, Segment } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 import { AllocationPane, LeveragePane } from '/imports/ui/Admin/Panes'
 import Organizations from './Organizations'
 import Stats from './Stats'
 import Graph from './Graph'
-import MembersList from '/imports/ui/Admin/Panes/MembersPane/MembersList'
+import MembersTable from '/imports/ui/Admin/Panes/MembersPane/MembersTable'
 
 /**
  * Orgs:
@@ -46,7 +46,7 @@ const TABS = {
 		slug: 'members',
 		heading: 'Members',
 		color: 'teal',
-		component: MembersList
+		component: MembersTable
 	},*/
 	allocation: {
 		slug: 'allocation',
@@ -116,7 +116,8 @@ const Feedback = observer(() => {
 								<Route exact path={ TABS[tab].slug } key={ tab } >
 									<Component hideAdminFields={ true } />
 								</Route>
-							)})}
+							)
+						})}
 					</Switch>
 				</Segment>
 

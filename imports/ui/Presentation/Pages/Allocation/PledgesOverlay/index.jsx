@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import { useData, useOrgs } from '/imports/api/providers'
 
 import { observer } from 'mobx-react-lite'

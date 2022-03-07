@@ -5,16 +5,19 @@ import { useSettings } from '/imports/api/providers'
 
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react'
+import {
+	FormControlLabel,
+	Switch,
+} from '@mui/material'
 
 const ChitVotingActiveToggle = observer(() => {
 	const { settings } = useSettings()
 
-	const saveValue = (e, data) => {
+	const saveValue = e => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
-				chitVotingActive: data.checked,
+				chitVotingActive: e.target.checked,
 				fundsVotingActive: false,
 				topupsActive: false
 			}
@@ -24,15 +27,15 @@ const ChitVotingActiveToggle = observer(() => {
 	if(!settings.useKioskChitVoting) return <></>
 
 	return(
-		<Checkbox
+		<FormControlLabel
+			control={ <Switch
+				index='chitVotingActive'
+				onClick={ saveValue }
+				checked={ settings.chitVotingActive || false }
+			/> }
 			label='Chit Voting Active'
-			toggle
-			index='chitVotingActive'
-			onClick={ saveValue }
-			checked={ settings.chitVotingActive || false }
 		/>
 	)
-
 })
 
 export default ChitVotingActiveToggle

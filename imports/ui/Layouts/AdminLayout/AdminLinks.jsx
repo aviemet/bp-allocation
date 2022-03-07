@@ -1,133 +1,166 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
-import { Header, Icon, Menu } from 'semantic-ui-react'
-import MenuLink from './MenuLink'
+import {
+	List,
+	ListItem,
+	ListItemButton,
+	ListItemIcon,
+	ListItemText,
+	Divider,
+	Typography,
+} from '@mui/material'
+
+import BusinessIcon from '@mui/icons-material/Business'
+import PeopleIcon from '@mui/icons-material/People'
+import StarIcon from '@mui/icons-material/Star'
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
+import PieChartIcon from '@mui/icons-material/PieChart'
+// import BarChartIcon from '@mui/icons-material/BarChart'
+import EmailIcon from '@mui/icons-material/Email'
+import SettingsIcon from '@mui/icons-material/Settings'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 
 import { observer } from 'mobx-react-lite'
 import { useData } from '/imports/api/providers'
 
-import styled from 'styled-components'
+const navLinks = [
+	{
+		id: 'orgs',
+		title: 'Orgs',
+		icon: BusinessIcon,
+		route: themeId => `/admin/${themeId}/orgs`,
+		color: 'teal'
+	},
+	{
+		id: 'members',
+		title: 'Members',
+		icon: PeopleIcon,
+		route: themeId => `/admin/${themeId}/members`,
+		color: 'violet'
+	},
+	{
+		id: 'chits',
+		title: 'Chit Votes',
+		icon: StarIcon,
+		route: themeId => `/admin/${themeId}/chits`,
+		color: 'brown'
+	},
+	{
+		id: 'allocation',
+		title: 'Allocations',
+		icon: AttachMoneyIcon,
+		route: themeId => `/admin/${themeId}/allocation`,
+		color: 'green'
+	},
+	{
+		id: 'pledges',
+		title: 'Pledges',
+		icon: AccountBalanceWalletIcon,
+		route: themeId => `/admin/${themeId}/pledges`,
+		color: 'green'
+	},
+	{
+		id: 'leverage',
+		title: 'Leverage',
+		icon: PieChartIcon,
+		route: themeId => `/admin/${themeId}/leverage`,
+		color: 'orange'
+	},
+	// {
+	// 	id: 'presentation',
+	// 	title: 'Presentation',
+	// 	icon: BarChartIcon,
+	// 	route: themeId => `/admin/${themeId}/presentation`,
+	// 	color: 'red'
+	// },
+	{
+		id: 'messaging',
+		title: 'Messaging',
+		icon: EmailIcon,
+		route: themeId => `/admin/${themeId}/messaging`,
+		color: 'olive'
+	}
+]
+
+const bottomLinks = [
+	{
+		id: 'kiosk',
+		title: 'Kiosk',
+		route: themeId => `/kiosk/${themeId}`,
+		newTab: false
+	},
+	{
+		id: 'feedback',
+		title: 'Feedback',
+		route: themeId => `/feedback/${themeId}`,
+		newTab: false
+	},
+	{
+		id: 'presentation',
+		title: 'Presentation',
+		route: themeId => `/presentation/${themeId}`,
+		newTab: true
+	},
+	{
+		id: 'pledges',
+		title: 'Pledges',
+		route: themeId => `/pledges/${themeId}`,
+		newTab: true
+	}
+]
 
 const Links = observer(({ activeMenuItem }) => {
 	const data = useData()
 
 	return(
-		<MenuContainer id="MENUCONTAINER">
-			<Menu vertical>
-				<MenuLink
-					to={ `/admin/${data.themeId}/orgs` }
-					active={ activeMenuItem === 'orgs' }
-					iconPosition='left'
-					color='teal'
-				>
-					<Icon name='building' color='teal' /> Orgs
-				</MenuLink>
+		<>
+			<List>
+				{ navLinks.map(link => {
+					const Icon = link.icon
+					return (
+						<ListItemButton key={ link.id } component={ Link } to={ link.route(data.themeId) } selected={ activeMenuItem === link.id }>
+							{ Icon && <ListItemIcon><Icon /></ListItemIcon> }
+							<ListItemText primary={ link.title } />
+						</ListItemButton>
+					)
+				})}
+			</List>
 
-				<MenuLink
-					to={ `/admin/${data.themeId}/members` }
-					active={ activeMenuItem === 'members' }
-					iconPosition='left'
-					color='violet'
-				>
-					<Icon name='users' color='violet' /> Members
-				</MenuLink>
+			<Divider />
 
-				<MenuLink
-					to={ `/admin/${data.themeId}/chits` }
-					active={ activeMenuItem === 'chits' }
-					iconPosition='left'
-					color='brown'
-				>
-					<Icon name='star' color='brown' /> Chit Votes
-				</MenuLink>
+			<List>
+				<ListItemButton component={ Link } to={ `/admin/${data.themeId}/settings` } selected={ activeMenuItem === 'settings' } >
+					<ListItemIcon><SettingsIcon /></ListItemIcon>
+					<ListItemText primary={ 'Settings' } />
+				</ListItemButton>
+			</List>
 
-				<MenuLink
-					to={ `/admin/${data.themeId}/allocation` }
-					active={ activeMenuItem === 'allocation' }
-					iconPosition='left'
-					color='green'
-				>
-					<Icon name='dollar' color='green' /> Allocations
-				</MenuLink>
+			<Divider />
 
-				<MenuLink
-					to={ `/admin/${data.themeId}/leverage` }
-					active={ activeMenuItem === 'leverage' }
-					iconPosition='left'
-					color='orange'
-				>
-					<Icon name='chart pie' color='orange' /> Leverage
-				</MenuLink>
+			<Typography variant="h6" noWrap component="div">Pages</Typography>
 
-				<MenuLink
-					to={ `/admin/${data.themeId}/presentation` }
-					active={ activeMenuItem === 'presentation' || activeMenuItem === '' }
-					iconPosition='left'
-					color='red'
-				>
-					<Icon name='chart bar' color='red' /> Presentation
-				</MenuLink>
+			<List>
+				{ bottomLinks.map(link => {
+					const linkProps = {}
+					if(link.newTab) {
+						linkProps.target = '_blank'
+						linkProps.rel = 'noopener noreferrer'
+					}
+					return (
+						<ListItem button key={ link.id } component={ Link } to={ link.route(data.themeId) } { ...linkProps }>
+							<ListItemText primary={ link.title } />
+							{ link.newTab && <ListItemIcon><OpenInNewIcon /></ListItemIcon> }
+						</ListItem>
+					)
+				})}
+			</List>
 
-				<MenuLink
-					to={ `/admin/${data.themeId}/messaging` }
-					active={ activeMenuItem === 'messaging' }
-					iconPosition='left'
-				>
-					<Icon name='mail' color='olive'/> Messaging
-				</MenuLink>
-			</Menu>
-			<br />
-
-			<Menu vertical>
-				<MenuLink
-					to={ `/admin/${data.themeId}/settings` }
-					active={ activeMenuItem === 'settings' }
-					iconPosition='left'
-				>
-					<Icon name='setting'/> Settings
-				</MenuLink>
-			</Menu>
-
-			{/* Pages */}
-			<Header as={ 'h1' }>Pages</Header>
-
-			<Menu vertical>
-				<MenuLink to={ `/kiosk/${data.themeId}` }>
-					Kiosk
-				</MenuLink>
-
-				<MenuLink to={ `/feedback/${data.themeId}` }>
-					Feedback
-				</MenuLink>
-
-				<MenuLink to={ `/presentation/${data.themeId}` } target='_blank'>
-					Presentation
-				</MenuLink>
-
-				<MenuLink to={ `/pledges/${data.themeId}` } target='_blank'>
-					Pledge Inputs
-				</MenuLink>
-			</Menu>
-		</MenuContainer>
+		</>
 	)
 })
-
-const MenuContainer = styled.div`
-	& .ui.menu.vertical {
-		width: inherit;
-		border-radius: 0;
-
-		& > .active.item:last-child, .item {
-			border-radius: 0;
-		}
-
-		.item.left i.icon {
-			float: left;
-			margin: 0 0.5em 0 0;
-		}
-	}
-`
 
 Links.propTypes = {
 	activeMenuItem: PropTypes.string

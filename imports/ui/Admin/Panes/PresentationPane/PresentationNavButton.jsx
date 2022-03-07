@@ -1,14 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Button } from 'semantic-ui-react'
-import styled from 'styled-components'
+import useTheme from '@mui/material/styles/useTheme'
+import { Button, Chip, Stack } from '@mui/material'
 
 import { observer } from 'mobx-react-lite'
 import { useSettings } from '/imports/api/providers'
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
-const PresentationNavButton = observer(({ page, active, onClick, children, ...rest }) => {
+const PresentationNavButton = observer(({ page, active, onClick, label, Icon, ...rest }) => {
+	const muiTheme = useTheme()
 	const { settings } = useSettings()
 
 	const changeCurrentPage = (e, data) => {
@@ -28,35 +29,34 @@ const PresentationNavButton = observer(({ page, active, onClick, children, ...re
 	}
 
 	// Highlight the active page button
-	const color = active !== false && settings.currentPage === page ? 'green' : null
+	const activePage = active !== false && settings.currentPage === page
 
 	return (
-		<NavButton icon onClick={ doOnClick } color={ color } { ...rest }>
-			{ children }
-		</NavButton>
+		<Button
+			fullWidth
+			sx={ {
+				height: 120,
+				mb: 3,
+				backgroundColor: activePage ? muiTheme.palette.success.main : muiTheme.palette.grey[300]
+			} }
+			onClick={ doOnClick }
+			{ ...rest }
+		>
+			<Stack alignItems="center">
+				<Icon sx={ {
+					fontSize: '3.5rem',
+					color: activePage ? muiTheme.palette.success.contrastText : muiTheme.palette.text.secondary
+				} } />
+				<Chip label={ label } sx={ { backgroundColor: activePage ? muiTheme.palette.success.light : null } } />
+			</Stack>
+		</Button>
 	)
 })
 
-const NavButton = styled(Button)`
-	width: 100%;
-	height: 120px;
-	margin-bottom: 10px !important;
-
-	.icon{
-		height: unset !important;
-	}
-
-	.label {
-		font-size: 1.2rem;
-	}
-`
-
 PresentationNavButton.propTypes = {
-	page: PropTypes.string,
-	children: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.node),
-		PropTypes.node
-	]),
+	page: PropTypes.string.isRequired,
+	label: PropTypes.string.isRequired,
+	Icon: PropTypes.any.isRequired,
 	onClick: PropTypes.func,
 	rest: PropTypes.any
 }

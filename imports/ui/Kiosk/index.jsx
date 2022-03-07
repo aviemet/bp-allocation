@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Route, Switch, useRouteMatch } from 'react-router-dom'
 import { Transition } from 'react-transition-group'
 
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 import { observer } from 'mobx-react-lite'
 import { useData, useTheme, useSettings } from '/imports/api/providers'
@@ -20,13 +20,13 @@ const Kiosk = observer(() => {
 	const match = useRouteMatch('/voting/:id/:member')
 
 	const data = useData()
-	const { theme } = useTheme()
-	const { settings } = useSettings()
+	const { theme, isLoading: themeLoading } = useTheme()
+	const { settings, isLoading: settingsLoading } = useSettings()
 
 	const activePage = settings.fundsVotingActive ? data.KIOSK_PAGES.funds : data.KIOSK_PAGES.info
 
 	const [ displayPage, setDisplayPage ] = useState(activePage) // Active presentation page
-	const [ show, setShow ] = useState(true) // Transition values
+	const [ show, setShow ] = useState(false) // Transition values
 
 	const timeoutRef = useRef()
 
@@ -53,6 +53,12 @@ const Kiosk = observer(() => {
 			}
 		}
 	}
+
+	useEffect(() => {
+		if(!themeLoading && !settingsLoading) {
+			setShow(true)
+		}
+	}, [themeLoading, settingsLoading])
 
 	useEffect(() => {
 		let pageNav = getActivePage()
@@ -143,7 +149,9 @@ const transitionStyles = {
 
 const PageFader = styled.div`
 	opacity: 0;
-	max-width: 100vw; 
+	max-width: 100vw;
+	height: 100%;
+	min-height: 100vh;
 `
 
 export default Kiosk

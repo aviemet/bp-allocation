@@ -5,31 +5,34 @@ import { useSettings } from '/imports/api/providers'
 
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react'
+import {
+	FormControlLabel,
+	Switch,
+} from '@mui/material'
 
 const ShowSaveValuesToggle = observer(() => {
 
 	const{ settings } = useSettings()
 
-	const saveValue = (e, data) => {
+	const saveValue = e => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
-				savesVisible: data.checked
+				savesVisible: e.target.checked
 			}
 		})
 	}
 
 	return(
-		<Checkbox
+		<FormControlLabel
+			control={ <Switch
+				index='savesVisible'
+				onClick={ saveValue }
+				checked={ settings.savesVisible || false }
+			/> }
 			label='Show Save Values'
-			toggle
-			index='savesVisible'
-			onClick={ saveValue }
-			checked={ settings.savesVisible || false }
 		/>
 	)
-
 })
 
 export default ShowSaveValuesToggle

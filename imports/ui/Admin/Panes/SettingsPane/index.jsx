@@ -1,41 +1,60 @@
-import React, { useState, useEffect } from 'react'
-import { Tab } from 'semantic-ui-react'
-import { useRouteMatch, useHistory } from 'react-router-dom'
+import React from 'react'
+import { Route, Link, useRouteMatch } from 'react-router-dom'
+
+import {
+	Box,
+	Tab,
+	Tabs,
+} from '@mui/material'
+
 import GeneralSettings from './GeneralSettings'
 import MessageSettings from './MessageSettings'
 import AdvancedSettings from './AdvancedSettings'
 
 const panes = [
-	{ menuItem: 'General', slug: 'general', render: () => <Tab.Pane><GeneralSettings /></Tab.Pane> },
-	{ menuItem: 'Messages', slug: 'messages', render: () => <Tab.Pane><MessageSettings /></Tab.Pane> },
-	{ menuItem: 'Advanced', slug: 'advanced', render: () => <Tab.Pane><AdvancedSettings /></Tab.Pane> },
+	{
+		label: 'General',
+		slug: 'general',
+		render: <GeneralSettings />
+	},
+	{
+		label: 'Messages',
+		slug: 'messages',
+		render: <MessageSettings />
+	},
+	{
+		label: 'Advanced',
+		slug: 'advanced',
+		render: <AdvancedSettings />
+	},
 ]
 
-const tabIndex = tab => {
-	if(tab === undefined) return 0
-	return panes.findIndex(pane => pane.slug.toLowerCase() === tab.toLowerCase()) || 0
-}
-
 const Settings = () => {
-	const history = useHistory()
-	// Redirect in routes file should prevent match from ever being undefined
-	const match = useRouteMatch('/admin/:id/settings/:activeTab')
-	const [activeTab, setActiveTab] = useState(tabIndex(match.params.activeTab))
-
-	useEffect(() => {
-		setActiveTab(tabIndex(match.params.activeTab))
-	}, [match.params.activeTab])
-
-	const handleTabChange = (_, { activeIndex }) => {
-		history.push(`/admin/${match.params.id}/settings/${panes[activeIndex].slug}`)
-	}
+	const { params } = useRouteMatch('/admin/:id/settings/:activeTab')
 
 	return (
-		<Tab
-			panes={ panes }
-			activeIndex={ activeTab }
-			onTabChange={ handleTabChange }
-		/>
+		<>
+			<Tabs value={ `/admin/${params.id}/settings/${params.activeTab}` }>
+				{ panes.map(pane => (
+					<Tab
+						key={ `tab-${pane.slug}` }
+						label={ pane.label }
+						value={ `/admin/${params.id}/settings/${pane.slug}` }
+						to={ `/admin/${params.id}/settings/${pane.slug}` }
+						component={ Link }
+					/>
+				))}
+			</Tabs>
+			<Box sx={ { mt: 2 } }>
+				{ panes.map(pane => (
+					<Route
+						key={ `content-${pane.slug}` }
+						path={ `/admin/:id/settings/${pane.slug}` }
+						render={ () => pane.render }
+					/>
+				)) }
+			</Box>
+		</>
 	)
 }
 

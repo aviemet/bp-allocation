@@ -6,11 +6,11 @@ const Members = new Mongo.Collection('members')
 const MemberSchema = new SimpleSchema({
 	firstName: {
 		type: String,
-		required: false
+		required: true
 	},
 	lastName: {
 		type: String,
-		required: false
+		required: true
 	},
 	fullName: {
 		type: String,
@@ -45,7 +45,6 @@ const MemberSchema = new SimpleSchema({
 		required: false,
 		defaultValue: new Date()
 	}
-
 })
 
 Members.attachSchema(MemberSchema)

@@ -5,8 +5,9 @@ import { isEmpty } from 'lodash'
 import { observer } from 'mobx-react-lite'
 import { useMembers } from '/imports/api/providers'
 
-import styled from 'styled-components'
-import { Container, Form, Input, Header, Button, Loader } from 'semantic-ui-react'
+import styled from '@emotion/styled'
+import { Container, Grid, Stack, Typography } from '@mui/material'
+import { Form, Input, Header, Button, Loader } from 'semantic-ui-react'
 
 import { VotingContextProvider } from './VotingContext'
 
@@ -43,9 +44,9 @@ const MemberLoginRequired = observer(props => {
 
 		setSearchError(false)
 		const code = `${initials.trim().toUpperCase()}${number}`
-		
+
 		const member = members.values.find(mem => mem.code === code)
-		
+
 		setInitials('')
 		setNumber('')
 		if(member) {
@@ -62,13 +63,17 @@ const MemberLoginRequired = observer(props => {
 	// Display the interface to choose a member
 	if(!user) {
 		return(
-			<MemberLoginContainer>
+			<>
 				<BackgroundImage />
-				<Centered>
-					<Header as='h1' className='title'>Enter Your Initials &amp; Member ID</Header>
-					<Container>
-						<Form onSubmit={ chooseMember } ref={ formRef }>
-							<Form.Group inline widths='equal'>
+				<Stack justifyContent="center" alignItems="center" sx={ { minHeight: '100vh', height: '100%' } }>
+					<Form onSubmit={ chooseMember } ref={ formRef }>
+						<Grid container spacing={ 2 }>
+
+							<Grid item xs={ 12 }>
+								<Typography component="h1" variant="h2" color="white" className='title' align="center">Enter Your Initials &amp; Member ID</Typography>
+							</Grid>
+
+							<Grid item xs={ 12 } md={ 6 }>
 								<Form.Field>
 									<Input
 										fluid
@@ -79,6 +84,9 @@ const MemberLoginRequired = observer(props => {
 										onChange={ e => setInitials(e.target.value.trim().toUpperCase()) }
 									/>
 								</Form.Field>
+							</Grid>
+
+							<Grid item xs={ 12 } md={ 6 }>
 								<Form.Field>
 									<Input
 										fluid
@@ -89,20 +97,23 @@ const MemberLoginRequired = observer(props => {
 										onChange={ e => setNumber(parseInt(e.target.value.trim()) || '') }
 									/>
 								</Form.Field>
-							</Form.Group>
-							<Form.Group>
+							</Grid>
+
+							<Grid item xs={ 12 }>
 								<SubmitButton size='huge' disabled={ submitDisabled } onClick={ formRef.submit }>Begin Voting!</SubmitButton>
-							</Form.Group>
-						</Form>
-					</Container>
+							</Grid>
 
-					{ searchError && <Header as='h2' className='title'>No Member Found, Try Again</Header> }
+							<Grid item xs={ 12 }>
+								{ searchError && <Header as='h2' className='title'>No Member Found, Try Again</Header> }
+							</Grid>
 
-				</Centered>
-			</MemberLoginContainer>
+						</Grid>
+					</Form>
+				</Stack>
+			</>
 		)
 	}
-	
+
 	// Member is chosen, display the voting panel
 	return (
 		<VotingContextProvider member={ user } unsetUser={ () => setUser(false) }>
@@ -114,6 +125,7 @@ const MemberLoginRequired = observer(props => {
 const MemberLoginContainer = styled(Container)`
 	text-align: center;
 	padding-top: 6rem;
+	height: 100%;
 
 	h1.title {
 		color: #FFF;
@@ -131,13 +143,6 @@ const MemberLoginContainer = styled(Container)`
 	}
 `
 
-const Centered = styled.div`
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	z-index: 1000;
-`
-
 const BackgroundImage = styled.div`
 	position: absolute;
 	top: 0;
@@ -145,7 +150,7 @@ const BackgroundImage = styled.div`
 	width: 100%;
 	height: 100vh;
 	opacity: 0.1;
-	z-index: 1;
+	z-index: 0;
 	background: url('/img/BPLogo.svg') no-repeat 50% 50%;
 	background-size: 1600px;
 `

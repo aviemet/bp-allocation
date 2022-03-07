@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Container } from 'semantic-ui-react'
-import styled from 'styled-components'
+import { Container } from '@mui/material'
+import styled from '@emotion/styled'
 
-const KioskLayout = (props) => (
+const KioskLayout = ({ children }) => (
 	<KioskContainer>
-		<Container>
-			{props.children}
+		<Container sx={ { width: '100%', minHeight: '100vh' } }>
+			{ children }
 		</Container>
 	</KioskContainer>
 )
@@ -15,6 +15,7 @@ const KioskLayout = (props) => (
 const KioskContainer = styled.div`
 	width: 100%;
 	height: 100%;
+	min-height: 100vh;
 	background: black;
 	color: white;
 	touch-action: manipulation;

@@ -1,4 +1,6 @@
-const screen = {
+import { createTheme } from '@mui/material/styles'
+
+export const screen = {
 	mobileS: 320,
 	mobileM: 375,
 	mobileL: 425,
@@ -10,8 +12,100 @@ const screen = {
 	desktopL: 2560
 }
 
-const theme = {
-	screen
-}
+const theme = createTheme({
+	screen,
+	palette: {
+		success: {
+			highlight: '#e1fbe2',
+			main: '#168341',
+		},
+		table: {
+			stripe: '#EEE',
+			highlight: '#edf6ff',
+			header: '#DDD',
+		},
+	},
+	components: {
+		MuiButton: {
+			defaultProps: {
+				variant: 'contained',
+			},
+		},
+		MuiTable: {
+			styleOverrides: {
+				root: {
+					borderCollapse: 'collapse',
+				}
+			},
+			variants: [
+				{
+					props: { variant: 'striped' },
+					style: ({ ownerState, theme }) => ({
+						'& > tbody > tr:nth-of-type(2n)': {
+							backgroundColor: theme.palette.grey[100],
+						},
+					}),
+				},
+				{
+					props: { variant: 'striped-collapse' },
+					style: ({ ownerState, theme }) => ({
+						'& > tbody > tr:nth-of-type(4n), & > tbody > tr:nth-of-type(4n-1)': {
+							backgroundColor: theme.palette.grey[100],
+						},
+					}),
+				},
+			],
+		},
+		MuiTableHead: {
+			styleOverrides: {
+				root: ({ ownerState, theme }) => ({
+					backgroundColor: theme.palette.grey[100],
+					'& > th': {
+						borderRight: theme.palette.grey[200],
+					},
+				}),
+			},
+		},
+		MuiTableRow:{
+			root:  ({ ownerState, theme }) => ({
+				'&:first-of-type': {
+					borderLeft: `1px solid ${theme.palette.grey[200]}`,
+				},
+			}),
+		},
+		MuiTableCell: {
+			styleOverrides: {
+				root: {
+					fontSize: '1rem',
+				},
+				head: {
+					fontSize: '1.2rem',
+				},
+				footer: ({ ownerState, theme }) => ({
+					fontSize: '1.2rem',
+					textAlign: ownerState.align,
+					fontWeight: 500,
+					color: theme.palette.text.primary,
+				}),
+			},
+		},
+	},
+	typography: {
+		fontFamily: 'Roboto',
+	},
+	props: {
+		MuiTooltip: {
+			arrow: true,
+		},
+	},
+	overrides: {
+		MuiAppBar: {
+			colorInherit: {
+				backgroundColor: '#002b45',
+				color: '#fff',
+			},
+		},
+	},
+})
 
 export default theme

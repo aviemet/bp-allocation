@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { MemberMethods } from '/imports/api/methods'
-import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
+import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
 import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
 
 import { Icon, Dropdown } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 const ActionsDropdownMenu = ({ theme, member, messages }) => {
 	const [ modalOpen, setModalOpen ] = useState(false)

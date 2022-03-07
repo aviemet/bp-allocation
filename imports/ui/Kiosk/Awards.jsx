@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite'
 import { useSettings, useOrgs } from '/imports/api/providers'
 
 import { Header, Card } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 import AwardCard from '/imports/ui/Components/Cards/AwardCard'
 

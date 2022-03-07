@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useMembers } from '/imports/api/providers'
 import numeral from 'numeral'
 
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import { Loader } from 'semantic-ui-react'
 
 const PledgeInfo = ({ pledge }) => {

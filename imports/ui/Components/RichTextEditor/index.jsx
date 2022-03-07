@@ -1,13 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, forwardRef } from 'react'
 import PropTypes from 'prop-types'
-import { Checkbox } from 'semantic-ui-react'
+import { Checkbox, FormControlLabel } from '@mui/material'
 
 import RawEditor from './RawEditor'
 import Quill from './Quill'
-// import CKEditor from './CKEditor'
 
-const RichTextEditor = ({ value, onChange, ...rest }, ref) => {
-	const [ isRaw, setIsRaw ] = useState(false)
+const RichTextEditor = forwardRef(({ value, onChange, ...rest }, ref) => {
+	const [isRaw, setIsRaw] = useState(false)
 
 	const InputComponent = isRaw ? RawEditor : Quill
 
@@ -17,14 +16,20 @@ const RichTextEditor = ({ value, onChange, ...rest }, ref) => {
 
 	return (
 		<>
-			<Checkbox label='Raw HTML' checked={ isRaw } onClick={ (e, { checked }) => setIsRaw(checked) } />
+			<FormControlLabel label='Raw HTML' control={
+				<Checkbox
+					checked={ isRaw }
+					onChange={ e => setIsRaw(e.target.checked) } />
+			} />
 			<InputComponent
-				value={ value }
+				ref={ ref }
+				{ ...rest }
+				value={ value || '' }
 				onChange={ handleChange }
 			/>
 		</>
 	)
-}
+})
 
 RichTextEditor.propTypes = {
 	placeholder: PropTypes.string,

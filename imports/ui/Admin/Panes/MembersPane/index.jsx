@@ -1,62 +1,51 @@
 import React from 'react'
+import { useParams, useHistory } from 'react-router-dom'
 import { useMembers } from '/imports/api/providers'
-import { isEmpty } from 'lodash'
 
-import { Container, Input, Grid, Loader } from 'semantic-ui-react'
+import {
+	Container,
+	Grid,
+	Skeleton,
+	Typography,
+} from '@mui/material'
 
-import NewMemberInputs from './NewMemberInputs'
-import MembersList from './MembersList'
-import ImportMembers from './ImportMembers'
+import SplitButton from '/imports/ui/Components/Buttons/SplitButton'
+import MembersTable from './MembersTable'
 import { observer } from 'mobx-react-lite'
 
 const MembersPane = observer(() => {
-	const { members, isLoading: membersLoading } = useMembers()
+	const { id } = useParams()
+	const history = useHistory()
 
-	const clearSearch = () => {
-		members.searchFilter = null
-	}
+	const options = [
+		{
+			title: 'Add New Member',
+			action: () => history.push(`/admin/${id}/members/new`)
+		},
+		{
+			title: 'Import From CSV',
+			action: () => history.push(`/admin/${id}/members/import`)
+		},
+	]
 
-	if(membersLoading || isEmpty(members)) return <Loader active />
 	return (
-		<>
-			<Container style={ { marginBottom: '0.6rem' } }>
-				<Grid>
-
-					<Grid.Row>
-
-						<Grid.Column width={ 3 }>
-							<h1>Members</h1>
-						</Grid.Column>
-
-						<Grid.Column width={ 10 }>
-							<Input
-								fluid
-								icon='search'
-								iconPosition='left'
-								action={ { icon: 'cancel', onClick: clearSearch } }
-								placeholder='Filter'
-								value={ members.searchFilter || '' }
-								onChange={ e => members.searchFilter = e.currentTarget.value }
-							/>
-						</Grid.Column>
-
-						<Grid.Column width={ 3 }>
-							<ImportMembers />
-						</Grid.Column>
-
-					</Grid.Row>
-
+		<Container>
+			<Grid container spacing={ 4 }>
+				<Grid item xs={ 12 } md={ 8 }>
+					<Typography component="h1" variant="h3">
+							Members
+					</Typography>
 				</Grid>
-			</Container>
 
-			<Container>
-				<NewMemberInputs />
-			</Container>
+				<Grid item xs={ 12 } md={ 4 } align="right">
+					<SplitButton options={ options } />
+				</Grid>
 
-			<Container>
-				<MembersList members={ members } />
-			</Container>
-		</>
+				<Grid item xs={ 12 }>
+					<MembersTable />
+				</Grid>
+			</Grid>
+		</Container>
 	)
 })
 

@@ -16,15 +16,18 @@ const OrganizationMethods = {
 		validate: null,
 
 		run(data) {
-			return Organizations.insert(data, (err, res) => {
-				if(err){
-					console.error(err)
+			let result = {}
+			Organizations.insert(data, (error, response) => {
+				if(error){
+					console.error(error)
 				} else {
 					Themes.update({ _id: data.theme }, {
-						$push: { organizations: res }
+						$push: { organizations: response }
 					})
 				}
+				result = { error, response }
 			})
+			return result
 		}
 	}),
 

@@ -1,21 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Card } from 'semantic-ui-react'
-import styled from 'styled-components'
+import { styled } from '@mui/material/styles'
+import { css } from '@emotion/react'
+
+import Card from '@mui/material/Card'
+import Paper from '@mui/material/Paper'
+
 import numeral from 'numeral'
 
 import AwardEmblem from '../AwardEmblem'
 
 import { COLORS } from '/imports/lib/global'
 
+
 /**
  * OrgCard Component
  */
 const AwardCard = props => {
 
-	const amount = props.amount ? 
-		numeral(props.amount).format('$0.[0]a') : 
+	const amount = props.amount ?
+		numeral(props.amount).format('$0.[0]a') :
 		props.org.allocatedFunds + props.org.leverageFunds
 
 	return (
@@ -26,22 +31,34 @@ const AwardCard = props => {
 					amount={ amount }
 				/>
 			</CardImage>
-			<CardContent>
+			<CardContent style={ { paddingTop: '4px' } }>
 				<OrgTitle>{ props.org.title }</OrgTitle>
 			</CardContent>
 		</OrgCard>
 	)
 }
 
-const OrgCard = styled(Card)`
+const OrgCard = styled(Paper)`
+	text-align: center;
+	background-color: ${COLORS.green};
+	border-radius: 0;
+	flex-basis: 290px;
+	width: 290px;
+	height: 295px;
+	line-height: 20px;
+	margin: 0.5em 0.5em;
+	/* float: none; */
+`
+
+const OrgCardOld = styled(Card)`
 	body .ui.cards > &, && {
 		background-color: ${COLORS.green};
 	}
 `
 
-const OrgTitle = styled.p`
+const OrgTitle = styled('p')`
 	font-family: TradeGothic;
-	font-size: 1.5em;
+	font-size: 1.75rem;
 	margin: 5px;
 	font-weight: 600;
 `
@@ -52,7 +69,7 @@ const OrgAsk = styled.p`
 	font-weight: 700;
 `
 */
-const CardImage = styled.div`
+const CardImage = styled('div')`
 	width: 100%;
 	height: 205px;
 	/*padding: 5px;*/
@@ -61,7 +78,7 @@ const CardImage = styled.div`
 	background-position: center center;
 `
 
-const CardContent = styled(Card.Content)`
+const CardContent = styled('div')`
 	background-color: ${props => props.bgcolor} !important;
 	color: #FFF;
 	text-align: center;

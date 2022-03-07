@@ -1,7 +1,9 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import { Button, Grid } from 'semantic-ui-react'
+
+import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
 import CustomMessage from '../Components/CustomMessage'
 
 const Login = () => {
@@ -35,32 +37,32 @@ const Login = () => {
 
 	return (
 		<>
-			<Grid textAlign='center' verticalAlign='middle'>
-				<Grid.Column style={ { maxWidth: 450 } }>
-					<img style={ { textAlign: 'center' } } src='/img/BPLogo.svg' />
+			<Grid container justifyContent="center" alignItems="center">
+				<Grid item xs={ 10 } sm={ 8 } md={ 6 } lg={ 4 } align="center">
+					<img src='/img/BPLogo.svg' />
 					<h1>Battery Powered<br/>Allocation Night</h1>
-					<Button
-						fluid
-						size='large'
-						onClick={ handleLogin }
-					>
+					<Button size='large' onClick={ handleLogin } style={ { width: '100%' } }>
 						Login
 					</Button>
-				</Grid.Column>
+				</Grid>
 			</Grid>
-			{ loginErrorVisible && <CustomMessage
-				negative
-				onDismiss={ hideMessage }
-				heading='Login Unsuccesful'
-				body={ <>
-					<p>Authentication is restricted to emails with the following domains:</p>
-					<ul>
-						{ ['thebatterysf.com'].map((domain, i) => ( // Should be pulling from the settings file, but I ain't got time for that
-							<li key={ i }>{ domain }</li>
-						)) }
-					</ul>
-				</> }
-			/> }
+
+			{ loginErrorVisible &&
+				<CustomMessage
+					negative
+					onDismiss={ hideMessage }
+					heading='Login Unsuccesful'
+					body={ <>
+						<p>Authentication is restricted to emails with the following domains:</p>
+						<ul>
+							{ ['thebatterysf.com'].map((domain, i) => ( // Should be pulling from the settings file
+								<li key={ i }>{ domain }</li>
+							)) }
+						</ul>
+					</> }
+				/>
+			}
+
 		</>
 	)
 }

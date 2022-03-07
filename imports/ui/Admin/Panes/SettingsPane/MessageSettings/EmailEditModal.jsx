@@ -38,10 +38,10 @@ const EmailEditModal = ({ buttonText, message }) => {
 	}
 
 	return (
-		<Modal 
-			trigger={ <Button onClick={ () => setIsModalOpen(true) }>{ buttonText }</Button> } 
-			centered={ false } 
-			open={ isModalOpen } 
+		<Modal
+			trigger={ <Button onClick={ () => setIsModalOpen(true) }>{ buttonText }</Button> }
+			centered={ false }
+			open={ isModalOpen }
 			onClose={ handleClose }
 		>
 			<Modal.Header>Create New Message</Modal.Header>
@@ -52,20 +52,20 @@ const EmailEditModal = ({ buttonText, message }) => {
 
 						<Form.Field>
 							<label htmlFor="messageTitle">Short but descriptive title for the message</label>
-							<Input 
-								placeholder='e.g. Voting Begins Text' 
+							<Input
+								placeholder='e.g. Voting Begins Text'
 								id='messageTitle'
-								value={ messageTitle } 
-								onChange={ e => setMessageTitle(e.target.value) } 
+								value={ messageTitle }
+								onChange={ e => setMessageTitle(e.target.value) }
 							/>
 						</Form.Field>
 
 						<Form.Field>
 							<label htmlFor='messageSubject'>Subject</label>
-							<Input 
+							<Input
 								id='messageSubject'
-								value={ messageSubject } 
-								onChange={ e => setMessageSubject(e.target.value) } 
+								value={ messageSubject }
+								onChange={ e => setMessageSubject(e.target.value) }
 							/>
 						</Form.Field>
 

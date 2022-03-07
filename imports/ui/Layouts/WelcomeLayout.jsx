@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Container } from 'semantic-ui-react'
-import styled from 'styled-components'
+import Container from '@mui/material/Container'
+import styled from '@emotion/styled'
 
 const WelcomeLayout = ({ children }) => {
 	return (

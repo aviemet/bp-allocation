@@ -5,7 +5,7 @@ import { COLORS } from '/imports/lib/global'
 import { useTheme } from '/imports/api/providers'
 import numeral from 'numeral'
 
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 const VotingComplete = ({ clearAllValues, org, amount }) => {
 	const { theme, isLoading: themeLoading } = useTheme()

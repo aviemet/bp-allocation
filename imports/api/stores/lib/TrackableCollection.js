@@ -9,18 +9,18 @@ class TrackableCollection {
 	searchableFields = null
 
 	/**
-	 * 
+	 *
 	 * @param {Array} data Array of data to be stored in the collection
 	 * @param {Object} Store Mobx Store object for data being stored
 	 */
 	constructor(data, Store) {
 		this._store = Store
-		
+
 		// If a Store was provided, instantiate a new store for each element in data
 		// Either the Store object, or the raw data variable gets stored as the values for the collection
 		if(Store) {
-			this.values = data.map(value => { 
-				const store = new Store(value) 
+			this.values = data.map(value => {
+				const store = new Store(value)
 				return store
 			})
 		} else {
@@ -61,7 +61,7 @@ class TrackableCollection {
 				dir = 'desc'
 				break
 			default:
-				dir = direction 
+				dir = direction
 		}
 
 		this.values = orderBy(this.values, column, dir)

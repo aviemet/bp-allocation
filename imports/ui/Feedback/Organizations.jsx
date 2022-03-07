@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite'
 import { useOrgs, useTheme, useSettings } from '/imports/api/providers'
 
 import { Table, Checkbox } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 const ChitVotingPane = observer(() => {
 	const { topOrgs, orgs } = useOrgs()

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Input } from 'semantic-ui-react'
+import { TextField } from '@mui/material'
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
 const TimerInput = props => {
@@ -14,8 +14,8 @@ const TimerInput = props => {
 	}
 
 	return (
-		<Input
-			fluid
+		<TextField
+			fullWidth
 			type='number'
 			label='Seconds'
 			index='timerLength'

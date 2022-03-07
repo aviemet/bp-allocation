@@ -8,7 +8,7 @@ import { Container, Grid, Table, Dropdown, Loader, Icon, Segment } from 'semanti
 import { MessageMethods } from '/imports/api/methods'
 import IncludeVotingLinkToggle from './IncludevotingLinkToggle'
 import ActiveToggle from './ActiveToggle'
-import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
+import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
 import { Link, useLocation, useHistory } from 'react-router-dom'
 import EditableText from '/imports/ui/Components/Inputs/EditableText'
 

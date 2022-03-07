@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Card, Container } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 import { observer } from 'mobx-react-lite'
 import { useOrgs, useSettings } from '/imports/api/providers'

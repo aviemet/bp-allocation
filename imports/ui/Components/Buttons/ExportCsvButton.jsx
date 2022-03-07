@@ -2,21 +2,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Papa from 'papaparse'
 
-import { Button } from 'semantic-ui-react'
+import Button from '@mui/material/Button'
 
-const ExportCsvButton = props => {
+const ExportCsvButton = ({ settings, data, description }) => {
 
 	const exportData = () => {
-		const settings = props.settings || {}
+		const settings = settings || {}
 
-		if(props.data) {
+		if(data) {
 			// Convert data to CSV format
-			let csv = Papa.unparse(props.data, settings)
+			let csv = Papa.unparse(data, settings)
 
 			// Prep the file information
 			let csvData = new Blob([csv], { type: 'text/csvcharset=utf-8' })
-			
-			const filename = props.description || 'Allocation Export'
+
+			const filename = description || 'Allocation Export'
 			if (navigator.msSaveBlob) { // IE 10+
 				navigator.msSaveBlob(csvData, filename)
 			} else {
@@ -36,7 +36,7 @@ const ExportCsvButton = props => {
 	}
 
 	return (
-		<Button onClick={ exportData }>Export {props.description}</Button>
+		<Button onClick={ exportData }>Export {description}</Button>
 	)
 }
 

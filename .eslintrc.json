@@ -38,7 +38,7 @@
 		"linebreak-style": [ "error", "unix" ],
 		"quotes": [ "error", "single" ],
 		"semi": [ "error", "never" ],
-		"no-unused-vars": [ "error", {
+		"no-unused-vars": [ "warn", {
 				"vars": "all",
 				"args": "none"
 		}],

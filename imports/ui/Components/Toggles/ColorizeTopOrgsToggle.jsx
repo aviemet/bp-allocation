@@ -5,30 +5,34 @@ import { useSettings } from '/imports/api/providers'
 
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react'
+import {
+	FormControlLabel,
+	Switch,
+} from '@mui/material'
 
 const ColorizeTopOrgsToggle = observer(() => {
 	const { settings } = useSettings()
 
-	const saveValue = (e, data) => {
+	const saveValue = e => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
-				colorizeOrgs: data.checked
+				colorizeOrgs: e.target.checked
 			}
 		})
 	}
 
 	return(
-		<Checkbox
+		<FormControlLabel
+			control={ <Switch
+				index='colorizeOrgs'
+				onClick={ saveValue }
+				checked={ settings.colorizeOrgs || false }
+			/>
+			}
 			label='Dim Top Orgs'
-			toggle
-			index='colorizeOrgs'
-			onClick={ saveValue }
-			checked={ settings.colorizeOrgs || false }
 		/>
 	)
-
 })
 
 export default ColorizeTopOrgsToggle

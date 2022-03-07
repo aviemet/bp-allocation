@@ -1,19 +1,91 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState } from 'react'
-import TextEditModal from './TextEditModal'
-import EmailEditModal from './EmailEditModal'
-import { useData, useMessages } from '/imports/api/providers'
-import { Container, Grid, Table, Dropdown, Loader, Icon, Segment } from 'semantic-ui-react'
+import { useData, useMessages, useMembers } from '/imports/api/providers'
+import { Link, useLocation, useHistory } from 'react-router-dom'
 import { MessageMethods } from '/imports/api/methods'
+
+import ActionMenu from '/imports/ui/Components/Menus/ActionMenu'
+import SortableTable from '/imports/ui/Components/SortableTable'
+import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
+import {
+	Box,
+	Button,
+	CircularProgress,
+	Paper,
+	Stack,
+	TableCell,
+} from '@mui/material'
 import IncludeVotingLinkToggle from './IncludevotingLinkToggle'
 import ActiveToggle from './ActiveToggle'
-import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
-import { Link, useLocation, useHistory } from 'react-router-dom'
+import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
 import EditableText from '/imports/ui/Components/Inputs/EditableText'
+import TextEditModal from './TextEditModal'
+import EmailEditModal from './EmailEditModal'
+
+const textHeaderCells = [
+	{
+		id: 'active',
+		label: 'Active',
+		width: 80,
+	},
+	{
+		id: 'title',
+		label: 'Title',
+		width: '30%',
+	},
+	{
+		id: 'body',
+		label: 'Message',
+		width: '30%',
+	},
+	{
+		id: 'votingLink',
+		label: 'Link',
+		sort: false,
+		disablePadding: true,
+	},
+	{
+		id: 'actions',
+		label: '',
+		sort: false,
+		disablePadding: true,
+	}
+]
+
+const emailHeaderCells = [
+	{
+		id: 'active',
+		label: 'Active',
+		width: 80,
+	},
+	{
+		id: 'title',
+		label: 'Title',
+		width: '30%',
+	},
+	{
+		id: 'subject',
+		label: 'Subject',
+		width: '30%',
+	},
+	{
+		id: 'votingLink',
+		label: 'Link',
+		sort: false,
+		disablePadding: true,
+	},
+	{
+		id: 'actions',
+		label: '',
+		sort: false,
+		disablePadding: true,
+	}
+]
 
 const Messages = () => {
 	const { themeId } = useData()
 	const { messages, isLoading: messagesLoading } = useMessages()
+	const { members } = useMembers()
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState('')
@@ -23,7 +95,21 @@ const Messages = () => {
 	const { pathname } = useLocation()
 	const history = useHistory()
 
-	const deleteMessage = id => () => MessageMethods.remove.call(id)
+	const handleBulkDelete = (selected, onSuccess) => {
+		console.log({ selected })
+		const plural = selected.size > 1
+
+		setModalHeader(`Permanently delete message${plural ? 's' : ''}?`)
+		setModalContent(`This will permanently remove the message${plural ? 's' : ''}. This action is not reversable.`)
+		// Need to curry the function since useState calls passed functions
+		setModalAction( () => () => {
+			selected.forEach(id => {
+				MessageMethods.remove.call(id)
+			})
+			onSuccess()
+		})
+		setModalOpen(true)
+	}
 
 	const handleTextEdits = (id, data) => {
 		MessageMethods.update.call({ id, data }, err => {
@@ -33,166 +119,64 @@ const Messages = () => {
 		})
 	}
 
-	if(messagesLoading) return <Loader active />
+	if(messagesLoading) return <CircularProgress />
 
 	return (
-		<Container>
-			<Segment>
-				<Grid>
-					<Grid.Row>
+		<>
+			<SortableTable
+				title={ <Stack direction="row" alignItems="center" justifyContent="space-between">
+					<div>Text Messages</div>
+					<Button component={ Link } to={ `/admin/${themeId}/settings/messages/new/text` }>+ New Text Message</Button>
+				</Stack> }
+				headCells={ textHeaderCells }
+				rows={ messages.values.filter(message => message.type === 'text') }
+				defaultOrderBy='craetedAt'
+				paginate={ false }
+				onBulkDelete={ handleBulkDelete }
+				fixed={ true }
+				render={ message =>  (
+					<>
+						<TableCell>
+							<ActiveToggle message={ message } />
+						</TableCell>
+						<TableCell>
+							<Link to={ `${pathname}/${message._id}` }>{ message.title }</Link>
+						</TableCell>
+						<TableCell>{ message.body }</TableCell>
+						<TableCell>
+							<IncludeVotingLinkToggle message={ message } />
+						</TableCell>
+						<TableCell>
+							<SendWithFeedbackButton message={ message } />
+						</TableCell>
+					</>
+				) }  />
 
-						<Grid.Column width={ 8 }>
-							<h2>Texts</h2>
-						</Grid.Column>
-
-						<Grid.Column width={ 8 } textAlign='right'>
-							<TextEditModal
-								buttonText='+ New Text Message'
-								messageType='text'
-							/>
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
-
-				{/* Text Message Table */}
-				<Table celled striped>
-					<Table.Header>
-						<Table.Row>
-							<Table.HeaderCell>Active</Table.HeaderCell>
-							<Table.HeaderCell>Title</Table.HeaderCell>
-							<Table.HeaderCell>Message</Table.HeaderCell>
-							<Table.HeaderCell>Include Link</Table.HeaderCell>
-							<Table.HeaderCell>Actions</Table.HeaderCell>
-						</Table.Row>
-					</Table.Header>
-
-					<Table.Body>
-						{ messages.values.map((message, i) => {
-							if(message.type === 'text') {
-								return (
-									<Table.Row key={ i }>
-										<Table.Cell>
-											<ActiveToggle message={ message } />
-										</Table.Cell>
-										<Table.Cell>
-											<EditableText
-												onSubmit={ value => handleTextEdits(message._id, { title: value }) }
-											>
-												{ message.title }
-											</EditableText>
-										</Table.Cell>
-										<Table.Cell>
-											<EditableText
-												type='textarea'
-												onSubmit={ value => handleTextEdits(message._id, { body: value }) }
-											>
-												{ message.body }
-											</EditableText>
-										</Table.Cell>
-										<Table.Cell>
-											<IncludeVotingLinkToggle message={ message } />
-										</Table.Cell>
-										<Table.Cell singleLine>
-
-											<Dropdown text='Actions' className='link item' direction='left'>
-												<Dropdown.Menu>
-													<Dropdown.Item onClick={ () => {
-														Meteor.call('textVotingLinkToMembers', { themeId, message })
-													} }>Send</Dropdown.Item>
-
-													<Dropdown.Divider />
-
-													<Dropdown.Item onClick={ () => {
-														setModalHeader('Permanently Delete This Text Message Template?')
-														setModalContent(`This will permanently remove ${message.title}.`)
-														setModalAction( () => deleteMessage(message._id) )
-														setModalOpen(true)
-													} } ><Icon name='trash' />Delete Message</Dropdown.Item>
-
-												</Dropdown.Menu>
-											</Dropdown>
-
-										</Table.Cell>
-									</Table.Row>
-								)
-							}
-						} ) }
-					</Table.Body>
-				</Table>
-			</Segment>
-
-			<br />
-
-			<Segment>
-				<Grid>
-					<Grid.Row>
-
-						<Grid.Column width={ 8 }>
-							<h2>Emails</h2>
-						</Grid.Column>
-
-						<Grid.Column width={ 8 } textAlign='right'>
-							<EmailEditModal
-								buttonText='+ New Email Message'
-							/>
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
-
-				{/* Email Message Table */}
-				<Table celled striped>
-					<Table.Header>
-						<Table.Row>
-							<Table.HeaderCell>Active</Table.HeaderCell>
-							<Table.HeaderCell>Title</Table.HeaderCell>
-							<Table.HeaderCell>Subject</Table.HeaderCell>
-							<Table.HeaderCell>Include Link</Table.HeaderCell>
-							<Table.HeaderCell>Actions</Table.HeaderCell>
-						</Table.Row>
-					</Table.Header>
-
-					<Table.Body>
-						{ messages.values.map((message, i) => {
-							if(message.type === 'email') {
-								return (
-									<Table.Row key={ i }>
-										<Table.Cell>
-											<ActiveToggle message={ message } />
-										</Table.Cell>
-										<Table.Cell><Link to={ `${pathname}/${message._id}` }>{ message.title }</Link></Table.Cell>
-										<Table.Cell>{ message.subject }</Table.Cell>
-										<Table.Cell>
-											<IncludeVotingLinkToggle message={ message } />
-										</Table.Cell>
-										<Table.Cell singleLine>
-
-											<Dropdown text='Actions' className='link item' direction='left'>
-												<Dropdown.Menu>
-													<Dropdown.Item onClick={ () => history.push(`${pathname}/${message._id}`) }>Preview/Edit</Dropdown.Item>
-
-													<Dropdown.Item onClick={ () => {
-														Meteor.call('emailVotingLinkToMembers', { themeId, message })
-													} }>Send</Dropdown.Item>
-
-													<Dropdown.Divider />
-
-													<Dropdown.Item onClick={ () => {
-														MessageMethods.remove.call(message._id)
-													} } ><Icon name='trash' />Delete Message</Dropdown.Item>
-
-												</Dropdown.Menu>
-											</Dropdown>
-
-										</Table.Cell>
-									</Table.Row>
-								)
-							}
-						} ) }
-					</Table.Body>
-				</Table>
-			</Segment>
-
-			<br />
+			<SortableTable
+				title={ <Stack direction="row" alignItems="center" justifyContent="space-between">
+					<div>Email Messages</div>
+					<Button component={ Link } to={ `/admin/${themeId}/settings/messages/new/email` }>+ New Email Message</Button>
+				</Stack> }
+				headCells={ emailHeaderCells }
+				rows={ messages.values.filter(message => message.type === 'email') }
+				defaultOrderBy='craetedAt'
+				paginate={ false }
+				onBulkDelete={ handleBulkDelete }
+				render={ message => (
+					<>
+						<TableCell>
+							<ActiveToggle message={ message } />
+						</TableCell>
+						<TableCell><Link to={ `${pathname}/${message._id}` }>{ message.title }</Link></TableCell>
+						<TableCell>{ message.subject }</TableCell>
+						<TableCell>
+							<IncludeVotingLinkToggle message={ message } />
+						</TableCell>
+						<TableCell>
+							<SendWithFeedbackButton message={ message } />
+						</TableCell>
+					</>
+				) } />
 
 			<ConfirmationModal
 				isModalOpen={ modalOpen }
@@ -201,7 +185,7 @@ const Messages = () => {
 				content={ modalContent }
 				confirmAction={ modalAction }
 			/>
-		</Container>
+		</>
 	)
 }
 

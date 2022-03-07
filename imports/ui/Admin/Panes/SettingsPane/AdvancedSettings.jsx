@@ -1,114 +1,86 @@
 import React, { useState, useEffect } from 'react'
 import _ from 'lodash'
 import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods'
+import { PresentationSettingsSchema } from '/imports/api/db/schema'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings } from '/imports/api/providers'
 
 import CustomMessage from '/imports/ui/Components/CustomMessage'
-import { Loader, Form } from 'semantic-ui-react'
 import ResetOrgFundsButton from '/imports/ui/Components/Buttons/ResetOrgFundsButton'
 import ResetMessageStatusButton from '/imports/ui/Components/Buttons/ResetMessageStatusButton'
 
-const SettingsPane = observer(props => {
-	const { theme } = useTheme()
+import {
+	CircularProgress,
+	FormControlLabel,
+	Grid,
+	InputAdornment,
+	Stack,
+} from '@mui/material'
+import { Form, TextInput, Switch, SubmitButton, STATUS, } from '/imports/ui/Components/Form'
+
+const SettingsPane = observer(() => {
 	const { settings, isLoading: settingsLoading } = useSettings()
 
-	const [ twilioRateLimit, setTwilioRateLimit ]       = useState(settings.twilioRateLimit || 100)
+	const [formStatus, setFormStatus] = useState(STATUS.READY)
 
-	const [ formErrorVisible, setFormErrorVisible ] = useState(false)
-	const [ formErrorMessage, setFormErrorMessage ] = useState('')
-
-	useEffect(() => {
-		if(!settingsLoading) {
-			setTwilioRateLimit(settings.twilioRateLimit)
-		}
-	}, [settingsLoading])
-
-	const showFormErrorMessage = () => {
-		setFormErrorVisible(true)
-		setTimeout(hideFormErrorMessage, 10000)
+	const defaultData = {
+		twilioRateLimit: settings?.twilioRateLimit || 100,
 	}
 
-	const hideFormErrorMessage = () => {
-		setFormErrorVisible(false)
-		setFormErrorMessage('')
+	const sanitizeData = data => {
+		const sanitizedData = data
+		sanitizedData.twilioRateLimit = parseInt(sanitizedData.twilioRateLimit)
+		return data
 	}
 
-	const handleSubmit = e => {
-		e.preventDefault()
+	const onError = (errors, data) => {
+		console.log({ errors, data })
+	}
 
-		let formData = {
-			settings: { twilioRateLimit }
-		}
-
-		// Iterate over database objects with keys to be saved
-		_.forEach(formData, (value, dataKey) => {
-			// In each object, delete keys which haven't changed
-			_.keys(formData[dataKey]).map(key => {
-				// I know we shouldn't use eval Justification:
-				// Values being eval'd are not from user, the only way to have dynamic variable names in JS
-				if(eval(key) === eval(dataKey)[key]) {
-					delete formData[dataKey][key]
-				}
-			})
+	const onSubmit = data => {
+		console.log({ data })
+		setFormStatus(STATUS.SUBMITTING)
+		PresentationSettingsMethods.update.call({
+			id: settings._id,
+			data: data
+		}, (err, res) => {
+			if(err) {
+				setFormStatus(STATUS.ERROR)
+			} else {
+				setFormStatus(STATUS.SUCCESS)
+			}
 		})
-
-		// Only update if data has changed
-		if(!_.isEmpty(formData.theme)) {
-			ThemeMethods.update.call({
-				id: theme._id,
-				data: formData.theme
-			}, (err, res) => {
-				if(err) {
-					setFormErrorMessage(err.reason.errmsg)
-					showFormErrorMessage()
-					Object.keys(formData.theme).forEach(key => {
-						const val = key.charAt(0).toUpperCase() + key.slice(1)
-						eval(`set${val}('${theme[key]}')`)
-					})
-				}
-			})
-		}
-
-		if(!_.isEmpty(formData.settings)) {
-			PresentationSettingsMethods.update.call({
-				id: settings._id,
-				data: formData.settings
-			})
-		}
 	}
 
-	if(!theme) return(<Loader/>)
+	if(settingsLoading) return(<CircularProgress />)
 	return (
 		<>
-			<Form onBlur={ handleSubmit } onSubmit={ handleSubmit }>
-
-				<Form.Group>
-					{/* Twilio Rate Limit ms */}
-					<Form.Field>
-						<Form.Input
-							name='settings.twilioRateLimit'
-							type='text'
-							placeholder='1000 is 1 second'
+			<Form
+				onValidSubmit={ onSubmit }
+				schema={ PresentationSettingsSchema }
+				onSanitize={ sanitizeData }
+				onValidationError={ onError }
+				defaultValues={ defaultData }
+			>
+				<Grid container spacing={ 2 }>
+					<Grid item xs={ 12 }>
+						<TextInput
+							name='twilioRateLimit'
 							label='Rate limit in ms for sending texts'
-							value={ twilioRateLimit || '' }
-							onChange={ e => setTwilioRateLimit(e.target.value) }
 						/>
-					</Form.Field>
-				</Form.Group>
+					</Grid>
+					<Grid item xs={ 12 } align="right">
+						<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Changes</SubmitButton>
+					</Grid>
+				</Grid>
 			</Form>
 
 			<hr />
 
-			<ResetOrgFundsButton />
-			<ResetMessageStatusButton />
-
-			{ formErrorVisible && <CustomMessage
-				negative
-				onDismiss={ hideFormErrorMessage }
-				heading='There was an error saving values'
-				body={ formErrorMessage }
-			/> }
+			<Stack direction="row" justifyContent="space-between" alignItems="center">
+				<ResetOrgFundsButton />
+				<ResetMessageStatusButton />
+			</Stack>
 		</>
 	)
 })

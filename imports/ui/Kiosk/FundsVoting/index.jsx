@@ -8,12 +8,12 @@ import { useData, useSettings, useOrgs } from '/imports/api/providers'
 import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext'
 
 import { Card, Container, Header, Button } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 import VotingComplete from '../VotingComplete'
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import FundsSlider from './FundsSlider'
-import useInterval from '/imports/ui/Components/useInterval'
+import Countown from '../Countdown'
 
 import { COLORS } from '/imports/lib/global'
 
@@ -36,16 +36,10 @@ const FundsVotingKiosk = observer(props => {
 
 	const [ votingComplete, setVotingComplete ] = useState(voted)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
-	const [ count, setCount ] = useState(data.votingRedirectTimeout)
 	const [ isCounting, setIsCounting ] = useState(false)
-
-	useInterval(() => {
-		setCount(count - 1)
-	}, isCounting ? 1000 : null)
 
 	const displayCountDown = () => {
 		setCountdownVisible(true)
-		setCount(data.votingRedirectTimeout)
 		setIsCounting(true)
 	}
 
@@ -64,10 +58,7 @@ const FundsVotingKiosk = observer(props => {
 
 			<Header as='h1' className="title">{props.user.firstName && 'Voting for'} {memberName}</Header>
 
-			{ countdownVisible && <Header as='h3' className='countdown'>
-				Voting has ended, please submit your votes. <br/>
-				This page will redirect in { count } seconds
-			</Header> }
+			{ countdownVisible && <Countown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
 
 			<Card.Group doubling centered itemsPerRow={ 2 }>
 				{topOrgs.map(org => {

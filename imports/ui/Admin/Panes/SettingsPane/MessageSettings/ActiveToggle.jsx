@@ -2,21 +2,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { MessageMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react'
+import { Switch } from '@mui/material'
 
 const includeVotingLinkToggle = ({ message }) => {
-	const saveValue = (e, data) => {
+	const saveValue = e => {
 		MessageMethods.update.call({
 			id: message._id,
 			data: {
-				active: data.checked
+				active: e.target.checked
 			}
 		})
 	}
 
 	return(
-		<Checkbox
-			toggle
+		<Switch
 			onClick={ saveValue }
 			checked={ message.active || false }
 		/>

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Grid } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 const Hr = (props) => (
 	<Grid.Row>

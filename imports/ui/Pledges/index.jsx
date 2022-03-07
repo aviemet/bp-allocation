@@ -7,7 +7,7 @@ import { toJS } from 'mobx'
 import { roundFloat } from '/imports/lib/utils'
 
 import { Container, Form, Input, Button, Card, Checkbox, Loader } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import MemberSearch from '/imports/ui/Components/MemberSearch'
@@ -124,17 +124,17 @@ const Pledges = observer(() => {
 })
 
 const PledgesContainer = styled(Container)`
-	height: 100vh;
-	padding-top: 3rem;
+	padding-top: 2rem;
+	padding-bottom: 1rem;
 
 	h1 {
 		text-align: center;
 		font-size: 2.5rem;
-		margin-bottom: 3rem;
+		margin-bottom: 1rem;
 	}
 
 	form {
-		margin-bottom: 2rem;
+		margin-bottom: 1rem;
 	}
 
 	.ui {
@@ -161,11 +161,11 @@ const FinalizeButton = styled(Button)`
 `
 
 const BottomRight = styled.div`
+	padding-top: 1rem;
 	text-align: right;
 	align-items: flex-end;
 	display: flex;
 	justify-content: flex-end;
-	height: 150px;
 `
 
 export default Pledges

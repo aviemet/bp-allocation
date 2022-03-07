@@ -7,7 +7,20 @@ import { useTheme, useSettings } from '/imports/api/providers'
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
 import { TimerInput, ResultsOffsetInput } from '/imports/ui/Components/Inputs'
-import { Grid, Icon, Label, Segment, Button, Loader } from 'semantic-ui-react'
+import {
+	Box,
+	Button,
+	CircularProgress,
+	Grid,
+	Paper,
+} from '@mui/material'
+import InfoIcon from '@mui/icons-material/Info'
+import ViewComfyIcon from '@mui/icons-material/ViewComfy'
+import TimerIcon from '@mui/icons-material/Timer'
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
+import BarChartIcon from '@mui/icons-material/BarChart'
+import CheckIcon from '@mui/icons-material/Check'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 
 import {
 	ChitVotingActiveToggle,
@@ -57,123 +70,114 @@ const PresentationPane = observer(() => {
 		})
 	}
 
-	if(settingsLoading) return <Loader active />
+	if(settingsLoading) return <CircularProgress />
 
 	return (
-		<div>
-			<Segment>
-				<Grid stackable columns={ 3 }>
-					<Grid.Row>
-						<Grid.Column>
+		<>
+			<Paper sx={ { p: 3, mb: 2 } }>
+				<Grid container spacing={ 2 }>
+					<Grid item xs={ 12 } md={ 4 }>
 
-							{/************
+						{/************
 							* Intro/Title Page
 							************/}
-							<PresentationNavButton page='intro'>
-								<Icon name='address card' size='huge' /><br/>
-								<Label>Title Page</Label>
-							</PresentationNavButton>
+						<PresentationNavButton
+							page='intro'
+							label="Title Page"
+							Icon={ InfoIcon }
+						/>
 
-							<Button onClick={ restoreDefaultSettings }>Restore Defaults</Button>
+						<Button onClick={ restoreDefaultSettings }>Restore Defaults</Button>
+					</Grid>
+					<Grid item xs={ 12 } md={ 4 }>
 
-						</Grid.Column>
-						<Grid.Column>
-
-							{/************
+						{/************
 							* Participating Organizations
 							************/}
-							<PresentationNavButton page='orgs'>
-								<Icon name='table' size='huge' /><br/>
-								<Label>Participating Organizations</Label>
-							</PresentationNavButton>
+						<PresentationNavButton
+							page='orgs'
+							label="Participating Organizations"
+							Icon={ ViewComfyIcon }
+						/>
 
-							<ColorizeTopOrgsToggle />
+						<ColorizeTopOrgsToggle />
 
-						</Grid.Column>
-						<Grid.Column>
+					</Grid>
+					<Grid item xs={ 12 } md={ 4 }>
 
-							{/************
+						{/************
 							* Timer
 							************/}
-							<PresentationNavButton page='timer' icon>
-								<Icon name='hourglass' size='huge' /><br/>
-								<Label>Timer</Label>
-							</PresentationNavButton>
+						<PresentationNavButton
+							page='timer'
+							label="Timer"
+							Icon={ TimerIcon }
+						/>
 
-							<TimerInput timerLength={ settings.timerLength } settingsId={ settings._id } />
-							<br/>
-							<ChitVotingActiveToggle />
-							<br/>
-							<FundsVotingActiveToggle />
-						</Grid.Column>
+						<TimerInput timerLength={ settings.timerLength } settingsId={ settings._id } />
+						<br/>
+						<ChitVotingActiveToggle />
+						<br/>
+						<FundsVotingActiveToggle />
 
-					</Grid.Row>
-					<Grid.Row>
-						<Grid.Column>
+					</Grid>
+					<Grid item xs={ 12 } md={ 4 }>
 
-							{/************
+						{/************
 							* Top Organizations
 							************/}
-							<PresentationNavButton page='toporgs'>
-								<Icon name='winner' size='huge' /><br/>
-								<Label>Top Organizations</Label>
-							</PresentationNavButton>
+						<PresentationNavButton
+							page='toporgs'
+							label="Top Organizations"
+							Icon={ EmojiEventsIcon }
+						/>
 
-							<AnimateTopOrgsToggle />
+						<AnimateTopOrgsToggle />
 
-						</Grid.Column>
-						<Grid.Column>
+					</Grid>
+					<Grid item xs={ 12 } md={ 4 }>
 
-							{/************
+						{/************
 							* Allocation/Evaluation
 							************/}
-							<PresentationNavButton page='allocation'>
-								<Icon name='chart bar' size='huge' /><br/>
-								<Label>Allocation</Label>
-							</PresentationNavButton>
+						<PresentationNavButton
+							page='allocation'
+							label="Allocation"
+							Icon={ BarChartIcon }
+						/>
 
-							<ShowLeverageToggle />
-							<br/>
-							<ShowSaveValuesToggle />
-							<br/>
-							<hr />
-							<TopupsActiveToggle />
+						<ShowLeverageToggle />
+						<br/>
+						<ShowSaveValuesToggle />
+						<br/>
+						<hr />
+						<TopupsActiveToggle />
 
-						</Grid.Column>
-						<Grid.Column>
+					</Grid>
+					<Grid item xs={ 12 } md={ 4 }>
 
-							{/************
+						{/************
 							* Results Page
 							************/}
-							<PresentationNavButton page='results' onClick={ setResultsHaveBeenViewed }>
-								<Icon name='check' size='huge' /><br/>
-								<Label>Result</Label>
-							</PresentationNavButton>
+						<PresentationNavButton
+							page='results'
+							label="Results"
+							Icon={ CheckIcon }
+							onClick={ setResultsHaveBeenViewed }
+						/>
 
-							<ResultsOffsetInput resultsOffset={ settings.resultsOffset } settingsId={ settings._id } />
+						<ResultsOffsetInput resultsOffset={ settings.resultsOffset } settingsId={ settings._id } />
 
-						</Grid.Column>
-					</Grid.Row>
+
+					</Grid>
 				</Grid>
-			</Segment>
+			</Paper>
 
-			<Segment>
-				<Grid columns={ 1 }>
-					<Grid.Row>
-						<Grid.Column>
+			<Link to={ `/presentation/${theme._id}` } target='_blank'>
+				<PresentationNavButton page='intro' label="Launch Presentaion" Icon={ OpenInNewIcon } active={ false } />
+			</Link>
 
-							<Link to={ `/presentation/${theme._id}` } target='_blank'>
-								<PresentationNavButton page='intro' active={ false }>
-									<Label>Launch Presentaion</Label>
-								</PresentationNavButton>
-							</Link>
-
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
-			</Segment>
-
-		</div>
+		</>
 	)
 })
 

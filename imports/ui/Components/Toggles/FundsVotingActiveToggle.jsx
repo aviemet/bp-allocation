@@ -5,17 +5,20 @@ import { useSettings } from '/imports/api/providers'
 
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react'
+import {
+	FormControlLabel,
+	Switch,
+} from '@mui/material'
 
 const FundsVotingActiveToggle = observer(() => {
 
 	const { settings } = useSettings()
 
-	const saveValue = (e, data) => {
+	const saveValue = e => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
-				fundsVotingActive: data.checked,
+				fundsVotingActive: e.target.checked,
 				chitVotingActive: false,
 				topupsActive: false
 			}
@@ -25,15 +28,15 @@ const FundsVotingActiveToggle = observer(() => {
 	if(!settings.useKioskFundsVoting) return <></>
 
 	return(
-		<Checkbox
+		<FormControlLabel
+			control={ <Switch
+				index='fundsVotingActive'
+				onClick={ saveValue }
+				checked={ settings.fundsVotingActive || false }
+			/> }
 			label='Funds Voting Active'
-			toggle
-			index='fundsVotingActive'
-			onClick={ saveValue }
-			checked={ settings.fundsVotingActive || false }
 		/>
 	)
-
 })
 
 export default FundsVotingActiveToggle

@@ -8,7 +8,7 @@ export const roundFloat = (value, decimal) => {
 export const formatters = {
 	currency: new Intl.NumberFormat('en-US', {
 		style: 'currency',
-		currency: 'USD'
+		currency: 'USD',
 	})
 }
 

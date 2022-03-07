@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import numeral from 'numeral'
 
 import { Card } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 import { Images } from '/imports/api/db'
 

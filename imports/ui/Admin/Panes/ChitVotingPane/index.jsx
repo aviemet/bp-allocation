@@ -1,74 +1,78 @@
-import React, { useEffect, useState } from 'react'
-
+import React from 'react'
+import PropTypes from 'prop-types'
 import { observer } from 'mobx-react-lite'
-import { useOrgs, useSettings } from '/imports/api/providers'
+import { useSettings, useTheme, useOrgs } from '/imports/api/providers'
+import { ThemeMethods } from '/imports/api/methods'
 
-import { Grid, Table, Loader } from 'semantic-ui-react'
+import {
+	Box,
+	Grid,
+	CircularProgress,
+	Stack,
+	Typography,
+	TextField
+} from '@mui/material'
 
-import ChitInputs from './ChitInputs'
-import TopOrgsByChitVote from './TopOrgsByChitVote'
-import { useWindowSize, breakpoints } from '/imports/ui/MediaProvider'
+import ManualInputTable from './ManualInputTable'
+import RankedOrgsTable from './RankedOrgsTable'
+import ChitVotingActiveToggle from '/imports/ui/Components/Toggles/ChitVotingActiveToggle'
 
-const ChitVotingPane = observer(() => {
+const ChitVotingPane = observer(({ hideAdminFields }) => {
 	const { settings } = useSettings()
-	const { orgs, topOrgs, isLoading: orgsLoading } = useOrgs()
-	const { width } = useWindowSize()
+	const { isLoading: orgsLoading } = useOrgs()
+	const { theme } = useTheme()
 
-	const [ gridColumns, setGridColumns ] = useState(settings.useKioskChitVoting ? 1 : 2)
 
-	useEffect(() => {
-		if(settings.useKioskChitVoting || width < breakpoints.tablet) {
-			setGridColumns(1)
-		} else {
-			setGridColumns(2)
+	const updateNumTopOrgs = e => {
+		if(e.target.value !== theme.numTopOrgs){
+			ThemeMethods.update.call({
+				id: theme._id,
+				data: {
+					numTopOrgs: e.target.value
+				}
+			})
 		}
-	}, [settings.useKioskChitVoting, width])
+	}
 
-	if(orgsLoading) return <Loader active />
-
-	const topOrgIds = topOrgs.map(org => org._id)
+	if(orgsLoading) return <CircularProgress />
 
 	return (
-		<Grid
-			columns={ gridColumns }
-			divided={ gridColumns > 1 }
-		>
-			<Grid.Row>
+		<Grid container spacing={ 2 }>
 
-				{ !settings.useKioskChitVoting && <Grid.Column>
+			{ !settings.useKioskChitVoting && <Grid item xs={ 12 } md={ 6 }>
+				<ManualInputTable />
+			</Grid> }
 
-					<Table celled striped columns={ 3 }>
-						<Table.Header>
-							<Table.Row>
-								<Table.HeaderCell>Organization</Table.HeaderCell>
-								<Table.HeaderCell>Weight of Tokens</Table.HeaderCell>
-								<Table.HeaderCell>Token Count</Table.HeaderCell>
-							</Table.Row>
-						</Table.Header>
+			<Grid item xs={ 12 } md={ settings.useKioskChitVoting ? 12 : 6 }>
+				<Box sx={ { mb: 2 } }>
+					<Stack direction="row" justifyContent="space-between" alignItems="center">
+						<Typography component="h3" variant="h3">
+						Top { !hideAdminFields ?
+								<TextField
+									size='mini'
+									type='number'
+									value={ theme.numTopOrgs }
+									onChange={ updateNumTopOrgs }
+									width={ 1 }
+								/> :
+								theme.numTopOrgs
+							} Organizations
+						</Typography>
 
-						<Table.Body>
-							{orgs.values.map((org, i) => (
-								<ChitInputs
-									org={ org }
-									key={ i }
-									tabInfo={ { index: i + 1, length: orgs.length } }
-									positive={ topOrgIds.includes(org._id) }
-								/>
-							))}
-						</Table.Body>
-					</Table>
+						<Typography component="h3" variant="h3">
+							<ChitVotingActiveToggle />
+						</Typography>
+					</Stack>
+				</Box>
+				<RankedOrgsTable />
+			</Grid>
 
-				</Grid.Column> }
-
-				<Grid.Column>
-					<TopOrgsByChitVote />
-				</Grid.Column>
-
-			</Grid.Row>
 		</Grid>
 	)
 })
 
-ChitVotingPane.propTypes = {}
+ChitVotingPane.propTypes = {
+	hideAdminFields: PropTypes.bool
+}
 
 export default ChitVotingPane

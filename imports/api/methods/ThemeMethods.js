@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 
-import moment from 'moment'
+import { format } from 'date-fns'
 
 import { Themes, Organizations, MemberThemes } from '/imports/api/db'
 import OrganizationMethods from './OrganizationMethods'
@@ -22,7 +22,8 @@ const ThemeMethods = {
 			if(!data) return null
 
 			if(!data.quarter) {
-				data.quarter = `${moment().year()}Q${moment().quarter()}`
+				const today = new Date()
+				data.quarter = `${format(today, 'y')}Q${format(today, 'Q')}`
 			}
 
 			if(!data.slug) {

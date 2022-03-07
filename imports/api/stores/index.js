@@ -22,5 +22,5 @@ export {
 	MemberThemeStore,
 	MemberStore,
 	MessageStore,
-	MessagesCollection
+	MessagesCollection,
 }
