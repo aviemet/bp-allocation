@@ -104,7 +104,7 @@ const Kiosk = observer(() => {
 						<Route exact path={ data.KIOSK_PAGES.chit } render={ () => {
 							return member ?
 								// If member is set, navigation comes from the short link for voting remotely
-								<RemoteVoting member={ member } component={ ChitVotingKiosk } /> :
+								<RemoteVoting memberId={ member } component={ ChitVotingKiosk } /> :
 								// Otherwise kiosk voting in the room, members must login to proceed
 								<MemberLoginRequired component={ ChitVotingKiosk } />
 						} } />

@@ -9,19 +9,19 @@ import { MemberMethods } from '/imports/api/methods'
 
 const FundsVoteContext = React.createContext()
 
-const VotingContextProvider = observer(props => {
+const VotingContextProvider = observer(({ children, member, unsetUser }) => {
 	const { theme } = useTheme()
 	const { orgs, topOrgs } = useOrgs()
 
 	let initialVotesState = {}
 	topOrgs.map(org => {
-		const allocations = find(props.member.theme.allocations, ['organization', org._id])
+		const allocations = find(member.theme.allocations, ['organization', org._id])
 		initialVotesState[org._id] = allocations ? allocations.amount : 0
 	})
 
 	let initialChitState = {}
 	orgs.values.map(org => {
-		const chits = find(props.member.theme.chitVotes, ['organization', org._id])
+		const chits = find(member.theme.chitVotes, ['organization', org._id])
 		initialChitState[org._id] = chits ? chits.votes : 0
 	})
 
@@ -44,7 +44,7 @@ const VotingContextProvider = observer(props => {
 		forEach(allocations, (amount, org) => {
 			const voteData = {
 				theme: theme._id,
-				member: props.member._id,
+				member: member._id,
 				org: org,
 				amount: amount
 			}
@@ -57,7 +57,7 @@ const VotingContextProvider = observer(props => {
 		forEach(chits, (votes, org) => {
 			const voteData = {
 				theme: theme._id,
-				member: props.member._id,
+				member: member._id,
 				org,
 				votes
 			}
@@ -74,10 +74,10 @@ const VotingContextProvider = observer(props => {
 			chits,
 			updateChits,
 			saveChits,
-			member: props.member || false,
-			unsetUser: props.unsetUser
+			member: member || false,
+			unsetUser: unsetUser
 		} }>
-			{props.children}
+			{children}
 		</FundsVoteContext.Provider>
 	)
 })

@@ -92,8 +92,9 @@ MembersProvider.propTypes = {
 }
 
 // Get a single member
-export const useMember = (memberId) => {
+export const useMember = memberId => {
 	const membersContext = useContext(MembersContext)
+
 	membersContext.setMemberId(memberId)
 	return membersContext
 }
@@ -102,7 +103,7 @@ export const useMember = (memberId) => {
 export const useMembers = () => {
 	const membersContext = useContext(MembersContext)
 
-	// Unsibscribe from members upon unmounting page
+	// Unsubscribe from members upon unmounting page
 	useEffect(() => {
 		membersContext.getAllMembers()
 		return () => {

@@ -8,6 +8,7 @@ import { roundFloat } from '/imports/lib/utils'
 
 import { Container, Form, Input, Button, Card, Checkbox, Loader } from 'semantic-ui-react'
 import styled from '@emotion/styled'
+import { useWindowSize, breakpoints } from '/imports/ui/MediaProvider'
 
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import MemberSearch from '/imports/ui/Components/MemberSearch'
@@ -23,6 +24,8 @@ const Pledges = observer(() => {
 	const [ pledgeAmount, setPledgeAmount ] = useState('')
 	const [ isFormValid, setIsFormValid ] = useState(false)
 	const [ isAnonymous, setIsAnonymous ] = useState(false)
+
+	const { width } = useWindowSize()
 
 	useEffect(() => {
 		const isValid = selectedOrg !== null && selectedMember !== null && pledgeAmount !== ''
@@ -89,7 +92,7 @@ const Pledges = observer(() => {
 			</Form>
 
 			{/* Selectable Cards for top orgs */}
-			<Card.Group centered itemsPerRow={ 2 }>
+			<Card.Group centered itemsPerRow={ width < breakpoints.tablet ? 1 : 2 }>
 				{ topOrgs.map(org => (
 					<OrgCard
 						disabled={ org.need <= 0 }
