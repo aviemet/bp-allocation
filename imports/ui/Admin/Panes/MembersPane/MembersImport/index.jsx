@@ -5,7 +5,7 @@ import { sanitizeNames } from '/imports/lib/utils'
 
 import { observer } from 'mobx-react-lite'
 import { useData } from '/imports/api/providers'
-import { OrganizationMethods } from '/imports/api/methods'
+import { MemberMethods } from '/imports/api/methods'
 import { MemberSchema, MemberThemeSchema } from '/imports/api/db/schema'
 
 import CustomMessage from '/imports/ui/Components/CustomMessage'
@@ -51,6 +51,7 @@ const ImportMembers = observer(() => {
 
 	const onSanitize = data => {
 		const sanitizedData = data
+		sanitizedData.theme = themeId
 
 		if(sanitizedData.hasOwnProperty('fullName') && sanitizedData.fullName.includes(',')) {
 			sanitizedData.fullName = sanitizeNames(sanitizedData.fullName)
@@ -66,7 +67,7 @@ const ImportMembers = observer(() => {
 	// TODO: Validation error feedback
 	const handleImportData = data => {
 		data.forEach(datum => {
-			const { error, response } = OrganizationMethods.create.call(Object.assign({ theme: themeId }, datum))
+			const { error, response } = MemberMethods.upsert.call(datum)
 			if(error) console.error({ error })
 		})
 		history.push(`/admin/${themeId}/members`)
@@ -130,7 +131,7 @@ const ImportMembers = observer(() => {
 	]
 
 	const schema = MemberSchema.omit('code')
-		.extend(MemberThemeSchema.omit('member', 'chitVotes', 'allocations', 'createdAt', 'theme'))
+		.extend(MemberThemeSchema.omit('member', 'chitVotes', 'allocations', 'createdAt'))
 
 	return (
 		<>

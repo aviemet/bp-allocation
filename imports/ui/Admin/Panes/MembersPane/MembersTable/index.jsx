@@ -78,10 +78,6 @@ const MembersTable = observer(() => {
 
 	const { id: themeId } = useParams()
 
-	const removeMember = id => () => {
-		MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId })
-	}
-
 	const bulkDelete = (selected, onSuccess) => {
 		const plural = selected.size > 1
 
@@ -90,7 +86,7 @@ const MembersTable = observer(() => {
 		// Need to curry the function since useState calls passed functions
 		setModalAction( () => () => {
 			selected.forEach(id => {
-				removeMember(id)
+				MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId })
 			})
 			onSuccess()
 		})
@@ -109,8 +105,9 @@ const MembersTable = observer(() => {
 	if(membersLoading || isEmpty(members)) {
 		return (
 			<>
-				<Skeleton height={ 200 } />
-				<Skeleton variant="text" height={ 200 } />
+				<Skeleton height={ 100 } />
+				<Skeleton variant="text" height={ 100 } />
+				<Skeleton variant="text" height={ 100 } />
 			</>
 		)
 	}
