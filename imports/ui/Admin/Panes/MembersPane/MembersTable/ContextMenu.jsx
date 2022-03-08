@@ -107,12 +107,12 @@ const ContextMenu = ({ themeId, member }) => {
 						<Divider />
 						{ messages.values.map((message) => {
 							if(message.active && message.type === 'email') return (
-								<ActionMenuItem key={ `${message._id}-email` }>
+								<MenuItem key={ `${message._id}-email` } disableRipple>
 									<Stack sx={ { width: '100%' } } direction="row" justifyContent="space-between" alignItems="center">
 										<Box sx={ { mr: 1 } }>{ message.title }</Box>
 										<Box><SendWithFeedbackButton message={ message } members={ [member._id] } /></Box>
 									</Stack>
-								</ActionMenuItem>
+								</MenuItem>
 							)
 						}) }
 					</Collapse>
