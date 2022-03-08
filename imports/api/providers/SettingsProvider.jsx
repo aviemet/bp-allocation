@@ -12,7 +12,7 @@ import { SettingsStore } from '/imports/api/stores'
 const SettingsContext = React.createContext('settings')
 export const useSettings = () => useContext(SettingsContext)
 
-const SettingsProvider = observer(props => {
+const SettingsProvider = observer(({ children }) => {
 	const { themeId } = useData()
 	const { theme, isLoading: themeLoading } = useTheme()
 	let subscription
@@ -49,15 +49,13 @@ const SettingsProvider = observer(props => {
 			settings: settingsStore || {},
 			isLoading: !subscription.ready()
 		}
-
 	}, [themeId, themeLoading])
 
 	return (
 		<SettingsContext.Provider value={ settings }>
-			{ props.children }
+			{ children }
 		</SettingsContext.Provider>
 	)
-
 })
 
 SettingsProvider.propTypes = {

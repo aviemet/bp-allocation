@@ -132,7 +132,7 @@ const OrgAsk = styled.p`
 `
 
 const CardContent = styled(Card.Content)`
-	background-color: ${props => props.bgcolor} !important;
+	background-color: ${({ bgcolor }) => bgcolor} !important;
 	color: #FFF;
 	text-align: center;
 

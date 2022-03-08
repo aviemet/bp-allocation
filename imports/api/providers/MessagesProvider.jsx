@@ -11,7 +11,7 @@ import { MessagesCollection, MessageStore } from '/imports/api/stores'
 
 const MessagesContext = React.createContext('messages')
 
-const MessagesProvider = observer(function(props) {
+const MessagesProvider = observer(({ children }) => {
 	const { themeId } = useData()
 	const { isLoading: themeLoading } = useTheme()
 
@@ -47,15 +47,13 @@ const MessagesProvider = observer(function(props) {
 			messages: messagesCollection,
 			isLoading: !subscription.ready()
 		}
-
 	}, [themeId, themeLoading])
 
 	return (
 		<MessagesContext.Provider value={ messages }>
-			{ props.children }
+			{ children }
 		</MessagesContext.Provider>
 	)
-
 })
 
 MessagesProvider.propTypes = {

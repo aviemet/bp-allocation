@@ -3,7 +3,7 @@ import React from 'react'
 import { Grid } from 'semantic-ui-react'
 import styled from '@emotion/styled'
 
-const Hr = (props) => (
+const Hr = () => (
 	<Grid.Row>
 		<Grid.Column>
 			<PaddedImg src="/img/xxx_hr.svg" />

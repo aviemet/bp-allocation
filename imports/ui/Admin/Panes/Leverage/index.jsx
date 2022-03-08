@@ -20,7 +20,7 @@ import {
 import RoundTable from './RoundTable'
 import ResultsTable from './ResultsTable'
 
-const Leverage = observer(props => {
+const Leverage = observer(({ hideAdminFields }) => {
 	const { theme } = useTheme()
 	const { topOrgs } = useOrgs()
 
@@ -60,7 +60,7 @@ const Leverage = observer(props => {
 					<Typography component="h2" variant="h3">Final Distribution</Typography>
 
 					<div>Leverage Remaining: {numeral(leverage.finalRoundAllcoation(rounds)).format('$0,0.00')}</div>
-					{ !props.hideAdminFields && <>
+					{ !hideAdminFields && <>
 						{ !leverageDistributed ? (
 							<Button onClick={ () => saveLeverageSpread(rounds[rounds.length - 1]) }>
 								Submit Final Values

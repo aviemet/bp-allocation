@@ -10,30 +10,24 @@ import { Images } from '/imports/api/db'
 /**
  * OrgCard Component
  */
-const OrgImageCard = props => {
-
-	// Add animation class if toggled
-	let animateClass = props.animateClass ? 'animate-orgs' : ''
-
+const OrgImageCard = ({ image, org, animateClass, bgcolor, overlay }) => {
 	let imagePath = ''
-	if(props.image && props.image.path){
-		imagePath = Images.link(props.image, 'original', '/')
+	if(image && image.path){
+		imagePath = Images.link(image, 'original', '/')
 	}
 
-	let className = props.bgcolor ? 'white' : ''
+	let className = bgcolor ? 'white' : ''
 
-	// let total = props.org.allocatedFunds + props.org.leverageFunds
-
-	const Overlay = props.overlay || false
+	const Overlay = overlay || false
 
 	return (
-		<Card className={ animateClass }>
+		<Card className={ animateClass ? 'animate-orgs' : '' }>
 			<CardImage style={ { backgroundImage: `url(${imagePath})` } } className='orgsImage'>
 				{ Overlay && <Overlay /> }
 			</CardImage>
-			<CardContent bgcolor={ props.bgcolor || '#FFF' } className={ className }>
-				<OrgTitle>{ props.org.title }</OrgTitle>
-				<OrgAsk>{ numeral(props.org.ask).format('$0a') }</OrgAsk>
+			<CardContent bgcolor={ bgcolor || '#FFF' } className={ className }>
+				<OrgTitle>{ org.title }</OrgTitle>
+				<OrgAsk>{ numeral(org.ask).format('$0a') }</OrgAsk>
 			</CardContent>
 		</Card>
 	)
@@ -61,9 +55,8 @@ const CardImage = styled.div`
 `
 
 const CardContent = styled(Card.Content)`
-	background-color: ${props => props.bgcolor} !important;
-	color: ${props => (props.bgcolor ? '#FFF' : '#222')};
-	/* color: #002B45 */
+	background-color: ${({ bgcolor }) => bgcolor} !important;
+	color: ${({ bgcolor }) => (bgcolor ? '#FFF' : '#222')};
 `
 
 OrgImageCard.propTypes = {

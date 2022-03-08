@@ -10,7 +10,7 @@ import { MembersCollection, MemberStore } from '/imports/api/stores'
 
 const MembersContext = React.createContext('members')
 
-const MembersProvider = observer(props => {
+const MembersProvider = observer(({ children }) => {
 	const { themeId } = useData()
 	let subscription
 	let cursorObserver
@@ -81,7 +81,7 @@ const MembersProvider = observer(props => {
 
 	return (
 		<MembersContext.Provider value={ members } render={ renderCount /* used to force re-render */ }>
-			{ props.children }
+			{ children }
 		</MembersContext.Provider>
 	)
 

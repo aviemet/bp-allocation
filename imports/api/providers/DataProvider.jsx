@@ -8,10 +8,10 @@ export const useData = () => useContext(DataContext)
 
 const appStore = new AppStore()
 
-const DataProvider = props => {
+const DataProvider = ({ children }) => {
 	return (
 		<DataContext.Provider value={ appStore }>
-			{ props.children }
+			{ children }
 		</DataContext.Provider>
 	)
 }

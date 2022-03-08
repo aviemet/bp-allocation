@@ -7,8 +7,7 @@ import { Images } from '/imports/api/db'
 
 import { Progress, Input, Segment } from 'semantic-ui-react'
 
-const FileUpload = props => {
-
+const FileUpload = ({ image, width, fileLocator, onStart, onProgress, onUploaded, onEnd, onError }) => {
 	const [ uploading, setUploading ]   = useState([])
 	const [ progress, setProgress ]     = useState(0)
 	const [ inProgress, setInProgress ] = useState(false)
@@ -25,7 +24,7 @@ const FileUpload = props => {
 				let uploadInstance = Images.insert({
 					file: file,
 					meta: {
-						locator: props.fileLocator,
+						locator: fileLocator,
 						// userId: Meteor.userId() // Optional, used to check on server for file tampering
 					},
 					streams: 'dynamic',
@@ -38,16 +37,16 @@ const FileUpload = props => {
 
 				// These are the event functions, don't need most of them, it shows where we are in the process
 				uploadInstance.on('start', function () {
-					if(props.onStart) props.onStart()
+					if(onStart) onStart()
 
 				}).on('progress', function (progress, fileObj) {
-					if(props.onProgress) props.onProgress({ progress: progress, file: fileObj, uploading })
+					if(onProgress) onProgress({ progress: progress, file: fileObj, uploading })
 
 					// Update our progress bar
 					setProgress(progress)
 
 				}).on('uploaded', function (error, fileObj) {
-					if(props.onUploaded) props.onUploaded({ error: error, file: fileObj })
+					if(onUploaded) onUploaded({ error: error, file: fileObj })
 
 					setUploading([])
 					setInProgress(false)
@@ -55,11 +54,11 @@ const FileUpload = props => {
 					// setProgress(0)
 
 				}).on('end', function (error, fileObj) {
-					if(props.onEnd) props.onEnd({ error: error, file: fileObj })
+					if(onEnd) onEnd({ error: error, file: fileObj })
 
 				}).on('error', function (error, fileObj) {
 					console.error('Error during upload: ' + error)
-					if(props.onError) props.onError({ error: error, file: fileObj })
+					if(onError) onError({ error: error, file: fileObj })
 
 				})
 
@@ -68,7 +67,7 @@ const FileUpload = props => {
 		}
 	}
 
-	// let file = Images.findOne({ _id: props.image })
+	// let file = Images.findOne({ _id: image })
 
 	return (
 		<FileUploadContainer>
@@ -76,7 +75,7 @@ const FileUpload = props => {
 				type='file'
 				disabled={ inProgress }
 				onChange={ handleUpload }
-				width={ props.width }
+				width={ width }
 			/>
 			<Progress
 				attached='bottom'

@@ -16,8 +16,7 @@ import {
 } from '@mui/material'
 import { Icon } from 'semantic-ui-react'
 
-const RoundTable = props => {
-
+const RoundTable = ({ orgs }) => {
 	let totals = {
 		percent: 0,
 		funds: 0,
@@ -25,7 +24,7 @@ const RoundTable = props => {
 		needed: 0
 	}
 
-	props.orgs.map(org => {
+	orgs.map(org => {
 		totals.percent += org.percent
 		totals.funds += org.roundFunds
 		totals.total += org.allocatedFunds + org.leverageFunds
@@ -45,7 +44,7 @@ const RoundTable = props => {
 			</TableHead>
 
 			<TableBody>
-				{ props.orgs.map(org => (
+				{ orgs.map(org => (
 					<TableRow
 						key={ org._id }
 						className={ org.need === 0 && org.roundFunds > 0 ? 'fully-funded' : '' }

@@ -4,12 +4,15 @@ import PropTypes from 'react'
 
 import { Grid, Button } from 'semantic-ui-react'
 
-const IndividualFile = props => {
+
+
+
+const IndividualFile = ({ fileId, fileName, fileUrl, fileSize }) => {
 
 	const deleteFile = () => {
 		let conf = confirm('Are you sure you want to delete the file?') || false
 		if(conf) {
-			Meteor.call('images.delete', props.fileId, (err, res) => {
+			Meteor.call('images.delete', fileId, (err, res) => {
 				if (err)
 					console.error(err)
 			})
@@ -18,7 +21,7 @@ const IndividualFile = props => {
 
 	const renameFile = () => {
 		let validName = /[^a-zA-Z0-9 .:+()\-_%!&]/gi
-		let prompt    = window.prompt('New file name?', props.fileName)
+		let prompt    = window.prompt('New file name?', fileName)
 
 		// Replace any non valid characters, also do this on the server
 		if(prompt) {
@@ -28,7 +31,7 @@ const IndividualFile = props => {
 
 		// if (!_.isEmpty(prompt)) {
 		if(typeof prompt === 'string' && prompt !== ''){
-			Meteor.call('images.rename', props.fileId, prompt, function (err, res) {
+			Meteor.call('images.rename', fileId, prompt, function (err, res) {
 				if(err) console.error(err)
 			})
 		}
@@ -38,7 +41,7 @@ const IndividualFile = props => {
 		<>
 			<Grid.Row>
 				<Grid.Column>
-					<strong>{props.fileName}</strong>
+					<strong>{ fileName }</strong>
 					<div className="m-b-sm">
 					</div>
 				</Grid.Column>
@@ -51,7 +54,7 @@ const IndividualFile = props => {
 
 
 				<Grid.Column>
-					<a href={ props.fileUrl } target="_blank" rel="noopener noreferrer">View</a>
+					<a href={ fileUrl } target="_blank" rel="noopener noreferrer">View</a>
 				</Grid.Column>
 
 				<Grid.Column>
@@ -59,7 +62,7 @@ const IndividualFile = props => {
 				</Grid.Column>
 
 				<Grid.Column>
-          Size: {props.fileSize}
+          Size: {fileSize}
 				</Grid.Column>
 			</Grid.Row>
 		</>

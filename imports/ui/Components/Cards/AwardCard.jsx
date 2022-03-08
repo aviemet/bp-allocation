@@ -17,22 +17,20 @@ import { COLORS } from '/imports/lib/global'
 /**
  * OrgCard Component
  */
-const AwardCard = props => {
-
-	const amount = props.amount ?
-		numeral(props.amount).format('$0.[0]a') :
-		props.org.allocatedFunds + props.org.leverageFunds
-
+const AwardCard = ({ org, award, amount }) => {
 	return (
 		<OrgCard>
 			<CardImage>
 				<AwardEmblem
-					type={ props.award }
-					amount={ amount }
+					type={ award }
+					amount={ amount ?
+						numeral(amount).format('$0.[0]a') :
+						org.allocatedFunds + org.leverageFunds
+					}
 				/>
 			</CardImage>
 			<CardContent style={ { paddingTop: '4px' } }>
-				<OrgTitle>{ props.org.title }</OrgTitle>
+				<OrgTitle>{ org.title }</OrgTitle>
 			</CardContent>
 		</OrgCard>
 	)
@@ -47,13 +45,6 @@ const OrgCard = styled(Paper)`
 	height: 295px;
 	line-height: 20px;
 	margin: 0.5em 0.5em;
-	/* float: none; */
-`
-
-const OrgCardOld = styled(Card)`
-	body .ui.cards > &, && {
-		background-color: ${COLORS.green};
-	}
 `
 
 const OrgTitle = styled('p')`
@@ -62,27 +53,19 @@ const OrgTitle = styled('p')`
 	margin: 5px;
 	font-weight: 600;
 `
-/*
-const OrgAsk = styled.p`
-	font-family: TradeGothic20;
-	font-size: 2.1em;
-	font-weight: 700;
-`
-*/
+
 const CardImage = styled('div')`
 	width: 100%;
 	height: 205px;
-	/*padding: 5px;*/
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center center;
 `
 
 const CardContent = styled('div')`
-	background-color: ${props => props.bgcolor} !important;
+	background-color: ${({ bgcolor }) => bgcolor} !important;
 	color: #FFF;
 	text-align: center;
-	/* color: #002B45; */
 `
 
 AwardCard.propTypes = {

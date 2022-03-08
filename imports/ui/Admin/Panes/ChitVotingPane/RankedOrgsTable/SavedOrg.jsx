@@ -7,21 +7,21 @@ import { ThemeMethods } from '/imports/api/methods'
 
 import { Grid, Header, Button } from 'semantic-ui-react'
 
-const SavedOrg = observer(props => {
+const SavedOrg = observer(({ org, save }) => {
 
 	const { theme } = useTheme()
 
 	const unSaveOrg = () => {
 		ThemeMethods.unSaveOrg.call({
 			theme_id: theme._id,
-			org_id: props.org._id
+			org_id: org._id
 		})
 	}
 
 	return(
 		<React.Fragment>
 			<Grid.Column>
-				<Header as="h5">{props.org && props.org.title}, {props.save.amount}</Header>
+				<Header as="h5">{org && org.title}, {save.amount}</Header>
 			</Grid.Column>
 			<Grid.Column>
 				<Button icon='trash' onClick={ unSaveOrg } />

@@ -133,7 +133,7 @@ const AdminLayout = observer(() => {
 				open={ drawerOpen }
 			>
 				<DrawerHeader>
-					<Button component={ Link } to={ themeLoading ? '#' : `/admin/${theme._id}/presentation` } fullWidth><BarChartIcon />Presentation</Button>
+					<Button component={ Link } color="warning" to={ themeLoading ? '#' : `/admin/${theme._id}/presentation` } fullWidth sx={ { p: 2 } }><BarChartIcon />Presentation</Button>
 				</DrawerHeader>
 
 				<Divider />

@@ -13,7 +13,7 @@ import { useTheme } from './ThemeProvider'
 const OrgsContext = React.createContext('orgs')
 export const useOrgs = () => useContext(OrgsContext)
 
-const OrgsProvider = observer(function(props) {
+const OrgsProvider = observer(({ children }) => {
 	const { themeId } = useData()
 	const { theme, isLoading: themeLoading } = useTheme()
 
@@ -50,15 +50,13 @@ const OrgsProvider = observer(function(props) {
 			topOrgs: !orgsCollection ? [] : filterTopOrgs(orgsCollection.values, theme),
 			isLoading: !subscription.ready()
 		}
-
 	}, [themeId, themeLoading])
 
 	return (
 		<OrgsContext.Provider value={ orgs }>
-			{ props.children }
+			{ children }
 		</OrgsContext.Provider>
 	)
-
 })
 
 OrgsProvider.propTypes = {
