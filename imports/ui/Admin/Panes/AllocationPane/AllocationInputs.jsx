@@ -66,7 +66,7 @@ const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminField
 
 			{/* Funded */}
 			<TableCell className={ reachedGoal ? 'bold' : '' } align="right">
-				{ numeral(org.allocatedFunds).format('$0,0') }
+				{ numeral(org.allocatedFunds + org.leverageFunds).format('$0,0') }
 			</TableCell>
 
 			{/* Ask */}

@@ -6,6 +6,9 @@ import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 import { useOrgs, useSettings } from '/imports/api/providers'
 
+import {
+	Container
+} from '@mui/material'
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 
 const TopOrgs = observer(() => {
@@ -14,59 +17,53 @@ const TopOrgs = observer(() => {
 
 	if(settingsLoading || orgsLoading) return <Loader active />
 	return (
-		<TopOrgsContainer>
+		<TopOrgsContainer maxWidth="xl">
 			<PageTitle>Top {topOrgs.length} Organizations</PageTitle>
 			<CardsContainer>
-				<Card.Group centered itemsPerRow={ Math.ceil(topOrgs.length / 2) }>
-					{topOrgs.map((org) => (
+				<Card.Group centered itemsPerRow={ Math.ceil(topOrgs.length / 2) } style={ { height: '100%' } }>
+					{ topOrgs.map((org) => (
 						<OrgCard
 							key={ org._id }
 							org={ org }
 							animateClass={ settings.animateOrgs }
 							size='big'
 						/>
-					))}
+					)) }
 				</Card.Group>
 			</CardsContainer>
 		</TopOrgsContainer>
 	)
 })
 
-const TopOrgsContainer = styled.div`
+const TopOrgsContainer = styled(Container)`
 	padding: 16px;
+	flex: 1;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: space-around;
 	align-items: center;
-
-	.ui.card{
-
-		.content{
-			color: #002B45;
-			padding-bottom: 0.2em;
-		}
-
-		.orgsImageDisabled{
-			height: 245px;
-		}
-	}
-
-	p{
-		line-height: 1em;
-	}
+	height: 100%;
 `
 
 const PageTitle = styled.h2`
-	margin-bottom: 46px;
+	padding: 2rem;
 `
 
 const CardsContainer = styled.div`
+	flex: 1;
 	width: 100%;
-	max-width: 1600px;
 	margin: 0 auto;
 
-	.ui.card div.content p{
-		color: #FFF;
+	.ui.card {
+		height: 45%;
+		
+		div.content p {
+			color: #FFF;
+		}
+}
+
+	.ui.cards > .card > .content:after, .ui.card > .content:after {
+		content: none;
 	}
 `
 

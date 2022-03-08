@@ -9,7 +9,7 @@ import { COLORS } from '/imports/lib/global'
 
 const AwardImg = ({ show }) => {
 	if(show !== true) return <React.Fragment />
-	return <Award src='/img/BAT_award_logo.svg' style={ { maxHeight: '6em' } } />
+	return <Award src='/img/BAT_award_logo.svg' style={ { maxHeight: '10rem' } } />
 }
 
 AwardImg.propTypes = {

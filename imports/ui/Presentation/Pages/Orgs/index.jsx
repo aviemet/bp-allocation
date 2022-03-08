@@ -1,6 +1,9 @@
 import React from 'react'
 
-import { Card, Container } from 'semantic-ui-react'
+import {
+	Container
+} from '@mui/material'
+import { Card } from 'semantic-ui-react'
 import styled from '@emotion/styled'
 
 import { observer } from 'mobx-react-lite'
@@ -26,8 +29,8 @@ const Orgs = observer(() => {
 	return (
 		<OrgsContainer>
 			<PageTitle>Participating Organizations</PageTitle>
-			<Container>
-				<Card.Group centered itemsPerRow={ 4 }>
+			<Container maxWidth="xl" sx={ { height: '100%' } }>
+				<Card.Group centered itemsPerRow={ 4 } style={ { height: '100%' } }>
 					{ orgs.values.map((org, i) => (
 						<OrgCard
 							key={ org._id }
@@ -49,6 +52,7 @@ const OrgsContainer = styled.div`
 	flex: 1;
 	padding-top: 16px;
 	padding-bottom: 16px;
+	height: 100%;
 
 	&& .ui.card {
 

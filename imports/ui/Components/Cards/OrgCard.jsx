@@ -80,12 +80,12 @@ const StyledCard = styled(Card)`
 		border: 5px solid #FFF !important;
 
 		.content {
-			padding: 1em 0.5em;
+			padding: 1rem 0.5rem;
 		}
 	}
 
 	&.big {
-		height: 13rem;
+		// height: 13rem;
 	}
 
 	&.disabled {
@@ -97,14 +97,29 @@ const StyledCard = styled(Card)`
 	}
 `
 
+const CardContent = styled(Card.Content)`
+	background-color: ${({ bgcolor }) => bgcolor} !important;
+	color: #FFF;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+
+	& a {
+		color: #FFF;
+	}
+`
+
 const OrgTitle = styled.div`
 	font-family: TradeGothic;
 	font-size: 2.5rem;
 	margin: 5px;
 	font-weight: 600;
-	min-height: 6rem;
-	position: relative;
-	padding: 0;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 
 	.small & {
 		min-height: 3.5rem;
@@ -112,16 +127,7 @@ const OrgTitle = styled.div`
 
 	.big & {
 		// min-height: 13.5rem;
-		font-size: 2.4rem;
-	}
-
-	& > p {
-		display: block;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
+		font-size: 3.4rem;
 	}
 `
 
@@ -129,16 +135,6 @@ const OrgAsk = styled.p`
 	font-family: TradeGothic20;
 	font-size: 3rem;
 	font-weight: 700;
-`
-
-const CardContent = styled(Card.Content)`
-	background-color: ${({ bgcolor }) => bgcolor} !important;
-	color: #FFF;
-	text-align: center;
-
-	& a {
-		color: #FFF;
-	}
 `
 
 const InfoLink = styled(Icon)`

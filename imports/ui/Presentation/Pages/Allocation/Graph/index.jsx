@@ -94,18 +94,22 @@ const Graph = observer(props => {
 })
 
 const GraphPageContainer = styled.div`
-	overflow-y: hidden;
 	font-size: 18px;
 	font-family: 'TradeGothic20';
 	color: #fff;
-	min-height: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	padding-left: 1.5rem;
 `
 
 const GraphContainer = styled.div`
-	width: calc(100% - 10em);
-	height: 43vh;
+	width: calc(100% - 12rem);
 	position: relative;
-	margin: 7em auto 0 7em;
+	margin: 12rem auto 0 7rem;
+	flex: 1;
 `
 
 const XAxis = styled.div`
@@ -150,20 +154,7 @@ const Goal = styled.div`
 	border-right: 0;
 	border-style: dashed;
 `
-/*
-const BarsOuterContainer = styled.div`
-	width: 100%;
-	position: relative;
-	margin: 2em auto 0 auto;
-	min-height: 100%;
-`
 
-const BarsInnerContainer = styled.div`
-	width: 100%;
-	height: 100%;
-	position: absolute;
-`
-*/
 const BarsContainer = styled(Grid)`
 	width: 100%;
 	height: 100%;
@@ -176,7 +167,7 @@ const BarsContainer = styled(Grid)`
 const InfoContainer = styled.div`
 	text-align: left;
 	margin: 2em auto 0 7em;
-	width: calc(100% - 10em);
+	width: calc(100% - 12rem);
 `
 
 const InfoGrid = styled(Grid)`
@@ -201,11 +192,12 @@ const ProgressBar = styled(Progress)`
 const LeverageCount = styled.div`
 	position: absolute;
 	color: #FFF;
-  top: 0;
-  right: 15px;
-  text-align: right;
+  top: -3px;
+  left: 0;
+	width: 100%;
+  text-align: center;
   font-size: 2em;
-  padding-right: .2em;
+  padding-right: 2rem;
 `
 
 Graph.propTypes = {

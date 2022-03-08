@@ -37,7 +37,7 @@ const Results = observer(() => {
 	// let awardeesColumns = awardees.length > 3 ? parseInt(awardees.length / 2) + awardees.length % 2 : false
 
 	return (
-		<ResultsPageContainer sx={ { p: 2 } }>
+		<ResultsPageContainer maxWidth="xl" sx={ { p: 2 } }>
 			<AwardsImage><img src="/img/BAT_awards.png" /></AwardsImage>
 
 			<h1>Total amount given: {numeral(total).format('$0.[00]a')}</h1>
