@@ -34,7 +34,7 @@ const MembersEdit = () => {
 
 	const onSubmit = data => {
 		console.log({ data })
-		setFormStatus(STATUS.DISABLED)
+		setFormStatus(STATUS.SUBMITTING)
 		if(memberId) {
 			editUser(data)
 		} else {
@@ -46,7 +46,7 @@ const MembersEdit = () => {
 	const createUser = data => {
 		MemberMethods.upsert.call(data, (err, res) => {
 			if(err) {
-				setFormStatus(STATUS.READY)
+				setFormStatus(STATUS.ERROR)
 				console.error({ err })
 			} else {
 				setFormStatus(STATUS.SUCCESS)
@@ -66,7 +66,7 @@ const MembersEdit = () => {
 			email: data.email || '',
 		} }, (err, res) => {
 			if(err) {
-				setFormStatus(STATUS.READY)
+				setFormStatus(STATUS.ERROR)
 				console.error({ err })
 			} else {
 				MemberMethods.updateTheme.call({ id: memberStore.theme._id, data: {
@@ -74,7 +74,7 @@ const MembersEdit = () => {
 					chits: data.chits,
 				} }, (err, res) => {
 					if(err) {
-						setFormStatus(STATUS.READY)
+						setFormStatus(STATUS.ERROR)
 						console.error({ err })
 					} else {
 						setFormStatus(STATUS.SUCCESS)

@@ -49,7 +49,6 @@ const RoundTable = props => {
 					<TableRow
 						key={ org._id }
 						className={ org.need === 0 && org.roundFunds > 0 ? 'fully-funded' : '' }
-						warning={ org.need > 0 }
 					>
 						<TableCell>{ org.title }</TableCell>
 						<TableCell>{ org.roundFunds === 0 ? '-' : numeral(org.roundFunds).format('$0,0.00') }</TableCell>

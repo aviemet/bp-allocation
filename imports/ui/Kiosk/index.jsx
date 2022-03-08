@@ -151,8 +151,7 @@ const transitionStyles = {
 const PageFader = styled.div`
 	opacity: 0;
 	max-width: 100vw;
-	height: 100%;
-	min-height: 100vh;
+	min-height: 100%;
 `
 
 export default Kiosk

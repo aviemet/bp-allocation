@@ -37,7 +37,7 @@ const Results = observer(() => {
 	// let awardeesColumns = awardees.length > 3 ? parseInt(awardees.length / 2) + awardees.length % 2 : false
 
 	return (
-		<ResultsPageContainer>
+		<ResultsPageContainer sx={ { p: 2 } }>
 			<AwardsImage><img src="/img/BAT_awards.png" /></AwardsImage>
 
 			<h1>Total amount given: {numeral(total).format('$0.[00]a')}</h1>
@@ -75,21 +75,47 @@ const Results = observer(() => {
 	)
 })
 
+const ResultsPageContainer = styled(Container)( ({ theme }) => ({
+	color: '#FFF',
 
-const AwardsCards = styled('div')`display: flex;
-	margin: -0.5em -0.5em;
-	flex-wrap: wrap;
-	justify-content: center;
-	text-align: center;
-	font-size: 16px;
-	font-family: "BentonMod";
-`
+	'h1, h2': {
+		lineHeight: '1em',
+		color: '#FFF',
+		textTransform: 'uppercase',
+		letterSpacing: '1px',
+		fontFamily: 'TradeGothic',
+		textAlign: 'center',
+	},
+	h1: {
+		fontSize: '3.6em',
+		margin: 0,
+
+		'@media screen and (max-width: 800px)': {
+			marginTop: '50px',
+		},
+	},
+
+	h2: {
+		fontSize: '2.75em',
+		margin: '2px 0 0 0',
+	},
+
+	'.ui.cards .card .content': {
+		padding: '5px',
+
+		p: {
+			margin: 0,
+			fontSize: '1.75em',
+		},
+	},
+	maxWidth: 'lg',
+}))
 
 const AwardsImage = styled('div')`
 	text-align: center;
 
 	img {
-		width: 10%;
+		width: 15%;
 	}
 
 	@media screen and (max-width: 800px) {
@@ -97,44 +123,13 @@ const AwardsImage = styled('div')`
 	}
 `
 
-const ResultsPageContainer = styled(Container)( ({ theme }) => ({
-	root: css`
-		color: #FFF;
-
-		&& {
-			h1, h2 {
-				line-height: 1em;
-				color: #FFF;
-				text-transform: uppercase;
-				letter-spacing: 1px;
-				font-family: TradeGothic;
-				text-align: center;
-			}
-			h1 {
-				font-size: 3.8em;
-				margin: 0;
-
-				@media screen and (max-width: 800px) {
-					margin-top: 50px;
-				}
-			}
-
-			h2 {
-				font-size: 2.75em;
-				margin: 2px 0 0 0;
-			}
-		}
-
-		.ui.cards .card .content {
-			padding: 5px;
-
-			p{
-				margin: 0;
-				font-size: 1.75em;
-			}
-		}
-	`,
-	maxWidth: 'lg'
-}))
+const AwardsCards = styled('div')`
+	display: flex;
+	margin: -0.5em -0.5em;
+	flex-wrap: wrap;
+	justify-content: center;
+	text-align: center;
+	font-family: "BentonMod";
+`
 
 export default Results

@@ -47,7 +47,8 @@ const OrgsContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	flex: 1;
-	padding-top: 20px;
+	padding-top: 16px;
+	padding-bottom: 16px;
 
 	&& .ui.card {
 
@@ -64,7 +65,7 @@ const OrgsContainer = styled.div`
 `
 
 const PageTitle = styled.h2`
-	margin-bottom: 20px;
+
 `
 
 const DimOverlay = styled.div`

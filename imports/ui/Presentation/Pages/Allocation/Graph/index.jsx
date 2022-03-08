@@ -84,7 +84,7 @@ const Graph = observer(props => {
 								color='green'
 								size='large'
 							/>
-							<LeverageCount>${numeral(leverageAfterDistribution).format('0.00a')}</LeverageCount>
+							<LeverageCount>${ numeral(leverageAfterDistribution).format('0.00a') }</LeverageCount>
 						</Grid.Column>
 					</Grid.Row>
 				</InfoGrid>
@@ -201,8 +201,8 @@ const ProgressBar = styled(Progress)`
 const LeverageCount = styled.div`
 	position: absolute;
 	color: #FFF;
-  top: 15px;
-  right: 14px;
+  top: 0;
+  right: 15px;
   text-align: right;
   font-size: 2em;
   padding-right: .2em;

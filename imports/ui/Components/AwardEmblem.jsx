@@ -18,7 +18,7 @@ const AwardEmblem = observer(({ type, amount }) => {
 	return (
 		<Award>
 			<AwardImage style={ { backgroundImage: `url(${awardImgSrc[type || 'awardee']})` } }>
-				<AwardAmount style={ { fontSize: type === 'awardee' ? '3.3em' : '2.9em' } }>{ amount }</AwardAmount>
+				<AwardAmount style={ { fontSize: type === 'awardee' ? '3rem' : '2.7rem' } }>{ amount }</AwardAmount>
 			</AwardImage>
 		</Award>
 	)
