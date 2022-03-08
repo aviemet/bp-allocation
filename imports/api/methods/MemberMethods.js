@@ -254,6 +254,7 @@ const MemberMethods = {
 		validate: null,
 
 		run({ id, data }) {
+			data.fullName = `${data.firstName} ${data.lastName}`
 			return Members.update({ _id: id }, { $set: _sanitizeMemberData(data) })
 		}
 	}),
