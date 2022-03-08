@@ -85,7 +85,7 @@ const StyledCard = styled(Card)`
 	}
 
 	&.big {
-		height: 21rem;
+		height: 13rem;
 	}
 
 	&.disabled {
@@ -102,7 +102,7 @@ const OrgTitle = styled.div`
 	font-size: 2.5rem;
 	margin: 5px;
 	font-weight: 600;
-	min-height: 8rem;
+	min-height: 6rem;
 	position: relative;
 	padding: 0;
 
@@ -111,8 +111,8 @@ const OrgTitle = styled.div`
 	}
 
 	.big & {
-		min-height: 13.5rem;
-		font-size: 4rem;
+		// min-height: 13.5rem;
+		font-size: 2.4rem;
 	}
 
 	& > p {

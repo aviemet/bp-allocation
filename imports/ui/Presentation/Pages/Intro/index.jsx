@@ -19,12 +19,6 @@ const Intro = props => {
 }
 
 const TitlePage = styled.div`
-	// margin: 0 auto;
-	// top: 50%;
-	// left: 50%;
-	// position: absolute;
-	// transform: translate(-50%, -50%);
-	// width: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
@@ -44,7 +38,7 @@ const TitlePage = styled.div`
 const MainHeading = styled.h1`
 	font-family: 'BentonMod';
 	letter-spacing: 4px;
-	font-size: 8.5em;
+	font-size: 6em;
 	text-transform: uppercase;
 	clear: both;
 `

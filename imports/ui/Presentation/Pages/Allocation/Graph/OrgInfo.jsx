@@ -30,18 +30,19 @@ const OrgInfo = observer(({ org, showLeverage }) => {
 
 const InfoContainer = styled(Grid.Column)`
 	&& {
-		margin: 0 1.5em;
+		margin: 0 1em;
 		padding: 0 !important;
 		margin-bottom: -6px;
 		bottom: 0;
 		text-align: center;
-		font-size: 1.5em;
-		line-height: 1em;
+		font-size: 1.2em;
+		line-height: 1.3em;
 	}
 `
 
 const Title = styled.div`
 	min-height: 60px;
+	font-size: 1.4em;
 `
 
 const MatchNeed = styled.div`

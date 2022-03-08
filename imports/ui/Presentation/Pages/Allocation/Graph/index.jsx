@@ -66,14 +66,14 @@ const Graph = observer(props => {
 			<InfoContainer id="info">
 				<InfoGrid columns='equal'>
 					<Grid.Row>
-						{topOrgs.map((org) => (
+						{ topOrgs.map((org) => (
 							<OrgInfo
 								org={ org }
 								theme={ theme }
 								key={ org._id }
 								showLeverage={ settings.leverageVisible }
 							/>
-						))}
+						)) }
 					</Grid.Row>
 
 					<Grid.Row style={ { visibility: visibility } }>
@@ -102,10 +102,10 @@ const GraphPageContainer = styled.div`
 `
 
 const GraphContainer = styled.div`
-	width: 90%;
-	height: 45vh;
+	width: calc(100% - 10em);
+	height: 43vh;
 	position: relative;
-	margin: 12em auto 0 7em;
+	margin: 7em auto 0 7em;
 `
 
 const XAxis = styled.div`
@@ -176,7 +176,7 @@ const BarsContainer = styled(Grid)`
 const InfoContainer = styled.div`
 	text-align: left;
 	margin: 2em auto 0 7em;
-	width: 90%;
+	width: calc(100% - 10em);
 `
 
 const InfoGrid = styled(Grid)`
