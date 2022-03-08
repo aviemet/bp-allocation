@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import numeral from 'numeral'
 
 import styled from '@emotion/styled'
 
-import ReactCountdownClock from 'react-countdown-clock'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 const secondsAsMinutes = seconds => {
-	return `${Math.floor(seconds % 3600 / 60)}:${Math.floor(seconds % 3600 % 60)}`
+	const m = Math.floor(seconds % 3600 / 60)
+	const s = Math.floor(seconds % 3600 % 60)
+	return `${m}:${s < 10 ? 0 : ''}${s}`
 }
 
 const renderTime = ({ remainingTime }) => {
@@ -20,13 +20,6 @@ const renderTime = ({ remainingTime }) => {
 }
 
 const Timer = ({ seconds }) => {
-	// const [ countdown, setCountdown ] = useState(true)
-
-	// const timerFinish = () => {
-	// 	setTimeout(() => {
-	// 		setCountdown(false)
-	// 	}, 2000)
-	// }
 
 	return (
 		<TimerContainer>
@@ -46,15 +39,6 @@ const Timer = ({ seconds }) => {
 		</TimerContainer>
 	)
 }
-
-{/* <ReactCountdownClock
-				seconds={ seconds + 1 }
-				color="#FFF"
-				size={ 850 }
-				weight={ 10 }
-				onComplete={ timerFinish }
-				showMilliseconds={ false }
-			/> */}
 
 const TimerContainer = styled.div`
 	display: flex;
