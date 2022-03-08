@@ -65,7 +65,7 @@ const MemberLoginRequired = observer(props => {
 		return(
 			<>
 				<BackgroundImage />
-				<Stack justifyContent="center" alignItems="center" sx={ { minHeight: '100vh', height: '100%' } }>
+				<Stack justifyContent="center" alignItems="center" sx={ { minHeight: '100%' } }>
 					<Form onSubmit={ chooseMember } ref={ formRef }>
 						<Grid container spacing={ 2 }>
 

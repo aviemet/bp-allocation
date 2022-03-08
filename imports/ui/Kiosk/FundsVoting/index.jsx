@@ -25,6 +25,7 @@ const AmountRemaining = React.memo(({ value }) => {
 	)
 })
 
+// TODO: Elements are too wide for screen at xl screen width
 AmountRemaining.displayName = 'AmountRemaining' // To slience eslint
 
 const FundsVotingKiosk = observer(props => {

@@ -1,65 +1,75 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import numeral from 'numeral'
 
 import styled from '@emotion/styled'
 
 import ReactCountdownClock from 'react-countdown-clock'
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+
+const secondsAsMinutes = seconds => {
+	return `${Math.floor(seconds % 3600 / 60)}:${Math.floor(seconds % 3600 % 60)}`
+}
+
+const renderTime = ({ remainingTime }) => {
+	if (remainingTime === 0) {
+		return <h1>Thank you<br/>for voting!</h1>
+	}
+
+	return <h1>{ secondsAsMinutes(remainingTime) }</h1>
+}
 
 const Timer = ({ seconds }) => {
+	// const [ countdown, setCountdown ] = useState(true)
 
-	const [ countdown, setCountdown ] = useState(true)
-
-	const timerFinish = () => {
-		setTimeout(() => {
-			setCountdown(false)
-		}, 2000)
-	}
-
-	if(!countdown) {
-		return(
-			<FinishedContainer>
-				<h1>Thank you<br/>for voting!</h1>
-			</FinishedContainer>
-		)
-	}
+	// const timerFinish = () => {
+	// 	setTimeout(() => {
+	// 		setCountdown(false)
+	// 	}, 2000)
+	// }
 
 	return (
 		<TimerContainer>
-			<ReactCountdownClock
+			<CountdownCircleTimer
+				className="countdown-clock"
+				isPlaying
+				duration={ seconds }
+				colors="white"
+				trailColor="#AAA"
+				strokeWidth={ 12 }
+				strokeLinecap="square"
+				size={ 500 }
+				onComplete={ () => ({ shouldRepeat: false, delay: 1 }) }
+			>
+				{ renderTime }
+			</CountdownCircleTimer>
+		</TimerContainer>
+	)
+}
+
+{/* <ReactCountdownClock
 				seconds={ seconds + 1 }
 				color="#FFF"
 				size={ 850 }
 				weight={ 10 }
 				onComplete={ timerFinish }
 				showMilliseconds={ false }
-			/>
-		</TimerContainer>
-	)
-}
+			/> */}
 
 const TimerContainer = styled.div`
-	.react-countdown-clock {
-		position: absolute;
-		margin: 0 auto;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100%;
+	padding: 16px 0 16px 0;
 
-		& canvas:nth-child(2){
+	.countdown-clock {
+		flex: 1;
+
+		/* & canvas:nth-child(2){
 			position: relative !important;
-		}
+		} */
 	}
-`
-
-const FinishedContainer = styled.div`
-	position: absolute;
-	margin: 0 auto;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	font-family: TradeGothic;
-	text-transform: uppercase;
 
 	h1{
 		color: #FFF;

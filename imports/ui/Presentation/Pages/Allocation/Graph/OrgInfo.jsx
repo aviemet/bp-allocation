@@ -8,19 +8,19 @@ import numeral from 'numeral'
 import { Grid } from 'semantic-ui-react'
 import styled from '@emotion/styled'
 
-const OrgInfo = observer(props => {
-
+const OrgInfo = observer(({ org, showLeverage }) => {
+	const need = org.need - org.leverageFunds
 	return (
 		<InfoContainer className='orginfo'>
-			<Title>{props.org.title}</Title>
+			<Title>{ org.title }</Title>
 
 			<TotalNeed>
-				Need: {props.org.need > 0 ? `$${numeral(props.org.need).format('0,0[a]')}` : '--'}
+				Need: { need > 0 ? `$${numeral(need).format('0,0[a]')}` : '--' }
 			</TotalNeed>
-			
-			{props.showLeverage &&
+
+			{ showLeverage &&
 				<MatchNeed>
-					Match Need: {props.org.need > 0 ? `$${numeral(props.org.need / 2).format('0,0[a]')}` : '--'}
+					Match Need: { need > 0 ? `$${numeral(need / 2).format('0,0[a]')}` : '--' }
 				</MatchNeed>
 			}
 
@@ -29,7 +29,7 @@ const OrgInfo = observer(props => {
 })
 
 const InfoContainer = styled(Grid.Column)`
-	&&{
+	&& {
 		margin: 0 1.5em;
 		padding: 0 !important;
 		margin-bottom: -6px;
@@ -58,5 +58,3 @@ OrgInfo.propTypes = {
 }
 
 export default OrgInfo
-
-// <Ask>Ask: ${numeral(props.org.ask).format('0.0a')}</Ask>

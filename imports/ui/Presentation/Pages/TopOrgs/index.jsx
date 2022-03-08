@@ -33,7 +33,11 @@ const TopOrgs = observer(() => {
 })
 
 const TopOrgsContainer = styled.div`
-	padding-top: 60px;
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
 
 	.ui.card{
 

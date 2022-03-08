@@ -9,8 +9,8 @@ const Intro = props => {
 	return (
 		<TitlePage>
 			<MainHeading>Allocation Night</MainHeading>
-			<ThemeTitle>{props.title}</ThemeTitle>
-			<ThemeQuestion>{props.question}</ThemeQuestion>
+			<ThemeTitle>{ props.title }</ThemeTitle>
+			<ThemeQuestion>{ props.question }</ThemeQuestion>
 			<LogoContainer>
 				<Image src='/img/BPLogoBlue.svg' />
 			</LogoContainer>
@@ -19,12 +19,16 @@ const Intro = props => {
 }
 
 const TitlePage = styled.div`
-	margin: 0 auto;
-	top: 50%;
-	left: 50%;
-	position: absolute;
-	transform: translate(-50%, -50%);
-	width: 100%;
+	// margin: 0 auto;
+	// top: 50%;
+	// left: 50%;
+	// position: absolute;
+	// transform: translate(-50%, -50%);
+	// width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	height: 100%;
 
 	h1, h2 {
 		color: #fff;
@@ -40,8 +44,6 @@ const TitlePage = styled.div`
 const MainHeading = styled.h1`
 	font-family: 'BentonMod';
 	letter-spacing: 4px;
-	padding-top: 0.7em;
-	margin-bottom: 1em;
 	font-size: 8.5em;
 	text-transform: uppercase;
 	clear: both;
@@ -54,14 +56,11 @@ const ThemeTitle = styled.h2`
 	}
 `
 
-const LogoContainer = styled.div`
-	margin: 5em auto;
-	display: block;
-	width: 250px;
+const ThemeQuestion = styled.h2`
 `
 
-const ThemeQuestion = styled.h2`
-	margin-bottom: 1.5em;
+const LogoContainer = styled.div`
+	display: block;
 `
 
 Intro.propTypes = {

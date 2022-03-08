@@ -59,7 +59,7 @@ const Presentation = withRouter(observer(props => {
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{(state) => (
-				<PageFader style={ { ...defaultStyle, ...transitionStyles[state] } }>
+				<PageFader style={ { ...defaultStyle, ...transitionStyles[state], width: '100%' } } id="presentationFader">
 					{/* Intro */}
 					<Route path={ `${props.match.path}/intro` } render={ () => (
 						<Intro title={ title } question={ question } />

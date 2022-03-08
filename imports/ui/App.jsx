@@ -47,10 +47,11 @@ const App = () => {
 
 const GlobalContainer = styled.div`
 	width: 100%;
-	height: 100%;
-	min-height: 100vh;
+	/* height: 100%; */
+	min-height: 100%;
 	position: relative;
-	display: block;
+	display: flex;
+	flex-direction: column;
 `
 
 App.propTypes = {
