@@ -112,14 +112,14 @@ const Kiosk = observer(() => {
 						{/* Topups */}
 						<Route exact path={ data.KIOSK_PAGES.topups } render={ () => (
 							// If member is set, navigation comes from the short link for voting remotely
-							<RemoteVoting member={ member } component={ Topups } />
+							<RemoteVoting memberId={ member } component={ Topups } />
 						) } />
 
 						{/* Funds Voting */}
 						<Route exact path={ data.KIOSK_PAGES.funds } render={ () => {
 							return member ?
 								// If member is set, navigation comes from the short link for voting remotely
-								<RemoteVoting member={ member } component={ FundsVotingKiosk } /> :
+								<RemoteVoting memberId={ member } component={ FundsVotingKiosk } /> :
 								// Otherwise kiosk voting in the room, members must login to proceed
 								<MemberLoginRequired component={ FundsVotingKiosk } />
 						} } />

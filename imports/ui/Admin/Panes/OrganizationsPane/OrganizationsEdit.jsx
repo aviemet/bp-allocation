@@ -33,7 +33,9 @@ const OrganizationsEdit = () => {
 
 	const sanitizeData = data => {
 		const sanitizedData = data
-		sanitizedData.ask = sanitizedData.ask ? parseFloat(sanitizedData.ask.replace(/[^\d.]/g, '')) : undefined
+		if(typeof sanitizedData === 'string') {
+			sanitizedData.ask = parseFloat(sanitizedData.ask.replace(/[^\d.]/g, ''))
+		}
 		return sanitizedData
 	}
 

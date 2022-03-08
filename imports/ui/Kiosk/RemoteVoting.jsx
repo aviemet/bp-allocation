@@ -19,6 +19,7 @@ const RemoteVoting = observer(({ memberId, component }) => {
 
 	// TODO: This should be a subscription to a single member
 	const member = members.values.find(member => member._id === memberId)
+	console.log({ member })
 
 	// if(membersLoading) return <Loader active />
 	if(!member) return (
