@@ -7,81 +7,94 @@ import { useSettings } from '/imports/api/providers'
 
 import { OrganizationMethods } from '/imports/api/methods'
 
-import CrowdFavoriteRibbon from '/imports/ui/Components/CrowdFavoriteRibbon'
+import {
+	Button,
+	Stack,
+	TableRow,
+	TableCell,
+	TextField,
+	Tooltip,
+} from '@mui/material'
+import FavoriteIcon from '@mui/icons-material/Favorite'
 
-import { Table, Button, Input } from 'semantic-ui-react'
-
-/**
- * Allocation Inputs Component
- */
-const AllocationInputs = observer(props => {
+const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminFields }) => {
 	const { settings } = useSettings()
 
-	const [ votedAmount, setVotedAmount ] = useState(props.org.votedTotal)
+	const [ votedAmount, setVotedAmount ] = useState(org.votedTotal)
 
 	// Controlling input only visible if not in kiosk voting mode
 	const enterAmountFromVotes = e => {
-		OrganizationMethods.update.call({ id: props.org._id, data: {
+		OrganizationMethods.update.call({ id: org._id, data: {
 			amountFromVotes: parseInt(e.target.value)
 		} })
 	}
 
 	const topoff = () => {
-		const amount = props.org.topOff > 0 ? 0 : props.org.need - props.org.leverageFunds
-		OrganizationMethods.update.call({ id: props.org._id, data: {
+		const amount = org.topOff > 0 ? 0 : org.need - org.leverageFunds
+		OrganizationMethods.update.call({ id: org._id, data: {
 			topOff: amount
 		} })
 	}
 
 	// Boolean help for marking fully funded orgs
-	const reachedGoal = props.org.need - props.org.leverageFunds <= 0
+	const reachedGoal = org.need - org.leverageFunds <= 0
 	return (
-		<Table.Row positive={ reachedGoal }>
+		<TableRow className={ reachedGoal ? 'make-me-stand-out' : '' }>
 
 			{/* Org Title */}
-			<Table.Cell>
-				<CrowdFavoriteRibbon crowdFavorite={ props.crowdFavorite || false }>
-					{props.org.title}
-				</CrowdFavoriteRibbon>
-			</Table.Cell>
+			<TableCell>
+				<Stack direction="row" justifyContent="space-between" alignItems="center">
+					{ org.title }
+					{ crowdFavorite && <Tooltip title="Crowd Favorite"><FavoriteIcon color="success" /></Tooltip> }
+				</Stack>
+			</TableCell>
 
 			{/* Voted Amount Input */}
-			<Table.Cell textAlign="right">
-				{ props.hideAdminFields || settings.useKioskFundsVoting ?
-					<span>{ numeral(props.org.votedTotal || 0).format('$0,0') }</span>
+			<TableCell align="right">
+				{ hideAdminFields || settings.useKioskFundsVoting ?
+					<span>{ numeral(org.votedTotal || 0).format('$0,0') }</span>
 					:
-					<Input
-						fluid
+					<TextField
 						type='number'
 						value={ votedAmount || '' }
 						onChange={ e => setVotedAmount(e.target.value === '' ? 0 : e.target.value) }
 						onBlur={ enterAmountFromVotes }
-						tabIndex={ props.tabInfo ? props.tabInfo.index : false }
+						tabIndex={ tabInfo ? tabInfo.index : false }
 					/>
 				}
-			</Table.Cell>
+			</TableCell>
 
 			{/* Funded */}
-			<Table.Cell className={ reachedGoal ? 'bold' : '' } textAlign="right">
-				{numeral(props.org.allocatedFunds).format('$0,0')}
-			</Table.Cell>
+			<TableCell className={ reachedGoal ? 'bold' : '' } align="right">
+				{ numeral(org.allocatedFunds).format('$0,0') }
+			</TableCell>
 
 			{/* Ask */}
-			<Table.Cell className={ reachedGoal ? 'bold' : '' } textAlign="right">
-				{numeral(props.org.ask).format('$0,0')}
-			</Table.Cell>
+			<TableCell className={ reachedGoal ? 'bold' : '' } align="right">
+				{ numeral(org.ask).format('$0,0') }
+			</TableCell>
 
 			{/* Need */}
-			<Table.Cell textAlign="right">
-				{ numeral(props.org.need - props.org.leverageFunds).format('$0,0') }
-			</Table.Cell>
+			<TableCell align="right">
+				{ numeral(org.need - org.leverageFunds).format('$0,0') }
+			</TableCell>
 
 			{/* Actions */}
-			{ !props.hideAdminFields &&
-			<Table.Cell singleLine>
-				<Button onClick={ topoff } style={ { width: '100%' } }>{props.org.topOff > 0 ? 'Undo' : '' } Top Off</Button>
-			</Table.Cell> }
-		</Table.Row>
+			{ !hideAdminFields &&
+				<TableCell>
+					<Button
+						onClick={ topoff }
+						color={ crowdFavorite ? 'primary' : 'grey' }
+						sx={ {
+							width: '100%',
+							whiteSpace: 'nowrap',
+						} }
+					>
+						{ org.topOff > 0 ? 'Undo ' : '' }Top Off
+					</Button>
+				</TableCell>
+			}
+		</TableRow>
 	)
 })
 

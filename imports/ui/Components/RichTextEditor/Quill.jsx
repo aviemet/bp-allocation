@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import PropTypes from 'prop-types'
 import ReactQuill, { Quill } from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 
 // configure Quill to use inline styles so the email's format properly
@@ -99,25 +99,27 @@ const config = {
 /*
  * Simple editor component that takes placeholder text as a prop
  */
-const Editor = props => {
+const Editor = forwardRef(({ onChange, value, placeholder }, ref) => {
+	const handleChange = (content, delta, source, editor) => {
+		if(onChange) onChange(content)
+	}
+
 	return (
 		<QuillWrapper>
 			<ReactQuill
+				ref={ ref }
 				theme='snow'
-				onChange={ props.onChange }
-				value={ props.value }
+				onChange={ handleChange }
+				value={ value }
 				modules={ config.modules }
 				formats={ config.formats }
 				bounds={ '.app' }
-				placeholder={ props.placeholder || '' }
+				placeholder={ placeholder || '' }
 			/>
 		</QuillWrapper>
 	)
-}
+})
 
-/*
- * PropType validation
- */
 Editor.propTypes = {
 	placeholder: PropTypes.string,
 	value: PropTypes.string,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Button, Icon } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 import { useData } from '/imports/api/providers'
 import { uuid } from '/imports/lib/utils'

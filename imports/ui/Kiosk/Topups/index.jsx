@@ -5,7 +5,7 @@ import { OrganizationMethods } from '/imports/api/methods'
 import { roundFloat } from '/imports/lib/utils'
 
 import { Container, Form, Input, Button, Card, Checkbox, Loader } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import TopupComplete from './TopupComplete'

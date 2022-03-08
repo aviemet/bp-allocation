@@ -2,7 +2,7 @@ import React from 'react'
 import { createPortal } from 'react-dom'
 import PropTypes from 'prop-types'
 import { Message } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import usePortal from '/imports/lib/usePortal'
 
 const CustomMessage = ({ heading, body, onDismiss, ...rest }) => {

@@ -7,7 +7,7 @@ class AppStore {
 	@observable themeId
 	@observable loading = true
 	@observable sidebarOpen = false
-	defaultMenuHeading = 'Battery Powered Allocation Night Themes!'
+	defaultMenuHeading = 'Battery Powered Allocation Night Themes'
 	@observable menuHeading = this.defaultMenuHeading
 	// Set of pledges not to be animated on allocation presentation page
 	@observable displayedPledges = new Set()

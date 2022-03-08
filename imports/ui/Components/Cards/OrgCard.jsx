@@ -4,7 +4,7 @@ import numeral from 'numeral'
 import _ from 'lodash'
 
 import { Card, Icon, Button, Modal } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
 // TODO: Use styledcomponents theme

@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Image } from 'semantic-ui-react'
-import styled from 'styled-components'
+import Image from '/imports/ui/Components/Image'
+import styled from '@emotion/styled'
 
 const Intro = props => {
 

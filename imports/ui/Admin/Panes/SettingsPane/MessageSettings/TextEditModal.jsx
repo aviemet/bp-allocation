@@ -36,10 +36,10 @@ const TextEditModal = ({ buttonText, message }) => {
 	}
 
 	return (
-		<Modal 
-			trigger={ <Button onClick={ () => setIsModalOpen(true) }>{ buttonText }</Button> } 
-			centered={ false } 
-			open={ isModalOpen } 
+		<Modal
+			trigger={ <Button onClick={ () => setIsModalOpen(true) }>{ buttonText }</Button> }
+			centered={ false }
+			open={ isModalOpen }
 			onClose={ handleClose }
 		>
 			<Modal.Header>Create New Message</Modal.Header>

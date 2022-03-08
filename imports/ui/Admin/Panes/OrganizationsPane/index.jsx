@@ -1,191 +1,186 @@
-/* eslint-disable react/display-name */
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
+import { Link, useParams, useHistory } from 'react-router-dom'
 import numeral from 'numeral'
 import { observer } from 'mobx-react-lite'
-import { useTheme, useOrgs } from '/imports/api/providers'
+import { useOrgs } from '/imports/api/providers'
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
 
 import { OrganizationMethods } from '/imports/api/methods'
 
-import { Header, Grid, Form, Container, Table, Button, Popup, Icon, Loader } from 'semantic-ui-react'
-import styled from 'styled-components'
+import { styled, alpha } from '@mui/material/styles'
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CircularProgress,
+	Container,
+	Divider,
+	Grid,
+	IconButton,
+	Menu,
+	MenuItem,
+	Typography,
+} from '@mui/material'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 
-import ImportOrgs from './ImportOrgs'
-import EditableText from '/imports/ui/Components/Inputs/EditableText'
-import ConfirmationModal from '/imports/ui/Components/Modals/ConfirmationModal'
+import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
+import SplitButton from '/imports/ui/Components/Buttons/SplitButton'
+import DisplayHtml from '/imports/ui/Components/DisplayHtml'
 
-const OrganizationsPane = observer(props => {
-	const { theme } = useTheme()
+const OrganizationsPane = observer(() => {
 	const { orgs, isLoading: orgsLoading } = useOrgs()
 
-	const [ orgTitle, setOrgTitle ] = useState('')
-	const [ orgAsk, setOrgAsk ] = useState('')
-	const [ orgDescription, setOrgDescription ] = useState('')
+	const modalValuesRef = useRef({
+		header: '',
+		content: '',
+		action: () => {}
+	})
 
 	const [ modalOpen, setModalOpen ] = useState(false)
-	const [ modalHeader, setModalHeader ] = useState('')
-	const [ modalContent, setModalContent ] = useState('')
-	const [ modalAction, setModalAction ] = useState()
 
-	const MAX_ORG_CHARACTERS = 50
+	const { id } = useParams()
+	const history = useHistory()
 
-	const handleNewOrgSubmit = (e) => {
-		e.preventDefault()
-
-		e.target.reset()
-
-		let data = {
-			title: orgTitle,
-			ask: parseFloat(orgAsk.replace(/[^\d.]/g, '')),
-			description: orgDescription,
-			theme: theme._id
+	const showDeleteModal = (org) => {
+		modalValuesRef.current.header = 'Permanently Delete This Organization?'
+		modalValuesRef.current.content = `This will permanently remove ${org.title} from this theme and all associated data. This process cannot be undone.`
+		modalValuesRef.current.action = () => {
+			OrganizationMethods.remove.call(org._id, (err, res) => {
+				if(err) console.error(err)
+			})
 		}
-
-		OrganizationMethods.create.call(data, (err, res) => {
-			if(err){
-				console.error(err)
-			} else {
-				setOrgTitle('')
-				setOrgAsk('')
-				setOrgDescription('')
-			}
-		})
+		setModalOpen(true)
 	}
 
-	const updateOrg = (id, field) => value => {
-		let data = {}
-		data[field] = value
-		OrganizationMethods.update.call({ id: id, data })
-	}
+	if(orgsLoading) return <CircularProgress />
 
-	const removeOrg = id => () => {
-		OrganizationMethods.remove.call(id, (err, res) => {
-			if(err) console.error(err)
-		})
-	}
-
-	if(orgsLoading) return <Loader active />
+	const options = [
+		{
+			title: 'Add New Organization',
+			action: () => history.push(`/admin/${id}/orgs/new`)
+		},
+		{
+			title: 'Import From CSV',
+			action: () => history.push(`/admin/${id}/orgs/import`)
+		},
+	]
 
 	return (
 		<>
-			<OrgsContainer>
-				<Grid.Row>
-					<Header as="h1">
-						{ `Organizations for Theme: ${ theme.title }` }
-						<ImportOrgs />
-					</Header>
-				</Grid.Row>
+			<Container>
+				<Grid container spacing={ 4 }>
+					<Grid item xs={ 12 } md={ 8 }>
+						<Typography component="h1" variant="h3">
+							Organizations
+						</Typography>
+					</Grid>
+					<Grid item xs={ 12 } md={ 4 } align="right">
+						<SplitButton options={ options } />
+					</Grid>
+				</Grid>
 
-				<Grid.Row>
-
-					<Form onSubmit={ handleNewOrgSubmit }>
-						<Form.Group>
-							<Form.Input
-								name='orgTitle'
-								width={ 8 }
-								type='text'
-								placeholder='Organization Name'
-								value={ orgTitle }
-								onChange={ e => setOrgTitle(e.target.value) }
-							/>
-
-							<Form.Input
-								name='orgAsk'
-								width={ 4 }
-								type='text'
-								placeholder='Ask'
-								iconPosition='left'
-								icon='dollar sign'
-								value={ orgAsk }
-								onChange={ e => setOrgAsk(e.target.value) }
-							/>
-
-							<Form.Button width={ 4 } type='submit'>Add</Form.Button>
-						</Form.Group>
-
-						<Form.TextArea
-							name='orgDescription'
-							placeholder='Brief description of the organization'
-							value={ orgDescription }
-							onChange={ e => setOrgDescription(e.target.value) }
-						/>
-
-					</Form>
-
-				</Grid.Row>
-
-				<Table size='small' sortable striped celled structured>
-					<Table.Header>
-						<Table.Row>
-							<Table.HeaderCell>Organization</Table.HeaderCell>
-							<Table.HeaderCell collapsing>Ask</Table.HeaderCell>
-							<Table.HeaderCell>Description</Table.HeaderCell>
-							<Table.HeaderCell collapsing></Table.HeaderCell>
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
-						{ orgs.values.map((org, i) => {
-							const titleLength = {
-								warning: {
-									test: org.title.length >= MAX_ORG_CHARACTERS - 5 && org.title.length < MAX_ORG_CHARACTERS,
-									message: () => <><p>This organization title is a little long at <b><em>{org.title.length}</em></b> characters. It may not appear correctly in the presentation. </p><p> Please reduce it to under 50 characters.</p></>
-								},
-								error: {
-									test: org.title.length >= MAX_ORG_CHARACTERS,
-									message: () => <><p>This organization title is too long at <b><em>{org.title.length}</em></b> characters. It most likely won&apos;t appear correctly in the presentation.</p><p> Please reduce it to under 50 characters.</p></>
-								}
+				{ orgs.values.map(org => (
+					<Card key={ org._id } sx={ { mb: 2 } }>
+						<CardHeader
+							action={
+								<PopupState variant="popover" popupId={ `org-${org._id}-options` }>
+									{ popupState => (
+										<>
+											<IconButton { ...bindTrigger(popupState) }>
+												<MoreVertIcon />
+											</IconButton>
+											<StyledMenu
+												{ ...bindMenu(popupState) }
+												anchorOrigin={ {
+													vertical: 'bottom',
+													horizontal: 'right',
+												} }
+												transformOrigin={ {
+													vertical: 'top',
+													horizontal: 'right',
+												} }
+											>
+												<Link to={ `/admin/${id}/orgs/${org._id}` }>
+													<MenuItem onClick={ popupState.close } disableRipple>
+														<EditIcon />
+														Edit
+													</MenuItem>
+												</Link>
+												<Divider />
+												<MenuItem disableRipple onClick={ () => {
+													showDeleteModal(org)
+													popupState.close()
+												} }>
+													<DeleteIcon />
+													Delete
+												</MenuItem>
+											</StyledMenu>
+										</>
+									) }
+								</PopupState>
 							}
-							return (
-								<Table.Row
-									key={ i }
-									warning={ titleLength.warning.test }
-									error={ titleLength.error.test }
-								>
-									<Table.Cell>
-										{ titleLength.warning.test && <Popup content={ titleLength.warning.message } trigger={ <Icon name='info' float='left' /> } /> }
-										{ titleLength.error.test && <Popup content={ titleLength.error.message } trigger={ <Icon name='info' float='left' /> } /> }
-										<EditableText onSubmit={ updateOrg(org._id, 'title') }>
-											{ org.title ? org.title : '' }
-										</EditableText>
-									</Table.Cell>
+							title={ org.title }
+							subheader={ `Ask: ${numeral(org.ask).format('$0,0')}` }
+						/>
+						<CardContent>
+							<DisplayHtml>{ org.description }</DisplayHtml>
+						</CardContent>
+					</Card>
+				)) }
+			</Container>
 
-									<EditableText as={ Table.Cell } onSubmit={ updateOrg(org._id, 'ask') } format={ value => numeral(value).format('$0,0') }>
-										{ org.ask ? org.ask : '' }
-									</EditableText>
-
-									<EditableText as={ Table.Cell } onSubmit={ updateOrg(org._id, 'description') } type='rte'>
-										{ org.description ? org.description : '' }
-									</EditableText>
-
-									<Table.Cell>
-										<Button icon='trash' onClick={ () => {
-											setModalHeader('Permanently Delete This Organization?')
-											setModalContent(`This will permanently remove ${org.title} from this theme and all associated data. This process cannot be undone.`)
-											setModalAction( () => removeOrg(org._id) )
-											setModalOpen(true)
-										} } />
-									</Table.Cell>
-								</Table.Row>
-							)
-						} ) }
-					</Table.Body>
-				</Table>
-
-			</OrgsContainer>
 			<ConfirmationModal
 				isModalOpen={ modalOpen }
 				handleClose={ () => setModalOpen(false) }
-				header={ modalHeader }
-				content={ modalContent }
-				confirmAction={ modalAction }
+				header={ modalValuesRef.current.header }
+				content={ modalValuesRef.current.content }
+				confirmAction={ modalValuesRef.current.action }
 			/>
 		</>
 	)
 })
 
-const OrgsContainer = styled(Container)`
-	&& h1.ui.header {
-		margin-bottom: 1rem;
-	}
-`
+const StyledMenu = styled((props) => (
+	<Menu
+		elevation={ 0 }
+		anchorOrigin={ {
+			vertical: 'bottom',
+			horizontal: 'right',
+		} }
+		transformOrigin={ {
+			vertical: 'top',
+			horizontal: 'right',
+		} }
+		{ ...props }
+	/>
+))(({ theme }) => ({
+	'& .MuiPaper-root': {
+		borderRadius: 6,
+		marginTop: theme.spacing(1),
+		minWidth: 180,
+		color:
+      theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+		boxShadow:
+      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+		'& .MuiMenu-list': {
+			padding: '4px 0',
+		},
+		'& .MuiMenuItem-root': {
+			'& .MuiSvgIcon-root': {
+				fontSize: 18,
+				color: theme.palette.text.secondary,
+				marginRight: theme.spacing(1.5),
+			},
+			'&:active': {
+				backgroundColor: alpha(
+					theme.palette.primary.main,
+					theme.palette.action.selectedOpacity,
+				),
+			},
+		},
+	},
+}))
 
 export default OrganizationsPane

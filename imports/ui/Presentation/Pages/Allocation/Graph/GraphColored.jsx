@@ -4,7 +4,7 @@ import numeral from 'numeral'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings, useOrgs } from '/imports/api/providers'
 
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import { Grid, Progress } from 'semantic-ui-react'
 
 import OrgInfo from '/imports/ui/Presentation/Graph/OrgInfo'

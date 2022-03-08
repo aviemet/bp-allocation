@@ -3,16 +3,28 @@ import PropTypes from 'prop-types'
 
 import numeral from 'numeral'
 
-import { Table, Icon } from 'semantic-ui-react'
+import {
+	CircularProgress,
+	Grid,
+	Table,
+	TableContainer,
+	TableHead,
+	TableBody,
+	TableFooter,
+	TableRow,
+	TableCell,
+	TextField,
+} from '@mui/material'
+import { Icon } from 'semantic-ui-react'
 
-const ResultsTable = props => {
+const ResultsTable = ({ round }) => {
 	let totals = {
 		spread: 0,
 		total: 0,
 		needed: 0
 	}
 
-	props.round.orgs.map(org => {
+	round.orgs.map(org => {
 		totals.spread += org.leverageFunds
 		totals.total += org.allocatedFunds + org.leverageFunds
 		totals.needed += org.need
@@ -20,37 +32,37 @@ const ResultsTable = props => {
 
 	return(
 		<Table>
-			<Table.Header>
-				<Table.Row>
-					<Table.HeaderCell>Organization</Table.HeaderCell>
-					<Table.HeaderCell>Leverage Spread</Table.HeaderCell>
-					<Table.HeaderCell>Ask</Table.HeaderCell>
-					<Table.HeaderCell>Total Earned</Table.HeaderCell>
-					<Table.HeaderCell>Still Needed</Table.HeaderCell>
-				</Table.Row>
-			</Table.Header>
+			<TableHead>
+				<TableRow>
+					<TableCell>Organization</TableCell>
+					<TableCell>Leverage Spread</TableCell>
+					<TableCell>Ask</TableCell>
+					<TableCell>Total Earned</TableCell>
+					<TableCell>Still Needed</TableCell>
+				</TableRow>
+			</TableHead>
 
-			<Table.Body>{props.round.orgs.map(org => (
+			<TableBody>
+				{ round.orgs.map(org => (
+					<TableRow key={ org._id } className={ org.need === 0 ? 'fully-funded' : '' }>
+						<TableCell>{ org.title }</TableCell>
+						<TableCell>{ org.leverageFunds === 0 ? '-' : numeral(org.leverageFunds).format('$0,0.00') }</TableCell>
+						<TableCell>{ numeral(org.ask).format('$0,0.00') }</TableCell>
+						<TableCell>{ numeral(org.allocatedFunds + org.leverageFunds).format('$0,0.00') }</TableCell>
+						<TableCell>{ org.need === 0 ? <Icon color='green' name='check circle' />  : numeral(org.need).format('$0,0.00') }</TableCell>
+					</TableRow>
+				)) }
+			</TableBody>
 
-				<Table.Row key={ org._id } positive={ org.need === 0 }>
-					<Table.Cell>{ org.title }</Table.Cell>
-					<Table.Cell>{ org.leverageFunds === 0 ? '-' : numeral(org.leverageFunds).format('$0,0.00') }</Table.Cell>
-					<Table.Cell>{ numeral(org.ask).format('$0,0.00') }</Table.Cell>
-					<Table.Cell>{ numeral(org.allocatedFunds + org.leverageFunds).format('$0,0.00') }</Table.Cell>
-					<Table.Cell>{ org.need === 0 ? <Icon color='green' name='check circle' />  : numeral(org.need).format('$0,0.00') }</Table.Cell>
-				</Table.Row>
-
-			))}</Table.Body>
-
-			<Table.Footer>
-				<Table.Row>
-					<Table.HeaderCell align="right">Totals:</Table.HeaderCell>
-					<Table.HeaderCell>{ numeral(totals.spread).format('$0,0.00') }</Table.HeaderCell>
-					<Table.HeaderCell></Table.HeaderCell>
-					<Table.HeaderCell>{ numeral(totals.total).format('$0,0.00') }</Table.HeaderCell>
-					<Table.HeaderCell>{ numeral(totals.needed).format('$0,0.00') }</Table.HeaderCell>
-				</Table.Row>
-			</Table.Footer>
+			<TableFooter>
+				<TableRow>
+					<TableCell align="right">Totals:</TableCell>
+					<TableCell>{ numeral(totals.spread).format('$0,0.00') }</TableCell>
+					<TableCell></TableCell>
+					<TableCell>{ numeral(totals.total).format('$0,0.00') }</TableCell>
+					<TableCell>{ numeral(totals.needed).format('$0,0.00') }</TableCell>
+				</TableRow>
+			</TableFooter>
 		</Table>
 	)
 }

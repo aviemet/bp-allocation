@@ -164,10 +164,10 @@ const MemberMethods = {
 		validate: null,
 
 		run(data) {
-			const { amount, chits, themeId, phone, email } = data
+			const { amount, chits, theme, phone, email } = data
 			// Create/edit member
 			return _memberInsert(data).then(member => {
-				const memberThemeQuery = { member, amount, chits, theme: themeId, phone, email }
+				const memberThemeQuery = { member, amount, chits, theme, phone, email }
 
 				// Create/edit theme association
 				return _memberThemeInsert(memberThemeQuery)
@@ -254,6 +254,7 @@ const MemberMethods = {
 		validate: null,
 
 		run({ id, data }) {
+			data.fullName = `${data.firstName} ${data.lastName}`
 			return Members.update({ _id: id }, { $set: _sanitizeMemberData(data) })
 		}
 	}),

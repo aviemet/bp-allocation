@@ -5,14 +5,18 @@ import numeral from 'numeral'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useOrgs } from '/imports/api/providers'
 
-import { Statistic, Segment, Loader } from 'semantic-ui-react'
-import styled from 'styled-components'
+import {
+	CircularProgress,
+	Paper,
+	Stack,
+} from '@mui/material'
+import styled from '@emotion/styled'
 
 const Breakdown = observer(() => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	if(themeLoading || orgsLoading ) return <Loader active />
+	if(themeLoading || orgsLoading ) return <CircularProgress />
 
 	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount}, 0)
 	const topOff = topOrgs.reduce((sum, org) => { return sum + org.topOff }, 0)
@@ -27,79 +31,76 @@ const Breakdown = observer(() => {
 
 
 	return (
-		<BreakdownContainer>
-			<Segment>
-				<Statistic.Group size='tiny'>
+		<Paper sx={ { p: 2 } }>
+			<Stack direction="row" justifyContent="space-between" alignItems="center">
 
-					{/* Total amount to allocate */}
-					<Statistic>
-						<Statistic.Value>{numeral(totalPot).format('$0,0')}</Statistic.Value>
-						<Statistic.Label>Total Pot + Saves</Statistic.Label>
-					</Statistic>
+				{/* Total amount to allocate */}
+				<Segment>
+					<Value>{ numeral(totalPot).format('$0,0') }</Value>
+					<Label>Total Pot + Saves</Label>
+				</Segment>
 
-					<Arithmetic>-</Arithmetic>
+				<Arithmetic>-</Arithmetic>
 
-					{/* Subtract 10k for each unchosen organization */}
-					<Statistic>
-						<Statistic.Value>{numeral(theme.consolationTotal).format('$0,0')}</Statistic.Value>
-						<Statistic.Label>Pulled/Others</Statistic.Label>
-					</Statistic>
+				{/* Subtract 10k for each unchosen organization */}
+				<Segment>
+					<Value>{ numeral(theme.consolationTotal).format('$0,0') }</Value>
+					<Label>Pulled/Others</Label>
+				</Segment>
 
-					<Arithmetic>-</Arithmetic>
+				<Arithmetic>-</Arithmetic>
 
-					{/* Subtract funds from votes and topOff */}
-					<Statistic>
-						<Statistic.Value>{numeral(fundsAllocated).format('$0,0')}</Statistic.Value>
-						<Statistic.Label>Votes + Topoff + Saves</Statistic.Label>
-					</Statistic>
+				{/* Subtract funds from votes and topOff */}
+				<Segment>
+					<Value>{ numeral(fundsAllocated).format('$0,0') }</Value>
+					<Label>Votes + Topoff + Saves</Label>
+				</Segment>
 
-					<Arithmetic>=</Arithmetic>
+				<Arithmetic>=</Arithmetic>
 
-					{/* Leverage amount to begin pledge round */}
-					<Statistic>
-						<Statistic.Value>{numeral(leverage).format('$0,0')}</Statistic.Value>
-						<Statistic.Label>Starting Leverage</Statistic.Label>
-					</Statistic>
+				{/* Leverage amount to begin pledge round */}
+				<Segment>
+					<Value>{ numeral(leverage).format('$0,0') }</Value>
+					<Label>Starting Leverage</Label>
+				</Segment>
 
-					<Arithmetic>-</Arithmetic>
+				<Arithmetic>-</Arithmetic>
 
-					{/* Subtract funds from pledge round */}
-					<Statistic>
-						<Statistic.Value>{numeral(theme.pledgedTotal).format('$0,0')}</Statistic.Value>
-						<Statistic.Label>Pledge Matches</Statistic.Label>
-					</Statistic>
+				{/* Subtract funds from pledge round */}
+				<Segment>
+					<Value>{ numeral(theme.pledgedTotal).format('$0,0') }</Value>
+					<Label>Pledge Matches</Label>
+				</Segment>
 
-					<Arithmetic>=</Arithmetic>
+				<Arithmetic>=</Arithmetic>
 
-					{/* Amount remaining to spread to winners */}
-					<Statistic>
-						<Statistic.Value>{numeral(theme.leverageRemaining).format('$0,0')}</Statistic.Value>
-						<Statistic.Label>Remaining</Statistic.Label>
-					</Statistic>
+				{/* Amount remaining to spread to winners */}
+				<Segment>
+					<Value>{ numeral(theme.leverageRemaining).format('$0,0') }</Value>
+					<Label>Remaining</Label>
+				</Segment>
 
-				</Statistic.Group>
-			</Segment>
-		</BreakdownContainer>
+			</Stack>
+		</Paper>
 	)
 
 })
 
-const Arithmetic = styled.span`
-	font-size: 2rem;
-	display: inline-flex;
-  flex: 0 1 auto;
-  flex-direction: column;
-  font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
-  font-weight: normal;
-  line-height: 1em;
-  color: #1b1c1d;
-  text-align: center;
+const Segment = styled.div`
+	text-align: center;
 `
 
-const BreakdownContainer = styled.div`
-	& .ui.statistics .ui.statistic {
-		margin: 0em 1em 2em;
-	}
+const Value = styled.div`
+	font-size: 2rem;
+	font-weight: 700;
+`
+
+const Label = styled.div`
+	font-size: 1.2rem;
+`
+
+const Arithmetic = styled.span`
+	font-size: 2rem;
 `
 
 Breakdown.propTypes = {}

@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite'
 import numeral from 'numeral'
 
 import { Grid } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 const OrgInfo = observer(props => {
 

@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import numeral from 'numeral'
 
 import { Grid } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 import { COLORS } from '/imports/lib/global'
 
 const AwardImg = ({ show }) => {
 	if(show !== true) return <React.Fragment />
-	return <Award src='/img/BAT_award_logo.svg' />
+	return <Award src='/img/BAT_award_logo.svg' style={ { maxHeight: '10em' } } />
 }
 
 AwardImg.propTypes = {

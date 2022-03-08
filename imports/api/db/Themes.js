@@ -25,6 +25,7 @@ const ThemeSchema = new SimpleSchema({
 	title: {
 		type: String,
 		label: 'Battery Powered Theme Title',
+		min: 3,
 		max: 200
 	},
 	question: {
@@ -91,7 +92,10 @@ const ThemeSchema = new SimpleSchema({
 		required: false
 	},
 	'saves.$': OrgSaveSchema,
-	presentationSettings: SimpleSchema.RegEx.Id,
+	presentationSettings: {
+		type: SimpleSchema.RegEx.Id,
+		required: false
+	},
 	createdAt: {
 		type: Date,
 		required: false,

@@ -4,7 +4,7 @@ import { isNaN, forEach } from 'lodash'
 
 import { useVoting } from '/imports/ui/Kiosk/VotingContext'
 
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import { Button } from 'semantic-ui-react'
 
 /**
@@ -13,7 +13,7 @@ import { Button } from 'semantic-ui-react'
 const ChitTicker = ({ org }) => {
 	const { member, chits, updateChits } = useVoting()
 	const [ value, setValue ] = useState(parseInt(chits[org._id]) || 0)
-	
+
 	const MAX = member.theme.chits
 
 	useLayoutEffect(() => {
@@ -26,9 +26,9 @@ const ChitTicker = ({ org }) => {
 
 		let sumAfterThisVote = 0
 		forEach(chits, (votes, orgId) => sumAfterThisVote += orgId === org._id ? parseInt(value) : votes)
-		
+
 		if(sumAfterThisVote > MAX || sumAfterThisVote < 0) return
-		
+
 		const constrained = Math.min(Math.max(value, 0), MAX)
 		setValue(constrained)
 

@@ -5,7 +5,7 @@ import numeral from 'numeral'
 
 import { useVoting } from '/imports/ui/Kiosk/VotingContext'
 
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import InputRange from 'react-input-range'
 import { Input, Button, Icon } from 'semantic-ui-react'
 

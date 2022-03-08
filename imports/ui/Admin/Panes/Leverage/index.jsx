@@ -1,16 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-// import _ from 'lodash'
 import numeral from 'numeral'
-
-// import { roundFloat } from '/imports/lib/utils'
 
 import { observer } from 'mobx-react-lite'
 import { useTheme, useOrgs } from '/imports/api/providers'
 import { ThemeMethods } from '/imports/api/methods'
 import LeverageObject from '/imports/lib/Leverage'
 
-import { Header, Segment, Grid, Button } from 'semantic-ui-react'
+import { styled } from '@mui/material/styles'
+import {
+	Box,
+	Button,
+	Grid,
+	Paper,
+	Stack,
+	Typography,
+} from '@mui/material'
 
 import RoundTable from './RoundTable'
 import ResultsTable from './ResultsTable'
@@ -34,10 +39,10 @@ const Leverage = observer(props => {
 
 	if(rounds.length === 0) {
 		return (
-			<React.Fragment>
-				<Header as='h1'>Not enough leverage to assign to organizations</Header>
+			<>
+				<Typography component='h1' variant="h3">Not enough leverage to assign to organizations</Typography>
 				<p>Check if amount has been entered to the &apos;Total Pot&apos; field in Theme Settings</p>
-			</React.Fragment>
+			</>
 		)
 	}
 
@@ -47,69 +52,54 @@ const Leverage = observer(props => {
 	const leverageDistributed = orgSpreadSum === roundSpreadSum
 
 	return (
-		<React.Fragment>
-			<Segment color='violet'>
-				<Grid>
-					<Grid.Row>
-						<Grid.Column width={ 6 }>
-							<Header as="h2">Final Distribution</Header>
-						</Grid.Column>
-						<Grid.Column width={ 4 }>
-							<span>Leverage Remaining: {numeral(leverage.finalRoundAllcoation(rounds)).format('$0,0.00')}</span><br/>
-						</Grid.Column>
-						<Grid.Column width={ 6 }>
-							{ !props.hideAdminFields && <React.Fragment>
-								{ !leverageDistributed ? (
-									<Button
-										color='green'
-										onClick={ () => saveLeverageSpread(rounds[rounds.length - 1]) }
-									>
-										Submit Final Values
-									</Button>
-								) : (
-									<Button
-										color='red'
-										onClick={ resetLeverage }
-									>
-										Reset Leverage Distribution
-									</Button>
-								) }
-							</React.Fragment> }
-						</Grid.Column>
-					</Grid.Row>
+		<>
+			<StageCard>
+				<Stack direction="row" justifyContent="space-between" alignItems="center">
+					<Typography component="h2" variant="h3">Final Distribution</Typography>
 
-					<Grid.Row>
-						<Grid.Column>
-							<ResultsTable round={ rounds[rounds.length - 1] } />
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
-			</Segment>
+					<div>Leverage Remaining: {numeral(leverage.finalRoundAllcoation(rounds)).format('$0,0.00')}</div>
+					{ !props.hideAdminFields && <>
+						{ !leverageDistributed ? (
+							<Button onClick={ () => saveLeverageSpread(rounds[rounds.length - 1]) }>
+								Submit Final Values
+							</Button>
+						) : (
+							<Button color="warning" onClick={ resetLeverage }>
+								Reset Leverage Distribution
+							</Button>
+						) }
+					</> }
+				</Stack>
+				<ResultsTable round={ rounds[rounds.length - 1] } />
+			</StageCard>
 
 			{ rounds.map((round, i) => (
-				<Segment key={ i }>
-					<Grid>
-						<Grid.Row>
-							<Grid.Column width={ 6 }>
-								<Header as="h2">Round {i + 1}</Header>
-							</Grid.Column>
-							<Grid.Column width={ 10 }>
-								<span>Leverage Remaining: {numeral(round.leverageRemaining).format('$0,0.00')}</span><br/>
-								<span>Remaining Orgs Sum: {numeral(round.sumRemainingOrgs).format('$0,0.00')}</span>
-							</Grid.Column>
-						</Grid.Row>
-
-						<Grid.Row>
-							<Grid.Column>
-								<RoundTable orgs={ round.orgs } />
-							</Grid.Column>
-						</Grid.Row>
-					</Grid>
-				</Segment>
+				<StageCard key={ i }>
+					<Stack direction="row" justifyContent="space-between" alignItems="center">
+						<Typography component="h2" variant="h3">Round {i + 1}</Typography>
+						<div>
+							<span>
+								Leverage Remaining:
+								<b>{ numeral(round.leverageRemaining).format('$0,0.00') }</b>
+							</span>
+							<br/>
+							<span>
+								Remaining Orgs Sum:
+								<b>{ numeral(round.sumRemainingOrgs).format('$0,0.00') }</b>
+							</span>
+						</div>
+					</Stack>
+					<RoundTable orgs={ round.orgs } />
+				</StageCard>
 			)) }
-		</React.Fragment>
+		</>
 	)
 })
+
+const StageCard = styled(Paper)(({ theme }) => ({
+	padding: 16,
+	marginBottom: 16,
+}))
 
 Leverage.propTypes = {
 	hideAdminFields: PropTypes.bool

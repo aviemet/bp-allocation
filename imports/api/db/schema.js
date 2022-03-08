@@ -1,5 +1,6 @@
-import { ThemeSchema } from '/imports/api/Themes'
-import { PresentationSettingsSchema } from '/imports/api/PresentationSettings'
-import { OrganizationsSchema } from '/imports/api/Organizations'
-
-export { ThemeSchema, PresentationSettingsSchema, OrganizationsSchema }
+export { ThemeSchema } from './Themes'
+export { PresentationSettingsSchema } from './PresentationSettings'
+export { OrganizationSchema } from './Organizations'
+export { MemberSchema } from './Members'
+export { MemberThemeSchema } from './MemberThemes'
+export { MessageSchema } from './Messages'

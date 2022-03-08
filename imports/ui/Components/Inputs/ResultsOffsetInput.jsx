@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Input } from 'semantic-ui-react'
+import { TextField } from '@mui/material'
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
 const ResultsOffsetInput = props => {
@@ -14,16 +14,13 @@ const ResultsOffsetInput = props => {
 	}
 
 	return (
-		<Input
-			fluid
+		<TextField
+			fullWidth
 			type='text'
 			pattern="[0-9]*"
-			icon='dollar sign'
-			iconPosition='left'
-			label='Offset'
-			labelPosition='right'
+			label='Results Offset Amount'
 			index='resultsOffset'
-			value={ resultsOffset }
+			value={ resultsOffset || '' }
 			onChange={ e => setResultsOffset(parseFloat(e.target.value)) }
 			onBlur={ saveResultsOffset }
 		/>

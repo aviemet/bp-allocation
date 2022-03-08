@@ -5,30 +5,33 @@ import { useSettings } from '/imports/api/providers'
 
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react'
+import {
+	FormControlLabel,
+	Switch,
+} from '@mui/material'
 
 const AnimateTopOrgsToggle = observer(() => {
 	const { settings } = useSettings()
 
-	const saveValue = (e, data) => {
+	const saveValue = e => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
-				animateOrgs: data.checked
+				animateOrgs: e.target.checked
 			}
 		})
 	}
 
 	return(
-		<Checkbox
+		<FormControlLabel
+			control={ <Switch
+				index='animateOrgs'
+				onClick={ saveValue }
+				checked={ settings.animateOrgs || false }
+			/> }
 			label='Animate'
-			toggle
-			index='animateOrgs'
-			onClick={ saveValue }
-			checked={ settings.animateOrgs || false }
 		/>
 	)
-
 })
 
 export default AnimateTopOrgsToggle

@@ -5,8 +5,10 @@ import numeral from 'numeral'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings, useOrgs } from '/imports/api/providers'
 
-import { Header, Card } from 'semantic-ui-react'
-import styled from 'styled-components'
+import { styled } from '@mui/system'
+import { css } from '@emotion/react'
+
+import Container from '@mui/material/Container'
 
 import AwardCard from '/imports/ui/Components/Cards/AwardCard'
 
@@ -38,14 +40,11 @@ const Results = observer(() => {
 		<ResultsPageContainer>
 			<AwardsImage><img src="/img/BAT_awards.png" /></AwardsImage>
 
-			<Header as='h1'>
-					Total amount given: {numeral(total).format('$0.[00]a')}
-			</Header>
+			<h1>Total amount given: {numeral(total).format('$0.[00]a')}</h1>
 			<br/><br/>
-			{/*<Header as='h2'>Battery Powered Awardees</Header>*/}
 
-			<Card.Group centered>
-				{awardees.map((org) => {
+			<AwardsCards>
+				{ awardees.map((org) => {
 					return(
 						<AwardCard
 							key={ org._id }
@@ -54,13 +53,13 @@ const Results = observer(() => {
 							amount={ org.allocatedFunds + org.leverageFunds }
 						/>
 					)
-				})}
-			</Card.Group>
-			<br/>
-			{/*<Header as='h2'>Other winners</Header>*/}
+				}) }
+			</AwardsCards>
 
-			<Card.Group centered >
-				{others.map((org) => {
+			<br/>
+
+			<AwardsCards>
+				{ others.map((org) => {
 					return(
 						<AwardCard
 							key={ org._id }
@@ -69,51 +68,24 @@ const Results = observer(() => {
 							amount={ org.allocatedFunds + org.leverageFunds }
 						/>
 					)
-				})}
-			</Card.Group>
+				}) }
+			</AwardsCards>
 
 		</ResultsPageContainer>
 	)
 })
 
-const ResultsPageContainer = styled.div`
-	color: #FFF;
 
-	&& {
-		h1, h2 {
-			line-height: 1em;
-			color: #FFF;
-			text-transform: uppercase;
-	    letter-spacing: 1px;
-			font-family: TradeGothic;
-			text-align: center;
-		}
-		h1 {
-			font-size: 3.8em;
-			margin: 0;
-
-			@media screen and (max-width: 800px) {
-				margin-top: 50px;
-			}
-		}
-
-		h2 {
-			font-size: 2.75em;
-			margin: 2px 0 0 0;
-		}
-	}
-
-	.ui.cards .card .content {
-		padding: 5px;
-
-		p{
-			margin: 0;
-			font-size: 1.75em;
-		}
-	}
+const AwardsCards = styled('div')`display: flex;
+	margin: -0.5em -0.5em;
+	flex-wrap: wrap;
+	justify-content: center;
+	text-align: center;
+	font-size: 16px;
+	font-family: "BentonMod";
 `
 
-const AwardsImage = styled.div`
+const AwardsImage = styled('div')`
 	text-align: center;
 
 	img {
@@ -124,5 +96,45 @@ const AwardsImage = styled.div`
 		display: none;
 	}
 `
+
+const ResultsPageContainer = styled(Container)( ({ theme }) => ({
+	root: css`
+		color: #FFF;
+
+		&& {
+			h1, h2 {
+				line-height: 1em;
+				color: #FFF;
+				text-transform: uppercase;
+				letter-spacing: 1px;
+				font-family: TradeGothic;
+				text-align: center;
+			}
+			h1 {
+				font-size: 3.8em;
+				margin: 0;
+
+				@media screen and (max-width: 800px) {
+					margin-top: 50px;
+				}
+			}
+
+			h2 {
+				font-size: 2.75em;
+				margin: 2px 0 0 0;
+			}
+		}
+
+		.ui.cards .card .content {
+			padding: 5px;
+
+			p{
+				margin: 0;
+				font-size: 1.75em;
+			}
+		}
+	`,
+	maxWidth: 'lg'
+}))
 
 export default Results

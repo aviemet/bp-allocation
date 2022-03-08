@@ -102,6 +102,7 @@ const emailVotingLinkToMembers = ({ themeId, message, members }) => {
 
 	sentMail.then(response => {
 		setMessageSentFlag(theme, message)
+		console.log({ sent: messages.map(m => m.to) })
 	}, error => {
 		console.error(error)
 
@@ -112,7 +113,7 @@ const emailVotingLinkToMembers = ({ themeId, message, members }) => {
 	})
 
 	// Log invalid emails
-	console.error({ invalidEmailMembers })
+	if(invalidEmailMembers.length > 0) console.error({ invalidEmailMembers })
 }
 
 export default emailVotingLinkToMembers

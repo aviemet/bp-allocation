@@ -11,12 +11,12 @@ import { isUndefined, indexOf, isEmpty, forEach, has } from 'lodash'
  * @param  {Function} cb   Callback to be called
  * @return {Object}        Data response object
  */
-const _dispatchCallback = (cb, data) => {
+function _dispatchCallback(cb, ...args) {
 	if(!isUndefined(cb)) {
-		const response = cb(data)
+		const response = cb(...args)
 		if(!isUndefined(response)) return response
 	}
-	return data
+	return args
 }
 
 /**
@@ -103,6 +103,52 @@ export const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
 		},
 		complete: results => {
 			_dispatchCallback(callbacks.onComplete, data)
+		}
+	})
+
+	return parser
+}
+
+/**
+ * Reads a csv file, returns an array of rows in key,value object form
+ * @param {File} file File object from input
+ * @param {Object} callbacks Lifecycle callbacks. Accepted values are:
+ *                                     'beforeInferHeadings(row)',
+ *                                     'afterInferHeadings(headings)',
+ *                                     'beforeRowParse(row)',
+ *                                     'afterRowParse(row)',
+ *                                     'onComplete(data)'
+ * @returns {Parser} Parser object containing all rows in sheet
+ */
+export const readCsv = (file, callbacks) => {
+	let firstRun = true
+	let headers = []
+	let data = []
+	const parser = Papa.parse(file, {
+		header: true,
+		delimiter: ',',
+		dynamicTyping: true,
+		skipEmptyLines: true,
+		step: (results, parser) => {
+			if(firstRun) {
+				headers = results.meta.fields.filter(field => field !== '')
+				firstRun = false
+				console.log({ headers })
+			}
+			let row = {} // Return object
+
+			let rowData = results.data[0]
+			_dispatchCallback(callbacks.beforeRowParse, rowData)
+
+			// Touch each value in the row
+			forEach(rowData, (value, key) => row[key] = value)
+
+			_dispatchCallback(callbacks.afterRowParse, row)
+
+			data.push(row)
+		},
+		complete: results => {
+			_dispatchCallback(callbacks.onComplete, data, headers)
 		}
 	})
 

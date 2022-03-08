@@ -1,22 +1,24 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import PropTypes from 'prop-types'
-// import RTE from './RTE'
-import { Form } from 'semantic-ui-react'
+
+import { Box, TextField } from '@mui/material'
 import TextareaAutosize from 'react-textarea-autosize'
 
-const Raw = ({ value, onChange, ...rest }) => {
+const Raw = forwardRef(({ value, onChange, ...rest }, ref) => {
 	return (
-		<Form>
-			<Form.Field
+		<Box>
+			<TextField
+				ref={ ref }
+				{ ...rest }
+				multiline
+				fullWidth
 				control={ TextareaAutosize }
 				onChange={ e => onChange(e.target.value) }
-				useCacheForDOMMeasurements
 				value={ value }
-				{ ...rest }
 			/>
-		</Form>
+		</Box>
 	)
-}
+})
 
 Raw.propTypes = {
 	placeholder: PropTypes.string,

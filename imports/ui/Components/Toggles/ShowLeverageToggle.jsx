@@ -5,17 +5,20 @@ import { useSettings } from '/imports/api/providers'
 
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react'
+import {
+	FormControlLabel,
+	Switch,
+} from '@mui/material'
 
 const ShowLeverageToggle = observer(() => {
 
 	const { settings, isLoading: settingsLoading } = useSettings()
 
-	const saveValue = (e, data) => {
+	const saveValue = e => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
-				leverageVisible: data.checked
+				leverageVisible: e.target.checked
 			}
 		})
 	}
@@ -23,15 +26,16 @@ const ShowLeverageToggle = observer(() => {
 	const checked = settingsLoading ? false : settings.leverageVisible
 
 	return(
-		<Checkbox
+		<FormControlLabel
+			control={ <Switch
+				index='leverageVisible'
+				onClick={ saveValue }
+				checked={ checked || false }
+			/>
+			}
 			label='Show Leverage'
-			toggle
-			index='leverageVisible'
-			onClick={ saveValue }
-			checked={ checked || false }
 		/>
 	)
-
 })
 
 export default ShowLeverageToggle

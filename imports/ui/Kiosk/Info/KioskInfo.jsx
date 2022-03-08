@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Card, Container, Header, Loader } from 'semantic-ui-react'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 import { observer } from 'mobx-react-lite'
 import { useTheme, useOrgs } from '/imports/api/providers'

@@ -5,7 +5,7 @@ import { Button } from 'semantic-ui-react'
 import { COLORS } from '/imports/lib/global'
 import { useData, useSettings } from '/imports/api/providers'
 
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 const VotingComplete = ({ setVotingComplete }) => {
 	const data = useData()

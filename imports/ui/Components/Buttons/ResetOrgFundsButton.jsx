@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'semantic-ui-react'
+import Button from '@mui/material/Button'
 import { ThemeMethods } from '/imports/api/methods'
 import { useTheme } from '/imports/api/providers'
 
@@ -13,7 +13,7 @@ const ResetOrgFundsButton = () => {
 	}
 
 	return (
-		<Button onClick={ resetOrgFunds }>Reset Funds for All Orgs</Button>
+		<Button color="warning" onClick={ resetOrgFunds }>Reset Funds for All Orgs</Button>
 	)
 }
 

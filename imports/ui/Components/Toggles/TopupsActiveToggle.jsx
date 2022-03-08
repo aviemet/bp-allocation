@@ -5,16 +5,19 @@ import { useSettings } from '/imports/api/providers'
 
 import { PresentationSettingsMethods } from '/imports/api/methods'
 
-import { Checkbox } from 'semantic-ui-react'
+import {
+	FormControlLabel,
+	Switch,
+} from '@mui/material'
 
 const TopupsActiveToggle = observer(() => {
 	const { settings } = useSettings()
 
-	const saveValue = (e, data) => {
+	const saveValue = e => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
-				topupsActive: data.checked,
+				topupsActive: e.target.checked,
 				chitVotingActive: false,
 				fundsVotingActive: false
 			}
@@ -24,15 +27,15 @@ const TopupsActiveToggle = observer(() => {
 	if(!settings.useKioskChitVoting) return <></>
 
 	return(
-		<Checkbox
+		<FormControlLabel
+			control={ <Switch
+				index='topupsActive'
+				onClick={ saveValue }
+				checked={ settings.topupsActive || false }
+			/> }
 			label='Topups Active'
-			toggle
-			index='topupsActive'
-			onClick={ saveValue }
-			checked={ settings.topupsActive || false }
 		/>
 	)
-
 })
 
 export default TopupsActiveToggle

@@ -27,8 +27,8 @@ const Routes = observer(() => (
 					: <Redirect to='/' />
 			) } />
 
-			<Redirect exact from='/' to='/themes' />
-			<PrivateRoute path={ ['/themes', '/admin'] } component={ AdminLayout } />
+			<Redirect exact from='/' to='/admin' />
+			<PrivateRoute path={ '/admin' } component={ AdminLayout } />
 
 			<LoadingRoute path='/presentation/:id' render={ () => (
 				<PresentationLayout>

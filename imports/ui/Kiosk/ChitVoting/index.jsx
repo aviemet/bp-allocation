@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { forEach, shuffle } from 'lodash'
 
@@ -6,13 +6,14 @@ import { observer } from 'mobx-react-lite'
 import { useData, useSettings, useOrgs } from '/imports/api/providers'
 import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext'
 
-import { Card, Container, Header, Button } from 'semantic-ui-react'
-import styled from 'styled-components'
+import { Container } from '@mui/material'
+import { Card, Header, Button } from 'semantic-ui-react'
+import styled from '@emotion/styled'
 
 import VotingComplete from '../VotingComplete'
 import OrgCard from '/imports/ui/Components/Cards/OrgCard'
 import ChitTicker from './ChitTicker'
-import useInterval from '/imports/ui/Components/useInterval'
+import Countown from '../Countdown'
 
 import { COLORS } from '/imports/lib/global'
 
@@ -23,6 +24,24 @@ const VotesRemaining = React.memo(({ value }) => {
 		</Header>
 	)
 })
+
+const ShuffledOrgs = React.memo(({ orgs }) => <>{
+	shuffle(orgs.values).map(org => (
+		<OrgCard
+			key={ org._id }
+			org={ org }
+			showAsk={ false }
+			size='small'
+			info={ true }
+			content={ () => (
+				<ChitTicker
+					org={ org }
+				/>
+			) }
+		/>
+	))
+}</>, (prev, next) => prev.orgs.values.every((org, i) => next.orgs.values[i]._id === org._id))
+
 
 VotesRemaining.displayName = 'VotesRemaining' // To slience eslint
 
@@ -35,16 +54,10 @@ const FundsVotingKiosk = observer(props => {
 
 	const [ votingComplete, setVotingComplete ] = useState(voted)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
-	const [ count, setCount ] = useState(data.votingRedirectTimeout)
 	const [ isCounting, setIsCounting ] = useState(false)
-
-	useInterval(() => {
-		setCount(count - 1)
-	}, isCounting ? 1000 : null)
 
 	const displayCountDown = () => {
 		setCountdownVisible(true)
-		setCount(data.votingRedirectTimeout)
 		setIsCounting(true)
 	}
 
@@ -55,6 +68,8 @@ const FundsVotingKiosk = observer(props => {
 
 	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName
 
+	const randomizedOrgs = useMemo(() => shuffle(orgs.values), [orgs.values])
+
 	if(votingComplete) {
 		return <VotingComplete setVotingComplete={ setVotingComplete } />
 	}
@@ -63,13 +78,10 @@ const FundsVotingKiosk = observer(props => {
 
 			<Header as='h1' className="title">{props.user.firstName && 'Voting for'} {memberName}</Header>
 
-			{ countdownVisible && <Header as='h3' className='countdown'>
-				Voting has ended, please submit your votes. <br/>
-				This page will redirect in { count } seconds
-			</Header> }
+			{ countdownVisible && <Countown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
 
 			<Card.Group doubling centered itemsPerRow={ 2 }>
-				{ shuffle(orgs.values).map(org => {
+				{/* { shuffle(orgs.values).map(org => {
 					return (
 						<OrgCard
 							key={ org._id }
@@ -84,7 +96,8 @@ const FundsVotingKiosk = observer(props => {
 							) }
 						/>
 					)
-				} ) }
+				} ) } */}
+				<ShuffledOrgs orgs={ orgs } />
 			</Card.Group>
 
 			<FundsVoteContext.Consumer>{ ({ chits, saveChits, member }) => {
@@ -111,7 +124,7 @@ const FundsVotingKiosk = observer(props => {
 })
 
 const OrgsContainer = styled(Container)`
-	padding-top: 20px;
+	padding: 20px;
 
 	&& .ui.centered.two.cards {
 		margin-top: 1rem;
@@ -167,6 +180,10 @@ FundsVotingKiosk.propTypes = {
 
 VotesRemaining.propTypes = {
 	value: PropTypes.number
+}
+
+ShuffledOrgs.propTypes = {
+	orgs: PropTypes.object
 }
 
 export default FundsVotingKiosk

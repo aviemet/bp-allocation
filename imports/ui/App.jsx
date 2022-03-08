@@ -2,7 +2,9 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Routes from './Routes'
 
-import styled, { ThemeProvider as StyledProvider } from 'styled-components'
+import { ThemeProvider as MUIProvider } from '@mui/material/styles'
+import CssBaseline from '@mui/material/CssBaseline'
+import styled from '@emotion/styled'
 import theme from '/imports/ui/theme'
 import { isMobileDevice } from '/imports/lib/utils'
 
@@ -20,7 +22,9 @@ const App = () => {
 
 	return (
 		<MediaProvider>
-			<StyledProvider theme={ theme }>
+			<CssBaseline />
+
+			<MUIProvider theme={ theme }>
 				<GlobalContainer id="globalContainer">
 					<DataProvider>
 						<ThemeProvider>
@@ -36,20 +40,17 @@ const App = () => {
 						</ThemeProvider>
 					</DataProvider>
 				</GlobalContainer>
-			</StyledProvider>
+			</MUIProvider>
 		</MediaProvider>
 	)
 }
 
 const GlobalContainer = styled.div`
 	width: 100%;
-	height: 100vh;
-
-	table {
-		&.ui.table {
-			padding: 0;
-		}
-	}
+	height: 100%;
+	min-height: 100vh;
+	position: relative;
+	display: block;
 `
 
 App.propTypes = {

@@ -1,45 +1,38 @@
 import { Meteor } from 'meteor/meteor'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useTheme } from '/imports/api/providers'
 import { observer } from 'mobx-react-lite'
 
-import styled from 'styled-components'
-import { Button, Icon, Modal, Segment } from 'semantic-ui-react'
+import styled from '@emotion/styled'
+import { Paper } from '@mui/material'
+import SmsIcon from '@mui/icons-material/Sms'
+import EmailIcon from '@mui/icons-material/Email'
+
+import CustomConfirm from '/imports/ui/Components/Dialogs/CustomConfirm'
 import { emailVotingLink, textVotingLink } from '/imports/lib/utils'
+import { STATUS, SubmitButton } from '/imports/ui/Components/Form'
 
 const buttonValues = {
 	email: {
 		method: 'emailVotingLinkToMembers',
-		icon: 'mail'
+		icon: EmailIcon
 	},
 	text: {
 		method: 'textVotingLinkToMembers',
-		icon: 'text telephone'
+		icon: SmsIcon
 	}
 }
 
 const SendWithFeedbackButton = observer(({ message, members, ...rest }) => {
 	const { theme } = useTheme()
 
+	const [buttonStatus, setButtonStatus] = useState(STATUS.READY)
+	const [buttonContent, setButtonContent] = useState('Send')
 	const [modalOpen, setModalOpen] = useState(false)
 
-	const handleSendMessage = () => {
-		setModalOpen(false)
-		Meteor.call(buttonValues[message.type].method, { themeId: theme._id, message, members })
-	}
-
 	const messageStatus = theme?.messagesStatus?.find(status => status.messageId === message._id)
-	let buttonContent = 'Send'
-	let buttonColor = 'green'
-	if(messageStatus?.error) {
-		buttonContent = 'Error Sending Messages'
-		buttonColor = 'red'
-	} else if(!messageStatus?.sending && messageStatus?.sent) {
-		buttonContent = 'Send Again'
-		buttonColor = undefined
-	}
 
 	let previewMessage = message.body
 	if(message.includeLink) {
@@ -50,6 +43,20 @@ const SendWithFeedbackButton = observer(({ message, members, ...rest }) => {
 		}
 	}
 
+	const handleSendMessage = () => {
+		setModalOpen(false)
+		Meteor.call(buttonValues[message.type].method, { themeId: theme._id, message, members })
+	}
+
+	useEffect(() => {
+		if(messageStatus?.error) {
+			setButtonStatus(STATUS.ERROR)
+			setButtonContent('Error Sending Messages')
+		} else if(!messageStatus?.sending && messageStatus?.sent) {
+			setButtonContent('Send Again')
+		}
+	}, [messageStatus])
+
 	let memberCountMessage = 'every member'
 	if(Array.isArray(members)) {
 		memberCountMessage = `${members.length} member${members.length !== 1 ? 's' : ''}`
@@ -57,47 +64,32 @@ const SendWithFeedbackButton = observer(({ message, members, ...rest }) => {
 
 	return (
 		<>
-			<Button
+			<SubmitButton
 				onClick={ () => setModalOpen(true) }
-				icon
-				labelPosition='right'
-				loading={ messageStatus?.sending }
-				color={ buttonColor }
+				status={ buttonStatus }
+				setStatus={ setButtonStatus }
+				icon={ buttonValues[message.type].icon }
 				{ ...rest }
 			>
-				<Icon name={ buttonValues[message.type].icon } />
 				{ buttonContent }
-			</Button>
+			</SubmitButton>
 
-			<Modal
-				centered={ false }
-				open={ modalOpen }
-				onClose={ () => setModalOpen(false) }
-			>
-				<Modal.Header>{ `Confirm sending ${message.type}` }</Modal.Header>
-				<Modal.Content>
-					<p>{ `Do you want to send the ${message.type}, "${message.title}" to ${memberCountMessage}?` }</p>
-					<p>Preview:</p>
-					<Segment>
-						<FormattedMessageBody dangerouslySetInnerHTML={ { __html: previewMessage } } />
-					</Segment>
-
-				</Modal.Content>
-				<Modal.Actions>
-					<Button
-						color='red'
-						onClick={ () => setModalOpen(false) }
-					>Cancel
-					</Button>
-
-					<Button
-						color='green'
-						onClick={ handleSendMessage }
-					>Send the Message
-					</Button>
-
-				</Modal.Actions>
-			</Modal>
+			<CustomConfirm
+				header={ `Confirm sending ${message.type}` }
+				content={
+					<>
+						<div>{ `Do you want to send the ${message.type}, "${message.title}" to ${memberCountMessage}?` }</div>
+						<div>Preview:</div>
+						<Paper elevation={ 1 } sx={ { p: 2 } }>
+							<FormattedMessageBody dangerouslySetInnerHTML={ { __html: previewMessage } } />
+						</Paper>
+					</>
+				}
+				isModalOpen={ modalOpen }
+				handleClose={ () => setModalOpen(false) }
+				confirmAction={ handleSendMessage }
+				okText="Send The Message"
+			/>
 		</>
 	)
 })
