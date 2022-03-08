@@ -6,7 +6,7 @@ import styled from '@emotion/styled'
 
 const KioskLayout = ({ children }) => (
 	<KioskContainer>
-		<Container sx={ { width: '100%', minHeight: '100vh' } }>
+		<Container>
 			{ children }
 		</Container>
 	</KioskContainer>
@@ -15,10 +15,10 @@ const KioskLayout = ({ children }) => (
 const KioskContainer = styled.div`
 	width: 100%;
 	height: 100%;
-	min-height: 100vh;
 	background: black;
 	color: white;
 	touch-action: manipulation;
+	padding-bottom: 2rem;
 `
 
 KioskLayout.propTypes = {

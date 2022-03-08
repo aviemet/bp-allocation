@@ -62,6 +62,7 @@ const Kiosk = observer(() => {
 
 	useEffect(() => {
 		let pageNav = getActivePage()
+		console.log({ pageNav })
 
 		// Wait 1 minute before navigating a user away from a voting screen
 		if(

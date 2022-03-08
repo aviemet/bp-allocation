@@ -44,6 +44,9 @@ const Orgs = observer(() => {
 })
 
 const OrgsContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	flex: 1;
 	padding-top: 20px;
 
 	&& .ui.card {

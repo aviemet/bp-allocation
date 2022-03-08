@@ -27,7 +27,7 @@ const PledgesOverlay = observer(() => {
 
 	// Listen for changes on the pledges Set from OrgsCollection
 	useEffect(() => {
-		// Compare all pledges to list of displayedPledges to avoid displaying all 
+		// Compare all pledges to list of displayedPledges to avoid displaying all
 		//   pledges at first display of page (only new pledges will display)
 		orgs.pledges.forEach(pledge => {
 			// Find any new pledges which haven't been displayed yet

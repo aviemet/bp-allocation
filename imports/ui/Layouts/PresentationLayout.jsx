@@ -3,13 +3,18 @@ import PropTypes from 'prop-types'
 
 import styled from '@emotion/styled'
 
-const PresentationLayout = ({ children }) => <PresentationContainer>{ children }</PresentationContainer>
+const PresentationLayout = ({ children }) => {
+	return (
+		<PresentationContainer id="presentationContainer">{ children }</PresentationContainer>
+	)
+}
 
 const PresentationContainer = styled.div`
 	background: #000;
 	width: 100%;
-	height: 100%;
-	min-height: 100vh;
+	flex: 1;
+	display: flex;
+	min-height: 100%;
 	color: #FFF;
 	text-align: center;
 	font-size: 16px;
