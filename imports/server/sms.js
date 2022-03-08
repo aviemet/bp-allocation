@@ -21,7 +21,7 @@ const memberPhoneNumbersQuery = (themeId, members) => {
 	}
 
 	// Coerce members into an array
-	if(typeof members == 'string') members = [members]
+	if(typeof members === 'string') members = [members]
 
 	// Constrain results to member ids if provided
 	if(Array.isArray(members)) {
@@ -84,7 +84,6 @@ const smsToMember = (member, message, slug) => {
 			})
 			resolve(response)
 		}).catch(error => {
-			console.error(error, member.phone)
 			reject({ error, member })
 		})
 	})
@@ -115,10 +114,11 @@ const textVotingLinkToMembers = ({ themeId, message, members }) => {
 
 		let i = 0
 		const interval = await setInterval(() => {
-			smsToMember(numbers[i++], message, theme.slug).catch(({ error, number }) => {
-				const retry = number.hasOwnProperty('retry') ? number.retry + 1 : 0
+			smsToMember(numbers[i++], message, theme.slug).catch(({ error, member }) => {
+				console.log({ error, member })
+				const retry = member.hasOwnProperty('retry') ? member.retry + 1 : 0
 				if(retry <= retryLimit) {
-					failedTexts.push(Object.assign(number, { retry }))
+					failedTexts.push(Object.assign(member, { retry }))
 				}
 			})
 
@@ -126,6 +126,7 @@ const textVotingLinkToMembers = ({ themeId, message, members }) => {
 				clearInterval(interval)
 
 				if(failedTexts.length > 0) {
+					console.log('retry')
 					sendTextsWithRetry(failedTexts)
 				}
 
