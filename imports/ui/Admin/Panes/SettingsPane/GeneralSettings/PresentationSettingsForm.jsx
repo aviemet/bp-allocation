@@ -119,7 +119,7 @@ const PresentationSettingsForm = observer(() => {
 				</Grid>
 
 				<Grid item xs={ 12 } align="right">
-					<SubmitButton status={ formStatus } setStatus={ setFormStatus }>Save Changes</SubmitButton>
+					<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Changes</SubmitButton>
 				</Grid>
 
 			</Grid>

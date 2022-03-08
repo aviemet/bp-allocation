@@ -19,7 +19,7 @@ import {
 	Paper,
 } from '@mui/material'
 
-const ImportMapping = ({ headings, values, mapping, schema, onImport }) => {
+const ImportMapping = ({ headings, values, mapping, schema, sanitize, onImport }) => {
 	const [errors, setErrors] = useState([])
 
 	const alternateForm = heading => {
@@ -72,7 +72,12 @@ const ImportMapping = ({ headings, values, mapping, schema, onImport }) => {
 				row[dbField] = cellValue
 			}
 
-			if(!context.validate(row)) {
+			let sanitizedRow = row
+			if(sanitize !== undefined) {
+				sanitizedRow = sanitize(row)
+			}
+
+			if(!context.validate(sanitizedRow)) {
 				batchErrors[i] = context.validationErrors().map(({ name, type }) => ({
 					name,
 					type,
@@ -80,7 +85,7 @@ const ImportMapping = ({ headings, values, mapping, schema, onImport }) => {
 				}))
 			}
 
-			return row
+			return sanitizedRow
 		})
 
 		if(batchErrors.length > 0) {
@@ -185,6 +190,7 @@ ImportMapping.propTypes = {
 	values: PropTypes.array,
 	mapping: PropTypes.array.isRequired,
 	schema: PropTypes.object.isRequired,
+	sanitize: PropTypes.func,
 	onImport: PropTypes.func.isRequired,
 	// errors: PropTypes.array,
 }

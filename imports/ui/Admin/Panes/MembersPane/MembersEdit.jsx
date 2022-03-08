@@ -168,7 +168,7 @@ const MembersEdit = () => {
 					<Grid item xs={ 12 }>
 						<Stack direction="row" spacing={ 2 } justifyContent="end">
 							<Button color="error" onClick={ () => history.push(`/admin/${id}/members`) }>Cancel</Button>
-							<SubmitButton status={ formStatus } setStatus={ setFormStatus }>Save Member</SubmitButton>
+							<SubmitButton  type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Member</SubmitButton>
 						</Stack>
 					</Grid>
 

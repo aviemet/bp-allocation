@@ -20,7 +20,7 @@ const ResultsOffsetInput = props => {
 			pattern="[0-9]*"
 			label='Results Offset Amount'
 			index='resultsOffset'
-			value={ resultsOffset }
+			value={ resultsOffset || '' }
 			onChange={ e => setResultsOffset(parseFloat(e.target.value)) }
 			onBlur={ saveResultsOffset }
 		/>

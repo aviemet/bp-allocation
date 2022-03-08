@@ -30,8 +30,6 @@ const ThemesList = () => {
 		return { themes: Themes.find({}).fetch() }
 	})
 
-	console.log({ themes })
-
 	const bulkDelete = (selected, onSuccess) => {
 		console.log({ selected, onSuccess })
 		const plural = selected.size > 1
@@ -81,7 +79,7 @@ const ThemesList = () => {
 				render={ row => (
 					<>
 						<TableCell><Link to={ `/admin/${row._id}` }>{ row.title }</Link></TableCell>
-						<TableCell align="center">{ format(row.createdAt, 'MM/dd/y') }</TableCell>
+						<TableCell align="center">{ format(row?.createdAt || new Date(), 'MM/dd/y') }</TableCell>
 						<TableCell align="right">
 							<ActionMenu label="Actions" render={ MenuItem => [
 								<MenuItem key='edit' onClick={ () => window.open(`/kiosk/${row._id}`) }>

@@ -49,14 +49,23 @@ const ImportMembers = observer(() => {
 		return parser
 	}
 
+	const onSanitize = data => {
+		const sanitizedData = data
+
+		if(sanitizedData.hasOwnProperty('fullName') && sanitizedData.fullName.includes(',')) {
+			sanitizedData.fullName = sanitizeNames(sanitizedData.fullName)
+		} else if(sanitizedData.hasOwnProperty('fullName') && !sanitizedData.hasOwnProperty('firstName') && !sanitizedData.hasOwnProperty('lastName')) {
+			const nameSplit = sanitizedData.fullName.split(' ')
+			sanitizedData.firstName = nameSplit[0]
+			sanitizedData.lastName = nameSplit[1]
+		}
+		console.log({ sanitizedData })
+		return sanitizedData
+	}
+
 	// TODO: Validation error feedback
 	const handleImportData = data => {
 		data.forEach(datum => {
-			const sanitizedData = datum
-
-			if(sanitizedData.hasOwnProperty('fullName') && sanitizedData.fullName.includes(',')) {
-				sanitizedData.fullName = sanitizeNames(sanitizedData.fullName)
-			}
 			const { error, response } = OrganizationMethods.create.call(Object.assign({ theme: themeId }, datum))
 			if(error) console.error({ error })
 		})
@@ -121,7 +130,7 @@ const ImportMembers = observer(() => {
 	]
 
 	const schema = MemberSchema.omit('code')
-		.extend(MemberThemeSchema.omit('member', 'chitVotes', 'allocations', 'createdAt'))
+		.extend(MemberThemeSchema.omit('member', 'chitVotes', 'allocations', 'createdAt', 'theme'))
 
 	return (
 		<>
@@ -131,6 +140,7 @@ const ImportMembers = observer(() => {
 					values={ pendingMembers }
 					mapping={ headingsMap }
 					schema = { schema }
+					sanitize={ onSanitize }
 					onImport={ handleImportData }
 				/>
 			) }
