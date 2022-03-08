@@ -35,7 +35,7 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	const [totals, setTotals] = useState(Map(emptyTotals))
+	// const [totals, setTotals] = useState(Map(emptyTotals))
 
 	const _calculateCrowdFavorite = () => {
 		let favorite = 0
@@ -49,24 +49,24 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 		return favorite
 	}
 
-	useEffect(() => {
-		const newTotals = emptyTotals
-		topOrgs.forEach(org => {
-			for(const [key, value] of Object.entries(newTotals)) {
-				newTotals[key] = org[key] + value
+	// useEffect(() => {
+	// 	const newTotals = Object.assign(emptyTotals, {})
+	// 	topOrgs.forEach(org => {
+	// 		for(const [key, value] of Object.entries(newTotals)) {
+	// 			newTotals[key] = org[key] + value
 
-				// Additional calculations besides basic summation per key
-				switch(key) {
-					case 'need':
-						newTotals.need -= org.leverageFunds
-						break
-					default:
-						break
-				}
-			}
-		})
-		setTotals(Map(newTotals))
-	}, [topOrgs, orgsLoading])
+	// 			// Additional calculations besides basic summation per key
+	// 			switch(key) {
+	// 				case 'need':
+	// 					newTotals.need -= org.leverageFunds
+	// 					break
+	// 				default:
+	// 					break
+	// 			}
+	// 		}
+	// 	})
+	// 	setTotals(Map(newTotals))
+	// }, [topOrgs, orgsLoading])
 
 	if(themeLoading || orgsLoading) return <CircularProgress />
 	const cellWidth = 90
@@ -104,26 +104,26 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 
 						{/* Voted Amount */}
 						<TableCell>{
-							// numeral(topOrgs.reduce((sum, org) => { return sum + org.votedTotal }, 0)).format('$0,0')
-							numeral(totals.get('votedTotal')).format('$0,0')
+							numeral(topOrgs.reduce((sum, org) => { return sum + org.votedTotal }, 0)).format('$0,0')
+							// numeral(totals.get('votedTotal')).format('$0,0')
 						}</TableCell>
 
 						{/* Total Allocated */}
 						<TableCell>{
-							// numeral(topOrgs.reduce((sum, org) => { return sum + org.allocatedFunds }, 0)).format('$0,0')
-							numeral(totals.get('allocatedFunds')).format('$0,0')
+							numeral(topOrgs.reduce((sum, org) => { return sum + org.allocatedFunds }, 0)).format('$0,0')
+							// numeral(totals.get('allocatedFunds')).format('$0,0')
 						}</TableCell>
 
 						{/* Original Ask*/}
 						<TableCell>{
-							// numeral(topOrgs.reduce((sum, org) => { return sum + org.ask }, 0)).format('$0,0')
-							numeral(totals.get('ask')).format('$0,0')
+							numeral(topOrgs.reduce((sum, org) => { return sum + org.ask }, 0)).format('$0,0')
+							// numeral(totals.get('ask')).format('$0,0')
 						}</TableCell>
 
 						{/* Need (Difference remaining) */}
 						<TableCell>{
-							// numeral(topOrgs.reduce((sum, org) => { return sum + org.need - org.leverageFunds }, 0)).format('$0,0')
-							numeral(totals.get('need')).format('$0,0')
+							numeral(topOrgs.reduce((sum, org) => { return sum + org.need - org.leverageFunds }, 0)).format('$0,0')
+							// numeral(totals.get('need')).format('$0,0')
 						}</TableCell>
 
 						{ !hideAdminFields &&  <TableCell>
