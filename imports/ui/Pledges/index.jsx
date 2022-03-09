@@ -50,6 +50,11 @@ const Pledges = observer(() => {
 		clearAllValues()
 	}
 
+	const setAmount = e => {
+		const amount = e.target.value
+		setPledgeAmount(parseInt(`${amount}`.replace(/([^0-9])/)))
+	}
+
 	if(membersLoading || isEmpty(members) || orgsLoading) return <Loader active />
 	return (
 		<PledgesContainer fluid textAlign='center'>
@@ -80,11 +85,12 @@ const Pledges = observer(() => {
 								icon='dollar'
 								iconPosition='left'
 								placeholder='Pledge Amount'
-								type='number'
+								type='text'
 								value={ pledgeAmount || '' }
-								onChange={ e => setPledgeAmount(e.target.value) }
-								onKeyUp={ e => setPledgeAmount(e.target.value) }
+								onChange={ setAmount }
+								onKeyUp={ setAmount }
 								size='huge'
+								pattern="[0-9]*"
 							/>
 						</Form.Field>
 					</Form.Group>

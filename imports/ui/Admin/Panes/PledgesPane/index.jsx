@@ -121,7 +121,7 @@ const Pledges = observer(({ hideAdminFields }) => {
 								<TableCell align="right">
 									<Stack direction="row" justifyContent="space-between" alignItems="baseline">
 										<div>$</div>
-										<div>{ numeral(pledge.amount).format('0,0') }</div>
+										<div>{ numeral(pledge.amount).format('0,0.00') }</div>
 									</Stack>
 								</TableCell>
 
@@ -153,7 +153,7 @@ const Pledges = observer(({ hideAdminFields }) => {
 										<TableCell align="right">
 											<Stack direction="row" justifyContent="space-between" alignItems="baseline">
 												<Box sx={ { mr: 1 } }>$</Box>
-												<Box>{ numeral(org.pledges.reduce((sum, pledge) => sum + pledge.amount, 0)).format('0,0') }</Box>
+												<Box>{ numeral(org.pledges.reduce((sum, pledge) => sum + pledge.amount, 0)).format('0,0.00') }</Box>
 											</Stack>
 										</TableCell>
 									</TableRow>
@@ -165,7 +165,7 @@ const Pledges = observer(({ hideAdminFields }) => {
 									<TableCell>
 										<Stack direction="row" justifyContent="space-between" alignItems="baseline">
 											<Box sx={ { mr: 1 } }>$</Box>
-											<Box>{ numeral(theme.pledgedTotal).format('0,0') }</Box>
+											<Box>{ numeral(theme.pledgedTotal).format('0,0.00') }</Box>
 										</Stack>
 									</TableCell>
 								</TableRow>

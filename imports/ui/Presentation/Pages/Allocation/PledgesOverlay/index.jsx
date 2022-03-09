@@ -39,14 +39,14 @@ const PledgesOverlay = observer(() => {
 				if(!animatingPledges) setAnimatingPledges(true)
 			}
 		})
-	}, [ orgs.pledges ])
+	}, [orgs.pledges])
 
 	useEffect(() => {
 		// When animatingPledges becomes true, begin the animation
 		if(animatingPledges) {
 			animatePledges()
 		}
-	}, [ animatingPledges ])
+	}, [animatingPledges])
 
 	const animatePledges = () => {
 		setDisplayPledge(null)

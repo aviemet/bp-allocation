@@ -110,7 +110,7 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 
 						{/* Total Allocated */}
 						<TableCell>{
-							numeral(topOrgs.reduce((sum, org) => { return sum + org.allocatedFunds }, 0)).format('$0,0')
+							numeral(topOrgs.reduce((sum, org) => { return sum + org.allocatedFunds + org.leverageFunds }, 0)).format('$0,0')
 							// numeral(totals.get('allocatedFunds')).format('$0,0')
 						}</TableCell>
 

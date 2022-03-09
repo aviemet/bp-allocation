@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import PledgeInfo from './PledgeInfo'
 import Fireworks from 'matter-fireworks'
- 
+
 const PledgeDisplay = ({ pledge }) => {
 	const canvasRef = useRef()
 	let fireworks
@@ -16,7 +16,7 @@ const PledgeDisplay = ({ pledge }) => {
 		fireworks = new Fireworks(canvasRef.current)
 		fireworks.fire(numFireworks, numFireworks * 750)
 	})
-	
+
 	return (
 		<>
 			<PledgeInfo pledge={ pledge } />
