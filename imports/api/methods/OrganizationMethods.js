@@ -143,30 +143,31 @@ const OrganizationMethods = {
 		}
 	}),
 
-
 	/**
-	 * Adjust Pledged Value
-	 *
-	 * Legacy: Pledges were a single value on the Organization model,
-	 * changed to be array of pledges with optional relation to Members
+	 * Remove a matched pledge without the orgId
 	 */
-	/*pledge: new ValidatedMethod({
-		name: 'organizations.pledge',
+	removePledgeById: new ValidatedMethod({
+		name: 'organizations.removePledgeById',
 
 		validate: null,
 
-		run({id, amount, match, themeId}) {
-			amount = roundFloat(amount)
-			let theme = Themes.find({_id: themeId}).fetch()[0]
+		run({ themeId, pledgeIds }) {
+			if(!Array.isArray(pledgeIds)) {
+				pledgeIds = [pledgeIds]
+			}
 
-			// Pledge should increment org.pledged by twice the amount
-			// increment theme.leverageUsed by the amount
-
-			Themes.update({_id: themeId}, {$inc: {leverageUsed: amount}})
-
-			return Organizations.update({_id: id}, {$inc: {pledges: (amount * parseInt(theme.matchRatio))}})
+			const orgs = Themes.findOne({ _id: themeId }, { organizations: true }).organizations
+			return Organizations.update(
+				{ _id: { $in: orgs } },
+				{
+					$pull: {
+						pledges: { _id: { $in: pledgeIds } }
+					}
+				},
+				{ getAutoValues: false, multi: true }
+			)
 		}
-	}),*/
+	}),
 
 	/**
 	 * Top-off organization

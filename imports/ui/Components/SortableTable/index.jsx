@@ -68,10 +68,11 @@ const SortableTable = ({
 		}
 	}
 
+	// TODO: Could may eliminate the callback by using a Promise
 	const handleDelete = () => {
 		if(!onBulkDelete) return
 
-		onBulkDelete(selected, () => {
+		onBulkDelete(selected.toArray(), () => {
 			setSelected(Set())
 		})
 	}

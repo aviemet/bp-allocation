@@ -186,7 +186,6 @@ const MemberMethods = {
 
 		validate: null,
 
-		// TODO: Also remove matched pledges for the member - hopefully DRY
 		run({ memberId, themeId }) {
 			const orgs = Organizations.find({ theme: themeId }).fetch()
 
@@ -202,6 +201,7 @@ const MemberMethods = {
 		}
 	}),
 
+	// TODO: Convert this to a batch remove members method
 	/*********************************
 	 * Remove All Members From Theme *
 	 *********************************/

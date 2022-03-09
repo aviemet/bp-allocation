@@ -78,6 +78,7 @@ const MembersTable = observer(() => {
 
 	const { id: themeId } = useParams()
 
+	// TODO: See about batching deletes
 	const bulkDelete = (selected, onSuccess) => {
 		const plural = selected.size > 1
 
