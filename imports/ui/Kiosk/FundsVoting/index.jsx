@@ -62,7 +62,7 @@ const FundsVotingKiosk = observer(props => {
 			{ countdownVisible && <Countown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
 
 			<Card.Group doubling centered itemsPerRow={ 2 }>
-				{topOrgs.map(org => {
+				{ topOrgs.map(org => {
 					return(
 						<OrgCard
 							key={ org._id }
@@ -76,7 +76,7 @@ const FundsVotingKiosk = observer(props => {
 								/>
 							) }
 						/>)
-				})}
+				}) }
 			</Card.Group>
 
 			<FundsVoteContext.Consumer>{ ({ allocations, saveAllocations, member }) => {
@@ -114,6 +114,7 @@ const OrgsContainer = styled(Container)`
 		margin: 0.3rem;
 
 		.content{
+			width: 100%;
 			padding: 0.2em 0.5em 1.5em;
 		}
 	}

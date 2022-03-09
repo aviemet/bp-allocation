@@ -126,7 +126,6 @@ const Pledges = observer(({ user }) => {
 })
 
 const PledgesContainer = styled(Container)`
-	height: 100vh;
 	padding-top: 3rem;
 
 	h1 {
