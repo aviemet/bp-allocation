@@ -4,14 +4,12 @@ import Papa from 'papaparse'
 
 import Button from '@mui/material/Button'
 
-const ExportCsvButton = ({ settings, data, description }) => {
+const ExportCsvButton = ({ options, data, description }) => {
 
 	const exportData = () => {
-		const settings = settings || {}
-
 		if(data) {
 			// Convert data to CSV format
-			let csv = Papa.unparse(data, settings)
+			let csv = Papa.unparse(data, options)
 
 			// Prep the file information
 			let csvData = new Blob([csv], { type: 'text/csvcharset=utf-8' })
@@ -41,9 +39,13 @@ const ExportCsvButton = ({ settings, data, description }) => {
 }
 
 ExportCsvButton.propTypes = {
-	settings: PropTypes.object,
+	options: PropTypes.object,
 	data: PropTypes.array,
 	description: PropTypes.string
+}
+
+ExportCsvButton.defaultProps = {
+	options: {},
 }
 
 export default ExportCsvButton
