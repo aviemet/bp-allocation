@@ -32,7 +32,7 @@ const ThemesList = () => {
 
 	const bulkDelete = (selected, onSuccess) => {
 		console.log({ selected, onSuccess })
-		const plural = selected.size > 1
+		const plural = selected.length > 1
 
 		setModalHeader(`Permanently Delete Theme${plural ? 's' : ''}?`)
 		setModalContent(`This is a permanent action, theme${plural ? 's' : ''} will not be recoverable`)

@@ -80,7 +80,7 @@ const MembersTable = observer(() => {
 
 	// TODO: See about batching deletes
 	const bulkDelete = (selected, onSuccess) => {
-		const plural = selected.size > 1
+		const plural = selected.length > 1
 
 		setModalHeader(`Permanently unlink member${plural ? 's' : ''} from this theme?`)
 		setModalContent(`This will permanently remove the member${plural ? 's' : ''} from this theme. It will not delete the Member record${plural ? 's' : ''}.`)

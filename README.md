@@ -10,8 +10,6 @@ For tracking and presenting the data on Allocation Night for Battery Powered.
   - [ ] ResetMessageStatusButton
   - [ ] Double check all prompt messages are accurate to their purpose
 
-    - Delete topup message is incorrect
-
 - [ ] If someone has entered their vote, automatically opt them out of receiving the email and text reminder for that round
 
 - [ ] Ability to pause/disable/enable topups fireworks

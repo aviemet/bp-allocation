@@ -12,11 +12,10 @@ const AllocationSchema = new SimpleSchema({
 	},
 	createdAt: {
 		type: Date,
+		required: false,
 		autoValue: function() {
-			if (this.isInsert) {
+			if(this.operator === '$push'){
 				return new Date()
-			} else if (this.isUpsert) {
-				return { $setOnInsert: new Date() }
 			} else {
 				this.unset()  // Prevent user from supplying their own value
 			}
@@ -35,11 +34,10 @@ const ChitVoteSchema = new SimpleSchema({
 	},
 	createdAt: {
 		type: Date,
+		required: false,
 		autoValue: function() {
-			if (this.isInsert) {
+			if(this.operator === '$push'){
 				return new Date()
-			} else if (this.isUpsert) {
-				return { $setOnInsert: new Date() }
 			} else {
 				this.unset()  // Prevent user from supplying their own value
 			}
@@ -79,6 +77,7 @@ const MemberThemeSchema = new SimpleSchema({
 	'allocations.$': AllocationSchema,
 	createdAt: {
 		type: Date,
+		required: false,
 		autoValue: function() {
 			if (this.isInsert) {
 				return new Date()

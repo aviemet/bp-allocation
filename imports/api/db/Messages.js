@@ -40,6 +40,7 @@ const MessageSchema = new SimpleSchema({
 	'optOutRounds.$': Number,
 	createdAt: {
 		type: Date,
+		required: false,
 		autoValue: function() {
 			if (this.isInsert) {
 				return new Date()
@@ -52,6 +53,7 @@ const MessageSchema = new SimpleSchema({
 	},
 	updatedAt: {
 		type: Date,
+		required: false,
 		autoValue: function() {
 			if (this.isUpdate) {
 				return new Date()

@@ -30,8 +30,14 @@ const MatchPledgeSchema = new SimpleSchema({
 	createdAt: {
 		type: Date,
 		required: false,
-		defaultValue: new Date()
-	}
+		autoValue: function() {
+			if(this.operator === '$push'){
+				return new Date()
+			} else {
+				this.unset()  // Prevent user from supplying their own value
+			}
+		}
+	},
 })
 
 // Define Collection
@@ -92,10 +98,11 @@ const OrganizationSchema = new SimpleSchema({
 	},
 	createdAt: {
 		type: Date,
+		required: false,
 		autoValue: function() {
-			if (this.isInsert) {
+			if(this.isInsert){
 				return new Date()
-			} else if (this.isUpsert) {
+			} else if(this.isUpsert){
 				return { $setOnInsert: new Date() }
 			} else {
 				this.unset()  // Prevent user from supplying their own value

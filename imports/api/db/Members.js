@@ -42,6 +42,7 @@ const MemberSchema = new SimpleSchema({
 	},
 	createdAt: {
 		type: Date,
+		required: false,
 		autoValue: function() {
 			if (this.isInsert) {
 				return new Date()

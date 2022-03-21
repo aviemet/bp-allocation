@@ -64,10 +64,11 @@ const Pledges = observer(({ hideAdminFields }) => {
 	const [ modalAction, setModalAction ] = useState()
 
 	const bulkDelete = (selected, onSuccess) => {
-		const plural = selected.size > 1
+		const plural = selected.length > 1
+		console.log({ selected })
 
 		setModalHeader(`Permanently unlink member${plural ? 's' : ''} from this theme?`)
-		setModalContent(`This will permanently remove the member${plural ? 's' : ''} from this theme. It will not delete the Member record${plural ? 's' : ''}.`)
+		setModalContent(`This will permanently delete the selected pledge${plural ? 's' : ''}. This action cannot be reversed.`)
 		// Need to curry the function since useState calls passed functions
 		setModalAction( () => () => {
 			OrganizationMethods.removePledgeById.call({ themeId: theme._id , pledgeIds: selected })
@@ -112,18 +113,18 @@ const Pledges = observer(({ hideAdminFields }) => {
 									<TableCell align="right">
 										<Stack direction="row" justifyContent="space-between" alignItems="baseline">
 											<div>$</div>
-											<div>{ numeral(pledge.amount).format('0,0.00') }</div>
+											<div>{ numeral(pledge?.amount).format('0,0.00') }</div>
 										</Stack>
 									</TableCell>
 
 									{/* Anonymous */}
 									<TableCell>
-										{ pledge.anonymous && <CheckIcon /> }
+										{ pledge?.anonymous && <CheckIcon /> }
 									</TableCell>
 
 									{/* Pledge Timestamp */}
 									<TableCell>
-										{ format(pledge.createdAt, 'hh:mm a') }
+										{ pledge?.createdAt && format(pledge.createdAt, 'hh:mm a') }
 									</TableCell>
 								</>
 							)

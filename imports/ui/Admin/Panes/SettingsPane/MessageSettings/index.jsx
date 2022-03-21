@@ -90,7 +90,7 @@ const Messages = () => {
 
 	const handleBulkDelete = (selected, onSuccess) => {
 		console.log({ selected })
-		const plural = selected.size > 1
+		const plural = selected.length > 1
 
 		setModalHeader(`Permanently delete message${plural ? 's' : ''}?`)
 		setModalContent(`This will permanently remove the message${plural ? 's' : ''}. This action is not reversable.`)

@@ -49,10 +49,8 @@ const Overview = () => {
 						return(
 							<TableRow key={ i }>
 								<TableCell>
-									<Stack direction="row" justifyContent="space-between" alignItems="center">
-										<Box>{ org.title }</Box>
-										<Box><Chip label={ numeral(org.ask).format('$0,0') } /></Box>
-									</Stack>
+									<Box>{ org.title }</Box>
+									<Box sx={ { textAlign: 'right' } }><Chip label={ `Ask: ${numeral(org.ask).format('$0,0')}` } /></Box>
 								</TableCell>
 								<TableCell align="right">{ roundFloat(org.votes, 1) }</TableCell>
 								<MoneyCell>{ org.votedTotal || 0 }</MoneyCell>

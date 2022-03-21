@@ -110,6 +110,7 @@ const ThemeSchema = new SimpleSchema({
 	'messagesStatus.$': MessageStatusSchema,
 	createdAt: {
 		type: Date,
+		required: false,
 		autoValue: function() {
 			if (this.isInsert) {
 				return new Date()
