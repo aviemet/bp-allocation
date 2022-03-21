@@ -1,22 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import numeral from 'numeral'
-import { Map } from 'immutable'
 
 import { observer } from 'mobx-react-lite'
-import { toJS } from 'mobx'
 import { useTheme, useMembers, useOrgs } from '/imports/api/providers'
 import { OrganizationMethods } from '/imports/api/methods'
-import { formatters } from '/imports/lib/utils'
 import { format } from 'date-fns'
 
-import styled from '@emotion/styled'
 import {
 	Box,
-	CircularProgress,
 	Grid,
 	Paper,
-	Skeleton,
 	Stack,
 	TableContainer,
 	Table,
@@ -27,8 +21,11 @@ import {
 	TableCell,
 	Typography,
 }  from '@mui/material'
+import CheckIcon from '@mui/icons-material/Check'
 import SortableTable from '/imports/ui/Components/SortableTable'
 import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
+import { TopupsActiveToggle } from '/imports/ui/Components/Toggles'
+import { Loading } from '/imports/ui/Components'
 
 // TODO: Investigate time issues with createdAt value
 
@@ -44,6 +41,10 @@ const headCells = [
 	{
 		id: 'amount',
 		label: 'Amount',
+	},
+	{
+		id: 'anonymous',
+		label: 'Anonymous',
 	},
 	{
 		id: 'createdAt',
@@ -75,13 +76,16 @@ const Pledges = observer(({ hideAdminFields }) => {
 		setModalOpen(true)
 	}
 
-	if(orgsLoading || membersLoading || !members) return <CircularProgress />
+	if(orgsLoading || membersLoading || !members) return <Loading />
 	return (
 		<>
 			<Grid container spacing={ 2 }>
 				<Grid item xs={ 12 } md={ 8 }>
 					<SortableTable
-						title="Pledges"
+						title={ <Stack direction="row" alignItems="center" justifyContent="space-between">
+							<Box>Pledges</Box>
+							<Box><TopupsActiveToggle /></Box>
+						</Stack> }
 						onBulkDelete={ bulkDelete }
 						headCells={ headCells }
 						rows={ orgs.pledges }
@@ -110,6 +114,11 @@ const Pledges = observer(({ hideAdminFields }) => {
 											<div>$</div>
 											<div>{ numeral(pledge.amount).format('0,0.00') }</div>
 										</Stack>
+									</TableCell>
+
+									{/* Anonymous */}
+									<TableCell>
+										{ pledge.anonymous && <CheckIcon /> }
 									</TableCell>
 
 									{/* Pledge Timestamp */}

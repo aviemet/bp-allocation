@@ -4,33 +4,47 @@ import SimpleSchema from 'simpl-schema'
 const AllocationSchema = new SimpleSchema({
 	organization: SimpleSchema.RegEx.Id,
 	amount: Number,
-	createdAt: {
-		type: Date,
-		required: false,
-		defaultValue: new Date()
-	},
 	voteSource: {
 		type: String,
 		required: false,
 		allowedValues: ['kiosk', 'mobile'],
 		defaultValue: 'kiosk'
-	}
+	},
+	createdAt: {
+		type: Date,
+		autoValue: function() {
+			if (this.isInsert) {
+				return new Date()
+			} else if (this.isUpsert) {
+				return { $setOnInsert: new Date() }
+			} else {
+				this.unset()  // Prevent user from supplying their own value
+			}
+		}
+	},
 })
 
 const ChitVoteSchema = new SimpleSchema({
 	organization: SimpleSchema.RegEx.Id,
 	votes: Number,
-	createdAt: {
-		type: Date,
-		required: false,
-		defaultValue: new Date()
-	},
 	voteSource: {
 		type: String,
 		required: false,
 		allowedValues: ['kiosk', 'mobile'],
 		defaultValue: 'kiosk'
-	}
+	},
+	createdAt: {
+		type: Date,
+		autoValue: function() {
+			if (this.isInsert) {
+				return new Date()
+			} else if (this.isUpsert) {
+				return { $setOnInsert: new Date() }
+			} else {
+				this.unset()  // Prevent user from supplying their own value
+			}
+		}
+	},
 })
 
 /**
@@ -65,9 +79,16 @@ const MemberThemeSchema = new SimpleSchema({
 	'allocations.$': AllocationSchema,
 	createdAt: {
 		type: Date,
-		required: false,
-		defaultValue: new Date()
-	}
+		autoValue: function() {
+			if (this.isInsert) {
+				return new Date()
+			} else if (this.isUpsert) {
+				return { $setOnInsert: new Date() }
+			} else {
+				this.unset()  // Prevent user from supplying their own value
+			}
+		}
+	},
 })
 
 MemberThemes.attachSchema(MemberThemeSchema)

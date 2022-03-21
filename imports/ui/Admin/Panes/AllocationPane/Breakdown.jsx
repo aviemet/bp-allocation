@@ -5,18 +5,18 @@ import numeral from 'numeral'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useOrgs } from '/imports/api/providers'
 
+import styled from '@emotion/styled'
 import {
-	CircularProgress,
 	Paper,
 	Stack,
 } from '@mui/material'
-import styled from '@emotion/styled'
+import { Loading } from '/imports/ui/Components'
 
 const Breakdown = observer(() => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	if(themeLoading || orgsLoading ) return <CircularProgress />
+	if(themeLoading || orgsLoading ) return <Loading />
 
 	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount}, 0)
 	const topOff = topOrgs.reduce((sum, org) => { return sum + org.topOff }, 0)

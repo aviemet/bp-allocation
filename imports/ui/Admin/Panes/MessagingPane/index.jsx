@@ -6,23 +6,19 @@ import { Link } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
 import {
 	Box,
-	CircularProgress,
-	Grid,
 	Paper,
 	Stack,
 	Table,
-	TableContainer,
 	TableHead,
 	TableBody,
-	TableFooter,
 	TableRow,
 	TableCell,
-	TextField,
 	Typography
 } from '@mui/material'
 
 import EditableText from '/imports/ui/Components/Inputs/EditableText'
 import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
+import { Loading } from '/imports/ui/Components'
 
 const Messages = () => {
 	const { theme } = useTheme()
@@ -36,7 +32,7 @@ const Messages = () => {
 		})
 	}
 
-	if(messagesLoading) return <CircularProgress />
+	if(messagesLoading) return <Loading />
 
 	return (
 		<>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { ThemeMethods } from '/imports/api/methods'
 import { observer } from 'mobx-react-lite'
 import { useTheme } from '/imports/api/providers'
@@ -6,12 +6,12 @@ import { ThemeSchema } from '/imports/api/db/schema'
 import { formatters, roundFloat } from '/imports/lib/utils'
 
 import {
-	CircularProgress,
 	FormControlLabel,
 	Grid,
 	InputAdornment,
 } from '@mui/material'
 import { Form, TextInput, Switch, SubmitButton, STATUS, } from '/imports/ui/Components/Form'
+import { Loading } from '/imports/ui/Components'
 
 const SettingsPane = observer(() => {
 	const { theme } = useTheme()
@@ -45,7 +45,7 @@ const SettingsPane = observer(() => {
 		console.log({ errors, data })
 	}
 
-	if(!theme) return <CircularProgress />
+	if(!theme) return <Loading />
 	return (
 		<Form
 			onValidSubmit={ onSubmit }

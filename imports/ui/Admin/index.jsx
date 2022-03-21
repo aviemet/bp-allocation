@@ -11,6 +11,7 @@ import {
 	MembersImport,
 	MembersEdit,
 	SettingsPane,
+	OverviewPane,
 	MessagingPane,
 	MessageEdit,
 	ChitVotingPane,
@@ -55,6 +56,8 @@ const Admin = () => {
 				<Route exact path='/admin/:id/settings/:activeTab' component={ SettingsPane } />
 				<Route exact path='/admin/:id/settings/messages/new/:type' component={ MessageEdit } />
 				<Route exact path='/admin/:id/settings/messages/:messageId' component={ MessageEdit } />
+
+				<Route exact path='/admin/:id/overview' component={ OverviewPane } />
 
 			</Switch>
 		</Container>

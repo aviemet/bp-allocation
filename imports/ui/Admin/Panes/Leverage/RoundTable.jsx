@@ -3,16 +3,12 @@ import PropTypes from 'prop-types'
 import numeral from 'numeral'
 
 import {
-	CircularProgress,
-	Grid,
 	Table,
-	TableContainer,
 	TableHead,
 	TableBody,
 	TableFooter,
 	TableRow,
 	TableCell,
-	TextField,
 } from '@mui/material'
 import { Icon } from 'semantic-ui-react'
 

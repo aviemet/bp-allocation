@@ -7,15 +7,12 @@ import { useMembers } from '/imports/api/providers'
 
 import { VotingContextProvider } from './VotingContext'
 
-import {
-	CircularProgress
-} from '@mui/material'
-// import { Loader } from 'semantic-ui-react'
+import { Loading } from '/imports/ui/Components'
 
 const RemoteVoting = observer(({ memberId, component }) => {
 	const { members, isLoading: membersLoading } = useMembers()
 
-	if(membersLoading || isEmpty(members)) return <CircularProgress />
+	if(membersLoading || isEmpty(members)) return <Loading />
 
 	// TODO: This should be a subscription to a single member
 	const member = members.values.find(member => member._id === memberId)

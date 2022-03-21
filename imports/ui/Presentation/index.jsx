@@ -9,7 +9,7 @@ import { useTheme, useSettings } from '/imports/api/providers'
 import styled from '@emotion/styled'
 
 import { Intro, Orgs, Timer, TopOrgs, Allocation, Results } from '/imports/ui/Presentation/Pages'
-import { CircularProgress } from '@mui/material'
+import { Loading } from '/imports/ui/Components'
 
 // Transition group definitions
 const FADE_DURATION = 300
@@ -55,7 +55,7 @@ const Presentation = withRouter(observer(props => {
 	const title = theme.title || ''
 	const question = theme.question || ''
 
-	if(themeLoading || settingsLoading) return <CircularProgress />
+	if(themeLoading || settingsLoading) return <Loading />
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{(state) => (

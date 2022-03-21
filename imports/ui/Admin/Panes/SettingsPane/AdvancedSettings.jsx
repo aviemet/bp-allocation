@@ -1,22 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import _ from 'lodash'
-import { ThemeMethods, PresentationSettingsMethods } from '/imports/api/methods'
+import React, { useState } from 'react'
+import { PresentationSettingsMethods } from '/imports/api/methods'
 import { PresentationSettingsSchema } from '/imports/api/db/schema'
 import { observer } from 'mobx-react-lite'
-import { useTheme, useSettings } from '/imports/api/providers'
+import { useSettings } from '/imports/api/providers'
 
-import CustomMessage from '/imports/ui/Components/CustomMessage'
 import ResetOrgFundsButton from '/imports/ui/Components/Buttons/ResetOrgFundsButton'
 import ResetMessageStatusButton from '/imports/ui/Components/Buttons/ResetMessageStatusButton'
 
 import {
-	CircularProgress,
-	FormControlLabel,
 	Grid,
-	InputAdornment,
 	Stack,
 } from '@mui/material'
-import { Form, TextInput, Switch, SubmitButton, STATUS, } from '/imports/ui/Components/Form'
+import { Form, TextInput, SubmitButton, STATUS, } from '/imports/ui/Components/Form'
+import { Loading } from '/imports/ui/Components'
 
 const SettingsPane = observer(() => {
 	const { settings, isLoading: settingsLoading } = useSettings()
@@ -52,7 +48,7 @@ const SettingsPane = observer(() => {
 		})
 	}
 
-	if(settingsLoading) return(<CircularProgress />)
+	if(settingsLoading) return(<Loading />)
 	return (
 		<>
 			<Form

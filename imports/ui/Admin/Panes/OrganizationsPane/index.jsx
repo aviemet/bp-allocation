@@ -12,7 +12,6 @@ import {
 	Card,
 	CardContent,
 	CardHeader,
-	CircularProgress,
 	Container,
 	Divider,
 	Grid,
@@ -28,6 +27,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
 import SplitButton from '/imports/ui/Components/Buttons/SplitButton'
 import DisplayHtml from '/imports/ui/Components/DisplayHtml'
+import { Loading } from '/imports/ui/Components'
 
 const OrganizationsPane = observer(() => {
 	const { orgs, isLoading: orgsLoading } = useOrgs()
@@ -54,7 +54,7 @@ const OrganizationsPane = observer(() => {
 		setModalOpen(true)
 	}
 
-	if(orgsLoading) return <CircularProgress />
+	if(orgsLoading) return <Loading />
 
 	const options = [
 		{

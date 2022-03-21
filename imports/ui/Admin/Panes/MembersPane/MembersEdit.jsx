@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Link, useParams, useHistory } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useParams, useHistory } from 'react-router-dom'
 import { useMembers } from '/imports/api/providers'
 import { MemberMethods } from '/imports/api/methods'
 import { MemberSchema, MemberThemeSchema } from '/imports/api/db/schema'
@@ -9,12 +9,12 @@ import { Form, TextInput, SubmitButton, STATUS, } from '/imports/ui/Components/F
 
 import {
 	Button,
-	CircularProgress,
 	Grid,
 	InputAdornment,
 	Stack,
 	Typography,
 } from '@mui/material'
+import { Loading } from '/imports/ui/Components'
 
 const MembersEdit = () => {
 	const { members, isLoading: membersLoading } = useMembers()
@@ -103,7 +103,7 @@ const MembersEdit = () => {
 	const schema = MemberSchema.omit('fullName', 'code')
 		.extend(MemberThemeSchema.omit('member', 'chitVotes', 'allocations', 'createdAt'))
 
-	if(membersLoading) return <CircularProgress />
+	if(membersLoading) return <Loading />
 
 	const memberStore = members?.values.find(member => member._id === memberId)
 	const member = {

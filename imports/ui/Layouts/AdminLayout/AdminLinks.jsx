@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 import {
+	Collapse,
 	List,
 	ListItem,
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
 	Divider,
-	Typography,
 } from '@mui/material'
 
 import BusinessIcon from '@mui/icons-material/Business'
@@ -18,10 +18,12 @@ import StarIcon from '@mui/icons-material/Star'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
 import PieChartIcon from '@mui/icons-material/PieChart'
-// import BarChartIcon from '@mui/icons-material/BarChart'
 import EmailIcon from '@mui/icons-material/Email'
 import SettingsIcon from '@mui/icons-material/Settings'
+import AllInclusiveIcon from '@mui/icons-material/AllInclusive'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ExpandMore from '@mui/icons-material/ExpandMore'
 
 import { observer } from 'mobx-react-lite'
 import { useData } from '/imports/api/providers'
@@ -69,13 +71,6 @@ const navLinks = [
 		route: themeId => `/admin/${themeId}/leverage`,
 		color: 'orange'
 	},
-	// {
-	// 	id: 'presentation',
-	// 	title: 'Presentation',
-	// 	icon: BarChartIcon,
-	// 	route: themeId => `/admin/${themeId}/presentation`,
-	// 	color: 'red'
-	// },
 	{
 		id: 'messaging',
 		title: 'Messaging',
@@ -115,6 +110,12 @@ const bottomLinks = [
 const Links = observer(({ activeMenuItem }) => {
 	const data = useData()
 
+	const [pagesOpen, setPagesOpen] = useState(false)
+
+	const togglePagesOpen = () => {
+		setPagesOpen(!pagesOpen)
+	}
+
 	return(
 		<>
 			<List>
@@ -134,28 +135,51 @@ const Links = observer(({ activeMenuItem }) => {
 			<List>
 				<ListItemButton component={ Link } to={ `/admin/${data.themeId}/settings` } selected={ activeMenuItem === 'settings' } >
 					<ListItemIcon><SettingsIcon /></ListItemIcon>
-					<ListItemText primary={ 'Settings' } />
+					<ListItemText primary="Settings" />
 				</ListItemButton>
 			</List>
 
 			<Divider />
 
-			<Typography variant="h6" noWrap component="div">Pages</Typography>
+			<List>
+				<ListItemButton component={ Link } to={ `/admin/${data.themeId}/overview` } selected={ activeMenuItem === 'overview' } >
+					<ListItemIcon><AllInclusiveIcon /></ListItemIcon>
+					<ListItemText primary="Overview" />
+				</ListItemButton>
+			</List>
+
+			<Divider />
 
 			<List>
-				{ bottomLinks.map(link => {
-					const linkProps = {}
-					if(link.newTab) {
-						linkProps.target = '_blank'
-						linkProps.rel = 'noopener noreferrer'
-					}
-					return (
-						<ListItem button key={ link.id } component={ Link } to={ link.route(data.themeId) } { ...linkProps }>
-							<ListItemText primary={ link.title } />
-							{ link.newTab && <ListItemIcon><OpenInNewIcon /></ListItemIcon> }
-						</ListItem>
-					)
-				})}
+				<ListItemButton onClick={ togglePagesOpen }>
+					<ListItemIcon>
+						{ pagesOpen ? <ExpandLess /> : <ExpandMore /> }
+					</ListItemIcon>
+					<ListItemText primary="Pages" />
+				</ListItemButton>
+				<Collapse in={ pagesOpen } timeout="auto" unmountOnExit>
+					<List>
+						{ bottomLinks.map(link => {
+							const linkProps = {}
+							if(link.newTab) {
+								linkProps.target = '_blank'
+								linkProps.rel = 'noopener noreferrer'
+							}
+							return (
+								<ListItem
+									key={ link.id }
+									button
+									component={ Link }
+									to={ link.route(data.themeId) }
+									secondaryAction={ link.newTab && <OpenInNewIcon /> }
+									{ ...linkProps }
+								>
+									<ListItemText primary={ link.title } />
+								</ListItem>
+							)
+						})}
+					</List>
+				</Collapse>
 			</List>
 
 		</>

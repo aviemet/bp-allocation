@@ -96,11 +96,6 @@ const ThemeSchema = new SimpleSchema({
 		type: SimpleSchema.RegEx.Id,
 		required: false
 	},
-	createdAt: {
-		type: Date,
-		required: false,
-		defaultValue: new Date()
-	},
 	slug: {
 		type: String,
 		required: false,
@@ -112,7 +107,19 @@ const ThemeSchema = new SimpleSchema({
 		defaultValue: [],
 		required: false
 	},
-	'messagesStatus.$': MessageStatusSchema
+	'messagesStatus.$': MessageStatusSchema,
+	createdAt: {
+		type: Date,
+		autoValue: function() {
+			if (this.isInsert) {
+				return new Date()
+			} else if (this.isUpsert) {
+				return { $setOnInsert: new Date() }
+			} else {
+				this.unset()  // Prevent user from supplying their own value
+			}
+		}
+	},
 })
 
 Themes.attachSchema(ThemeSchema)

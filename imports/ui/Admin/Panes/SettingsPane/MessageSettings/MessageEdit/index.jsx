@@ -9,12 +9,12 @@ import { Form, TextInput, Switch, SubmitButton, STATUS, RichTextInput } from '/i
 import styled from '@emotion/styled'
 import {
 	Button,
-	CircularProgress,
 	Grid,
 	Paper,
 	Stack,
 	Typography,
 } from '@mui/material'
+import { Loading } from '/imports/ui/Components'
 
 const MessageEdit = observer(() => {
 	const { id: themeId, messageId, type } = useParams()
@@ -85,7 +85,7 @@ const MessageEdit = observer(() => {
 		setPreview(data.body)
 	}
 
-	if(messageLoading) return <CircularProgress />
+	if(messageLoading) return <Loading />
 	return (
 		<>
 			<Typography component="h1" variant="h3" sx={ { mb: 1 } }>

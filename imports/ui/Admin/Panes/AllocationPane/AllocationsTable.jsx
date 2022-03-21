@@ -8,7 +8,6 @@ import { observer } from 'mobx-react-lite'
 
 import { styled } from '@mui/material/styles'
 import {
-	CircularProgress,
 	Grid,
 	Table,
 	TableContainer,
@@ -22,6 +21,7 @@ import {
 
 import AllocationInputs from './AllocationInputs'
 import { useSettings, useTheme, useOrgs } from '/imports/api/providers'
+import { Loading } from '/imports/ui/Components'
 
 const emptyTotals = {
 	votedTotal: 0,
@@ -49,6 +49,7 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 		return favorite
 	}
 
+	// This was a failed attempt to calculate totals in a singe loop, rather than 5 separate loops
 	// useEffect(() => {
 	// 	const newTotals = Object.assign(emptyTotals, {})
 	// 	topOrgs.forEach(org => {
@@ -68,8 +69,7 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 	// 	setTotals(Map(newTotals))
 	// }, [topOrgs, orgsLoading])
 
-	if(themeLoading || orgsLoading) return <CircularProgress />
-	const cellWidth = 90
+	if(themeLoading || orgsLoading) return <Loading />
 	return (
 		<TableContainer>
 			<StyledTable variant="striped">

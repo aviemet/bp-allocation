@@ -8,9 +8,7 @@ import { PresentationSettingsMethods } from '/imports/api/methods'
 
 import { TimerInput, ResultsOffsetInput } from '/imports/ui/Components/Inputs'
 import {
-	Box,
 	Button,
-	CircularProgress,
 	Grid,
 	Paper,
 } from '@mui/material'
@@ -32,8 +30,8 @@ import {
 	ShowSaveValuesToggle
 } from '/imports/ui/Components/Toggles'
 
-
 import PresentationNavButton from './PresentationNavButton'
+import { Loading } from '/imports/ui/Components'
 
 const PresentationPane = observer(() => {
 	const { theme } = useTheme()
@@ -70,7 +68,7 @@ const PresentationPane = observer(() => {
 		})
 	}
 
-	if(settingsLoading) return <CircularProgress />
+	if(settingsLoading) return <Loading />
 
 	return (
 		<>

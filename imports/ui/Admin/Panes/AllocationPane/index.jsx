@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 import {
 	Button,
-	CircularProgress,
 	Grid,
 	Typography,
 } from '@mui/material'
+import { Loading } from '/imports/ui/Components'
 
 import Breakdown from './Breakdown'
 import AllocationsTable from './AllocationsTable'
@@ -20,7 +20,7 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	if(themeLoading || orgsLoading) return <CircularProgress />
+	if(themeLoading || orgsLoading) return <Loading />
 
 	return (
 		<Grid container spacing={ 2 }>

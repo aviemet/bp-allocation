@@ -19,6 +19,8 @@ export { default as PresentationPane } from '/imports/ui/Admin/Panes/Presentatio
 
 export { default as SettingsPane } from '/imports/ui/Admin/Panes/SettingsPane'
 
+export { default as OverviewPane } from '/imports/ui/Admin/Panes/OverviewPane'
+
 export { default as MessagingPane } from '/imports/ui/Admin/Panes/MessagingPane'
 export { default as MessageEdit } from '/imports/ui/Admin/Panes/SettingsPane/MessageSettings/MessageEdit'
 

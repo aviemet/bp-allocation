@@ -7,7 +7,6 @@ import { ThemeMethods } from '/imports/api/methods'
 import {
 	Box,
 	Grid,
-	CircularProgress,
 	Stack,
 	Typography,
 	TextField
@@ -16,6 +15,7 @@ import {
 import ManualInputTable from './ManualInputTable'
 import RankedOrgsTable from './RankedOrgsTable'
 import ChitVotingActiveToggle from '/imports/ui/Components/Toggles/ChitVotingActiveToggle'
+import { Loading } from '/imports/ui/Components'
 
 const ChitVotingPane = observer(({ hideAdminFields }) => {
 	const { settings } = useSettings()
@@ -34,7 +34,7 @@ const ChitVotingPane = observer(({ hideAdminFields }) => {
 		}
 	}
 
-	if(orgsLoading) return <CircularProgress />
+	if(orgsLoading) return <Loading />
 
 	return (
 		<Grid container spacing={ 2 }>

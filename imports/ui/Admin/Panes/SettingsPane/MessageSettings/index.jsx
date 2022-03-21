@@ -1,26 +1,19 @@
-import { Meteor } from 'meteor/meteor'
 import React, { useState } from 'react'
 import { useData, useMessages, useMembers } from '/imports/api/providers'
 import { Link, useLocation, useHistory } from 'react-router-dom'
 import { MessageMethods } from '/imports/api/methods'
 
-import ActionMenu from '/imports/ui/Components/Menus/ActionMenu'
 import SortableTable from '/imports/ui/Components/SortableTable'
 import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
 import {
-	Box,
 	Button,
-	CircularProgress,
-	Paper,
 	Stack,
 	TableCell,
 } from '@mui/material'
 import IncludeVotingLinkToggle from './IncludevotingLinkToggle'
 import ActiveToggle from './ActiveToggle'
 import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
-import EditableText from '/imports/ui/Components/Inputs/EditableText'
-import TextEditModal from './TextEditModal'
-import EmailEditModal from './EmailEditModal'
+import { Loading } from '/imports/ui/Components'
 
 const textHeaderCells = [
 	{
@@ -119,7 +112,7 @@ const Messages = () => {
 		})
 	}
 
-	if(messagesLoading) return <CircularProgress />
+	if(messagesLoading) return <Loading />
 
 	return (
 		<>

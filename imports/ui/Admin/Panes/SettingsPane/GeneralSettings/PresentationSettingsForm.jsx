@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { PresentationSettingsMethods } from '/imports/api/methods'
 import { observer } from 'mobx-react-lite'
 import { useSettings } from '/imports/api/providers'
 import { PresentationSettingsSchema } from '/imports/api/db/schema'
 
 import {
-	Button,
-	CircularProgress,
 	Grid,
 	Paper,
 	Stack,
 } from '@mui/material'
 import { Form, TextInput, Switch, SubmitButton, STATUS, } from '/imports/ui/Components/Form'
+import { Loading } from '/imports/ui/Components'
 
 const PresentationSettingsForm = observer(() => {
 	const { settings, isLoading: settingsLoading } = useSettings()
@@ -41,7 +40,7 @@ const PresentationSettingsForm = observer(() => {
 		console.log({ errors, data })
 	}
 
-	if(!settings || settingsLoading) return <CircularProgress />
+	if(!settings || settingsLoading) return <Loading />
 	return (
 		<Form
 			onValidSubmit={ onSubmit }
