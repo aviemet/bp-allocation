@@ -5,7 +5,7 @@ import { useTracker } from 'meteor/react-meteor-data'
 
 import { Themes, Members } from '/imports/api/db'
 
-import { Loader } from 'semantic-ui-react'
+import { Loading } from '/imports/ui/Components'
 
 
 const ShortRoute = matchProps => {
@@ -34,7 +34,7 @@ const ShortRoute = matchProps => {
 		}
 	}, [themeSlug, memberCode])
 
-	if(data.isLoading) return <Loader active />
+	if(data.isLoading) return <Loading />
 
 	if(data.theme && data.member) {
 		// TODO: This is a hack because Redirect isn't working properly

@@ -1,15 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import numeral from 'numeral'
-
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings, useOrgs } from '/imports/api/providers'
-
 import styled from '@emotion/styled'
-import { Grid, Progress } from 'semantic-ui-react'
-
 import OrgInfo from './OrgInfo'
 import Bar from './Bar'
+import LeverageBar from './LeverageBar'
 
 const Graph = observer(props => {
 	const { theme } = useTheme()
@@ -50,7 +47,7 @@ const Graph = observer(props => {
 				<Goal style={ { top: 0 } } />
 				<Goal style={ { top: '50%' } } />
 
-				<BarsContainer columns='equal'>
+				<BarsContainer cols={ topOrgs.length }>
 					{topOrgs.map((org, i) => (
 						<Bar
 							key={ org._id }
@@ -64,30 +61,24 @@ const Graph = observer(props => {
 			</GraphContainer>
 
 			<InfoContainer id="info">
-				<InfoGrid columns='equal'>
-					<Grid.Row>
-						{ topOrgs.map((org) => (
-							<OrgInfo
-								org={ org }
-								theme={ theme }
-								key={ org._id }
-								showLeverage={ settings.leverageVisible }
-							/>
-						)) }
-					</Grid.Row>
-
-					<Grid.Row style={ { visibility: visibility } }>
-						<Grid.Column>
-							<ProgressBar
-								value={ leverageAfterDistribution }
-								total={ startingLeverage() }
-								color='green'
-								size='large'
-							/>
-							<LeverageCount>${ numeral(leverageAfterDistribution).format('0.00a') }</LeverageCount>
-						</Grid.Column>
-					</Grid.Row>
+				<InfoGrid cols={ topOrgs.length }>
+					{ topOrgs.map((org) => (
+						<OrgInfo
+							org={ org }
+							theme={ theme }
+							key={ org._id }
+							showLeverage={ settings.leverageVisible }
+						/>
+					)) }
 				</InfoGrid>
+
+				<LeverageContainer style={ { visibility: visibility } }>
+					<LeverageBar
+						value={ leverageAfterDistribution }
+						total={ startingLeverage() }
+					/>
+				</LeverageContainer>
+
 			</InfoContainer>
 		</GraphPageContainer>
 	)
@@ -108,7 +99,7 @@ const GraphPageContainer = styled.div`
 const GraphContainer = styled.div`
 	width: calc(100% - 12rem);
 	position: relative;
-	margin: 12rem auto 0 7rem;
+	margin: 4rem auto 0 7rem;
 	flex: 1;
 `
 
@@ -155,49 +146,39 @@ const Goal = styled.div`
 	border-style: dashed;
 `
 
-const BarsContainer = styled(Grid)`
+const BarsContainer = styled.div(({ cols }) => ({
+	display: 'grid',
+	gridTemplateColumns: `repeat(${cols}, 1fr)`,
+	width: '100%',
+	height: '100%',
+
+	'&&': {
+		marginLeft: 0,
+	}
+}))
+
+const InfoContainer = styled.div(({ cols }) => ({
+	flex: 0.5,
+	textAlign: 'left',
+	margin: '2vh auto 2vh 7rem',
+	width: 'calc(100% - 12rem)',
+	display: 'flex',
+	flexDirection: 'column',
+	justifyContent: 'space-between',
+}))
+
+const InfoGrid = styled.div(({ cols }) => ({
+	display: 'grid',
+	gridTemplateColumns: `repeat(${cols}, 1fr)`,
+	'&&': {
+		marginLeft: 0,
+	}
+}))
+
+const LeverageContainer = styled.div`
+	position: relative;
 	width: 100%;
-	height: 100%;
-
-	&& {
-		margin-left: 0;
-	}
-`
-
-const InfoContainer = styled.div`
-	text-align: left;
-	margin: 2em auto 0 7em;
-	width: calc(100% - 12rem);
-`
-
-const InfoGrid = styled(Grid)`
-	&& {
-		margin-left: 0;
-	}
-`
-
-const ProgressBar = styled(Progress)`
-	color: #FFF;
-
-	&& .bar {
-		background: #CCCCCC;
-		transition: width 4s ease-in-out;
-	}
-
-	&& .label {
-		color: #FFF;
-	}
-`
-
-const LeverageCount = styled.div`
-	position: absolute;
-	color: #FFF;
-  top: -3px;
-  left: 0;
-	width: 100%;
-  text-align: center;
-  font-size: 2em;
-  padding-right: 2rem;
+	padding: 0.5rem 0;
 `
 
 Graph.propTypes = {

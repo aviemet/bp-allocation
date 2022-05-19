@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { styled } from '@mui/material/styles'
 import { css } from '@emotion/react'
 
-import Card from '@mui/material/Card'
 import Paper from '@mui/material/Paper'
 
 import numeral from 'numeral'
@@ -43,7 +42,6 @@ const OrgCard = styled(Paper)`
 	flex-basis: 290px;
 	width: 290px;
 	height: 295px;
-	line-height: 20px;
 	margin: 0.5em 0.5em;
 `
 

@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Route, Switch, useRouteMatch } from 'react-router-dom'
 import { Transition } from 'react-transition-group'
-
 import styled from '@emotion/styled'
-
 import { observer } from 'mobx-react-lite'
 import { useData, useTheme, useSettings } from '/imports/api/providers'
-
 import KioskInfo from './Info/KioskInfo'
 import ChitVotingKiosk from './ChitVoting'
 import FundsVotingKiosk from './FundsVoting'
@@ -14,7 +11,6 @@ import Topups from './Topups'
 import MemberLoginRequired from './MemberLoginRequired'
 import RemoteVoting from './RemoteVoting'
 import Results from '/imports/ui/Presentation/Pages/Results'
-import Awards from './Awards'
 
 const Kiosk = observer(() => {
 	const match = useRouteMatch('/voting/:id/:member')
@@ -62,7 +58,6 @@ const Kiosk = observer(() => {
 
 	useEffect(() => {
 		let pageNav = getActivePage()
-		console.log({ pageNav })
 
 		// Wait 1 minute before navigating a user away from a voting screen
 		if(
@@ -125,7 +120,7 @@ const Kiosk = observer(() => {
 						} } />
 
 						{/* Voting Results */}
-						<Route exact path={ data.KIOSK_PAGES.results } component={ settings.awardsPresentation ? Awards : Results } />
+						<Route exact path={ data.KIOSK_PAGES.results } component={ Results } />
 
 					</Switch>
 
@@ -140,7 +135,8 @@ const FADE_DURATION = 300
 
 const defaultStyle = {
 	transition: `opacity ${FADE_DURATION}ms ease-in-out`,
-	opacity: 0
+	opacity: 0,
+	width: '100%',
 }
 
 const transitionStyles = {

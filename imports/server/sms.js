@@ -1,23 +1,25 @@
 import { Meteor } from 'meteor/meteor'
 import { format } from 'date-fns'
-import { formatPhoneNumber } from '/imports/lib/utils'
-import { Themes, Members } from '/imports/api/db'
-
-import '/imports/api/methods'
 import twilio from 'twilio'
-
-// Meteor publication definitions
+import { Themes, Members, MemberThemes, PresentationSettings } from '/imports/api/db'
+import '/imports/api/methods'
 import '/imports/server/publications'
-import { PresentationSettings, MemberThemes } from '/imports/api/db'
-
 import { setMessageSendingFlag, setMessageSentFlag } from './messageMethods'
-import { textVotingLink } from '/imports/lib/utils'
+import { textVotingLink, formatPhoneNumber } from '/imports/lib/utils'
 
-const memberPhoneNumbersQuery = (themeId, members) => {
+const memberPhoneNumbersQuery = (themeId, members, skipRounds) => {
 	const match = {
 		$match: {
-			'member.email': { $ne: null }
+			'member.phone': { $ne: null }
 		}
+	}
+
+	if(skipRounds?.one) {
+		match.$match.chitVotes = []
+	}
+
+	if(skipRounds?.two) {
+		match.$match.allocations = []
 	}
 
 	// Coerce members into an array
@@ -103,7 +105,7 @@ const textVotingLinkToMembers = ({ themeId, message, members }) => {
 
 	setMessageSendingFlag(theme, message)
 
-	const memberPhoneNumbers = memberPhoneNumbersQuery(themeId, members)
+	const memberPhoneNumbers = memberPhoneNumbersQuery(themeId, members, message.optOutRounds)
 
 	const rateLimitMs = settings.twilioRateLimit || 100
 	const retryLimit = 2

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-
-import { Header } from 'semantic-ui-react'
+import { Typography } from '@mui/material'
 
 import useInterval from '/imports/ui/Components/useInterval'
 
@@ -13,10 +12,10 @@ const Countdown = ({ seconds, isCounting }) => {
 	}, isCounting ? 1000 : null)
 
 	return (
-		<Header as='h3' className='countdown'>
+		<Typography component='h3' variant='h6' className='countdown'>
 			Voting has ended, please submit your votes. <br/>
 			This page will redirect in { count } seconds
-		</Header>
+		</Typography>
 	)
 }
 

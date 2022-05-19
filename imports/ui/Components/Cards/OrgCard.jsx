@@ -1,20 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import numeral from 'numeral'
-import _ from 'lodash'
-
-import { Card, Icon, Button, Modal } from 'semantic-ui-react'
 import styled from '@emotion/styled'
+import {
+	Box,
+	Dialog,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	IconButton,
+	Typography,
+} from '@mui/material'
+import InfoIcon from '@mui/icons-material/Info'
 import { observer } from 'mobx-react-lite'
+import { useCardContext } from './OrgCardContainer'
 
-// TODO: Use styledcomponents theme
+// TODO: Use MUI theme
 const GREEN = '#0D8744'
 const BLUE = '#002B43'
 
-/**
- * OrgCard Component
- */
 const OrgCard = observer(({
+	children,
 	org,
 	overlay,
 	content,
@@ -23,49 +29,65 @@ const OrgCard = observer(({
 	showAsk,
 	animateClass,
 	info,
-	bgcolor,
+	color,
 	onClick,
 	disabled,
-	...rest
+	...props
 }) => {
+	const [infoOpen, setInfoOpen] = useState(false)
+	// const { cols } = useCardContext()
 
 	const Overlay = overlay || false
 	const Content = content || false
 
-	let localBgColor = bgcolor || GREEN
-	if(!bgcolor && index) {
-		const row = parseInt(index / 4) % 4
-		localBgColor = (index + (row % 2)) % 2 === 0 ? GREEN : BLUE
-	}
-
-	const cardClasses = []
+	const cardClasses = ['orgCard']
 	if(size) cardClasses.push(size)
 	if(animateClass) cardClasses.push('animate-orgs')
 	if(disabled) cardClasses.push('disabled')
+	if(color) cardClasses.push(color)
+	// if(index !== undefined) {
+	// 	const row = parseInt(index / cols) % cols
+	// 	const parity = (index + (row % 2)) % 2
+	// 	cardClasses.push(parity)
+	// 	// console.log({ row, index, mod: (index + (row % 2)) % 2 })
+	// 	let localBgColor = (index + (row % 2)) % 2 === 0 ? 'green' : 'blue'
+	// 	cardClasses.push(localBgColor)
+	// }
 
 	return (
-		<StyledCard link={ false } className={ cardClasses.join(' ') } onClick={ onClick } >
+		<StyledCard
+			className={ cardClasses.join(' ') }
+			onClick={ onClick }
+			{ ...props }
+		>
 			{ Overlay && <Overlay /> }
 
-			<CardContent bgcolor={ localBgColor } >
+			{ info && <InfoLink>
+				<IconButton sx={ { color: 'white' } } aria-label="info" onClick={ () => setInfoOpen(true) }>
+					<InfoIcon />
+				</IconButton>
+				<Dialog
+					open={ infoOpen }
+					onClose={ () => setInfoOpen(false) }
+				>
+					<DialogTitle>{ org.title }</DialogTitle>
+					<DialogContent>
+						<DialogContentText>
+							{ org.description && <div dangerouslySetInnerHTML={ { __html: org.description } } /> }
+						</DialogContentText>
+					</DialogContent>
+				</Dialog>
+			</InfoLink> }
 
-				{ content && <Card.Content>
-					<Content />
-				</Card.Content> }
+			<CardContent>
 
-				{ info && <InfoLink>
-					<Modal
-						trigger={ <Button compact circular size='mini' icon='info' /> }
-						closeIcon
-						size='large'
-					>
-						<Modal.Header>{ org.title }</Modal.Header>
-						<Modal.Content scrolling>{ org.description && <div dangerouslySetInnerHTML={ { __html: org.description } } /> }</Modal.Content>
-					</Modal>
-				</InfoLink> }
+				{ content && <Content /> }
 
-				<OrgTitle><p>{ org.title }</p></OrgTitle>
-				{ (_.isUndefined(showAsk) ? true : !!showAsk) && <OrgAsk>{ numeral(org.ask).format('$0a') }</OrgAsk> }
+				<OrgTitle>
+					<Typography component="h3" variant="h5">{ org.title }</Typography>
+				</OrgTitle>
+				{ children !== undefined && <OrgAsk>{ children }</OrgAsk> }
+				{ showAsk ?? <OrgAsk>{ numeral(org.ask).format('$0a') }</OrgAsk> }
 			</CardContent>
 		</StyledCard>
 	)
@@ -73,38 +95,38 @@ const OrgCard = observer(({
 
 OrgCard.colors = { GREEN, BLUE }
 
-const StyledCard = styled(Card)`
-	text-align: center;
-
-	&& {
-		border: 5px solid #FFF !important;
-
-		.content {
-			padding: 1rem 0.5rem;
+const StyledCard = styled(Box)(({ theme }) => ({
+	position: 'relative',
+	border: '2px solid white',
+	textAlign: 'center',
+	minHeight: '4rem',
+	'&.disabled': {
+		filter: ' opacity(0.5)',
+		'& > *': {
+			color: theme.palette.grey[100]
 		}
+	},
+	'&.green': {
+		backgroundColor: theme.palette.batteryGreen.main,
+	},
+	'&.blue': {
+		backgroundColor: theme.palette.batteryBlue.main,
+	},
+	p: {
+		margin: 16,
 	}
+}))
 
-	&.big {
-		// height: 13rem;
-	}
-
-	&.disabled {
-		filter: opacity(0.5);
-
-		& > * {
-			color: #666 !important;
-		}
-	}
-`
-
-const CardContent = styled(Card.Content)`
-	background-color: ${({ bgcolor }) => bgcolor} !important;
+const CardContent = styled(Box)`
 	color: #FFF;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: space-between;
+	padding: 0.5rem;
+	width: 90%;
+	margin: 0 auto;
 
 	& a {
 		color: #FFF;
@@ -112,38 +134,43 @@ const CardContent = styled(Card.Content)`
 `
 
 const OrgTitle = styled.div`
-	font-family: TradeGothic;
-	font-size: 2.5rem;
-	margin: 5px;
 	font-weight: 600;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 
+	h3 {
+		font-family: TradeGothic20;
+		font-size: clamp(1.75rem, -3rem + 3vw + 4.5vh, 3rem);
+		// line-height: clamp(1.75rem, -3rem + 3vw + 4.5vh, 3rem);
+		font-weight: 700;
+		letter-spacing: -1px;
+	}
+
 	.small & {
 		min-height: 3.5rem;
 	}
 
 	.big & {
-		// min-height: 13.5rem;
 		font-size: 3.4rem;
 	}
 `
 
-const OrgAsk = styled.p`
-	font-family: TradeGothic20;
-	font-size: 3rem;
+const OrgAsk = styled.div`
+	font-family: BentonMod;
 	font-weight: 700;
+	font-size: clamp(1.55rem, -3.15rem + 3vw + 4.5vh, 2.55rem);
 `
 
-const InfoLink = styled(Icon)`
+const InfoLink = styled.div`
 	position: absolute;
-	top: 10px;
-	right: 10px;
+	top: 0;
+	right: 0;
 `
 
 OrgCard.propTypes = {
+	children: PropTypes.node,
 	org: PropTypes.object,
 	overlay: PropTypes.any,
 	content: PropTypes.oneOfType([
@@ -158,9 +185,13 @@ OrgCard.propTypes = {
 	showAsk: PropTypes.bool,
 	animateClass: PropTypes.bool,
 	info: PropTypes.bool,
-	bgcolor: PropTypes.string,
+	color: PropTypes.oneOf(['green', 'blue']),
 	onClick: PropTypes.func,
-	rest: PropTypes.any
+	rest: PropTypes.any,
+}
+
+OrgCard.defaultProps = {
+	color: 'green',
 }
 
 export default OrgCard

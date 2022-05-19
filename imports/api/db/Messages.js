@@ -1,6 +1,11 @@
 import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'simpl-schema'
 
+const RoundsSchema = new SimpleSchema({
+	one: Boolean,
+	two: Boolean,
+})
+
 const Messages = new Mongo.Collection('messages')
 
 const MessageSchema = new SimpleSchema({
@@ -33,11 +38,11 @@ const MessageSchema = new SimpleSchema({
 		defaultValue: false
 	},
 	optOutRounds: {
-		type: Array,
-		defaultValue: [],
+		type: RoundsSchema,
 		required: false,
+		defaultValue: { one: false, two: false },
+		label: 'Skip sending messages if member has voted in these rounds'
 	},
-	'optOutRounds.$': Number,
 	createdAt: {
 		type: Date,
 		required: false,
@@ -47,7 +52,7 @@ const MessageSchema = new SimpleSchema({
 			} else if (this.isUpsert) {
 				return { $setOnInsert: new Date() }
 			} else {
-				this.unset()  // Prevent user from supplying their own value
+				this.unset() // Prevent user from supplying their own value
 			}
 		}
 	},

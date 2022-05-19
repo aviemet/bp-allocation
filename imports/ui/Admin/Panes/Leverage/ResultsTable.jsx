@@ -10,9 +10,8 @@ import {
 	TableFooter,
 	TableRow,
 	TableCell,
-	TextField,
 } from '@mui/material'
-import { Icon } from 'semantic-ui-react'
+import CheckIcon from '@mui/icons-material/Check'
 
 const ResultsTable = ({ round }) => {
 	let totals = {
@@ -46,7 +45,7 @@ const ResultsTable = ({ round }) => {
 						<TableCell>{ org.leverageFunds === 0 ? '-' : numeral(org.leverageFunds).format('$0,0.00') }</TableCell>
 						<TableCell>{ numeral(org.ask).format('$0,0.00') }</TableCell>
 						<TableCell>{ numeral(org.allocatedFunds + org.leverageFunds).format('$0,0.00') }</TableCell>
-						<TableCell>{ org.need === 0 ? <Icon color='green' name='check circle' />  : numeral(org.need).format('$0,0.00') }</TableCell>
+						<TableCell>{ org.need === 0 ? <CheckIcon color="success" />  : numeral(org.need).format('$0,0.00') }</TableCell>
 					</TableRow>
 				)) }
 			</TableBody>

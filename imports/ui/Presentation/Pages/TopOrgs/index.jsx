@@ -1,26 +1,21 @@
 import React from 'react'
-
-import { Card, Loader } from 'semantic-ui-react'
 import styled from '@emotion/styled'
-
 import { observer } from 'mobx-react-lite'
 import { useOrgs, useSettings } from '/imports/api/providers'
-
 import {
 	Container
 } from '@mui/material'
-import OrgCard from '/imports/ui/Components/Cards/OrgCard'
+import { OrgCard, OrgCardContainer } from '/imports/ui/Components/Cards'
 
 const TopOrgs = observer(() => {
-	const { settings, isLoading: settingsLoading } = useSettings()
-	const { topOrgs, isLoading: orgsLoading } = useOrgs()
+	const { settings } = useSettings()
+	const { topOrgs }  = useOrgs()
 
-	if(settingsLoading || orgsLoading) return <Loader active />
 	return (
 		<TopOrgsContainer maxWidth="xl">
 			<PageTitle>Top {topOrgs.length} Organizations</PageTitle>
-			<CardsContainer>
-				<Card.Group centered itemsPerRow={ Math.ceil(topOrgs.length / 2) } style={ { height: '100%' } }>
+			<Container maxWidth="lg" sx={ { height: '100%', paddingBottom: '2rem' } }>
+				<OrgCardContainer centered cols={ 3 } sx={ { height: '80%' } }>
 					{ topOrgs.map((org) => (
 						<OrgCard
 							key={ org._id }
@@ -29,8 +24,8 @@ const TopOrgs = observer(() => {
 							size='big'
 						/>
 					)) }
-				</Card.Group>
-			</CardsContainer>
+				</OrgCardContainer>
+			</Container>
 		</TopOrgsContainer>
 	)
 })
@@ -45,26 +40,6 @@ const TopOrgsContainer = styled(Container)`
 	height: 100%;
 `
 
-const PageTitle = styled.h2`
-	padding: 2rem;
-`
-
-const CardsContainer = styled.div`
-	flex: 1;
-	width: 100%;
-	margin: 0 auto;
-
-	.ui.card {
-		height: 45%;
-		
-		div.content p {
-			color: #FFF;
-		}
-}
-
-	.ui.cards > .card > .content:after, .ui.card > .content:after {
-		content: none;
-	}
-`
+const PageTitle = styled.h2``
 
 export default TopOrgs

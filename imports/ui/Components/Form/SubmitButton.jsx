@@ -16,7 +16,7 @@ const SubmitButton = ({ children, status, setStatus, icon, ...props }) => {
 	const Icon = icon
 
 	const [loading, setLoading] = useState(false)
-	const [buttonIcon, setButtonIcon] = useState(<Icon />)
+	const [buttonIcon, setButtonIcon] = useState(icon ? <Icon /> : null)
 
 	const loadingTimeoutRef = useRef()
 	const statusTimeoutRef = useRef()
@@ -25,23 +25,23 @@ const SubmitButton = ({ children, status, setStatus, icon, ...props }) => {
 		switch(status) {
 			case STATUS.READY:
 				setLoading(false)
-				setButtonIcon(<Icon />)
+				if(icon) setButtonIcon(<Icon />)
 				break
 			case STATUS.SUCCESS:
 				delayLoading()
-				setButtonIcon(<CheckIcon />)
+				if(icon) setButtonIcon(<CheckIcon />)
 				break
 			case STATUS.SUBMITTING:
 				setLoading(true)
 				break
 			case STATUS.DISABLED:
-				setLoading(true)
+				setLoading(false)
 				break
 			case STATUS.ERROR:
 				break
 			default:
 				delayLoading()
-				setButtonIcon(<Icon />)
+				if(icon) setButtonIcon(<Icon />)
 		}
 	}, [status])
 
@@ -69,9 +69,11 @@ const SubmitButton = ({ children, status, setStatus, icon, ...props }) => {
 	return (
 		<LoadingButton
 			variant="contained"
-			loadingPosition="end"
+			loadingPosition={ buttonIcon ? 'end' : undefined }
 			endIcon={ buttonIcon }
 			loading={ loading }
+			disabled={ status === STATUS.DISABLED }
+			sx={ { whiteSpace: 'nowrap' } }
 			color={ status === STATUS.SUCCESS ? 'success' : 'primary' }
 			{ ...props }
 		>{ children }</LoadingButton>

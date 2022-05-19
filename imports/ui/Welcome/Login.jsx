@@ -1,16 +1,16 @@
 import { Meteor } from 'meteor/meteor'
-import React, { useState } from 'react'
+import React from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
-import CustomMessage from '../Components/CustomMessage'
+import { useSnackbar } from 'notistack'
 
 const Login = () => {
+	const { enqueueSnackbar } = useSnackbar()
+
 	const history = useHistory()
 	const location = useLocation()
-
-	const [loginErrorVisible, setLoginErrorVisible] = useState(false)
 
 	const handleLogin = e => {
 		Meteor.loginWithGoogle({
@@ -18,7 +18,16 @@ const Login = () => {
 			scope: [ 'email' ]
 		}, err => {
 			if(err) {
-				showLoginError()
+				enqueueSnackbar(
+					<>
+						<p>Authentication is restricted to emails with the following domains:</p>
+						<ul>
+							{ ['thebatterysf.com'].map((domain, i) => ( // Should be pulling from the settings file
+								<li key={ i }>{ domain }</li>
+							)) }
+						</ul>
+					</>
+					, { variant: 'error' })
 				console.error({ err })
 			} else {
 				let redirect = location.state && location.state.from ? location.state.from : '/'
@@ -26,14 +35,6 @@ const Login = () => {
 			}
 		})
 	}
-
-	const showLoginError = () => {
-		setLoginErrorVisible(true)
-
-		setTimeout(() => setLoginErrorVisible(false), 10000)
-	}
-
-	const hideMessage = () => setLoginErrorVisible(false)
 
 	return (
 		<>
@@ -46,23 +47,6 @@ const Login = () => {
 					</Button>
 				</Grid>
 			</Grid>
-
-			{ loginErrorVisible &&
-				<CustomMessage
-					negative
-					onDismiss={ hideMessage }
-					heading='Login Unsuccesful'
-					body={ <>
-						<p>Authentication is restricted to emails with the following domains:</p>
-						<ul>
-							{ ['thebatterysf.com'].map((domain, i) => ( // Should be pulling from the settings file
-								<li key={ i }>{ domain }</li>
-							)) }
-						</ul>
-					</> }
-				/>
-			}
-
 		</>
 	)
 }

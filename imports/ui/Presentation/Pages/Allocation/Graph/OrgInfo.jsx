@@ -1,11 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-
 import { observer } from 'mobx-react-lite'
-
 import numeral from 'numeral'
-
-import { Grid } from 'semantic-ui-react'
 import styled from '@emotion/styled'
 
 const OrgInfo = observer(({ org, showLeverage }) => {
@@ -28,20 +24,19 @@ const OrgInfo = observer(({ org, showLeverage }) => {
 	)
 })
 
-const InfoContainer = styled(Grid.Column)`
-	height: 12vh;
+const InfoContainer = styled.div`
 	&& {
 		margin: 0 1rem;
 		text-align: center;
-		font-size: 2rem;
-		line-height: 2rem;
+		font-size: clamp(1.4rem, 0.4265rem + 1.2715vw, 2rem);
+		line-height: clamp(1.4rem, 0.4265rem + 1.2715vw, 2rem);
 	}
 `
 
 const Title = styled.div`
 	min-height: 60px;
-	font-size: 2.6rem;
-	line-height: 2.6rem;
+	font-size: clamp(1.5rem, -0.9338rem + 3.1788vw, 3rem);
+	line-height: clamp(1.5rem, -0.9338rem + 3.1788vw, 3rem);
 `
 
 const MatchNeed = styled.div`

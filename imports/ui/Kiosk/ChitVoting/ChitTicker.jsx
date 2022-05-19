@@ -1,11 +1,11 @@
 import React, { useState, useLayoutEffect } from 'react'
 import PropTypes from 'prop-types'
-import { isNaN, forEach } from 'lodash'
-
+import { forEach } from 'lodash'
 import { useVoting } from '/imports/ui/Kiosk/VotingContext'
-
 import styled from '@emotion/styled'
-import { Button } from 'semantic-ui-react'
+import { IconButton } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import RemoveIcon from '@mui/icons-material/Remove'
 
 /**
  * Full Component containing Ticker, Org Title and amount feedback
@@ -38,11 +38,15 @@ const ChitTicker = ({ org }) => {
 
 	return (
 		<TickerContainer>
-			<TransparentButton icon='minus' onClick={ () => handleChange(value - 1) } size='huge' />
+			<TransparentButton variant="text" onClick={ () => handleChange(value - 1) }>
+				<RemoveIcon />
+			</TransparentButton>
 
 			<Amount>{ value }</Amount>
 
-			<TransparentButton icon='plus' onClick={ () =>  handleChange(value + 1) } size='huge' />
+			<TransparentButton variant="text" onClick={ () =>  handleChange(value + 1) }>
+				<AddIcon />
+			</TransparentButton>
 		</TickerContainer>
 	)
 }
@@ -52,10 +56,9 @@ const TickerContainer = styled.div`
 	height: 100%;
 	margin: 0;
 	position: relative;
-
-	.input-range {
-		margin-bottom: 15px;
-	}
+	display: flex;
+	align-items: center;
+	justify-content: center;
 `
 
 const Amount = styled.div`
@@ -66,13 +69,9 @@ const Amount = styled.div`
 	padding: 0 15px;
 `
 
-const TransparentButton = styled(Button)`
-	&& {
-		background: none;
-		color: white;
-		vertical-align: bottom;
-		margin-bottom: 4px;
-	}
+const TransparentButton = styled(IconButton)`
+	color: white;
+	font-size: 3rem;
 `
 
 ChitTicker.propTypes = {

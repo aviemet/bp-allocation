@@ -1,10 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import numeral from 'numeral'
-
-import { Grid } from 'semantic-ui-react'
 import styled from '@emotion/styled'
-
 import { COLORS } from '/imports/lib/global'
 
 const AwardImg = ({ show }) => {
@@ -24,34 +21,29 @@ const Bar = props => {
 	let backgroundColor = height === 100 ? COLORS.green : COLORS.blue
 
 	if(height === 0){
-		return (
-			<Grid.Column>
-				<BarContainer />
-			</Grid.Column> )
+		return <BarContainer />
 	}
 
 	return (
 		<BarContainer>
 			<AwardImg show={ height === 100 } />
 			<GraphBar style={ { height: `${height}%`, backgroundColor: backgroundColor } }>
-				<Pledged>{numeral(shownFunds).format('$0,0')}</Pledged>
+				<Pledged>{ numeral(shownFunds).format('$0,0') }</Pledged>
 			</GraphBar>
 		</BarContainer>
 	)
 }
 
-const BarContainer = styled(Grid.Column)`
+const BarContainer = styled.div`
 	height: 100%;
-	padding: 0;
+	padding: 0 2vw;
 	text-align: center;
+	display: flex;
+	flex-direction: column-reverse;
+	position: relative;
 `
 
 const GraphBar = styled.div`
-	position: absolute;
-	bottom: 0;
-	left: 50%;
-	width: 80%;
-	transform: translateX(-50%);
 	background-color: ${COLORS.blue};
 
 	animation: animate-bar 4s 1 ease-out;
@@ -79,12 +71,11 @@ const Pledged = styled.span`
 
 const Award = styled.img`
 	position: absolute;
-	width: 55%;
-	top: 0;
-	left: 50%;
-	transform: translate(-50%, -104%);
+	width: 50%;
 	opacity: 0;
-	margin-top: 55px;
+	top: 3vh;
+	left: 50%;
+	transform: translateX(-50%);
 
 	animation: reveal-winner-logo .8s ease 4s;
 	-webkit-animation: reveal-winner-logo .5s ease 4s;

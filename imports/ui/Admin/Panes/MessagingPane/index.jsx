@@ -1,8 +1,6 @@
 import React from 'react'
 import { useTheme, useMessages } from '/imports/api/providers'
-import { MessageMethods } from '/imports/api/methods'
 import { Link } from 'react-router-dom'
-
 import { styled } from '@mui/material/styles'
 import {
 	Box,
@@ -15,22 +13,12 @@ import {
 	TableCell,
 	Typography
 } from '@mui/material'
-
-import EditableText from '/imports/ui/Components/Inputs/EditableText'
 import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
 import { Loading } from '/imports/ui/Components'
 
 const Messages = () => {
 	const { theme } = useTheme()
 	const { messages, isLoading: messagesLoading } = useMessages()
-
-	const handleTextEdits = (id, data) => {
-		MessageMethods.update.call({ id, data }, err => {
-			if(err) {
-				console.error(err)
-			}
-		})
-	}
 
 	if(messagesLoading) return <Loading />
 
@@ -59,9 +47,7 @@ const Messages = () => {
 							if(message.active && message.type === 'text') return (
 								<TableRow key={ message._id }>
 									<TableCell>
-										<EditableText
-											onSubmit={ value => handleTextEdits(message._id, { title: value }) }
-										>{ message.title }</EditableText>
+										{ message.title }
 									</TableCell>
 									<TableCell>
 										{ message.body }
@@ -92,9 +78,7 @@ const Messages = () => {
 							if(message.active && message.type === 'email') return (
 								<TableRow key={ message._id }>
 									<TableCell>
-										<EditableText
-											onSubmit={ value => handleTextEdits(message._id, { title: value }) }
-										>{ message.title }</EditableText>
+										{ message.title }
 									</TableCell>
 									<TableCell>
 										{ message.subject }

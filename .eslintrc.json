@@ -35,6 +35,7 @@
 			"MemberExpression": 1,
 			"ArrayExpression": 1
 		} ],
+		"no-console": "warn",
 		"linebreak-style": [ "error", "unix" ],
 		"quotes": [ "error", "single" ],
 		"semi": [ "error", "never" ],

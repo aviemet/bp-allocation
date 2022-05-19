@@ -1,26 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { useOrgs } from '/imports/api/providers'
 import { OrganizationMethods } from '/imports/api/methods'
-
-import { roundFloat } from '/imports/lib/utils'
-
-import { Container, Form, Input, Button, Card, Checkbox, Loader } from 'semantic-ui-react'
+import { Box, Container } from '@mui/material'
+import { Form, TextInput, SubmitButton, STATUS, SwitchInput } from '/imports/ui/Components/Form'
 import styled from '@emotion/styled'
-
-import OrgCard from '/imports/ui/Components/Cards/OrgCard'
+import { isEmpty } from 'lodash'
+import { OrgCard } from '/imports/ui/Components/Cards'
 import TopupComplete from './TopupComplete'
 import { observer } from 'mobx-react-lite'
 import { useWindowSize, breakpoints } from '/imports/ui/MediaProvider'
+import { Loading } from '/imports/ui/Components'
+import SelectableOrgCards from './SelectableOrgCards'
 
 const Pledges = observer(({ user }) => {
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	const [ selectedOrg, setSelectedOrg ] = useState(null)
-	const [ pledgeAmount, setPledgeAmount ] = useState('')
-	const [ isFormValid, setIsFormValid ] = useState(false)
-	const [ isAnonymous, setIsAnonymous ] = useState(false)
+	const [formStatus, setFormStatus] = useState(STATUS.READY)
+
 	const [ itemsPerRow, setItemsPerRow ] = useState(2)
-	const [ didPledge, setDidPlegde ] = useState(false)
+	const [ pledgeFeedbackData, setPledgeFeedbackData ] = useState({})
 
 	const { width } = useWindowSize()
 
@@ -33,132 +31,88 @@ const Pledges = observer(({ user }) => {
 		if(itemsPerRow !== n) setItemsPerRow(n)
 	}, [width])
 
-	const clearAllValues = () => {
-		setSelectedOrg(null)
-		setPledgeAmount('')
-		setDidPlegde(false)
-	}
-
-	useEffect(() => {
-		const isValid = selectedOrg !== null && pledgeAmount !== ''
-		if(isFormValid !== isValid) setIsFormValid(isValid)
-	}, [selectedOrg, pledgeAmount])
-
-	const saveTopUp = () => {
-		const data = {
-			id: selectedOrg,
+	const handleSubmit = (data, { reset }) => {
+		OrganizationMethods.pledge.call({
+			...data,
 			member: user._id,
-			amount: roundFloat(pledgeAmount),
-			anonymous: isAnonymous
-		}
-		OrganizationMethods.pledge.call(data)
-		setDidPlegde(true)
+		}, (err, res) => {
+			if(err) {
+				console.error(err)
+			} else if(res) {
+				reset()
+				setPledgeFeedbackData(data)
+			}
+		})
 	}
 
-	const setAmount = e => {
-		const amount = e.target.value
-		console.log({ amount })
-		setPledgeAmount(parseInt(`${amount}`.replace(/([^0-9])/)))
-	}
-
-	if(orgsLoading) return <Loader active />
-	if(didPledge) {
-		const votedOrg = topOrgs.find(org => org._id === selectedOrg)
-		return <TopupComplete clearAllValues={ clearAllValues } org={ votedOrg } amount={ roundFloat(pledgeAmount) } />
+	if(orgsLoading) return <Loading />
+	if(!isEmpty(pledgeFeedbackData)) {
+		const org = topOrgs.find(org => org._id === pledgeFeedbackData.id)
+		return <TopupComplete data={ { ...pledgeFeedbackData, org } } resetData={ () => setPledgeFeedbackData({}) } />
 	}
 	return (
-		<PledgesContainer fluid textAlign='center'>
+		<PledgesContainer>
 			<h1>If you feel like giving more</h1>
 			<p>Pledges made during this round will be matched from the leverage remaining. If you feel strongly about an organization and want to help them achieve full funding, now is your chance!</p>
 
-			{/* Member name and amount input fields */}
-			<Form	inverted>
+			<Form
+				defaultValues={ {
+					id: '',
+					amount: '',
+					anonymous: false,
+				} }
+				onValidSubmit={ handleSubmit }
+			>
 				<Container>
-					<div  style={ { textAlign: 'right', marginBottom: '0.5rem' } }>
-						<Checkbox
+					<Box sx={ { textAlign: 'right', marginBottom: '0.5rem' } }>
+						<SwitchInput
 							toggle
-							label='Anonymous'
-							checked={ isAnonymous }
-							onClick={ () => setIsAnonymous(!isAnonymous) }
+							label="Anonymous"
+							name="anonymous"
 						/>
-					</div>
-					<Input fluid
-						icon='dollar'
-						iconPosition='left'
+					</Box>
+					<TextInput
+						name="amount"
 						placeholder='Pledge Amount'
-						type='text'
-						value={ pledgeAmount || '' }
-						onChange={ setAmount }
-						onKeyUp={ setAmount }
-						size='huge'
+						required
+						sx={ { mb: 2 } }
 						pattern="[0-9]*"
+						onChange={ value => value.replace(/[^0-9]*/, '') }
 					/>
+
+					<Box sx={ { mb: 2 } }>
+						<SelectableOrgCards orgs={ topOrgs } />
+					</Box>
+
+					<FinalizeButton
+						type="submit"
+						status={ formStatus }
+						setStatus={ setFormStatus }
+						icon={ false }
+					>Submit Matched Pledge</FinalizeButton>
 				</Container>
 			</Form>
-
-			{/* Selectable Cards for top orgs */}
-			<Card.Group
-				centered
-				itemsPerRow={ itemsPerRow }
-			>
-				{ topOrgs.map(org => (
-					<OrgCard
-						disabled={ org.need <= 0 }
-						key={ org._id }
-						org={ org }
-						showAsk={ false }
-						onClick={ org.need > 0 ? () => setSelectedOrg(org._id) : null }
-						bgcolor={ selectedOrg === org._id ? OrgCard.colors.GREEN : OrgCard.colors.BLUE }
-					/>
-				) ) }
-			</Card.Group>
-
-			<Container>
-				<FinalizeButton
-					size='huge'
-					disabled={ !isFormValid }
-					onClick={ saveTopUp }
-				>Submit Matched Pledge</FinalizeButton>
-			</Container>
 
 		</PledgesContainer>
 	)
 })
 
 const PledgesContainer = styled(Container)`
-	padding-top: 3rem;
-
 	h1 {
 		text-align: center;
 		font-size: 2.5rem;
 		margin-bottom: 3rem;
 	}
-
-	form {
-		margin-bottom: 2rem;
-	}
-
-	.ui {
-		&.cards {
-			margin-bottom: 3rem;
-		}
-
-		&.toggle.checkbox {
-			input:checked ~ .box, input:checked ~ label {
-				color: #FFF !important;
-			}
-		}
-	}
 `
 
-const FinalizeButton = styled(Button)`
+const FinalizeButton = styled(SubmitButton)`
 	width: 100%;
 	text-align: center;
-	background-color: ${OrgCard.colors.GREEN} !important;
-	color: white !important;
-	border: 2px solid #fff !important;
-	font-size: 2rem !important;
-	text-transform: uppercase !important;
+	background-color: ${OrgCard.colors.GREEN};
+	color: white;
+	border: 2px solid #fff;
+	font-size: 2rem;
+	text-transform: uppercase;
 `
 
 export default Pledges

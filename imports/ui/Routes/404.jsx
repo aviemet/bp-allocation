@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container } from 'semantic-ui-react'
+import { Container } from '@mui/material'
 import styled from '@emotion/styled'
 
 const FourOhFour = () => {

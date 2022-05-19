@@ -36,6 +36,7 @@ const textHeaderCells = [
 		label: 'Link',
 		sort: false,
 		disablePadding: true,
+		width: '70px'
 	},
 	{
 		id: 'actions',
@@ -66,6 +67,7 @@ const emailHeaderCells = [
 		label: 'Link',
 		sort: false,
 		disablePadding: true,
+		width: '70px'
 	},
 	{
 		id: 'actions',
@@ -143,7 +145,8 @@ const Messages = () => {
 							<SendWithFeedbackButton message={ message } />
 						</TableCell>
 					</>
-				) }  />
+				) }
+			/>
 
 			<SortableTable
 				title={ <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -155,6 +158,7 @@ const Messages = () => {
 				defaultOrderBy='craetedAt'
 				paginate={ false }
 				onBulkDelete={ handleBulkDelete }
+				fixed={ true }
 				render={ message => (
 					<>
 						<TableCell>
@@ -169,7 +173,8 @@ const Messages = () => {
 							<SendWithFeedbackButton message={ message } />
 						</TableCell>
 					</>
-				) } />
+				) }
+			/>
 
 			<ConfirmationModal
 				isModalOpen={ modalOpen }

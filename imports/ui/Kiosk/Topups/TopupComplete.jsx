@@ -1,36 +1,32 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Loader } from 'semantic-ui-react'
+import { Button } from '@mui/material'
 import { COLORS } from '/imports/lib/global'
 import { useTheme } from '/imports/api/providers'
 import numeral from 'numeral'
-
 import styled from '@emotion/styled'
+import { Loading } from '/imports/ui/Components'
 
-const VotingComplete = ({ clearAllValues, org, amount }) => {
+const VotingComplete = ({ data, resetData }) => {
 	const { theme, isLoading: themeLoading } = useTheme()
 
-	const showVotingPageAgain = () => {
-		clearAllValues()
-	}
-
-	if(themeLoading) return <Loader active />
+	if(themeLoading) return <Loading />
 	const formatted = {
-		amount: numeral(amount).format('$0,0[.]00'),
-		total: numeral(amount * theme.matchRatio).format('$0,0[.]00')
+		amount: numeral(data.amount).format('$0,0[.]00'),
+		total: numeral(data.amount * theme.matchRatio).format('$0,0[.]00')
 	}
 
 	return (
 		<>
 			<Centered>
 				<h1>Thank You For Your Pledge!</h1>
-				<p>Your generous donation to <b><u>{ org.title }</u></b> of <b>{ formatted.amount }</b> was matched by the remaining leverage for a total of <b>{ formatted.total }</b></p>
+				<p>Your generous donation to <b><u>{ data.org.title }</u></b> of <b>{ formatted.amount }</b> was matched by the remaining leverage bringing them <b>{ formatted.total }</b> closer to being fully funded</p>
 			</Centered>
 			<BottomAligned>
 				<AmendVoteButton
 					size='huge'
 					disabled={ false }
-					onClick={ showVotingPageAgain }
+					onClick={ resetData }
 				>Pledge Again</AmendVoteButton>
 			</BottomAligned>
 		</>
@@ -87,9 +83,8 @@ const AmendVoteButton = styled(Button)`
 `
 
 VotingComplete.propTypes = {
-	clearAllValues: PropTypes.func,
-	org: PropTypes.object,
-	amount: PropTypes.number
+	data: PropTypes.object,
+	resetData: PropTypes.func,
 }
 
 export default VotingComplete

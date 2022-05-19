@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useLayoutEffect } from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import numeral from 'numeral'
@@ -7,7 +7,8 @@ import { useVoting } from '/imports/ui/Kiosk/VotingContext'
 
 import styled from '@emotion/styled'
 import InputRange from 'react-input-range'
-import { Input, Button, Icon } from 'semantic-ui-react'
+
+import { Input, Button, Icon } from '@mui/material'
 
 /**
  * Tactile slider for adjusting voting amount
@@ -17,7 +18,7 @@ const FundsSlider = props => {
 
 	const context = Object.assign({ member, allocations, updateAllocations }, props)
 
-	return <FundsSliderComponent { ...context }>{props.children}</FundsSliderComponent>
+	return <FundsSliderComponent { ...context }>{ props.children }</FundsSliderComponent>
 }
 
 /**
@@ -30,9 +31,9 @@ const FundsSliderComponent = props => {
 
 	const MAX = props.member.theme.amount
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		// Disable contextmenu for long press on mobile
-		document.oncontextmenu = () => false
+		// document.oncontextmenu = () => false
 	}, [])
 
 	const handleChange = value => {
@@ -94,7 +95,7 @@ const FundsSliderComponent = props => {
 
 	return (
 		<SliderContainer>
-			{showInput ?
+			{ showInput ?
 				<AmountInputContainer id='inputContainer'>
 					<Input fluid
 						type='number'

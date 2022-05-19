@@ -12,19 +12,19 @@ const Form = ({
 	onSanitize,
 	onValidationError,
 	onUpdate,
+	onChange,
 	...props
 }) => {
-	const formValidationContext = schema.newContext()
+	const formValidationContext = schema ? schema.newContext() : false
 
 	const formMethods = useForm({ defaultValues })
 
 	const onSubmit = data => {
 		const sanitizedData = onSanitize ? onSanitize(data) : data
-		console.log({ data })
 
-		if(formValidationContext.validate(sanitizedData)) {
+		if(!formValidationContext || formValidationContext.validate(sanitizedData)) {
 			if(onValidSubmit) {
-				onValidSubmit(sanitizedData)
+				onValidSubmit(sanitizedData, formMethods)
 			}
 		} else {
 			formValidationContext.validationErrors().forEach(error => {
@@ -38,13 +38,25 @@ const Form = ({
 	}
 
 	useEffect(() => {
-		const subscription = formMethods.watch((value, { name, type }) => {
-			const sanitizedData = onSanitize ? onSanitize({ [name]: value[name] }) : { [name]: value[name] }
-			formValidationContext.validate(sanitizedData, { keys: [name] })
+		if(!onUpdate) return
 
-			if(onUpdate !== undefined) {
-				onUpdate(sanitizedData)
+		const subscription = formMethods.watch((value, { name, type }) => {
+			const valueObject = { [name]: formMethods.getValues(name) }
+			const sanitizedData = onSanitize ? onSanitize(valueObject) : valueObject
+			if(formValidationContext) {
+				formValidationContext.validate(sanitizedData, { keys: [name] })
 			}
+
+			onUpdate(sanitizedData)
+		})
+		return () => subscription.unsubscribe()
+	}, [formMethods.watch])
+
+	useEffect(() => {
+		if(!onChange) return
+
+		const subscription = formMethods.watch(() => {
+			onChange(formMethods)
 		})
 		return () => subscription.unsubscribe()
 	}, [formMethods.watch])
@@ -66,6 +78,7 @@ Form.propTypes = {
 	onSanitize: PropTypes.func,
 	onValidationError: PropTypes.func,
 	onUpdate: PropTypes.func,
+	onChange: PropTypes.func,
 }
 
 Form.defaultProps = {

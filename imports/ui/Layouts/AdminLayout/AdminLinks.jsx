@@ -88,12 +88,6 @@ const bottomLinks = [
 		newTab: false
 	},
 	{
-		id: 'feedback',
-		title: 'Feedback',
-		route: themeId => `/feedback/${themeId}`,
-		newTab: false
-	},
-	{
 		id: 'presentation',
 		title: 'Presentation',
 		route: themeId => `/presentation/${themeId}`,

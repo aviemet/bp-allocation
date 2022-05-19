@@ -4,32 +4,29 @@ import { readCsv } from '/imports/lib/papaParseMethods'
 import { sanitizeNames } from '/imports/lib/utils'
 
 import { observer } from 'mobx-react-lite'
-import { useData } from '/imports/api/providers'
 import { MemberMethods } from '/imports/api/methods'
 import { MemberSchema, MemberThemeSchema } from '/imports/api/db/schema'
 
-import CustomMessage from '/imports/ui/Components/CustomMessage'
 import {
 	Button,
 	Input,
 } from '@mui/material'
+import { useSnackbar } from 'notistack'
 
 import ImportMapping from '/imports/ui/Components/ImportMapping'
 
 const ImportMembers = observer(() => {
+	const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+
 	const [pendingMembers, setPendingMembers] = useState([])
 	const [pendingHeadings, setPendingHeadings] = useState([])
 
-	const [ importResponseMessageVisible, setImportResponseMessageVisible ] = useState(false)
-	const [ importReponseMessage, setImportResponseMessage ] = useState('')
 	const [ loading, setLoading ] = useState(false)
 
 	const fileInputRef = useRef(null)
 
 	const { id: themeId } = useParams()
 	const history = useHistory()
-
-	const hideImportResponseMessage = () => setImportResponseMessageVisible(false)
 
 	useEffect(() => {
 		fileInputRef.current.click()
@@ -60,7 +57,6 @@ const ImportMembers = observer(() => {
 			sanitizedData.firstName = nameSplit[0]
 			sanitizedData.lastName = nameSplit[1]
 		}
-		console.log({ sanitizedData })
 		return sanitizedData
 	}
 
@@ -68,8 +64,12 @@ const ImportMembers = observer(() => {
 	const handleImportData = data => {
 		data.forEach(datum => {
 			const { error, response } = MemberMethods.upsert.call(datum)
-			if(error) console.error({ error })
+			if(error) {
+				enqueueSnackbar('Error importing members', { variant: 'error' })
+				console.error({ error })
+			}
 		})
+		enqueueSnackbar(`${data.length} Member${ data.length === 1 ? '' : 's'} imported`, { variant: 'success' })
 		history.push(`/admin/${themeId}/members`)
 	}
 
@@ -133,6 +133,7 @@ const ImportMembers = observer(() => {
 	const schema = MemberSchema.omit('code')
 		.extend(MemberThemeSchema.omit('member', 'chitVotes', 'allocations', 'createdAt'))
 
+	// TODO: Set loading=true when button clicked, false when csv is loaded
 	return (
 		<>
 			{ pendingMembers.length > 0 && pendingHeadings.length > 0 && (
@@ -161,12 +162,6 @@ const ImportMembers = observer(() => {
 				style={ { display: 'none' } }
 				onChange={ importMembers }
 			/>
-			{ importResponseMessageVisible && <CustomMessage
-				positive
-				onDismiss={ hideImportResponseMessage }
-				heading='Import Successful'
-				body={ importReponseMessage }
-			/> }
 		</>
 	)
 })

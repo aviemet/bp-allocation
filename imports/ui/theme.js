@@ -1,5 +1,8 @@
 import { createTheme } from '@mui/material/styles'
 
+const GREEN = '#0D8744'
+const BLUE = '#002B43'
+
 export const screen = {
 	mobileS: 320,
 	mobileM: 375,
@@ -23,6 +26,16 @@ const theme = createTheme({
 			stripe: '#EEE',
 			highlight: '#edf6ff',
 			header: '#DDD',
+		},
+		batteryBlue: {
+			main: BLUE,
+			dark: '#002B43',
+			contrastText: '#FEFEFE',
+		},
+		batteryGreen: {
+			main: GREEN,
+			dark: '#0E532D',
+			contrastText: '#FEFEFE',
 		},
 	},
 	components: {
@@ -88,6 +101,14 @@ const theme = createTheme({
 					color: theme.palette.text.primary,
 				}),
 			},
+		},
+		MuiOutlinedInput: {
+			styleOverrides: {
+				root: ({ theme }) => ({
+					width: '100%',
+					backgroundColor: theme.palette.common.white,
+				})
+			}
 		},
 	},
 	typography: {

@@ -36,17 +36,17 @@ const AwardImage = styled.div`
 	background-size: cover;
 	background-position: center center;
 	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 `
 
 const AwardAmount = styled.span`
+	margin-top: 1rem;
 	color: #fff;
 	font-family: TradeGothic;
 	z-index: 999;
 	font-weight: 700;
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	transform: translateX(-50%);
 `
 
 AwardEmblem.propTypes = {

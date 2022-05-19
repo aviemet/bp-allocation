@@ -11,6 +11,9 @@ import { isMobileDevice } from '/imports/lib/utils'
 import { DataProvider, ThemeProvider, SettingsProvider, OrgsProvider, MembersProvider, MessagesProvider } from '/imports/api/providers'
 import MediaProvider from './MediaProvider'
 
+import { SnackbarProvider } from 'notistack'
+
+// console.log({ theme })
 const App = () => {
 	useEffect(() => {
 		if(isMobileDevice()) {
@@ -25,21 +28,23 @@ const App = () => {
 			<CssBaseline />
 
 			<MUIProvider theme={ theme }>
-				<GlobalContainer id="globalContainer">
-					<DataProvider>
-						<ThemeProvider>
-							<SettingsProvider>
-								<OrgsProvider>
-									<MembersProvider>
-										<MessagesProvider>
-											<Routes />
-										</MessagesProvider>
-									</MembersProvider>
-								</OrgsProvider>
-							</SettingsProvider>
-						</ThemeProvider>
-					</DataProvider>
-				</GlobalContainer>
+				<SnackbarProvider>
+					<GlobalContainer id="globalContainer">
+						<DataProvider>
+							<ThemeProvider>
+								<SettingsProvider>
+									<OrgsProvider>
+										<MembersProvider>
+											<MessagesProvider>
+												<Routes />
+											</MessagesProvider>
+										</MembersProvider>
+									</OrgsProvider>
+								</SettingsProvider>
+							</ThemeProvider>
+						</DataProvider>
+					</GlobalContainer>
+				</SnackbarProvider>
 			</MUIProvider>
 		</MediaProvider>
 	)
@@ -47,7 +52,6 @@ const App = () => {
 
 const GlobalContainer = styled.div`
 	width: 100%;
-	/* height: 100%; */
 	min-height: 100%;
 	position: relative;
 	display: flex;

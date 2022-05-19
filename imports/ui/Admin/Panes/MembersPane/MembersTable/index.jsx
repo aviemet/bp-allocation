@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom'
 import { useMembers, useSettings } from '/imports/api/providers'
 import { formatters } from '/imports/lib/utils'
 import { observer } from 'mobx-react-lite'
-// import { toJS } from 'mobx'
 import { isEmpty } from 'lodash'
 
 import { MemberMethods } from '/imports/api/methods'

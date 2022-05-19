@@ -1,15 +1,9 @@
 import React from 'react'
-
-import {
-	Container
-} from '@mui/material'
-import { Card } from 'semantic-ui-react'
+import { Container } from '@mui/material'
 import styled from '@emotion/styled'
-
 import { observer } from 'mobx-react-lite'
 import { useOrgs, useSettings } from '/imports/api/providers'
-
-import OrgCard from '/imports/ui/Components/Cards/OrgCard'
+import { OrgCard, OrgCardContainer } from '/imports/ui/Components/Cards'
 
 const Overlay = () => (
 	<DimOverlay>
@@ -30,17 +24,17 @@ const Orgs = observer(() => {
 		<OrgsContainer>
 			<PageTitle>Participating Organizations</PageTitle>
 			<Container maxWidth="xl" sx={ { height: '100%' } }>
-				<Card.Group centered itemsPerRow={ 4 } style={ { height: '100%' } }>
-					{ orgs.values.map((org, i) => (
-						<OrgCard
+				<OrgCardContainer centered cols={ 3 } sx={ { paddingBottom: 'clamp(0rem, -58.1818rem + 90.9091vh, 10rem)' } }>
+					{ orgs.values.map((org, i) => {
+						return <OrgCard
 							key={ org._id }
 							org={ org }
 							index={ i }
 							size='big'
 							overlay={ settings.colorizeOrgs && colorOrgs[org._id] ? Overlay : false }
 						/>
-					)) }
-				</Card.Group>
+					}) }
+				</OrgCardContainer>
 			</Container>
 		</OrgsContainer>
 	)
@@ -54,23 +48,12 @@ const OrgsContainer = styled.div`
 	padding-bottom: 16px;
 	height: 100%;
 
-	&& .ui.card {
-
-		.content{
-			&.white{
-				color: #FFF;
-			}
-		}
-	}
-
 	&& p{
 		line-height: 1em;
 	}
 `
 
-const PageTitle = styled.h2`
-
-`
+const PageTitle = styled.h2``
 
 const DimOverlay = styled.div`
 	width: calc(100% + 10px);

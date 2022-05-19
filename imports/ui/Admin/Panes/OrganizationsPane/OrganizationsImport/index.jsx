@@ -3,32 +3,29 @@ import { useHistory, useParams } from 'react-router-dom'
 import { readCsv } from '/imports/lib/papaParseMethods'
 
 import { observer } from 'mobx-react-lite'
-import { useData } from '/imports/api/providers'
 import { OrganizationMethods } from '/imports/api/methods'
 import { OrganizationSchema } from '/imports/api/db/schema'
 
-import CustomMessage from '/imports/ui/Components/CustomMessage'
 import {
 	Button,
 	Input,
 } from '@mui/material'
+import { useSnackbar } from 'notistack'
 
 import ImportMapping from '/imports/ui/Components/ImportMapping'
 
 const ImportOrgs = observer(() => {
+	const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+
 	const [pendingOrgs, setPendingOrgs] = useState([])
 	const [pendingHeadings, setPendingHeadings] = useState([])
 
-	const [ importResponseMessageVisible, setImportResponseMessageVisible ] = useState(false)
-	const [ importReponseMessage, setImportResponseMessage ] = useState('')
 	const [ loading, setLoading ] = useState(false)
 
 	const fileInputRef = useRef(null)
 
 	const { id: themeId } = useParams()
 	const history = useHistory()
-
-	const hideImportResponseMessage = () => setImportResponseMessageVisible(false)
 
 	useEffect(() => {
 		fileInputRef.current.click()
@@ -51,8 +48,12 @@ const ImportOrgs = observer(() => {
 	const handleImportData = data => {
 		data.forEach(datum => {
 			const { error, response } = OrganizationMethods.create.call(Object.assign({ theme: themeId }, datum))
-			if(error) console.error({ error })
+			if(error) {
+				enqueueSnackbar('Error importing organizations', { variant: 'error' })
+				console.error({ error })
+			}
 		})
+		enqueueSnackbar(`${data.length} Organization${ data.length === 1 ? '' : 's'} imported`, { variant: 'success' })
 		history.push(`/admin/${themeId}/orgs`)
 	}
 
@@ -77,6 +78,7 @@ const ImportOrgs = observer(() => {
 		}
 	]
 
+	// TODO: Set loading=true when button clicked, false when csv is loaded
 	return (
 		<>
 			{ pendingOrgs.length > 0 && pendingHeadings.length > 0 && (
@@ -104,12 +106,6 @@ const ImportOrgs = observer(() => {
 				style={ { display: 'none' } }
 				onChange={ importOrgs }
 			/>
-			{ importResponseMessageVisible && <CustomMessage
-				positive
-				onDismiss={ hideImportResponseMessage }
-				heading='Import Successful'
-				body={ importReponseMessage }
-			/> }
 		</>
 	)
 })

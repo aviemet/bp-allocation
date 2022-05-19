@@ -4,11 +4,22 @@ import { observer } from 'mobx-react-lite'
 import { useMessage } from '/imports/api/providers'
 import { MessageMethods } from '/imports/api/methods'
 import { MessageSchema } from '/imports/api/db/schema'
-
-import { Form, TextInput, Switch, SubmitButton, STATUS, RichTextInput } from '/imports/ui/Components/Form'
+import {
+	Form,
+	TextInput,
+	Switch,
+	SubmitButton,
+	STATUS,
+	RichTextInput,
+	CheckboxInput,
+} from '/imports/ui/Components/Form'
 import styled from '@emotion/styled'
 import {
+	Box,
 	Button,
+	FormGroup,
+	FormControl,
+	FormLabel,
 	Grid,
 	Paper,
 	Stack,
@@ -41,20 +52,15 @@ const MessageEdit = observer(() => {
 		type: message?.type || type || '',
 		active: message?.active || true,
 		includeLink: message?.includeLink || false,
+		optOutRounds: {
+			one: !!message?.optOutRounds?.one,
+			two: !!message?.optOutRounds?.two,
+		}
 	}
-
-	const sanitizeData = data => {
-		console.log({ data })
-		return data
-	}
-
-	console.log({ message })
 
 	const onSubmit = data => {
-		console.log({ data })
 		setFormStatus(STATUS.SUBMITTING)
 		if(message._id) {
-			console.log('updating')
 			MessageMethods.update.call({ id: message._id, data }, (err, res) => {
 				if(err) {
 					setFormStatus(STATUS.ERROR)
@@ -96,7 +102,6 @@ const MessageEdit = observer(() => {
 				schema={ MessageSchema }
 				defaultValues={ messageData }
 				onValidSubmit={ onSubmit }
-				onSanitize={ sanitizeData }
 				onValidationError={ onError }
 				onUpdate={ handlePreview }
 			>
@@ -119,12 +124,29 @@ const MessageEdit = observer(() => {
 						}
 					</Grid>
 
-					<Grid item xs={ 12 }>
-						<Switch name="active" label="Active" />
+					<Grid item xs={ 12 } sm={ 6 }>
+						<Paper sx={ { p: 2 } }>
+							<Box>
+								<Switch name="active" label="Active" />
+							</Box>
+							<Box>
+								<Switch name="includeLink" label="Include Voting Link" />
+							</Box>
+						</Paper>
 					</Grid>
 
-					<Grid item xs={ 12 }>
-						<Switch name="includeLink" label="Include Voting Link" />
+					<Grid item xs={ 12 } sm={ 6 }>
+						<Paper sx={ { p: 2 } }>
+							<FormControl component="fieldset" variant="standard">
+								<FormLabel component="legend">Skip If Member Has Voted In:</FormLabel>
+								<FormGroup>
+									<CheckboxInput name="optOutRounds.one" label="Round One" onUpdate={ (value, name, setValue) => {
+										console.log({ value, name })
+									} } />
+									<CheckboxInput name="optOutRounds.two" label="Round Two" />
+								</FormGroup>
+							</FormControl>
+						</Paper>
 					</Grid>
 
 					<Grid item xs={ 12 } >

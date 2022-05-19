@@ -6,8 +6,9 @@ import { observer } from 'mobx-react-lite'
 import { useMembers } from '/imports/api/providers'
 
 import styled from '@emotion/styled'
+import { Loading } from '/imports/ui/Components'
 import { Container, Grid, Stack, Typography } from '@mui/material'
-import { Form, Input, Header, Button, Loader } from 'semantic-ui-react'
+import { Form, TextInput, SubmitButton, STATUS } from '/imports/ui/Components/Form'
 
 import { VotingContextProvider } from './VotingContext'
 
@@ -17,10 +18,7 @@ const MemberLoginRequired = observer(props => {
 	// Pull member data from Data Store
 	const { members, isLoading: membersLoading } = useMembers()
 
-	const formRef = React.createRef()
-
-	const [ initials, setInitials ] = useState('')
-	const [ number, setNumber ] = useState('')
+	const [formStatus, setFormStatus] = useState(STATUS.DISABLED)
 
 	const [ searchError, setSearchError ] = useState(false)
 
@@ -30,7 +28,7 @@ const MemberLoginRequired = observer(props => {
 	}
 	const [ user, setUser ] = useState(member || false)
 
-	if(membersLoading || isEmpty(members)) return <Loader active />
+	if(membersLoading || isEmpty(members)) return <Loading />
 
 	const showSearchError = () => {
 		setSearchError(true)
@@ -39,16 +37,12 @@ const MemberLoginRequired = observer(props => {
 		}, 5000)
 	}
 
-	const chooseMember = e => {
-		e.preventDefault()
-
+	const chooseMember = data => {
 		setSearchError(false)
-		const code = `${initials.trim().toUpperCase()}${number}`
+		const code = `${data.initials.trim().toUpperCase()}${data.number}`
 
 		const member = members.values.find(mem => mem.code === code)
 
-		setInitials('')
-		setNumber('')
 		if(member) {
 			setUser(member)
 		} else {
@@ -56,70 +50,83 @@ const MemberLoginRequired = observer(props => {
 		}
 	}
 
+	const handleUpdate = form => {
+		const data = form.getValues()
+		if(data.initials !== '' && data.number !== '' ) {
+			setFormStatus(STATUS.READY)
+		} else {
+			setFormStatus(STATUS.DISABLED)
+		}
+	}
+
 	const ChildComponent = props.component
-	const submitDisabled = initials === '' || number === ''
 
-	// props.member comes from router params
-	// Display the interface to choose a member
-	if(!user) {
-		return(
-			<>
-				<BackgroundImage />
-				<Stack justifyContent="center" alignItems="center" sx={ { minHeight: '100%' } }>
-					<Form onSubmit={ chooseMember } ref={ formRef }>
-						<Grid container spacing={ 2 }>
+	console.log({ user })
 
-							<Grid item xs={ 12 }>
-								<Typography component="h1" variant="h2" color="white" className='title' align="center">Enter Your Initials &amp; Member ID</Typography>
-							</Grid>
-
-							<Grid item xs={ 12 } md={ 6 }>
-								<Form.Field>
-									<Input
-										fluid
-										size='huge'
-										label='Initials'
-										placeholder='Ex: MB'
-										value={ initials }
-										onChange={ e => setInitials(e.target.value.trim().toUpperCase()) }
-									/>
-								</Form.Field>
-							</Grid>
-
-							<Grid item xs={ 12 } md={ 6 }>
-								<Form.Field>
-									<Input
-										fluid
-										size='huge'
-										label='Member #'
-										placeholder='Ex: 1234'
-										value={ number }
-										onChange={ e => setNumber(parseInt(e.target.value.trim()) || '') }
-									/>
-								</Form.Field>
-							</Grid>
-
-							<Grid item xs={ 12 }>
-								<SubmitButton size='huge' disabled={ submitDisabled } onClick={ formRef.submit }>Begin Voting!</SubmitButton>
-							</Grid>
-
-							<Grid item xs={ 12 }>
-								{ searchError && <Header as='h2' className='title'>No Member Found, Try Again</Header> }
-							</Grid>
-
-						</Grid>
-					</Form>
-				</Stack>
-			</>
+	// Member is chosen, display the voting panel
+	if(user) {
+		return (
+			<VotingContextProvider member={ user } unsetUser={ () => setUser(false) }>
+				<ChildComponent user={ user } />
+			</VotingContextProvider>
 		)
 	}
 
-	// Member is chosen, display the voting panel
-	return (
-		<VotingContextProvider member={ user } unsetUser={ () => setUser(false) }>
-			<ChildComponent user={ user } />
-		</VotingContextProvider>
+	// props.member comes from router params
+	// Display the interface to choose a member
+	return(
+		<>
+			<BackgroundImage />
+			<Stack justifyContent="center" alignItems="center" sx={ { minHeight: '100%' } }>
+				<Form
+					defaultValues={ { initials: '', number: '' } }
+					onValidSubmit={ chooseMember }
+					onChange={ handleUpdate }
+				>
+					<Grid container spacing={ 2 }>
+
+						<Grid item xs={ 12 }>
+							<Typography component="h1" variant="h2" color="white" className='title' align="center">Enter Your Initials &amp; Member ID</Typography>
+						</Grid>
+
+						<Grid item xs={ 12 } md={ 6 }>
+							<TextInput
+								name='initials'
+								placeholder='Initials'
+								onChange={ value => value.replace(/[0-9.]*/g, '').toUpperCase() }
+							/>
+						</Grid>
+
+						<Grid item xs={ 12 } md={ 6 }>
+							<TextInput
+								name='number'
+								placeholder='Member #'
+								pattern="[0-9]+"
+								onChange={ value => value.replace(/[^0-9]*/g, '') }
+							/>
+						</Grid>
+
+						<Grid item xs={ 12 }>
+							<StyledSubmitButton
+								type="submit"
+								status={ formStatus }
+								setStatus={ setFormStatus }
+								icon={ false }
+							>
+								Begin Voting!
+							</StyledSubmitButton>
+						</Grid>
+
+						<Grid item xs={ 12 } textAlign='center'>
+							{ searchError && <Typography component='h2' variant='h2' className='title'>Member Not Found</Typography> }
+						</Grid>
+
+					</Grid>
+				</Form>
+			</Stack>
+		</>
 	)
+
 })
 
 const MemberLoginContainer = styled(Container)`
@@ -143,6 +150,20 @@ const MemberLoginContainer = styled(Container)`
 	}
 `
 
+const StyledSubmitButton = styled(SubmitButton)(({ theme }) => ({
+	width: '100%',
+	textAlign: 'center',
+	color: 'white',
+	border: '2px solid #fff',
+	fontSize: '2rem',
+	textTransform: 'uppercase',
+	backgroundColor: COLORS.blue,
+
+	'&.Mui-disabled': {
+		backgroundColor: COLORS.blue,
+	}
+}))
+
 const BackgroundImage = styled.div`
 	position: absolute;
 	top: 0;
@@ -153,16 +174,6 @@ const BackgroundImage = styled.div`
 	z-index: 0;
 	background: url('/img/BPLogo.svg') no-repeat 50% 50%;
 	background-size: 1600px;
-`
-
-const SubmitButton = styled(Button)`
-	width: 100%;
-	text-align: center;
-	background-color: ${COLORS.blue} !important;
-	color: white !important;
-	border: 2px solid #fff !important;
-	font-size: 2rem !important;
-	text-transform: uppercase !important;
 `
 
 MemberLoginRequired.propTypes = {

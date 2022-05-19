@@ -40,7 +40,7 @@ const Results = observer(() => {
 		<ResultsPageContainer maxWidth="xl" sx={ { p: 2 } }>
 			<AwardsImage><img src="/img/BAT_awards.png" /></AwardsImage>
 
-			<h1>Total amount given: {numeral(total).format('$0.[00]a')}</h1>
+			<h1>Total amount given: { numeral(total).format('$0.[00]a') }</h1>
 			<br/><br/>
 
 			<AwardsCards>
@@ -79,7 +79,7 @@ const ResultsPageContainer = styled(Container)( ({ theme }) => ({
 	color: '#FFF',
 
 	'h1, h2': {
-		lineHeight: '1em',
+		lineHeight: '1rem',
 		color: '#FFF',
 		textTransform: 'uppercase',
 		letterSpacing: '1px',
@@ -87,7 +87,7 @@ const ResultsPageContainer = styled(Container)( ({ theme }) => ({
 		textAlign: 'center',
 	},
 	h1: {
-		fontSize: '3.6em',
+		fontSize: '3.6rem',
 		margin: 0,
 
 		'@media screen and (max-width: 800px)': {
@@ -96,7 +96,7 @@ const ResultsPageContainer = styled(Container)( ({ theme }) => ({
 	},
 
 	h2: {
-		fontSize: '2.75em',
+		fontSize: '2.75rem',
 		margin: '2px 0 0 0',
 	},
 
@@ -105,7 +105,7 @@ const ResultsPageContainer = styled(Container)( ({ theme }) => ({
 
 		p: {
 			margin: 0,
-			fontSize: '1.75em',
+			fontSize: '1.75rem',
 		},
 	},
 	maxWidth: 'lg',

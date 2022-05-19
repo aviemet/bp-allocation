@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from 'react'
 
-import { Card, Container, Header, Loader } from 'semantic-ui-react'
 import styled from '@emotion/styled'
+import {
+	Box,
+	Button,
+	Container,
+	Grid,
+	InputAdornment,
+	Stack,
+	Switch,
+	OutlinedInput,
+	Typography,
+} from '@mui/material'
 
 import { observer } from 'mobx-react-lite'
 import { useTheme, useOrgs } from '/imports/api/providers'
 
-import OrgCard from '/imports/ui/Components/Cards/OrgCard'
+import { Loading } from '/imports/ui/Components'
+import { OrgCard, OrgCardContainer } from '/imports/ui/Components/Cards'
 import { useWindowSize, breakpoints } from '/imports/ui/MediaProvider'
 
 const KioskInfo = observer(() => {
@@ -19,9 +30,13 @@ const KioskInfo = observer(() => {
 
 	useEffect(() => {
 		let n = itemsPerRow
-		if(width < breakpoints.tablet) n = 1
-		else if(width >= breakpoints.tablet && width < breakpoints.tabletL) n = 2
-		else n = 3
+		if(width < breakpoints.tablet) {
+			n = 1
+		} else if(width >= breakpoints.tablet && width < breakpoints.tabletL){
+			n = 2
+		} else{
+			n = 3
+		}
 
 		if(itemsPerRow !== n) setItemsPerRow(n)
 	}, [width])
@@ -41,16 +56,16 @@ const KioskInfo = observer(() => {
 
 	const orgsToDisplay = theme.chitVotingStarted ? topOrgs : orgs.values
 
-	if(orgsLoading) return <Loader active />
+	if(orgsLoading) return <Loading />
 	return (
-		<OrgsContainer>
-			<FlexHeading as='h1'>{ title }</FlexHeading>
-			<Header as='h2'>{ subHeading }</Header>
-			<Card.Group
-				// onUpdate={ handleScreenLayout }
-				centered
-				itemsPerRow={ itemsPerRow }
-			>
+		<>
+			<Typography component="h1" variant="h3" align="center">{ title }</Typography>
+			<Typography component="h2" variant="h4" align="center">{ subHeading }</Typography>
+			<OrgCardContainer cols={ itemsPerRow } sx={ {
+				'& > .MuiBox-root': {
+					height: 250
+				}
+			} }>
 				{ orgsToDisplay.map(org => (
 					<OrgCard
 						key={ org._id }
@@ -58,44 +73,9 @@ const KioskInfo = observer(() => {
 						info={ true }
 					/>
 				)) }
-			</Card.Group>
-		</OrgsContainer>
+			</OrgCardContainer>
+		</>
 	)
 })
-
-const OrgsContainer = styled(Container)`
-	padding-top: 20px;
-
-	.ui.card {
-
-		.orgsImage {
-			height: 150px;
-		}
-
-		.content{
-			padding-bottom: 0.2em;
-		}
-	}
-
-	&& {
-		.ui.header {
-			color: #FFF;
-			text-align: center;
-		}
-
-		p {
-			line-height: 1em;
-		}
-	}
-`
-
-const FlexHeading = styled(Header)`
-	font-size: 3em;
-	text-align: center;
-
-	@media only screen and (max-width: 500px) {
-		font-size: 10vw !important;
-	}
-`
 
 export default KioskInfo

@@ -4,12 +4,12 @@ import { useMembers } from '/imports/api/providers'
 import numeral from 'numeral'
 
 import styled from '@emotion/styled'
-import { Loader } from 'semantic-ui-react'
+import { Loading } from '/imports/ui/Components'
 
 const PledgeInfo = ({ pledge }) => {
 	const { members, isLoading: membersLoading } = useMembers()
 
-	if(membersLoading || !members) return <Loader />
+	if(membersLoading || !members) return <Loading />
 
 	const member = pledge.anonymous ? undefined : members.values.find(mem => mem._id === pledge.member)
 

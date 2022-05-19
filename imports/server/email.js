@@ -20,11 +20,19 @@ const htmlEmailWrapper = yeild => `<html><head><style>
 	} 
 </style></head><body><div style="max-width: 600px; margin: 0 auto;">${yeild}</div></body></html>`
 
-const memberEmailsQuery = (themeId, members) => {
+const memberEmailsQuery = (themeId, members, skipRounds) => {
 	const match = {
 		$match: {
 			'member.email': { $ne: null }
 		}
+	}
+
+	if(skipRounds?.one) {
+		match.$match.chitVotes = []
+	}
+
+	if(skipRounds?.two) {
+		match.$match.allocations = []
 	}
 
 	// Coerce members into an array
@@ -83,7 +91,7 @@ const emailVotingLinkToMembers = ({ themeId, message, members }) => {
 
 	setMessageSendingFlag(theme, message)
 
-	const memberEmails = memberEmailsQuery(themeId, members)
+	const memberEmails = memberEmailsQuery(themeId, members, message.optOutRounds)
 
 	const messages = memberEmails.flatMap(member => {
 		if(!validEmail(member.email)) {

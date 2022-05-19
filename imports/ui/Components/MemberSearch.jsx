@@ -1,92 +1,60 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import _ from 'lodash'
+import { isEmpty } from 'lodash'
+import { observer } from 'mobx-react-lite'
+import { useMembers } from '/imports/api/providers'
 
-import { Search, Label } from 'semantic-ui-react'
+import {
+	Autocomplete,
+	Box,
+	Chip,
+	InputAdornment,
+	TextField,
+} from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
+import TagIcon from '@mui/icons-material/Tag'
+import { Loading } from '/imports/ui/Components'
 
-/**
- * Member search results renderer
- * @param {object} props { title, number } of selected member 
- */
-const resultRenderer = ({ title, number }) => (
-	<>
-		{title} <Label icon='hashtag' content={ number } />
-	</>
-)
+const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }) => {
+	const { members, isLoading: membersLoading } = useMembers()
 
-/**
- * Search input for member data
- * @param {object} props Search props
- */
-const MemberSearch = ({ data, value, setValue, onResultSelect, ...rest }) => {
-	const [ isLoading, setIsLoading ] = useState(false)
-	const [ searchResults, setSearchResults ] = useState([])
-	// const [ selectedValue, setSelectedValue ] = useState('')
-
-	// Filter source data to only display what's needed in search results
-	const source = data.map(member => {
-		return ({
-			title: `${member.firstName} ${member.lastName}`,
-			number: member.number,
-			id: member._id
-		})
-	})
-	
-	// Handle select action with user defined method
-	const handleResultSelect = (e, { result }) => {
-		setValue(result.title)
-		if(onResultSelect) {
-			onResultSelect(result)
-		}
+	const handleChange = (event, newValue, reason) => {
+		if(setValue) setValue(newValue)
+		if(onResultSelect) onResultSelect(newValue)
 	}
 
-	// Animate searching and filter results on user input change
-	const handleSearchChange = (e, { value }) => {
-		setIsLoading(true)
-		setValue(value)
-
-		// Wait for at least 2 characters to display search results
-		if (value.trim().length < 1) {
-			setIsLoading(false)
-			setSearchResults([])
-			setValue('')
-			return
-		}
-
-		// Filter search results to match input
-		const equality = new RegExp(_.escapeRegExp(value), 'i')
-		setSearchResults( _.filter( source, result => equality.test(result.title) || equality.test(result.number) ) )
-		setIsLoading(false)
-	}
-
+	if(membersLoading || isEmpty(members)) return <Loading />
 	return (
-		<Search
-			input={ { icon: 'search', iconPosition: 'left' } }
-			loading={ isLoading }
-			onResultSelect={ handleResultSelect }
-			onSearchChange={ _.debounce(handleSearchChange, 1000, {
-				leading: true,
-			}) }
-			results={ searchResults }
-			resultRenderer={ resultRenderer }
+		<Autocomplete
+			id="member-select-input"
+			autoComplete
+			blurOnSelect
 			value={ value }
-			fluid
-			placeholder='Member Search'
-			minCharacters={ 1 }
-			{ ...rest }
+			onChange={ handleChange }
+			options={ members.values }
+			getOptionLabel={ option => option?.fullName || '' }
+			clearText={ '' }
+			renderOption={ (props, option) => (
+				<Box component="li" sx={ { p: 2 } } { ...props }>
+					{ option?.fullName } <Chip icon={ <TagIcon /> } label={ option?.number } />
+				</Box>
+			) }
+			renderInput={ (params) => (
+				<TextField
+					variant="outlined"
+					placeholder="Member Name or Number"
+					InputProps={ {
+						startAdornment: ( <InputAdornment position="start"><SearchIcon /></InputAdornment> ),
+					} }
+					{ ...params }
+				/>
+			) }
+			{ ...props }
 		/>
 	)
-}
-
-resultRenderer.propTypes = {
-	title: PropTypes.string,
-	number: PropTypes.number
-}
+})
 
 MemberSearch.propTypes = {
-	data: PropTypes.array.isRequired,
-	value: PropTypes.string.isRequired,
-	setValue: PropTypes.func.isRequired,
 	onResultSelect: PropTypes.func,
 	rest: PropTypes.any,
 }

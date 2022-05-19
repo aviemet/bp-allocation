@@ -33,7 +33,7 @@ const OrganizationsEdit = () => {
 
 	const sanitizeData = data => {
 		const sanitizedData = data
-		if(typeof sanitizedData === 'string') {
+		if(typeof sanitizedData.ask === 'string') {
 			sanitizedData.ask = parseFloat(sanitizedData.ask.replace(/[^\d.]/g, ''))
 		}
 		return sanitizedData
@@ -47,8 +47,6 @@ const OrganizationsEdit = () => {
 		} else {
 			response = OrganizationMethods.create.call(data)
 		}
-
-		console.log({ response })
 
 		if(response) {
 			setFormStatus(STATUS.SUCCESS)
@@ -78,13 +76,22 @@ const OrganizationsEdit = () => {
 			>
 				<Grid container spacing={ 2 }>
 					<Grid item xs={ 12 } md={ 8 }>
-						<TextInput name="title" label="Organization Title" required />
+						<TextInput
+							name="title"
+							label="Organization Title"
+							required
+						/>
 					</Grid>
 
 					<Grid item xs={ 12 } md={ 4 }>
-						<TextInput name="ask" label="Funding Ask" required inputProps={ {
-							startAdornment: <InputAdornment position="start">$</InputAdornment>,
-						} }/>
+						<TextInput
+							name="ask"
+							label="Funding Ask"
+							required
+							inputProps={ {
+								startAdornment: <InputAdornment position="start">$</InputAdornment>,
+							} }
+						/>
 					</Grid>
 
 					<Grid item xs={ 12 }>

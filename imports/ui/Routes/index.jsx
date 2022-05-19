@@ -8,13 +8,12 @@ import ShortRoute from './ShortRoute'
 
 import { observer } from 'mobx-react-lite'
 
-import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout, FeedbackLayout } from '/imports/ui/Layouts'
+import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from '/imports/ui/Layouts'
 import Presentation from '/imports/ui/Presentation'
 import Simulation from '/imports/ui/Admin/Simulation'
 import Pledges from '/imports/ui/Pledges'
 import Login from '/imports/ui/Welcome/Login'
 import Kiosk from '/imports/ui/Kiosk'
-import Feedback from '/imports/ui/Feedback'
 import FourOhFour from './404'
 
 const Routes = observer(() => (
@@ -55,12 +54,6 @@ const Routes = observer(() => (
 				<KioskLayout>
 					<Pledges />
 				</KioskLayout>
-			) } />
-
-			<LoadingRoute path='/feedback/:id' render={ () => (
-				<FeedbackLayout>
-					<Feedback />
-				</FeedbackLayout>
 			) } />
 
 			<Route path='/404' component={ FourOhFour } />

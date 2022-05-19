@@ -44,8 +44,8 @@ const Overview = () => {
 					</TableRow>
 					<TableRow>
 						<TableCell></TableCell>
-						<TableCell>R1<br/>{ settings.useKioskChitVoting && `(${theme.chitVotesCast}/${theme.totalMembers})` }</TableCell>
-						<TableCell>R2<br/>{ settings.useKioskFundsVoting && `(${theme.fundsVotesCast}/${theme.totalMembers})` }</TableCell>
+						<TableCell>R1 (chits)<br/>{ settings.useKioskChitVoting && `[${theme.chitVotesCast}/${theme.totalMembers}]` }</TableCell>
+						<TableCell>R2 ($)<br/>{ settings.useKioskFundsVoting && `[${theme.fundsVotesCast}/${theme.totalMembers}]` }</TableCell>
 						<TableCell>Saves</TableCell>
 						<TableCell>Top Off</TableCell>
 						<TableCell>Pledges</TableCell>
@@ -61,9 +61,9 @@ const Overview = () => {
 							<TableRow key={ i }>
 								<TableCell>
 									<Box>{ org.title }</Box>
-									<Box sx={ { textAlign: 'right' } }><Chip label={ `Ask: ${numeral(org.ask).format('$0,0')}` } /></Box>
+									<Box><Chip label={ `Ask: ${numeral(org.ask).format('$0,0')}` } /></Box>
 								</TableCell>
-								<TableCell align="right">{ roundFloat(org.votes, 1) }</TableCell>
+								<TableCell align="center">{ roundFloat(org.votes, 1) }</TableCell>
 								<MoneyCell>{ org.votedTotal || 0 }</MoneyCell>
 								<MoneyCell>{ saveIndex >= 0 ? theme.saves[saveIndex] : 0 }</MoneyCell>
 								<MoneyCell>{ org.topOff }</MoneyCell>
@@ -138,7 +138,7 @@ const Overview = () => {
 	)
 }
 
-const fontSize = '1.1rem'
+const fontSize = '1rem'
 const StyledTable = styled(Table)(({ theme }) => ({
 	tableLayout: 'fixed',
 	width: 'calc(100% - 1px)',
@@ -167,7 +167,7 @@ const StyledTable = styled(Table)(({ theme }) => ({
 				width: '23%',
 			},
 			'&:nth-of-type(2)': {
-				width: '17%',
+				width: '18%',
 			},
 		},
 	},
@@ -175,7 +175,7 @@ const StyledTable = styled(Table)(({ theme }) => ({
 		tr:{
 			'td': {
 				border: `1px solid ${theme.palette.grey[300]}`,
-				fontSize: fontSize,
+				fontSize: '0.9rem',
 				padding: '8px',
 			},
 			'&:nth-of-type(2n) td:first-of-type': {
