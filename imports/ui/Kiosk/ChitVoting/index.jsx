@@ -36,10 +36,9 @@ const ShuffledOrgs = React.memo(({ orgs }) => <>{
 	))
 }</>, (prev, next) => prev.orgs.values.every((org, i) => next.orgs.values[i]._id === org._id))
 
-
 VotesRemaining.displayName = 'VotesRemaining' // To slience eslint
 
-const FundsVotingKiosk = observer(props => {
+const ChitVotingKiosk = observer(props => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { orgs } = useOrgs()
@@ -68,7 +67,7 @@ const FundsVotingKiosk = observer(props => {
 	return (
 		<OrgsContainer>
 
-			<Typography variant="h2" component="h1">{props.user.firstName && 'Voting for'} {memberName}</Typography>
+			<Typography variant="h4" component="h1" align="center">{ props.user.firstName && 'Voting for' } { memberName }</Typography>
 
 			{ countdownVisible && <Countown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
 
@@ -115,22 +114,25 @@ const OrgsContainer = styled.div`
 	}
 `
 
-const FinalizeButton = styled(Button)`
-	width: 100%;
-	text-align: center;
-	background-color: ${COLORS.blue} !important;
-	color: white !important;
-	border: 2px solid #fff !important;
-	font-size: 2rem !important;
-	text-transform: uppercase !important;
-	margin-bottom: 10px;
-`
+const FinalizeButton = styled(Button)(({ theme }) => ({
+	width: '100%',
+	textAlign: 'center',
+	color: 'white',
+	border: '2px solid #fff',
+	fontSize: '2rem',
+	textTransform: 'uppercase',
+	backgroundColor: COLORS.blue,
+
+	'&.Mui-disabled': {
+		backgroundColor: COLORS.blue,
+	}
+}))
 
 const NumberFormat = styled.span`
 	display: inline-block;
 `
 
-FundsVotingKiosk.propTypes = {
+ChitVotingKiosk.propTypes = {
 	user: PropTypes.object,
 	source: PropTypes.string
 }
@@ -143,4 +145,4 @@ ShuffledOrgs.propTypes = {
 	orgs: PropTypes.object
 }
 
-export default FundsVotingKiosk
+export default ChitVotingKiosk

@@ -33,9 +33,6 @@ const StyledOrgCardContainer = styled(Box)(({ theme, cols, orphans }) => ({
 	display: 'grid',
 	gap: `${gap}px`,
 	gridAutoRows: '1fr',
-	'.MuiBox-root': {
-		height: '100%',
-	},
 	gridTemplateColumns: `repeat(${cols * 2}, 1fr)`,
 
 	'.orgCard': {

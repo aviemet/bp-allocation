@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite'
 import { useData, useSettings, useOrgs } from '/imports/api/providers'
 import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext'
 import { forEach } from 'lodash'
-import { Container, Button } from '@mui/material'
+import { Container, Button, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 
 import VotingComplete from '../VotingComplete'
@@ -18,9 +18,9 @@ import { COLORS } from '/imports/lib/global'
 
 const AmountRemaining = React.memo(({ value }) => {
 	return (
-		<h1 className="title">
+		<h2>
 			FUNDS LEFT TO ALLOCATE: <NumberFormat>{numeral(value).format('$0,0')}</NumberFormat>
-		</h1>
+		</h2>
 	)
 })
 
@@ -55,8 +55,7 @@ const FundsVotingKiosk = observer(props => {
 	}
 	return (
 		<OrgsContainer>
-
-			<h1 className="title">{ props.user.firstName && 'Voting for' } {memberName}</h1>
+			<Typography variant="h4" component="h1" align="center">{ props.user.firstName && 'Voting for' } { memberName }</Typography>
 
 			{ countdownVisible && <Countown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
 

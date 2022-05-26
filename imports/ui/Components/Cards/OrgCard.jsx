@@ -11,7 +11,8 @@ import {
 	IconButton,
 	Typography,
 } from '@mui/material'
-import InfoIcon from '@mui/icons-material/Info'
+import InfoIcon from '@mui/icons-material/InfoOutlined'
+// import InfoIcon from '@mui/icons-material/Info'
 import { observer } from 'mobx-react-lite'
 import { useCardContext } from './OrgCardContainer'
 
@@ -100,6 +101,7 @@ const StyledCard = styled(Box)(({ theme }) => ({
 	border: '2px solid white',
 	textAlign: 'center',
 	minHeight: '4rem',
+	padding: '0.25rem 0.4rem',
 	'&.disabled': {
 		filter: ' opacity(0.5)',
 		'& > *': {
@@ -124,8 +126,8 @@ const CardContent = styled(Box)`
 	flex-direction: column;
 	align-items: center;
 	justify-content: space-between;
-	padding: 0.5rem;
 	width: 90%;
+	height: 100%;
 	margin: 0 auto;
 
 	& a {

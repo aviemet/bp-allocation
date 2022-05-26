@@ -8,7 +8,9 @@ import { useVoting } from '/imports/ui/Kiosk/VotingContext'
 import styled from '@emotion/styled'
 import InputRange from 'react-input-range'
 
-import { Input, Button, Icon } from '@mui/material'
+import { TextField, InputAdornment, IconButton, Box, Typography } from '@mui/material'
+import KeyboardIcon from '@mui/icons-material/Keyboard'
+import CheckIcon from '@mui/icons-material/Check'
 
 /**
  * Tactile slider for adjusting voting amount
@@ -94,89 +96,92 @@ const FundsSliderComponent = props => {
 	}
 
 	return (
-		<SliderContainer>
+		<FundsInputContainer>
 			{ showInput ?
-				<AmountInputContainer id='inputContainer'>
-					<Input fluid
-						type='number'
-						pattern="[0-9]*"
+				<div id='inputContainer'>
+					<TextField
 						value={ value || '' }
 						onChange={ e => handleChange(parseInt(e.currentTarget.value)) }
-						size='massive'
-						icon='dollar'
-						iconPosition='left'
-						action={ <Button onClick={ hideInput }><Icon name='check' /></Button> }
+						InputProps={ {
+							inputProps: {
+								sx: {
+									padding: '0.5rem',
+									textAlign: 'center',
+								}
+							},
+							startAdornment: (
+								<InputAdornment
+									position="start"
+									sx={ {
+										margin: 0,
+									} }
+								>
+									<Typography sx={ { fontFamily: 'Roboto', margin: '0 !important' } }>$</Typography>
+								</InputAdornment>
+							),
+							endAdornment:(
+								<InputAdornment position="end">
+									<IconButton
+										aria-label="set value"
+										onClick={ hideInput }
+										edge="end"
+									>
+										<CheckIcon />
+									</IconButton>
+								</InputAdornment>
+							)
+						} }
+						sx={ {
+							width: '85%',
+							color: 'white',
+						} }
 					/>
-				</AmountInputContainer>
+				</div>
 				:
-				<Amount onClick={ toggleAmountInput }>
+				<Box
+					onClick={ toggleAmountInput }
+					sx={ {
+						fontSize: '3rem',
+						textAlign: 'center',
+						lineHeight: '2.5rem'
+					} }
+				>
 					{ numeral(value).format('$0,0') }
-					<Icon name='keyboard' size='tiny' />
-				</Amount>
+					<KeyboardIcon sx={ {
+						position: 'absolute',
+						top: '8%',
+						left: 0,
+						zIndex: 100,
+					} } />
+				</Box>
 			}
-			<BottomAlign className={ showLabel ? 'visible' : '' }>
-				<InputRange
-					disabled={ !props.member.theme.amount || props.member.theme.amount <= 0 }
-					minValue={ 0 }
-					maxValue={ props.member.theme.amount || 1 }
-					value={ value || 0 }
-					onChange={ handleChange }
-					onChangeStart={ toggleSliderLabel }
-					onChangeComplete={ () => setShowLabel(false) }
-					formatLabel={ value => numeral(value / MAX).format('0%') }
-					step={ 5 }
-				/>
-			</BottomAlign>
-		</SliderContainer>
+			<div className={ showLabel ? 'visible' : '' }>
+				<div>
+					<InputRange
+						disabled={ !props.member.theme.amount || props.member.theme.amount <= 0 }
+						minValue={ 0 }
+						maxValue={ props.member.theme.amount || 1 }
+						value={ value || 0 }
+						onChange={ handleChange }
+						onChangeStart={ toggleSliderLabel }
+						onChangeComplete={ () => setShowLabel(false) }
+						formatLabel={ value => numeral(value / MAX).format('0%') }
+						step={ 5 }
+					/>
+				</div>
+			</div>
+		</FundsInputContainer>
 	)
 }
 
-const SliderContainer = styled.div`
+const FundsInputContainer = styled.div`
 	width: 100%;
 	height: 100%;
-	margin: 0;
 	position: relative;
-
-	.input-range {
-		margin-bottom: 15px;
-	}
-`
-
-const Amount = styled.div`
-	font-size: 4rem;
-	text-align: center;
-	line-height: 1.15;
-
-	.icon {
-		position: absolute;
-		top: 25%;
-		left: 0;
-
-		&.tiny {
-			font-size: 0.3em;
-		}
-	}
-`
-
-const AmountInputContainer = styled.div`
-	&& .ui.massive.input {
-		height: 64px;
-		text-align: center;
-		font-size: 2.5rem;
-
-		input {
-			padding-left: 1.25em !important;
-			padding-right: 0.5em !important;
-		}
-
-		.icon {
-			width: 1.25em;
-		}
-	}
-`
-
-const BottomAlign = styled.div`
-	margin: 15px 5px -15px 5px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	margin: 1rem 0 0.25rem 0;
 `
 
 FundsSliderComponent.propTypes = {
