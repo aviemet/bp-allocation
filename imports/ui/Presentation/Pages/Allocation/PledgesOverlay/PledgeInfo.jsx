@@ -35,6 +35,7 @@ const AnimationContainer = styled.div`
 	justify-content: center;
 
 	h1 {
+		font-family: Roboto;
 		-webkit-text-stroke: 3px #000;
 		text-shadow: 2px 3px 1px #99F;
 		font-weight: 700;

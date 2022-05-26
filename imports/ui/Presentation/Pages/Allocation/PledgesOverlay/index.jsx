@@ -20,7 +20,7 @@ const PledgesOverlay = observer(() => {
 	useEffect(() => {
 		orgs.values.forEach(org => {
 			org.pledges.forEach(pledge => {
-				data.displayedPledges.add(pledge._id)
+				// data.displayedPledges.add(pledge._id)
 			})
 		})
 	}, [])

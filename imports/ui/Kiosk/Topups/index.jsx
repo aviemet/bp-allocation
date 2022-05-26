@@ -111,7 +111,7 @@ const FinalizeButton = styled(SubmitButton)`
 	background-color: ${OrgCard.colors.GREEN};
 	color: white;
 	border: 2px solid #fff;
-	font-size: 2rem;
+	font-size: clamp(1.75rem, -3rem + 3vw + 4.5vh, 3rem);
 	text-transform: uppercase;
 `
 

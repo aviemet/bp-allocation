@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button } from '@mui/material'
+import { Button, Container, Typography } from '@mui/material'
 import { COLORS } from '/imports/lib/global'
 import { useTheme } from '/imports/api/providers'
 import numeral from 'numeral'
@@ -17,69 +17,43 @@ const VotingComplete = ({ data, resetData }) => {
 	}
 
 	return (
-		<>
-			<Centered>
-				<h1>Thank You For Your Pledge!</h1>
-				<p>Your generous donation to <b><u>{ data.org.title }</u></b> of <b>{ formatted.amount }</b> was matched by the remaining leverage bringing them <b>{ formatted.total }</b> closer to being fully funded</p>
-			</Centered>
-			<BottomAligned>
-				<AmendVoteButton
-					size='huge'
-					disabled={ false }
-					onClick={ resetData }
-				>Pledge Again</AmendVoteButton>
-			</BottomAligned>
-		</>
+		<TopupCompleteContainer>
+			<Typography component="h1" variant="h4" align="center">Thank You For Your Pledge!</Typography>
+			<p>Your generous donation to <b><u>{ data.org.title }</u></b> of <b>{ formatted.amount }</b> was matched by the remaining leverage bringing them <b>{ formatted.total }</b> closer to being fully funded</p>
+
+			<AmendVoteButton
+				size='huge'
+				disabled={ false }
+				onClick={ resetData }
+			>Pledge Again</AmendVoteButton>
+		</TopupCompleteContainer>
 	)
 }
 
-const Centered = styled.div`
-	width: 80%;
-	position: fixed;
-	top: 40%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	text-align: center;
+const TopupCompleteContainer = styled(Container)`
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+	padding: 1rem auto;
 
-	& h1 {
-		text-transform: uppercase;
-		font-size: 6rem;
-		line-height: 6rem;
-		color: white;
-		
-		@media screen and (min-width: 351px) and (max-width: ${({ theme }) => theme.screen.tablet}px) {
-			font-size: 4rem !important;
-			line-height: 4.5rem;
-		}
-
-		@media screen and (max-width: 350px) {
-			font-size: 16vw !important;
-			line-height: 17vw;
-		}
-	}
-
-	& p {
+	p {
 		margin-top: 20px;
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 		color: white;
 	}
-`
-const BottomAligned = styled.div`
-	position: fixed;
-	bottom: 2em;
-	left: 0;
-	width: 100%;
-	text-align: center;
 `
 
 const AmendVoteButton = styled(Button)`
 	text-align: center;
-	background-color: ${COLORS.blue} !important;
-	color: white !important;
-	border: 2px solid #fff !important;
-	font-size: 2rem !important;
-	text-transform: uppercase !important;
+	background-color: ${COLORS.blue};
+	color: white;
+	border: 2px solid #fff;
+	font-size: 2rem;
+	text-transform: uppercase;
 	margin-bottom: 10px;
+	padding-bottom: 0;
 `
 
 VotingComplete.propTypes = {
