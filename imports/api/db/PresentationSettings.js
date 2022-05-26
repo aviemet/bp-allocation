@@ -69,13 +69,13 @@ const PresentationSettingsSchema = new SimpleSchema({
 		type: Boolean,
 		label: 'Will the chit voting totals be entered manually or taken from kiosk voting?',
 		required: false,
-		defaultValue: false
+		defaultValue: true
 	},
 	useKioskFundsVoting: {
 		type: Boolean,
 		label: 'Will the funds voting totals be entered manually or taken from kiosk voting?',
 		required: false,
-		defaultValue: false
+		defaultValue: true
 	},
 	resultsVisited: {
 		type: Boolean,
