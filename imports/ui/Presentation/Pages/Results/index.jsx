@@ -5,10 +5,10 @@ import numeral from 'numeral'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings, useOrgs } from '/imports/api/providers'
 
+import { Container, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { css } from '@emotion/react'
 
-import Container from '@mui/material/Container'
 
 import AwardCard from '/imports/ui/Components/Cards/AwardCard'
 
@@ -40,8 +40,7 @@ const Results = observer(() => {
 		<ResultsPageContainer maxWidth="xl" sx={ { p: 2 } }>
 			<AwardsImage><img src="/img/BAT_awards.png" /></AwardsImage>
 
-			<h1>Total amount given: { numeral(total).format('$0.[00]a') }</h1>
-			<br/><br/>
+			<Typography component="h1" variant="h2" sx={ { marginBottom: 2 } }>Total amount given: { numeral(total).format('$0.[00]a') }</Typography>
 
 			<AwardsCards>
 				{ awardees.map((org) => {
@@ -78,27 +77,19 @@ const Results = observer(() => {
 const ResultsPageContainer = styled(Container)( ({ theme }) => ({
 	color: '#FFF',
 
-	'h1, h2': {
-		lineHeight: '1rem',
-		color: '#FFF',
-		textTransform: 'uppercase',
-		letterSpacing: '1px',
-		fontFamily: 'TradeGothic',
-		textAlign: 'center',
-	},
 	h1: {
 		fontSize: '3.6rem',
-		margin: 0,
+		letterSpacing: '1px',
+		fontFamily: 'TradeGothic',
+		textTransform: 'uppercase',
+		textAlign: 'center',
 
-		'@media screen and (max-width: 800px)': {
-			marginTop: '50px',
+		[theme.breakpoints.down('md')]: {
+			fontSize: '2rem',
+			fontWeight: 'bold',
 		},
 	},
 
-	h2: {
-		fontSize: '2.75rem',
-		margin: '2px 0 0 0',
-	},
 
 	'.ui.cards .card .content': {
 		padding: '5px',

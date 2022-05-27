@@ -23,9 +23,7 @@ const SelectableOrgCards = ({ orgs }) => {
 					showAsk={ false }
 					onClick={ handleSetValue(org._id) }
 					color={ watch === org._id ? 'green' : 'blue' }
-				>
-					{ numeral(org.need).format('$0a') }
-				</OrgCard>
+				/>
 			) ) }
 		</OrgCardContainer>
 	)

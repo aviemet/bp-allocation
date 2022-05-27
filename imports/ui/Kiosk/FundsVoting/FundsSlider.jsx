@@ -99,6 +99,7 @@ const FundsSliderComponent = props => {
 		<FundsInputContainer>
 			{ showInput ?
 				<div id='inputContainer'>
+
 					<TextField
 						value={ value || '' }
 						onChange={ e => handleChange(parseInt(e.currentTarget.value)) }
@@ -107,25 +108,17 @@ const FundsSliderComponent = props => {
 								sx: {
 									padding: '0.5rem',
 									textAlign: 'center',
-								}
+								},
+								pattern: '[0-9]*'
 							},
 							startAdornment: (
-								<InputAdornment
-									position="start"
-									sx={ {
-										margin: 0,
-									} }
-								>
+								<InputAdornment position="start" sx={ { margin: 0 } }>
 									<Typography sx={ { fontFamily: 'Roboto', margin: '0 !important' } }>$</Typography>
 								</InputAdornment>
 							),
 							endAdornment:(
 								<InputAdornment position="end">
-									<IconButton
-										aria-label="set value"
-										onClick={ hideInput }
-										edge="end"
-									>
+									<IconButton onClick={ hideInput } edge="end">
 										<CheckIcon />
 									</IconButton>
 								</InputAdornment>
@@ -136,6 +129,7 @@ const FundsSliderComponent = props => {
 							color: 'white',
 						} }
 					/>
+
 				</div>
 				:
 				<Box

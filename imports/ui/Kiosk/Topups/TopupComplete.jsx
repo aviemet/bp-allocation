@@ -19,7 +19,7 @@ const VotingComplete = ({ data, resetData }) => {
 	return (
 		<TopupCompleteContainer>
 			<Typography component="h1" variant="h4" align="center">Thank You For Your Pledge!</Typography>
-			<p>Your generous donation to <b><u>{ data.org.title }</u></b> of <b>{ formatted.amount }</b> was matched by the remaining leverage bringing them <b>{ formatted.total }</b> closer to being fully funded</p>
+			<p>Your generous donation to <b><u>{ data.org.title }</u></b> of <b>{ formatted.amount }</b> was matched by the remaining leverage bringing them <b>{ formatted.total }</b> closer to being fully funded.</p>
 
 			<AmendVoteButton
 				size='huge'
