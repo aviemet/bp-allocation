@@ -61,8 +61,6 @@ const MemberLoginRequired = observer(props => {
 
 	const ChildComponent = props.component
 
-	console.log({ user })
-
 	// Member is chosen, display the voting panel
 	if(user) {
 		return (
@@ -77,13 +75,13 @@ const MemberLoginRequired = observer(props => {
 	return(
 		<>
 			<BackgroundImage />
-			<Stack justifyContent="center" alignItems="center" sx={ { minHeight: '100%' } }>
+			<Stack flexDirection="column" justifyContent="center" alignItems="center" sx={ { minHeight: '100%' } }>
 				<Form
 					defaultValues={ { initials: '', number: '' } }
 					onValidSubmit={ chooseMember }
 					onChange={ handleUpdate }
 				>
-					<Grid container spacing={ 2 }>
+					<Grid container spacing={ 2 } sx={ { mt: 4 } }>
 
 						<Grid item xs={ 12 }>
 							<Typography component="h1" variant="h2" color="white" className='title' align="center">Enter Your Initials &amp; Member ID</Typography>
@@ -128,27 +126,6 @@ const MemberLoginRequired = observer(props => {
 	)
 
 })
-
-const MemberLoginContainer = styled(Container)`
-	text-align: center;
-	padding-top: 6rem;
-	height: 100%;
-
-	h1.title {
-		color: #FFF;
-		text-align: center;
-		font-size: 3rem;
-		text-transform: uppercase;
-	}
-
-	& h2.ui.header {
-		color: #FFF;
-	}
-
-	.ui.search .ui.icon.input {
-		width: 100%;
-	}
-`
 
 const StyledSubmitButton = styled(SubmitButton)(({ theme }) => ({
 	width: '100%',
