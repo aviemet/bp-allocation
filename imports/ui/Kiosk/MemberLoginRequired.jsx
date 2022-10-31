@@ -7,7 +7,7 @@ import { useMembers } from '/imports/api/providers'
 
 import styled from '@emotion/styled'
 import { Loading } from '/imports/ui/Components'
-import { Container, Grid, Stack, Typography } from '@mui/material'
+import { Grid, Stack, Typography } from '@mui/material'
 import { Form, TextInput, SubmitButton, STATUS } from '/imports/ui/Components/Form'
 
 import { VotingContextProvider } from './VotingContext'

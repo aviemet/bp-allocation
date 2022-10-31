@@ -27,8 +27,6 @@ import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
 import { TopupsActiveToggle } from '/imports/ui/Components/Toggles'
 import { Loading } from '/imports/ui/Components'
 
-// TODO: Investigate time issues with createdAt value
-
 const headCells = [
 	{
 		id: 'org.title',
@@ -65,7 +63,6 @@ const Pledges = observer(({ hideAdminFields }) => {
 
 	const bulkDelete = (selected, onSuccess) => {
 		const plural = selected.length > 1
-		console.log({ selected })
 
 		setModalHeader(`Permanently unlink member${plural ? 's' : ''} from this theme?`)
 		setModalContent(`This will permanently delete the selected pledge${plural ? 's' : ''}. This action cannot be reversed.`)

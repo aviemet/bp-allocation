@@ -16,11 +16,11 @@ const ExportTopups = () => {
 			const member = members.values.find(member => member._id === pledge.member)
 			if(member) {
 				const pledgeData = {
-					Organization: org.title,
-					'Member Name': member.fullName,
-					'Member Number': member.number,
-					Amount: pledge.amount,
-					'Time Stamp': pledge.createdAt
+					'Organization': org?.title,
+					'Member Name': member?.fullName,
+					'Member Number': member?.number,
+					'Amount': pledge?.amount,
+					'Pledged At': pledge?.createdAt
 				}
 				pledges.push(pledgeData)
 			}
