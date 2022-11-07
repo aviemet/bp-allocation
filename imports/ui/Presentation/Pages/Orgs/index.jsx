@@ -24,7 +24,7 @@ const Orgs = observer(() => {
 		<OrgsContainer>
 			<PageTitle>Participating Organizations</PageTitle>
 			<Container maxWidth="xl" sx={ { height: '100%' } }>
-				<OrgCardContainer centered cols={ 3 } sx={ { paddingBottom: 'clamp(0rem, -58.1818rem + 90.9091vh, 10rem)' } }>
+				<OrgCardContainer centered cols={ 3 } sx={ { paddingBottom: 'clamp(0rem, -58.1818rem + 90.9091vh, 10rem)', height: '100%' } }>
 					{ orgs.values.map((org, i) => {
 						return <OrgCard
 							key={ org._id }
@@ -32,6 +32,7 @@ const Orgs = observer(() => {
 							index={ i }
 							size='big'
 							overlay={ settings.colorizeOrgs && colorOrgs[org._id] ? Overlay : false }
+							showAsk={ settings.showAskOnOrgCards }
 						/>
 					}) }
 				</OrgCardContainer>

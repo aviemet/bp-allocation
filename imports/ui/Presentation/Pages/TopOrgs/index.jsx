@@ -22,6 +22,7 @@ const TopOrgs = observer(() => {
 							org={ org }
 							animateClass={ settings.animateOrgs }
 							size='big'
+							showAsk={ settings.showAskOnOrgCards }
 						/>
 					)) }
 				</OrgCardContainer>

@@ -37,7 +37,7 @@ const PresentationSettingsForm = observer(() => {
 	}
 
 	const onError = (errors, data) => {
-		console.log({ errors, data })
+		console.error({ errors, data })
 	}
 
 	if(!settings || settingsLoading) return <Loading />
@@ -52,6 +52,7 @@ const PresentationSettingsForm = observer(() => {
 				useKioskChitVoting: settings.useKioskChitVoting || false,
 				useKioskFundsVoting: settings.useKioskFundsVoting || false,
 				awardsPresentation: settings.awardsPresentation || false,
+				showAskOnOrgCards: settings.showAskOnOrgCards || false,
 			} }
 		>
 			<Grid container spacing={ 2 }>
@@ -64,9 +65,7 @@ const PresentationSettingsForm = observer(() => {
 							</div>
 							<div>
 								<label>Manual</label>
-								<Switch
-									name='useKioskChitVoting'
-								/>
+								<Switch name='useKioskChitVoting' />
 								<label>Kiosk</label>
 							</div>
 						</Stack>
@@ -82,9 +81,7 @@ const PresentationSettingsForm = observer(() => {
 							</div>
 							<div>
 								<label>Manual</label>
-								<Switch
-									name='useKioskFundsVoting'
-								/>
+								<Switch name='useKioskFundsVoting' />
 								<label>Kiosk</label>
 							</div>
 						</Stack>
@@ -100,9 +97,7 @@ const PresentationSettingsForm = observer(() => {
 							</div>
 							<div>
 								<label>Full Presentation</label>
-								<Switch
-									name='awardsPresentation'
-								/>
+								<Switch name='awardsPresentation' />
 								<label>Awards</label>
 							</div>
 						</Stack>
@@ -115,6 +110,20 @@ const PresentationSettingsForm = observer(() => {
 						type='number'
 						label='Amount being awarded'
 					/> }
+				</Grid>
+
+				{/* OrgCard Show Ask */}
+				<Grid item xs={ 12 }>
+					<Paper sx={ { p: 1 } }>
+						<Stack direction="row" justifyContent="space-between" alignItems="center">
+							<div>
+								<label>Show &quot;Ask&quot; on Org Cards</label>
+							</div>
+							<div>
+								<Switch name='showAskOnOrgCards' />
+							</div>
+						</Stack>
+					</Paper>
 				</Grid>
 
 				<Grid item xs={ 12 } align="right">
