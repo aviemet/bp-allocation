@@ -1,8 +1,14 @@
-import { computed } from 'mobx'
+import { computed, makeObservable } from 'mobx'
 import TrackableStore from './lib/TrackableStore'
 
 class MemberStore extends TrackableStore {
-	@computed
+	constructor(data) {
+		super(data)
+		makeObservable(this, {
+			formattedName: computed
+		})
+	}
+
 	get formattedName() {
 		if(this.fullName) return this.fullName
 		return `${this.firstName} ${this.lastName}`

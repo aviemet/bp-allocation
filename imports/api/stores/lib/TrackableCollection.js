@@ -1,10 +1,10 @@
-import { action, observable, computed } from 'mobx'
+import { action, observable, computed, makeObservable } from 'mobx'
 import { filterCollection } from '/imports/lib/utils'
 import { findIndex, remove, orderBy, isEqual } from 'lodash'
 
 class TrackableCollection {
-	@observable values = []
-	@observable searchFilter
+	values = []
+	searchFilter
 	// Override with String array of field names to search against in collection filter
 	searchableFields = null
 
@@ -25,9 +25,18 @@ class TrackableCollection {
 		} else {
 			this.values = data
 		}
+
+		makeObservable(this, {
+			values: observable,
+			searchFilter: observable,
+			refreshData: action,
+			deleteItem: action,
+			sortBy: action,
+			reverse: action,
+			filteredMembers: computed,
+		})
 	}
 
-	@action
 	refreshData(data) {
 		let i = findIndex(this.values, value => value._id === data._id )
 		if(i >= 0) {
@@ -44,12 +53,10 @@ class TrackableCollection {
 		}
 	}
 
-	@action
 	deleteItem(data) {
 		remove(this.values, value => value._id === data._id)
 	}
 
-	@action
 	sortBy(column, direction) {
 		let dir
 		switch(direction) {
@@ -66,12 +73,10 @@ class TrackableCollection {
 		this.values = orderBy(this.values, column, dir)
 	}
 
-	@action
 	reverse() {
 		this.values.reverse()
 	}
 
-	@computed
 	get filteredMembers() {
 		if(!this.searchFilter) return this.values
 
