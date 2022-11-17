@@ -13,7 +13,6 @@ import MediaProvider from './MediaProvider'
 
 import { SnackbarProvider } from 'notistack'
 
-// console.log({ theme })
 const App = () => {
 	useEffect(() => {
 		if(isMobileDevice()) {

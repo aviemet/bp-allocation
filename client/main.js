@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import React from 'react'
-import { render } from 'react-dom'
-
+import { createRoot } from 'react-dom/client'
 import App from '/imports/ui/App'
 
 // Redirect all requests to www
@@ -10,5 +9,8 @@ if(window.location.host.indexOf('batterysf.com') >= 0 && window.location.host.in
 }
 
 Meteor.startup(() => {
-	render(<App />, document.getElementById('app'))
+	const root = createRoot(
+		document.getElementById('app')
+	)
+	root.render(<App />)
 })

@@ -1,8 +1,9 @@
 import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'simpl-schema'
+import SchemaRegex from '/imports/lib/schema'
 
 const OrgSaveSchema = new SimpleSchema({
-	org: SimpleSchema.RegEx.Id,
+	org: SchemaRegex.Id,
 	amount: Number,
 	name: {
 		type: String,
@@ -12,7 +13,7 @@ const OrgSaveSchema = new SimpleSchema({
 })
 
 const MessageStatusSchema = new SimpleSchema({
-	messageId: SimpleSchema.RegEx.Id,
+	messageId: SchemaRegex.Id,
 	sending: Boolean,
 	sent: Boolean,
 	error: Boolean
@@ -44,13 +45,13 @@ const ThemeSchema = new SimpleSchema({
 		defaultValue: [],
 		required: false,
 	},
-	'organizations.$': SimpleSchema.RegEx.Id,
+	'organizations.$': SchemaRegex.Id,
 	topOrgsManual: {
 		type: Array,
 		defaultValue: [],
 		required: false
 	},
-	'topOrgsManual.$': SimpleSchema.RegEx.Id,
+	'topOrgsManual.$': SchemaRegex.Id,
 	numTopOrgs: {
 		type: Number,
 		defaultValue: 5,
@@ -93,7 +94,7 @@ const ThemeSchema = new SimpleSchema({
 	},
 	'saves.$': OrgSaveSchema,
 	presentationSettings: {
-		type: SimpleSchema.RegEx.Id,
+		type: SchemaRegex.Id,
 		required: false
 	},
 	slug: {

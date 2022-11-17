@@ -9,7 +9,6 @@ class TrackableCollection {
 	searchableFields = null
 
 	/**
-	 *
 	 * @param {Array} data Array of data to be stored in the collection
 	 * @param {Object} Store Mobx Store object for data being stored
 	 */

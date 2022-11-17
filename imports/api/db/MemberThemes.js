@@ -1,8 +1,9 @@
 import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'simpl-schema'
+import SchemaRegex from '/imports/lib/schema'
 
 const AllocationSchema = new SimpleSchema({
-	organization: SimpleSchema.RegEx.Id,
+	organization: SchemaRegex.Id,
 	amount: Number,
 	voteSource: {
 		type: String,
@@ -24,7 +25,7 @@ const AllocationSchema = new SimpleSchema({
 })
 
 const ChitVoteSchema = new SimpleSchema({
-	organization: SimpleSchema.RegEx.Id,
+	organization: SchemaRegex.Id,
 	votes: Number,
 	voteSource: {
 		type: String,
@@ -52,8 +53,8 @@ const ChitVoteSchema = new SimpleSchema({
 const MemberThemes = new Mongo.Collection('memberThemes')
 
 const MemberThemeSchema = new SimpleSchema({
-	theme: SimpleSchema.RegEx.Id,
-	member: SimpleSchema.RegEx.Id,
+	theme: SchemaRegex.Id,
+	member: SchemaRegex.Id,
 	chits: { // Number of chits this member gets for round 1 voting
 		type: Number,
 		required: false,

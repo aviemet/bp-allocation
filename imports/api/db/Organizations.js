@@ -1,6 +1,7 @@
 import { Random } from 'meteor/random'
 import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'simpl-schema'
+import SchemaRegex from '/imports/lib/schema'
 
 const ChitVoteSchema = new SimpleSchema({
 	weight: Number,
@@ -9,13 +10,13 @@ const ChitVoteSchema = new SimpleSchema({
 
 const MatchPledgeSchema = new SimpleSchema({
 	_id: {
-		type: SimpleSchema.RegEx.Id,
+		type: SchemaRegex.Id,
 		autoValue: () => Random.id(),
 		index: true
 	},
 	amount: Number,
 	member: {
-		type: SimpleSchema.RegEx.Id,
+		type: SchemaRegex.Id,
 		required: false
 	},
 	anonymous: {
@@ -50,7 +51,7 @@ const OrganizationSchema = new SimpleSchema({
 		min: 3,
 		max: 50
 	},
-	theme: SimpleSchema.RegEx.Id,
+	theme: SchemaRegex.Id,
 	ask: {
 		type: Number,
 		label: 'Funding Request Amount'
@@ -61,7 +62,7 @@ const OrganizationSchema = new SimpleSchema({
 		required: false
 	},
 	image: {
-		type: SimpleSchema.RegEx.Id,
+		type: SchemaRegex.Id,
 		label: 'Organization Image',
 		required: false
 	},
