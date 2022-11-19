@@ -49,8 +49,6 @@ const Leverage = observer(({ hideAdminFields }) => {
 	const orgSpreadSum = topOrgs.reduce((sum, org) => { return sum + org.leverageFunds }, 0)
 	const roundSpreadSum = rounds[rounds.length - 1].orgs.reduce((sum, org) => { return sum + org.leverageFunds }, 0)
 
-	console.log({ orgSpreadSum, roundSpreadSum })
-
 	const leverageDistributed = orgSpreadSum === roundSpreadSum && roundSpreadSum > 0
 
 	return (
@@ -59,7 +57,7 @@ const Leverage = observer(({ hideAdminFields }) => {
 				<Stack direction="row" justifyContent="space-between" alignItems="center">
 					<Typography component="h2" variant="h3">Final Distribution</Typography>
 
-					<div>Leverage Remaining: {numeral(leverage.finalRoundAllcoation(rounds)).format('$0,0.00')}</div>
+					<div>Leverage Remaining: { numeral(leverage.finalRoundAllcoation(rounds)).format('$0,0.00') }</div>
 					{ !hideAdminFields && <>
 						{ !leverageDistributed ? (
 							<Button onClick={ () => saveLeverageSpread(rounds[rounds.length - 1]) }>
@@ -78,7 +76,7 @@ const Leverage = observer(({ hideAdminFields }) => {
 			{ rounds.map((round, i) => (
 				<StageCard key={ i }>
 					<Stack direction="row" justifyContent="space-between" alignItems="center">
-						<Typography component="h2" variant="h3">Round {i + 1}</Typography>
+						<Typography component="h2" variant="h3">Round { i + 1 }</Typography>
 						<div>
 							<span>
 								Leverage Remaining:
@@ -104,7 +102,7 @@ const StageCard = styled(Paper)(({ theme }) => ({
 }))
 
 Leverage.propTypes = {
-	hideAdminFields: PropTypes.bool
+	hideAdminFields: PropTypes.bool,
 }
 
 export default Leverage

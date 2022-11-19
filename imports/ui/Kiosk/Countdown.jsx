@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Typography } from '@mui/material'
 
-import useInterval from '/imports/ui/Components/useInterval'
+import useInterval from '/lib/hooks/useInterval'
 
 const Countdown = ({ seconds, isCounting }) => {
 	const [count, setCount] = useState(seconds)
