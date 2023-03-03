@@ -13,10 +13,7 @@ let config = {
 		}
 		return 'Please upload image, with size equal or less than 20MB'
 	},
-}
-
-if(Meteor.isServer){
-	config.storagePath = process.env.PWD + '/public/.uploads'
+	storagePath: Meteor.isServer ? process.env.PWD + '/public/.uploads' : '',
 }
 
 const Images = new FilesCollection(config)

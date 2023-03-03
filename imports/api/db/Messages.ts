@@ -72,13 +72,13 @@ Messages.attachSchema(MessageSchema)
 
 // Set permissions
 Messages.allow({
-	insert: (userId, doc) => {
+	insert: (_userId, _doc) => {
 		return true
 	},
-	update: (userId, doc) => {
+	update: (_userId, _doc) => {
 		return true
 	},
-	remove: (userId, doc) => {
+	remove: (_userId, _doc) => {
 		return true
 	},
 })

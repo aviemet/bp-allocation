@@ -129,7 +129,13 @@ Themes.attachSchema(ThemeSchema)
 
 // Set permissions
 Themes.allow({
-	insert: (userId, doc) => {
+	insert: (_userId, _doc) => {
+		return true
+	},
+	update: (_userId, _doc) => {
+		return true
+	},
+	remove: (_userId, _doc) => {
 		return true
 	},
 })

@@ -12,8 +12,13 @@ import {
 } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
+export type TSplitButtonOption = {
+	title: string
+	action: () => void
+}
+
 interface ISplitButtonProps extends ButtonProps {
-	options: Record<string, string>[]
+	options: TSplitButtonOption[]
 	defaultSelected?: number
 }
 
@@ -27,7 +32,8 @@ const SplitButton = ({ options, defaultSelected = 0 }: ISplitButtonProps) => {
 		options[selectedIndex].action()
 	}
 
-	const handleMenuItemClick = (event, index) => {
+	const handleMenuItemClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>
+		, index: number) => {
 		setSelectedIndex(index)
 		setOpen(false)
 		options[index].action()
@@ -81,7 +87,7 @@ const SplitButton = ({ options, defaultSelected = 0 }: ISplitButtonProps) => {
 										<MenuItem
 											key={ option.title }
 											selected={ index === selectedIndex }
-											onClick={ (event) => handleMenuItemClick(event, index) }
+											onClick={ event => handleMenuItemClick(event, index) }
 										>
 											{ option.title }
 										</MenuItem>

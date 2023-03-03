@@ -9,7 +9,7 @@ import {
 	Typography,
 } from '@mui/material'
 
-import SplitButton from '/imports/ui/Components/Buttons/SplitButton'
+import SplitButton, { type TSplitButtonOption } from '/imports/ui/Components/Buttons/SplitButton'
 import MembersTable from './MembersTable'
 import { observer } from 'mobx-react-lite'
 
@@ -17,14 +17,14 @@ const MembersPane = observer(() => {
 	const { id } = useParams()
 	const history = useHistory()
 
-	const options = [
+	const options: TSplitButtonOption[] = [
 		{
 			title: 'Add New Member',
-			action: () => history.push(`/admin/${id}/members/new`)
+			action: () => history.push(`/admin/${id}/members/new`),
 		},
 		{
 			title: 'Import From CSV',
-			action: () => history.push(`/admin/${id}/members/import`)
+			action: () => history.push(`/admin/${id}/members/import`),
 		},
 	]
 
