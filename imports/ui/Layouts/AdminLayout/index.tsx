@@ -1,12 +1,9 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState, useEffect } from 'react'
-
 import { Switch, useHistory, useLocation, useRouteMatch, Link } from 'react-router-dom'
 import LoadingRoute from '/imports/ui/Routes/LoadingRoute'
-
 import ThemesList from '/imports/ui/Admin/ThemesList'
 import Admin from '/imports/ui/Admin'
-
 import {
 	Container,
 	AppBar as MuiAppBar,
@@ -24,9 +21,7 @@ import {
 import styled from '@emotion/styled'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import BarChartIcon from '@mui/icons-material/BarChart'
-
 import AdminLinks from './AdminLinks'
-
 import { observer } from 'mobx-react-lite'
 import { useData, useTheme } from '/imports/api/providers'
 
@@ -55,20 +50,6 @@ const AdminLayout = observer(() => {
 		setAnchorEl(null)
 	}
 
-	// const setSidebarVisibilty = () => {
-	// 	let showSidebar = window.innerWidth >= layoutTheme.screen.tablet && !/^\/(admin|themes)[/]?$/.test(location.pathname)
-	// 	setSidebarVisible(showSidebar)
-	// }
-
-	// useEffect(() => {
-	// 	setSidebarVisibilty()
-	// }, [ location.pathname ])
-
-	// useEffect(() => {
-	// 	window.addEventListener('resize', setSidebarVisibilty)
-	// 	return () => window.removeEventListener('resize', setSidebarVisibilty)
-	// })
-
 	/**
 	 * Update the main page heading when the theme changes
 	 */
@@ -76,7 +57,7 @@ const AdminLayout = observer(() => {
 		data.menuHeading = theme?.title ? theme.title : data.defaultMenuHeading
 	}, [theme])
 
-	return(
+	return (
 		<AdminContainer className='AdminContainer'>
 			<AppBar position="relative" open={ drawerOpen }>
 				<Toolbar>

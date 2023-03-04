@@ -1,5 +1,7 @@
 import TrackableStore from './lib/TrackableStore'
 
-class OrgStore extends TrackableStore<Organization> {}
+interface OrgStore extends Organization {}
+
+class OrgStore extends TrackableStore<OrgStore> implements OrgStore {}
 
 export default OrgStore

@@ -9,7 +9,7 @@ import { Members } from '/imports/api/db'
 import { MembersCollection, MemberStore } from '/imports/api/stores'
 
 const MembersContext = React.createContext<{
-	members?: MemberStore
+	members: MemberStore
 	isLoading: boolean
 } | undefined>(undefined)
 
@@ -19,13 +19,13 @@ interface IMembersProviderProps {
 
 const MembersProvider = observer(({ children }: IMembersProviderProps) => {
 	const { themeId } = useData()
+
 	let subscription: Meteor.SubscriptionHandle
 	let cursorObserver: Meteor.LiveQueryHandle
 	let membersCollection: MembersCollection
 
 	// limit of 0 == 'return no records', limit of false == 'no limit'
 	const [subLimit, setSubLimit] = useState<number | false>(0)
-	// const [ subIndex, setSubIndex ] = useState(0)
 
 	const [renderCount, setRenderCount] = useState(0)
 	const [memberId, setMemberId] = useState(false)
@@ -35,8 +35,10 @@ const MembersProvider = observer(({ children }: IMembersProviderProps) => {
 
 	const methods = { getAllMembers, hideAllMembers, setMemberId }
 
-	// Method to be called when subscription is ready
-	const subscriptionReady = (cursor: Mongo.Cursor<Member, Member>) => {
+	/**
+	 * Method to be called when subscription is ready
+	 */
+	const subscriptionReady = (cursor: Mongo.Cursor<Partial<Member>, Member>) => {
 		membersCollection = new MembersCollection(cursor.fetch(), MemberStore)
 
 		cursorObserver = cursor.observe({

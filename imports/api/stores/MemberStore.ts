@@ -1,9 +1,12 @@
 import { computed, makeObservable } from 'mobx'
 import TrackableStore from './lib/TrackableStore'
 
-class MemberStore extends TrackableStore<Member> {
-	constructor(data: Member) {
+interface MemberStore extends Member {}
+
+class MemberStore extends TrackableStore<MemberStore> implements MemberStore {
+	constructor(data: Partial<MemberStore>) {
 		super(data)
+
 		makeObservable(this, {
 			formattedName: computed,
 		})

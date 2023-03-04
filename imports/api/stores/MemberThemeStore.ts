@@ -1,5 +1,7 @@
 import TrackableStore from './lib/TrackableStore'
 
-class MemberThemeStore extends TrackableStore<MemberTheme> {}
+interface MemberThemeStore extends MemberTheme {}
+
+class MemberThemeStore extends TrackableStore<MemberThemeStore> implements MemberThemeStore {}
 
 export default MemberThemeStore

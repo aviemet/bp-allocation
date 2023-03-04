@@ -6,10 +6,10 @@ import { useTracker } from 'meteor/react-meteor-data'
 import { useData } from './DataProvider'
 import { Themes } from '/imports/api/db'
 import { ThemeStore } from '/imports/api/stores'
-import createCtx from '/imports/lib/hooks/createCtx'
+import { createContext } from '/imports/lib/hooks'
 
-export const [useTheme, ThemeProvider] = createCtx<{
-	theme? : ThemeStore
+export const [useTheme, ThemeProvider] = createContext<{
+	theme: ThemeStore
 	isLoading: boolean
 }>()
 

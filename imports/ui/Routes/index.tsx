@@ -1,13 +1,10 @@
 import { Meteor } from 'meteor/meteor'
 import React from 'react'
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
-
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
 import LoadingRoute from './LoadingRoute'
 import ShortRoute from './ShortRoute'
-
 import { observer } from 'mobx-react-lite'
-
 import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from '/imports/ui/Layouts'
 import Presentation from '/imports/ui/Presentation'
 import Simulation from '/imports/ui/Admin/Simulation'
@@ -16,24 +13,37 @@ import Login from '/imports/ui/Welcome/Login'
 import Kiosk from '/imports/ui/Kiosk'
 import FourOhFour from './404'
 
-const Routes = observer(() => (
+const AppRoutes = observer(() => (
 	<BrowserRouter>
-		<Switch>
+		<Routes>
 
-			<Route path='/login' render={ () => (
+			<Route path='/login'>{
 				!Meteor.userId()
-					? <WelcomeLayout><Login /></WelcomeLayout>
-					: <Redirect to='/' />
-			) } />
+					?
+					<WelcomeLayout><Login /></WelcomeLayout>
+					:
+					<Navigate to='/' />
+			}</Route>
 
-			<Redirect exact from='/' to='/admin' />
+			<Route path='/'>
+				<Navigate to='/admin' />
+			</Route>
+
+			<Route path='/admin'>{
+				process.env.NODE_ENV !== 'development' && !Meteor.userId()
+					?
+					<Navigate to='/login' />
+					:
+					<AdminLayout />
+			}</Route>
+
 			<PrivateRoute path={ '/admin' } component={ AdminLayout } />
 
-			<LoadingRoute path='/presentation/:id' render={ () => (
+			<LoadingRoute path='/presentation/:id'>
 				<PresentationLayout>
 					<Presentation />
 				</PresentationLayout>
-			) } />
+			</LoadingRoute>
 
 			{ /* Short URL for texts */ }
 			<Route path='/v/:themeSlug/:memberCode' component={ ShortRoute } />
@@ -57,9 +67,8 @@ const Routes = observer(() => (
 			) } />
 
 			<Route path='/404' component={ FourOhFour } />
-
-		</Switch>
+		</Routes>
 	</BrowserRouter>
 ))
 
-export default Routes
+export default AppRoutes

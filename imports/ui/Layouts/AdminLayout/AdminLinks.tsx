@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-
 import {
 	Collapse,
 	List,
@@ -11,7 +9,6 @@ import {
 	ListItemText,
 	Divider,
 } from '@mui/material'
-
 import BusinessIcon from '@mui/icons-material/Business'
 import PeopleIcon from '@mui/icons-material/People'
 import StarIcon from '@mui/icons-material/Star'
@@ -24,85 +21,98 @@ import AllInclusiveIcon from '@mui/icons-material/AllInclusive'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-
 import { observer } from 'mobx-react-lite'
 import { useData } from '/imports/api/providers'
 
-const navLinks = [
+type NavLink = {
+	id: string
+	title: string
+	icon?: Icon
+	route: (id: string) => string
+	color?: string
+	newTab?: boolean
+}
+
+const navLinks: NavLink[] = [
 	{
 		id: 'orgs',
 		title: 'Orgs',
 		icon: BusinessIcon,
 		route: themeId => `/admin/${themeId}/orgs`,
-		color: 'teal'
+		color: 'teal',
 	},
 	{
 		id: 'members',
 		title: 'Members',
 		icon: PeopleIcon,
 		route: themeId => `/admin/${themeId}/members`,
-		color: 'violet'
+		color: 'violet',
 	},
 	{
 		id: 'chits',
 		title: 'Chit Votes',
 		icon: StarIcon,
 		route: themeId => `/admin/${themeId}/chits`,
-		color: 'brown'
+		color: 'brown',
 	},
 	{
 		id: 'allocation',
 		title: 'Allocations',
 		icon: AttachMoneyIcon,
 		route: themeId => `/admin/${themeId}/allocation`,
-		color: 'green'
+		color: 'green',
 	},
 	{
 		id: 'pledges',
 		title: 'Pledges',
 		icon: AccountBalanceWalletIcon,
 		route: themeId => `/admin/${themeId}/pledges`,
-		color: 'green'
+		color: 'green',
 	},
 	{
 		id: 'leverage',
 		title: 'Leverage',
 		icon: PieChartIcon,
 		route: themeId => `/admin/${themeId}/leverage`,
-		color: 'orange'
+		color: 'orange',
 	},
 	{
 		id: 'messaging',
 		title: 'Messaging',
 		icon: EmailIcon,
 		route: themeId => `/admin/${themeId}/messaging`,
-		color: 'olive'
-	}
+		color: 'olive',
+	},
 ]
 
-const bottomLinks = [
+const bottomLinks: NavLink[] = [
 	{
 		id: 'kiosk',
 		title: 'Kiosk',
 		route: themeId => `/kiosk/${themeId}`,
-		newTab: false
+		newTab: false,
 	},
 	{
 		id: 'presentation',
 		title: 'Presentation',
 		route: themeId => `/presentation/${themeId}`,
-		newTab: true
+		newTab: true,
 	},
 	{
 		id: 'pledges',
 		title: 'Pledges',
 		route: themeId => `/pledges/${themeId}`,
-		newTab: true
-	}
+		newTab: true,
+	},
 ]
 
-const Links = observer(({ activeMenuItem }) => {
+interface ILinksProps {
+	activeMenuItem: string
+}
+
+const Links = observer(({ activeMenuItem }: ILinksProps) => {
 	const data = useData()
+
 
 	const [pagesOpen, setPagesOpen] = useState(false)
 
@@ -110,18 +120,21 @@ const Links = observer(({ activeMenuItem }) => {
 		setPagesOpen(!pagesOpen)
 	}
 
-	return(
+	return (
 		<>
 			<List>
 				{ navLinks.map(link => {
+					if(data.themeId === undefined) return <></>
+
 					const Icon = link.icon
+
 					return (
 						<ListItemButton key={ link.id } component={ Link } to={ link.route(data.themeId) } selected={ activeMenuItem === link.id }>
 							{ Icon && <ListItemIcon><Icon /></ListItemIcon> }
 							<ListItemText primary={ link.title } />
 						</ListItemButton>
 					)
-				})}
+				}) }
 			</List>
 
 			<Divider />
@@ -154,7 +167,9 @@ const Links = observer(({ activeMenuItem }) => {
 				<Collapse in={ pagesOpen } timeout="auto" unmountOnExit>
 					<List>
 						{ bottomLinks.map(link => {
-							const linkProps = {}
+							if(data.themeId === undefined) return <></>
+
+							const linkProps: Partial<Record<'target'|'rel', string>> = {}
 							if(link.newTab) {
 								linkProps.target = '_blank'
 								linkProps.rel = 'noopener noreferrer'
@@ -162,7 +177,6 @@ const Links = observer(({ activeMenuItem }) => {
 							return (
 								<ListItem
 									key={ link.id }
-									button
 									component={ Link }
 									to={ link.route(data.themeId) }
 									secondaryAction={ link.newTab && <OpenInNewIcon /> }
@@ -171,7 +185,7 @@ const Links = observer(({ activeMenuItem }) => {
 									<ListItemText primary={ link.title } />
 								</ListItem>
 							)
-						})}
+						}) }
 					</List>
 				</Collapse>
 			</List>
@@ -179,9 +193,5 @@ const Links = observer(({ activeMenuItem }) => {
 		</>
 	)
 })
-
-Links.propTypes = {
-	activeMenuItem: PropTypes.string
-}
 
 export default Links

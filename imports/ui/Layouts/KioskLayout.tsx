@@ -1,11 +1,13 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-
 import { Container } from '@mui/material'
 import styled from '@emotion/styled'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
-const KioskLayout = ({ children }) => (
+interface IKioskLayoutProps {
+	children: React.ReactNode
+}
+
+const KioskLayout = ({ children }: IKioskLayoutProps) => (
 	<KioskContainer>
 		<ThemeProvider
 			theme={ (theme) =>
@@ -22,7 +24,7 @@ const KioskLayout = ({ children }) => (
 						},
 						secondary: {
 							main: '#002B43',
-						}
+						},
 					},
 					components: {
 						...theme.components,
@@ -50,14 +52,6 @@ const KioskContainer = styled.div`
 	background: black;
 	color: white;
 	touch-action: manipulation;
-	// padding-bottom: 2rem;
 `
-
-KioskLayout.propTypes = {
-	children: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.node),
-		PropTypes.node
-	])
-}
 
 export default KioskLayout

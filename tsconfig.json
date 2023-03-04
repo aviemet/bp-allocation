@@ -35,7 +35,8 @@
       "./@types"
     ],
     "esModuleInterop": true,
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
+    "useDefineForClassFields": false
   },
   "exclude": [
     "./.meteor/**",

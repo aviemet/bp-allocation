@@ -1,7 +1,5 @@
 import React from 'react'
-
 import styled from '@emotion/styled'
-
 import { Allocation } from '/imports/ui/Presentation/Pages'
 
 const Presentation = () => {

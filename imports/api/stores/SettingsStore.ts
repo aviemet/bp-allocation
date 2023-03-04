@@ -1,5 +1,7 @@
 import TrackableStore from './lib/TrackableStore'
 
-class SettingsStore extends TrackableStore<PresentationSettings> {}
+interface SettingsStore extends PresentationSettings {}
+
+class SettingsStore extends TrackableStore<SettingsStore> implements SettingsStore {}
 
 export default SettingsStore

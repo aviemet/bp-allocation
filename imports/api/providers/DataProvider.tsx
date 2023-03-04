@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import AppStore from '/imports/api/stores/AppStore'
-import createCtx from '/imports/lib/hooks/createCtx'
+import { createContext } from '/imports/lib/hooks'
 
-export const [useData, DataProvider] = createCtx<AppStore>()
+export const [useData, DataProvider] = createContext<AppStore>()
 
 const appStore = new AppStore()
 

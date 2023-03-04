@@ -1,6 +1,6 @@
 type VoteSource = 'kiosk' | 'mobile'
 
-type BaseCollection = {
+type BaseCollection = Record<string, any> & {
 	_id: string
 }
 
