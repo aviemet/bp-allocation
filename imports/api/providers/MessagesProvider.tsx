@@ -28,7 +28,7 @@ const MessagesProvider = observer(({ children }: IMessagesProviderProps) => {
 	const messages = useTracker(() => {
 		if(!themeId  || themeLoading) {
 			if(subscription) subscription.stop()
-			if(handleObserver) handleObserver.stop()
+			if(cursorObserver) cursorObserver.stop()
 
 			return {
 				isLoading: true,
@@ -41,7 +41,7 @@ const MessagesProvider = observer(({ children }: IMessagesProviderProps) => {
 				const cursor = Messages.find({ })
 				messagesCollection = new MessagesCollection(cursor.fetch(), MessageStore)
 
-				handleObserver = cursor.observe({
+				cursorObserver = cursor.observe({
 					added: messages => messagesCollection.refreshData(messages),
 					changed: messages => messagesCollection.refreshData(messages),
 					removed: messages => messagesCollection.deleteItem(messages),

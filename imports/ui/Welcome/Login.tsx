@@ -1,14 +1,13 @@
 import { Meteor } from 'meteor/meteor'
 import React from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
-
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Grid, Button } from '@mui/material'
 import { useSnackbar } from 'notistack'
 
 const Login = () => {
 	const { enqueueSnackbar } = useSnackbar()
 
-	const history = useHistory()
+	const navigate = useNavigate()
 	const location = useLocation()
 
 	const handleLogin = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -30,7 +29,7 @@ const Login = () => {
 				console.error({ err })
 			} else {
 				let redirect = location.state && location.state.from ? location.state.from : '/'
-				history.push(redirect)
+				navigate(redirect)
 			}
 		})
 	}

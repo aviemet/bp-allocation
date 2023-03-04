@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
 import { Typography } from '@mui/material'
+import { useInterval } from '/imports/lib/hooks'
 
-import useInterval from '/lib/hooks/useInterval'
+interface ICountdownProps {
+	seconds: number
+	isCounting: boolean
+}
 
-const Countdown = ({ seconds, isCounting }) => {
+const Countdown = ({ seconds, isCounting }: ICountdownProps) => {
 	const [count, setCount] = useState(seconds)
 
 	useInterval(() => {
@@ -17,11 +20,6 @@ const Countdown = ({ seconds, isCounting }) => {
 			This page will redirect in { count } seconds
 		</Typography>
 	)
-}
-
-Countdown.propTypes = {
-	seconds: PropTypes.number.isRequired,
-	isCounting: PropTypes.bool.isRequired,
 }
 
 export default Countdown

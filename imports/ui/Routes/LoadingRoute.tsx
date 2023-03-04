@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useData, useTheme, useOrgs, useSettings } from '/imports/api/providers'
-import { Route, Redirect, useRouteMatch, type RouteProps } from 'react-router-dom'
+import { Route, Navigate, useRouteMatch, type RouteProps } from 'react-router-dom'
 import { Loading } from '/imports/ui/Components'
 
 interface ILoadingRoute extends RouteProps {
@@ -36,15 +36,17 @@ const LoadingRoute = observer(({ component, render, children, path, ...rest }: I
 		}
 	}, [themeLoading, orgsLoading, settingsLoading])
 
+	const getElement = () => {
+		if(match?.params.id !== undefined && isLoading) {
+			return <Loading />
+		} else if(match?.params.id !== undefined && !theme) {
+			return <Navigate to='/404' />
+		}
+		return <Component />
+	}
+
 	return (
-		<Route { ...rest } render={ () => {
-			if(match?.params.id !== undefined && isLoading) {
-				return <Loading />
-			} else if(match?.params.id !== undefined && !theme) {
-				return <Redirect to='/404' />
-			}
-			return <Component />
-		} } />
+		<Route { ...rest } element={ getElement() } />
 	)
 })
 

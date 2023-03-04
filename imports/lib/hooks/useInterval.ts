@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-const useInterval = (callback: Function, delay: number) => {
+const useInterval = (callback: Function, delay: number|null) => {
 	const savedCallback = useRef(callback)
 
 	// Remember the latest callback.

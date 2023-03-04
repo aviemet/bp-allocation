@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import React from 'react'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
-import PrivateRoute from './PrivateRoute'
 import LoadingRoute from './LoadingRoute'
 import ShortRoute from './ShortRoute'
 import { observer } from 'mobx-react-lite'
@@ -17,27 +16,23 @@ const AppRoutes = observer(() => (
 	<BrowserRouter>
 		<Routes>
 
-			<Route path='/login'>{
+			<Route path='/login' element={
 				!Meteor.userId()
 					?
-					<WelcomeLayout><Login /></WelcomeLayout>
+					<><WelcomeLayout><Login /></WelcomeLayout></>
 					:
 					<Navigate to='/' />
-			}</Route>
+			} />
 
-			<Route path='/'>
-				<Navigate to='/admin' />
-			</Route>
+			<Route path='/' element={ <Navigate to='/admin' /> } />
 
-			<Route path='/admin'>{
+			<Route path='/admin' element={
 				process.env.NODE_ENV !== 'development' && !Meteor.userId()
 					?
 					<Navigate to='/login' />
 					:
 					<AdminLayout />
-			}</Route>
-
-			<PrivateRoute path={ '/admin' } component={ AdminLayout } />
+			} />
 
 			<LoadingRoute path='/presentation/:id'>
 				<PresentationLayout>
@@ -46,27 +41,27 @@ const AppRoutes = observer(() => (
 			</LoadingRoute>
 
 			{ /* Short URL for texts */ }
-			<Route path='/v/:themeSlug/:memberCode' component={ ShortRoute } />
+			<Route path='/v/:themeSlug/:memberCode' element={ <ShortRoute /> } />
 
-			<LoadingRoute path={ ['/voting/:id/:member', '/kiosk/:id'] } render={ () => (
+			<LoadingRoute path={ ['/voting/:id/:member', '/kiosk/:id'] }>
 				<KioskLayout>
 					<Kiosk />
 				</KioskLayout>
-			) } />
+			</LoadingRoute>
 
-			<LoadingRoute path='/simulation/:id' render={ () => (
+			<LoadingRoute path='/simulation/:id'>
 				<PresentationLayout>
 					<Simulation />
 				</PresentationLayout>
-			) } />
+			</LoadingRoute>
 
-			<LoadingRoute path='/pledges/:id' render={ () => (
+			<LoadingRoute path='/pledges/:id'>
 				<KioskLayout>
 					<Pledges />
 				</KioskLayout>
-			) } />
+			</LoadingRoute>
 
-			<Route path='/404' component={ FourOhFour } />
+			<Route path='/404' element={ <FourOhFour /> } />
 		</Routes>
 	</BrowserRouter>
 ))
