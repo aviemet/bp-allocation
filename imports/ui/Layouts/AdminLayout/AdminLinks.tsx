@@ -120,16 +120,16 @@ const Links = observer(({ activeMenuItem }: ILinksProps) => {
 		setPagesOpen(!pagesOpen)
 	}
 
+	if(data.themeId === undefined) return <></>
+
 	return (
 		<>
 			<List>
 				{ navLinks.map(link => {
-					if(data.themeId === undefined) return <></>
-
 					const Icon = link.icon
 
 					return (
-						<ListItemButton key={ link.id } component={ Link } to={ link.route(data.themeId) } selected={ activeMenuItem === link.id }>
+						<ListItemButton key={ link.id } component={ Link } to={ link.route(data.themeId!) } selected={ activeMenuItem === link.id }>
 							{ Icon && <ListItemIcon><Icon /></ListItemIcon> }
 							<ListItemText primary={ link.title } />
 						</ListItemButton>

@@ -1,19 +1,12 @@
 import { Meteor } from 'meteor/meteor'
 import React from 'react'
-import { Redirect, type match } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 import { useTracker } from 'meteor/react-meteor-data'
 import { Themes, Members } from '/imports/api/db'
 import { Loading } from '/imports/ui/Components'
 
-interface IShortRouteProps {
-	match: match<{
-		themeSlug: string
-		memberCode: string
-	}>
-}
-
-const ShortRoute = ({ match }: IShortRouteProps) => {
-	const { themeSlug, memberCode } = match.params
+const ShortRoute = () => {
+	const { themeSlug, memberCode } = useParams()
 
 	const data = useTracker(() => {
 		let theme: Theme | undefined
@@ -35,7 +28,7 @@ const ShortRoute = ({ match }: IShortRouteProps) => {
 			isLoading: !themeSubscription.ready() || !membersSubscription?.ready(),
 			theme,
 			member,
-			route: match,
+			route: { themeSlug, memberCode },
 		}
 	}, [themeSlug, memberCode])
 
@@ -43,11 +36,11 @@ const ShortRoute = ({ match }: IShortRouteProps) => {
 
 	if(data.theme && data.member) {
 		// TODO: This is a hack because Redirect isn't working properly
-		window.location.href = `/voting/${data.theme._id}/${data.member._id}`
-		return <Redirect push to={ `/voting/${data.theme._id}/${data.member._id}` } />
+		// window.location.href = `/voting/${data.theme._id}/${data.member._id}`
+		return <Navigate to={ `/voting/${data.theme._id}/${data.member._id}` } />
 	}
 
-	return <Redirect to='/404' />
+	return <Navigate to='/404' />
 }
 
 export default ShortRoute

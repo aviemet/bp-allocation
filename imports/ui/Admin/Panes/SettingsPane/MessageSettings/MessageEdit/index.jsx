@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link,useParams, useHistory } from 'react-router-dom'
+import { Link,useParams, useNavigate } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 import { useMessage } from '/imports/api/providers'
 import { MessageMethods } from '/imports/api/methods'
@@ -40,7 +40,7 @@ const MessageEdit = observer(() => {
 		message = {}
 	}
 
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 	const [preview, setPreview] = useState(message?.body || '')
@@ -55,7 +55,7 @@ const MessageEdit = observer(() => {
 		optOutRounds: {
 			one: !!message?.optOutRounds?.one,
 			two: !!message?.optOutRounds?.two,
-		}
+		},
 	}
 
 	const onSubmit = data => {
@@ -67,7 +67,7 @@ const MessageEdit = observer(() => {
 					console.error(err)
 				} else {
 					setFormStatus(STATUS.SUCCESS)
-					history.push(`/admin/${themeId}/settings/messages`)
+					navigate(`/admin/${themeId}/settings/messages`)
 				}
 			})
 		} else {
@@ -77,7 +77,7 @@ const MessageEdit = observer(() => {
 					console.error(err)
 				} else {
 					setFormStatus(STATUS.SUCCESS)
-					history.push(`/admin/${themeId}/settings/messages`)
+					navigate(`/admin/${themeId}/settings/messages`)
 				}
 			})
 		}

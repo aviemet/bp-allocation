@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useData, useTheme, useOrgs, useSettings } from '/imports/api/providers'
-import { Route, Navigate, useRouteMatch, type RouteProps } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 import { Loading } from '/imports/ui/Components'
 
-interface ILoadingRoute extends RouteProps {
+interface ILoadingRoute {
+	children: React.ReactNode
 	path: string | string[]
 }
 
 // Route which delays display of content until the theme data has fully loaded
 // Used for all views besides Admin
-const LoadingRoute = observer(({ component, render, children, path, ...rest }: ILoadingRoute) => {
+const LoadingRoute = observer(({ children, path, ...props }: ILoadingRoute) => {
 	const data = useData()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { isLoading: orgsLoading } = useOrgs()
@@ -18,16 +19,13 @@ const LoadingRoute = observer(({ component, render, children, path, ...rest }: I
 
 	const [isLoading, setIsLoading] = useState(themeLoading || orgsLoading || settingsLoading)
 
-	// Allow for any of the methods for passing components
-	const Component = render || component || children
-
-	const match = useRouteMatch(path)
+	const { id } = useParams()
 
 	useEffect(() => {
-		if(!match) return
+		if(!id) return
 
-		data.themeId = match.params.id || undefined
-	}, [match?.params])
+		data.themeId = id
+	}, [id])
 
 	useEffect(() => {
 		const loadingTest = themeLoading || orgsLoading || settingsLoading
@@ -36,18 +34,13 @@ const LoadingRoute = observer(({ component, render, children, path, ...rest }: I
 		}
 	}, [themeLoading, orgsLoading, settingsLoading])
 
-	const getElement = () => {
-		if(match?.params.id !== undefined && isLoading) {
-			return <Loading />
-		} else if(match?.params.id !== undefined && !theme) {
-			return <Navigate to='/404' />
-		}
-		return <Component />
+	if(id && isLoading) {
+		return <Loading />
+	} else if(id && !theme) {
+		return <Navigate to='/404' />
 	}
+	return <>{ children }</>
 
-	return (
-		<Route { ...rest } element={ getElement() } />
-	)
 })
 
 export default LoadingRoute

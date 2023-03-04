@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import React from 'react'
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
-import LoadingRoute from './LoadingRoute'
+import { Navigate, createBrowserRouter, RouterProvider } from 'react-router-dom'
 import ShortRoute from './ShortRoute'
 import { observer } from 'mobx-react-lite'
 import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from '/imports/ui/Layouts'
@@ -12,6 +11,74 @@ import Login from '/imports/ui/Welcome/Login'
 import Kiosk from '/imports/ui/Kiosk'
 import FourOhFour from './404'
 
+const router = createBrowserRouter([
+	{
+		path: '/',
+		element: <Navigate to='/admin' />,
+	},
+	{
+		path: '/login',
+		element: !Meteor.userId()
+			?
+			<><WelcomeLayout><Login /></WelcomeLayout></>
+			:
+			<Navigate to='/' />,
+	},
+	{
+		path: '/admin',
+		element: process.env.NODE_ENV !== 'development' && !Meteor.userId()
+			?
+			<Navigate to='/login' />
+			:
+			<AdminLayout />,
+	},
+	{
+		path: '/presentation/:id',
+		element:
+		<PresentationLayout>
+			<Presentation />
+		</PresentationLayout>,
+	},
+	{
+		path: '/v/:themeSlug/:memberCode',
+		element: <ShortRoute />,
+	},
+	{
+		path: '/voting/:id/:member',
+		element:
+		<KioskLayout>
+			<Kiosk />
+		</KioskLayout>,
+	},
+	{
+		path: '/kiosk/:id',
+		// loader:
+		element:
+		<KioskLayout>
+			<Kiosk />
+		</KioskLayout>,
+	},
+	{
+		path: '/simulation/:id',
+		// loader:
+		element: <PresentationLayout>
+			<Simulation />
+		</PresentationLayout>,
+	},
+	{
+		path: '/pledges/:id',
+		// loader:
+		element:
+		<KioskLayout>
+			<Pledges />
+		</KioskLayout>,
+	},
+])
+
+const AppRoutes = () => <RouterProvider router={ router } />
+
+
+/*
 const AppRoutes = observer(() => (
 	<BrowserRouter>
 		<Routes>
@@ -40,7 +107,6 @@ const AppRoutes = observer(() => (
 				</PresentationLayout>
 			</LoadingRoute>
 
-			{ /* Short URL for texts */ }
 			<Route path='/v/:themeSlug/:memberCode' element={ <ShortRoute /> } />
 
 			<LoadingRoute path={ ['/voting/:id/:member', '/kiosk/:id'] }>
@@ -65,5 +131,6 @@ const AppRoutes = observer(() => (
 		</Routes>
 	</BrowserRouter>
 ))
+*/
 
 export default AppRoutes

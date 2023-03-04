@@ -9,7 +9,7 @@ import { Themes } from '/imports/api/db'
 import { ThemeMethods } from '/imports/api/methods'
 
 import SortableTable from '/imports/ui/Components/SortableTable'
-import { Container, TableCell }  from '@mui/material'
+import { Container, TableCell, MenuItem }  from '@mui/material'
 
 import ActionMenu from '/imports/ui/Components/Menus/ActionMenu'
 import NewThemeModal from './NewThemeModal'
@@ -19,7 +19,7 @@ const ThemesList = () => {
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState('')
 	const [ modalContent, setModalContent ] = useState('')
-	const [ modalAction, setModalAction ] = useState()
+	const [ modalAction, setModalAction ] = useState<() => void>()
 
 	const { themes } = useTracker(() => {
 		Meteor.subscribe('themes')
@@ -73,23 +73,25 @@ const ThemesList = () => {
 				paginationCounts={ [5,10,25] }
 				fixed
 				render={ row => (
-					<>
+					<React.Fragment key={ row._id }>
 						<TableCell><Link to={ `/admin/${row._id}` }>{ row.title }</Link></TableCell>
 						<TableCell align="center">{ format(row?.createdAt || new Date(), 'MM/dd/y') }</TableCell>
 						<TableCell align="right">
-							<ActionMenu label="Actions" render={ MenuItem => [
+							<ActionMenu label="Actions">
 								<MenuItem key='edit' onClick={ () => window.open(`/kiosk/${row._id}`) }>
 									Kiosk
-								</MenuItem>,
+								</MenuItem>
+
 								<MenuItem key='duplicate' onClick={ () => window.open(`/presentation/${row._id}`) }>
 									Launch Presentation
-								</MenuItem>,
+								</MenuItem>
+
 								<MenuItem key='archive' onClick={ () => window.open(`/pledges/${row._id}`) }>
 									Launch Top-Ups
-								</MenuItem>,
-							] } />
+								</MenuItem>
+							</ActionMenu>
 						</TableCell>
-					</>
+					</React.Fragment>
 				) }
 			/>
 

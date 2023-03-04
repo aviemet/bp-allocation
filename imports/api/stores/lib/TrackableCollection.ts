@@ -1,13 +1,12 @@
 import { action, observable, computed, makeObservable } from 'mobx'
-import { filterCollection } from '/imports/lib/utils'
-import { findIndex, remove, orderBy, isEqual } from 'lodash'
+import { findIndex, remove, orderBy } from 'lodash'
 import TrackableStore from './TrackableStore'
 
-class TrackableCollection<C extends BaseCollection> {
+abstract class TrackableCollection<C extends BaseCollection> {
 	values: TrackableStore<C>[] = []
 	searchFilter: string = ''
 	// Override with String array of field names to search against in collection filter
-	searchableFields: string[] | null = null
+	searchableFields: (keyof C)[] | null = null
 
 	_store
 
@@ -15,19 +14,13 @@ class TrackableCollection<C extends BaseCollection> {
 	 * @param {Array} data Array of data to be stored in the collection
 	 * @param {Object} Store Mobx Store object for data being stored
 	 */
-	constructor(data: C[], Store: TrackableStore<C>) {
+	constructor(data: C[], Store: typeof TrackableStore<C>) {
 		this._store = Store
 
-		// If a Store was provided, instantiate a new store for each element in data
-		// Either the Store object, or the raw data variable gets stored as the values for the collection
-		if(Store) {
-			this.values = data.map(value => {
-				const store = new Store<C>(value)
-				return store
-			})
-		} else {
-			this.values = data
-		}
+		this.values = data.map(datum => {
+			const store = new Store(datum)
+			return store
+		})
 
 		makeObservable(this, {
 			values: observable,
@@ -44,16 +37,9 @@ class TrackableCollection<C extends BaseCollection> {
 		let i = findIndex(this.values, value => value._id === data._id)
 
 		if(i >= 0) {
-			// Update values
-			for(let [key, value] of Object.entries(data)) {
-				if(!isEqual(this.values[i][key], value)) {
-					this.values[i][key] = value
-				}
-			}
+			this.values[i].refreshData(data)
 		} else {
-			// Add values
-			const newElement = this._store ? new this._store(data) : data
-			this.values.push(newElement)
+			this.values.push(new this._store(data))
 		}
 	}
 
@@ -85,7 +71,24 @@ class TrackableCollection<C extends BaseCollection> {
 	get filteredMembers() {
 		if(!this.searchFilter) return this.values
 
-		return filterCollection(this.values, this.searchFilter, this.searchableFields)
+		// Split search terms by whitespace, discarding empty strings
+		const searchParts = this.searchFilter.split(/\s+/).filter(part => part.length > 0)
+		const checkFields = this.searchableFields || Object.keys(this.values[0])
+
+		return this.values.filter(member => searchParts.every(word => {
+			const test = new RegExp(word, 'i')
+
+			return checkFields.some(field => {
+				// @ts-ignore: Type 'keyof C' cannot be used to index type 'TrackableStore<C>'
+				if(test.test(member[field])) {
+					return true
+				}
+			})
+		}))
+	}
+
+	clearSearchFilter() {
+		this.searchFilter = ''
 	}
 }
 

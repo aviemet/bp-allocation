@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { readCsv } from '/imports/lib/papaParseMethods'
 
 import { observer } from 'mobx-react-lite'
@@ -25,7 +25,7 @@ const ImportOrgs = observer(() => {
 	const fileInputRef = useRef(null)
 
 	const { id: themeId } = useParams()
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		fileInputRef.current.click()
@@ -39,7 +39,7 @@ const ImportOrgs = observer(() => {
 			'onComplete': (data, headers) => {
 				setPendingOrgs(data)
 				setPendingHeadings(headers)
-			}
+			},
 		})
 
 		return parser
@@ -54,7 +54,7 @@ const ImportOrgs = observer(() => {
 			}
 		})
 		enqueueSnackbar(`${data.length} Organization${ data.length === 1 ? '' : 's'} imported`, { variant: 'success' })
-		history.push(`/admin/${themeId}/orgs`)
+		navigate(`/admin/${themeId}/orgs`)
 	}
 
 	const headingsMap = [
@@ -62,20 +62,20 @@ const ImportOrgs = observer(() => {
 			name: 'title',
 			label: 'Title',
 			forms: ['title', 'org', 'organization', 'name', 'org name', 'organization name'],
-			type: String
+			type: String,
 		},
 		{
 			name: 'ask',
 			label: 'Ask',
 			forms: ['ask', 'amount', 'request'],
-			type: val => typeof val === 'string' ? parseFloat(val.replace(/[^0-9.]/g, '')) : val
+			type: val => typeof val === 'string' ? parseFloat(val.replace(/[^0-9.]/g, '')) : val,
 		},
 		{
 			name: 'description',
 			label: 'Description',
 			forms: ['description', 'desc', 'about', 'details', 'info', 'project overview'],
-			type: String
-		}
+			type: String,
+		},
 	]
 
 	// TODO: Set loading=true when button clicked, false when csv is loaded

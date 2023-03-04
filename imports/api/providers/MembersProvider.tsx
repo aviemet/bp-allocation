@@ -3,15 +3,19 @@ import { Mongo } from 'meteor/mongo'
 import { useTracker } from 'meteor/react-meteor-data'
 import React, { useContext, useState, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
-
 import { useData } from './DataProvider'
 import { Members } from '/imports/api/db'
 import { MembersCollection, MemberStore } from '/imports/api/stores'
 
-const MembersContext = React.createContext<{
-	members: MemberStore
+interface IMembersStoreContext {
+	members: MembersCollection | undefined
 	isLoading: boolean
-} | undefined>(undefined)
+	getAllMembers?: () => void
+	hideAllMembers?: () => void
+	setMemberId?: (memberId: string|false) => void
+}
+
+const MembersContext = React.createContext<IMembersStoreContext>({ isLoading: true, members: undefined })
 
 interface IMembersProviderProps {
 	children: React.ReactNode
@@ -28,7 +32,7 @@ const MembersProvider = observer(({ children }: IMembersProviderProps) => {
 	const [subLimit, setSubLimit] = useState<number | false>(0)
 
 	const [renderCount, setRenderCount] = useState(0)
-	const [memberId, setMemberId] = useState(false)
+	const [memberId, setMemberId] = useState<string|false>(false)
 
 	const getAllMembers = () => setSubLimit(false)
 	const hideAllMembers = () => setSubLimit(0)
@@ -50,7 +54,7 @@ const MembersProvider = observer(({ children }: IMembersProviderProps) => {
 		setRenderCount(renderCount + 1)
 	}
 
-	const members = useTracker(() => {
+	const members = useTracker<IMembersStoreContext>(() => {
 		// Return a single user if memberId is set
 		if(memberId) {
 			subscription = Meteor.subscribe(
@@ -87,13 +91,13 @@ const MembersProvider = observer(({ children }: IMembersProviderProps) => {
 		}
 
 		return Object.assign(methods, {
-			members: membersCollection,
+			members: membersCollection || undefined,
 			isLoading: !subscription.ready(),
 		})
 	}, [themeId, subLimit, memberId])
 
 	return (
-		<MembersContext.Provider value={ members } render={ renderCount /* used to force re-render */ }>
+		<MembersContext.Provider value={ members }>
 			{ children }
 		</MembersContext.Provider>
 	)
@@ -103,7 +107,7 @@ const MembersProvider = observer(({ children }: IMembersProviderProps) => {
 export const useMember = (memberId: string) => {
 	const membersContext = useContext(MembersContext)
 
-	membersContext?.setMemberId(memberId)
+	if(membersContext.setMemberId) membersContext.setMemberId(memberId)
 	return membersContext
 }
 
@@ -113,9 +117,9 @@ export const useMembers = () => {
 
 	// Unsubscribe from members upon unmounting page
 	useEffect(() => {
-		membersContext.getAllMembers()
+		if(membersContext.getAllMembers) membersContext.getAllMembers()
 		return () => {
-			membersContext.hideAllMembers()
+			if(membersContext.hideAllMembers) membersContext.hideAllMembers()
 		}
 	}, [])
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Route, Switch, useRouteMatch } from 'react-router-dom'
+import { Route, Routes, useMatch, useParams } from 'react-router-dom'
 import { Transition } from 'react-transition-group'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
@@ -13,7 +13,8 @@ import RemoteVoting from './RemoteVoting'
 import Results from '/imports/ui/Presentation/Pages/Results'
 
 const Kiosk = observer(() => {
-	const match = useRouteMatch('/voting/:id/:member')
+	// const match = useMatch('/voting/:id/:member')
+	const { member: memberId } = useParams()
 
 	const data = useData()
 	const { theme, isLoading: themeLoading } = useTheme()
@@ -33,7 +34,7 @@ const Kiosk = observer(() => {
 		} else if(settings.chitVotingActive) {
 			// Show the chit voting page:
 			return data.KIOSK_PAGES.chit
-		} else if(member && settings.topupsActive) {
+		} else if(memberId && settings.topupsActive) {
 			// Show the topups pledge screen to members
 			return data.KIOSK_PAGES.topups
 		// Chit and Funds voting are not active
@@ -84,45 +85,43 @@ const Kiosk = observer(() => {
 		}
 	}
 
-	const member = match?.params?.member
+	// const member = match?.params?.member
 
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{ state => (
 				<PageFader style={ { ...defaultStyle, ...transitionStyles[state] } }>
-					<Switch location={ { pathname: displayPage } }>
+					<Routes location={ { pathname: displayPage } }>
 
-						{/* Orgs Grid */}
-						<Route exact path={ data.KIOSK_PAGES.info } render={ () => <KioskInfo /> } />
+						{ /* Orgs Grid */ }
+						<Route path={ data.KIOSK_PAGES.info } element={ <KioskInfo /> } />
 
-						{/* Chit Voting */}
-						<Route exact path={ data.KIOSK_PAGES.chit } render={ () => {
-							return member ?
-								// If member is set, navigation comes from the short link for voting remotely
-								<RemoteVoting memberId={ member } component={ ChitVotingKiosk } /> :
-								// Otherwise kiosk voting in the room, members must login to proceed
-								<MemberLoginRequired component={ ChitVotingKiosk } />
-						} } />
+						{ /* Chit Voting */ }
+						<Route path={ data.KIOSK_PAGES.chit } element={ memberId ?
+							// If Id is set, navigation comes from the short link for voting remotely
+							<RemoteVoting memberId={ memberId } component={ ChitVotingKiosk } /> :
+							// Otherwise kiosk voting in the room, members must login to proceed
+							<MemberLoginRequired component={ ChitVotingKiosk } />
+						} />
 
-						{/* Topups */}
-						<Route exact path={ data.KIOSK_PAGES.topups } render={ () => (
+						{ /* Topups */ }
+						<Route path={ data.KIOSK_PAGES.topups } element={
 							// If member is set, navigation comes from the short link for voting remotely
-							<RemoteVoting memberId={ member } component={ Topups } />
-						) } />
+							<RemoteVoting memberId={ memberId } component={ Topups } />
+						 } />
 
-						{/* Funds Voting */}
-						<Route exact path={ data.KIOSK_PAGES.funds } render={ () => {
-							return member ?
-								// If member is set, navigation comes from the short link for voting remotely
-								<RemoteVoting memberId={ member } component={ FundsVotingKiosk } /> :
-								// Otherwise kiosk voting in the room, members must login to proceed
-								<MemberLoginRequired component={ FundsVotingKiosk } />
-						} } />
+						{ /* Funds Voting */ }
+						<Route path={ data.KIOSK_PAGES.funds } element={ memberId ?
+						// If member is set, navigation comes from the short link for voting remotely
+							<RemoteVoting memberId={ member } component={ FundsVotingKiosk } /> :
+						// Otherwise kiosk voting in the room, members must login to proceed
+							<MemberLoginRequired component={ FundsVotingKiosk } />
+						} />
 
-						{/* Voting Results */}
-						<Route exact path={ data.KIOSK_PAGES.results } component={ Results } />
+						{ /* Voting Results */ }
+						<Route path={ data.KIOSK_PAGES.results } element={ <Results /> } />
 
-					</Switch>
+					</Routes>
 
 				</PageFader>
 			) }
@@ -141,7 +140,7 @@ const defaultStyle = {
 
 const transitionStyles = {
 	entering: { opacity: 0 },
-	entered: { opacity: 1 }
+	entered: { opacity: 1 },
 }
 
 const PageFader = styled.div`

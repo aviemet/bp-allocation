@@ -16,8 +16,8 @@ interface IFormProps<T extends Record<string, any>> {
 	onValidSubmit?: (sanitizedData: T, formMethods: UseFormReturn<T>) => void
 	onSanitize?: (data: {[x: string]: PathValue<T, Path<T>>}) => T
 	onValidationError?: (errors: FieldErrors<T>, data: T) => void
-	onUpdate: (data: {[x: string]: PathValue<T, Path<T>>}) => void
-	onChange: (formMethods: UseFormReturn<T>) => void
+	onUpdate?: (data: {[x: string]: PathValue<T, Path<T>>}) => void
+	onChange?: (formMethods: UseFormReturn<T>) => void
 }
 
 const Form = <T extends Record<string, any>>({

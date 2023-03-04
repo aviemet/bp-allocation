@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useMembers } from '/imports/api/providers'
 import { MemberMethods } from '/imports/api/methods'
 import { MemberSchema, MemberThemeSchema } from '/imports/api/db/schema'
 import { roundFloat } from '/imports/lib/utils'
 
-import { Form, TextInput, SubmitButton, STATUS, } from '/imports/ui/Components/Form'
+import { Form, TextInput, SubmitButton, STATUS } from '/imports/ui/Components/Form'
 
 import {
 	Button,
@@ -20,7 +20,7 @@ const MembersEdit = () => {
 	const { members, isLoading: membersLoading } = useMembers()
 
 	const { id, memberId } = useParams()
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 
@@ -33,7 +33,6 @@ const MembersEdit = () => {
 	}
 
 	const onSubmit = data => {
-		console.log({ data })
 		setFormStatus(STATUS.SUBMITTING)
 		if(memberId) {
 			editUser(data)
@@ -86,7 +85,7 @@ const MembersEdit = () => {
 
 	useEffect(() => {
 		if(formStatus === STATUS.SUCCESS) {
-			setTimeout(() => history.push(`/admin/${id}/members`), 1000)
+			setTimeout(() => navigate(`/admin/${id}/members`), 1000)
 		}
 	}, [formStatus])
 
@@ -167,7 +166,7 @@ const MembersEdit = () => {
 
 					<Grid item xs={ 12 }>
 						<Stack direction="row" spacing={ 2 } justifyContent="end">
-							<Button color="error" onClick={ () => history.push(`/admin/${id}/members`) }>Cancel</Button>
+							<Button color="error" onClick={ () => navigate(`/admin/${id}/members`) }>Cancel</Button>
 							<SubmitButton  type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Member</SubmitButton>
 						</Stack>
 					</Grid>

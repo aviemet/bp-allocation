@@ -1,5 +1,5 @@
 import React from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useMembers } from '/imports/api/providers'
 
 import {
@@ -15,16 +15,16 @@ import { observer } from 'mobx-react-lite'
 
 const MembersPane = observer(() => {
 	const { id } = useParams()
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const options: TSplitButtonOption[] = [
 		{
 			title: 'Add New Member',
-			action: () => history.push(`/admin/${id}/members/new`),
+			action: () => navigate(`/admin/${id}/members/new`),
 		},
 		{
 			title: 'Import From CSV',
-			action: () => history.push(`/admin/${id}/members/import`),
+			action: () => navigate(`/admin/${id}/members/import`),
 		},
 	]
 

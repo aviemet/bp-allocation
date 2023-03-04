@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useParams, useHistory } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useOrgs } from '/imports/api/providers'
 import { OrganizationMethods } from '/imports/api/methods'
 import { OrganizationSchema } from '/imports/api/db/schema'
@@ -19,7 +19,7 @@ const OrganizationsEdit = () => {
 	const { orgs } = useOrgs()
 
 	const { id, orgId } = useParams()
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 
@@ -58,7 +58,7 @@ const OrganizationsEdit = () => {
 
 	useEffect(() => {
 		if(formStatus === STATUS.SUCCESS) {
-			setTimeout(() => history.push(`/admin/${id}/orgs`), 1000)
+			setTimeout(() => navigate(`/admin/${id}/orgs`), 1000)
 		}
 	}, [formStatus])
 

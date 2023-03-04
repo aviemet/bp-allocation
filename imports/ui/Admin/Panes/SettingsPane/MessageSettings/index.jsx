@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useData, useMessages, useMembers } from '/imports/api/providers'
-import { Link, useLocation, useHistory } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { MessageMethods } from '/imports/api/methods'
 
 import SortableTable from '/imports/ui/Components/SortableTable'
@@ -36,14 +36,14 @@ const textHeaderCells = [
 		label: 'Link',
 		sort: false,
 		disablePadding: true,
-		width: '70px'
+		width: '70px',
 	},
 	{
 		id: 'actions',
 		label: '',
 		sort: false,
 		disablePadding: true,
-	}
+	},
 ]
 
 const emailHeaderCells = [
@@ -67,14 +67,14 @@ const emailHeaderCells = [
 		label: 'Link',
 		sort: false,
 		disablePadding: true,
-		width: '70px'
+		width: '70px',
 	},
 	{
 		id: 'actions',
 		label: '',
 		sort: false,
 		disablePadding: true,
-	}
+	},
 ]
 
 const Messages = () => {
@@ -88,7 +88,7 @@ const Messages = () => {
 	const [ modalAction, setModalAction ] = useState()
 
 	const { pathname } = useLocation()
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const handleBulkDelete = (selected, onSuccess) => {
 		console.log({ selected })

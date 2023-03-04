@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Link, useParams, useHistory } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import numeral from 'numeral'
 import { observer } from 'mobx-react-lite'
 import { useOrgs } from '/imports/api/providers'
@@ -35,13 +35,13 @@ const OrganizationsPane = observer(() => {
 	const modalValuesRef = useRef({
 		header: '',
 		content: '',
-		action: () => {}
+		action: () => {},
 	})
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 
 	const { id } = useParams()
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const showDeleteModal = (org) => {
 		modalValuesRef.current.header = 'Permanently Delete This Organization?'
@@ -59,11 +59,11 @@ const OrganizationsPane = observer(() => {
 	const options = [
 		{
 			title: 'Add New Organization',
-			action: () => history.push(`/admin/${id}/orgs/new`)
+			action: () => navigate(`/admin/${id}/orgs/new`),
 		},
 		{
 			title: 'Import From CSV',
-			action: () => history.push(`/admin/${id}/orgs/import`)
+			action: () => navigate(`/admin/${id}/orgs/import`),
 		},
 	]
 

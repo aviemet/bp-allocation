@@ -9,26 +9,25 @@ import {
 	TableContainer,
 	TablePagination,
 	TableRow,
+	type TableProps,
 } from '@mui/material'
 import { getComparator, stableSort } from './sort'
 import EnhancedTableHead, { TTableHeadCells } from './EnhancedTableHead'
 import EnhancedTableToolbar from './EnhancedTableToolbar'
 import EnhancedTableRow from './EnhancedTableRow'
 
-
-interface ISortableTableProps {
-	title?: React.ReactNode
+interface ISortableTableProps<R> extends TableProps {
 	headCells: TTableHeadCells[]
 	tableHeadTopRow: unknown[]
 	rows: unknown[]
-	render: (record: unknown) => React.ReactNode
+	render: (record: R) => React.ReactNode
 	collapse: (record: unknown) => React.ReactNode
 	striped: boolean
 	defaultOrderBy: string
 	defaultDirection: 'asc'|'desc'
 	paginate: boolean
 	paginationCounts: number[]
-	onBulkDelete: (set: unknown[], cb: Function) => void
+	onBulkDelete: (set: string[], cb: () => void) => void
 	dense: boolean
 	selectOnClick: boolean
 	filterParams: string
@@ -37,7 +36,7 @@ interface ISortableTableProps {
 	fixed: boolean
 }
 
-const SortableTable = ({
+const SortableTable = <R extends Record<string, unknown> = any>({
 	title,
 	headCells,
 	tableHeadTopRow,
@@ -57,7 +56,7 @@ const SortableTable = ({
 	selectable = false,
 	fixed = false,
 	...props
-}: ISortableTableProps) => {
+}: ISortableTableProps<R>) => {
 	const [order, setOrder] = useState(defaultDirection)
 	const [orderBy, setOrderBy] = useState(defaultOrderBy || headCells[0].id)
 	const [selected, setSelected] = useState(Set())

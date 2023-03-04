@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState, useEffect } from 'react'
-import { Switch, useHistory, useLocation, useRouteMatch, Link } from 'react-router-dom'
+import { Routes, useNavigate, useLocation, useParams, Link } from 'react-router-dom'
 import LoadingRoute from '/imports/ui/Routes/LoadingRoute'
 import ThemesList from '/imports/ui/Admin/ThemesList'
 import Admin from '/imports/ui/Admin'
@@ -31,9 +31,10 @@ const AdminLayout = observer(() => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const data = useData()
 
-	const history = useHistory()
+	const navigate = useNavigate()
 	const location = useLocation()
-	const match = useRouteMatch('/admin/:id/:page')
+	// const match = useRouteMatch('/admin/:id/:page')
+	const { id, page } = useParams()
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const [ drawerOpen, setDrawerOpen ] = useState(false)
@@ -94,7 +95,7 @@ const AdminLayout = observer(() => {
 						>
 							<Link to="/admin"><MenuItem>Themes List</MenuItem></Link>
 							<Divider />
-							<MenuItem onClick={ () => { handleMenuClose(); Meteor.logout(() => history.push('/login')) } }>Sign Out</MenuItem>
+							<MenuItem onClick={ () => { handleMenuClose(); Meteor.logout(() => navigate('/login')) } }>Sign Out</MenuItem>
 						</Menu>
 					</div>
 				</Toolbar>
@@ -119,16 +120,20 @@ const AdminLayout = observer(() => {
 
 				<Divider />
 
-				<AdminLinks activeMenuItem={ match?.params?.page || '' } />
+				<AdminLinks activeMenuItem={ page ?? '' } />
 			</Drawer>
 
 			<Main open={ drawerOpen }>
 				<Container>
 					<Grid container>
-						<Switch>
-							<LoadingRoute exact path={ '/admin' } render={ () => <ThemesList /> } />
-							<LoadingRoute path='/admin/:id' component={ Admin } />
-						</Switch>
+
+						<LoadingRoute path={ '/admin' }>
+							<ThemesList />
+						</LoadingRoute>
+
+						<LoadingRoute path='/admin/:id'>
+							<Admin />
+						</LoadingRoute>
 					</Grid>
 				</Container>
 			</Main>

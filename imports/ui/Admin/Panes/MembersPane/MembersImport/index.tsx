@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { readCsv } from '/imports/lib/papaParseMethods'
 import { sanitizeNames } from '/imports/lib/utils'
 
@@ -26,7 +26,7 @@ const ImportMembers = observer(() => {
 	const fileInputRef = useRef(null)
 
 	const { id: themeId } = useParams()
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		fileInputRef.current.click()
@@ -40,7 +40,7 @@ const ImportMembers = observer(() => {
 			'onComplete': (data, headers) => {
 				setPendingMembers(data)
 				setPendingHeadings(headers)
-			}
+			},
 		})
 
 		return parser
@@ -70,7 +70,7 @@ const ImportMembers = observer(() => {
 			}
 		})
 		enqueueSnackbar(`${data.length} Member${ data.length === 1 ? '' : 's'} imported`, { variant: 'success' })
-		history.push(`/admin/${themeId}/members`)
+		navigate(`/admin/${themeId}/members`)
 	}
 
 	const headingsMap = [
@@ -78,56 +78,56 @@ const ImportMembers = observer(() => {
 			name: 'firstName',
 			label: 'First Name',
 			forms: ['firstname', 'first name', 'first', 'f_name', 'f name', 'f'],
-			type: String
+			type: String,
 		},
 		{
 			name: 'lastName',
 			label: 'Last Name',
 			forms: ['lastName', 'last name', 'last', 'l_name', 'l name', 'l'],
-			type: String
+			type: String,
 		},
 		{
 			name: 'fullName',
 			label: 'Full Name',
 			forms: ['name', 'member', 'member name', 'donor'],
-			type: String
+			type: String,
 		},
 		{
 			name: 'number',
 			label: 'Member Number',
 			forms: ['number', 'member', 'member number', 'membernumber', 'member_number', 'member #', 'no', 'no.', 'num', '#'],
-			type: val => typeof val === 'string' ? parseInt(val.replace(/[^0-9.]/g, '')) : val
+			type: val => typeof val === 'string' ? parseInt(val.replace(/[^0-9.]/g, '')) : val,
 		},
 		{
 			name: 'amount',
 			label: 'Amount',
 			forms: ['amount', 'money', 'donated', 'donations', 'given', 'funds', 'dollars'],
-			type: val => typeof val === 'string' ? parseFloat(val.replace(/[^0-9.]/g, '')) : val
+			type: val => typeof val === 'string' ? parseFloat(val.replace(/[^0-9.]/g, '')) : val,
 		},
 		{
 			name: 'chits',
 			label: 'Chits',
 			forms: ['chits', 'chit', 'chip', 'chips', 'chip vote', 'chip votes', 'votes', 'round 1', 'round one'],
-			type: val => typeof val === 'string' ? parseInt(val.replace(/[^0-9.]/g, '')) : val
+			type: val => typeof val === 'string' ? parseInt(val.replace(/[^0-9.]/g, '')) : val,
 		},
 		{
 			name: 'initials',
 			label: 'Initials',
 			forms: ['initials', 'initial', 'init', 'inits'],
-			type: String
+			type: String,
 		},
 		{
 			name: 'phone',
 			label: 'Phone Number',
 			forms: ['phone', 'phone number', 'phone no', 'mobile', 'mobile number', 'mobile no'],
-			type: String
+			type: String,
 		},
 		{
 			name: 'email',
 			label: 'Email',
 			forms: ['email', 'mail', 'e-mail'],
-			type: String
-		}
+			type: String,
+		},
 	]
 
 	const schema = MemberSchema.omit('code')

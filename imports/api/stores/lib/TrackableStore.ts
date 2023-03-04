@@ -1,7 +1,13 @@
 import { action, extendObservable, makeObservable } from 'mobx'
 
-abstract class TrackableStore<C extends BaseCollection> {
+class TrackableStore<C extends BaseCollection> {
+	_id:string
+
 	constructor(data: { [key in keyof C]?: C[key] }) {
+		// To satisfy typescript, it needs to think this will always be a string
+		// This is fine because passed objects will always be fetched from MongoDB, and thus will always have an id
+		this._id = data._id ?? ''
+
 		Object.assign(this, data)
 
 		makeObservable(this, {

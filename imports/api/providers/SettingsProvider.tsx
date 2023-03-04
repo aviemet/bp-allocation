@@ -8,12 +8,13 @@ import { useTheme } from './ThemeProvider'
 import { PresentationSettings } from '/imports/api/db'
 import { SettingsStore } from '/imports/api/stores'
 
-const SettingsContext = React.createContext<{
-	settings?: SettingsStore
+interface ISettingsStoreContext {
+	settings: SettingsStore | undefined
 	isLoading: boolean
-} | undefined>(undefined)
-export const useSettings = () => useContext(SettingsContext)
+}
 
+const SettingsContext = React.createContext<ISettingsStoreContext>({ isLoading: true, settings: undefined })
+export const useSettings = () => useContext(SettingsContext)
 
 interface ISettingsProviderProps {
 	children: React.ReactNode
@@ -25,9 +26,9 @@ const SettingsProvider = observer(({ children }: ISettingsProviderProps) => {
 
 	let subscription: Meteor.SubscriptionHandle
 	let cursorObserver: Meteor.LiveQueryHandle
-	let settingsStore: SettingsStore | undefined
+	let settingsStore: SettingsStore
 
-	const settings = useTracker(() => {
+	const settings = useTracker<ISettingsStoreContext>(() => {
 		if(!themeId) {
 			if(subscription) subscription.stop()
 			if(cursorObserver) cursorObserver.stop()
@@ -54,7 +55,7 @@ const SettingsProvider = observer(({ children }: ISettingsProviderProps) => {
 		})
 
 		return {
-			settings: settingsStore || {},
+			settings: settingsStore || undefined,
 			isLoading: !subscription.ready(),
 		}
 	}, [themeId, themeLoading])

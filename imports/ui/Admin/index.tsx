@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
 
 import Container from '@mui/material/Container'
 
@@ -28,37 +28,42 @@ const Admin = () => {
 
 	return (
 		<Container>
-			<Switch>
-				<Route exact path='/admin/:id/orgs' component={ OrganizationsPane } />
-				<Route exact path='/admin/:id/orgs/import' component={ OrganizationsImport } />
-				<Route exact path={ ['/admin/:id/orgs/new', '/admin/:id/orgs/:orgId'] } component={ OrganizationsEdit } />
+			<Routes>
+				<Route path='/admin/:id/orgs' element={ <OrganizationsPane /> } />
+				<Route path='/admin/:id/orgs/import' element={ <OrganizationsImport /> } />
 
-				<Route exact path='/admin/:id/members' component={ MembersPane } />
-				<Route exact path='/admin/:id/members/import' component={ MembersImport } />
-				<Route exact path={ ['/admin/:id/members/new', '/admin/:id/members/:memberId'] } component={ MembersEdit } />
+				<Route path='/admin/:id/orgs/new' element={ <OrganizationsEdit /> } />
+				<Route path='/admin/:id/orgs/:orgId' element={ <OrganizationsEdit /> } />
 
-				<Route exact path='/admin/:id/chits' component={ ChitVotingPane } />
+				<Route path='/admin/:id/members' element={ <MembersPane /> } />
+				<Route path='/admin/:id/members/import' element={ <MembersImport /> } />
 
-				<Route exact path='/admin/:id/allocation' component={ AllocationPane } />
+				<Route path='/admin/:id/members/new' element={ <MembersEdit /> } />
+				<Route path='/admin/:id/members/:memberId' element={ <MembersEdit /> } />
 
-				<Route exact path='/admin/:id/pledges' component={ PledgesPane } />
+				<Route path='/admin/:id/chits' element={ <ChitVotingPane /> } />
 
-				<Route exact path='/admin/:id/leverage' component={ LeveragePane } />
+				<Route path='/admin/:id/allocation' element={ <AllocationPane /> } />
 
-				<Route path='/admin/:id/messaging' component={ MessagingPane } />
+				<Route path='/admin/:id/pledges' element={ <PledgesPane /> } />
 
-				<Route exact path={ ['/admin/:id', '/admin/:id/presentation'] } component={ PresentationPane } />
+				<Route path='/admin/:id/leverage' element={ <LeveragePane /> } />
 
-				<Route exact path='/admin/:id/settings' render={ ({ match }) => (
-					<Redirect to={ `/admin/${match.params.id}/settings/general` } />
-				) } />
-				<Route exact path='/admin/:id/settings/:activeTab' component={ SettingsPane } />
-				<Route exact path='/admin/:id/settings/messages/new/:type' component={ MessageEdit } />
-				<Route exact path='/admin/:id/settings/messages/:messageId' component={ MessageEdit } />
+				<Route path='/admin/:id/messaging' element={ <MessagingPane /> } />
 
-				<Route exact path='/admin/:id/overview' component={ OverviewPane } />
+				<Route path='/admin/:id' element={ <PresentationPane /> } />
+				<Route path='/admin/:id/presentation' element={ <PresentationPane /> } />
 
-			</Switch>
+				{ /* <Route path='/admin/:id/settings' render={ ({ match }) => (
+					<Navigate to={ `/admin/${match.params.id}/settings/general` } />
+				) } /> */ }
+				<Route path='/admin/:id/settings/:activeTab' element={ <SettingsPane /> } />
+				<Route path='/admin/:id/settings/messages/new/:type' element={ <MessageEdit /> } />
+				<Route path='/admin/:id/settings/messages/:messageId' element={ <MessageEdit /> } />
+
+				<Route path='/admin/:id/overview' element={ <OverviewPane /> } />
+
+			</Routes>
 		</Container>
 	)
 }
