@@ -44,11 +44,11 @@ const Results = observer(() => {
 
 			<AwardsCards>
 				{ awardees.map((org) => {
-					return(
+					return (
 						<AwardCard
 							key={ org._id }
 							org={ org }
-							award={ 'awardee' }
+							type={ 'awardee' }
 							amount={ org.allocatedFunds + org.leverageFunds }
 						/>
 					)
@@ -59,11 +59,11 @@ const Results = observer(() => {
 
 			<AwardsCards>
 				{ others.map((org) => {
-					return(
+					return (
 						<AwardCard
 							key={ org._id }
 							org={ org }
-							award={ 'other' }
+							type={ 'other' }
 							amount={ org.allocatedFunds + org.leverageFunds }
 						/>
 					)

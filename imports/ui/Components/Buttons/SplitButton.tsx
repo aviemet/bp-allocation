@@ -26,14 +26,13 @@ const SplitButton = ({ options, defaultSelected = 0 }: ISplitButtonProps) => {
 	const [selectedIndex, setSelectedIndex] = useState(defaultSelected)
 	const [open, setOpen] = useState(false)
 
-	const anchorRef = useRef(null)
+	const anchorRef = useRef<HTMLDivElement>(null)
 
 	const handleClick = () => {
 		options[selectedIndex].action()
 	}
 
-	const handleMenuItemClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>
-		, index: number) => {
+	const handleMenuItemClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent> , index: number) => {
 		setSelectedIndex(index)
 		setOpen(false)
 		options[index].action()
@@ -44,7 +43,7 @@ const SplitButton = ({ options, defaultSelected = 0 }: ISplitButtonProps) => {
 	}
 
 	const handleClose = (event: MouseEvent | TouchEvent) => {
-		if(anchorRef.current && anchorRef.current.contains(event.target)) return
+		if(event.target && anchorRef?.current?.contains(event.target as Node)) return
 
 		setOpen(false)
 	}

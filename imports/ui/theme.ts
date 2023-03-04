@@ -80,7 +80,7 @@ const theme = createTheme({
 			},
 		},
 		MuiTableRow:{
-			root:  ({ theme }) => ({
+			root: ({ theme }) => ({
 				'&:first-of-type': {
 					borderLeft: `1px solid ${theme.palette.grey[200]}`,
 				},

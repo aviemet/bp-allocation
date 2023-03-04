@@ -1,8 +1,9 @@
 import React from 'react'
 import { observer } from 'mobx-react-lite'
 import styled from '@emotion/styled'
+import numeral from 'numeral'
 
-interface IAwardEmblemProps {
+export interface IAwardEmblemProps {
 	type?: 'awardee'|'other'
 	amount: number
 }
@@ -16,7 +17,9 @@ const AwardEmblem = observer(({ type = 'awardee', amount }: IAwardEmblemProps) =
 	return (
 		<Award>
 			<AwardImage style={ { backgroundImage: `url(${awardImgSrc[type]})` } }>
-				<AwardAmount style={ { fontSize: type === 'awardee' ? '3rem' : '2.7rem' } }>{ amount }</AwardAmount>
+				<AwardAmount style={ { fontSize: type === 'awardee' ? '3rem' : '2.7rem' } }>
+					{ numeral(amount).format('$0.[0]a') }
+				</AwardAmount>
 			</AwardImage>
 		</Award>
 	)

@@ -2660,34 +2660,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ckeditor/ckeditor5-build-classic@npm:^36.0.1":
-  version: 36.0.1
-  resolution: "@ckeditor/ckeditor5-build-classic@npm:36.0.1"
-  dependencies:
-    "@ckeditor/ckeditor5-adapter-ckfinder": ^36.0.1
-    "@ckeditor/ckeditor5-autoformat": ^36.0.1
-    "@ckeditor/ckeditor5-basic-styles": ^36.0.1
-    "@ckeditor/ckeditor5-block-quote": ^36.0.1
-    "@ckeditor/ckeditor5-ckbox": ^36.0.1
-    "@ckeditor/ckeditor5-ckfinder": ^36.0.1
-    "@ckeditor/ckeditor5-cloud-services": ^36.0.1
-    "@ckeditor/ckeditor5-easy-image": ^36.0.1
-    "@ckeditor/ckeditor5-editor-classic": ^36.0.1
-    "@ckeditor/ckeditor5-essentials": ^36.0.1
-    "@ckeditor/ckeditor5-heading": ^36.0.1
-    "@ckeditor/ckeditor5-image": ^36.0.1
-    "@ckeditor/ckeditor5-indent": ^36.0.1
-    "@ckeditor/ckeditor5-link": ^36.0.1
-    "@ckeditor/ckeditor5-list": ^36.0.1
-    "@ckeditor/ckeditor5-media-embed": ^36.0.1
-    "@ckeditor/ckeditor5-paragraph": ^36.0.1
-    "@ckeditor/ckeditor5-paste-from-office": ^36.0.1
-    "@ckeditor/ckeditor5-table": ^36.0.1
-    "@ckeditor/ckeditor5-typing": ^36.0.1
-  checksum: 0652d5b1187ff28b94338a08d5a47bae06a467d01ecbbd43f1bba9dfb4997213f46ab7a8ab903eb8efdb3cbdbebab2af0b9f30e25ab4093c0892d705cacb48f0
-  languageName: node
-  linkType: hard
-
 "@ckeditor/ckeditor5-ckbox@npm:^36.0.1":
   version: 36.0.1
   resolution: "@ckeditor/ckeditor5-ckbox@npm:36.0.1"
@@ -2755,16 +2727,6 @@ __metadata:
     ckeditor5: ^36.0.1
     lodash-es: ^4.17.15
   checksum: a1314678ae353da435cee82e6e08f642222b6b1c878da11213a0bf5645f1a3107c552ac688dc959900f21675534f99b911669d8eac2743d4010acce2d9298b59
-  languageName: node
-  linkType: hard
-
-"@ckeditor/ckeditor5-editor-classic@npm:^36.0.1":
-  version: 36.0.1
-  resolution: "@ckeditor/ckeditor5-editor-classic@npm:36.0.1"
-  dependencies:
-    ckeditor5: ^36.0.1
-    lodash-es: ^4.17.15
-  checksum: 619e43f89158afb80f178b80e16ac039dc3b4c60eb941f44606eece7a0fadc7877d4a7fc854b93d7ab2c3c395094f9431f90f94c61709bbade6473f2c8221c20
   languageName: node
   linkType: hard
 
@@ -2874,17 +2836,6 @@ __metadata:
   dependencies:
     ckeditor5: ^36.0.1
   checksum: 5ca5900a32c9e2d5c29137e36c443390740bd8198f2011d92098647dbf69c6803c40b997a792ef8f1d30b2797b98dfc9c9aad4d2dbdb9c2cb7cb17627324dc81
-  languageName: node
-  linkType: hard
-
-"@ckeditor/ckeditor5-react@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@ckeditor/ckeditor5-react@npm:5.1.0"
-  dependencies:
-    prop-types: ^15.7.2
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  checksum: 444a5b3fd757c7b0df59e975bb9d817503216083432e7b33ba13a0af281a160c0971431b4935091519afb0bc252a08e52eb3a01f13fd527c6a9a9bfffd11e3b2
   languageName: node
   linkType: hard
 
@@ -6746,8 +6697,6 @@ __metadata:
     "@babel/types": ^7.21.2
     "@ckeditor/ckeditor5-alignment": ^36.0.1
     "@ckeditor/ckeditor5-build-balloon": ^36.0.1
-    "@ckeditor/ckeditor5-build-classic": ^36.0.1
-    "@ckeditor/ckeditor5-react": ^5.1.0
     "@emotion/react": ^11.10.6
     "@emotion/styled": ^11.10.6
     "@mui/icons-material": ^5.11.11
@@ -6800,6 +6749,7 @@ __metadata:
     react-countdown-circle-timer: ^3.1.0
     react-dom: ^18.2.0
     react-hook-form: ^7.43.3
+    react-html-props: ^2.0.2
     react-image: ^4.0.3
     react-input-range: ^1.3.0
     react-quill: ^2.0.0
@@ -15260,6 +15210,16 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18
   checksum: 16e03e42d07f696e36d67c0d60671df6d0bc73b9e48876ea99b85cf3aaa4cf40acb0c0e2870169d4a22504c7111c0f658b0b17a4f3fd191ef69c7eea70785a9d
+  languageName: node
+  linkType: hard
+
+"react-html-props@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "react-html-props@npm:2.0.2"
+  peerDependencies:
+    react: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0
+    react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0
+  checksum: cc8c90af353520f57fb256a8b4f6b01bcb367a6981533f67b8a2f8d58c4af77beacb233766ab5632c96a6b710acd023991ce55ef5f897021ebd18b6d3301e8cc
   languageName: node
   linkType: hard
 
