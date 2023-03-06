@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState, useEffect } from 'react'
-import { Routes, useNavigate, useLocation, useParams, Link } from 'react-router-dom'
+import { Routes, useNavigate, useLocation, useParams, Link, Outlet } from 'react-router-dom'
 import LoadingRoute from '/imports/ui/Routes/LoadingRoute'
 import ThemesList from '/imports/ui/Admin/ThemesList'
 import Admin from '/imports/ui/Admin'
@@ -126,14 +126,14 @@ const AdminLayout = observer(() => {
 			<Main open={ drawerOpen }>
 				<Container>
 					<Grid container>
-
-						<LoadingRoute path={ '/admin' }>
+						<Outlet />
+						{ /* <LoadingRoute path={ '/admin' }>
 							<ThemesList />
 						</LoadingRoute>
 
 						<LoadingRoute path='/admin/:id'>
 							<Admin />
-						</LoadingRoute>
+						</LoadingRoute> */ }
 					</Grid>
 				</Container>
 			</Main>

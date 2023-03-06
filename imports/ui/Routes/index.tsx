@@ -10,6 +10,8 @@ import Pledges from '/imports/ui/Pledges'
 import Login from '/imports/ui/Welcome/Login'
 import Kiosk from '/imports/ui/Kiosk'
 import FourOhFour from './404'
+import ThemesList from '../Admin/ThemesList'
+import Admin from '../Admin'
 
 const router = createBrowserRouter([
 	{
@@ -31,6 +33,16 @@ const router = createBrowserRouter([
 			<Navigate to='/login' />
 			:
 			<AdminLayout />,
+		children:[
+			{
+				path: '',
+				element: <ThemesList />,
+			},
+			{
+				path: '/',
+				element: <Admin />,
+			},
+		],
 	},
 	{
 		path: '/presentation/:id',
