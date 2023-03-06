@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Route, useLocation, useNavigate } from 'react-router-dom'
+import { Route, useLocation } from 'wouter'
 import { Transition } from 'react-transition-group'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings } from '/imports/api/providers'
@@ -7,10 +7,8 @@ import styled from '@emotion/styled'
 import { Intro, Orgs, Timer, TopOrgs, Allocation, Results } from '/imports/ui/Presentation/Pages'
 import { Loading } from '/imports/ui/Components'
 
-
 const Presentation = observer(() => {
-	const location = useLocation()
-	const navigate = useNavigate()
+	const [location, setLocation] = useLocation()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { settings, isLoading: settingsLoading } = useSettings()
 
@@ -20,14 +18,13 @@ const Presentation = observer(() => {
 		if(!settingsLoading) doNavigation(settings.currentPage)
 	}, [settings.currentPage, settingsLoading])
 
-	// TODO: wait for image load before showing page
 	const doNavigation = (currentPage: string) => {
 		let page = `/presentation/${theme._id}/${currentPage}`
 		if(location.pathname !== page && show){
 			setShow(false)
 
 			setTimeout(() => {
-				navigate(page)
+				setLocation(page)
 				setShow(true)
 			}, FADE_DURATION)
 		}
@@ -43,22 +40,22 @@ const Presentation = observer(() => {
 			{ (state) => (
 				<PageFader style={ { ...defaultStyle, ...transitionStyles[state], width: '100%' } } id="presentationFader">
 					{ /* Intro */ }
-					<Route path={ `${location}/intro` } element={ <Intro title={ title } question={ question } /> } />
+					<Route path={ `${location}/intro` }><Intro title={ title } question={ question } /></Route>
 
 					{ /* Participating Organizations */ }
-					<Route path={ `${location}/orgs` } element={ <Orgs /> } />
+					<Route path={ `${location}/orgs` }><Orgs /></Route>
 
 					{ /* Timer */ }
-					<Route path={ `${location}/timer` } element={ <Timer seconds={ settings.timerLength } /> } />
+					<Route path={ `${location}/timer` }><Timer seconds={ settings.timerLength } /></Route>
 
 					{ /* Top Orgs */ }
-					<Route path={ `${location}/toporgs` } element={ <TopOrgs /> } />
+					<Route path={ `${location}/toporgs` }><TopOrgs /></Route>
 
 					{ /* Allocation */ }
-					<Route path={ `${location}/allocation` } element={ <Allocation /> } />
+					<Route path={ `${location}/allocation` }><Allocation /></Route>
 
 					{ /* Results */ }
-					<Route path={ `${location}/results` } element={ <Results /> } />
+					<Route path={ `${location}/results` }><Results /></Route>
 
 				</PageFader>
 			) }

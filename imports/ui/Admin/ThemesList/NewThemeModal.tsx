@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { Button, Grid, Stack } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { useLocation } from 'wouter'
 import { Form, TextInput, SubmitButton, STATUS } from '/imports/ui/Components/Form'
 import ContentModal from '/imports/ui/Components/Dialogs/ContentModal'
 import { ThemeMethods } from '/imports/api/methods'
 import { ThemeSchema } from '/imports/api/db/schema'
 
 const NewThemeModal = () => {
-	const navigate = useNavigate()
+	const [location, setLocation] = useLocation()
 
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
@@ -21,7 +21,7 @@ const NewThemeModal = () => {
 			} else {
 				setFormStatus(STATUS.SUCCESS)
 				setIsModalOpen(false)
-				navigate(`/admin/${res}`)
+				setLocation(`/admin/${res}`)
 			}
 		})
 	}

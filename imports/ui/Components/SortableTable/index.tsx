@@ -17,6 +17,7 @@ import EnhancedTableToolbar from './EnhancedTableToolbar'
 import EnhancedTableRow from './EnhancedTableRow'
 
 interface ISortableTableProps<R> extends TableProps {
+	title: React.ReactNode
 	headCells: TTableHeadCells[]
 	tableHeadTopRow: unknown[]
 	rows: unknown[]

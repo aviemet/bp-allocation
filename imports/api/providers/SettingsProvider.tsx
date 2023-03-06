@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor'
-import React, { useContext } from 'react'
+import React from 'react'
 import { observer } from 'mobx-react-lite'
 
 import { useTracker } from 'meteor/react-meteor-data'
@@ -7,14 +7,18 @@ import { useData } from './DataProvider'
 import { useTheme } from './ThemeProvider'
 import { PresentationSettings } from '/imports/api/db'
 import { SettingsStore } from '/imports/api/stores'
+import { createContext } from '/imports/lib/hooks'
 
 interface ISettingsStoreContext {
 	settings: SettingsStore | undefined
 	isLoading: boolean
 }
 
-const SettingsContext = React.createContext<ISettingsStoreContext>({ isLoading: true, settings: undefined })
-export const useSettings = () => useContext(SettingsContext)
+const [useSettings, SettingsContextProvider] = createContext<{
+	settings: SettingsStore
+	isLoading: boolean
+}>()
+export { useSettings }
 
 interface ISettingsProviderProps {
 	children: React.ReactNode
@@ -61,9 +65,9 @@ const SettingsProvider = observer(({ children }: ISettingsProviderProps) => {
 	}, [themeId, themeLoading])
 
 	return (
-		<SettingsContext.Provider value={ settings }>
+		<SettingsContextProvider value={ settings }>
 			{ children }
-		</SettingsContext.Provider>
+		</SettingsContextProvider>
 	)
 })
 

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-// import { Link } from 'react-router-dom'
 import { Link } from '/imports/ui/Components'
 import { useMessages } from '/imports/api/providers'
 import { MemberMethods } from '/imports/api/methods'

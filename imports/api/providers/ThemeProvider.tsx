@@ -8,18 +8,15 @@ import { Themes } from '/imports/api/db'
 import { ThemeStore } from '/imports/api/stores'
 import { createContext } from '/imports/lib/hooks'
 
-export const [useTheme, ThemeProvider] = createContext<{
+const [useTheme, ThemeProvider] = createContext<{
 	theme: ThemeStore
 	isLoading: boolean
 }>()
-
-interface IThemeProviderProps {
-	children: React.ReactNode
-}
+export { useTheme }
 
 // Provider to wrap the application with
 // Observes changes on the data store to manage subscription to the theme
-const ThemeProviderComponent = observer(({ children }: IThemeProviderProps) => {
+const ThemeProviderComponent = observer(({ children }: {children: React.ReactNode}) => {
 	const { themeId } = useData()
 	let subscription: Meteor.SubscriptionHandle
 	let cursorObserver: Meteor.LiveQueryHandle

@@ -8,14 +8,10 @@ interface IRawProps {
 	onChange: (value: string) => void
 }
 
-const Raw = forwardRef<typeof TextField, IRawProps>((
-	{ value, onChange, ...props }
-	, ref,
-) => {
+const Raw = ({ value, onChange, ...props }: IRawProps) => {
 	return (
 		<Box>
 			<TextField
-				ref={ ref }
 				{ ...props }
 				multiline
 				fullWidth
@@ -25,6 +21,6 @@ const Raw = forwardRef<typeof TextField, IRawProps>((
 			/>
 		</Box>
 	)
-})
+}
 
 export default Raw

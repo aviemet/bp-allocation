@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { useMembers, useSettings } from '/imports/api/providers'
+import { useMembers, useSettings, useTheme } from '/imports/api/providers'
 import { formatters } from '/imports/lib/utils'
 import { observer } from 'mobx-react-lite'
 import { isEmpty } from 'lodash'
@@ -65,6 +64,7 @@ const headCells = [
 // TODO: Would be cool to get the filter icon to allow filtering by keyword
 //       So, choosing 'not voted' would filter out all those who have voted
 const MembersTable = observer(() => {
+	const { theme } = useTheme()
 	const { members, isLoading: membersLoading } = useMembers()
 	const { settings } = useSettings()
 
@@ -72,8 +72,6 @@ const MembersTable = observer(() => {
 	const [modalHeader, setModalHeader] = useState('')
 	const [modalContent, setModalContent] = useState('')
 	const [modalAction, setModalAction] = useState<() => void>()
-
-	const { id: themeId } = useParams()
 
 	// TODO: See about batching deletes
 	const bulkDelete = (selected: string[], onSuccess: () => void) => {
@@ -84,7 +82,7 @@ const MembersTable = observer(() => {
 		// Need to curry the function since useState immediately calls passed functions
 		setModalAction( () => () => {
 			selected.forEach(id => {
-				MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId })
+				MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: theme._id })
 			})
 			onSuccess()
 		})
@@ -152,7 +150,7 @@ const MembersTable = observer(() => {
 
 							{ /* Actions */ }
 							<TableCell padding="checkbox">
-								<ContextMenu themeId={ themeId } member={ member } />
+								<ContextMenu themeId={ theme._id } member={ member } />
 							</TableCell>
 						</>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Route, Routes, useMatch, useParams } from 'react-router-dom'
+import { Route, Router } from 'wouter'
 import { Transition } from 'react-transition-group'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
@@ -11,16 +11,16 @@ import Topups from './Topups'
 import MemberLoginRequired from './MemberLoginRequired'
 import RemoteVoting from './RemoteVoting'
 import Results from '/imports/ui/Presentation/Pages/Results'
+import useParams from '/imports/lib/hooks/useParams'
 
 const Kiosk = observer(() => {
-	// const match = useMatch('/voting/:id/:member')
-	const { member: memberId } = useParams()
+	const { memberId } = useParams()
 
 	const data = useData()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { settings, isLoading: settingsLoading } = useSettings()
 
-	const activePage = settings.fundsVotingActive ? data.KIOSK_PAGES.funds : data.KIOSK_PAGES.info
+	const activePage = settings?.fundsVotingActive ? data.KIOSK_PAGES.funds : data.KIOSK_PAGES.info
 
 	const [ displayPage, setDisplayPage ] = useState(activePage) // Active presentation page
 	const [ show, setShow ] = useState(false) // Transition values
@@ -91,37 +91,37 @@ const Kiosk = observer(() => {
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{ state => (
 				<PageFader style={ { ...defaultStyle, ...transitionStyles[state] } }>
-					<Routes location={ { pathname: displayPage } }>
+					<Router base={ displayPage }>
 
 						{ /* Orgs Grid */ }
-						<Route path={ data.KIOSK_PAGES.info } element={ <KioskInfo /> } />
+						<Route path={ data.KIOSK_PAGES.info }><KioskInfo /></Route>
 
 						{ /* Chit Voting */ }
-						<Route path={ data.KIOSK_PAGES.chit } element={ memberId ?
+						<Route path={ data.KIOSK_PAGES.chit }>{ memberId ?
 							// If Id is set, navigation comes from the short link for voting remotely
 							<RemoteVoting memberId={ memberId } component={ ChitVotingKiosk } /> :
 							// Otherwise kiosk voting in the room, members must login to proceed
 							<MemberLoginRequired component={ ChitVotingKiosk } />
-						} />
+						}</Route>
 
 						{ /* Topups */ }
-						<Route path={ data.KIOSK_PAGES.topups } element={
-							// If member is set, navigation comes from the short link for voting remotely
+						<Route path={ data.KIOSK_PAGES.topups }>
+							{ /* If member is set, navigation comes from the short link for voting remotely */ }
 							<RemoteVoting memberId={ memberId } component={ Topups } />
-						 } />
+						</Route>
 
 						{ /* Funds Voting */ }
-						<Route path={ data.KIOSK_PAGES.funds } element={ memberId ?
-						// If member is set, navigation comes from the short link for voting remotely
+						<Route path={ data.KIOSK_PAGES.funds }>{ memberId ?
+							// If member is set, navigation comes from the short link for voting remotely
 							<RemoteVoting memberId={ member } component={ FundsVotingKiosk } /> :
-						// Otherwise kiosk voting in the room, members must login to proceed
+							// Otherwise kiosk voting in the room, members must login to proceed
 							<MemberLoginRequired component={ FundsVotingKiosk } />
-						} />
+						}</Route>
 
 						{ /* Voting Results */ }
-						<Route path={ data.KIOSK_PAGES.results } element={ <Results /> } />
+						<Route path={ data.KIOSK_PAGES.results }><Results /></Route>
 
-					</Routes>
+					</Router>
 
 				</PageFader>
 			) }

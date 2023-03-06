@@ -1,11 +1,10 @@
 import React, { useLayoutEffect, useRef } from 'react'
-import PropTypes from 'prop-types'
-
 import PledgeInfo from './PledgeInfo'
-import Fireworks from 'matter-fireworks'
+import Fireworks from 'matter-fireworks' // personal package
 
-const PledgeDisplay = ({ pledge }) => {
-	const canvasRef = useRef()
+const PledgeDisplay = ({ pledge }: { pledge: MatchPledge }) => {
+	const canvasRef = useRef<HTMLCanvasElement>(null)
+
 	let fireworks
 	let numFireworks = 4
 	if(pledge.amount > 10000) numFireworks++
@@ -23,10 +22,6 @@ const PledgeDisplay = ({ pledge }) => {
 			<canvas ref={ canvasRef } />
 		</>
 	)
-}
-
-PledgeDisplay.propTypes = {
-	pledge: PropTypes.object
 }
 
 export default PledgeDisplay

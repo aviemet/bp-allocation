@@ -1,30 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useParams } from 'react-router-dom'
-
 import { ThemeMethods } from '/imports/api/methods'
-
 import {
 	Stack,
 	Switch,
 	TableRow,
 	TableCell,
 } from '@mui/material'
-
 import { roundFloat } from '/imports/lib/utils'
-
 import SaveButton from './SaveButton'
 import UnSaveButton from './UnSaveButton'
+import { useTheme } from '/imports/api/providers'
 
 const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }) => {
-	const { id: themeId } = useParams()
+	const { theme } = useTheme()
 
 	/**
 	 * Manually pins an organization as a "Top Org"
 	 */
 	const topOrgToggle = (e, data) => {
 		ThemeMethods.topOrgToggle.call({
-			theme_id: themeId,
+			theme_id: theme.id,
 			org_id: org._id,
 		})
 	}
@@ -39,7 +35,7 @@ const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }) => {
 				<Stack direction="row" justifyContent="space-between" alignItems="baseline">
 					<div>{ org.title }</div>
 
-					{ /* Save and unsave buttons */ }
+					{ /* Save and un-save buttons */ }
 					{ !hideAdminFields && <>
 						{ !inTopOrgs && <SaveButton org={ org } /> }
 						{ isSaved && <UnSaveButton org={ org } />  }

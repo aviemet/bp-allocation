@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState, useEffect } from 'react'
-import { useNavigate, useLocation, useParams } from 'react-router-dom'
+import { Route, useLocation, useRoute, useRouter } from 'wouter'
 import { Link } from '/imports/ui/Components'
 import LoadingRoute from '/imports/ui/Routes/LoadingRoute'
 import ThemesList from '/imports/ui/Admin/ThemesList'
@@ -25,6 +25,7 @@ import BarChartIcon from '@mui/icons-material/BarChart'
 import AdminLinks from './AdminLinks'
 import { observer } from 'mobx-react-lite'
 import { useData, useTheme } from '/imports/api/providers'
+import useParams from '/imports/lib/hooks/useParams'
 
 const drawerWidth = 175
 
@@ -32,17 +33,15 @@ const AdminLayout = observer(() => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const data = useData()
 
-	const navigate = useNavigate()
-	const location = useLocation()
-	// const match = useRouteMatch('/admin/:id/:page')
-	const { id, page } = useParams()
+	const [location, setLocation] = useLocation()
+	const { page } = useParams()
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const [ drawerOpen, setDrawerOpen ] = useState(false)
 
 	useEffect(() => {
-		setDrawerOpen(!['/themes', '/admin'].includes(location.pathname))
-	}, [location.pathname])
+		setDrawerOpen(location !== '/admin')
+	}, [location])
 
 	const handleMenu = event => {
 		setAnchorEl(event.currentTarget)
@@ -96,7 +95,7 @@ const AdminLayout = observer(() => {
 						>
 							<Link to="/admin"><MenuItem>Themes List</MenuItem></Link>
 							<Divider />
-							<MenuItem onClick={ () => { handleMenuClose(); Meteor.logout(() => navigate('/login')) } }>Sign Out</MenuItem>
+							<MenuItem onClick={ () => { handleMenuClose(); Meteor.logout(() => setLocation('/login')) } }>Sign Out</MenuItem>
 						</Menu>
 					</div>
 				</Toolbar>
@@ -127,9 +126,9 @@ const AdminLayout = observer(() => {
 			<Main open={ drawerOpen }>
 				<Container>
 					<Grid container>
-						<LoadingRoute path={ '/admin' }>
+						<Route path='/admin'>
 							<ThemesList />
-						</LoadingRoute>
+						</Route>
 
 						<LoadingRoute path='/admin/:id'>
 							<Admin />
@@ -156,7 +155,7 @@ const Logo = styled.img`
 
 const AppBar = styled(MuiAppBar, {
 	shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
+})(({ theme, open }: { theme: Theme, open: boolean }) => ({
 	transition: theme.transitions.create(['margin', 'width'], {
 		easing: theme.transitions.easing.sharp,
 		duration: theme.transitions.duration.leavingScreen,
@@ -172,7 +171,7 @@ const AppBar = styled(MuiAppBar, {
 }))
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
-	({ theme, open }) => ({
+	({ theme, open }: { theme: Theme, open: boolean }) => ({
 		flexGrow: 1,
 		padding: theme.spacing(3),
 		transition: theme.transitions.create('margin', {

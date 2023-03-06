@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useLocation } from 'wouter'
 import { Link } from '/imports/ui/Components'
 import { observer } from 'mobx-react-lite'
-import { useMessage } from '/imports/api/providers'
+import { useData, useMessage } from '/imports/api/providers'
 import { MessageMethods } from '/imports/api/methods'
 import { MessageSchema } from '/imports/api/db/schema'
 import {
@@ -27,11 +27,13 @@ import {
 	Typography,
 } from '@mui/material'
 import { Loading } from '/imports/ui/Components'
+import useParams from '/imports/lib/hooks/useParams'
 
 const MessageEdit = observer(() => {
-	const { id: themeId, messageId, type } = useParams()
+	const { themeId } = useData()
+	const { messageId, type } = useParams()
 
-	let message
+	let message: Partial<Message>
 	let messageLoading = false
 	if(messageId) {
 		const { message: loadedMessage, isLoading } = useMessage(messageId)
@@ -41,7 +43,7 @@ const MessageEdit = observer(() => {
 		message = {}
 	}
 
-	const navigate = useNavigate()
+	const [location, setLocation] = useLocation()
 
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 	const [preview, setPreview] = useState(message?.body || '')
@@ -68,7 +70,7 @@ const MessageEdit = observer(() => {
 					console.error(err)
 				} else {
 					setFormStatus(STATUS.SUCCESS)
-					navigate(`/admin/${themeId}/settings/messages`)
+					setLocation(`/admin/${themeId}/settings/messages`)
 				}
 			})
 		} else {
@@ -78,7 +80,7 @@ const MessageEdit = observer(() => {
 					console.error(err)
 				} else {
 					setFormStatus(STATUS.SUCCESS)
-					navigate(`/admin/${themeId}/settings/messages`)
+					setLocation(`/admin/${themeId}/settings/messages`)
 				}
 			})
 		}
@@ -157,7 +159,7 @@ const MessageEdit = observer(() => {
 								color="error"
 								to={ `/admin/${themeId}/settings/messages` }
 							>Cancel</Button>
-							<SubmitButton type="submt" status={ formStatus } setStatus={ setFormStatus }>Save Message</SubmitButton>
+							<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Message</SubmitButton>
 						</Stack>
 					</Grid>
 				</Grid>

@@ -1,20 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation } from 'wouter'
 import { readCsv } from '/imports/lib/papaParseMethods'
-
 import { observer } from 'mobx-react-lite'
 import { OrganizationMethods } from '/imports/api/methods'
 import { OrganizationSchema } from '/imports/api/db/schema'
-
 import {
 	Button,
 	Input,
 } from '@mui/material'
 import { useSnackbar } from 'notistack'
-
 import ImportMapping from '/imports/ui/Components/ImportMapping'
+import { useTheme } from '/imports/api/providers'
 
 const ImportOrgs = observer(() => {
+	const { theme } = useTheme()
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
 	const [pendingOrgs, setPendingOrgs] = useState([])
@@ -24,8 +23,7 @@ const ImportOrgs = observer(() => {
 
 	const fileInputRef = useRef(null)
 
-	const { id: themeId } = useParams()
-	const navigate = useNavigate()
+	const [location, setLocation] = useLocation()
 
 	useEffect(() => {
 		fileInputRef.current.click()
@@ -47,14 +45,14 @@ const ImportOrgs = observer(() => {
 
 	const handleImportData = data => {
 		data.forEach(datum => {
-			const { error, response } = OrganizationMethods.create.call(Object.assign({ theme: themeId }, datum))
+			const { error, response } = OrganizationMethods.create.call(Object.assign({ theme: theme._id }, datum))
 			if(error) {
 				enqueueSnackbar('Error importing organizations', { variant: 'error' })
 				console.error({ error })
 			}
 		})
 		enqueueSnackbar(`${data.length} Organization${ data.length === 1 ? '' : 's'} imported`, { variant: 'success' })
-		navigate(`/admin/${themeId}/orgs`)
+		setLocation(`/admin/${theme._id}/orgs`)
 	}
 
 	const headingsMap = [

@@ -7,7 +7,7 @@ interface ITextInputProps {
 	label?: string
 	placeholder?: string
 	inputProps?: Record<string, any>
-	onUpdate?: (value, name: string, form: UseFormReturn<FieldValues, any>) => void
+	onUpdate?: (value: string, name: string, form: UseFormReturn<FieldValues, any>) => void
 	onChange?: (value: string) => void
 	rules?: object
 	pattern?: string

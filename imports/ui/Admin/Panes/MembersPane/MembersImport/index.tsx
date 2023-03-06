@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation } from 'wouter'
 import { readCsv } from '/imports/lib/papaParseMethods'
 import { sanitizeNames } from '/imports/lib/utils'
 
@@ -14,8 +14,10 @@ import {
 import { useSnackbar } from 'notistack'
 
 import ImportMapping from '/imports/ui/Components/ImportMapping'
+import { useTheme } from '/imports/api/providers'
 
 const ImportMembers = observer(() => {
+	const { theme } = useTheme()
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
 	const [pendingMembers, setPendingMembers] = useState([])
@@ -25,8 +27,7 @@ const ImportMembers = observer(() => {
 
 	const fileInputRef = useRef(null)
 
-	const { id: themeId } = useParams()
-	const navigate = useNavigate()
+	const [location, setLocation] = useLocation()
 
 	useEffect(() => {
 		fileInputRef.current.click()
@@ -70,7 +71,7 @@ const ImportMembers = observer(() => {
 			}
 		})
 		enqueueSnackbar(`${data.length} Member${ data.length === 1 ? '' : 's'} imported`, { variant: 'success' })
-		navigate(`/admin/${themeId}/members`)
+		setLocation(`/admin/${theme._id}/members`)
 	}
 
 	const headingsMap = [

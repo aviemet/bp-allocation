@@ -1,10 +1,8 @@
 import React from 'react'
-// import { Link } from 'react-router-dom'
 import { Link } from '/imports/ui/Components'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings } from '/imports/api/providers'
 import { PresentationSettingsMethods } from '/imports/api/methods'
-
 import { TimerInput, ResultsOffsetInput } from '/imports/ui/Components/Inputs'
 import {
 	Button,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useData, useMessages, useMembers } from '/imports/api/providers'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'wouter'
 import { Link } from '/imports/ui/Components'
 import { MessageMethods } from '/imports/api/methods'
 
@@ -88,8 +88,7 @@ const Messages = () => {
 	const [ modalContent, setModalContent ] = useState('')
 	const [ modalAction, setModalAction ] = useState()
 
-	const { pathname } = useLocation()
-	const navigate = useNavigate()
+	const [location, setLocation] = useLocation()
 
 	const handleBulkDelete = (selected, onSuccess) => {
 		console.log({ selected })
@@ -107,7 +106,7 @@ const Messages = () => {
 		setModalOpen(true)
 	}
 
-	const handleTextEdits = (id, data) => {
+	const handleTextEdits = (id: string, data) => {
 		MessageMethods.update.call({ id, data }, err => {
 			if(err) {
 				console.error(err)
@@ -136,7 +135,7 @@ const Messages = () => {
 							<ActiveToggle message={ message } />
 						</TableCell>
 						<TableCell>
-							<Link to={ `${pathname}/${message._id}` }>{ message.title }</Link>
+							<Link to={ `${location}/${message._id}` }>{ message.title }</Link>
 						</TableCell>
 						<TableCell>{ message.body }</TableCell>
 						<TableCell>

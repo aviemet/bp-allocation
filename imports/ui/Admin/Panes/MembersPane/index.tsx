@@ -1,30 +1,29 @@
 import React from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useLocation } from 'wouter'
 import { useMembers } from '/imports/api/providers'
-
 import {
 	Container,
 	Grid,
 	Skeleton,
 	Typography,
 } from '@mui/material'
-
 import SplitButton, { type TSplitButtonOption } from '/imports/ui/Components/Buttons/SplitButton'
 import MembersTable from './MembersTable'
 import { observer } from 'mobx-react-lite'
+import useParams from '/imports/lib/hooks/useParams'
 
 const MembersPane = observer(() => {
 	const { id } = useParams()
-	const navigate = useNavigate()
+	const [location, setLocation] = useLocation()
 
 	const options: TSplitButtonOption[] = [
 		{
 			title: 'Add New Member',
-			action: () => navigate(`/admin/${id}/members/new`),
+			action: () => setLocation(`/admin/${id}/members/new`),
 		},
 		{
 			title: 'Import From CSV',
-			action: () => navigate(`/admin/${id}/members/import`),
+			action: () => setLocation(`/admin/${id}/members/import`),
 		},
 	]
 

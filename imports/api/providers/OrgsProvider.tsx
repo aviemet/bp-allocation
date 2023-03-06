@@ -5,22 +5,26 @@ import { observer } from 'mobx-react-lite'
 import { useTracker } from 'meteor/react-meteor-data'
 import { useData } from './DataProvider'
 import { Organizations } from '/imports/api/db'
-import { OrgsCollection, OrgStore } from '/imports/api/stores'
+import { OrgsCollection } from '/imports/api/stores'
 import { filterTopOrgs } from '/imports/lib/orgsMethods'
+import { createContext } from '/imports/lib/hooks'
 import { useTheme } from './ThemeProvider'
 
-const OrgsContext = React.createContext<{
-	orgs?: OrgsCollection
-	topOrgs?: OrgsCollection
+// const OrgsContext = React.createContext<{
+// 	orgs: OrgsCollection
+// 	topOrgs: OrgsCollection
+// 	isLoading: boolean
+// } | undefined>(undefined)
+// export const useOrgs = () => useContext(OrgsContext)
+
+const [useOrgs, OrgsContextProvider] = createContext<{
+	orgs: OrgsCollection
+	topOrgs: OrgsCollection
 	isLoading: boolean
-} | undefined>(undefined)
-export const useOrgs = () => useContext(OrgsContext)
+}>()
+export { useOrgs }
 
-interface IOrgsProviderProps {
-	children: React.ReactNode
-}
-
-const OrgsProvider = observer(({ children }: IOrgsProviderProps) => {
+const OrgsProvider = observer(({ children }: { children: React.ReactNode }) => {
 	const { themeId } = useData()
 	const { theme, isLoading: themeLoading } = useTheme()
 
@@ -60,9 +64,13 @@ const OrgsProvider = observer(({ children }: IOrgsProviderProps) => {
 	}, [themeId, themeLoading])
 
 	return (
-		<OrgsContext.Provider value={ orgs }>
+		<OrgsContextProvider value={ orgs || {
+			orgs: [],
+			topOrgs: [],
+			isLoading: true,
+		} }>
 			{ children }
-		</OrgsContext.Provider>
+		</OrgsContextProvider>
 	)
 })
 

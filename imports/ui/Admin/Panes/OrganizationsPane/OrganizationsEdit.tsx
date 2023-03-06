@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useLocation } from 'wouter'
 import { Link } from '/imports/ui/Components'
-import { useOrgs } from '/imports/api/providers'
+import { useOrgs, useTheme } from '/imports/api/providers'
 import { OrganizationMethods } from '/imports/api/methods'
 import { OrganizationSchema } from '/imports/api/db/schema'
-
 import { Form, TextInput, RichTextInput, SubmitButton, STATUS } from '/imports/ui/Components/Form'
-
 import {
 	Button,
 	Container,
@@ -15,18 +13,20 @@ import {
 	Stack,
 	Typography,
 } from '@mui/material'
+import useParams from '/imports/lib/hooks/useParams'
 
 const OrganizationsEdit = () => {
+	const { theme } = useTheme()
 	const { orgs } = useOrgs()
 
-	const { id, orgId } = useParams()
-	const navigate = useNavigate()
+	const { orgId } = useParams()
+	const [location, setLocation] = useLocation()
 
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 
 	const orgStore = orgs?.values.find(org => org._id === orgId)
 	const org = {
-		theme: id,
+		theme: theme._id,
 		title: orgStore?.title || '',
 		ask: orgStore?.ask || '',
 		description: orgStore?.description || '',
@@ -40,7 +40,7 @@ const OrganizationsEdit = () => {
 		return sanitizedData
 	}
 
-	const onSubmit = data => {
+	const onSubmit = (data) => {
 		setFormStatus(STATUS.SUBMITTING)
 		let response
 		if(orgId) {
@@ -59,7 +59,7 @@ const OrganizationsEdit = () => {
 
 	useEffect(() => {
 		if(formStatus === STATUS.SUCCESS) {
-			setTimeout(() => navigate(`/admin/${id}/orgs`), 1000)
+			setTimeout(() => setLocation(`/admin/${theme._id}/orgs`), 1000)
 		}
 	}, [formStatus])
 
@@ -101,7 +101,7 @@ const OrganizationsEdit = () => {
 
 					<Grid item xs={ 12 }>
 						<Stack direction="row" spacing={ 2 } justifyContent="end">
-							<Link to={ `/admin/${id}/orgs` }><Button color="error">Cancel</Button></Link>
+							<Link to={ `/admin/${theme._id}/orgs` }><Button color="error">Cancel</Button></Link>
 							<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Organization</SubmitButton>
 						</Stack>
 					</Grid>

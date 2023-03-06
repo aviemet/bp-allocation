@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { Link, type LinkProps } from 'wouter'
 
-const LinkComponent = (props: LinkProps) => {
-	return <Link { ...props } />
-}
+const RouterLink = Link as React.FunctionComponent<LinkProps & React.RefAttributes<HTMLAnchorElement>>
+
+const LinkComponent = forwardRef<HTMLAnchorElement,LinkProps>((props, ref) => {
+	return (
+		<RouterLink ref={ ref } { ...props } />
+	)
+})
 
 export default LinkComponent

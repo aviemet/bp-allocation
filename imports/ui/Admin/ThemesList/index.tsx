@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-// import { Link } from 'react-router-dom'
 import { Link } from '/imports/ui/Components'
 import { useTracker } from 'meteor/react-meteor-data'
 import { format } from 'date-fns'

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useMembers } from '/imports/api/providers'
+import { useLocation } from 'wouter'
+import useParams from '/imports/lib/hooks/useParams'
+import { useMembers, useTheme } from '/imports/api/providers'
 import { MemberMethods } from '/imports/api/methods'
 import { MemberSchema, MemberThemeSchema } from '/imports/api/db/schema'
 import { roundFloat } from '/imports/lib/utils'
@@ -17,10 +18,11 @@ import {
 import { Loading } from '/imports/ui/Components'
 
 const MembersEdit = () => {
+	const { theme } = useTheme()
 	const { members, isLoading: membersLoading } = useMembers()
 
-	const { id, memberId } = useParams()
-	const navigate = useNavigate()
+	const { memberId } = useParams()
+	const [location, setLocation] = useLocation()
 
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 
@@ -85,7 +87,7 @@ const MembersEdit = () => {
 
 	useEffect(() => {
 		if(formStatus === STATUS.SUCCESS) {
-			setTimeout(() => navigate(`/admin/${id}/members`), 1000)
+			setTimeout(() => navigate(`/admin/${theme._id}/members`), 1000)
 		}
 	}, [formStatus])
 
@@ -106,7 +108,7 @@ const MembersEdit = () => {
 
 	const memberStore = members?.values.find(member => member._id === memberId)
 	const member = {
-		theme: id,
+		theme: theme.id,
 		firstName: memberStore?.firstName || '',
 		lastName: memberStore?.lastName || '',
 		initials: memberStore?.initials || '',
@@ -116,6 +118,7 @@ const MembersEdit = () => {
 		email: memberStore?.email || '',
 		chits: memberStore?.theme?.chits || '',
 	}
+
 	return (
 		<>
 			<Typography component="h1" variant="h3" sx={ { mb: 1 } }>
@@ -166,7 +169,7 @@ const MembersEdit = () => {
 
 					<Grid item xs={ 12 }>
 						<Stack direction="row" spacing={ 2 } justifyContent="end">
-							<Button color="error" onClick={ () => navigate(`/admin/${id}/members`) }>Cancel</Button>
+							<Button color="error" onClick={ () => setLocation(`/admin/${theme.id}/members`) }>Cancel</Button>
 							<SubmitButton  type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Member</SubmitButton>
 						</Stack>
 					</Grid>

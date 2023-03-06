@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from 'react'
+import React, { useState } from 'react'
 import { Checkbox, FormControlLabel } from '@mui/material'
 import RawEditor from './RawEditor'
 import Quill from './Quill'
@@ -9,10 +9,7 @@ interface IRichTextEditorProps {
 	onChange: (value: string) => void
 }
 
-const RichTextEditor = forwardRef<any, IRichTextEditorProps>((
-	{ value, onChange, ...rest },
-	ref,
-) => {
+const RichTextEditor = ({ value, onChange, ...rest }: IRichTextEditorProps) => {
 	const [isRaw, setIsRaw] = useState(false)
 
 	const InputComponent = isRaw ? RawEditor : Quill
@@ -25,13 +22,12 @@ const RichTextEditor = forwardRef<any, IRichTextEditorProps>((
 					onChange={ e => setIsRaw(e.target.checked) } />
 			} />
 			<InputComponent
-				ref={ ref }
 				{ ...rest }
 				value={ value || '' }
 				onChange={ newValue => { if(onChange) onChange(newValue) } }
 			/>
 		</>
 	)
-})
+}
 
 export default RichTextEditor

@@ -1,13 +1,11 @@
 import React, { useState, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useLocation } from 'wouter'
 import { Link } from '/imports/ui/Components'
 import numeral from 'numeral'
 import { observer } from 'mobx-react-lite'
-import { useOrgs } from '/imports/api/providers'
+import { useOrgs, useTheme } from '/imports/api/providers'
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
-
 import { OrganizationMethods } from '/imports/api/methods'
-
 import { styled, alpha } from '@mui/material/styles'
 import {
 	Card,
@@ -24,13 +22,13 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-
 import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
 import SplitButton from '/imports/ui/Components/Buttons/SplitButton'
 import DisplayHtml from '/imports/ui/Components/DisplayHtml'
 import { Loading } from '/imports/ui/Components'
 
 const OrganizationsPane = observer(() => {
+	const { theme } = useTheme()
 	const { orgs, isLoading: orgsLoading } = useOrgs()
 
 	const modalValuesRef = useRef({
@@ -41,10 +39,9 @@ const OrganizationsPane = observer(() => {
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 
-	const { id } = useParams()
-	const navigate = useNavigate()
+	const [location, setLocation] = useLocation()
 
-	const showDeleteModal = (org) => {
+	const showDeleteModal = (org: Organization) => {
 		modalValuesRef.current.header = 'Permanently Delete This Organization?'
 		modalValuesRef.current.content = `This will permanently remove ${org.title} from this theme and all associated data. This process cannot be undone.`
 		modalValuesRef.current.action = () => {
@@ -60,11 +57,11 @@ const OrganizationsPane = observer(() => {
 	const options = [
 		{
 			title: 'Add New Organization',
-			action: () => navigate(`/admin/${id}/orgs/new`),
+			action: () => setLocation(`/admin/${theme._id}/orgs/new`),
 		},
 		{
 			title: 'Import From CSV',
-			action: () => navigate(`/admin/${id}/orgs/import`),
+			action: () => setLocation(`/admin/${theme._id}/orgs/import`),
 		},
 	]
 

@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor'
 import React from 'react'
-// import { Navigate, useParams } from 'react-router-dom'
 import { Redirect, useRoute } from 'wouter'
 import { useTracker } from 'meteor/react-meteor-data'
 import { Themes, Members } from '/imports/api/db'
