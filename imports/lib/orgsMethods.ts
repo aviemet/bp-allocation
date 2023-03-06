@@ -1,11 +1,12 @@
 import { sortBy } from 'lodash'
+import type TrackableStore from '../api/stores/lib/TrackableStore'
 
 /**
  * Returns the top orgs after the first round of chit voting
  * @param {*} orgs
  * @param {*} theme
  */
-export const sortTopOrgs = (orgs: Organization[], theme: Theme) => {
+export const sortTopOrgs = (orgs: Organization[] | TrackableStore<Organization>[], theme: Theme) => {
 	// Save manual top orgs as key/value true/false pairs for reference
 	const manualTopOrgs: Record<string, boolean> = {}
 	theme.topOrgsManual.map((org) => {
@@ -13,7 +14,7 @@ export const sortTopOrgs = (orgs: Organization[], theme: Theme) => {
 	})
 
 	// First sort orgs by weight and vote count
-	const sortedOrgs = sortBy(orgs, org => {
+	const sortedOrgs = sortBy(orgs, (org: Organization) => {
 		const votes = org.votes || 0
 		// Sort in descending order
 		return -(votes)
@@ -48,7 +49,7 @@ export const sortTopOrgs = (orgs: Organization[], theme: Theme) => {
 		}
 	}
 
-	return sortedOrgs
+	return sortedOrgs as Organization[] | TrackableStore<Organization>[]
 }
 
 /**
@@ -63,7 +64,7 @@ export const getNumTopOrgs = (theme: Theme) => theme.numTopOrgs >= theme.topOrgs
  * @param {*} orgs
  * @param {*} theme
  */
-export const filterTopOrgs = (orgs: Organization[], theme: Theme) => {
-	const sortedOrgs = sortTopOrgs(orgs, theme)
+export const filterTopOrgs = (orgs: Organization[] | TrackableStore<Organization>[], theme: Theme) => {
+	const sortedOrgs: Organization[] | TrackableStore<Organization>[] = sortTopOrgs(orgs, theme)
 	return sortedOrgs.slice(0, getNumTopOrgs(theme))
 }

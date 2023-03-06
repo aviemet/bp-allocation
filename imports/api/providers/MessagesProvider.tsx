@@ -23,7 +23,7 @@ const MessagesProvider = observer(({ children }: IMessagesProviderProps) => {
 
 	let subscription: Meteor.SubscriptionHandle
 	let cursorObserver: Meteor.LiveQueryHandle
-	let messagesCollection: MessagesCollection | undefined
+	let messagesCollection: MessagesCollection
 
 	const messages = useTracker(() => {
 		if(!themeId  || themeLoading) {
@@ -39,7 +39,7 @@ const MessagesProvider = observer(({ children }: IMessagesProviderProps) => {
 		subscription = Meteor.subscribe('messages', themeId, {
 			onReady: () => {
 				const cursor = Messages.find({ })
-				messagesCollection = new MessagesCollection(cursor.fetch(), MessageStore)
+				messagesCollection = new MessagesCollection(cursor.fetch())
 
 				cursorObserver = cursor.observe({
 					added: messages => messagesCollection.refreshData(messages),

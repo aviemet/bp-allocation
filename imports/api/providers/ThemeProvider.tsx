@@ -23,7 +23,7 @@ const ThemeProviderComponent = observer(({ children }: IThemeProviderProps) => {
 	const { themeId } = useData()
 	let subscription: Meteor.SubscriptionHandle
 	let cursorObserver: Meteor.LiveQueryHandle
-	let themeStore: ThemeStore | undefined
+	let themeStore: ThemeStore
 
 	// Setup Meteor tracker to subscribe to a Theme
 	const theme = useTracker(() => {

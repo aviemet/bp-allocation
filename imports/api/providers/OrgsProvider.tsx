@@ -26,7 +26,7 @@ const OrgsProvider = observer(({ children }: IOrgsProviderProps) => {
 
 	let subscription: Meteor.SubscriptionHandle
 	let cursorObserver: Meteor.LiveQueryHandle
-	let orgsCollection: OrgsCollection | undefined
+	let orgsCollection: OrgsCollection
 
 	const orgs = useTracker(() => {
 		if(!themeId || themeLoading) {
@@ -42,7 +42,7 @@ const OrgsProvider = observer(({ children }: IOrgsProviderProps) => {
 		subscription = Meteor.subscribe('organizations', themeId, {
 			onReady: () => {
 				const cursor = Organizations.find({ theme: themeId })
-				orgsCollection = new OrgsCollection(cursor.fetch(), theme, OrgStore)
+				orgsCollection = new OrgsCollection(cursor.fetch(), theme)
 
 				cursorObserver = cursor.observe({
 					added: orgs => orgsCollection.refreshData(orgs),

@@ -5,7 +5,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useData } from './DataProvider'
 import { Members } from '/imports/api/db'
-import { MembersCollection, MemberStore } from '/imports/api/stores'
+import { MembersCollection } from '/imports/api/stores'
 
 interface IMembersStoreContext {
 	members: MembersCollection | undefined
@@ -43,7 +43,7 @@ const MembersProvider = observer(({ children }: IMembersProviderProps) => {
 	 * Method to be called when subscription is ready
 	 */
 	const subscriptionReady = (cursor: Mongo.Cursor<Partial<Member>, Member>) => {
-		membersCollection = new MembersCollection(cursor.fetch(), MemberStore)
+		membersCollection = new MembersCollection(cursor.fetch())
 
 		cursorObserver = cursor.observe({
 			added: members => membersCollection.refreshData(members),

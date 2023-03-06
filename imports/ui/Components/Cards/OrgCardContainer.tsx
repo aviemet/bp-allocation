@@ -1,5 +1,5 @@
 import React from 'react'
-import createContext from '/imports/lib/hooks/createCtx'
+import createContext from '../../../lib/hooks/createContext'
 import styled from '@emotion/styled'
 import { Box, SxProps } from '@mui/material'
 import { useWindowSize } from '/imports/ui/MediaProvider'

@@ -2,14 +2,14 @@ import TrackableCollection from './lib/TrackableCollection'
 import { computed, makeObservable } from 'mobx'
 import { sortBy } from 'lodash'
 import { filterTopOrgs } from '/imports/lib/orgsMethods'
-import TrackableStore from './lib/TrackableStore'
+import OrgStore from './OrgStore'
 
 class OrgsCollection extends TrackableCollection<Organization> {
 	_theme: Theme
 
 	// Cache list of pre-existing pledges to prevent animating stale data
-	constructor(data: Organization[], theme: Theme, Store: TrackableStore<Organization>) {
-		super(data, Store)
+	constructor(data: Organization[], theme: Theme) {
+		super(data, OrgStore)
 
 		makeObservable(this, {
 			pledges: computed,
@@ -25,7 +25,7 @@ class OrgsCollection extends TrackableCollection<Organization> {
 		let pledges: MatchPledge[] = []
 
 		const topOrgs = filterTopOrgs(this.values, this._theme)
-		topOrgs.forEach(org => {
+		topOrgs.forEach((org: Organization) => {
 			org.pledges.forEach(pledge => {
 				pledges.push(
 					Object.assign(

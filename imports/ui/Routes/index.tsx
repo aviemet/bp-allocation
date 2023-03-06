@@ -1,9 +1,9 @@
 import { Meteor } from 'meteor/meteor'
 import React from 'react'
-// import { Navigate, createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Route, Router, Redirect } from 'wouter'
-import { Link } from '/imports/ui/Components'
 import ShortRoute from './ShortRoute'
+import LoadingRoute from './LoadingRoute'
+import PrivateRoute from './PrivateRoute'
 import { observer } from 'mobx-react-lite'
 import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from '/imports/ui/Layouts'
 import Presentation from '/imports/ui/Presentation'
@@ -12,77 +12,6 @@ import Pledges from '/imports/ui/Pledges'
 import Login from '/imports/ui/Welcome/Login'
 import Kiosk from '/imports/ui/Kiosk'
 import FourOhFour from './404'
-import ThemesList from '../Admin/ThemesList'
-import Admin from '../Admin'
-import LoadingRoute from './LoadingRoute'
-
-// const router = createBrowserRouter([
-// 	{
-// 		path: '/',
-// 		element: <Navigate to='/admin' />,
-// 	},
-// 	{
-// 		path: '/login',
-// 		element: !Meteor.userId()
-// 			?
-// 			<><WelcomeLayout><Login /></WelcomeLayout></>
-// 			:
-// 			<Navigate to='/' />,
-// 	},
-// 	{
-// 		path: '/admin',
-// 		element: process.env.NODE_ENV !== 'development' && !Meteor.userId()
-// 			?
-// 			<Navigate to='/login' />
-// 			:
-// 			<AdminLayout />,
-// 	},
-// 	{
-// 		path: '/presentation/:id',
-// 		element:
-// 		<PresentationLayout>
-// 			<Presentation />
-// 		</PresentationLayout>,
-// 	},
-// 	{
-// 		path: '/v/:themeSlug/:memberCode',
-// 		element: <ShortRoute />,
-// 	},
-// 	{
-// 		path: '/voting/:id/:member',
-// 		element:
-// 		<KioskLayout>
-// 			<Kiosk />
-// 		</KioskLayout>,
-// 	},
-// 	{
-// 		path: '/kiosk/:id',
-// 		// loader:
-// 		element:
-// 		<KioskLayout>
-// 			<Kiosk />
-// 		</KioskLayout>,
-// 	},
-// 	{
-// 		path: '/simulation/:id',
-// 		// loader:
-// 		element: <PresentationLayout>
-// 			<Simulation />
-// 		</PresentationLayout>,
-// 	},
-// 	{
-// 		path: '/pledges/:id',
-// 		// loader:
-// 		element:
-// 		<KioskLayout>
-// 			<Pledges />
-// 		</KioskLayout>,
-// 	},
-// ])
-
-// const AppRoutes = () => <RouterProvider router={ router } />
-
-
 
 const AppRoutes = observer(() => (
 	<Router>
@@ -97,13 +26,11 @@ const AppRoutes = observer(() => (
 
 		<Route path='/'><Redirect to='/admin' /></Route>
 
-		<Route path='/admin'>{
-			process.env.NODE_ENV !== 'development' && !Meteor.userId()
-				?
-				<Redirect to='/login' />
-				:
+		<Route path='/admin'>
+			<PrivateRoute>
 				<AdminLayout />
-		}</Route>
+			</PrivateRoute>
+		</Route>
 
 		<LoadingRoute path='/presentation/:id'>
 			<PresentationLayout>

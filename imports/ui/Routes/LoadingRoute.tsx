@@ -21,7 +21,7 @@ const LoadingRoute = observer(({ children, path, ...props }: ILoadingRoute) => {
 	const [isLoading, setIsLoading] = useState(themeLoading || orgsLoading || settingsLoading)
 
 	const [location] = useLocation()
-	const [match, params] = useRoute(location)
+	const [_, params] = useRoute(location)
 
 	useEffect(() => {
 		if(!params?.id) return
