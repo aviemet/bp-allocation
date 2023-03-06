@@ -1,7 +1,6 @@
 import React from 'react'
-
-import { Link } from 'react-router-dom'
-
+// import { Link } from 'react-router-dom'
+import { Link } from '/imports/ui/Components'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings } from '/imports/api/providers'
 import { PresentationSettingsMethods } from '/imports/api/methods'
@@ -19,7 +18,6 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
 import BarChartIcon from '@mui/icons-material/BarChart'
 import CheckIcon from '@mui/icons-material/Check'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-
 import {
 	ChitVotingActiveToggle,
 	FundsVotingActiveToggle,
@@ -27,9 +25,8 @@ import {
 	ColorizeTopOrgsToggle,
 	AnimateTopOrgsToggle,
 	ShowLeverageToggle,
-	ShowSaveValuesToggle
+	ShowSaveValuesToggle,
 } from '/imports/ui/Components/Toggles'
-
 import PresentationNavButton from './PresentationNavButton'
 import { Loading } from '/imports/ui/Components'
 
@@ -54,7 +51,7 @@ const PresentationPane = observer(() => {
 				colorizeOrgs: false,
 				resultsVisited: false,
 				resultsOffset: 0,
-			}
+			},
 		})
 
 	}
@@ -63,8 +60,8 @@ const PresentationPane = observer(() => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
-				resultsVisited: true
-			}
+				resultsVisited: true,
+			},
 		})
 	}
 
@@ -76,9 +73,9 @@ const PresentationPane = observer(() => {
 				<Grid container spacing={ 2 }>
 					<Grid item xs={ 12 } md={ 4 }>
 
-						{/************
+						{ /************
 							* Intro/Title Page
-							************/}
+							************/ }
 						<PresentationNavButton
 							page='intro'
 							label="Title Page"
@@ -89,9 +86,9 @@ const PresentationPane = observer(() => {
 					</Grid>
 					<Grid item xs={ 12 } md={ 4 }>
 
-						{/************
+						{ /************
 							* Participating Organizations
-							************/}
+							************/ }
 						<PresentationNavButton
 							page='orgs'
 							label="Participating Organizations"
@@ -103,9 +100,9 @@ const PresentationPane = observer(() => {
 					</Grid>
 					<Grid item xs={ 12 } md={ 4 }>
 
-						{/************
+						{ /************
 							* Timer
-							************/}
+							************/ }
 						<PresentationNavButton
 							page='timer'
 							label="Timer"
@@ -121,9 +118,9 @@ const PresentationPane = observer(() => {
 					</Grid>
 					<Grid item xs={ 12 } md={ 4 }>
 
-						{/************
+						{ /************
 							* Top Organizations
-							************/}
+							************/ }
 						<PresentationNavButton
 							page='toporgs'
 							label="Top Organizations"
@@ -135,9 +132,9 @@ const PresentationPane = observer(() => {
 					</Grid>
 					<Grid item xs={ 12 } md={ 4 }>
 
-						{/************
+						{ /************
 							* Allocation/Evaluation
-							************/}
+							************/ }
 						<PresentationNavButton
 							page='allocation'
 							label="Allocation"
@@ -154,9 +151,9 @@ const PresentationPane = observer(() => {
 					</Grid>
 					<Grid item xs={ 12 } md={ 4 }>
 
-						{/************
+						{ /************
 							* Results Page
-							************/}
+							************/ }
 						<PresentationNavButton
 							page='results'
 							label="Results"

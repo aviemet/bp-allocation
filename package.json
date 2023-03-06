@@ -52,7 +52,8 @@
     "react-transition-group": "^4.4.5",
     "recharts": "^2.4.3",
     "simpl-schema": "^3.4.1",
-    "twilio": "^3.84.1"
+    "twilio": "^3.84.1",
+    "wouter": "^2.10.0"
   },
   "devDependencies": {
     "@babel/types": "^7.21.2",

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Link,useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Link } from '/imports/ui/Components'
 import { observer } from 'mobx-react-lite'
 import { useMessage } from '/imports/api/providers'
 import { MessageMethods } from '/imports/api/methods'

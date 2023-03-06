@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Link } from '/imports/ui/Components'
 import numeral from 'numeral'
 import { observer } from 'mobx-react-lite'
 import { useOrgs } from '/imports/api/providers'

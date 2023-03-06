@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useData, useTheme, useOrgs, useSettings } from '/imports/api/providers'
-import { Navigate, useParams } from 'react-router-dom'
+// import { Navigate, useParams } from 'react-router-dom'
+import { Redirect, useRoute, useLocation } from 'wouter'
 import { Loading } from '/imports/ui/Components'
 
 interface ILoadingRoute {
@@ -19,13 +20,14 @@ const LoadingRoute = observer(({ children, path, ...props }: ILoadingRoute) => {
 
 	const [isLoading, setIsLoading] = useState(themeLoading || orgsLoading || settingsLoading)
 
-	const { id } = useParams()
+	const [location] = useLocation()
+	const [match, params] = useRoute(location)
 
 	useEffect(() => {
-		if(!id) return
+		if(!params?.id) return
 
-		data.themeId = id
-	}, [id])
+		data.themeId = params.id
+	}, [params])
 
 	useEffect(() => {
 		const loadingTest = themeLoading || orgsLoading || settingsLoading
@@ -34,10 +36,10 @@ const LoadingRoute = observer(({ children, path, ...props }: ILoadingRoute) => {
 		}
 	}, [themeLoading, orgsLoading, settingsLoading])
 
-	if(id && isLoading) {
+	if(params?.id && isLoading) {
 		return <Loading />
-	} else if(id && !theme) {
-		return <Navigate to='/404' />
+	} else if(params?.id && !theme) {
+		return <Redirect to='/404' />
 	}
 	return <>{ children }</>
 

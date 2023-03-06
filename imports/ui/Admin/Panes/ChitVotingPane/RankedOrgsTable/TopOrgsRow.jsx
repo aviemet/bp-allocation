@@ -25,21 +25,21 @@ const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }) => {
 	const topOrgToggle = (e, data) => {
 		ThemeMethods.topOrgToggle.call({
 			theme_id: themeId,
-			org_id: org._id
+			org_id: org._id,
 		})
 	}
 
 	const rowSx = inTopOrgs ? { sx: { backgroundColor: 'table.highlight' } } : {}
 
-	return(
+	return (
 		<TableRow { ...rowSx }>
 
-			{/* Title */}
+			{ /* Title */ }
 			<TableCell>
 				<Stack direction="row" justifyContent="space-between" alignItems="baseline">
 					<div>{ org.title }</div>
 
-					{/* Save and unsave buttons */}
+					{ /* Save and unsave buttons */ }
 					{ !hideAdminFields && <>
 						{ !inTopOrgs && <SaveButton org={ org } /> }
 						{ isSaved && <UnSaveButton org={ org } />  }
@@ -47,10 +47,10 @@ const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }) => {
 				</Stack>
 			</TableCell>
 
-			{/* Votes */}
+			{ /* Votes */ }
 			<TableCell align='center'>{ roundFloat(org.votes, 1) }</TableCell>
 
-			{/* Lock */}
+			{ /* Lock */ }
 			<TableCell padding="checkbox">
 				<Switch
 					onChange={ topOrgToggle }
@@ -68,7 +68,7 @@ TopOrgsRow.propTypes = {
 	inTopOrgs: PropTypes.bool,
 	hideAdminFields: PropTypes.bool,
 	isSaved: PropTypes.bool,
-	isLocked: PropTypes.bool
+	isLocked: PropTypes.bool,
 }
 
 export default TopOrgsRow

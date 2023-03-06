@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Link } from '/imports/ui/Components'
 import { useOrgs } from '/imports/api/providers'
 import { OrganizationMethods } from '/imports/api/methods'
 import { OrganizationSchema } from '/imports/api/db/schema'

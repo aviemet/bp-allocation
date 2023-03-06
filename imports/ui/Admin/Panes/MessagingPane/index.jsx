@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTheme, useMessages } from '/imports/api/providers'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
+import { Link } from '/imports/ui/Components'
 import { styled } from '@mui/material/styles'
 import {
 	Box,
@@ -11,7 +12,7 @@ import {
 	TableBody,
 	TableRow,
 	TableCell,
-	Typography
+	Typography,
 } from '@mui/material'
 import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
 import { Loading } from '/imports/ui/Components'

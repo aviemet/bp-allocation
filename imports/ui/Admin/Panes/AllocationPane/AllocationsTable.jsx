@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 import numeral from 'numeral'
 import { Map } from 'immutable'
 
@@ -102,25 +101,25 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 
 						<TableCell>Totals:</TableCell>
 
-						{/* Voted Amount */}
+						{ /* Voted Amount */ }
 						<TableCell>{
 							numeral(topOrgs.reduce((sum, org) => { return sum + org.votedTotal }, 0)).format('$0,0')
 							// numeral(totals.get('votedTotal')).format('$0,0')
 						}</TableCell>
 
-						{/* Total Allocated */}
+						{ /* Total Allocated */ }
 						<TableCell>{
 							numeral(topOrgs.reduce((sum, org) => { return sum + org.allocatedFunds + org.leverageFunds }, 0)).format('$0,0')
 							// numeral(totals.get('allocatedFunds')).format('$0,0')
 						}</TableCell>
 
-						{/* Original Ask*/}
+						{ /* Original Ask*/ }
 						<TableCell>{
 							numeral(topOrgs.reduce((sum, org) => { return sum + org.ask }, 0)).format('$0,0')
 							// numeral(totals.get('ask')).format('$0,0')
 						}</TableCell>
 
-						{/* Need (Difference remaining) */}
+						{ /* Need (Difference remaining) */ }
 						<TableCell>{
 							numeral(topOrgs.reduce((sum, org) => { return sum + org.need - org.leverageFunds }, 0)).format('$0,0')
 							// numeral(totals.get('need')).format('$0,0')
@@ -128,7 +127,7 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 
 						{ !hideAdminFields &&  <TableCell>
 							{ settings.useKioskFundsVoting && <>
-								{`(${theme.fundsVotesCast}/${theme.totalMembers})`} <span style={ { fontSize: '0.75em' } }>Members Voted</span>
+								{ `(${theme.fundsVotesCast}/${theme.totalMembers})` } <span style={ { fontSize: '0.75em' } }>Members Voted</span>
 							</> }
 						</TableCell> }
 
@@ -181,11 +180,11 @@ const StyledTable = styled(Table)(({ theme }) => ({
 }))
 
 AllocationPane.propTypes = {
-	hideAdminFields: PropTypes.bool
+	hideAdminFields: PropTypes.bool,
 }
 
 AllocationPane.defaultProps = {
-	hideAdminFields: false
+	hideAdminFields: false,
 }
 
 export default AllocationPane

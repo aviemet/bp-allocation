@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
+import { Link } from '/imports/ui/Components'
 
 import { observer } from 'mobx-react-lite'
 import {
@@ -25,7 +26,7 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 	return (
 		<Grid container spacing={ 2 }>
 
-			{/* Breakdown Segment */}
+			{ /* Breakdown Segment */ }
 			<Grid item xs={ 12 }>
 				<Breakdown />
 			</Grid>
@@ -54,11 +55,11 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 })
 
 AllocationPane.propTypes = {
-	hideAdminFields: PropTypes.bool
+	hideAdminFields: PropTypes.bool,
 }
 
 AllocationPane.defaultProps = {
-	hideAdminFields: false
+	hideAdminFields: false,
 }
 
 export default AllocationPane

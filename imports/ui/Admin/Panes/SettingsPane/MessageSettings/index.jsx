@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useData, useMessages, useMembers } from '/imports/api/providers'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Link } from '/imports/ui/Components'
 import { MessageMethods } from '/imports/api/methods'
 
 import SortableTable from '/imports/ui/Components/SortableTable'

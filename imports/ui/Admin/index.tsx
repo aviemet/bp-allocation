@@ -1,5 +1,6 @@
 import React from 'react'
-import { Route, Routes, Navigate } from 'react-router-dom'
+// import { Route, Routes, Navigate } from 'react-router-dom'
+import { Router, Route, Redirect } from 'wouter'
 
 import Container from '@mui/material/Container'
 
@@ -28,42 +29,42 @@ const Admin = () => {
 
 	return (
 		<Container>
-			<Routes>
-				<Route path='/admin/:id/orgs' element={ <OrganizationsPane /> } />
-				<Route path='/admin/:id/orgs/import' element={ <OrganizationsImport /> } />
+			<Router>
+				<Route path='/admin/:id/orgs'><OrganizationsPane /></Route>
+				<Route path='/admin/:id/orgs/import'><OrganizationsImport /></Route>
 
-				<Route path='/admin/:id/orgs/new' element={ <OrganizationsEdit /> } />
-				<Route path='/admin/:id/orgs/:orgId' element={ <OrganizationsEdit /> } />
+				<Route path='/admin/:id/orgs/new'><OrganizationsEdit /></Route>
+				<Route path='/admin/:id/orgs/:orgId'><OrganizationsEdit /></Route>
 
-				<Route path='/admin/:id/members' element={ <MembersPane /> } />
-				<Route path='/admin/:id/members/import' element={ <MembersImport /> } />
+				<Route path='/admin/:id/members'><MembersPane /></Route>
+				<Route path='/admin/:id/members/import'><MembersImport /></Route>
 
-				<Route path='/admin/:id/members/new' element={ <MembersEdit /> } />
-				<Route path='/admin/:id/members/:memberId' element={ <MembersEdit /> } />
+				<Route path='/admin/:id/members/new'><MembersEdit /></Route>
+				<Route path='/admin/:id/members/:memberId'><MembersEdit /></Route>
 
-				<Route path='/admin/:id/chits' element={ <ChitVotingPane /> } />
+				<Route path='/admin/:id/chits'><ChitVotingPane /></Route>
 
-				<Route path='/admin/:id/allocation' element={ <AllocationPane /> } />
+				<Route path='/admin/:id/allocation'><AllocationPane /></Route>
 
-				<Route path='/admin/:id/pledges' element={ <PledgesPane /> } />
+				<Route path='/admin/:id/pledges'><PledgesPane /></Route>
 
-				<Route path='/admin/:id/leverage' element={ <LeveragePane /> } />
+				<Route path='/admin/:id/leverage'><LeveragePane /></Route>
 
-				<Route path='/admin/:id/messaging' element={ <MessagingPane /> } />
+				<Route path='/admin/:id/messaging'><MessagingPane /></Route>
 
-				<Route path='/admin/:id' element={ <PresentationPane /> } />
-				<Route path='/admin/:id/presentation' element={ <PresentationPane /> } />
+				<Route path='/admin/:id'><PresentationPane /></Route>
+				<Route path='/admin/:id/presentation'><PresentationPane /></Route>
 
 				{ /* <Route path='/admin/:id/settings' render={ ({ match }) => (
 					<Navigate to={ `/admin/${match.params.id}/settings/general` } />
 				) } /> */ }
-				<Route path='/admin/:id/settings/:activeTab' element={ <SettingsPane /> } />
-				<Route path='/admin/:id/settings/messages/new/:type' element={ <MessageEdit /> } />
-				<Route path='/admin/:id/settings/messages/:messageId' element={ <MessageEdit /> } />
+				<Route path='/admin/:id/settings/:activeTab'><SettingsPane /></Route>
+				<Route path='/admin/:id/settings/messages/new/:type'><MessageEdit /></Route>
+				<Route path='/admin/:id/settings/messages/:messageId'><MessageEdit /></Route>
 
-				<Route path='/admin/:id/overview' element={ <OverviewPane /> } />
+				<Route path='/admin/:id/overview'><OverviewPane /></Route>
 
-			</Routes>
+			</Router>
 		</Container>
 	)
 }
