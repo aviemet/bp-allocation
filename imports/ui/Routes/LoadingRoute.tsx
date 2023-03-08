@@ -1,26 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useData, useTheme, useOrgs, useSettings } from '/imports/api/providers'
-import { Redirect, Route, useRoute, useLocation } from 'wouter'
+import { Outlet, Route, RouteProps, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Loading } from '/imports/ui/Components'
-
-interface ILoadingRoute {
-	children: React.ReactNode
-	path: string
-}
 
 // Route which delays display of content until the theme data has fully loaded
 // Used for all views besides Admin
-const LoadingRoute = observer(({ children, path }: ILoadingRoute) => {
+const LoadingRoute = () => {
+	const params = useParams()
+	const navigate = useNavigate()
+
 	const data = useData()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { isLoading: orgsLoading } = useOrgs()
 	const { isLoading: settingsLoading } = useSettings()
 
 	const [isLoading, setIsLoading] = useState(themeLoading || orgsLoading || settingsLoading)
-
-	const [location, setLocation] = useLocation()
-	const [match, params] = useRoute('/admin/:id')
 
 	useEffect(() => {
 		if(!params?.id) return
@@ -37,25 +32,12 @@ const LoadingRoute = observer(({ children, path }: ILoadingRoute) => {
 
 	useEffect(() => {
 		if(!isLoading && !theme) {
-			setLocation('/404')
+			navigate('/404')
 		}
 	}, [isLoading])
 
-	return (
-		<Route path={ path }>{ isLoading ?
-			<Loading />
-			:
-			<>{ children }</>
-		}</Route>
-	)
+	if(isLoading) return <Loading />
+	return <Outlet />
+}
 
-	if(params?.id && isLoading) {
-		return <Loading />
-	} else if(params?.id && !theme) {
-		return <Redirect to='/404' />
-	}
-	return <>{ children }</>
-
-})
-
-export default LoadingRoute
+export default observer(LoadingRoute)

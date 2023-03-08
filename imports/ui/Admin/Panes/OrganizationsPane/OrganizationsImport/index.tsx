@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useLocation } from 'wouter'
+import { useNavigate } from 'react-router-dom'
 import { readCsv } from '/imports/lib/papaParseMethods'
 import { observer } from 'mobx-react-lite'
 import { OrganizationMethods } from '/imports/api/methods'
@@ -23,7 +23,7 @@ const ImportOrgs = observer(() => {
 
 	const fileInputRef = useRef(null)
 
-	const [location, setLocation] = useLocation()
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		fileInputRef.current.click()
@@ -52,7 +52,7 @@ const ImportOrgs = observer(() => {
 			}
 		})
 		enqueueSnackbar(`${data.length} Organization${ data.length === 1 ? '' : 's'} imported`, { variant: 'success' })
-		setLocation(`/admin/${theme._id}/orgs`)
+		navigate(`/admin/${theme._id}/orgs`)
 	}
 
 	const headingsMap = [

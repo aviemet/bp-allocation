@@ -1,10 +1,11 @@
 import React from 'react'
-import { Route } from 'wouter'
+import { Route, useMatch } from 'react-router-dom'
 import { Link } from '/imports/ui/Components'
 import { Box,Tab,Tabs } from '@mui/material'
 import GeneralSettings from './GeneralSettings'
 import MessageSettings from './MessageSettings'
 import AdvancedSettings from './AdvancedSettings'
+import { useData } from '/imports/api/providers'
 
 const panes = [
 	{
@@ -25,17 +26,20 @@ const panes = [
 ]
 
 const Settings = () => {
+	const { themeId } = useData()
 	const params = useMatch('/admin/:id/settings/:activeTab')
+
+	if(!themeId || !params?.params?.activeTab) return <></>
 
 	return (
 		<>
-			<Tabs value={ `/admin/${params?.params.id}/settings/${params?.params.activeTab}` }>
+			<Tabs value={ `/admin/${themeId}/settings/${params.params.activeTab}` }>
 				{ panes.map(pane => (
 					<Tab
 						key={ `tab-${pane.slug}` }
 						label={ pane.label }
-						value={ `/admin/${params?.params.id}/settings/${pane.slug}` }
-						to={ `/admin/${params?.params.id}/settings/${pane.slug}` }
+						value={ `/admin/${themeId}/settings/${pane.slug}` }
+						to={ `/admin/${themeId}/settings/${pane.slug}` }
 						component={ Link }
 					/>
 				)) }

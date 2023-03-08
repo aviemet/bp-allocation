@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Route, Router } from 'wouter'
+import { useParams, Route } from 'react-router-dom'
 import { Transition } from 'react-transition-group'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
@@ -11,7 +11,6 @@ import Topups from './Topups'
 import MemberLoginRequired from './MemberLoginRequired'
 import RemoteVoting from './RemoteVoting'
 import Results from '/imports/ui/Presentation/Pages/Results'
-import useParams from '/imports/lib/hooks/useParams'
 
 const Kiosk = observer(() => {
 	const { memberId } = useParams()
@@ -91,7 +90,7 @@ const Kiosk = observer(() => {
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{ state => (
 				<PageFader style={ { ...defaultStyle, ...transitionStyles[state] } }>
-					<Router base={ displayPage }>
+					<Route path={ displayPage }>
 
 						{ /* Orgs Grid */ }
 						<Route path={ data.KIOSK_PAGES.info }><KioskInfo /></Route>
@@ -121,7 +120,7 @@ const Kiosk = observer(() => {
 						{ /* Voting Results */ }
 						<Route path={ data.KIOSK_PAGES.results }><Results /></Route>
 
-					</Router>
+					</Route>
 
 				</PageFader>
 			) }

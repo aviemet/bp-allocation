@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useLocation } from 'wouter'
+import { useNavigate } from 'react-router-dom'
 import { readCsv } from '/imports/lib/papaParseMethods'
 import { sanitizeNames } from '/imports/lib/utils'
 
@@ -27,7 +27,7 @@ const ImportMembers = observer(() => {
 
 	const fileInputRef = useRef(null)
 
-	const [location, setLocation] = useLocation()
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		fileInputRef.current.click()
@@ -71,7 +71,7 @@ const ImportMembers = observer(() => {
 			}
 		})
 		enqueueSnackbar(`${data.length} Member${ data.length === 1 ? '' : 's'} imported`, { variant: 'success' })
-		setLocation(`/admin/${theme._id}/members`)
+		navigate(`/admin/${theme._id}/members`)
 	}
 
 	const headingsMap = [

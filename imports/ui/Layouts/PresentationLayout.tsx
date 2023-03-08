@@ -1,11 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 
-interface IPresentationLayoutProps {
-	children: React.ReactNode
-}
-
-const PresentationLayout = ({ children }: IPresentationLayoutProps) => {
+const PresentationLayout = ({ children }: {children: React.ReactNode}) => {
 	return (
 		<PresentationContainer id="presentationContainer">{ children }</PresentationContainer>
 	)

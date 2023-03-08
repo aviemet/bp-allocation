@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useLocation } from 'wouter'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Link } from '/imports/ui/Components'
 import { useOrgs, useTheme } from '/imports/api/providers'
 import { OrganizationMethods } from '/imports/api/methods'
@@ -13,14 +13,13 @@ import {
 	Stack,
 	Typography,
 } from '@mui/material'
-import useParams from '/imports/lib/hooks/useParams'
 
 const OrganizationsEdit = () => {
 	const { theme } = useTheme()
 	const { orgs } = useOrgs()
 
 	const { orgId } = useParams()
-	const [location, setLocation] = useLocation()
+	const navigate = useNavigate()
 
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 
@@ -59,7 +58,7 @@ const OrganizationsEdit = () => {
 
 	useEffect(() => {
 		if(formStatus === STATUS.SUCCESS) {
-			setTimeout(() => setLocation(`/admin/${theme._id}/orgs`), 1000)
+			setTimeout(() => navigate(`/admin/${theme._id}/orgs`), 1000)
 		}
 	}, [formStatus])
 

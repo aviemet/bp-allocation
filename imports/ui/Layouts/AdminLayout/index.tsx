@@ -1,10 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import React, { useState, useEffect } from 'react'
-import { Route, useLocation, useRoute, useRouter } from 'wouter'
+import { Outlet, useMatch, useParams } from 'react-router-dom'
 import { Link } from '/imports/ui/Components'
-import LoadingRoute from '/imports/ui/Routes/LoadingRoute'
-import ThemesList from '/imports/ui/Admin/ThemesList'
-import Admin from '/imports/ui/Admin'
 import {
 	Container,
 	AppBar as MuiAppBar,
@@ -25,7 +22,6 @@ import BarChartIcon from '@mui/icons-material/BarChart'
 import AdminLinks from './AdminLinks'
 import { observer } from 'mobx-react-lite'
 import { useData, useTheme } from '/imports/api/providers'
-import useParams from '/imports/lib/hooks/useParams'
 
 const drawerWidth = 175
 
@@ -33,15 +29,15 @@ const AdminLayout = observer(() => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const data = useData()
 
-	const [location, setLocation] = useLocation()
 	const { page } = useParams()
+	const isAdminRoot = useMatch('/admin')
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const [ drawerOpen, setDrawerOpen ] = useState(false)
 
 	useEffect(() => {
-		setDrawerOpen(location !== '/admin')
-	}, [location])
+		setDrawerOpen(!isAdminRoot)
+	}, [isAdminRoot])
 
 	const handleMenu = event => {
 		setAnchorEl(event.currentTarget)
@@ -126,13 +122,9 @@ const AdminLayout = observer(() => {
 			<Main open={ drawerOpen }>
 				<Container>
 					<Grid container>
-						<Route path='/admin'>
-							<ThemesList />
-						</Route>
 
-						<LoadingRoute path='/admin/:id'>
-							<Admin />
-						</LoadingRoute>
+						<Outlet />
+
 					</Grid>
 				</Container>
 			</Main>

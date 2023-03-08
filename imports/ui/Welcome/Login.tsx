@@ -1,13 +1,14 @@
 import { Meteor } from 'meteor/meteor'
 import React from 'react'
-import { useLocation } from 'wouter'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Grid, Button } from '@mui/material'
 import { useSnackbar } from 'notistack'
 
 const Login = () => {
 	const { enqueueSnackbar } = useSnackbar()
 
-	const [location, setLocation] = useLocation()
+	const location = useLocation()
+	const navigate = useNavigate()
 
 	const handleLogin = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		Meteor.loginWithGoogle({
@@ -28,7 +29,7 @@ const Login = () => {
 				console.error({ err })
 			} else {
 				let redirect = location.state && location.state.from ? location.state.from : '/'
-				setLocation(redirect)
+				navigate(redirect)
 			}
 		})
 	}

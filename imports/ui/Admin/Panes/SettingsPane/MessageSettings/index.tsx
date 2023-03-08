@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useData, useMessages, useMembers } from '/imports/api/providers'
-import { useLocation } from 'wouter'
+import { useLocation } from 'react-router-dom'
 import { Link } from '/imports/ui/Components'
 import { MessageMethods } from '/imports/api/methods'
 
@@ -88,7 +88,7 @@ const Messages = () => {
 	const [ modalContent, setModalContent ] = useState('')
 	const [ modalAction, setModalAction ] = useState()
 
-	const [location, setLocation] = useLocation()
+	const location = useLocation()
 
 	const handleBulkDelete = (selected, onSuccess) => {
 		console.log({ selected })

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useLocation } from 'wouter'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Link } from '/imports/ui/Components'
 import { observer } from 'mobx-react-lite'
 import { useData, useMessage } from '/imports/api/providers'
@@ -27,7 +27,6 @@ import {
 	Typography,
 } from '@mui/material'
 import { Loading } from '/imports/ui/Components'
-import useParams from '/imports/lib/hooks/useParams'
 
 const MessageEdit = observer(() => {
 	const { themeId } = useData()
@@ -43,7 +42,7 @@ const MessageEdit = observer(() => {
 		message = {}
 	}
 
-	const [location, setLocation] = useLocation()
+	const nagivate = useNavigate()
 
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 	const [preview, setPreview] = useState(message?.body || '')
@@ -70,7 +69,7 @@ const MessageEdit = observer(() => {
 					console.error(err)
 				} else {
 					setFormStatus(STATUS.SUCCESS)
-					setLocation(`/admin/${themeId}/settings/messages`)
+					nagivate(`/admin/${themeId}/settings/messages`)
 				}
 			})
 		} else {
@@ -80,7 +79,7 @@ const MessageEdit = observer(() => {
 					console.error(err)
 				} else {
 					setFormStatus(STATUS.SUCCESS)
-					setLocation(`/admin/${themeId}/settings/messages`)
+					nagivate(`/admin/${themeId}/settings/messages`)
 				}
 			})
 		}

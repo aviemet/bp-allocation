@@ -3,15 +3,13 @@ import { PresentationSettingsMethods } from '/imports/api/methods'
 import { PresentationSettingsSchema } from '/imports/api/db/schema'
 import { observer } from 'mobx-react-lite'
 import { useSettings } from '/imports/api/providers'
-
 import ResetOrgFundsButton from '/imports/ui/Components/Buttons/ResetOrgFundsButton'
 import ResetMessageStatusButton from '/imports/ui/Components/Buttons/ResetMessageStatusButton'
-
 import {
 	Grid,
 	Stack,
 } from '@mui/material'
-import { Form, TextInput, SubmitButton, STATUS, } from '/imports/ui/Components/Form'
+import { Form, TextInput, SubmitButton, STATUS } from '/imports/ui/Components/Form'
 import { Loading } from '/imports/ui/Components'
 
 const SettingsPane = observer(() => {
@@ -34,11 +32,10 @@ const SettingsPane = observer(() => {
 	}
 
 	const onSubmit = data => {
-		console.log({ data })
 		setFormStatus(STATUS.SUBMITTING)
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
-			data: data
+			data: data,
 		}, (err, res) => {
 			if(err) {
 				setFormStatus(STATUS.ERROR)
@@ -48,7 +45,7 @@ const SettingsPane = observer(() => {
 		})
 	}
 
-	if(settingsLoading) return(<Loading />)
+	if(settingsLoading) return (<Loading />)
 	return (
 		<>
 			<Form

@@ -36,5 +36,5 @@ peerlibrary:reactive-publish
 peerlibrary:related
 email@2.2.3
 hot-module-replacement@0.5.2
-typescript@4.7.4
 aldeed:collection2
+typescript

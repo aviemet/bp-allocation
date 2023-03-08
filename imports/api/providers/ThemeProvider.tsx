@@ -24,6 +24,7 @@ const ThemeProviderComponent = observer(({ children }: {children: React.ReactNod
 
 	// Setup Meteor tracker to subscribe to a Theme
 	const theme = useTracker(() => {
+		console.log({ themeId })
 		if(!themeId) {
 			if(subscription) subscription.stop()
 			if(cursorObserver) cursorObserver.stop()
@@ -38,7 +39,7 @@ const ThemeProviderComponent = observer(({ children }: {children: React.ReactNod
 		subscription = Meteor.subscribe('theme', themeId, {
 			onReady: () => {
 				const cursor = Themes.find({ _id: themeId })
-				themeStore = cursor ? new ThemeStore(cursor.fetch()[0]) : undefined
+				themeStore = new ThemeStore(cursor.fetch()[0])
 
 				cursorObserver = cursor.observe({
 					added: theme => themeStore.refreshData(theme),
@@ -53,7 +54,7 @@ const ThemeProviderComponent = observer(({ children }: {children: React.ReactNod
 		}
 
 	}, [themeId])
-
+	console.log({ theme })
 	return (
 		<ThemeProvider value={ theme }>
 			{ children }

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { useLocation } from 'wouter'
+import { useNavigate } from 'react-router-dom'
 import { Link } from '/imports/ui/Components'
 import numeral from 'numeral'
 import { observer } from 'mobx-react-lite'
@@ -39,7 +39,7 @@ const OrganizationsPane = observer(() => {
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 
-	const [location, setLocation] = useLocation()
+	const navigate = useNavigate()
 
 	const showDeleteModal = (org: Organization) => {
 		modalValuesRef.current.header = 'Permanently Delete This Organization?'
@@ -57,11 +57,11 @@ const OrganizationsPane = observer(() => {
 	const options = [
 		{
 			title: 'Add New Organization',
-			action: () => setLocation(`/admin/${theme._id}/orgs/new`),
+			action: () => navigate(`/admin/${theme._id}/orgs/new`),
 		},
 		{
 			title: 'Import From CSV',
-			action: () => setLocation(`/admin/${theme._id}/orgs/import`),
+			action: () => navigate(`/admin/${theme._id}/orgs/import`),
 		},
 	]
 
@@ -100,7 +100,7 @@ const OrganizationsPane = observer(() => {
 													horizontal: 'right',
 												} }
 											>
-												<Link to={ `/admin/${id}/orgs/${org._id}` }>
+												<Link to={ `/admin/${theme._id}/orgs/${org._id}` }>
 													<MenuItem onClick={ popupState.close } disableRipple>
 														<EditIcon />
 														Edit

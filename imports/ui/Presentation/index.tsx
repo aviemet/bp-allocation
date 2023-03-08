@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Route, useLocation } from 'wouter'
+import { Route, useLocation, useNavigate } from 'react-router-dom'
 import { Transition } from 'react-transition-group'
 import { observer } from 'mobx-react-lite'
 import { useTheme, useSettings } from '/imports/api/providers'
@@ -8,7 +8,8 @@ import { Intro, Orgs, Timer, TopOrgs, Allocation, Results } from '/imports/ui/Pr
 import { Loading } from '/imports/ui/Components'
 
 const Presentation = observer(() => {
-	const [location, setLocation] = useLocation()
+	const location = useLocation()
+	const navigate = useNavigate()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { settings, isLoading: settingsLoading } = useSettings()
 
@@ -24,7 +25,7 @@ const Presentation = observer(() => {
 			setShow(false)
 
 			setTimeout(() => {
-				setLocation(page)
+				navigate(page)
 				setShow(true)
 			}, FADE_DURATION)
 		}
@@ -40,22 +41,22 @@ const Presentation = observer(() => {
 			{ (state) => (
 				<PageFader style={ { ...defaultStyle, ...transitionStyles[state], width: '100%' } } id="presentationFader">
 					{ /* Intro */ }
-					<Route path={ `${location}/intro` }><Intro title={ title } question={ question } /></Route>
+					<Route path={ `${location}/intro` } element={ <Intro title={ title } question={ question } /> } />
 
 					{ /* Participating Organizations */ }
-					<Route path={ `${location}/orgs` }><Orgs /></Route>
+					<Route path={ `${location}/orgs` } element={ <Orgs /> } />
 
 					{ /* Timer */ }
-					<Route path={ `${location}/timer` }><Timer seconds={ settings.timerLength } /></Route>
+					<Route path={ `${location}/timer` } element={ <Timer seconds={ settings.timerLength } /> } />
 
 					{ /* Top Orgs */ }
-					<Route path={ `${location}/toporgs` }><TopOrgs /></Route>
+					<Route path={ `${location}/toporgs` } element={ <TopOrgs /> } />
 
 					{ /* Allocation */ }
-					<Route path={ `${location}/allocation` }><Allocation /></Route>
+					<Route path={ `${location}/allocation` } element={ <Allocation /> } />
 
 					{ /* Results */ }
-					<Route path={ `${location}/results` }><Results /></Route>
+					<Route path={ `${location}/results` } element={ <Results /> } />
 
 				</PageFader>
 			) }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useLocation } from 'wouter'
-import useParams from '/imports/lib/hooks/useParams'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useMembers, useTheme } from '/imports/api/providers'
 import { MemberMethods } from '/imports/api/methods'
 import { MemberSchema, MemberThemeSchema } from '/imports/api/db/schema'
@@ -22,7 +21,7 @@ const MembersEdit = () => {
 	const { members, isLoading: membersLoading } = useMembers()
 
 	const { memberId } = useParams()
-	const [location, setLocation] = useLocation()
+	const navigate = useNavigate()
 
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 
@@ -169,7 +168,7 @@ const MembersEdit = () => {
 
 					<Grid item xs={ 12 }>
 						<Stack direction="row" spacing={ 2 } justifyContent="end">
-							<Button color="error" onClick={ () => setLocation(`/admin/${theme.id}/members`) }>Cancel</Button>
+							<Button color="error" onClick={ () => navigate(`/admin/${theme.id}/members`) }>Cancel</Button>
 							<SubmitButton  type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Member</SubmitButton>
 						</Stack>
 					</Grid>
