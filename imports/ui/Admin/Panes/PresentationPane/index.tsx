@@ -167,7 +167,7 @@ const PresentationPane = observer(() => {
 			</Paper>
 
 			<Link to={ `/presentation/${theme._id}` } target='_blank'>
-				<PresentationNavButton page='intro' label="Launch Presentaion" Icon={ OpenInNewIcon } active={ false } />
+				<PresentationNavButton page='intro' label="Launch Presentation" Icon={ OpenInNewIcon } active={ false } />
 			</Link>
 
 		</>
