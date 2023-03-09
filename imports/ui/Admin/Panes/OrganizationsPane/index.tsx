@@ -16,6 +16,7 @@ import {
 	Grid,
 	IconButton,
 	Menu,
+	type MenuProps,
 	MenuItem,
 	Typography,
 } from '@mui/material'
@@ -26,6 +27,7 @@ import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
 import SplitButton from '/imports/ui/Components/Buttons/SplitButton'
 import DisplayHtml from '/imports/ui/Components/DisplayHtml'
 import { Loading } from '/imports/ui/Components'
+import { OrgStore } from '/imports/api/stores'
 
 const OrganizationsPane = observer(() => {
 	const { theme } = useTheme()
@@ -41,7 +43,7 @@ const OrganizationsPane = observer(() => {
 
 	const navigate = useNavigate()
 
-	const showDeleteModal = (org: Organization) => {
+	const showDeleteModal = (org: OrgStore) => {
 		modalValuesRef.current.header = 'Permanently Delete This Organization?'
 		modalValuesRef.current.content = `This will permanently remove ${org.title} from this theme and all associated data. This process cannot be undone.`
 		modalValuesRef.current.action = () => {
@@ -74,7 +76,7 @@ const OrganizationsPane = observer(() => {
 							Organizations
 						</Typography>
 					</Grid>
-					<Grid item xs={ 12 } md={ 4 } align="right">
+					<Grid item xs={ 12 } md={ 4 } justifyContent="flex-end">
 						<SplitButton options={ options } />
 					</Grid>
 				</Grid>
@@ -140,7 +142,7 @@ const OrganizationsPane = observer(() => {
 	)
 })
 
-const StyledMenu = styled((props) => (
+const StyledMenu = styled((props: MenuProps) => (
 	<Menu
 		elevation={ 0 }
 		anchorOrigin={ {
