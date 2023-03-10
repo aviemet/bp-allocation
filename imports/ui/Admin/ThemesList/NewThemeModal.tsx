@@ -6,13 +6,18 @@ import ContentModal from '/imports/ui/Components/Dialogs/ContentModal'
 import { ThemeMethods } from '/imports/api/methods'
 import { ThemeSchema } from '/imports/api/db/schema'
 
+type NewThemeFormValues = {
+	title: string
+	question: string
+}
+
 const NewThemeModal = () => {
 	const navigate = useNavigate()
 
 	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<typeof STATUS[keyof typeof STATUS]>(STATUS.READY)
 
-	const onSubmit = data => {
+	const onSubmit = (data: NewThemeFormValues) => {
 		setFormStatus(STATUS.SUBMITTING)
 		ThemeMethods.create.call(data, (err, res) => {
 			if(err) {
