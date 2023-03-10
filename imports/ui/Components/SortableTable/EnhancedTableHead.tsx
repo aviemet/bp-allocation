@@ -10,7 +10,7 @@ import {
 	TableSortLabel,
 } from '@mui/material'
 
-export type TTableHeadCells = {
+export type TableHeadProps = {
 	id: string
 	label: string
 	sort?: boolean
@@ -20,10 +20,10 @@ export type TTableHeadCells = {
 	width?: string
 }
 
-interface IEnhancedTableHeadProps {
-	headCells: TTableHeadCells[]
+interface EnhancedTableHeadProps {
+	headCells: TableHeadProps[]
 	spanForCollapse?: boolean
-	tableHeadTopRow?: TTableHeadCells[]
+	tableHeadTopRow?: TableHeadProps[]
 	numSelected: number
 	onRequestSort: (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, property: string) => void
 	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -44,16 +44,16 @@ const EnhancedTableHead = ({
 	rowCount,
 	onRequestSort,
 	selectable = true,
-}: IEnhancedTableHeadProps) => {
-	const cellsWithDefaults = headCells.map((cell, i) => {
-		const cellWithDefaults = {
+}: EnhancedTableHeadProps) => {
+	const cellsWithDefaults: TableHeadProps[] = headCells.map((cell, i) => {
+		const cellWithDefaults: TableHeadProps = {
 			disablePadding: false,
 			sort: true,
 			align: 'left',
 			span: 1,
 			...cell,
 		}
-		if(spanForCollapse && i === 0) {
+		if(cellWithDefaults.span !== undefined && spanForCollapse && i === 0) {
 			cellWithDefaults.span++
 		}
 		return cellWithDefaults
@@ -88,7 +88,7 @@ const EnhancedTableHead = ({
 						align={ headCell.align }
 						padding={ headCell.disablePadding ? 'none' : 'normal' }
 						sortDirection={ orderBy === headCell.id ? order : false }
-						colSpan={ headCell.span > 1 ? headCell.span : undefined }
+						colSpan={ headCell.span !== undefined && headCell.span > 1 ? headCell.span : undefined }
 						width={ headCell.width ? headCell.width : '' }
 					>
 						{ headCell.sort ? <TableSortLabel

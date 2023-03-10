@@ -12,17 +12,17 @@ import {
 	type TableProps,
 } from '@mui/material'
 import { getComparator, stableSort } from './sort'
-import EnhancedTableHead, { TTableHeadCells } from './EnhancedTableHead'
+import EnhancedTableHead, { TableHeadProps } from './EnhancedTableHead'
 import EnhancedTableToolbar from './EnhancedTableToolbar'
 import EnhancedTableRow from './EnhancedTableRow'
 
-interface ISortableTableProps<R> extends TableProps {
+interface SortableTableProps<R extends BaseCollection> extends Omit<TableProps, 'title'> {
 	title: React.ReactNode
-	headCells: TTableHeadCells[]
-	tableHeadTopRow: unknown[]
-	rows: unknown[]
+	headCells: TableHeadProps[]
+	tableHeadTopRow: TableHeadProps[]
+	rows: R[]
 	render: (record: R) => React.ReactNode
-	collapse: (record: unknown) => React.ReactNode
+	collapse?: (record: unknown) => React.ReactNode
 	striped: boolean
 	defaultOrderBy: string
 	defaultDirection: 'asc'|'desc'
@@ -37,7 +37,7 @@ interface ISortableTableProps<R> extends TableProps {
 	fixed: boolean
 }
 
-const SortableTable = <R extends Record<string, unknown> = any>({
+const SortableTable = <R extends BaseCollection>({
 	title,
 	headCells,
 	tableHeadTopRow,
@@ -57,10 +57,10 @@ const SortableTable = <R extends Record<string, unknown> = any>({
 	selectable = false,
 	fixed = false,
 	...props
-}: ISortableTableProps<R>) => {
+}: SortableTableProps<R>) => {
 	const [order, setOrder] = useState(defaultDirection)
 	const [orderBy, setOrderBy] = useState(defaultOrderBy || headCells[0].id)
-	const [selected, setSelected] = useState(Set())
+	const [selected, setSelected] = useState(Set<string>())
 	const [page, setPage] = useState(0)
 	const [rowsPerPage, setRowsPerPage] = useState(paginationCounts[0])
 
@@ -95,11 +95,11 @@ const SortableTable = <R extends Record<string, unknown> = any>({
 		})
 	}
 
-	const handleChangePage = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, newPage: number) => {
+	const handleChangePage = (event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: number) => {
 		setPage(newPage)
 	}
 
-	const handleChangeRowsPerPage = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+	const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		setRowsPerPage(parseInt(event.target.value, 10))
 		setPage(0)
 	}
@@ -115,8 +115,8 @@ const SortableTable = <R extends Record<string, unknown> = any>({
 	// Avoid a layout jump when reaching the last page with empty rows.
 	const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
-	const variants = []
-	if(striped) variants.push(`striped${ collapse ? '-collapse' : ''}`)
+	type TableVariants = 'striped'|'striped-collapse'|undefined
+	const variants: TableVariants = striped ? `striped${ collapse ? '-collapse' : ''}` : undefined
 
 	return (
 		<Box sx={ { width: '100%' } }>
@@ -137,7 +137,7 @@ const SortableTable = <R extends Record<string, unknown> = any>({
 						} }
 						aria-labelledby="tableTitle"
 						size={ dense ? 'small' : 'medium' }
-						variants={ variants.join(' ') }
+						// variant={ variants }
 						{ ...props }
 					>
 						<EnhancedTableHead
@@ -153,8 +153,8 @@ const SortableTable = <R extends Record<string, unknown> = any>({
 							selectable={ selectable }
 						/>
 						<TableBody>
-							{ doPagination(stableSort(rows, getComparator(order, orderBy)))
-								.map((row, i) => (
+							{ doPagination(stableSort(rows, getComparator(order, orderBy))
+								.map(row => (
 									<EnhancedTableRow
 										key={ row._id }
 										headCells={ headCells }
@@ -166,7 +166,7 @@ const SortableTable = <R extends Record<string, unknown> = any>({
 										row={ row }
 										selectable={ selectable }
 									/>
-								))
+								)))
 							}
 							{ emptyRows > 0 && (
 								<TableRow
