@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, useMatch } from 'react-router-dom'
+import { Route, useMatch, useNavigate } from 'react-router-dom'
 import { Link } from '/imports/ui/Components'
 import { Box,Tab,Tabs } from '@mui/material'
 import GeneralSettings from './GeneralSettings'
@@ -28,12 +28,15 @@ const panes = [
 const Settings = () => {
 	const { themeId } = useData()
 	const params = useMatch('/admin/:id/settings/:activeTab')
+	const navigate = useNavigate()
 
-	if(!themeId || !params?.params?.activeTab) return <></>
+	if(!themeId) return <></>
+
+	if(!params?.params?.activeTab) navigate(`/admin/${themeId}/settings/general`)
 
 	return (
 		<>
-			<Tabs value={ `/admin/${themeId}/settings/${params.params.activeTab}` }>
+			<Tabs value={ `/admin/${themeId}/settings/${params?.params.activeTab}` }>
 				{ panes.map(pane => (
 					<Tab
 						key={ `tab-${pane.slug}` }

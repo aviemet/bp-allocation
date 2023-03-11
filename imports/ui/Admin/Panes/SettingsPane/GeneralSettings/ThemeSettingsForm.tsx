@@ -10,13 +10,13 @@ import {
 	Grid,
 	InputAdornment,
 } from '@mui/material'
-import { Form, TextInput, Switch, SubmitButton, STATUS, } from '/imports/ui/Components/Form'
+import { Form, TextInput, Switch, SubmitButton, STATUS } from '/imports/ui/Components/Form'
 import { Loading } from '/imports/ui/Components'
 
 const SettingsPane = observer(() => {
 	const { theme } = useTheme()
 
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<Values<typeof STATUS>>(STATUS.READY)
 
 	const sanitizeData = data => {
 		const sanitizedData = data
@@ -31,7 +31,7 @@ const SettingsPane = observer(() => {
 		setFormStatus(STATUS.SUBMITTING)
 		ThemeMethods.update.call({
 			id: theme._id,
-			data: data
+			data: data,
 		}, (err, res) => {
 			if(err) {
 				setFormStatus(STATUS.READY)
@@ -64,7 +64,7 @@ const SettingsPane = observer(() => {
 		>
 			<Grid container spacing={ 2 }>
 				<Grid item xs={ 12 }>
-					{/* Title */}
+					{ /* Title */ }
 					<TextInput
 						name="title"
 						label="Theme Title"
@@ -72,7 +72,7 @@ const SettingsPane = observer(() => {
 				</Grid>
 
 				<Grid item xs={ 12 }>
-					{/* Question */}
+					{ /* Question */ }
 					<TextInput
 						name="question"
 						label="Theme Question"
@@ -80,7 +80,7 @@ const SettingsPane = observer(() => {
 				</Grid>
 
 				<Grid item xs={ 12 } md={ 6 }>
-					{/* Total Leverage Amount */}
+					{ /* Total Leverage Amount */ }
 					<TextInput
 						name="leverageTotal"
 						label="Total Pot"
@@ -96,7 +96,7 @@ const SettingsPane = observer(() => {
 				</Grid>
 
 				<Grid item xs={ 12 } md={ 6 }>
-					{/* Chit Weight */}
+					{ /* Chit Weight */ }
 					<TextInput
 						name="chitWeight"
 						type="number"
@@ -105,7 +105,7 @@ const SettingsPane = observer(() => {
 				</Grid>
 
 				<Grid item xs={ 12 } md={ 6 }>
-					{/* Match Ratio */}
+					{ /* Match Ratio */ }
 					<TextInput
 						name="matchRatio"
 						type="number"
@@ -114,7 +114,7 @@ const SettingsPane = observer(() => {
 				</Grid>
 
 				<Grid item xs={ 12 } md={ 6 }>
-					{/* Consolation Amount */}
+					{ /* Consolation Amount */ }
 					<TextInput
 						name="consolationAmount"
 						label="Amount for bottom orgs"
@@ -125,7 +125,7 @@ const SettingsPane = observer(() => {
 				</Grid>
 
 				<Grid item xs={ 12 } md={ 6 }>
-					{/* Consolation Active */}
+					{ /* Consolation Active */ }
 					<FormControlLabel
 						label="Use Consolation?"
 						control={ <Switch name="consolationActive" /> }

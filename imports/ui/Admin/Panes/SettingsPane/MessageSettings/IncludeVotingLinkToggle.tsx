@@ -9,12 +9,12 @@ const includeVotingLinkToggle = ({ message }) => {
 		MessageMethods.update.call({
 			id: message._id,
 			data: {
-				includeLink: e.target.checked
-			}
+				includeLink: e.target.checked,
+			},
 		})
 	}
 
-	return(
+	return (
 		<Checkbox
 			onClick={ saveValue }
 			checked={ message.includeLink || false }
@@ -23,7 +23,7 @@ const includeVotingLinkToggle = ({ message }) => {
 }
 
 includeVotingLinkToggle.propTypes = {
-	message: PropTypes.object.isRequired
+	message: PropTypes.object.isRequired,
 }
 
 export default includeVotingLinkToggle

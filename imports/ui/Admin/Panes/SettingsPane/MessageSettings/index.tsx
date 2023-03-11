@@ -11,7 +11,7 @@ import {
 	Stack,
 	TableCell,
 } from '@mui/material'
-import IncludeVotingLinkToggle from './IncludevotingLinkToggle'
+import IncludeVotingLinkToggle from './IncludeVotingLinkToggle'
 import ActiveToggle from './ActiveToggle'
 import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
 import { Loading } from '/imports/ui/Components'
@@ -86,12 +86,11 @@ const Messages = () => {
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState('')
 	const [ modalContent, setModalContent ] = useState('')
-	const [ modalAction, setModalAction ] = useState()
+	const [ modalAction, setModalAction ] = useState<() => void>()
 
 	const location = useLocation()
 
 	const handleBulkDelete = (selected, onSuccess) => {
-		console.log({ selected })
 		const plural = selected.length > 1
 
 		setModalHeader(`Permanently delete message${plural ? 's' : ''}?`)

@@ -1,17 +1,19 @@
 import { Meteor } from 'meteor/meteor'
-import React, { useContext } from 'react'
+import React from 'react'
 import { observer } from 'mobx-react-lite'
 
 import { useTracker } from 'meteor/react-meteor-data'
 import { useData } from './DataProvider'
 import { useTheme } from './ThemeProvider'
 import { Messages } from '/imports/api/db'
-import { MessagesCollection, MessageStore } from '/imports/api/stores'
+import { MessagesCollection } from '/imports/api/stores'
+import { createContext } from '/imports/lib/hooks'
 
-const MessagesContext = React.createContext<{
-	messages?: MessageStore
-	isLoding: boolean
-} | undefined>(undefined)
+const [useMessages, MessagesContextProvider] = createContext<{
+	messages: MessagesCollection
+	isLoading: boolean
+}>()
+export { useMessages }
 
 interface IMessagesProviderProps {
 	children: React.ReactNode
@@ -56,16 +58,16 @@ const MessagesProvider = observer(({ children }: IMessagesProviderProps) => {
 	}, [themeId, themeLoading])
 
 	return (
-		<MessagesContext.Provider value={ messages }>
+		<MessagesContextProvider value={ messages }>
 			{ children }
-		</MessagesContext.Provider>
+		</MessagesContextProvider>
 	)
 })
 
-export const useMessages = () => useContext(MessagesContext)
+// export const useMessages = () => useContext(MessagesContext)
 
 export const useMessage = (messageId: string) => {
-	const { messages, isLoading } = useContext(MessagesContext)
+	const { messages, isLoading } = useMessages()
 
 	if(isLoading) return { message: null, isLoading }
 

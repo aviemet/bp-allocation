@@ -9,11 +9,6 @@ import { PresentationSettings } from '/imports/api/db'
 import { SettingsStore } from '/imports/api/stores'
 import { createContext } from '/imports/lib/hooks'
 
-interface ISettingsStoreContext {
-	settings: SettingsStore | undefined
-	isLoading: boolean
-}
-
 const [useSettings, SettingsContextProvider] = createContext<{
 	settings: SettingsStore
 	isLoading: boolean
@@ -32,7 +27,7 @@ const SettingsProvider = observer(({ children }: ISettingsProviderProps) => {
 	let cursorObserver: Meteor.LiveQueryHandle
 	let settingsStore: SettingsStore
 
-	const settings = useTracker<ISettingsStoreContext>(() => {
+	const settings = useTracker(() => {
 		if(!themeId) {
 			if(subscription) subscription.stop()
 			if(cursorObserver) cursorObserver.stop()

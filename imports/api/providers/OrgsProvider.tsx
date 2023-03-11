@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor'
-import React, { useContext } from 'react'
+import React from 'react'
 import { observer } from 'mobx-react-lite'
 
 import { useTracker } from 'meteor/react-meteor-data'
@@ -9,13 +9,6 @@ import { OrgsCollection } from '/imports/api/stores'
 import { filterTopOrgs } from '/imports/lib/orgsMethods'
 import { createContext } from '/imports/lib/hooks'
 import { useTheme } from './ThemeProvider'
-
-// const OrgsContext = React.createContext<{
-// 	orgs: OrgsCollection
-// 	topOrgs: OrgsCollection
-// 	isLoading: boolean
-// } | undefined>(undefined)
-// export const useOrgs = () => useContext(OrgsContext)
 
 const [useOrgs, OrgsContextProvider] = createContext<{
 	orgs: OrgsCollection

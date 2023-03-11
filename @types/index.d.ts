@@ -5,7 +5,10 @@ declare global {
 	type Icon = OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
 		muiName: string;
 	}
+
+	type Values<T = Record<string, unknown>> = T[keyof T]
 }
+
 
 declare module '@mui/material/styles' {
   // allow configuration using `createTheme`

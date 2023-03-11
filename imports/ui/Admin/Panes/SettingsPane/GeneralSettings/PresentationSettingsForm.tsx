@@ -9,24 +9,25 @@ import {
 	Paper,
 	Stack,
 } from '@mui/material'
-import { Form, TextInput, Switch, SubmitButton, STATUS, } from '/imports/ui/Components/Form'
+import { Form, TextInput, Switch, SubmitButton, STATUS } from '/imports/ui/Components/Form'
 import { Loading } from '/imports/ui/Components'
+import { type FieldErrors } from 'react-hook-form'
 
 const PresentationSettingsForm = observer(() => {
 	const { settings, isLoading: settingsLoading } = useSettings()
 
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<Values<typeof STATUS>>(STATUS.READY)
 
-	const sanitizeData = data => {
+	const sanitizeData = (data: { [x: string]: any }) => {
 		const sanitizedData = data
 		return sanitizedData
 	}
 
-	const onSubmit = data => {
+	const onSubmit = (data: { [x: string]: any }) => {
 		setFormStatus(STATUS.SUBMITTING)
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
-			data: data
+			data,
 		}, (err, res) => {
 			if(err) {
 				setFormStatus(STATUS.READY)
@@ -36,7 +37,7 @@ const PresentationSettingsForm = observer(() => {
 		})
 	}
 
-	const onError = (errors, data) => {
+	const onError = (errors: FieldErrors<any>, data: any) => {
 		console.error({ errors, data })
 	}
 
@@ -56,7 +57,7 @@ const PresentationSettingsForm = observer(() => {
 			} }
 		>
 			<Grid container spacing={ 2 }>
-				{/* Use Chit Votes Kiosk Toggle */}
+				{ /* Use Chit Votes Kiosk Toggle */ }
 				<Grid item xs={ 12 }>
 					<Paper sx={ { p: 1 } }>
 						<Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -72,7 +73,7 @@ const PresentationSettingsForm = observer(() => {
 					</Paper>
 				</Grid>
 
-				{/* Use Kiosk Votes Kiosk Toggle */}
+				{ /* Use Kiosk Votes Kiosk Toggle */ }
 				<Grid item xs={ 12 }>
 					<Paper sx={ { p: 1 } }>
 						<Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -88,7 +89,7 @@ const PresentationSettingsForm = observer(() => {
 					</Paper>
 				</Grid>
 
-				{/* Presentation Type */}
+				{ /* Presentation Type */ }
 				<Grid item xs={ 12 }>
 					<Paper sx={ { p: 1 } }>
 						<Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -112,7 +113,7 @@ const PresentationSettingsForm = observer(() => {
 					/> }
 				</Grid>
 
-				{/* OrgCard Show Ask */}
+				{ /* OrgCard Show Ask */ }
 				<Grid item xs={ 12 }>
 					<Paper sx={ { p: 1 } }>
 						<Stack direction="row" justifyContent="space-between" alignItems="center">

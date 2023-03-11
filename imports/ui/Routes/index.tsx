@@ -54,37 +54,37 @@ const AppRoutes = observer(() => {
 
 					<Route path=':id' element={ <Container><LoadingRoute /></Container> }>
 
-						<Route path='/admin/:id/orgs' element={ <OrganizationsPane /> } />
-						<Route path='/admin/:id/orgs/import' element={ <OrganizationsImport /> } />
+						<Route index element={ <PresentationPane /> } />
+						<Route path='presentation' element={ <PresentationPane /> } />
 
-						<Route path='/admin/:id/orgs/new' element={ <OrganizationsEdit /> } />
-						<Route path='/admin/:id/orgs/:orgId' element={ <OrganizationsEdit /> } />
+						<Route path='orgs' element={ <OrganizationsPane /> } />
+						<Route path='orgs/import' element={ <OrganizationsImport /> } />
 
-						<Route path='/admin/:id/members' element={ <MembersPane /> } />
-						<Route path='/admin/:id/members/import' element={ <MembersImport /> } />
+						<Route path='orgs/new' element={ <OrganizationsEdit /> } />
+						<Route path='orgs/:orgId' element={ <OrganizationsEdit /> } />
 
-						<Route path='/admin/:id/members/new' element={ <MembersEdit /> } />
-						<Route path='/admin/:id/members/:memberId' element={ <MembersEdit /> } />
+						<Route path='members' element={ <MembersPane /> } />
+						<Route path='members/import' element={ <MembersImport /> } />
 
-						<Route path='/admin/:id/chits' element={ <ChitVotingPane /> } />
+						<Route path='members/new' element={ <MembersEdit /> } />
+						<Route path='members/:memberId' element={ <MembersEdit /> } />
 
-						<Route path='/admin/:id/allocation' element={ <AllocationPane /> } />
+						<Route path='chits' element={ <ChitVotingPane /> } />
 
-						<Route path='/admin/:id/pledges' element={ <PledgesPane /> } />
+						<Route path='allocation' element={ <AllocationPane /> } />
 
-						<Route path='/admin/:id/leverage' element={ <LeveragePane /> } />
+						<Route path='pledges' element={ <PledgesPane /> } />
 
-						<Route path='/admin/:id/messaging' element={ <MessagingPane /> } />
+						<Route path='leverage' element={ <LeveragePane /> } />
 
-						<Route path='/admin/:id' element={ <PresentationPane /> } />
-						<Route path='/admin/:id/presentation' element={ <PresentationPane /> } />
+						<Route path='messaging' element={ <MessagingPane /> } />
 
+						{ /* <Route path='settings' element={ <SettingsPane /> } /> */ }
+						<Route path='settings/:activeTab' element={ <SettingsPane /> } />
+						<Route path='settings/messages/new/:type' element={ <MessageEdit /> } />
+						<Route path='settings/messages/:messageId' element={ <MessageEdit /> } />
 
-						<Route path='/admin/:id/settings/:activeTab' element={ <SettingsPane /> } />
-						<Route path='/admin/:id/settings/messages/new/:type' element={ <MessageEdit /> } />
-						<Route path='/admin/:id/settings/messages/:messageId' element={ <MessageEdit /> } />
-
-						<Route path='/admin/:id/overview' element={ <OverviewPane /> } />
+						<Route path='overview' element={ <OverviewPane /> } />
 					</Route>
 				</Route>
 
