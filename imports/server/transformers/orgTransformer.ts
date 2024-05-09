@@ -2,9 +2,9 @@ import { isEmpty } from 'lodash'
 import { roundFloat } from '/imports/lib/utils'
 
 export type OrgTransformerParams = {
-	theme: Theme
-	settings: PresentationSettings
-	memberThemes: MemberTheme[]
+	theme: Schema.Theme
+	settings: Schema.PresentationSettings
+	memberThemes: Schema.MemberTheme[]
 }
 
 /**
@@ -12,7 +12,7 @@ export type OrgTransformerParams = {
  * @param {Ojbect} doc Object in iterating array of objects to altered
  * @param {Object} params { theme, settings, memberThemes }
  */
-const OrgTransformer = (doc: Organization, params: OrgTransformerParams) => {
+const OrgTransformer = (doc: Schema.Organization, params: OrgTransformerParams) => {
 	doc.save = function() {
 		// Get save amount if saved
 		let save = 0

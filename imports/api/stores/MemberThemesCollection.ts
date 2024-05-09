@@ -3,8 +3,8 @@ import { action, makeObservable } from 'mobx'
 import { remove } from 'lodash'
 import MemberThemeStore from './MemberThemeStore'
 
-class MembersThemesCollection extends TrackableCollection<MemberTheme> {
-	constructor(data: MemberTheme[]) {
+class MembersThemesCollection extends TrackableCollection<Schema.MemberTheme> {
+	constructor(data: Schema.MemberTheme[]) {
 		super(data, MemberThemeStore)
 
 		makeObservable(this, {
@@ -12,7 +12,7 @@ class MembersThemesCollection extends TrackableCollection<MemberTheme> {
 		})
 	}
 
-	deleteItem(memberTheme: MemberTheme) {
+	deleteItem(memberTheme: Schema.MemberTheme) {
 		remove(this.parent.members.values, member => member._id === memberTheme.member)
 		remove(this.values, _memberTheme => _memberTheme._id === memberTheme._id)
 	}

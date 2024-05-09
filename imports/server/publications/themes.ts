@@ -6,11 +6,11 @@ import { Themes, PresentationSettings, Organizations, MemberThemes } from '/impo
 import { ThemeTransformer, OrgTransformer } from '/imports/server/transformers'
 import { type ThemeTransformerParams } from '/imports/server/transformers/themeTransformer'
 
-const themeObserver = registerObserver((doc: Theme, params: ThemeTransformerParams) => {
+const themeObserver = registerObserver((doc: Schema.Theme, params: ThemeTransformerParams) => {
 	return ThemeTransformer(doc, params)
 })
 
-const themeObserverAutorun = (theme: Theme, publisher: Subscription) => {
+const themeObserverAutorun = (theme: Schema.Theme, publisher: Subscription) => {
 	publisher.autorun(function() {
 		const settings = PresentationSettings.findOne({ _id: theme.presentationSettings })
 		const memberThemes = MemberThemes.find({ theme: theme._id }).fetch()

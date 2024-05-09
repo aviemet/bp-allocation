@@ -1,10 +1,10 @@
 import MemberStore from './MemberStore'
 import TrackableCollection from './lib/TrackableCollection'
 
-class MembersCollection extends TrackableCollection<Member> {
+class MembersCollection extends TrackableCollection<Schema.Member> {
 	searchableFields = ['firstName', 'lastName', 'fullName', 'code', 'initials', 'number', 'phone']
 
-	constructor(data: Member[]) {
+	constructor(data: Schema.Member[]) {
 		super(data, MemberStore)
 	}
 }

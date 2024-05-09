@@ -37,7 +37,7 @@ import {
 const AppRoutes = observer(() => {
 	return (
 		<BrowserRouter>
-			<Routes>
+			<Routes >
 
 				<Route path='/login' element={
 					!Meteor.userId()
@@ -79,10 +79,10 @@ const AppRoutes = observer(() => {
 
 						<Route path='messaging' element={ <MessagingPane /> } />
 
-						{ /* <Route path='settings' element={ <SettingsPane /> } /> */ }
-						<Route path='settings/:activeTab' element={ <SettingsPane /> } />
+						<Route path="settings/" element={ <SettingsPane /> } />
 						<Route path='settings/messages/new/:type' element={ <MessageEdit /> } />
 						<Route path='settings/messages/:messageId' element={ <MessageEdit /> } />
+						<Route path='settings/:activeTab/*' element={ <SettingsPane /> } />
 
 						<Route path='overview' element={ <OverviewPane /> } />
 					</Route>

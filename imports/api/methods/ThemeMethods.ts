@@ -18,7 +18,7 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run(data: Partial<Theme>) {
+		run(data: Partial<Schema.Theme>) {
 			if(!data) return null
 
 			if(!data.quarter) {
@@ -44,7 +44,7 @@ const ThemeMethods = {
 			try {
 				let theme = Themes.insert(merge(data, { presentationSettings: PresentationSettingsMethods.create.call() }))
 				return theme
-			} catch (e) {
+			} catch(e) {
 				console.error(e)
 				return null
 			}
@@ -60,10 +60,10 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run({ id, data }: { id: string, data: Partial<Theme> }) {
+		run({ id, data }: { id: string, data: Partial<Schema.Theme> }) {
 			try {
 				return Themes.update({ _id: id }, { $set: data })
-			} catch (exception) {
+			} catch(exception) {
 				throw new Meteor.Error('500', exception)
 			}
 		},
@@ -180,7 +180,7 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run(orgs: Organization[]) {
+		run(orgs: Schema.Organization[]) {
 			orgs.map(org => {
 				Organizations.update({ _id: org._id }, {
 					$set: {
@@ -200,7 +200,7 @@ const ThemeMethods = {
 		validate: null,
 
 		run(themeId: string) {
-			const theme: Theme = Themes.findOne({ _id: themeId }, { organizations: true })
+			const theme: Schema.Theme = Themes.findOne({ _id: themeId }, { organizations: true })
 			if(!theme) {
 				throw new Error('Theme ID does not match records of any Themes')
 			}

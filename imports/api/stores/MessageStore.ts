@@ -1,13 +1,13 @@
 import { makeObservable, observable } from 'mobx'
 import TrackableStore from './lib/TrackableStore'
 
-interface MessageStore extends Message {}
+interface MessageStore extends Schema.Message {}
 
 class MessageStore extends TrackableStore<MessageStore> implements MessageStore {
 	dirty = false
 	originalMessage = ''
 
-	constructor(data: Message) {
+	constructor(data: Schema.Message) {
 		super(data)
 
 		makeObservable(this, {

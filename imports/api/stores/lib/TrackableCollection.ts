@@ -50,7 +50,7 @@ abstract class TrackableCollection<C extends BaseCollection> {
 	sortBy(column: string, direction: 'ascending' | 'descending') {
 		let dir: boolean | 'asc' | 'desc' | undefined
 
-		switch (direction) {
+		switch(direction) {
 			case 'ascending':
 				dir = 'asc'
 				break

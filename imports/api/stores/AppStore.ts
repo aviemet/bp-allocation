@@ -1,14 +1,14 @@
-import { makeAutoObservable } from 'mobx'
+import { makeObservable, observable, computed, action, flow } from 'mobx'
 
 /**
  * Top level Data Store for the application
  */
 class AppStore {
-	themeId: string | undefined
+	_themeId: string | undefined
 	loading = true
 	sidebarOpen = false
 	defaultMenuHeading = 'Battery Powered Allocation Night Themes'
-	menuHeading = this.defaultMenuHeading
+	_menuHeading: string | undefined = this.defaultMenuHeading
 	// Set of pledges not to be animated on allocation presentation page
 	displayedPledges = new Set()
 	loadMembers = true
@@ -21,9 +21,31 @@ class AppStore {
 	votingRedirectTimeout = this.defaultVotingRedirectTimeout
 
 	constructor() {
-		makeAutoObservable(this, {
-			KIOSK_PAGES: false,
+		makeObservable(this, {
+			_themeId: observable,
+			themeId: computed,
+			loading: observable,
+			sidebarOpen: observable,
+			defaultMenuHeading: observable,
+			_menuHeading: observable,
+			menuHeading: computed,
+			displayedPledges: observable,
+			loadMembers: observable,
+			openEditor: observable,
+			defaultVotingRedirectTimeout: observable,
+			votingRedirectTimeout: observable,
 		})
+	}
+
+	get themeId() { return this._themeId }
+
+	set themeId(id: string | undefined) {
+		this._themeId = id
+	}
+
+	get menuHeading() { return this._menuHeading }
+	set menuHeading(heading: string | undefined) {
+		this._menuHeading = heading
 	}
 }
 

@@ -1,10 +1,13 @@
 module.exports = {
 	'env': {
 		'browser': true,
-		'es2021': true,
 		'node': true,
 	},
-	'extends': ['plugin:react/recommended', 'plugin:import/typescript'],
+	'extends': [
+		'plugin:react/recommended',
+		'plugin:import/typescript',
+	],
+	'plugins': ['react', '@typescript-eslint', 'import'],
 	'settings': {
 		'import/resolver': {
 			'typescript': {},
@@ -16,11 +19,9 @@ module.exports = {
 			'jsx': true,
 		},
 		'ecmaVersion': 'latest',
-		'sourceType': 'module',
 		'requireConfigFile': false,
 	},
-	'plugins': ['react', '@typescript-eslint', 'import'],
-	'ignorePatterns': ['@types/**/*'],
+	'ignorePatterns': ['app/frontend/types/**/*', 'app/javascript/**/*'],
 	'rules': {
 		'indent': 'off',
 		'@typescript-eslint/indent': ['error', 'tab', {
@@ -62,6 +63,12 @@ module.exports = {
 			'when': 'always',
 			'children': true,
 		}],
+		'react/jsx-tag-spacing': ['error', {
+			'closingSlash': 'never',
+			'beforeSelfClosing': 'always',
+			'afterOpening': 'never',
+			'beforeClosing': 'allow',
+		}],
 		'react/display-name': ['off'],
 		'react/prop-types': 0,
 		'eqeqeq': 'error',
@@ -74,8 +81,10 @@ module.exports = {
 				'if': { 'after': false },
 				'for': { 'after': false },
 				'while': { 'after': false },
+				'switch': { 'after': false },
+				'catch': { 'after': false },
 			},
 		}],
-		'comma-dangle': [2, 'always-multiline'],
+		'comma-dangle': ['error', 'always-multiline'],
 	},
 }

@@ -1,7 +1,7 @@
 import { action, extendObservable, makeObservable } from 'mobx'
 
 class TrackableStore<C extends BaseCollection> {
-	_id:string
+	_id: string
 
 	constructor(data: { [key in keyof C]?: C[key] }) {
 		// To satisfy typescript, it needs to think this will always be a string

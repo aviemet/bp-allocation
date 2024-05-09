@@ -1,9 +1,9 @@
 import TrackableStore from './lib/TrackableStore'
 
-interface OrgStore extends Organization {}
+interface OrgStore extends Schema.Organization {}
 
 class OrgStore extends TrackableStore<OrgStore> implements OrgStore {
-	constructor(data: Partial<OrgStore>) {
+	constructor(data: Schema.Organization) {
 		super(data)
 	}
 }

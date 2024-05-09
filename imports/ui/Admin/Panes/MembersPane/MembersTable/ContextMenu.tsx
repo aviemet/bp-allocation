@@ -19,7 +19,12 @@ import ConfirmationModal from '/imports/ui/Components/Dialogs/ConfirmDelete'
 import ActionMenu from '/imports/ui/Components/Menus/ActionMenu'
 import SendWithFeedbackButton from '/imports/ui/Components/Buttons/SendWithFeedbackButton'
 
-const ContextMenu = ({ themeId, member }) => {
+interface ContextMenuProps {
+	themeId: string
+	member: Schema.Member
+}
+
+const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 	const { messages } = useMessages()
 
 	const [textSubmenuOpen, setTextSubmenuOpen] = useState(false)

@@ -1,7 +1,7 @@
-import React from 'react'
-import { Route, useMatch, useNavigate } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Route, Routes, useMatch, useNavigate } from 'react-router-dom'
 import { Link } from '/imports/ui/Components'
-import { Box,Tab,Tabs } from '@mui/material'
+import { Box, Tab, Tabs } from '@mui/material'
 import GeneralSettings from './GeneralSettings'
 import MessageSettings from './MessageSettings'
 import AdvancedSettings from './AdvancedSettings'
@@ -32,31 +32,56 @@ const Settings = () => {
 
 	if(!themeId) return <></>
 
-	if(!params?.params?.activeTab) navigate(`/admin/${themeId}/settings/general`)
+	useEffect(() => {
+		if(!params?.params?.activeTab) navigate(`/admin/${themeId}/settings/general`)
+	}, [params?.params?.activeTab])
+
+	const activeTab = params?.params.activeTab || panes[0].slug
 
 	return (
 		<>
-			<Tabs value={ `/admin/${themeId}/settings/${params?.params.activeTab}` }>
+			<Tabs value={ activeTab }>
 				{ panes.map(pane => (
 					<Tab
-						key={ `tab-${pane.slug}` }
+						key={ pane.slug }
 						label={ pane.label }
-						value={ `/admin/${themeId}/settings/${pane.slug}` }
+						value={ pane.slug }
 						to={ `/admin/${themeId}/settings/${pane.slug}` }
 						component={ Link }
 					/>
 				)) }
 			</Tabs>
+
 			<Box sx={ { mt: 2 } }>
 				{ panes.map(pane => (
-					<Route
-						key={ `content-${pane.slug}` }
-						path={ `/admin/:id/settings/${pane.slug}` }
-						element={ pane.render }
-					/>
+					<SettingsTabPanel key={ pane.slug } value={ activeTab } index={ pane.slug }>
+						{ pane.render }
+					</SettingsTabPanel>
 				)) }
 			</Box>
 		</>
+	)
+}
+
+interface SettingsTabPanelProps {
+	children: React.ReactNode
+	value: string
+	index: string
+}
+
+const SettingsTabPanel = ({ children, value, index }: SettingsTabPanelProps) => {
+	return (
+		<Box
+			role="tabpanel"
+			hidden={ value !== index }
+			id={ `settings-tabpanel-${index}` }
+		>
+			{ value === index && (
+				<Box sx={ { p: 3 } }>
+					{ children }
+				</Box>
+			) }
+		</Box>
 	)
 }
 

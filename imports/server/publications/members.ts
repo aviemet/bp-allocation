@@ -3,7 +3,7 @@ import { Members, MemberThemes } from '/imports/api/db'
 import { registerObserver } from '../methods'
 import { MemberTransformer } from '/imports/server/transformers'
 
-const membersTransformer = registerObserver((doc: Member, params: { themeId: string }) => {
+const membersTransformer = registerObserver((doc: Schema.Member, params: { themeId: string }) => {
 	const memberTheme = MemberThemes.findOne({ member: doc._id, theme: params.themeId })
 
 	if(!memberTheme) return doc

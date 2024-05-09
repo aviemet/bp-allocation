@@ -1,39 +1,49 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "es2018",
+    "target": "esnext",
     "module": "esNext",
-    "lib": ["esnext", "dom"],
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable"
+    ],
     "allowJs": true,
     "checkJs": false,
-    "jsx": "preserve",
+    "jsx": "react",
     "incremental": true,
     "noEmit": true,
     "sourceMap": true,
-
     /* Strict Type-Checking Options */
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
-
     /* Additional Checks */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": false,
-
     /* Module Resolution Options */
     "baseUrl": ".",
     "paths": {
       /* Support absolute /imports/* with a leading '/' */
-      "/*": ["*"]
+      "/*": [
+        "*"
+      ],
+      "meteor/*": [
+        "node_modules/@types/meteor/*",
+        ".meteor/local/types/packages.d.ts"
+      ]
     },
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "types": ["node", "mocha"],
+    "types": [
+      "node",
+      "mocha",
+    ],
     "typeRoots": [
-      "node_modules/@types/**/*",
-      "./@types"
+      "./node_modules/@types",
+      "./node_modules/**/types",
     ],
     "esModuleInterop": true,
     "preserveSymlinks": true,

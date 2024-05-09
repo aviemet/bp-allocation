@@ -4,11 +4,11 @@ import { sortBy } from 'lodash'
 import { filterTopOrgs } from '/imports/lib/orgsMethods'
 import OrgStore from './OrgStore'
 
-class OrgsCollection extends TrackableCollection<Organization> {
-	_theme: Theme
+class OrgsCollection extends TrackableCollection<Schema.Organization> {
+	_theme: Schema.Theme
 
 	// Cache list of pre-existing pledges to prevent animating stale data
-	constructor(data: Organization[], theme: Theme) {
+	constructor(data: Schema.Organization[], theme: Schema.Theme) {
 		super(data, OrgStore)
 
 		makeObservable(this, {
@@ -22,10 +22,10 @@ class OrgsCollection extends TrackableCollection<Organization> {
 	 * Queue for displaying pledges on screen
 	 */
 	get pledges() {
-		let pledges: MatchPledge[] = []
+		let pledges: Schema.MatchPledge[] = []
 
 		const topOrgs = filterTopOrgs(this.values, this._theme)
-		topOrgs.forEach((org: Organization) => {
+		topOrgs.forEach((org: Schema.Organization) => {
 			org.pledges.forEach(pledge => {
 				pledges.push(
 					Object.assign(

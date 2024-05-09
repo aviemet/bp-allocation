@@ -50,7 +50,7 @@ const ChitVoteSchema = new SimpleSchema({
  * Voting information for a member on a specific theme
  * Members are persistent, can vote in multiple themes
  */
-const MemberThemes = new Mongo.Collection<MemberTheme, Partial<MemberTheme>>('memberThemes')
+const MemberThemes = new Mongo.Collection<Schema.MemberTheme, Partial<Schema.MemberTheme>>('memberThemes')
 
 const MemberThemeSchema = new SimpleSchema({
 	theme: SchemaRegex.Id,

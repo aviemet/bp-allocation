@@ -32,23 +32,24 @@ const Form = <T extends Record<string, any>>({
 	...props
 }: IFormProps<T>) => {
 	const formValidationContext = schema ? schema.newContext() : false
-
 	const formMethods = useForm({ defaultValues })
 
 	const onSubmit: SubmitHandler<T> = (data) => {
 		const sanitizedData = onSanitize ? onSanitize(data) : data
 
-		if(!formValidationContext || formValidationContext.validate(sanitizedData)) {
+		if(formValidationContext === false || formValidationContext.validate(sanitizedData)) {
 			if(onValidSubmit) {
 				onValidSubmit(sanitizedData, formMethods)
 			}
 		} else {
+
 			formValidationContext.validationErrors().forEach(error => {
 				formMethods.setError(error.name, {
 					type: error.type,
 					message: formValidationContext.keyErrorMessage(error.name),
 				})
 			})
+
 			if(onValidationError) onValidationError(formMethods.formState.errors, data)
 		}
 	}
@@ -81,7 +82,7 @@ const Form = <T extends Record<string, any>>({
 
 	return (
 		<FormProvider { ...formMethods } { ...props }>
-			<form spacing={ 2 } onSubmit={ formMethods.handleSubmit(onSubmit) }>
+			<form onSubmit={ formMethods.handleSubmit(onSubmit) }>
 				{ children }
 			</form>
 		</FormProvider>

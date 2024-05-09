@@ -5,7 +5,7 @@ import { MemberMethods } from '/imports/api/methods'
 import { MemberSchema, MemberThemeSchema } from '/imports/api/db/schema'
 import { roundFloat } from '/imports/lib/utils'
 
-import { Form, TextInput, SubmitButton, STATUS } from '/imports/ui/Components/Form'
+import { Form, TextInput, SubmitButton, STATUS, TStatus } from '/imports/ui/Components/Form'
 
 import {
 	Button,
@@ -23,7 +23,7 @@ const MembersEdit = () => {
 	const { memberId } = useParams()
 	const navigate = useNavigate()
 
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<TStatus>(STATUS.READY)
 
 	const sanitizeData = data => {
 		const sanitizedData = data
@@ -107,7 +107,7 @@ const MembersEdit = () => {
 
 	const memberStore = members?.values.find(member => member._id === memberId)
 	const member = {
-		theme: theme.id,
+		theme: theme._id,
 		firstName: memberStore?.firstName || '',
 		lastName: memberStore?.lastName || '',
 		initials: memberStore?.initials || '',
@@ -169,7 +169,7 @@ const MembersEdit = () => {
 					<Grid item xs={ 12 }>
 						<Stack direction="row" spacing={ 2 } justifyContent="end">
 							<Button color="error" onClick={ () => navigate(`/admin/${theme.id}/members`) }>Cancel</Button>
-							<SubmitButton  type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Member</SubmitButton>
+							<SubmitButton status={ formStatus } setStatus={ setFormStatus }>Save Member</SubmitButton>
 						</Stack>
 					</Grid>
 

@@ -4,7 +4,7 @@ import { Organizations, Themes, MemberThemes, PresentationSettings } from '/impo
 import { OrgTransformer } from '/imports/server/transformers'
 import { type OrgTransformerParams } from '/imports/server/transformers/orgTransformer'
 
-const orgObserver = registerObserver((doc: Organization, params: OrgTransformerParams) => {
+const orgObserver = registerObserver((doc: Schema.Organization, params: OrgTransformerParams) => {
 	if(!doc.theme) return doc
 
 	return OrgTransformer(doc, params)

@@ -111,7 +111,7 @@ const MembersTable = observer(() => {
 	// TODO: Why isn't striping working now?
 	return (
 		<>
-			<SortableTable<Member>
+			<SortableTable<Schema.Member>
 				onBulkDelete={ bulkDelete }
 				headCells={ headCells }
 				rows={ members.filteredMembers }
@@ -156,7 +156,7 @@ const MembersTable = observer(() => {
 
 					)
 				} }
-				collapse={ (member: Member) => (
+				collapse={ (member: Schema.Member) => (
 					<Table size="small" aria-label="purchases"  sx={ { borderLeft: '1px solid #d7d7d7' } }>
 						<TableHead>
 							<TableRow>

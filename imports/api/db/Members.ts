@@ -1,7 +1,7 @@
 import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'simpl-schema'
 
-const Members = new Mongo.Collection<Partial<Member>, Member>('members')
+const Members = new Mongo.Collection<Partial<Schema.Member>, Schema.Member>('members')
 
 const MemberSchema = new SimpleSchema({
 	firstName: {

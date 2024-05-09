@@ -42,7 +42,7 @@ const MembersProvider = observer(({ children }: IMembersProviderProps) => {
 	/**
 	 * Method to be called when subscription is ready
 	 */
-	const subscriptionReady = (cursor: Mongo.Cursor<Partial<Member>, Member>) => {
+	const subscriptionReady = (cursor: Mongo.Cursor<Partial<Schema.Member>, Schema.Member>) => {
 		membersCollection = new MembersCollection(cursor.fetch())
 
 		cursorObserver = cursor.observe({

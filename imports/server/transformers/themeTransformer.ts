@@ -2,9 +2,9 @@ import { isEmpty } from 'lodash'
 import { roundFloat } from '/imports/lib/utils'
 
 export type ThemeTransformerParams = {
-	topOrgs: Organization[]
-	memberThemes: MemberTheme[]
-	settings: PresentationSettings
+	topOrgs: Schema.Organization[]
+	memberThemes: Schema.MemberTheme[]
+	settings: Schema.PresentationSettings
 }
 
 /**
@@ -12,7 +12,7 @@ export type ThemeTransformerParams = {
  * @param {Object} doc Object in iterating array of objects to altered
  * @param {Object} params { topOrgs, memberThemes, settings }
  */
-const ThemeTransformer = (doc: Partial<Theme>, params: ThemeTransformerParams) => {
+const ThemeTransformer = (doc: Partial<Schema.Theme>, params: ThemeTransformerParams) => {
 	doc.pledgedTotal = function() {
 		let total = 0
 		params.topOrgs.map(org => {

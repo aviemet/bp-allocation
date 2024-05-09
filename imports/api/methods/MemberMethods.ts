@@ -113,11 +113,11 @@ const _memberInsert = function(data: MemberData) {
 						resolve(result)
 					}
 				})
-			} catch (e) {
+			} catch(e) {
 				console.error(e)
 			}
 		} else {
-			const updateData: Partial<Member> = {
+			const updateData: Partial<Schema.Member> = {
 				initials,
 				code,
 			}
@@ -137,7 +137,7 @@ const _memberInsert = function(data: MemberData) {
  * Upserts a memberTheme assocication
  * @param  {Object} query
  */
-const _memberThemeInsert = function(query: Partial<MemberTheme>) {
+const _memberThemeInsert = function(query: Partial<Schema.MemberTheme>) {
 	// Check if this member is already associated with this theme
 	let memberTheme = MemberThemes.findOne({ member: query.member, theme: query.theme })
 
@@ -152,7 +152,7 @@ const _memberThemeInsert = function(query: Partial<MemberTheme>) {
 						resolve(result)
 					}
 				})
-			} catch (e) {
+			} catch(e) {
 				console.error(e)
 			}
 		// Existing member/theme association
@@ -170,7 +170,7 @@ const _memberThemeInsert = function(query: Partial<MemberTheme>) {
 							resolve(memberTheme?._id)
 						}
 					})
-			} catch (e) {
+			} catch(e) {
 				console.error(e)
 			}
 		}
@@ -238,7 +238,7 @@ const MemberMethods = {
 		validate: null,
 
 		run(themeId: string) {
-			const memberThemes: MemberTheme[] = MemberThemes.find({ theme: themeId }, { _id: true, member: true }).fetch()
+			const memberThemes: Schema.MemberTheme[] = MemberThemes.find({ theme: themeId }, { _id: true, member: true }).fetch()
 			const ids: string[] = []
 			const members: string[] = []
 
@@ -252,7 +252,7 @@ const MemberMethods = {
 			// Batch delete the MemberThemes first
 			try {
 				MemberThemes.remove({ _id: { $in: ids } })
-			} catch (e) {
+			} catch(e) {
 				console.error(e)
 			}
 
@@ -264,7 +264,7 @@ const MemberMethods = {
 						if(pledge.member && members.some(member => pledge.member === member)) {
 							try {
 								OrganizationMethods.removePledge({ orgId: org._id, pledgeId: pledge._id })
-							} catch (e) {
+							} catch(e) {
 								console.error(e)
 							}
 						}

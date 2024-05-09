@@ -1,6 +1,6 @@
 import TrackableStore from './lib/TrackableStore'
 
-interface ThemeStore extends Theme {}
+interface ThemeStore extends Schema.Theme {}
 
 class ThemeStore extends TrackableStore<ThemeStore> implements ThemeStore {}
 

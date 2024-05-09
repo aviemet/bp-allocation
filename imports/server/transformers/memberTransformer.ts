@@ -1,8 +1,8 @@
 type MemberThemeParams = {
-	memberTheme: MemberTheme
+	memberTheme: Schema.MemberTheme
 }
 
-const MemberTransformer = (doc: Member, params: MemberThemeParams) => {
+const MemberTransformer = (doc: Schema.Member, params: MemberThemeParams) => {
 	doc.theme = params.memberTheme
 
 	return doc

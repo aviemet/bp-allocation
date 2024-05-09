@@ -20,7 +20,7 @@ const htmlEmailWrapper = (message: string) => `<html><head><style>
 	} 
 </style></head><body><div style="max-width: 600px; margin: 0 auto;">${message}</div></body></html>`
 
-const memberEmailsQuery = (themeId: string, members: string|string[]|Member[], skipRounds: Round) => {
+const memberEmailsQuery = (themeId: string, members: string|string[]|Schema.Member[], skipRounds: Schema.Round) => {
 	const match: {
 		$match: {
 			'member.email': { $ne: null }
@@ -92,7 +92,7 @@ const messageBuilder = (memberCode: string, body: string, slug: string, includeL
 	return htmlEmailWrapper(finalMessage)
 }
 
-const emailVotingLinkToMembers = ({ themeId, message, members }: { themeId: string, message: string, members: Member[] }) => {
+const emailVotingLinkToMembers = ({ themeId, message, members }: { themeId: string, message: string, members: Schema.Member[] }) => {
 	const theme = Themes.findOne({ _id: themeId })
 	const invalidEmailMembers = []
 
@@ -117,7 +117,7 @@ const emailVotingLinkToMembers = ({ themeId, message, members }: { themeId: stri
 
 	sentMail.then(response => {
 		setMessageSentFlag(theme, message)
-		console.log({ sent: messages.map((m: Message) => m.to) })
+		console.log({ sent: messages.map((m: Schema.Message) => m.to) })
 	}, error => {
 		console.error(error)
 

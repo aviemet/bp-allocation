@@ -12,7 +12,7 @@ export const STATUS = {
 	ERROR: 'error',
 } as const
 
-type TStatus = typeof STATUS[keyof typeof STATUS]
+export type TStatus = typeof STATUS[keyof typeof STATUS]
 
 interface ISubmitButtonProps {
 	children: string
@@ -39,7 +39,7 @@ const SubmitButton = ({
 	// const statusTimeoutRef = useRef<number>()
 
 	useEffect(() => {
-		switch (status) {
+		switch(status) {
 			case STATUS.READY:
 				setLoading(false)
 				if(icon) setButtonIcon(<Icon />)
@@ -86,6 +86,7 @@ const SubmitButton = ({
 			disabled={ status === STATUS.DISABLED }
 			sx={ { whiteSpace: 'nowrap' } }
 			color={ status === STATUS.SUCCESS ? 'success' : 'primary' }
+			type="submit"
 			{ ...props }
 		>{ children }</LoadingButton>
 	)

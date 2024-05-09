@@ -1,27 +1,36 @@
 import React from 'react'
 import { styled, alpha } from '@mui/material/styles'
+
 import {
 	Menu,
 	MenuItem,
-	MenuProps,
 } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 
-interface IActionMenuProps {
-	children: React.ReactNode
+interface ActionMenuProps {
+	render: (ActionMenuItem) => React.ReactNode
 }
 
-const ActionMenu = ({ children }: IActionMenuProps) => {
-	const [anchorEl, setAnchorEl] = React.useState<EventTarget & HTMLButtonElement>()
+const ActionMenu = ({ render }: ActionMenuProps) => {
+	const [anchorEl, setAnchorEl] = React.useState(null)
 	const open = Boolean(anchorEl)
 
-	const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget)
 	}
 
-	const handleClose = () => {
-		setAnchorEl(undefined)
+	const handleClose = e => {
+		setAnchorEl(null)
+	}
+
+	const ActionMenuItem = ({ children, onClick }) => {
+		const handleClick = e => {
+			if(onClick !== undefined) onClick(e)
+			handleClose(e)
+		}
+
+		return <MenuItem onClick={ handleClick } disableRipple>{ children }</MenuItem>
 	}
 
 	return (
@@ -35,6 +44,7 @@ const ActionMenu = ({ children }: IActionMenuProps) => {
 			>
 				<MoreVertIcon />
 			</IconButton>
+
 			<StyledMenu
 				id="demo-customized-menu"
 				MenuListProps={ {
@@ -44,15 +54,13 @@ const ActionMenu = ({ children }: IActionMenuProps) => {
 				open={ open }
 				onClose={ handleClose }
 			>
-				{ children }
+				{ render(ActionMenuItem) }
 			</StyledMenu>
 		</div>
 	)
 }
 
-ActionMenu.MenuItem = MenuItem
-
-const StyledMenu = styled((props: MenuProps) => (
+const StyledMenu = styled((props) => (
 	<Menu
 		elevation={ 0 }
 		anchorOrigin={ {

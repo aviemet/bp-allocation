@@ -12,7 +12,6 @@ const MatchPledgeSchema = new SimpleSchema({
 	_id: {
 		type: SchemaRegex.Id,
 		autoValue: () => Random.id(),
-		index: true,
 	},
 	amount: Number,
 	member: {
@@ -42,7 +41,7 @@ const MatchPledgeSchema = new SimpleSchema({
 })
 
 // Define Collection
-const Organizations = new Mongo.Collection<Partial<Organization>, Organization>('organizations')
+const Organizations = new Mongo.Collection<Partial<Schema.Organization>, Schema.Organization>('organizations')
 
 const OrganizationSchema = new SimpleSchema({
 	title: {

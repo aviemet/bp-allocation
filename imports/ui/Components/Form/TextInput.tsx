@@ -1,5 +1,12 @@
 import React, { useEffect, forwardRef } from 'react'
-import { Controller, type ControllerRenderProps, type FieldValues, useFormContext, useWatch, type UseFormReturn } from 'react-hook-form'
+import {
+	Controller,
+	useFormContext,
+	useWatch,
+	type ControllerRenderProps,
+	type FieldValues,
+	type UseFormReturn,
+} from 'react-hook-form'
 import { TextField, type OutlinedTextFieldProps } from '@mui/material'
 
 interface TextInputProps extends Omit<OutlinedTextFieldProps, 'onChange'|'variant'> {
@@ -47,7 +54,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>((
 					ref={ ref }
 					fullWidth
 					error={ !!errors[name] }
-					helperText={ errors[name]?.message || '' }
+					helperText={ <>{ errors[name]?.message || '' }</> }
 					InputProps={ inputProps }
 					inputProps={ { pattern } }
 					onChange={ e => handleChange(e, field) }

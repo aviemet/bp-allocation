@@ -1,7 +1,7 @@
 import { computed, makeObservable } from 'mobx'
 import TrackableStore from './lib/TrackableStore'
 
-interface MemberStore extends Member {}
+interface MemberStore extends Schema.Member {}
 
 class MemberStore extends TrackableStore<MemberStore> implements MemberStore {
 	constructor(data: Partial<MemberStore>) {

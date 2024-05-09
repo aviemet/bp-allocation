@@ -32,7 +32,7 @@ const OrganizationsEdit = () => {
 	}
 
 	const sanitizeData = data => {
-		const sanitizedData = data
+		const sanitizedData = structuredClone(data)
 		if(typeof sanitizedData.ask === 'string') {
 			sanitizedData.ask = parseFloat(sanitizedData.ask.replace(/[^\d.]/g, ''))
 		}

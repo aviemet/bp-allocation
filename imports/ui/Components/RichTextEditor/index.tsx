@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { forwardRef, useState } from 'react'
 import { Checkbox, FormControlLabel } from '@mui/material'
 import RawEditor from './RawEditor'
 import Quill from './Quill'
+import ReactQuill from 'react-quill'
+import Tiptap from './TipTap'
 
 interface IRichTextEditorProps {
 	placeholder: string
@@ -9,10 +11,13 @@ interface IRichTextEditorProps {
 	onChange: (value: string) => void
 }
 
-const RichTextEditor = ({ value, onChange, ...rest }: IRichTextEditorProps) => {
+const RichTextEditor = forwardRef<ReactQuill, IRichTextEditorProps>((
+	{ value, onChange, ...rest },
+	ref,
+) => {
 	const [isRaw, setIsRaw] = useState(false)
 
-	const InputComponent = isRaw ? RawEditor : Quill
+	const InputComponent = isRaw ? RawEditor : Tiptap // Quill
 
 	return (
 		<>
@@ -23,11 +28,12 @@ const RichTextEditor = ({ value, onChange, ...rest }: IRichTextEditorProps) => {
 			} />
 			<InputComponent
 				{ ...rest }
+				ref={ ref }
 				value={ value || '' }
 				onChange={ newValue => { if(onChange) onChange(newValue) } }
 			/>
 		</>
 	)
-}
+})
 
 export default RichTextEditor
