@@ -55,6 +55,7 @@ const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }
 		if(status === STATUS.SUCCESS) {
 			statusTimeoutRef.current = setTimeout(() => setStatus(STATUS.READY), 4000)
 		}
+
 		return () => {
 			if(typeof statusTimeoutRef.current === 'function') statusTimeoutRef.current.clearTimeout()
 		}

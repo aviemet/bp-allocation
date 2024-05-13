@@ -28,6 +28,8 @@ const buttonValues = {
 const SendWithFeedbackButton = observer(({ message, members, ...rest }) => {
 	const { theme } = useTheme()
 
+	console.log({ host: Meteor.settings })
+
 	const [buttonStatus, setButtonStatus] = useState(STATUS.READY)
 	const [buttonContent, setButtonContent] = useState('Send')
 	const [modalOpen, setModalOpen] = useState(false)

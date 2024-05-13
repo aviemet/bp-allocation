@@ -64,7 +64,6 @@ const client = twilio(Meteor.settings.twilio.accountSid, Meteor.settings.twilio.
 const messageBuilder = (member, message, slug) => {
 	let finalMessage = message.body
 	if(message.includeLink === true && slug) {
-		console.log({ textVotingLink: textVotingLink(slug, member.code) })
 		finalMessage += textVotingLink(slug, member.code)
 	}
 	return finalMessage
