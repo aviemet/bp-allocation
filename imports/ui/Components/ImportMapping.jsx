@@ -102,7 +102,7 @@ const ImportMapping = ({ headings, values, mapping, schema, sanitize, onImport }
 
 	useEffect(() => {
 		setErrors([])
-		console.log({ headingMap })
+		// console.log({ headingMap })
 	}, [headingMap])
 
 	return (

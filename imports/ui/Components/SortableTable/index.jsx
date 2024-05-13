@@ -46,7 +46,7 @@ const SortableTable = ({
 	const [rowsPerPage, setRowsPerPage] = useState(paginationCounts[0])
 
 	const handleRequestSort = (event, property) => {
-		console.log({ property })
+		// console.log({ property })
 		const isAsc = orderBy === property && order === 'asc'
 		setOrder(isAsc ? 'desc' : 'asc')
 		setOrderBy(property)

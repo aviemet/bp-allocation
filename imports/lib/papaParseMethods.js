@@ -133,7 +133,7 @@ export const readCsv = (file, callbacks) => {
 			if(firstRun) {
 				headers = results.meta.fields.filter(field => field !== '')
 				firstRun = false
-				console.log({ headers })
+				// console.log({ headers })
 			}
 			let row = {} // Return object
 

@@ -33,7 +33,7 @@ const MembersEdit = () => {
 	}
 
 	const onSubmit = data => {
-		console.log({ data })
+		// console.log({ data })
 		setFormStatus(STATUS.SUBMITTING)
 		if(memberId) {
 			editUser(data)
