@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { isEmpty } from 'lodash'
 
 export const roundFloat = (value, decimal) => {
