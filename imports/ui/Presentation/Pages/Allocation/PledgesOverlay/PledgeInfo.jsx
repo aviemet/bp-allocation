@@ -9,7 +9,7 @@ import { Loading } from '/imports/ui/Components'
 const PledgeInfo = ({ pledge }) => {
 	const { members, isLoading: membersLoading } = useMembers()
 
-	if(membersLoading || !members) return <Loading />
+	if(membersLoading || !members) return <></>
 
 	const member = pledge.anonymous ? undefined : members.values.find(mem => mem._id === pledge.member)
 

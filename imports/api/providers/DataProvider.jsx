@@ -3,7 +3,13 @@ import PropTypes from 'prop-types'
 
 import AppStore from '/imports/api/stores/AppStore'
 
-export const DataContext = React.createContext()
+import { configure } from 'mobx'
+
+configure({
+	useProxies: 'never'
+})
+
+export const DataContext = React.createContext({})
 export const useData = () => useContext(DataContext)
 
 const appStore = new AppStore()

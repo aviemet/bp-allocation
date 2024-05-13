@@ -12,7 +12,7 @@ export const STATUS = {
 	ERROR: 'error',
 }
 
-const SubmitButton = ({ children, status, setStatus, icon, ...props }) => {
+const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }) => {
 	const Icon = icon
 
 	const [loading, setLoading] = useState(false)
@@ -86,10 +86,6 @@ SubmitButton.propTypes = {
 	status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
 	setStatus: PropTypes.func.isRequired,
 	icon: PropTypes.any
-}
-
-SubmitButton.defaultProps = {
-	icon: SaveIcon
 }
 
 export default SubmitButton
