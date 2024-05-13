@@ -1,3 +1,3 @@
 export default {
-	Id: () => /^[a-f\d]{24}$/i
+	Id: /^[a-zA-Z0-9+]{16,17}$/i
 }

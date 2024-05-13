@@ -7,6 +7,7 @@ import { setMessageSendingFlag, setMessageSentFlag, setMessageErrorFlag } from '
 import { emailVotingLink } from '/imports/lib/utils'
 
 import sgMail from '@sendgrid/mail'
+
 sgMail.setApiKey(Meteor.settings.SENDGRID_API_KEY)
 
 const htmlEmailWrapper = yeild => `<html><head><style> 
