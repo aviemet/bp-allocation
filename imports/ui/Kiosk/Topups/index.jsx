@@ -89,7 +89,9 @@ const Pledges = observer(({ user }) => {
 						status={ formStatus }
 						setStatus={ setFormStatus }
 						icon={ false }
-					>Submit Matched Pledge</FinalizeButton>
+					>
+						Submit Matched Pledge
+					</FinalizeButton>
 				</Container>
 			</Form>
 

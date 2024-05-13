@@ -4,10 +4,10 @@ import styled from '@emotion/styled'
 import { Box } from '@mui/material'
 import { useWindowSize } from '/imports/ui/MediaProvider'
 
-const CardContext = createContext()
+const CardContext = createContext({})
 export const useCardContext = () => useContext(CardContext)
 
-const OrgCardContainer = ({ children, cols, sx }) => {
+const OrgCardContainer = ({ children, cols = 2, sx }) => {
 	const { width } = useWindowSize()
 
 	const responsiveColumns = (cols) => {
@@ -19,8 +19,12 @@ const OrgCardContainer = ({ children, cols, sx }) => {
 		return cols
 	}
 
+	const orphans = Array.isArray(children) ? children.length % responsiveColumns(cols) : cols
+
+	console.log({ children, cols: responsiveColumns(cols), orphans })
+
 	return (
-		<StyledOrgCardContainer cols={ responsiveColumns(cols) } orphans={ children.length % cols } sx={ sx }>
+		<StyledOrgCardContainer cols={ responsiveColumns(cols) } orphans={ orphans } sx={ sx }>
 			<CardContext.Provider value={ { cols } }>
 				{ children }
 			</CardContext.Provider>
@@ -44,14 +48,13 @@ const StyledOrgCardContainer = styled(Box)(({ theme, cols, orphans }) => ({
 	}
 }))
 
-OrgCardContainer.propTypes = {
+const cardContainerPropsTypes = {
 	children: PropTypes.any,
 	cols: PropTypes.number,
 	sx: PropTypes.any,
 }
 
-OrgCardContainer.defaultProps = {
-	cols: 2,
-}
+OrgCardContainer.propTypes = cardContainerPropsTypes
+StyledOrgCardContainer.propTypes = cardContainerPropsTypes
 
 export default OrgCardContainer

@@ -30,7 +30,7 @@ const OrgCard = observer(({
 	showAsk,
 	animateClass,
 	info,
-	color,
+	color = 'green',
 	onClick,
 	disabled,
 	...props
@@ -190,10 +190,6 @@ OrgCard.propTypes = {
 	color: PropTypes.oneOf(['green', 'blue']),
 	onClick: PropTypes.func,
 	rest: PropTypes.any,
-}
-
-OrgCard.defaultProps = {
-	color: 'green',
 }
 
 export default OrgCard

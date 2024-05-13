@@ -7,7 +7,7 @@ import { useForm, FormProvider } from 'react-hook-form'
 const Form = ({
 	children,
 	schema,
-	defaultValues,
+	defaultValues = {},
 	onValidSubmit,
 	onSanitize,
 	onValidationError,
@@ -79,10 +79,6 @@ Form.propTypes = {
 	onValidationError: PropTypes.func,
 	onUpdate: PropTypes.func,
 	onChange: PropTypes.func,
-}
-
-Form.defaultProps = {
-	defaultValues: {}
 }
 
 export default Form

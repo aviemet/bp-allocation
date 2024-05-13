@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { forEach, shuffle } from 'lodash'
 import { observer } from 'mobx-react-lite'
@@ -12,31 +12,13 @@ import ChitTicker from './ChitTicker'
 import Countown from '../Countdown'
 
 import { COLORS } from '/imports/lib/global'
+import ChitVoteOrgCard from '/imports/ui/Kiosk/ChitVoting/ChitVoteOrgCard'
 
 const VotesRemaining = React.memo(({ value }) => {
 	return (
 		<h2>ROUND 1 VOTES LEFT: <NumberFormat>{ value }</NumberFormat></h2>
 	)
 })
-
-const ShuffledOrgs = React.memo(({ orgs }) => <>{
-	shuffle(orgs.values).map(org => (
-		<OrgCard
-			key={ org._id }
-			org={ org }
-			showAsk={ false }
-			size='small'
-			info={ true }
-			content={ () => (
-				<ChitTicker
-					org={ org }
-				/>
-			) }
-		/>
-	))
-}</>, (prev, next) => prev.orgs.values.every((org, i) => next.orgs.values[i]._id === org._id))
-
-VotesRemaining.displayName = 'VotesRemaining' // To slience eslint
 
 const ChitVotingKiosk = observer(props => {
 	const data = useData()
@@ -64,16 +46,30 @@ const ChitVotingKiosk = observer(props => {
 	if(votingComplete) {
 		return <VotingComplete setVotingComplete={ setVotingComplete } />
 	}
+
+
+	const shuffledOrgs = useCallback(() => {
+		return shuffle(orgs.values.map(org => {
+			return <ChitVoteOrgCard key={ org._id } org={ org } />
+		}))
+	}, [orgs.values])
+
 	return (
 		<OrgsContainer>
 
-			<Typography variant="h4" component="h1" align="center">{ props.user.firstName && 'Voting for' } { memberName }</Typography>
+			<Typography variant="h4" component="h1" align="center">
+				{ props.user.firstName && 'Voting for' } { memberName }
+			</Typography>
 
 			{ countdownVisible && <Countown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
 
 			<Container maxWidth="xl" sx={ { height: '100%' } }>
-				<OrgCardContainer centered cols={ 2 } sx={ { paddingBottom: 'clamp(0rem, -58.1818rem + 90.9091vh, 10rem)' } }>
-					<ShuffledOrgs orgs={ orgs } />
+				<OrgCardContainer
+					centered
+					cols={ 2 }
+					sx={ { paddingBottom: 'clamp(0rem, -58.1818rem + 90.9091vh, 10rem)' } }
+				>
+					{ shuffledOrgs() }
 				</OrgCardContainer>
 			</Container>
 
@@ -92,7 +88,10 @@ const ChitVotingKiosk = observer(props => {
 							onClick={ () => {
 								saveChits(props.source)
 								setVotingComplete(true)
-							} }>Finalize Vote</FinalizeButton>
+							} }
+						>
+								Finalize Vote
+						</FinalizeButton>
 					</>
 				)
 			} }</FundsVoteContext.Consumer>
@@ -139,10 +138,6 @@ ChitVotingKiosk.propTypes = {
 
 VotesRemaining.propTypes = {
 	value: PropTypes.number
-}
-
-ShuffledOrgs.propTypes = {
-	orgs: PropTypes.object
 }
 
 export default ChitVotingKiosk

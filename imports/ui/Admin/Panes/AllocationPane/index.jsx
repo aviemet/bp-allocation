@@ -16,7 +16,7 @@ import AllocationsTable from './AllocationsTable'
 import { ShowLeverageToggle } from '/imports/ui/Components/Toggles'
 import { useTheme, useOrgs } from '/imports/api/providers'
 
-const AllocationPane = observer(({ hideAdminFields }) => {
+const AllocationPane = observer(({ hideAdminFields = false }) => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
@@ -55,10 +55,6 @@ const AllocationPane = observer(({ hideAdminFields }) => {
 
 AllocationPane.propTypes = {
 	hideAdminFields: PropTypes.bool
-}
-
-AllocationPane.defaultProps = {
-	hideAdminFields: false
 }
 
 export default AllocationPane

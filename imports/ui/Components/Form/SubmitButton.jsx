@@ -77,7 +77,9 @@ const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }
 			sx={ { whiteSpace: 'nowrap' } }
 			color={ status === STATUS.SUCCESS ? 'success' : 'primary' }
 			{ ...props }
-		>{ children }</LoadingButton>
+		>
+			{ children }
+		</LoadingButton>
 	)
 }
 

@@ -30,7 +30,7 @@ const emptyTotals = {
 	need: 0,
 }
 
-const AllocationPane = observer(({ hideAdminFields }) => {
+const AllocationPane = observer(({ hideAdminFields = false }) => {
 	const { settings } = useSettings()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
@@ -182,10 +182,6 @@ const StyledTable = styled(Table)(({ theme }) => ({
 
 AllocationPane.propTypes = {
 	hideAdminFields: PropTypes.bool
-}
-
-AllocationPane.defaultProps = {
-	hideAdminFields: false
 }
 
 export default AllocationPane

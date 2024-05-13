@@ -51,7 +51,7 @@ const headCells = [
 	},
 ]
 
-const Pledges = observer(({ hideAdminFields }) => {
+const Pledges = observer(({ hideAdminFields = false }) => {
 	const { theme } = useTheme()
 	const { members, isLoading: membersLoading } = useMembers()
 	const { topOrgs, orgs, isLoading: orgsLoading } = useOrgs()
@@ -183,10 +183,6 @@ const Pledges = observer(({ hideAdminFields }) => {
 
 Pledges.propTypes = {
 	hideAdminFields: PropTypes.bool
-}
-
-Pledges.defaultProps = {
-	hideAdminFields: false
 }
 
 export default Pledges

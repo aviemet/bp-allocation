@@ -56,10 +56,6 @@ FormSwitch.propTypes = {
 	onUpdate: PropTypes.func,
 }
 
-FormSwitch.defaultProps = {
-	inputProps: {}
-}
-
 // const SwitchWithOptionalLabel = ({ name, label, onUpdate, ...props }) => {
 // 	if(label !== undefined) {
 // 		return <SwitchLabel><ControlledSwitch /></SwitchLabel>

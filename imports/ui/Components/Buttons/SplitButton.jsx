@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
-const SplitButton = ({ options, defaultSelected }) => {
+const SplitButton = ({ options, defaultSelected = 0 }) => {
 	const [selectedIndex, setSelectedIndex] = useState(defaultSelected)
 	const [open, setOpen] = useState(false)
 
@@ -95,10 +95,6 @@ const SplitButton = ({ options, defaultSelected }) => {
 SplitButton.propTypes = {
 	options: PropTypes.array,
 	defaultSelected: PropTypes.number,
-}
-
-SplitButton.defaultProps = {
-	defaultSelected: 0
 }
 
 export default SplitButton
