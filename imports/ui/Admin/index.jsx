@@ -25,7 +25,8 @@ import useTheme from '@mui/material/styles/useTheme'
 
 const Admin = () => {
 	const theme = useTheme()
-	console.log({ theme })
+
+	console.log('STARTING')
 
 	return (
 		<Container>
