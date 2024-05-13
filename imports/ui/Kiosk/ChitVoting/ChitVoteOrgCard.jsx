@@ -6,7 +6,6 @@ import ChitTicker from '/imports/ui/Kiosk/ChitVoting/ChitTicker'
 const ChitVoteOrgCard = ({ org }) => {
 	return (
 		<OrgCard
-			key={ org._id }
 			org={ org }
 			showAsk={ false }
 			size='small'

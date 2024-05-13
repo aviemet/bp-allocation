@@ -43,16 +43,15 @@ const ChitVotingKiosk = observer(props => {
 
 	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName
 
-	if(votingComplete) {
-		return <VotingComplete setVotingComplete={ setVotingComplete } />
-	}
-
-
 	const shuffledOrgs = useCallback(() => {
 		return shuffle(orgs.values.map(org => {
 			return <ChitVoteOrgCard key={ org._id } org={ org } />
 		}))
 	}, [orgs.values])
+
+	if(votingComplete) {
+		return <VotingComplete setVotingComplete={ setVotingComplete } />
+	}
 
 	return (
 		<OrgsContainer>

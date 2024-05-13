@@ -21,8 +21,6 @@ const OrgCardContainer = ({ children, cols = 2, sx }) => {
 
 	const orphans = Array.isArray(children) ? children.length % responsiveColumns(cols) : cols
 
-	console.log({ children, cols: responsiveColumns(cols), orphans })
-
 	return (
 		<StyledOrgCardContainer cols={ responsiveColumns(cols) } orphans={ orphans } sx={ sx }>
 			<CardContext.Provider value={ { cols } }>
