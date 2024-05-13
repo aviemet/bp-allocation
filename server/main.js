@@ -30,7 +30,7 @@ Meteor.startup(() => {
 	)
 
 	process.env.MAIL_URL = Meteor.settings.MAIL_URL
-	process.env.HOST_NAME = Meteor.settings.HOST_NAME
+	process.env.HOST_URL = Meteor.settings.HOST_URL
 	process.env.SENDGRID_API_KEY = Meteor.settings.SENDGRID_API_KEY
 })
 
