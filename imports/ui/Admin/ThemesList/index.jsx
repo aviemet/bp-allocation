@@ -31,7 +31,6 @@ const ThemesList = () => {
 	})
 
 	const bulkDelete = (selected, onSuccess) => {
-		console.log({ selected, onSuccess })
 		const plural = selected.length > 1
 
 		setModalHeader(`Permanently Delete Theme${plural ? 's' : ''}?`)
@@ -69,7 +68,7 @@ const ThemesList = () => {
 	return (
 		<Container>
 			<SortableTable
-				title="Battery Powered Themes"
+				title="Battery Powered Themes!"
 				onBulkDelete={ bulkDelete }
 				headCells={ headCells }
 				rows={ themes }
