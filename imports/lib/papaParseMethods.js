@@ -7,7 +7,6 @@ import { isUndefined, indexOf, isEmpty, forEach, has } from 'lodash'
 
 /**
  * Runs callback if defined, returning data as appropriate
- * @param  {Object}   data Data to be passed to method
  * @param  {Function} cb   Callback to be called
  * @return {Object}        Data response object
  */
@@ -21,7 +20,7 @@ function _dispatchCallback(cb, ...args) {
 
 /**
  * Takes a row from a csv file, maps headings in file to key values in final return object
- * @param  {Object} row              JSON row object
+ * @param  {Object} headings         JSON row object
  * @param  {Object} acceptedHeadings JSON object with mapping instructions
  * @param  {Object} callbacks        Lifecycle callbacks
  * @return {Object}                  JSON object of headings mapping
@@ -124,6 +123,7 @@ export const readCsv = (file, callbacks) => {
 	let firstRun = true
 	let headers = []
 	let data = []
+
 	const parser = Papa.parse(file, {
 		header: true,
 		delimiter: ',',
@@ -133,11 +133,10 @@ export const readCsv = (file, callbacks) => {
 			if(firstRun) {
 				headers = results.meta.fields.filter(field => field !== '')
 				firstRun = false
-				// console.log({ headers })
 			}
 			let row = {} // Return object
 
-			let rowData = results.data[0]
+			let rowData = results.data
 			_dispatchCallback(callbacks.beforeRowParse, rowData)
 
 			// Touch each value in the row
