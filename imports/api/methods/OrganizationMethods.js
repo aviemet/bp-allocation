@@ -40,6 +40,7 @@ const OrganizationMethods = {
 		validate: null,
 
 		run({ id, data }) {
+			console.log({ id, data })
 			return Organizations.update({ _id: id }, { $set: data })
 		}
 	}),

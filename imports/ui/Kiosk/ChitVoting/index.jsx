@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { forEach, shuffle } from 'lodash'
 import { observer } from 'mobx-react-lite'
@@ -6,19 +6,12 @@ import { useData, useSettings, useOrgs } from '/imports/api/providers'
 import { FundsVoteContext } from '/imports/ui/Kiosk/VotingContext'
 import { Container, Button, Typography } from '@mui/material'
 import styled from '@emotion/styled'
-import { OrgCard, OrgCardContainer } from '/imports/ui/Components/Cards'
+import { OrgCardContainer } from '/imports/ui/Components/Cards'
 import VotingComplete from '../VotingComplete'
-import ChitTicker from './ChitTicker'
 import Countown from '../Countdown'
 
 import { COLORS } from '/imports/lib/global'
 import ChitVoteOrgCard from '/imports/ui/Kiosk/ChitVoting/ChitVoteOrgCard'
-
-const VotesRemaining = React.memo(({ value }) => {
-	return (
-		<h2>ROUND 1 VOTES LEFT: <NumberFormat>{ value }</NumberFormat></h2>
-	)
-})
 
 const ChitVotingKiosk = observer(props => {
 	const data = useData()
@@ -43,11 +36,11 @@ const ChitVotingKiosk = observer(props => {
 
 	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName
 
-	const shuffledOrgs = useCallback(() => {
+	const shuffledOrgs = useMemo(() => {
 		return shuffle(orgs.values.map(org => {
 			return <ChitVoteOrgCard key={ org._id } org={ org } />
 		}))
-	}, [orgs.values])
+	}, [])
 
 	if(votingComplete) {
 		return <VotingComplete setVotingComplete={ setVotingComplete } />
@@ -68,7 +61,7 @@ const ChitVotingKiosk = observer(props => {
 					cols={ 2 }
 					sx={ { paddingBottom: 'clamp(0rem, -58.1818rem + 90.9091vh, 10rem)' } }
 				>
-					{ shuffledOrgs() }
+					{ shuffledOrgs }
 				</OrgCardContainer>
 			</Container>
 
@@ -80,7 +73,8 @@ const ChitVotingKiosk = observer(props => {
 
 				return(
 					<>
-						<VotesRemaining value={ remaining } />
+						<h2>ROUND 1 VOTES LEFT: <NumberFormat>{ remaining }</NumberFormat></h2>
+
 						<FinalizeButton
 							size='huge'
 							disabled={ buttonDisabled }
@@ -89,7 +83,7 @@ const ChitVotingKiosk = observer(props => {
 								setVotingComplete(true)
 							} }
 						>
-								Finalize Vote
+							Finalize Vote
 						</FinalizeButton>
 					</>
 				)
@@ -133,10 +127,6 @@ const NumberFormat = styled.span`
 ChitVotingKiosk.propTypes = {
 	user: PropTypes.object,
 	source: PropTypes.string
-}
-
-VotesRemaining.propTypes = {
-	value: PropTypes.number
 }
 
 export default ChitVotingKiosk

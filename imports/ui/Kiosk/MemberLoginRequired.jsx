@@ -26,7 +26,7 @@ const MemberLoginRequired = observer(props => {
 	if(!membersLoading && !isEmpty(members) && !isEmpty(members.values)) {
 		member = members.values.find(mem => mem._id === props.member)
 	}
-	const [ user, setUser ] = useState(member || false)
+	const [user, setUser] = useState(member || false)
 
 	if(membersLoading || isEmpty(members)) return <Loading />
 

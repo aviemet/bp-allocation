@@ -7,7 +7,7 @@ import { useTheme, useOrgs } from '/imports/api/providers'
 
 import { MemberMethods } from '/imports/api/methods'
 
-const FundsVoteContext = React.createContext()
+const FundsVoteContext = React.createContext(null)
 
 const VotingContextProvider = observer(({ children, member, unsetUser }) => {
 	const { theme } = useTheme()

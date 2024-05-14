@@ -29,11 +29,10 @@ const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminField
 		} })
 	}
 
-	const topoff = () => {
+	const handleTopoff = () => {
 		const amount = org.topOff > 0 ? 0 : org.need - org.leverageFunds
-		OrganizationMethods.update.call({ id: org._id, data: {
-			topOff: amount
-		} })
+
+		OrganizationMethods.update.call({ id: org._id, data: { topOff: amount } })
 	}
 
 	// Boolean help for marking fully funded orgs
@@ -83,7 +82,7 @@ const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminField
 			{ !hideAdminFields &&
 				<TableCell>
 					<Button
-						onClick={ topoff }
+						onClick={ handleTopoff }
 						color={ crowdFavorite ? 'primary' : 'grey' }
 						sx={ {
 							width: '100%',

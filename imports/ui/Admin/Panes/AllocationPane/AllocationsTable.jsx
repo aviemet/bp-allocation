@@ -87,7 +87,7 @@ const AllocationPane = observer(({ hideAdminFields = false }) => {
 				<TableBody>
 					{ topOrgs.map((org, i) => (
 						<AllocationInputs
-							key={ i }
+							key={ org._id }
 							org={ org }
 							theme={ theme }
 							crowdFavorite={ (i === _calculateCrowdFavorite()) }
