@@ -18,9 +18,11 @@ const ChitVotingKiosk = observer(props => {
 	const { settings } = useSettings()
 	const { orgs } = useOrgs()
 
-	const voted = props.user.theme.chitVotes.some(org => org.votes > 0)
+	// const voted = props.user.theme.chitVotes.some(org => org.votes > 0)
 
-	const [ votingComplete, setVotingComplete ] = useState(voted)
+	// const [voted, setVoted] = useState(false)
+
+	const [ votingComplete, setVotingComplete ] = useState(false)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
 	const [ isCounting, setIsCounting ] = useState(false)
 

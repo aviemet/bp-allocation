@@ -14,13 +14,13 @@ const VotingContextProvider = observer(({ children, member, unsetUser }) => {
 	const { orgs, topOrgs } = useOrgs()
 
 	let initialVotesState = {}
-	topOrgs.map(org => {
+	topOrgs.forEach(org => {
 		const allocations = find(member.theme.allocations, ['organization', org._id])
 		initialVotesState[org._id] = allocations ? allocations.amount : 0
 	})
 
 	let initialChitState = {}
-	orgs.values.map(org => {
+	orgs.values.forEach(org => {
 		const chits = find(member.theme.chitVotes, ['organization', org._id])
 		initialChitState[org._id] = chits ? chits.votes : 0
 	})

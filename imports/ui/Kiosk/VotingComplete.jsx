@@ -54,7 +54,9 @@ const VotingComplete = ({ setVotingComplete }) => {
 					size='huge'
 					disabled={ false }
 					onClick={ showVotingPageAgain }
-				>Amend Vote</AmendVoteButton>
+				>
+					Amend Vote
+				</AmendVoteButton>
 			</Box>
 		</VotingCompleteContainer>
 	)

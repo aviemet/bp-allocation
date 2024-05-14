@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
-import { isUndefined, isEmpty } from 'lodash'
+import { isUndefined, isEmpty, find } from 'lodash'
 import { formatPhoneNumber, sanitizeString } from '/imports/lib/utils'
 
 import { Members, MemberThemes, Organizations } from '/imports/api/db'

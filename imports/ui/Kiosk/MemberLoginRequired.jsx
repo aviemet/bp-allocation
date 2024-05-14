@@ -124,7 +124,6 @@ const MemberLoginRequired = observer(props => {
 			</Stack>
 		</>
 	)
-
 })
 
 const StyledSubmitButton = styled(SubmitButton)(({ theme }) => ({
