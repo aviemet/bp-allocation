@@ -21,7 +21,7 @@ const TextInput = forwardRef(({ name, onUpdate, onChange, rules, pattern, ...pro
 
 		return field.onChange(onChange(e.target.value))
 	}
-
+	console.log({ props })
 	return (
 		<Controller
 			name={ name }
@@ -29,15 +29,13 @@ const TextInput = forwardRef(({ name, onUpdate, onChange, rules, pattern, ...pro
 			rules={ rules }
 			render={ ({ field }) => (
 				<TextField
-					{ ...field }
-					{ ...props }
 					ref={ ref }
 					fullWidth
 					error={ !!errors[name] }
 					helperText={ errors[name] && errors[name].message }
-					// InputProps={ inputProps }
-					// inputProps={ { pattern } }
 					onChange={ e => handleChange(e, field) }
+					{ ...field }
+					{ ...props }
 				/>
 			) }
 		/>
@@ -48,15 +46,10 @@ TextInput.propTypes = {
 	name: PropTypes.string.isRequired,
 	label: PropTypes.string,
 	placeholder: PropTypes.string,
-	// inputProps: PropTypes.object,
 	onUpdate: PropTypes.func,
 	onChange: PropTypes.func,
 	rules: PropTypes.object,
 	pattern: PropTypes.string,
 }
-
-// TextInput.defaultProps = {
-// 	inputProps: {}
-// }
 
 export default TextInput

@@ -12,7 +12,7 @@ import styled from '@emotion/styled'
 import VotingComplete from '../VotingComplete'
 import { OrgCard, OrgCardContainer } from '/imports/ui/Components/Cards'
 import FundsSlider from './FundsSlider'
-import Countown from '../Countdown'
+import Countdown from '../Countdown'
 
 import { COLORS } from '/imports/lib/global'
 
@@ -57,7 +57,7 @@ const FundsVotingKiosk = observer(props => {
 		<OrgsContainer>
 			<Typography variant="h4" component="h1" align="center">{ props.user.firstName && 'Voting for' } { memberName }</Typography>
 
-			{ countdownVisible && <Countown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
+			{ countdownVisible && <Countdown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
 
 			<OrgCardContainer cols={ 2 }>
 				{ topOrgs.map(org => {
@@ -68,34 +68,33 @@ const FundsVotingKiosk = observer(props => {
 							showAsk={ false }
 							size='small'
 							info={ true }
-							content={ () => (
-								<FundsSlider
-									org={ org }
-								/>
-							) }
-						/>)
+							content={ () => <FundsSlider org={ org } /> }
+						/>
+					)
 				}) }
 			</OrgCardContainer>
 
-			<FundsVoteContext.Consumer>{ ({ allocations, saveAllocations, member }) => {
-				let sum = 0
-				forEach(allocations, value => sum += value)
-				const remaining = member.theme.amount - sum
-				const buttonDisabled = remaining !== 0
+			<FundsVoteContext.Consumer>
+				{ ({ allocations, saveAllocations, member }) => {
+					let sum = 0
+					forEach(allocations, value => sum += value)
+					const remaining = member.theme.amount - sum
+					const buttonDisabled = remaining !== 0
 
-				return(
-					<>
-						<AmountRemaining value={ remaining } />
-						<FinalizeButton
-							size='huge'
-							disabled={ buttonDisabled }
-							onClick={ () => {
-								saveAllocations(props.source)
-								setVotingComplete(true)
-							} }>Finalize Vote</FinalizeButton>
-					</>
-				)
-			} }</FundsVoteContext.Consumer>
+					return(
+						<>
+							<AmountRemaining value={ remaining } />
+							<FinalizeButton
+								size='huge'
+								disabled={ buttonDisabled }
+								onClick={ () => {
+									saveAllocations(props.source)
+									setVotingComplete(true)
+								} }>Finalize Vote</FinalizeButton>
+						</>
+					)
+				} }
+			</FundsVoteContext.Consumer>
 		</OrgsContainer>
 	)
 })
