@@ -21,7 +21,7 @@ const TextInput = forwardRef(({ name, onUpdate, onChange, rules, pattern, ...pro
 
 		return field.onChange(onChange(e.target.value))
 	}
-	console.log({ props })
+
 	return (
 		<Controller
 			name={ name }
