@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 import { observer } from 'mobx-react-lite'
 import { useMembers } from '/imports/api/providers'
+import { createFilterOptions } from '@mui/material/Autocomplete'
 
 import {
 	Autocomplete,
@@ -19,6 +20,11 @@ import { toJS } from 'mobx'
 const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }) => {
 	const { members, isLoading: membersLoading } = useMembers()
 
+	const filterOptions = createFilterOptions({
+		limit: 15,
+		stringify: (option) => `${option.fullName} ${option.number}`
+	})
+
 	const handleChange = (event, newValue, reason) => {
 		if(setValue) setValue(newValue)
 		if(onResultSelect) onResultSelect(newValue)
@@ -31,10 +37,11 @@ const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }) =>
 			autoComplete
 			blurOnSelect
 			value={ value }
+			clearText={ '' }
 			onChange={ handleChange }
 			options={ toJS(members.values) }
 			getOptionLabel={ option => option?.fullName || '' }
-			clearText={ '' }
+			filterOptions={ filterOptions }
 			renderOption={ (props, option) => (
 				<Box component="li" sx={ { p: 2 } } { ...props }>
 					{ option?.fullName } <Chip icon={ <TagIcon /> } label={ option?.number } />
