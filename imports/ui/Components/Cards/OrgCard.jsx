@@ -80,7 +80,9 @@ const OrgCard = observer(({
 				</Dialog>
 			</InfoLink> }
 
-			<CardContent>
+			<CardContent
+				style={ content === undefined ? { height: '100%' } : {} }
+			>
 
 				{ content && <Content /> }
 
