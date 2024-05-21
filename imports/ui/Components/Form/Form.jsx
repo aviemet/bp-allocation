@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { childrenType } from '/imports/types'
 
 import { useForm, FormProvider } from 'react-hook-form'
+import { debounce } from 'lodash'
 
 const Form = ({
 	children,
@@ -24,7 +25,12 @@ const Form = ({
 
 		if(!formValidationContext || formValidationContext.validate(sanitizedData)) {
 			if(onValidSubmit) {
-				onValidSubmit(sanitizedData, formMethods)
+				const debouncedPledgeSubmit = debounce(() => {
+					onValidSubmit(sanitizedData, formMethods)
+				}, 1000, {
+					leading: true
+				})
+				debouncedPledgeSubmit()
 			}
 		} else {
 			formValidationContext.validationErrors().forEach(error => {

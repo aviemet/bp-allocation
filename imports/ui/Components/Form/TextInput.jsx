@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
 import { TextField } from '@mui/material'
 
-const TextInput = forwardRef(({ name, onUpdate, onChange, rules, pattern, ...props }, ref) => {
+const TextInput = forwardRef((
+	{ name, onUpdate, onChange, rules, pattern, ...props },
+	ref
+) => {
 	const form = useFormContext()
 	const { control, formState: { errors } } = form
 	const value = useWatch({ name })

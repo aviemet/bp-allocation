@@ -14,6 +14,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search'
 import TagIcon from '@mui/icons-material/Tag'
 import { Loading } from '/imports/ui/Components'
+import { toJS } from 'mobx'
 
 const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }) => {
 	const { members, isLoading: membersLoading } = useMembers()
@@ -31,7 +32,7 @@ const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }) =>
 			blurOnSelect
 			value={ value }
 			onChange={ handleChange }
-			options={ members.values }
+			options={ toJS(members.values) }
 			getOptionLabel={ option => option?.fullName || '' }
 			clearText={ '' }
 			renderOption={ (props, option) => (
@@ -43,9 +44,6 @@ const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }) =>
 				<TextField
 					variant="outlined"
 					placeholder="Member Name or Number"
-					InputProps={ {
-						startAdornment: ( <InputAdornment position="start"><SearchIcon /></InputAdornment> ),
-					} }
 					{ ...params }
 				/>
 			) }

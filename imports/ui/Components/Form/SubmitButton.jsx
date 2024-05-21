@@ -73,7 +73,7 @@ const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }
 			loadingPosition={ buttonIcon ? 'end' : undefined }
 			endIcon={ buttonIcon }
 			loading={ loading }
-			disabled={ status === STATUS.DISABLED }
+			disabled={ status === STATUS.DISABLED || status === STATUS.SUBMITTING }
 			sx={ { whiteSpace: 'nowrap' } }
 			color={ status === STATUS.SUCCESS ? 'success' : 'primary' }
 			{ ...props }
@@ -83,7 +83,6 @@ const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }
 	)
 }
 
-// TODO: Figure out the correct proptype for icon
 SubmitButton.propTypes = {
 	children: PropTypes.string.isRequired,
 	status: PropTypes.oneOf(Object.values(STATUS)).isRequired,

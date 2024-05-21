@@ -127,7 +127,6 @@ const CardContent = styled(Box)`
 	align-items: center;
 	justify-content: space-between;
 	width: 90%;
-	height: 100%;
 	margin: 0 auto;
 
 	& a {

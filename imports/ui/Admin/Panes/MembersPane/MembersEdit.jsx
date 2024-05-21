@@ -156,7 +156,7 @@ const MembersEdit = () => {
 					</Grid>
 
 					<Grid item xs={ 12 } md={ 8 }>
-						<TextInput name="amount" label="Voting Funds" inputProps={ {
+						<TextInput name="amount" label="Voting Funds" InputProps={ {
 							startAdornment: <InputAdornment position="start">$</InputAdornment>,
 						} } />
 					</Grid>
