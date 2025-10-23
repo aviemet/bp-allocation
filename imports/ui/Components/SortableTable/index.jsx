@@ -25,18 +25,18 @@ const SortableTable = ({
 	rows,
 	render,
 	collapse,
-	striped,
+	striped = false,
 	defaultOrderBy,
-	defaultDirection,
-	paginate,
-	paginationCounts,
+	defaultDirection = 'desc',
+	paginate = true,
+	paginationCounts = [10, 25, 50],
 	onBulkDelete,
-	dense,
-	selectOnClick,
+	dense = false,
+	selectOnClick = false,
 	filterParams,
 	onFilterParamsChange,
-	selectable,
-	fixed,
+	selectable = true,
+	fixed = false,
 	...props
 }) => {
 	const [order, setOrder] = useState(defaultDirection)
@@ -46,7 +46,7 @@ const SortableTable = ({
 	const [rowsPerPage, setRowsPerPage] = useState(paginationCounts[0])
 
 	const handleRequestSort = (event, property) => {
-		console.log({ property })
+		// console.log({ property })
 		const isAsc = orderBy === property && order === 'asc'
 		setOrder(isAsc ? 'desc' : 'asc')
 		setOrderBy(property)
@@ -195,17 +195,6 @@ SortableTable.propTypes = {
 	onFilterParamsChange: PropTypes.func,
 	selectable: PropTypes.bool,
 	fixed: PropTypes.bool,
-}
-
-SortableTable.defaultProps = {
-	paginate: true,
-	paginationCounts: [10, 25, 50],
-	dense: false,
-	selectOnClick: false,
-	defaultDirection: 'desc',
-	striped: false,
-	selectable: true,
-	fixed: false,
 }
 
 export default SortableTable

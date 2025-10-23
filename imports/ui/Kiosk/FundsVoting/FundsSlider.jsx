@@ -109,7 +109,8 @@ const FundsSliderComponent = props => {
 									padding: '0.5rem',
 									textAlign: 'center',
 								},
-								pattern: '[0-9]*'
+								inputMode: 'numeric',
+								pattern: '[0-9.]*'
 							},
 							startAdornment: (
 								<InputAdornment position="start" sx={ { margin: 0 } }>

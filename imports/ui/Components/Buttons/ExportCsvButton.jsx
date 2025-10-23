@@ -4,7 +4,7 @@ import Papa from 'papaparse'
 
 import Button from '@mui/material/Button'
 
-const ExportCsvButton = ({ options, data, description }) => {
+const ExportCsvButton = ({ options = {}, data, description }) => {
 
 	const exportData = () => {
 		if(data) {
@@ -42,10 +42,6 @@ ExportCsvButton.propTypes = {
 	options: PropTypes.object,
 	data: PropTypes.array,
 	description: PropTypes.string
-}
-
-ExportCsvButton.defaultProps = {
-	options: {},
 }
 
 export default ExportCsvButton

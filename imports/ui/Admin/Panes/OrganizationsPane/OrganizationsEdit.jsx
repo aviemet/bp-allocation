@@ -88,7 +88,7 @@ const OrganizationsEdit = () => {
 							name="ask"
 							label="Funding Ask"
 							required
-							inputProps={ {
+							InputProps={ {
 								startAdornment: <InputAdornment position="start">$</InputAdornment>,
 							} }
 						/>

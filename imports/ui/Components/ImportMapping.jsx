@@ -19,7 +19,7 @@ import {
 	Paper,
 } from '@mui/material'
 
-const ImportMapping = ({ headings, values, mapping, schema, sanitize, onImport }) => {
+const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImport }) => {
 	const [errors, setErrors] = useState([])
 
 	const alternateForm = heading => {
@@ -102,7 +102,7 @@ const ImportMapping = ({ headings, values, mapping, schema, sanitize, onImport }
 
 	useEffect(() => {
 		setErrors([])
-		console.log({ headingMap })
+		// console.log({ headingMap })
 	}, [headingMap])
 
 	return (
@@ -193,10 +193,6 @@ ImportMapping.propTypes = {
 	sanitize: PropTypes.func,
 	onImport: PropTypes.func.isRequired,
 	// errors: PropTypes.array,
-}
-
-ImportMapping.defaultProps = {
-	values: [],
 }
 
 export default ImportMapping

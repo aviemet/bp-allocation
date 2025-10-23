@@ -19,8 +19,8 @@ const EnhancedTableRow = ({
 	handleClick,
 	render,
 	collapse,
-	striped,
-	selectable,
+	striped = false,
+	selectable = true,
 }) => {
 	const [collapseOpen, setCollapseOpen] = useState(false)
 
@@ -93,11 +93,5 @@ EnhancedTableRow.propTypes = {
 	striped: PropTypes.bool,
 	selectable: PropTypes.bool,
 }
-
-EnhancedTableRow.defaultProps = {
-	striped: false,
-	selectable: true,
-}
-
 
 export default EnhancedTableRow

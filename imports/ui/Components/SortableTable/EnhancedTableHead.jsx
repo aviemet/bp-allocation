@@ -13,7 +13,7 @@ import {
 
 const EnhancedTableHead = ({
 	headCells,
-	spanForCollapse,
+	spanForCollapse = false,
 	tableHeadTopRow,
 	onSelectAllClick,
 	order,
@@ -21,7 +21,7 @@ const EnhancedTableHead = ({
 	numSelected,
 	rowCount,
 	onRequestSort,
-	selectable,
+	selectable = true,
 }) => {
 	const cellsWithDefaults = headCells.map((cell, i) => {
 		const cellWithDefaults = {
@@ -114,11 +114,6 @@ EnhancedTableHead.propTypes = {
 	orderBy: PropTypes.string.isRequired,
 	rowCount: PropTypes.number.isRequired,
 	selectable: PropTypes.bool,
-}
-
-EnhancedTableHead.defaultProps = {
-	spanForCollapse: false,
-	selectable: true,
 }
 
 export default EnhancedTableHead

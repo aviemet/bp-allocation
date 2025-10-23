@@ -30,7 +30,7 @@ const OrgCard = observer(({
 	showAsk,
 	animateClass,
 	info,
-	color,
+	color = 'green',
 	onClick,
 	disabled,
 	...props
@@ -80,7 +80,9 @@ const OrgCard = observer(({
 				</Dialog>
 			</InfoLink> }
 
-			<CardContent>
+			<CardContent
+				style={ content === undefined ? { height: '100%' } : {} }
+			>
 
 				{ content && <Content /> }
 
@@ -127,7 +129,6 @@ const CardContent = styled(Box)`
 	align-items: center;
 	justify-content: space-between;
 	width: 90%;
-	height: 100%;
 	margin: 0 auto;
 
 	& a {
@@ -190,10 +191,6 @@ OrgCard.propTypes = {
 	color: PropTypes.oneOf(['green', 'blue']),
 	onClick: PropTypes.func,
 	rest: PropTypes.any,
-}
-
-OrgCard.defaultProps = {
-	color: 'green',
 }
 
 export default OrgCard

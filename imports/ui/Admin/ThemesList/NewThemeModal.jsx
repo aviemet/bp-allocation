@@ -66,7 +66,7 @@ const NewThemeModal = () => {
 	const onSubmit = data => {
 		setFormStatus(STATUS.SUBMITTING)
 		ThemeMethods.create.call(data, (err, res) => {
-			console.log({ err, res })
+			// console.log({ err, res })
 			if(err) {
 				setFormStatus(STATUS.ERROR)
 				console.error(err)

@@ -21,12 +21,7 @@ import {
 	PresentationPane,
 } from '/imports/ui/Admin/Panes'
 
-import useTheme from '@mui/material/styles/useTheme'
-
 const Admin = () => {
-	const theme = useTheme()
-	console.log({ theme })
-
 	return (
 		<Container>
 			<Switch>

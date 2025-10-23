@@ -49,7 +49,7 @@ const Leverage = observer(({ hideAdminFields }) => {
 	const orgSpreadSum = topOrgs.reduce((sum, org) => { return sum + org.leverageFunds }, 0)
 	const roundSpreadSum = rounds[rounds.length - 1].orgs.reduce((sum, org) => { return sum + org.leverageFunds }, 0)
 
-	console.log({ orgSpreadSum, roundSpreadSum })
+	// console.log({ orgSpreadSum, roundSpreadSum })
 
 	const leverageDistributed = orgSpreadSum === roundSpreadSum && roundSpreadSum > 0
 

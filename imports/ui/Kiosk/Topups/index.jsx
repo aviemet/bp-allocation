@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useOrgs } from '/imports/api/providers'
 import { OrganizationMethods } from '/imports/api/methods'
-import { Box, Container } from '@mui/material'
+import { Box, Container, InputAdornment, Typography } from '@mui/material'
 import { Form, TextInput, SubmitButton, STATUS, SwitchInput } from '/imports/ui/Components/Form'
 import styled from '@emotion/styled'
 import { isEmpty } from 'lodash'
@@ -76,8 +76,21 @@ const Pledges = observer(({ user }) => {
 						placeholder='Pledge Amount'
 						required
 						sx={ { mb: 2 } }
-						pattern="[0-9]*"
-						onChange={ value => value.replace(/[^0-9]*/, '') }
+						InputProps={ {
+							inputProps: {
+								sx: {
+									padding: '0.5rem',
+									textAlign: 'center',
+								},
+								inputMode: 'numeric',
+								pattern: '[0-9.]*'
+							},
+							startAdornment: (
+								<InputAdornment position="start" sx={ { margin: 0 } }>
+									<Typography sx={ { fontFamily: 'Roboto', margin: '0 !important' } }>$</Typography>
+								</InputAdornment>
+							)
+						} }
 					/>
 
 					<Box sx={ { mb: 2 } }>
@@ -88,8 +101,9 @@ const Pledges = observer(({ user }) => {
 						type="submit"
 						status={ formStatus }
 						setStatus={ setFormStatus }
-						icon={ false }
-					>Submit Matched Pledge</FinalizeButton>
+					>
+						Submit Matched Pledge
+					</FinalizeButton>
 				</Container>
 			</Form>
 

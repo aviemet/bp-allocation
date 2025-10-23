@@ -12,7 +12,7 @@ export const STATUS = {
 	ERROR: 'error',
 }
 
-const SubmitButton = ({ children, status, setStatus, icon, ...props }) => {
+const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }) => {
 	const Icon = icon
 
 	const [loading, setLoading] = useState(false)
@@ -55,6 +55,7 @@ const SubmitButton = ({ children, status, setStatus, icon, ...props }) => {
 		if(status === STATUS.SUCCESS) {
 			statusTimeoutRef.current = setTimeout(() => setStatus(STATUS.READY), 4000)
 		}
+
 		return () => {
 			if(typeof statusTimeoutRef.current === 'function') statusTimeoutRef.current.clearTimeout()
 		}
@@ -72,24 +73,21 @@ const SubmitButton = ({ children, status, setStatus, icon, ...props }) => {
 			loadingPosition={ buttonIcon ? 'end' : undefined }
 			endIcon={ buttonIcon }
 			loading={ loading }
-			disabled={ status === STATUS.DISABLED }
+			disabled={ status === STATUS.DISABLED || status === STATUS.SUBMITTING }
 			sx={ { whiteSpace: 'nowrap' } }
 			color={ status === STATUS.SUCCESS ? 'success' : 'primary' }
 			{ ...props }
-		>{ children }</LoadingButton>
+		>
+			{ children }
+		</LoadingButton>
 	)
 }
 
-// TODO: Figure out the correct proptype for icon
 SubmitButton.propTypes = {
 	children: PropTypes.string.isRequired,
 	status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
 	setStatus: PropTypes.func.isRequired,
 	icon: PropTypes.any
-}
-
-SubmitButton.defaultProps = {
-	icon: SaveIcon
 }
 
 export default SubmitButton

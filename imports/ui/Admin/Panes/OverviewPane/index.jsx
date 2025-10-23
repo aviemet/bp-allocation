@@ -21,6 +21,7 @@ import { useSettings, useTheme, useOrgs } from '/imports/api/providers'
 import { Loading, MoneyCell } from '/imports/ui/Components'
 import ExportMemberVotes from '/imports/ui/Components/Buttons/ExportMemberVotes'
 import ExportTopups from '/imports/ui/Components/Buttons/ExportTopups'
+import ExportChitVotes from '/imports/ui/Components/Buttons/ExportChitVotes'
 
 const Overview = () => {
 	const { settings } = useSettings()
@@ -29,112 +30,119 @@ const Overview = () => {
 
 	if(themeLoading || orgsLoading) return <Loading />
 	return (
-		<TableContainer>
-			<StyledTable variant="striped">
-				<TableHead>
-					<TableRow>
-						<TableCell></TableCell>
-						<TableCell colSpan={ 2 }>Votes</TableCell>
-						<TableCell colSpan={ 5 } sx={ { backgroundColor: 'transparent' } }>
-							<Stack direction="row" justifyContent="space-around" alignItems="center">
-								<ExportMemberVotes />
-								<ExportTopups />
-							</Stack>
-						</TableCell>
-					</TableRow>
-					<TableRow>
-						<TableCell></TableCell>
-						<TableCell>R1 (chits)<br/>{ settings.useKioskChitVoting && `[${theme.chitVotesCast}/${theme.totalMembers}]` }</TableCell>
-						<TableCell>R2 ($)<br/>{ settings.useKioskFundsVoting && `[${theme.fundsVotesCast}/${theme.totalMembers}]` }</TableCell>
-						<TableCell>Saves</TableCell>
-						<TableCell>Top Off</TableCell>
-						<TableCell>Pledges</TableCell>
-						<TableCell>Leverage</TableCell>
-						<TableCell>Total<br/>Allocated</TableCell>
-					</TableRow>
-				</TableHead>
+		<>
+			<TableContainer style={ {
+				minWidth: 1005,
+				overflow: 'auto'
+			} }>
+				<StyledTable variant="striped">
+					<TableHead>
+						<TableRow>
+							<TableCell></TableCell>
+							<TableCell colSpan={ 2 }>Votes</TableCell>
+							<TableCell colSpan={ 5 } sx={ { backgroundColor: 'transparent' } }>
+								<Stack direction="row" justifyContent="space-around" alignItems="center">
+									<ExportMemberVotes />
+									<ExportTopups />
+								</Stack>
+							</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell></TableCell>
+							<TableCell>R1 (chits)<br/>{ settings.useKioskChitVoting && `[${theme.chitVotesCast}/${theme.totalMembers}]` }</TableCell>
+							<TableCell>R2 ($)<br/>{ settings.useKioskFundsVoting && `[${theme.fundsVotesCast}/${theme.totalMembers}]` }</TableCell>
+							<TableCell>Saves</TableCell>
+							<TableCell>Top Off</TableCell>
+							<TableCell>Pledges</TableCell>
+							<TableCell>Leverage</TableCell>
+							<TableCell>Total<br/>Allocated</TableCell>
+						</TableRow>
+					</TableHead>
 
-				<TableBody>
-					{ topOrgs.map((org, i) => {
-						const saveIndex = findIndex(theme.saves, ['org', org._id])
-						return(
-							<TableRow key={ i }>
-								<TableCell>
-									<Box>{ org.title }</Box>
-									<Box><Chip label={ `Ask: ${numeral(org.ask).format('$0,0')}` } /></Box>
-								</TableCell>
-								<TableCell align="center">{ roundFloat(org.votes, 1) }</TableCell>
-								<MoneyCell>{ org.votedTotal || 0 }</MoneyCell>
-								<MoneyCell>{ saveIndex >= 0 ? theme.saves[saveIndex] : 0 }</MoneyCell>
-								<MoneyCell>{ org.topOff }</MoneyCell>
-								<MoneyCell>{ org.pledges.reduce((sum, pledge) => sum + pledge.amount, 0) }</MoneyCell>
-								<MoneyCell>{ org.leverageFunds }</MoneyCell>
-								<MoneyCell>{ org.allocatedFunds + org.leverageFunds }</MoneyCell>
-							</TableRow>
-						)
-					}) }
-				</TableBody>
+					<TableBody>
+						{ topOrgs.map((org, i) => {
+							const saveIndex = findIndex(theme.saves, ['org', org._id])
+							return(
+								<TableRow key={ i }>
+									<TableCell>
+										<Box>{ org.title }</Box>
+										<Box><Chip label={ `Ask: ${numeral(org.ask).format('$0,0')}` } /></Box>
+									</TableCell>
+									<TableCell align="center">{ roundFloat(org.votes, 1) }</TableCell>
+									<MoneyCell>{ org.votedTotal || 0 }</MoneyCell>
+									<MoneyCell>{ saveIndex >= 0 ? theme.saves[saveIndex] : 0 }</MoneyCell>
+									<MoneyCell>{ org.topOff }</MoneyCell>
+									<MoneyCell>{ org.pledges.reduce((sum, pledge) => sum + pledge.amount, 0) }</MoneyCell>
+									<MoneyCell>{ org.leverageFunds }</MoneyCell>
+									<MoneyCell>{ org.allocatedFunds + org.leverageFunds }</MoneyCell>
+								</TableRow>
+							)
+						}) }
+					</TableBody>
 
-				<TableFooter>
-					<TableRow align='right'>
+					<TableFooter>
+						<TableRow align='right'>
 
-						<TableCell>Totals:</TableCell>
+							<TableCell>Totals:</TableCell>
 
-						{/* Chit Votes */}
-						<TableCell>{
-							roundFloat(topOrgs.reduce((sum, org) => sum + org.votes, 0), 1)
-						}</TableCell>
+							{/* Chit Votes */}
+							<TableCell>{
+								roundFloat(topOrgs.reduce((sum, org) => sum + org.votes, 0), 1)
+							}</TableCell>
 
-						{/* $ Votes */}
-						<MoneyCell>{
-							topOrgs.reduce((sum, org) => sum + org.votedTotal, 0)
+							{/* $ Votes */}
+							<MoneyCell>{
+								topOrgs.reduce((sum, org) => sum + org.votedTotal, 0)
 							// numeral(totals.get('votedTotal')).format('$0,0')
-						}</MoneyCell>
+							}</MoneyCell>
 
-						{/* Saves */}
-						<MoneyCell>{
-							theme.saves.reduce((sum, save) => sum + save, 0)
-						}</MoneyCell>
+							{/* Saves */}
+							<MoneyCell>{
+								theme.saves.reduce((sum, save) => sum + save, 0)
+							}</MoneyCell>
 
-						{/* Topoff */}
-						<MoneyCell>{
-							topOrgs.reduce((sum, org) => sum + org.topOff, 0)
-						}</MoneyCell>
+							{/* Topoff */}
+							<MoneyCell>{
+								topOrgs.reduce((sum, org) => sum + org.topOff, 0)
+							}</MoneyCell>
 
-						{/* Pledges */}
-						<MoneyCell>{
-							topOrgs.reduce((finalSum, org) => {
-								return finalSum + org.pledges.reduce((sum, pledge) => sum + pledge.amount, 0)
-							}, 0)
-						}</MoneyCell>
+							{/* Pledges */}
+							<MoneyCell>{
+								topOrgs.reduce((finalSum, org) => {
+									return finalSum + org.pledges.reduce((sum, pledge) => sum + pledge.amount, 0)
+								}, 0)
+							}</MoneyCell>
 
-						{/* Leverage */}
-						<MoneyCell>{ theme.leverageRemaining }</MoneyCell>
+							{/* Leverage */}
+							<MoneyCell>{ theme.leverageRemaining }</MoneyCell>
 
-						{/* Total Allocated */}
-						<MoneyCell>{
-							topOrgs.reduce((sum, org) => sum + org.allocatedFunds + org.leverageFunds, 0)
+							{/* Total Allocated */}
+							<MoneyCell>{
+								topOrgs.reduce((sum, org) => sum + org.allocatedFunds + org.leverageFunds, 0)
 							// numeral(totals.get('allocatedFunds')).format('$0,0')
-						}</MoneyCell>
+							}</MoneyCell>
 
-					</TableRow>
-					<TableRow>
-						<TableCell colSpan={ 6 }></TableCell>
-						<TableCell align="right">Total Given:</TableCell>
-						<MoneyCell>{
-							topOrgs.reduce(
-								(sum, org) => sum + (org.pledgeTotal / 2),
-								parseFloat(
-									(theme.leverageTotal || 0) +
+						</TableRow>
+						<TableRow>
+							<TableCell colSpan={ 6 }></TableCell>
+							<TableCell align="right">Total Given:</TableCell>
+							<MoneyCell>{
+								topOrgs.reduce(
+									(sum, org) => sum + (org.pledgeTotal / 2),
+									parseFloat(
+										(theme.leverageTotal || 0) +
 									theme.saves.reduce((sum, save) => {return sum + save.amount}, 0) +
 									(settings.resultsOffset || 0)
+									)
 								)
-							)
-						}</MoneyCell>
-					</TableRow>
-				</TableFooter>
-			</StyledTable>
-		</TableContainer>
+							}</MoneyCell>
+						</TableRow>
+					</TableFooter>
+				</StyledTable>
+			</TableContainer>
+
+			<ExportChitVotes />
+		</>
 	)
 }
 

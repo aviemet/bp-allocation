@@ -101,7 +101,7 @@ const ThemeSchema = new SimpleSchema({
 		type: String,
 		required: false,
 		index: true,
-		unique: true
+		unique: true,
 	},
 	messagesStatus: {
 		type: Array,

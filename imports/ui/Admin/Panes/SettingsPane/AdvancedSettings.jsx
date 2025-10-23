@@ -34,7 +34,7 @@ const SettingsPane = observer(() => {
 	}
 
 	const onSubmit = data => {
-		console.log({ data })
+		// console.log({ data })
 		setFormStatus(STATUS.SUBMITTING)
 		PresentationSettingsMethods.update.call({
 			id: settings._id,

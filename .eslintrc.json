@@ -10,14 +10,14 @@
 		}
 	},
 	"extends": [
-		"eslint:recommended", 
+		"eslint:recommended",
 		"plugin:react/recommended"
 	],
 	"globals": {
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly"
 	},
-	"parser": "babel-eslint",
+	"parser": "@babel/eslint-parser",
 	"parserOptions": {
 		"ecmaFeatures": {
 			"jsx": true
@@ -29,30 +29,71 @@
 		"react"
 	],
 	"rules": {
-		"indent": [ "error", "tab", {
-			"SwitchCase": 1,
-			"VariableDeclarator": "first",
-			"MemberExpression": 1,
-			"ArrayExpression": 1
-		} ],
+		"indent": [
+			"error",
+			"tab",
+			{
+				"SwitchCase": 1,
+				"VariableDeclarator": "first",
+				"MemberExpression": 1,
+				"ArrayExpression": 1
+			}
+		],
 		"no-console": "warn",
-		"linebreak-style": [ "error", "unix" ],
-		"quotes": [ "error", "single" ],
-		"semi": [ "error", "never" ],
-		"no-unused-vars": [ "warn", {
+		"linebreak-style": [
+			"error",
+			"unix"
+		],
+		"quotes": [
+			"error",
+			"single"
+		],
+		"semi": [
+			"error",
+			"never"
+		],
+		"no-unused-vars": [
+			"warn",
+			{
 				"vars": "all",
 				"args": "none"
-		}],
-		"no-prototype-builtins": [ 0 ],
-		"space-infix-ops": [ "error" ],
+			}
+		],
+		"no-prototype-builtins": [
+			0
+		],
+		"space-infix-ops": [
+			"error"
+		],
 		"no-trailing-spaces": "error",
-		"object-curly-spacing": [ 1, "always", {
-			"objectsInObjects": true 
-		}],
-		"brace-style": ["error", "1tbs", { "allowSingleLine": true }],
-		"react/boolean-prop-naming": [ "error" ],
-		"react/no-typos": [ "error" ],
-		"react/jsx-curly-spacing": [ "error", {"when": "always"} ],
-		"react/display-name": ["off"]
+		"object-curly-spacing": [
+			1,
+			"always",
+			{
+				"objectsInObjects": true
+			}
+		],
+		"brace-style": [
+			"error",
+			"1tbs",
+			{
+				"allowSingleLine": true
+			}
+		],
+		"react/boolean-prop-naming": [
+			"error"
+		],
+		"react/no-typos": [
+			"error"
+		],
+		"react/jsx-curly-spacing": [
+			"error",
+			{
+				"when": "always"
+			}
+		],
+		"react/display-name": [
+			"off"
+		]
 	}
 }

@@ -84,7 +84,7 @@ const SettingsPane = observer(() => {
 					<TextInput
 						name="leverageTotal"
 						label="Total Pot"
-						inputProps={ {
+						InputProps={ {
 							startAdornment: <InputAdornment position="start">$</InputAdornment>,
 						} }
 					/>
@@ -118,7 +118,7 @@ const SettingsPane = observer(() => {
 					<TextInput
 						name="consolationAmount"
 						label="Amount for bottom orgs"
-						inputProps={ {
+						InputProps={ {
 							startAdornment: <InputAdornment position="start">$</InputAdornment>,
 						} }
 					/>

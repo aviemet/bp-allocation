@@ -141,7 +141,7 @@ const MessageEdit = observer(() => {
 								<FormLabel component="legend">Skip If Member Has Voted In:</FormLabel>
 								<FormGroup>
 									<CheckboxInput name="optOutRounds.one" label="Round One" onUpdate={ (value, name, setValue) => {
-										console.log({ value, name })
+										// console.log({ value, name })
 									} } />
 									<CheckboxInput name="optOutRounds.two" label="Round Two" />
 								</FormGroup>

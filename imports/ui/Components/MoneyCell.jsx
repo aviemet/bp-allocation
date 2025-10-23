@@ -7,7 +7,7 @@ import  {
 	TableCell,
 } from '@mui/material'
 
-const MoneyCell = ({ children, format }) => {
+const MoneyCell = ({ children, format = '0,0.00' }) => {
 	return (
 		<TableCell align="right">
 			<Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -21,10 +21,6 @@ const MoneyCell = ({ children, format }) => {
 MoneyCell.propTypes = {
 	children: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 	format: PropTypes.string,
-}
-
-MoneyCell.defaultProps = {
-	format: '0,0.00'
 }
 
 export default MoneyCell

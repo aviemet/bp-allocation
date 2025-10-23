@@ -10,8 +10,15 @@ const ChitVoteSchema = new SimpleSchema({
 
 const MatchPledgeSchema = new SimpleSchema({
 	_id: {
-		type: SchemaRegex.Id,
-		autoValue: () => Random.id(),
+		type: String,
+		regEx: SchemaRegex.Id,
+		autoValue: function() {
+			if(this.operator === '$push'){
+				return Random.id()
+			} else {
+				this.unset()  // Prevent user from supplying their own value
+			}
+		},
 		index: true
 	},
 	amount: Number,

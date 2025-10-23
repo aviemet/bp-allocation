@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
-import _ from 'lodash'
+import { isUndefined, isEmpty, find } from 'lodash'
 import { formatPhoneNumber, sanitizeString } from '/imports/lib/utils'
 
 import { Members, MemberThemes, Organizations } from '/imports/api/db'
@@ -14,13 +14,17 @@ const _sanitizeMemberData = function(data) {
 	/**********************
 	 * Normalize the data *
 	 **********************/
-	if(!_.isUndefined(data.number)) data.number = parseInt(data.number)
-	if(!_.isUndefined(data.firstName)) data.firstName = sanitizeString(data.firstName)
-	if(!_.isUndefined(data.lastName)) data.lastName = sanitizeString(data.lastName)
-	if(!_.isUndefined(data.fullName)) data.fullName = sanitizeString(data.fullName)
-	if(!_.isUndefined(data.initials)) data.initials = sanitizeString(data.initials)
-	if(!_.isEmpty(data.phone)) data.phone = formatPhoneNumber(data.phone)
-	if(!_.isUndefined(data.email)) data.email = sanitizeString(data.email)
+	if(!isUndefined(data.number)) data.number = parseInt(data.number)
+	if(!isUndefined(data.firstName)) data.firstName = sanitizeString(data.firstName)
+	if(!isUndefined(data.lastName)) data.lastName = sanitizeString(data.lastName)
+	if(!isUndefined(data.fullName)) data.fullName = sanitizeString(data.fullName)
+	if(!isUndefined(data.initials)) data.initials = sanitizeString(data.initials)
+	if(!isEmpty(data.phone)) data.phone = formatPhoneNumber(data.phone)
+	if(!isUndefined(data.email)) data.email = sanitizeString(data.email)
+
+	if(!isUndefined(data.number) && !isUndefined(data.initials)) {
+		data.code = sanitizeString(`${data.initials}${data.number}`).toUpperCase()
+	}
 
 	return data
 }
@@ -32,7 +36,7 @@ const _sanitizeMemberData = function(data) {
 const _buildMissingData = function(data) {
 	let { firstName, lastName, fullName, number, initials, phone, email, code } = _sanitizeMemberData(data)
 	// Build first/last from fullName if not present
-	if(_.isUndefined(firstName) && _.isUndefined(lastName) && !_.isUndefined(fullName)) {
+	if(isUndefined(firstName) && isUndefined(lastName) && !isUndefined(fullName)) {
 		const nameArr = fullName.split(' ')
 		if(nameArr.length >= 2) {
 			firstName = nameArr[0]
@@ -41,17 +45,17 @@ const _buildMissingData = function(data) {
 	}
 
 	// Build fullName from first/last if not present
-	if(_.isUndefined(fullName) && !_.isUndefined(firstName) && !_.isUndefined(lastName)) {
+	if(isUndefined(fullName) && !isUndefined(firstName) && !isUndefined(lastName)) {
 		fullName = firstName + ' ' + lastName
 	}
 
 	// Build initials from first/last if not present
-	if(_.isEmpty(initials) && !_.isUndefined(firstName) && !_.isUndefined(lastName)) {
+	if(isEmpty(initials) && !isUndefined(firstName) && !isUndefined(lastName)) {
 		initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
 	}
 
 	// Build code from initials and number
-	if(!_.isUndefined(initials) && !_.isUndefined(number)) {
+	if(!isUndefined(initials) && !isUndefined(number)) {
 		code = `${initials}${String(number)}`
 	}
 	return { firstName, lastName, fullName, number, initials, phone, email, code }
@@ -70,10 +74,10 @@ const _memberInsert = function(data) {
 
 	// Search by either of first/last or full name
 	const memberQuery = { '$or': [] }
-	if(!_.isUndefined(firstName) && !_.isUndefined(lastName)) {
+	if(!isUndefined(firstName) && !isUndefined(lastName)) {
 		memberQuery.$or.push({ firstName, lastName, number })
 	}
-	if(!_.isUndefined(fullName)) {
+	if(!isUndefined(fullName)) {
 		memberQuery.$or.push({ fullName, number })
 	}
 
@@ -286,7 +290,7 @@ const MemberMethods = {
 			// Check for existing allocation for this org from this member
 			let memberTheme = MemberThemes.findOne({ theme, member })
 
-			let allocation = _.find(memberTheme.allocations, ['organization', org])
+			let allocation = find(memberTheme.allocations, ['organization', org])
 
 			// Update amount
 			if(!allocation) {
@@ -330,7 +334,7 @@ const MemberMethods = {
 				// Check for existing allocation for this org from this member
 				let memberTheme = MemberThemes.findOne({ theme, member })
 
-				let chitVote = _.find(memberTheme.chitVotes, ['organization', org])
+				let chitVote = find(memberTheme.chitVotes, ['organization', org])
 
 				// Update votes
 				if(!chitVote) {
