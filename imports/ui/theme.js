@@ -79,12 +79,14 @@ const theme = createTheme({
 				}),
 			},
 		},
-		MuiTableRow:{
-			root:  ({ ownerState, theme }) => ({
-				'&:first-of-type': {
-					borderLeft: `1px solid ${theme.palette.grey[200]}`,
-				},
-			}),
+		MuiTableRow: {
+			styleOverrides: {
+				root: ({ ownerState, theme }) => ({
+					'&:first-of-type': {
+						borderLeft: `1px solid ${theme.palette.grey[200]}`,
+					},
+				}),
+			},
 		},
 		MuiTableCell: {
 			styleOverrides: {

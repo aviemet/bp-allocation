@@ -1,6 +1,7 @@
 {
   "name": "bpallocation",
   "private": true,
+  "packageManager": "yarn@4.10.3",
   "scripts": {
     "start": "meteor run",
     "dev": "METEOR_OFFLINE_CATALOG=1 ROOT_URL=http://0.0.0.0:3000 meteor --settings privateSettings.json run",
@@ -60,8 +61,12 @@
     "@babel/preset-env": "^7.24.5",
     "@babel/preset-react": "^7.24.1",
     "@babel/types": "^7.8.3",
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "chai": "^4.2.0",
     "chromedriver": "^107.0.3",
+    "commitizen": "^4.3.1",
+    "commitlint": "^20.1.0",
     "eslint": "^8.27.0",
     "eslint-plugin-react": "^7.18.0",
     "faker": "^6.6.6",
@@ -76,5 +81,27 @@
   },
   "mocha": {
     "recursive": true
+  },
+  "browserslist": [
+    "defaults"
+  ],
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run lint:types && lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "npm run lint:fix"
+    ],
+    "*.{md,json,yml}": [
+      "git add"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
