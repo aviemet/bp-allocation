@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
-import { Link } from "react-router-dom"
-
-import { observer } from "mobx-react-lite"
 import {
 	Button,
 	Grid,
 	Typography,
 } from "@mui/material"
+import { Link } from "@tanstack/react-router"
+import { observer } from "mobx-react-lite"
+import PropTypes from "prop-types"
+import React, { useState, useEffect } from "react"
 import { Loading } from "/imports/ui/Components"
 
-import Breakdown from "./Breakdown"
 import AllocationsTable from "./AllocationsTable"
+import Breakdown from "./Breakdown"
 
 import { ShowLeverageToggle } from "/imports/ui/Components/Toggles"
 import { useTheme, useOrgs } from "/imports/api/providers"

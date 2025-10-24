@@ -1,15 +1,15 @@
-import React from "react"
-import { Route, Link, useRouteMatch } from "react-router-dom"
-
 import {
 	Box,
 	Tab,
 	Tabs,
 } from "@mui/material"
+import { Link, useParams } from "@tanstack/react-router"
+import React from "react"
 
+
+import AdvancedSettings from "./AdvancedSettings"
 import GeneralSettings from "./GeneralSettings"
 import MessageSettings from "./MessageSettings"
-import AdvancedSettings from "./AdvancedSettings"
 
 const panes = [
 	{
@@ -30,7 +30,14 @@ const panes = [
 ]
 
 const Settings = () => {
-	const { params } = useRouteMatch("/admin/:id/settings/:activeTab")
+	// Get params safely - only if we're on a route with an ID and activeTab
+	let params = {}
+	try {
+		params = useParams({ from: "/admin/$id/settings/$activeTab" })
+	} catch(error) {
+		// We're not on a route with the expected structure, params will be empty
+		params = {}
+	}
 
 	return (
 		<>
@@ -46,13 +53,12 @@ const Settings = () => {
 				)) }
 			</Tabs>
 			<Box sx={ { mt: 2 } }>
-				{ panes.map(pane => (
-					<Route
-						key={ `content-${pane.slug}` }
-						path={ `/admin/:id/settings/${pane.slug}` }
-						render={ () => pane.render }
-					/>
-				)) }
+				{ panes.map(pane => {
+					if(pane.slug === params.activeTab) {
+						return <div key={ `content-${pane.slug}` }>{ pane.render }</div>
+					}
+					return null
+				}) }
 			</Box>
 		</>
 	)

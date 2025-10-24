@@ -1,12 +1,6 @@
+import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet, Navigate, useParams, redirect } from "@tanstack/react-router"
 import { Meteor } from "meteor/meteor"
 import React from "react"
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom"
-
-import PrivateRoute from "./PrivateRoute"
-import LoadingRoute from "./LoadingRoute"
-import ShortRoute from "./ShortRoute"
-
-import { observer } from "mobx-react-lite"
 
 import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from "/imports/ui/Layouts"
 import Presentation from "/imports/ui/Presentation"
@@ -16,50 +10,203 @@ import Login from "/imports/ui/Welcome/Login"
 import Kiosk from "/imports/ui/Kiosk"
 import FourOhFour from "./404"
 
-const Routes = observer(() => (
-	<BrowserRouter>
-		<Switch>
+const rootRoute = createRootRoute({
+	component: () => <Outlet />,
+})
 
-			<Route path="/login" render={ () => (
-				!Meteor.userId()
-					? <WelcomeLayout><Login /></WelcomeLayout>
-					: <Redirect to="/" />
-			) } />
+const indexRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/",
+	beforeLoad: () => {
+		throw redirect({ to: "/admin" })
+	},
+})
 
-			<Redirect exact from="/" to="/admin" />
-			<PrivateRoute path={ "/admin" } component={ AdminLayout } />
+const loginRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/login",
+	component: () => {
+		if(Meteor.userId()) {
+			return <Navigate to="/admin" />
+		}
+		return (
+			<WelcomeLayout>
+				<Login />
+			</WelcomeLayout>
+		)
+	},
+})
 
-			<LoadingRoute path="/presentation/:id" render={ () => (
-				<PresentationLayout>
-					<Presentation />
-				</PresentationLayout>
-			) } />
+const adminRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/admin",
+	component: () => {
+		if(process.env.NODE_ENV !== "development" && !Meteor.userId()) {
+			return <Navigate to="/login" />
+		}
+		return <AdminLayout />
+	},
+})
 
-			{ /* Short URL for texts */ }
-			<Route path="/v/:themeSlug/:memberCode" component={ ShortRoute } />
+const adminWildcardRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/admin/*",
+	component: () => {
+		if(process.env.NODE_ENV !== "development" && !Meteor.userId()) {
+			return <Navigate to="/login" />
+		}
+		return <AdminLayout />
+	},
+})
 
-			<LoadingRoute path={ ["/voting/:id/:member", "/kiosk/:id"] } render={ () => (
-				<KioskLayout>
-					<Kiosk />
-				</KioskLayout>
-			) } />
+const adminIdRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/admin/$id",
+	component: () => {
+		if(process.env.NODE_ENV !== "development" && !Meteor.userId()) {
+			return <Navigate to="/login" />
+		}
+		return <AdminLayout />
+	},
+})
 
-			<LoadingRoute path="/simulation/:id" render={ () => (
-				<PresentationLayout>
-					<Simulation />
-				</PresentationLayout>
-			) } />
+const adminIdPageRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/admin/$id/$page",
+	component: () => {
+		if(process.env.NODE_ENV !== "development" && !Meteor.userId()) {
+			return <Navigate to="/login" />
+		}
+		return <AdminLayout />
+	},
+})
 
-			<LoadingRoute path="/pledges/:id" render={ () => (
-				<KioskLayout>
-					<Pledges />
-				</KioskLayout>
-			) } />
+const adminIdSettingsRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/admin/$id/settings",
+	component: () => {
+		if(process.env.NODE_ENV !== "development" && !Meteor.userId()) {
+			return <Navigate to="/login" />
+		}
+		return <AdminLayout />
+	},
+})
 
-			<Route path="/404" component={ FourOhFour } />
+const adminIdSettingsTabRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/admin/$id/settings/$activeTab",
+	component: () => {
+		if(process.env.NODE_ENV !== "development" && !Meteor.userId()) {
+			return <Navigate to="/login" />
+		}
+		return <AdminLayout />
+	},
+})
 
-		</Switch>
-	</BrowserRouter>
-))
+const presentationRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/presentation/$id",
+	component: () => {
+		return (
+			<PresentationLayout>
+				<Presentation />
+			</PresentationLayout>
+		)
+	},
+})
+
+const shortRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/v/$themeSlug/$memberCode",
+	component: () => {
+		const { themeSlug, memberCode } = useParams({ from: "/v/$themeSlug/$memberCode" })
+		// Short route logic here
+		return <div>Short route: { themeSlug } - { memberCode }</div>
+	},
+})
+
+const votingRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/voting/$id/$member",
+	component: () => {
+		return (
+			<KioskLayout>
+				<Kiosk />
+			</KioskLayout>
+		)
+	},
+})
+
+const kioskRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/kiosk/$id",
+	component: () => {
+		return (
+			<KioskLayout>
+				<Kiosk />
+			</KioskLayout>
+		)
+	},
+})
+
+const simulationRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/simulation/$id",
+	component: () => {
+		return (
+			<PresentationLayout>
+				<Simulation />
+			</PresentationLayout>
+		)
+	},
+})
+
+const pledgesRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/pledges/$id",
+	component: () => {
+		return (
+			<KioskLayout>
+				<Pledges />
+			</KioskLayout>
+		)
+	},
+})
+
+const notFoundRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/404",
+	component: FourOhFour,
+})
+
+const routeTree = rootRoute.addChildren([
+	indexRoute,
+	loginRoute,
+	adminRoute,
+	adminIdRoute,
+	adminWildcardRoute,
+	presentationRoute,
+	shortRoute,
+	votingRoute,
+	kioskRoute,
+	simulationRoute,
+	pledgesRoute,
+	adminIdPageRoute,
+	adminIdSettingsRoute,
+	adminIdSettingsTabRoute,
+	notFoundRoute,
+])
+
+const router = createRouter({ routeTree })
+
+declare module "@tanstack/react-router" {
+	interface Register {
+		router: typeof router
+	}
+}
+
+const Routes = () => {
+	return <RouterProvider router={ router } />
+}
 
 export default Routes

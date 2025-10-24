@@ -1,24 +1,22 @@
-import React from "react"
-
-import { Link } from "react-router-dom"
-
-import { observer } from "mobx-react-lite"
 import { useTheme, useSettings } from "/imports/api/providers"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 import { TimerInput, ResultsOffsetInput } from "/imports/ui/Components/Inputs"
+import BarChartIcon from "@mui/icons-material/BarChart"
+import CheckIcon from "@mui/icons-material/Check"
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
+import InfoIcon from "@mui/icons-material/Info"
+import OpenInNewIcon from "@mui/icons-material/OpenInNew"
+import TimerIcon from "@mui/icons-material/Timer"
+import ViewComfyIcon from "@mui/icons-material/ViewComfy"
 import {
 	Button,
 	Grid,
 	Paper,
 } from "@mui/material"
-import InfoIcon from "@mui/icons-material/Info"
-import ViewComfyIcon from "@mui/icons-material/ViewComfy"
-import TimerIcon from "@mui/icons-material/Timer"
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
-import BarChartIcon from "@mui/icons-material/BarChart"
-import CheckIcon from "@mui/icons-material/Check"
-import OpenInNewIcon from "@mui/icons-material/OpenInNew"
+import { Link } from "@tanstack/react-router"
+import { observer } from "mobx-react-lite"
+import React from "react"
 
 import {
 	ChitVotingActiveToggle,

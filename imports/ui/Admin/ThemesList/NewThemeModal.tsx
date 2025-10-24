@@ -1,12 +1,12 @@
-import React, { useState } from "react"
 import {
 	Button,
 	Grid,
 	Stack,
 	TextField,
 } from "@mui/material"
+import { useNavigate } from "@tanstack/react-router"
+import React, { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
-import { useHistory } from "react-router-dom"
 
 import { Form, TextInput, SubmitButton, STATUS } from "/imports/ui/Components/Form"
 import ContentModal from "/imports/ui/Components/Dialogs/ContentModal"
@@ -58,7 +58,7 @@ const ThemeInputs = () => {
 }
 
 const NewThemeModal = () => {
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
@@ -73,7 +73,7 @@ const NewThemeModal = () => {
 			} else {
 				setFormStatus(STATUS.SUCCESS)
 				setIsModalOpen(false)
-				history.push(`/admin/${res}`)
+				navigate({ to: `/admin/${res}` })
 			}
 		})
 	}

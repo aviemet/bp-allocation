@@ -1,19 +1,20 @@
-import React, { useState, useEffect, useRef } from "react"
-import { Route, Switch, useRouteMatch } from "react-router-dom"
-import { Transition } from "react-transition-group"
 import styled from "@emotion/styled"
+import { useParams } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
+import React, { useState, useEffect, useRef } from "react"
+import { Transition } from "react-transition-group"
+
 import { useData, useTheme, useSettings } from "/imports/api/providers"
-import KioskInfo from "./Info/KioskInfo"
 import ChitVotingKiosk from "./ChitVoting"
 import FundsVotingKiosk from "./FundsVoting"
-import Topups from "./Topups"
+import KioskInfo from "./Info/KioskInfo"
 import MemberLoginRequired from "./MemberLoginRequired"
 import RemoteVoting from "./RemoteVoting"
+import Topups from "./Topups"
 import Results from "/imports/ui/Presentation/Pages/Results"
 
 const Kiosk = observer(() => {
-	const match = useRouteMatch("/voting/:id/:member")
+	const params = useParams({ from: "/voting/$id/$member" })
 
 	const data = useData()
 	const { theme, isLoading: themeLoading } = useTheme()
@@ -84,46 +85,34 @@ const Kiosk = observer(() => {
 		}
 	}
 
-	const member = match?.params?.member
+	const member = params?.member
+
+	const renderPage = () => {
+		switch(displayPage) {
+			case data.KIOSK_PAGES.info:
+				return <KioskInfo />
+			case data.KIOSK_PAGES.chit:
+				return member ?
+					<RemoteVoting memberId={ member } component={ ChitVotingKiosk } /> :
+					<MemberLoginRequired component={ ChitVotingKiosk } />
+			case data.KIOSK_PAGES.topups:
+				return <RemoteVoting memberId={ member } component={ Topups } />
+			case data.KIOSK_PAGES.funds:
+				return member ?
+					<RemoteVoting memberId={ member } component={ FundsVotingKiosk } /> :
+					<MemberLoginRequired component={ FundsVotingKiosk } />
+			case data.KIOSK_PAGES.results:
+				return <Results />
+			default:
+				return <KioskInfo />
+		}
+	}
 
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{ state => (
 				<PageFader style={ { ...defaultStyle, ...transitionStyles[state] } }>
-					<Switch location={ { pathname: displayPage } }>
-
-						{ /* Orgs Grid */ }
-						<Route exact path={ data.KIOSK_PAGES.info } render={ () => <KioskInfo /> } />
-
-						{ /* Chit Voting */ }
-						<Route exact path={ data.KIOSK_PAGES.chit } render={ () => {
-							return member ?
-								// If member is set, navigation comes from the short link for voting remotely
-								<RemoteVoting memberId={ member } component={ ChitVotingKiosk } /> :
-								// Otherwise kiosk voting in the room, members must login to proceed
-								<MemberLoginRequired component={ ChitVotingKiosk } />
-						} } />
-
-						{ /* Topups */ }
-						<Route exact path={ data.KIOSK_PAGES.topups } render={ () => (
-							// If member is set, navigation comes from the short link for voting remotely
-							<RemoteVoting memberId={ member } component={ Topups } />
-						) } />
-
-						{ /* Funds Voting */ }
-						<Route exact path={ data.KIOSK_PAGES.funds } render={ () => {
-							return member ?
-								// If member is set, navigation comes from the short link for voting remotely
-								<RemoteVoting memberId={ member } component={ FundsVotingKiosk } /> :
-								// Otherwise kiosk voting in the room, members must login to proceed
-								<MemberLoginRequired component={ FundsVotingKiosk } />
-						} } />
-
-						{ /* Voting Results */ }
-						<Route exact path={ data.KIOSK_PAGES.results } component={ Results } />
-
-					</Switch>
-
+					{ renderPage() }
 				</PageFader>
 			) }
 		</Transition>

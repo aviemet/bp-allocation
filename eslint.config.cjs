@@ -191,8 +191,7 @@ module.exports = [
 			"import/consistent-type-specifier-style": ["error", "prefer-inline"],
 			"import/no-named-as-default": "off",
 			"import/no-unused-modules": ["error", {
-				"unusedExports": true,
-				"ignoreExports": ["**/react"]
+				"unusedExports": true
 			}],
 			"semi": ["error", "never"],
 			"@stylistic/quotes": ["error", "double", {

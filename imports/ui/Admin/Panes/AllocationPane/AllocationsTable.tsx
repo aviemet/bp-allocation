@@ -1,12 +1,3 @@
-import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
-import { Link } from "react-router-dom"
-import numeral from "numeral"
-import { Map } from "immutable"
-
-import { observer } from "mobx-react-lite"
-
-import { styled } from "@mui/material/styles"
 import {
 	Grid,
 	Table,
@@ -18,6 +9,13 @@ import {
 	TableCell,
 	TextField,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { Link } from "@tanstack/react-router"
+import { Map } from "immutable"
+import { observer } from "mobx-react-lite"
+import numeral from "numeral"
+import PropTypes from "prop-types"
+import React, { useState, useEffect } from "react"
 
 import AllocationInputs from "./AllocationInputs"
 import { useSettings, useTheme, useOrgs } from "/imports/api/providers"

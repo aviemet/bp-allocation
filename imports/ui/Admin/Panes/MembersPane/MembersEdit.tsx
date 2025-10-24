@@ -1,12 +1,3 @@
-import React, { useState, useEffect } from "react"
-import { useParams, useHistory } from "react-router-dom"
-import { useMembers } from "/imports/api/providers"
-import { MemberMethods } from "/imports/api/methods"
-import { MemberSchema, MemberThemeSchema } from "/imports/api/db/schema"
-import { roundFloat } from "/imports/lib/utils"
-
-import { Form, TextInput, SubmitButton, STATUS } from "/imports/ui/Components/Form"
-
 import {
 	Button,
 	Grid,
@@ -14,6 +5,15 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material"
+import { useParams, useNavigate } from "@tanstack/react-router"
+import React, { useState, useEffect } from "react"
+import { useMembers } from "/imports/api/providers"
+import { MemberMethods } from "/imports/api/methods"
+import { MemberSchema, MemberThemeSchema } from "/imports/api/db/schema"
+import { roundFloat } from "/imports/lib/utils"
+
+import { Form, TextInput, SubmitButton, STATUS } from "/imports/ui/Components/Form"
+
 import { Loading } from "/imports/ui/Components"
 
 const MembersEdit = () => {

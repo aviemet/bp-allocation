@@ -1,5 +1,16 @@
-import React, { useState } from "react"
-import { Link, useParams, useHistory } from "react-router-dom"
+import styled from "@emotion/styled"
+import {
+	Box,
+	Button,
+	FormGroup,
+	FormControl,
+	FormLabel,
+	Grid,
+	Paper,
+	Stack,
+	Typography,
+} from "@mui/material"
+import { Link, useParams, useNavigate } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
 import { useMessage } from "/imports/api/providers"
 import { MessageMethods } from "/imports/api/methods"
@@ -13,18 +24,7 @@ import {
 	RichTextInput,
 	CheckboxInput,
 } from "/imports/ui/Components/Form"
-import styled from "@emotion/styled"
-import {
-	Box,
-	Button,
-	FormGroup,
-	FormControl,
-	FormLabel,
-	Grid,
-	Paper,
-	Stack,
-	Typography,
-} from "@mui/material"
+import React, { useState } from "react"
 import { Loading } from "/imports/ui/Components"
 
 const MessageEdit = observer(() => {

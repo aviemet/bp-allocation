@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useRef } from "react"
-import { useHistory, useParams } from "react-router-dom"
-import { readCsv } from "/imports/lib/papaParseMethods"
-
-import { observer } from "mobx-react-lite"
-import { OrganizationMethods } from "/imports/api/methods"
-import { OrganizationSchema } from "/imports/api/db/schema"
-
 import {
 	Button,
 	Input,
 } from "@mui/material"
+import { useNavigate, useParams } from "@tanstack/react-router"
+import { observer } from "mobx-react-lite"
 import { useSnackbar } from "notistack"
+import { readCsv } from "/imports/lib/papaParseMethods"
+import { OrganizationMethods } from "/imports/api/methods"
+import { OrganizationSchema } from "/imports/api/db/schema"
+import React, { useState, useEffect, useRef } from "react"
 
 import ImportMapping from "/imports/ui/Components/ImportMapping"
 
@@ -24,8 +22,8 @@ const ImportOrgs = observer(() => {
 
 	const fileInputRef = useRef(null)
 
-	const { id: themeId } = useParams()
-	const history = useHistory()
+	const { id: themeId } = useParams({ from: "/admin/$id" })
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		fileInputRef.current.click()
@@ -54,7 +52,7 @@ const ImportOrgs = observer(() => {
 			}
 		})
 		enqueueSnackbar(`${data.length} Organization${ data.length === 1 ? "" : "s"} imported`, { variant: "success" })
-		history.push(`/admin/${themeId}/orgs`)
+		navigate({ to: `/admin/${themeId}/orgs` })
 	}
 
 	const headingsMap = [

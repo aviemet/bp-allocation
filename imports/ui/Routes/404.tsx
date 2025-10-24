@@ -1,9 +1,8 @@
-import React from "react"
-import { Container } from "@mui/material"
 import styled from "@emotion/styled"
+import { Container } from "@mui/material"
+import React from "react"
 
 const FourOhFour = () => {
-
 	return (
 		<ErrorContainer>
 			<h1>Uh Oh!</h1>
@@ -14,9 +13,8 @@ const FourOhFour = () => {
 }
 
 const ErrorContainer = styled(Container)`
-	color: white;
-	text-align: center;
+  color: white;
+  text-align: center;
 `
-
 
 export default FourOhFour

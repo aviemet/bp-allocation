@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
-import { Route, withRouter } from "react-router-dom"
-import { Transition } from "react-transition-group"
-
+import styled from "@emotion/styled"
+import { useNavigate, useParams } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
+import { useState, useEffect } from "react"
+import { Transition } from "react-transition-group"
 import { useTheme, useSettings } from "/imports/api/providers"
 
-import styled from "@emotion/styled"
 
 import { Intro, Orgs, Timer, TopOrgs, Allocation, Results } from "/imports/ui/Presentation/Pages"
 import { Loading } from "/imports/ui/Components"
@@ -22,75 +20,76 @@ const defaultStyle = {
 const transitionStyles = {
 	entering: { opacity: 0 },
 	entered: { opacity: 1 },
+	exiting: { opacity: 0 },
+	exited: { opacity: 0 },
+	unmounted: { opacity: 0 },
 }
 
 const PageFader = styled.div`
 	opacity: 0;
 `
 
-const Presentation = withRouter(observer(props => {
+const Presentation = observer(() => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { settings, isLoading: settingsLoading } = useSettings()
+	const navigate = useNavigate()
+	const params = useParams({ from: "/presentation/$id" })
 
 	const [ show, setShow ] = useState(true)
 
-	useEffect(() => {
-		if(!settingsLoading) doNavigation(settings.currentPage)
-	}, [settings.currentPage, settingsLoading])
-
 	// TODO: wait for image load before showing page
-	const doNavigation = currentPage => {
-		let page = `/presentation/${theme._id}/${currentPage}`
-		if(location.pathname !== page && show) {
+	const doNavigation = (currentPage: string) => {
+		let page = `/presentation/${params.id}/${currentPage}`
+		if(globalThis.location.pathname !== page && show) {
 			setShow(false)
 
-			setTimeout(() => {
-				props.history.push(page)
+			globalThis.setTimeout(() => {
+				navigate({ to: page })
 				setShow(true)
 			}, FADE_DURATION)
 		}
 	}
+
+	useEffect(() => {
+		if(!settingsLoading) doNavigation(settings.currentPage)
+	}, [settings.currentPage, settingsLoading, doNavigation])
 
 	// Component doesn't update from mobx changes unless they are referenced
 	const title = theme.title || ""
 	const question = theme.question || ""
 
 	if(themeLoading || settingsLoading) return <Loading />
+	const renderPage = () => {
+		const currentPage = settings.currentPage
+
+		switch(currentPage) {
+			case "intro":
+				return <Intro title={ title } question={ question } />
+			case "orgs":
+				return <Orgs />
+			case "timer":
+				return <Timer seconds={ settings.timerLength } />
+			case "toporgs":
+				return <TopOrgs />
+			case "allocation":
+				return <Allocation />
+			case "results":
+				return <Results />
+			default:
+				return <Intro title={ title } question={ question } />
+		}
+	}
+
 	return (
 		<Transition in={ show } timeout={ FADE_DURATION }>
 			{ (state) => (
 				<PageFader style={ { ...defaultStyle, ...transitionStyles[state], width: "100%" } } id="presentationFader">
-					{ /* Intro */ }
-					<Route path={ `${props.match.path}/intro` } render={ () => (
-						<Intro title={ title } question={ question } />
-					) } />
-
-					{ /* Participating Organizations */ }
-					<Route exact path={ `${props.match.path}/orgs` } component={ Orgs } />
-
-					{ /* Timer */ }
-					<Route exact path={ `${props.match.path}/timer` } render={ () => (
-						<Timer seconds={ settings.timerLength } />
-					) } />
-
-					{ /* Top Orgs */ }
-					<Route exact path={ `${props.match.path}/toporgs` } component={ TopOrgs } />
-
-					{ /* Allocation */ }
-					<Route exact path={ `${props.match.path}/allocation` } component={ Allocation } />
-
-					{ /* Results */ }
-					<Route exact path={ `${props.match.path}/results` } component={ Results } />
-
+					{ renderPage() }
 				</PageFader>
 			) }
 		</Transition>
 	)
-}))
+})
 
-Presentation.propTypes = {
-	history: PropTypes.object,
-	match: PropTypes.object,
-}
 
 export default Presentation

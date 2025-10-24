@@ -1,15 +1,15 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { useParams } from "react-router-dom"
-
-import { ThemeMethods } from "/imports/api/methods"
-
 import {
 	Stack,
 	Switch,
 	TableRow,
 	TableCell,
 } from "@mui/material"
+import { useParams } from "@tanstack/react-router"
+import PropTypes from "prop-types"
+import React from "react"
+
+import { ThemeMethods } from "/imports/api/methods"
+
 
 import { roundFloat } from "/imports/lib/utils"
 

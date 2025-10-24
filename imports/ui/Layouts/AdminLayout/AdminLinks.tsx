@@ -1,7 +1,15 @@
-import React, { useState } from "react"
-import PropTypes from "prop-types"
-import { Link } from "react-router-dom"
-
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
+import SettingsIcon from "@mui/icons-material/Settings"
+import AllInclusiveIcon from "@mui/icons-material/AllInclusive"
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney"
+import BusinessIcon from "@mui/icons-material/Business"
+import EmailIcon from "@mui/icons-material/Email"
+import ExpandLess from "@mui/icons-material/ExpandLess"
+import ExpandMore from "@mui/icons-material/ExpandMore"
+import OpenInNewIcon from "@mui/icons-material/OpenInNew"
+import PeopleIcon from "@mui/icons-material/People"
+import PieChartIcon from "@mui/icons-material/PieChart"
+import StarIcon from "@mui/icons-material/Star"
 import {
 	Collapse,
 	List,
@@ -11,21 +19,10 @@ import {
 	ListItemText,
 	Divider,
 } from "@mui/material"
-
-import BusinessIcon from "@mui/icons-material/Business"
-import PeopleIcon from "@mui/icons-material/People"
-import StarIcon from "@mui/icons-material/Star"
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney"
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
-import PieChartIcon from "@mui/icons-material/PieChart"
-import EmailIcon from "@mui/icons-material/Email"
-import SettingsIcon from "@mui/icons-material/Settings"
-import AllInclusiveIcon from "@mui/icons-material/AllInclusive"
-import OpenInNewIcon from "@mui/icons-material/OpenInNew"
-import ExpandLess from "@mui/icons-material/ExpandLess"
-import ExpandMore from "@mui/icons-material/ExpandMore"
-
+import { Link } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
+import PropTypes from "prop-types"
+import React, { useState } from "react"
 import { useData } from "/imports/api/providers"
 
 const navLinks = [

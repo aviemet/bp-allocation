@@ -1,0 +1,12 @@
+{
+  "ignorePatterns": [
+    "public/**/*",
+    ".vscode/**/*",
+    ".yarn/**/*",
+    ".meteor/**/*",
+    "node_modules/**/*",
+    "client/main.html",
+    "client/main.less",
+    "client/react-input-range.less"
+  ]
+}

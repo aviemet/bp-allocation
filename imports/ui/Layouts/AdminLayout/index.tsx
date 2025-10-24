@@ -1,12 +1,8 @@
-import { Meteor } from "meteor/meteor"
-import React, { useState, useEffect } from "react"
-
-import { Switch, useHistory, useLocation, useRouteMatch, Link } from "react-router-dom"
-import LoadingRoute from "/imports/ui/Routes/LoadingRoute"
-
 import ThemesList from "/imports/ui/Admin/ThemesList"
-import Admin from "/imports/ui/Admin"
 
+import styled from "@emotion/styled"
+import AccountCircle from "@mui/icons-material/AccountCircle"
+import BarChartIcon from "@mui/icons-material/BarChart"
 import {
 	Container,
 	AppBar as MuiAppBar,
@@ -21,13 +17,12 @@ import {
 	Menu,
 	Button,
 } from "@mui/material"
-import styled from "@emotion/styled"
-import AccountCircle from "@mui/icons-material/AccountCircle"
-import BarChartIcon from "@mui/icons-material/BarChart"
+import { useNavigate, useLocation, useParams, Link } from "@tanstack/react-router"
+import { Meteor } from "meteor/meteor"
+import { observer } from "mobx-react-lite"
+import React, { useState, useEffect } from "react"
 
 import AdminLinks from "./AdminLinks"
-
-import { observer } from "mobx-react-lite"
 import { useData, useTheme } from "/imports/api/providers"
 
 const drawerWidth = 175
@@ -36,9 +31,16 @@ const AdminLayout = observer(() => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const data = useData()
 
-	const history = useHistory()
+	const navigate = useNavigate()
 	const location = useLocation()
-	const match = useRouteMatch("/admin/:id/:page")
+	// Get params safely - only if we're on a route with an ID
+	let params = {}
+	try {
+		params = useParams({ from: "/admin/$id" })
+	} catch(error) {
+		// We're not on a route with an ID, params will be empty
+		params = {}
+	}
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const [ drawerOpen, setDrawerOpen ] = useState(false)
@@ -113,7 +115,7 @@ const AdminLayout = observer(() => {
 						>
 							<Link to="/admin"><MenuItem>Themes List</MenuItem></Link>
 							<Divider />
-							<MenuItem onClick={ () => { handleMenuClose(); Meteor.logout(() => history.push("/login")) } }>Sign Out</MenuItem>
+							<MenuItem onClick={ () => { handleMenuClose(); Meteor.logout(() => navigate({ to: "/login" })) } }>Sign Out</MenuItem>
 						</Menu>
 					</div>
 				</Toolbar>
@@ -138,16 +140,13 @@ const AdminLayout = observer(() => {
 
 				<Divider />
 
-				<AdminLinks activeMenuItem={ match?.params?.page || "" } />
+				<AdminLinks activeMenuItem={ params?.page || "" } />
 			</Drawer>
 
 			<Main open={ drawerOpen }>
 				<Container>
 					<Grid container>
-						<Switch>
-							<LoadingRoute exact path={ "/admin" } render={ () => <ThemesList /> } />
-							<LoadingRoute path="/admin/:id" component={ Admin } />
-						</Switch>
+						<ThemesList />
 					</Grid>
 				</Container>
 			</Main>

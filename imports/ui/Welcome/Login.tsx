@@ -1,19 +1,18 @@
 import Button from "@mui/material/Button"
 import Grid from "@mui/material/Grid"
+import { useNavigate, useLocation } from "@tanstack/react-router"
 import { Meteor } from "meteor/meteor"
 import { useSnackbar } from "notistack"
-import { useHistory, useLocation } from "react-router-dom"
 
 const Login = () => {
 	const { enqueueSnackbar } = useSnackbar()
 
-	const history = useHistory()
+	const navigate = useNavigate()
 	const location = useLocation()
 
-	const handleLogin = e => {
+	const handleLogin = () => {
 		Meteor.loginWithGoogle({
 			loginStyle: "popup",
-			scope: [ "email" ],
 		}, err => {
 			if(err) {
 				enqueueSnackbar(
@@ -28,8 +27,7 @@ const Login = () => {
 					, { variant: "error" })
 				console.error({ err })
 			} else {
-				let redirect = location.state && location.state.from ? location.state.from : "/"
-				history.push(redirect)
+				navigate({ to: "/admin" })
 			}
 		})
 	}

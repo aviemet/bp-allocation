@@ -1,17 +1,18 @@
-import React from "react"
-import { useParams, useHistory } from "react-router-dom"
-import { useMembers } from "/imports/api/providers"
-
 import {
 	Container,
 	Grid,
 	Skeleton,
 	Typography,
 } from "@mui/material"
+import { useParams, useNavigate } from "@tanstack/react-router"
+import { observer } from "mobx-react-lite"
+import React from "react"
+import { useMembers } from "/imports/api/providers"
+
 
 import SplitButton from "/imports/ui/Components/Buttons/SplitButton"
 import MembersTable from "./MembersTable"
-import { observer } from "mobx-react-lite"
+
 
 const MembersPane = observer(() => {
 	const { id } = useParams()
