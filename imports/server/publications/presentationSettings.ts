@@ -11,8 +11,8 @@ Meteor.publish('presentationSettings', (settingsId) => {
 	}
 })
 */
-Meteor.publish("settings", function(themeId) {
-	const theme = Themes.findOne({ _id: themeId })
+Meteor.publish("settings", async function(themeId) {
+	const theme = await Themes.findOneAsync({ _id: themeId })
 	try {
 		return PresentationSettings.find({ _id: theme.presentationSettings })
 	} catch(e) {

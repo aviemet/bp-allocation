@@ -1,6 +1,7 @@
-import { Mongo } from "meteor/mongo"
 import SimpleSchema from "simpl-schema"
+
 import SchemaRegex from "/imports/lib/schema"
+import { CollectionPermissions } from "./index"
 
 const OrgSaveSchema = new SimpleSchema({
 	org: SchemaRegex.Id,
@@ -19,10 +20,8 @@ const MessageStatusSchema = new SimpleSchema({
 	error: Boolean,
 })
 
-// Define Collection
-const Themes = new Mongo.Collection("themes")
 
-const ThemeSchema = new SimpleSchema({
+export const ThemeSchema = new SimpleSchema({
 	title: {
 		type: String,
 		label: "Battery Powered Theme Title",
@@ -124,10 +123,14 @@ const ThemeSchema = new SimpleSchema({
 
 
 // Set permissions
-Themes.allow({
+export const themesPermissions: CollectionPermissions = {
 	insert: (userId, doc) => {
 		return true
 	},
-})
-
-export { Themes, ThemeSchema }
+	update: (userId, doc) => {
+		return true
+	},
+	remove: (userId, doc) => {
+		return true
+	},
+}

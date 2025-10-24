@@ -1,0 +1,47 @@
+# Allocation Project Documentation
+
+## Project Overview
+
+### Model Organization
+
+## Architecture Patterns
+
+### Data Provider Hierarchy
+The application uses a nested provider pattern established in `imports/ui/App.tsx`:
+
+```
+DataProvider
+  └── ThemeProvider
+      └── SettingsProvider
+          └── OrgsProvider
+              └── MembersProvider
+                  └── MessagesProvider
+                      └── Routes
+```
+
+This hierarchy provides global state management through MobX stores and Meteor subscriptions. Components should use the existing provider hooks (`useData()`, `useTheme()`, `useSettings()`, etc.) rather than duplicating providers.
+
+### Meteor 3.0+ Compatibility
+Server-side publications must use async methods:
+- `findOne()` → `findOneAsync()`
+- `find().fetch()` → `find().fetchAsync()`
+
+### TanStack Router Migration
+- Uses programmatic routing with `createRouter` and `createRoute`
+- Nested routes under `adminLayoutRoute` for admin section
+- Authentication handled in `beforeLoad` hooks
+- `AdminLayout` component wraps admin routes with `<Outlet />`
+
+### Theme Loading Pattern
+- `AdminLayout` sets `data.themeId` from route params
+- `ThemeProvider` subscribes to theme data based on `themeId`
+- Components should handle loading states when `theme` is undefined
+- Loading states prevent crashes when accessing `theme._id` before data loads
+
+### TypeScript + SimpleSchema Pattern
+- TypeScript interfaces auto-generated in `imports/api/db/generated-types.ts`
+- Collections defined in `imports/api/db/index.ts` with schemas attached
+- Individual schema files only contain SimpleSchema definitions
+- Optional fields in SimpleSchema (`required: false`) become optional in TypeScript (`field?: type`)
+- Use `npm run generate-types` to regenerate types from schemas
+- All types exported from `imports/api/db/index.ts`

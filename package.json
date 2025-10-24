@@ -13,7 +13,8 @@
     "test:client": "TEST_WATCH=1 meteor --settings privateSettings.json test --full-app --driver-package meteortesting:mocha --port 3333 TEST_SERVER=0",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "generate-types": "node node_modules/schema-to-types/dist/src/update-model.js tsconfig.json imports/api/db/generated-types.ts"
   },
   "dependencies": {
     "@artsy/fresnel": "^6.2.1",
@@ -90,6 +91,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.0",
     "jest": "^30.2.0",
+    "schema-to-types": "^1.2.4",
     "selenium-webdriver": "^4.37.0",
     "typescript": "^5.9.3"
   },

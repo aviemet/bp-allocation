@@ -1,9 +1,9 @@
 import { Meteor } from "meteor/meteor"
-import React, { useContext, useState } from "react"
-import PropTypes from "prop-types"
-import { observer } from "mobx-react-lite"
-
 import { useTracker } from "meteor/react-meteor-data"
+import { observer } from "mobx-react-lite"
+import PropTypes from "prop-types"
+import React, { useContext, useState } from "react"
+
 import { useData } from "./DataProvider"
 import { useTheme } from "./ThemeProvider"
 import { PresentationSettings } from "/imports/api/db"
@@ -33,7 +33,7 @@ const SettingsProvider = observer(({ children }) => {
 		// Begin the subscription
 		subscription = Meteor.subscribe("settings", themeId, {
 			onReady: () => {
-				if(!themeLoading) {
+				if(!themeLoading && theme && theme.presentationSettings) {
 					const cursor = PresentationSettings.find({ _id: theme.presentationSettings })
 					settingsStore = new SettingsStore(cursor.fetch()[0])
 

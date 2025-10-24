@@ -1,6 +1,8 @@
 import {
 	Container,
 	TableCell,
+	CircularProgress,
+	Box,
 } from "@mui/material"
 import { Link } from "@tanstack/react-router"
 import { format } from "date-fns"
@@ -22,13 +24,13 @@ const ThemesList = () => {
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState("")
 	const [ modalContent, setModalContent ] = useState("")
-	const [ modalAction, setModalAction ] = useState()
+	const [ modalAction, setModalAction ] = useState<() => void>()
 
-	Meteor.subscribe("themes")
+	const handle = Meteor.subscribe("themes")
 
 	const themes = useTracker(() => {
 		return Themes.find({}).fetch()
-	})
+	}, [])
 
 	const bulkDelete = (selected, onSuccess) => {
 		const plural = selected.length > 1

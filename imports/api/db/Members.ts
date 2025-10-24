@@ -1,9 +1,8 @@
-import { Mongo } from "meteor/mongo"
 import SimpleSchema from "simpl-schema"
 
-const Members = new Mongo.Collection("members")
+import { CollectionPermissions } from "./index"
 
-const MemberSchema = new SimpleSchema({
+export const MemberSchema = new SimpleSchema({
 	firstName: {
 		type: String,
 		required: true,
@@ -57,7 +56,7 @@ const MemberSchema = new SimpleSchema({
 
 
 // Set permissions
-Members.allow({
+export const membersPermissions: CollectionPermissions = {
 	insert: (userId, doc) => {
 		return true
 	},
@@ -67,6 +66,4 @@ Members.allow({
 	remove: (userId, doc) => {
 		return true
 	},
-})
-
-export { Members, MemberSchema }
+}

@@ -1,14 +1,14 @@
-import { Mongo } from "meteor/mongo"
 import SimpleSchema from "simpl-schema"
 
-const RoundsSchema = new SimpleSchema({
+import { CollectionPermissions } from "./index"
+
+export const RoundsSchema = new SimpleSchema({
 	one: Boolean,
 	two: Boolean,
 })
 
-const Messages = new Mongo.Collection("messages")
 
-const MessageSchema = new SimpleSchema({
+export const MessageSchema = new SimpleSchema({
 	title: String,
 	subject: {
 		type: String,
@@ -70,7 +70,7 @@ const MessageSchema = new SimpleSchema({
 
 
 // Set permissions
-Messages.allow({
+export const messagesPermissions: CollectionPermissions = {
 	insert: (userId, doc) => {
 		return true
 	},
@@ -80,6 +80,4 @@ Messages.allow({
 	remove: (userId, doc) => {
 		return true
 	},
-})
-
-export { Messages, MessageSchema }
+}

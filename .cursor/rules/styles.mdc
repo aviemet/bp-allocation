@@ -1,0 +1,7 @@
+---
+description: 
+globs: *.tsx,*.css.ts
+alwaysApply: false
+---
+- This project uses MUI as a component library.
+- Use Emotion to write styles and styles components

@@ -1,9 +1,9 @@
 import { Meteor } from "meteor/meteor"
-import React, { useContext } from "react"
-import PropTypes from "prop-types"
-import { observer } from "mobx-react-lite"
-
 import { useTracker } from "meteor/react-meteor-data"
+import { observer } from "mobx-react-lite"
+import PropTypes from "prop-types"
+import React, { useContext } from "react"
+
 import { useData } from "./DataProvider"
 import { Themes } from "/imports/api/db"
 import { ThemeStore } from "/imports/api/stores"
@@ -15,17 +15,13 @@ export const useTheme = () => useContext(ThemeContext)
 // Provider to wrap the application with
 // Observes changes on the data store to manage subscription to the theme
 const ThemeProvider = observer(({ children }) => {
-	const { themeId } = useData()
-	let subscription
-	let cursorObserver
-	let themeStore // The MobX store for the theme
+	const data = useData()
+	const themeId = data.themeId
 
 	// Setup Meteor tracker to subscribe to a Theme
 	const theme = useTracker(() => {
-		if(!themeId) {
-			if(subscription) subscription.stop()
-			if(cursorObserver) cursorObserver.stop()
 
+		if(!themeId) {
 			return {
 				isLoading: true,
 				theme: undefined,
@@ -33,17 +29,13 @@ const ThemeProvider = observer(({ children }) => {
 		}
 
 		// Begin the subscription
-		subscription = Meteor.subscribe("theme", themeId, {
-			onReady: () => {
-				const cursor = Themes.find({ _id: themeId })
-				themeStore = cursor ? new ThemeStore(cursor.fetch()[0]) : undefined
+		const subscription = Meteor.subscribe("theme", themeId)
 
-				cursorObserver = cursor.observe({
-					added: theme => themeStore.refreshData(theme),
-					changed: theme => themeStore.refreshData(theme),
-				})
-			},
-		})
+		// Get the theme data directly
+		const themeData = Themes.findOne({ _id: themeId })
+
+		// Create the theme store if we have data
+		const themeStore = themeData ? new ThemeStore(themeData) : undefined
 
 		return {
 			theme: themeStore,

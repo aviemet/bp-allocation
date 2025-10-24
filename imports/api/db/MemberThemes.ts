@@ -1,8 +1,9 @@
-import { Mongo } from "meteor/mongo"
 import SimpleSchema from "simpl-schema"
-import SchemaRegex from "/imports/lib/schema"
 
-const AllocationSchema = new SimpleSchema({
+import SchemaRegex from "/imports/lib/schema"
+import { CollectionPermissions } from "./index"
+
+export const AllocationSchema = new SimpleSchema({
 	organization: SchemaRegex.Id,
 	amount: Number,
 	voteSource: {
@@ -24,7 +25,7 @@ const AllocationSchema = new SimpleSchema({
 	},
 })
 
-const ChitVoteSchema = new SimpleSchema({
+export const ChitVoteSchema = new SimpleSchema({
 	organization: SchemaRegex.Id,
 	votes: Number,
 	voteSource: {
@@ -46,13 +47,8 @@ const ChitVoteSchema = new SimpleSchema({
 	},
 })
 
-/**
- * Voting information for a member on a specific theme
- * Members are persistent, can vote in multiple themes
- */
-const MemberThemes = new Mongo.Collection("memberThemes")
 
-const MemberThemeSchema = new SimpleSchema({
+export const MemberThemeSchema = new SimpleSchema({
 	theme: SchemaRegex.Id,
 	member: SchemaRegex.Id,
 	chits: { // Number of chits this member gets for round 1 voting
@@ -70,7 +66,7 @@ const MemberThemeSchema = new SimpleSchema({
 		required: false,
 	},
 	"chitVotes.$": ChitVoteSchema,
-	allocations: { // Alloction of money round 2
+	allocations: { // Allocation of money round 2
 		type: Array,
 		defaultValue: [],
 		required: false,
@@ -93,7 +89,7 @@ const MemberThemeSchema = new SimpleSchema({
 
 
 // Set permissions
-MemberThemes.allow({
+export const memberThemesPermissions: CollectionPermissions = {
 	insert: (userId, doc) => {
 		return true
 	},
@@ -103,6 +99,5 @@ MemberThemes.allow({
 	remove: (userId, doc) => {
 		return true
 	},
-})
+}
 
-export { MemberThemes, MemberThemeSchema, AllocationSchema, ChitVoteSchema }

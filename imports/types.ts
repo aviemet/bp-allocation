@@ -1,4 +1,5 @@
 import { ReactNode } from "react"
+import "./types/collection2"
 
 export interface BaseEntity {
 	_id: string
@@ -6,14 +7,6 @@ export interface BaseEntity {
 	updatedAt: Date
 }
 
-export interface Member extends BaseEntity {
-	firstName: string
-	lastName: string
-	email: string
-	phone?: string
-	organizationId: string
-	isActive: boolean
-}
 
 export interface Organization extends BaseEntity {
 	name: string

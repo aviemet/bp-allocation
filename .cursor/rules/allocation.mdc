@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# REQUIRED FOR EVERY INTERACTION
+
+1. Read .cursor/allocation.mdx at the start of each interaction
+2. Before ending ANY response, if you've learned anything useful about project-specific architectural details that are NOT immediately obvious from reading the code, you MUST update .cursor/allocation.mdx with this information
+3. When updating .cursor/allocation.mdx:
+   - Only add new information not already documented
+   - Place information in the appropriate section
+   - If no appropriate section exists, create one
+   - ONLY document project-specific architectural decisions, custom patterns, and non-obvious implementation details. Do not document highly specific workflows; if your documentation would become immediately outdated it's not worth noting.

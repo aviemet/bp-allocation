@@ -1,5 +1,3 @@
-import ThemesList from "/imports/ui/Admin/ThemesList"
-
 import styled from "@emotion/styled"
 import AccountCircle from "@mui/icons-material/AccountCircle"
 import BarChartIcon from "@mui/icons-material/BarChart"
@@ -15,9 +13,10 @@ import {
 	Divider,
 	Grid,
 	Menu,
+	CircularProgress,
 	Button,
 } from "@mui/material"
-import { useNavigate, useLocation, useParams, Link } from "@tanstack/react-router"
+import { useNavigate, useLocation, useParams, Link, Outlet } from "@tanstack/react-router"
 import { Meteor } from "meteor/meteor"
 import { observer } from "mobx-react-lite"
 import React, { useState, useEffect } from "react"
@@ -28,7 +27,6 @@ import { useData, useTheme } from "/imports/api/providers"
 const drawerWidth = 175
 
 const AdminLayout = observer(() => {
-	const { theme, isLoading: themeLoading } = useTheme()
 	const data = useData()
 
 	const navigate = useNavigate()
@@ -36,11 +34,23 @@ const AdminLayout = observer(() => {
 	// Get params safely - only if we're on a route with an ID
 	let params = {}
 	try {
-		params = useParams({ from: "/admin/$id" })
+		params = useParams({ strict: false })
 	} catch(error) {
 		// We're not on a route with an ID, params will be empty
 		params = {}
 	}
+
+	// Set the theme ID in the store based on the route parameters
+	useEffect(() => {
+		if(params.id) {
+			data.themeId = params.id
+		} else {
+			data.themeId = null
+		}
+	}, [params.id, data])
+
+	const { theme, isLoading: themeLoading } = useTheme()
+
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const [ drawerOpen, setDrawerOpen ] = useState(false)
@@ -77,6 +87,29 @@ const AdminLayout = observer(() => {
 	useEffect(() => {
 		data.menuHeading = theme?.title ? theme.title : data.defaultMenuHeading
 	}, [theme])
+
+	// Show loading state while theme is loading
+	if(themeLoading || !theme) {
+		return (
+			<AdminContainer className="AdminContainer">
+				<AppBar position="relative" open={ false }>
+					<Toolbar>
+						<Logo size="mini" src="/img/BPLogo.svg" />
+						<Typography variant="h6" component="div" sx={ { flexGrow: 1 } }>
+							Loading...
+						</Typography>
+					</Toolbar>
+				</AppBar>
+				<Main open={ false }>
+					<Container>
+						<Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+							<CircularProgress />
+						</Box>
+					</Container>
+				</Main>
+			</AdminContainer>
+		)
+	}
 
 	return (
 		<AdminContainer className="AdminContainer">
@@ -135,7 +168,7 @@ const AdminLayout = observer(() => {
 				open={ drawerOpen }
 			>
 				<DrawerHeader>
-					<Button component={ Link } color="warning" to={ themeLoading ? "#" : `/admin/${theme._id}/presentation` } fullWidth sx={ { p: 2 } }><BarChartIcon />Presentation</Button>
+					<Button component={ Link } color="warning" to={ themeLoading || !theme ? "#" : `/admin/${theme._id}/presentation` } fullWidth sx={ { p: 2 } }><BarChartIcon />Presentation</Button>
 				</DrawerHeader>
 
 				<Divider />
@@ -146,7 +179,7 @@ const AdminLayout = observer(() => {
 			<Main open={ drawerOpen }>
 				<Container>
 					<Grid container>
-						<ThemesList />
+						<Outlet />
 					</Grid>
 				</Container>
 			</Main>

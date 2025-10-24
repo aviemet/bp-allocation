@@ -32,9 +32,10 @@ import PresentationNavButton from "./PresentationNavButton"
 import { Loading } from "/imports/ui/Components"
 
 const PresentationPane = observer(() => {
-	const { theme } = useTheme()
+	const { theme, isLoading: themeLoading } = useTheme()
 	const { settings, isLoading: settingsLoading } = useSettings()
 
+	if(themeLoading || !theme) return <Loading />
 	/**
 	 * Reset the values for the presentation
 	 */

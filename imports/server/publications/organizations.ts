@@ -1,4 +1,5 @@
 import { Meteor } from "meteor/meteor"
+
 import { registerObserver } from "../methods"
 import { OrgTransformer } from "/imports/server/transformers"
 
@@ -15,14 +16,18 @@ Meteor.publish("organizations", function(themeId) {
 	if(!themeId) return null
 
 	// Autorun recalculates enclosed document searches with any change on related data
-	this.autorun(function() {
-		const theme = Themes.findOne({ _id: themeId })
-		const settings = PresentationSettings.findOne({ _id: theme.presentationSettings })
-		const memberThemes = MemberThemes.find({ theme: themeId }).fetch()
+	this.autorun(async function() {
+		const theme = await Themes.findOneAsync({ _id: themeId })
+		const settings = await PresentationSettings.findOneAsync({ _id: theme.presentationSettings })
+		const memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
 
 		const orgsObserver = Organizations.find({ theme: themeId }).observe(orgObserver("organizations", this, { theme, settings, memberThemes } ))
 
-		this.onStop(() => orgsObserver.stop())
+		this.onStop(() => {
+			if(orgsObserver && typeof orgsObserver.stop === "function") {
+				orgsObserver.stop()
+			}
+		})
 		this.ready()
 	})
 })

@@ -1,14 +1,15 @@
 import { Random } from "meteor/random"
-import { Mongo } from "meteor/mongo"
 import SimpleSchema from "simpl-schema"
-import SchemaRegex from "/imports/lib/schema"
 
-const ChitVoteSchema = new SimpleSchema({
+import SchemaRegex from "/imports/lib/schema"
+import { CollectionPermissions } from "./index"
+
+export const ChitVoteSchema = new SimpleSchema({
 	weight: Number,
 	count: Number,
 })
 
-const MatchPledgeSchema = new SimpleSchema({
+export const MatchPledgeSchema = new SimpleSchema({
 	_id: {
 		type: String,
 		regEx: SchemaRegex.Id,
@@ -47,10 +48,7 @@ const MatchPledgeSchema = new SimpleSchema({
 	},
 })
 
-// Define Collection
-const Organizations = new Mongo.Collection("organizations")
-
-const OrganizationSchema = new SimpleSchema({
+export const OrganizationSchema = new SimpleSchema({
 	title: {
 		type: String,
 		label: "Organization Name",
@@ -120,7 +118,7 @@ const OrganizationSchema = new SimpleSchema({
 
 
 // Set permissions
-Organizations.allow({
+export const organizationsPermissions: CollectionPermissions = {
 	insert: (userId, doc) => {
 		return true
 	},
@@ -130,6 +128,4 @@ Organizations.allow({
 	remove: (userId, doc) => {
 		return true
 	},
-})
-
-export { Organizations, OrganizationSchema, ChitVoteSchema }
+}

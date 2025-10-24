@@ -1,4 +1,5 @@
 import { Meteor } from "meteor/meteor"
+
 import { registerObserver } from "../methods"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
 
@@ -10,17 +11,34 @@ const themeObserver = registerObserver((doc, params) => {
 })
 
 const themeObserverAutorun = (theme, publisher) => {
-	publisher.autorun(function() {
-		const settings = PresentationSettings.findOne({ _id: theme.presentationSettings })
-		const memberThemes = MemberThemes.find({ theme: theme._id }).fetch()
+	publisher.autorun(async function() {
+		try {
+			const settings = await PresentationSettings.findOneAsync({ _id: theme.presentationSettings })
+			const memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
+			const orgs = await Organizations.find({ theme: theme._id }).fetchAsync()
 
-		const orgs = Organizations.find({ theme: theme._id }).fetch().map(org => OrgTransformer(org, { theme, settings, memberThemes }))
+			const transformedOrgs = orgs.map(org => {
+				try {
+					return OrgTransformer(org, { theme, settings, memberThemes })
+				} catch(error) {
+					console.error("Error in OrgTransformer:", error, org)
+					throw error
+				}
+			})
 
-		const topOrgs = filterTopOrgs(orgs, theme)
+			const topOrgs = filterTopOrgs(transformedOrgs, theme)
 
-		const observer = Themes.find({ _id: theme._id }).observe(themeObserver("themes", this, { topOrgs, memberThemes, settings }))
-		this.onStop(() => observer.stop())
-		this.ready()
+			const observer = Themes.find({ _id: theme._id }).observe(themeObserver("themes", this, { topOrgs, memberThemes, settings }))
+			this.onStop(() => {
+				if(observer && typeof observer.stop === "function") {
+					observer.stop()
+				}
+			})
+			this.ready()
+		} catch(error) {
+			console.error("Error in themeObserverAutorun:", error)
+			this.error(error)
+		}
 	})
 }
 
@@ -35,14 +53,24 @@ Meteor.publish("themes", function(themeId) {
 })
 
 
-Meteor.publish("theme", function(themeId) {
+Meteor.publish("theme", async function(themeId) {
 	if(!themeId) return
 
-	themeObserverAutorun(Themes.findOne({ _id: themeId }), this)
+	const theme = await Themes.findOneAsync({ _id: themeId })
+	if(!theme) {
+		return
+	}
+
+	themeObserverAutorun(theme, this)
 })
 
-Meteor.publish("themeBySlug", function(slug) {
+Meteor.publish("themeBySlug", async function(slug) {
 	if(!slug) return
 
-	themeObserverAutorun(Themes.findOne({ slug }), this)
+	const theme = await Themes.findOneAsync({ slug })
+	if(!theme) {
+		return
+	}
+
+	themeObserverAutorun(theme, this)
 })

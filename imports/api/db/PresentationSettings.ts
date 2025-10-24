@@ -1,9 +1,8 @@
-import { Mongo } from "meteor/mongo"
 import SimpleSchema from "simpl-schema"
 
-const PresentationSettings = new Mongo.Collection("presentationSettings")
+import { CollectionPermissions } from "./index"
 
-const PresentationSettingsSchema = new SimpleSchema({
+export const PresentationSettingsSchema = new SimpleSchema({
 	currentPage: {
 		type: String,
 		label: "Currently displayed presentation page",
@@ -116,4 +115,15 @@ const PresentationSettingsSchema = new SimpleSchema({
 })
 
 
-export { PresentationSettings, PresentationSettingsSchema }
+// Set permissions
+export const presentationSettingsPermissions: CollectionPermissions = {
+	insert: (userId, doc) => {
+		return true
+	},
+	update: (userId, doc) => {
+		return true
+	},
+	remove: (userId, doc) => {
+		return true
+	},
+}
