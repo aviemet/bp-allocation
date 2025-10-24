@@ -1,12 +1,12 @@
 import { expect } from "chai"
 import _ from "lodash"
 
-import Leverage from "../../imports/lib/Leverage"
+import Leverage from "../../../imports/lib/Leverage"
 import Education from "/tests/mock/Education"
 import Democracy from "/tests/mock/Democracy"
 import Youth from "/tests/mock/Youth"
 
-import { filterTopOrgs } from "../../imports/lib/orgsMethods"
+import { filterTopOrgs } from "../../../imports/lib/orgsMethods"
 import OrgsCollection from "/imports/api/stores/OrgsCollection"
 import OrgStore from "/imports/api/stores/OrgStore"
 

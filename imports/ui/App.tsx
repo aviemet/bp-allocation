@@ -1,22 +1,23 @@
-import React, { useEffect } from "react"
+import styled from "@emotion/styled"
+import CssBaseline from "@mui/material/CssBaseline"
+import { ThemeProvider as MUIProvider } from "@mui/material/styles"
+import { SnackbarProvider } from "notistack"
 import PropTypes from "prop-types"
+import React, { useEffect } from "react"
+
+import MediaProvider from "./MediaProvider"
 import Routes from "./Routes"
 
-import { ThemeProvider as MUIProvider } from "@mui/material/styles"
-import CssBaseline from "@mui/material/CssBaseline"
-import styled from "@emotion/styled"
 import theme from "/imports/ui/theme"
 import { isMobileDevice } from "/imports/lib/utils"
 
 import { DataProvider, ThemeProvider, SettingsProvider, OrgsProvider, MembersProvider, MessagesProvider } from "/imports/api/providers"
-import MediaProvider from "./MediaProvider"
 
-import { SnackbarProvider } from "notistack"
 
 const App = () => {
 	useEffect(() => {
-		if(isMobileDevice()) {
-			document.body.addEventListener("touchmove", function(e) {
+		if(isMobileDevice() && typeof globalThis !== "undefined" && globalThis.document) {
+			globalThis.document.body.addEventListener("touchmove", function(e) {
 				e.preventDefault()
 			})
 		}

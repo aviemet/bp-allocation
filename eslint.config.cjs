@@ -2,27 +2,33 @@
 const js = require("@eslint/js")
 const stylistic = require("@stylistic/eslint-plugin")
 const typescriptParser = require("@typescript-eslint/parser")
+const importPlugin = require("eslint-plugin-import")
+const jsoncPlugin = require("eslint-plugin-jsonc")
 const react = require("eslint-plugin-react")
 const reactHooks = require("eslint-plugin-react-hooks")
+const jsoncParser = require("jsonc-eslint-parser")
 
 const ignores = [
 	"public/**/*",
 	".vscode/**/*",
 	".yarn/**/*",
 	".meteor/**/*",
+	"node_modules/**/*",
+	"client/main.html",
+	"client/main.less",
+	"client/react-input-range.less",
 ]
 
 module.exports = [
 	js.configs.recommended,
 	{
-
 		files: ["**/*.{js,jsx,ts,tsx}"],
 		ignores,
 		languageOptions: {
+			ecmaVersion: "latest",
+			sourceType: "module",
 			parser: typescriptParser,
 			parserOptions: {
-				ecmaVersion: "latest",
-				sourceType: "module",
 				ecmaFeatures: {
 					jsx: true,
 				},
@@ -52,11 +58,17 @@ module.exports = [
 			react: {
 				version: "detect",
 			},
+			"import/resolver": {
+				node: {
+					extensions: [".js", ".jsx", ".ts", ".tsx"]
+				}
+			},
 		},
 		plugins: {
 			"react": react,
 			"react-hooks": reactHooks,
 			"@stylistic": stylistic,
+			"import": importPlugin,
 		},
 		rules: {
 			"@stylistic/indent": ["error", "tab", {
@@ -155,16 +167,40 @@ module.exports = [
 				caughtErrorsIgnorePattern: "^_",
 				destructuredArrayIgnorePattern: "^_",
 				ignoreRestSiblings: true,
+				varsIgnorePattern: "^React$"
 			}],
 			"eqeqeq": "error",
 			"no-console": "warn",
 			"eol-last": ["error", "always"],
+			"import/order": ["error", {
+				"groups": [
+					"builtin",
+					"external",
+					"internal",
+					["parent", "sibling"],
+					"index",
+					"object",
+				],
+				"alphabetize": {
+					"order": "asc",
+					"caseInsensitive": true,
+				},
+				"newlines-between": "always",
+			}],
+			"import/newline-after-import": "error",
+			"import/consistent-type-specifier-style": ["error", "prefer-inline"],
+			"import/no-named-as-default": "off",
+			"import/no-unused-modules": ["error", {
+				"unusedExports": true,
+				"ignoreExports": ["**/react"]
+			}],
 			"semi": ["error", "never"],
 			"@stylistic/quotes": ["error", "double", {
 				avoidEscape: true,
 				allowTemplateLiterals: "always",
 			}],
 			"@stylistic/jsx-quotes": ["error", "prefer-double"],
+			...reactHooks.configs.recommended.rules,
 		},
 	},
 	// Typescript declaration files
@@ -175,6 +211,23 @@ module.exports = [
 			"no-unused-vars": "off",
 			"@typescript-eslint/member-delimiter-style": "off",
 			"@stylistic/ts/indent": "off",
+		},
+	},
+	// JSON files
+	{
+		files: ["**/*.json", "**/*.jsonc", "**/*.json5"],
+		language: "json/json",
+		ignores,
+		plugins: {
+			jsonc: jsoncPlugin,
+		},
+		languageOptions: {
+			parser: jsoncParser,
+		},
+		rules: {
+			"json/no-duplicate-keys": "error",
+			"jsonc/indent": ["error", 2, { ignoredNodes: ["Property"] }],
+			"@stylistic/no-multi-spaces": "off",
 		},
 	},
 	// Test files

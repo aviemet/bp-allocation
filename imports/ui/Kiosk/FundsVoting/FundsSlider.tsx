@@ -6,7 +6,7 @@ import numeral from "numeral"
 import { useVoting } from "/imports/ui/Kiosk/VotingContext"
 
 import styled from "@emotion/styled"
-import InputRange from "react-input-range"
+import Slider from "react-slider"
 
 import { TextField, InputAdornment, IconButton, Box, Typography } from "@mui/material"
 import KeyboardIcon from "@mui/icons-material/Keyboard"
@@ -152,17 +152,21 @@ const FundsSliderComponent = props => {
 			}
 			<div className={ showLabel ? "visible" : "" }>
 				<div>
-					<InputRange
+					<Slider
 						disabled={ !props.member.theme.amount || props.member.theme.amount <= 0 }
-						minValue={ 0 }
-						maxValue={ props.member.theme.amount || 1 }
+						min={ 0 }
+						max={ props.member.theme.amount || 1 }
 						value={ value || 0 }
 						onChange={ handleChange }
-						onChangeStart={ toggleSliderLabel }
-						onChangeComplete={ () => setShowLabel(false) }
-						formatLabel={ value => numeral(value / MAX).format("0%") }
+						onBeforeChange={ toggleSliderLabel }
+						onAfterChange={ () => setShowLabel(false) }
 						step={ 5 }
 					/>
+					{ showLabel && (
+						<div style={ { textAlign: "center", marginTop: "0.5rem" } }>
+							{ numeral((value || 0) / MAX).format("0%") }
+						</div>
+					) }
 				</div>
 			</div>
 		</FundsInputContainer>

@@ -1,6 +1,5 @@
 import { expect } from "chai"
 import { faker } from "@faker-js/faker"
-import { resetDatabase } from "meteor/xolvio:cleaner"
 import { formatPhoneNumber } from "/imports/lib/utils"
 
 import { ThemeMethods, MemberMethods, OrganizationMethods } from "/imports/api/methods"
@@ -9,25 +8,25 @@ import { Themes, Members, MemberThemes } from "/imports/api/db"
 const NUM_TEST_RECORDS = 500
 
 const themeDataStub = () => ({
-	title: faker.company.bsNoun(),
+	title: faker.company.buzzNoun(),
 	leverage: 1200000,
 })
 
 const memberStub = themeId => ({
-	firstName: faker.name.firstName(),
-	lastName: faker.name.lastName(),
-	number: faker.random.number(),
+	firstName: faker.person.firstName(),
+	lastName: faker.person.lastName(),
+	number: faker.number.int(),
 	themeId: theme._id,
-	amount: faker.random.number(),
-	phone: faker.phone.phoneNumber(),
+	amount: faker.number.int(),
+	phone: faker.phone.number(),
 	themeId,
 })
 
 const orgStub = themeId => ({
-	title: faker.company.companyName(),
-	ask: faker.random.number(),
+	title: faker.company.name(),
+	ask: faker.number.int(),
 	theme: themeId,
-	leverageFunds: faker.random.number(),
+	leverageFunds: faker.number.int(),
 })
 
 var theme
@@ -36,7 +35,6 @@ var memberThemes = []
 
 describe("Promises with rate limiting", function() {
 	beforeEach(async function(done) {
-		resetDatabase()
 
 		let themeId = await ThemeMethods.create.call(themeDataStub())
 		theme = await Themes.find({ _id: themeId }).fetch()[0]
@@ -64,7 +62,7 @@ describe("Promises with rate limiting", function() {
 		})
 	})
 
-	context("Test setup", () => {
+	describe("Test setup", () => {
 		expect(1).to.equal(1)
 		// expect(MemberThemes.find().length).to.equal(NUM_TEST_RECORDS)
 	})

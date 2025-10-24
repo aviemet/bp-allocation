@@ -5,7 +5,7 @@ import { formatPhoneNumber } from "/imports/lib/utils"
 
 import { ThemeMethods, MemberMethods, OrganizationMethods } from "/imports/api/methods"
 import { Themes, Members, MemberThemes } from "/imports/api/db"
-import { Organizations } from "../../../imports/api/db/Organizations"
+import { Organizations } from "../../../../imports/api/db/Organizations"
 
 const NUM_TEST_RECORDS = 5
 
