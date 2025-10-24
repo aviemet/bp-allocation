@@ -24,10 +24,10 @@ const ThemesList = () => {
 	const [ modalContent, setModalContent ] = useState("")
 	const [ modalAction, setModalAction ] = useState()
 
-	const { themes } = useTracker(() => {
-		Meteor.subscribe("themes")
+	Meteor.subscribe("themes")
 
-		return { themes: Themes.find({}).fetch() }
+	const themes = useTracker(() => {
+		return Themes.find({}).fetch()
 	})
 
 	const bulkDelete = (selected, onSuccess) => {
