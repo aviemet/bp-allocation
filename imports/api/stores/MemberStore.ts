@@ -1,7 +1,7 @@
 import { computed, makeObservable } from "mobx"
 
 import TrackableStore, { TrackableData, TrackableStoreWithData } from "./lib/TrackableStore"
-import { Member } from "/imports/api/db/generated-types"
+import { Member } from "/imports/types/schema"
 
 export interface MemberData extends Member, TrackableData {}
 

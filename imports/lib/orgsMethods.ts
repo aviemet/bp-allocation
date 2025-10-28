@@ -1,5 +1,6 @@
 import { sortBy } from "lodash"
-import { Organization, Theme } from "../types"
+
+import { Organization, Theme } from "../types/schema"
 
 interface OrganizationWithVotes extends Organization {
 	votes?: number
@@ -62,7 +63,7 @@ export const sortTopOrgs = (orgs: OrganizationWithVotes[], theme: ThemeWithVotin
 /**
  * Returns the number of top orgs in the theme
  */
-export const getNumTopOrgs = (theme: ThemeWithVoting): number => 
+export const getNumTopOrgs = (theme: ThemeWithVoting): number =>
 	theme.numTopOrgs >= theme.topOrgsManual.length ? theme.numTopOrgs : theme.topOrgsManual.length
 
 /**

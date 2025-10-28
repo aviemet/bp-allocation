@@ -1,24 +1,50 @@
 import _ from "lodash"
 import { toJS } from "mobx"
+
 import { roundFloat } from "/imports/lib/utils"
+import { Organization } from "../types/schema"
+
+interface OrganizationWithFunding extends Organization {
+	save?: number
+	pledgeTotal?: number
+	allocatedFunds?: number
+	need?: number
+	leverageFunds?: number
+	roundFunds?: number
+	percent?: number
+}
+
+interface RoundTracker {
+	newSumRemainingOrgs: number
+	givenThisRound: number
+}
+
+interface LeverageRound {
+	leverageRemaining: number
+	sumRemainingOrgs: number
+	orgs: OrganizationWithFunding[]
+}
 
 class Leverage {
-	rounds = []
+	rounds: LeverageRound[] = []
+	leverageRemaining: number
+	orgs: OrganizationWithFunding[]
+	sumRemainingOrgs: number
 
 	/**
 	 * Clone top orgs (so no reference issues)
 	 * Add an accumulator for the leverage allocation per round
 	 * Also calculate sumRemainingOrgs for first round leverage
 	 */
-	constructor(orgs, leverageRemaining) {
+	constructor(orgs: OrganizationWithFunding[], leverageRemaining: number) {
 		this.leverageRemaining = leverageRemaining
 
 		let sumRemainingOrgs = 0
 		this.orgs = orgs.map(org => {
-			let orgClone = toJS(org)
+			const orgClone = toJS(org)
 
-			delete orgClone.parent
-			delete orgClone.createdAt
+			delete (orgClone as any).parent
+			delete (orgClone as any).createdAt
 			orgClone.save = org.save
 			orgClone.pledgeTotal = org.pledgeTotal
 			orgClone.amountFromVotes = org.amountFromVotes
@@ -29,7 +55,7 @@ class Leverage {
 			orgClone.leverageFunds = 0
 
 			// Use the loop to calculate the funding total of orgs not fully funded
-			sumRemainingOrgs = roundFloat(sumRemainingOrgs + (orgClone.allocatedFunds || 0))
+			sumRemainingOrgs = roundFloat(String(sumRemainingOrgs + (orgClone.allocatedFunds || 0)))
 
 			return orgClone
 		})
@@ -44,32 +70,33 @@ class Leverage {
 		let nRounds = 1
 		while(this.leverageRemaining >= 1 && this._numFullyFundedOrgs() < this.orgs.length && nRounds < 10) {
 
-			let round = {
+			const round: LeverageRound = {
 				leverageRemaining: this.leverageRemaining,
 				sumRemainingOrgs: this.sumRemainingOrgs,
+				orgs: [],
 			}
 
-			let trackers = {
+			const trackers: RoundTracker = {
 				newSumRemainingOrgs: 0,
 				givenThisRound: 0,
 			}
 
-			let roundOrgs = this.orgs.map(org => {
-				org = this._orgRoundValues(org, nRounds)
+			const roundOrgs = this.orgs.map(org => {
+				const updatedOrg = this._orgRoundValues(org, nRounds)
 
 				// Decrease remaining leverage by amount awarded
-				trackers.givenThisRound = roundFloat(trackers.givenThisRound + org.roundFunds)
+				trackers.givenThisRound = roundFloat(String(trackers.givenThisRound + (updatedOrg.roundFunds || 0)))
 
 				// Only orgs not yet funded are counted in the percentage ratio for next round
-				if(org.need > 0) {
-					trackers.newSumRemainingOrgs = roundFloat(trackers.newSumRemainingOrgs + org.allocatedFunds)
+				if((updatedOrg.need || 0) > 0) {
+					trackers.newSumRemainingOrgs = roundFloat(String(trackers.newSumRemainingOrgs + (updatedOrg.allocatedFunds || 0)))
 				}
 
-				return org
+				return updatedOrg
 			})
 
 			this.sumRemainingOrgs = trackers.newSumRemainingOrgs
-			this.leverageRemaining = roundFloat(this.leverageRemaining - trackers.givenThisRound)
+			this.leverageRemaining = roundFloat(String(this.leverageRemaining - trackers.givenThisRound))
 
 			round.orgs = _.cloneDeep(roundOrgs)
 			this.rounds.push(round)
@@ -79,49 +106,49 @@ class Leverage {
 		return this.rounds
 	}
 
-	_orgRoundValues(org, nRounds) {
+	_orgRoundValues(org: OrganizationWithFunding, nRounds: number) {
 		/** DEFAULTS **/
 		org.roundFunds = 0 // Amount allocated to org this round
 		org.percent = 0 // Percentage of remaining pot used for allocation
 
 		// Calculate all percentage on 1st, subsequently
 		// only calculate percentage if not fully funded
-		if(nRounds === 1 || org.need > 0 && this.sumRemainingOrgs !== 0) {
+		if(nRounds === 1 || (org.need || 0) > 0 && this.sumRemainingOrgs !== 0) {
 			// Percent: (funding amount from voting/pledges) / (sum of that amount for orgs not yet fully funded)
-			org.percent = org.allocatedFunds / this.sumRemainingOrgs
+			org.percent = (org.allocatedFunds || 0) / this.sumRemainingOrgs
 		}
 
 		// Give funds for this round
-		org.roundFunds = roundFloat(Math.min(
-			org.percent * this.leverageRemaining,
-			org.need
-		))
+		org.roundFunds = roundFloat(String(Math.min(
+			(org.percent || 0) * this.leverageRemaining,
+			org.need || 0
+		)))
 
 		// Accumulate the running total of all accrued funds during leverage rounds
-		org.leverageFunds = roundFloat(org.leverageFunds + org.roundFunds)
+		org.leverageFunds = roundFloat(String((org.leverageFunds || 0) + (org.roundFunds || 0)))
 
 		// Amount needed to be fully funded
-		org.need = roundFloat(org.ask - org.allocatedFunds - org.leverageFunds)
+		org.need = roundFloat(String((org.ask || 0) - (org.allocatedFunds || 0) - (org.leverageFunds || 0)))
 
 		return org
 	}
 
 	_numFullyFundedOrgs() {
 		return this.orgs.reduce((sum, org) => {
-			return sum + (org.need <= 0 ? 1 : 0)
+			return sum + ((org.need || 0) <= 0 ? 1 : 0)
 		}, 0)
 	}
 
-	finalRoundAllcoation() {
-		if(this.rounds.length === 0) return
+	finalRoundAllocation() {
+		if(this.rounds.length === 0) return undefined
 
-		let lastRound = this.rounds[this.rounds.length - 1]
-		let leverageRemaining = lastRound.leverageRemaining
-		let funds = lastRound.orgs.reduce((sum, org) => {
-			return sum + (org.leverageFunds > 0 ? org.roundFunds : 0)
+		const lastRound = this.rounds[this.rounds.length - 1]
+		const leverageRemaining = lastRound.leverageRemaining
+		const funds = lastRound.orgs.reduce((sum, org) => {
+			return sum + ((org.leverageFunds || 0) > 0 ? (org.roundFunds || 0) : 0)
 		}, 0)
 
-		return roundFloat(leverageRemaining - funds)
+		return roundFloat(String(leverageRemaining - funds))
 	}
 }
 

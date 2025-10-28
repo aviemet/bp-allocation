@@ -1,26 +1,31 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
 import { observer } from "mobx-react-lite"
-import PropTypes from "prop-types"
-import React, { useContext } from "react"
+import React from "react"
 
 import { useData } from "./DataProvider"
 import { Themes } from "/imports/api/db"
 import { ThemeStore } from "/imports/api/stores"
+import { createContext } from "/imports/lib/hooks/createContext"
 
-// Create the context and context hook
-const ThemeContext = React.createContext("theme")
-export const useTheme = () => useContext(ThemeContext)
+interface ThemeContextValue {
+	theme?: ThemeStore
+	isLoading: boolean
+}
 
-// Provider to wrap the application with
-// Observes changes on the data store to manage subscription to the theme
-const ThemeProvider = observer(({ children }) => {
-	const data = useData()
-	const themeId = data.themeId
+const [useTheme, ThemeContextProvider] = createContext<ThemeContextValue>()
+export { useTheme }
+
+interface ThemeProviderProps {
+	children: React.ReactNode
+}
+
+const ThemeProvider = observer(({ children }: ThemeProviderProps) => {
+	const appStore = useData()
+	const themeId = appStore?.themeId
 
 	// Setup Meteor tracker to subscribe to a Theme
 	const theme = useTracker(() => {
-
 		if(!themeId) {
 			return {
 				isLoading: true,
@@ -41,18 +46,13 @@ const ThemeProvider = observer(({ children }) => {
 			theme: themeStore,
 			isLoading: !subscription.ready(),
 		}
-
 	}, [themeId])
 
 	return (
-		<ThemeContext.Provider value={ theme }>
+		<ThemeContextProvider value={ theme }>
 			{ children }
-		</ThemeContext.Provider>
+		</ThemeContextProvider>
 	)
 })
-
-ThemeProvider.propTypes = {
-	children: PropTypes.any,
-}
 
 export default ThemeProvider

@@ -7,6 +7,7 @@ const jsoncPlugin = require("eslint-plugin-jsonc")
 const react = require("eslint-plugin-react")
 const reactHooks = require("eslint-plugin-react-hooks")
 const jsoncParser = require("jsonc-eslint-parser")
+const globals = require("globals")
 
 const ignores = [
 	"public/**/*",
@@ -34,17 +35,14 @@ module.exports = [
 				},
 			},
 			globals: {
+				...globals.browser,
+				...globals.node,
+				...globals.es2021,
+				// Meteor globals
 				Meteor: "readonly",
 				Package: "readonly",
 				Npm: "readonly",
-				process: "readonly",
-				global: "readonly",
-				Buffer: "readonly",
-				__dirname: "readonly",
-				__filename: "readonly",
-				module: "readonly",
-				require: "readonly",
-				exports: "readonly",
+				// Test globals
 				describe: "readonly",
 				it: "readonly",
 				before: "readonly",
@@ -52,9 +50,6 @@ module.exports = [
 				beforeEach: "readonly",
 				afterEach: "readonly",
 			},
-		},
-		env: {
-			browser: true,
 		},
 		settings: {
 			react: {
@@ -110,7 +105,7 @@ module.exports = [
 				after: true,
 				before: true,
 				overrides: {
-					if: { after: false },
+					if: { after: false, before: false },
 					for: { after: false },
 					while: { after: false },
 					switch: { after: false },

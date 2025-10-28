@@ -9,13 +9,13 @@ class TrackableCollection<T extends TrackableStore<TrackableData> = TrackableSto
 	searchFilter: string | null = null
 	// Override with String array of field names to search against in collection filter
 	searchableFields: string[] | null = null
-	private _store: (new (data: TrackableData) => T) | null = null
+	private _store: (new (data: any) => T) | null = null
 
 	/**
 	 * @param data Array of data to be stored in the collection
 	 * @param Store Mobx Store object for data being stored
 	 */
-	constructor(data: TrackableData[], Store: (new (data: TrackableData) => T) | null = null) {
+	constructor(data: TrackableData[], Store: (new (data: any) => T) | null = null) {
 		this._store = Store
 
 		// If a Store was provided, instantiate a new store for each element in data
@@ -73,7 +73,7 @@ class TrackableCollection<T extends TrackableStore<TrackableData> = TrackableSto
 	get filteredMembers(): T[] {
 		if(!this.searchFilter) return this.values
 
-		return filterCollection(this.values, this.searchFilter, this.searchableFields)
+		return filterCollection(this.values, this.searchFilter, this.searchableFields || undefined)
 	}
 }
 

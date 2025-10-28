@@ -18,114 +18,90 @@ export interface Member {
 
 export interface Theme {
 	_id: string
-	title: string
+	title?: string
 	question?: string
 	quarter?: string
-	organizations?: string[]
-	topOrgsManual?: string[]
+	organizations?: any[]
+	topOrgsManual?: any[]
 	numTopOrgs?: number
-	chitWeight?: number
-	matchRatio?: number
+	chitWeight?: unknown
+	matchRatio?: unknown
 	consolationAmount?: number
 	consolationActive?: boolean
 	leverageTotal?: number
-	saves?: OrgSave[]
-	presentationSettings?: string
+	saves?: any[]
+	presentationSettings?: unknown
 	slug?: string
-	messagesStatus?: MessageStatus[]
-	createdAt?: Date
-}
-
-export interface OrgSave {
-	org: string
-	amount: number
-	name?: string
-}
-
-export interface MessageStatus {
-	messageId: string
-	sending: boolean
-	sent: boolean
-	error: boolean
-}
-
-export interface Organization {
-	_id: string
-	title: string
-	theme: string
-	ask: number
-	description?: string
-	image?: string
-	chitVotes?: ChitVote
-	amountFromVotes?: number
-	topOff?: number
-	pledges?: MatchPledge[]
-	leverageFunds?: number
+	messagesStatus?: any[]
 	createdAt?: Date
 }
 
 export interface ChitVote {
-	weight: number
-	count: number
+	_id: string
+	voteSource?: "kiosk" | "mobile"
+	createdAt?: Date
 }
 
 export interface MatchPledge {
 	_id: string
-	amount: number
-	member?: string
+	member?: unknown
 	anonymous?: boolean
 	notes?: string
 	createdAt?: Date
 }
 
-export interface MemberTheme {
+export interface Organization {
 	_id: string
-	theme: string
-	member: string
-	chits?: number
-	amount?: number
-	chitVotes?: MemberThemeChitVote[]
-	allocations?: Allocation[]
-	createdAt?: Date
-}
-
-export interface MemberThemeChitVote {
-	organization: string
-	votes: number
-	voteSource?: "kiosk" | "mobile"
+	title?: string
+	ask?: number
+	description?: string
+	image?: unknown
+	chitVotes?: unknown
+	defaultValue?: unknown
+	amountFromVotes?: number
+	topOff?: number
+	pledges?: any[]
+	leverageFunds?: number
 	createdAt?: Date
 }
 
 export interface Allocation {
-	organization: string
-	amount: number
+	_id: string
 	voteSource?: "kiosk" | "mobile"
 	createdAt?: Date
 }
 
+export interface MemberTheme {
+	_id: string
+	chits?: number
+	amount?: number
+	chitVotes?: any[]
+	allocations?: any[]
+	createdAt?: Date
+}
+
+export interface Rounds {
+	_id: string
+}
+
 export interface Message {
 	_id: string
-	title: string
 	subject?: string
 	body?: string
 	type: "text" | "email"
 	active?: boolean
 	order?: number
 	includeLink?: boolean
-	optOutRounds?: Rounds
+	optOutRounds?: unknown
+	defaultValue?: unknown
 	createdAt?: Date
 	updatedAt?: Date
-}
-
-export interface Rounds {
-	one: boolean
-	two: boolean
 }
 
 export interface PresentationSettings {
 	_id: string
 	currentPage?: string
-	timerLength?: number
+	timerLength?: unknown
 	animateOrgs?: boolean
 	leverageVisible?: boolean
 	savesVisible?: boolean
@@ -143,3 +119,4 @@ export interface PresentationSettings {
 	showAskOnOrgCards?: boolean
 	twilioRateLimit?: number
 }
+

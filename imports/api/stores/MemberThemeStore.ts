@@ -1,5 +1,5 @@
 import TrackableStore, { TrackableData } from "./lib/TrackableStore"
-import { MemberTheme } from "/imports/api/db/generated-types"
+import { MemberTheme } from "/imports/types/schema"
 
 interface MemberThemeData extends MemberTheme, TrackableData {}
 

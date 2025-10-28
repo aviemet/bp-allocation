@@ -8,6 +8,14 @@ import { MessageSchema, messagesPermissions } from "./Messages"
 import { OrganizationSchema, organizationsPermissions } from "./Organizations"
 import { PresentationSettingsSchema, presentationSettingsPermissions } from "./PresentationSettings"
 import { ThemeSchema, themesPermissions } from "./Themes"
+import { type Member, type MemberTheme, type Message, type Organization, type PresentationSettings, type Theme } from "/imports/types/schema"
+import { type TrackableData } from "/imports/api/stores/lib/TrackableStore"
+
+export type MemberData = Member & TrackableData
+export type MessageData = Message & TrackableData
+export type OrgData = Organization & TrackableData
+export type SettingsData = PresentationSettings & TrackableData
+export type ThemeData = Theme & TrackableData
 
 type PermissionFunction = (userId: string, doc: unknown) => boolean
 export interface CollectionPermissions {
@@ -17,12 +25,12 @@ export interface CollectionPermissions {
 }
 
 // Define Collections
-const Members = new Mongo.Collection("members")
-const MemberThemes = new Mongo.Collection("memberThemes")
-const Messages = new Mongo.Collection("messages")
-const Organizations = new Mongo.Collection("organizations")
-const PresentationSettings = new Mongo.Collection("presentationSettings")
-const Themes = new Mongo.Collection("themes")
+const Members = new Mongo.Collection<MemberData>("members")
+const MemberThemes = new Mongo.Collection<MemberTheme>("memberThemes")
+const Messages = new Mongo.Collection<MessageData>("messages")
+const Organizations = new Mongo.Collection<OrgData>("organizations")
+const PresentationSettingsCollection = new Mongo.Collection<SettingsData>("presentationSettings")
+const Themes = new Mongo.Collection<ThemeData>("themes")
 
 // Collect all schemas for schema-to-types generation
 export const schemas: SchemaMap = {
@@ -47,13 +55,10 @@ Messages.allow(messagesPermissions)
 Organizations.attachSchema(OrganizationSchema)
 Organizations.allow(organizationsPermissions)
 
-PresentationSettings.attachSchema(PresentationSettingsSchema)
-PresentationSettings.allow(presentationSettingsPermissions)
+PresentationSettingsCollection.attachSchema(PresentationSettingsSchema)
+PresentationSettingsCollection.allow(presentationSettingsPermissions)
 
 Themes.attachSchema(ThemeSchema)
 Themes.allow(themesPermissions)
 
-export { Themes, PresentationSettings, Organizations, Images, Members, MemberThemes, Messages }
-
-// Re-export generated types
-export * from "./generated-types"
+export { Themes, PresentationSettingsCollection as PresentationSettings, Organizations, Images, Members, MemberThemes, Messages }

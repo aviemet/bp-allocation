@@ -1,7 +1,5 @@
-import TrackableStore, { TrackableData } from "./lib/TrackableStore"
-import { PresentationSettings } from "/imports/api/db/generated-types"
-
-interface SettingsData extends PresentationSettings, TrackableData {}
+import TrackableStore from "./lib/TrackableStore"
+import { SettingsData } from "/imports/api/db"
 
 class SettingsStore extends TrackableStore<SettingsData> {
 	constructor(data: SettingsData) {

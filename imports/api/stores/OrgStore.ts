@@ -1,5 +1,5 @@
 import TrackableStore, { TrackableData } from "./lib/TrackableStore"
-import { Organization } from "/imports/api/db/generated-types"
+import { Organization } from "/imports/types/schema"
 
 interface OrgData extends Organization, TrackableData {}
 

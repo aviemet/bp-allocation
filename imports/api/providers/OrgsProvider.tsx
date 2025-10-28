@@ -1,25 +1,51 @@
 import { Meteor } from "meteor/meteor"
-import React, { useContext } from "react"
-import PropTypes from "prop-types"
-import { observer } from "mobx-react-lite"
-
 import { useTracker } from "meteor/react-meteor-data"
+import { observer } from "mobx-react-lite"
+import React from "react"
+
 import { useData } from "./DataProvider"
-import { Organizations } from "/imports/api/db"
+import { useTheme } from "./ThemeProvider"
+import { Organizations, type OrgData } from "/imports/api/db"
 import { OrgsCollection, OrgStore } from "/imports/api/stores"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
-import { useTheme } from "./ThemeProvider"
+import { Organization, Theme } from "/imports/types/schema"
+import { createContext } from "/imports/lib/hooks/createContext"
 
-const OrgsContext = React.createContext("orgs")
-export const useOrgs = () => useContext(OrgsContext)
+interface ThemeWithVoting extends Theme {
+	numTopOrgs: number
+	topOrgsManual: string[]
+}
 
-const OrgsProvider = observer(({ children }) => {
-	const { themeId } = useData()
-	const { theme, isLoading: themeLoading } = useTheme()
+// Type guard to check if theme has voting properties
+const isThemeWithVoting = (theme: Theme | undefined): theme is ThemeWithVoting => {
+	return theme !== undefined &&
+		typeof theme.numTopOrgs === "number" &&
+		Array.isArray(theme.topOrgsManual)
+}
 
-	let subscription
-	let cursorObserver
-	let orgsCollection // The MobX store for the settings
+interface OrgsContextValue {
+	orgs?: OrgsCollection
+	topOrgs: Organization[]
+	isLoading: boolean
+}
+
+const [useOrgs, OrgsContextProvider] = createContext<OrgsContextValue>()
+export { useOrgs }
+
+interface OrgsProviderProps {
+	children: React.ReactNode
+}
+
+const OrgsProvider = observer(({ children }: OrgsProviderProps) => {
+	const appStore = useData()
+	const themeId = appStore?.themeId
+	const themeContext = useTheme()
+	const theme = themeContext?.theme
+	const themeLoading = themeContext?.isLoading || false
+
+	let subscription: Meteor.SubscriptionHandle | undefined
+	let cursorObserver: Meteor.LiveQueryHandle | undefined
+	let orgsCollection: OrgsCollection | undefined
 
 	const orgs = useTracker(() => {
 		if(!themeId || themeLoading) {
@@ -29,38 +55,39 @@ const OrgsProvider = observer(({ children }) => {
 			return {
 				isLoading: true,
 				orgs: undefined,
+				topOrgs: [],
 			}
 		}
 
 		subscription = Meteor.subscribe("organizations", themeId, {
 			onReady: () => {
+				if(!theme) {
+					return
+				}
+
 				const cursor = Organizations.find({ theme: themeId })
 				orgsCollection = new OrgsCollection(cursor.fetch(), theme, OrgStore)
 
 				cursorObserver = cursor.observe({
-					added: orgs => orgsCollection.refreshData(orgs),
-					changed: orgs => orgsCollection.refreshData(orgs),
-					removed: orgs => orgsCollection.deleteItem(orgs),
+					added: (orgs: OrgData) => orgsCollection?.refreshData(orgs),
+					changed: (orgs: OrgData) => orgsCollection?.refreshData(orgs),
+					removed: (orgs: OrgData) => orgsCollection?.deleteItem(orgs),
 				})
 			},
 		})
 
 		return {
 			orgs: orgsCollection,
-			topOrgs: !orgsCollection ? [] : filterTopOrgs(orgsCollection.values, theme),
-			isLoading: !subscription.ready(),
+			topOrgs: !orgsCollection || !isThemeWithVoting(theme) ? [] : filterTopOrgs(orgsCollection.values, theme),
+			isLoading: !subscription?.ready(),
 		}
 	}, [themeId, themeLoading])
 
 	return (
-		<OrgsContext.Provider value={ orgs }>
+		<OrgsContextProvider value={ orgs }>
 			{ children }
-		</OrgsContext.Provider>
+		</OrgsContextProvider>
 	)
 })
-
-OrgsProvider.propTypes = {
-	children: PropTypes.any,
-}
 
 export default OrgsProvider

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react"
 import PropTypes from "prop-types"
-import { childrenType } from "/imports/types"
 
 import { useForm, FormProvider } from "react-hook-form"
 import { debounce } from "lodash"
@@ -77,7 +76,7 @@ const Form = ({
 }
 
 Form.propTypes = {
-	children: childrenType,
+	children: ChildrenType,
 	schema: PropTypes.object,
 	defaultValues: PropTypes.object.isRequired,
 	onValidSubmit: PropTypes.func,

@@ -57,7 +57,7 @@ export const formatPhoneNumber = (number: string) => {
 	return newPhone
 }
 
-export const sanitizeString = (str: string|number) => `${str}`.trim()
+export const sanitizeString = (str: string | number) => `${str}`.trim()
 
 /**
  * Returns a subset of passed collection filtered by search terms
@@ -77,7 +77,7 @@ export const filterCollection = <T extends TrackableData>(collection: T[], searc
 			const test = new RegExp(word, "i")
 			return checkFields.some(field => {
 				const fieldValue = member[field]
-				if(typeof fieldValue === 'string' && test.test(fieldValue)) {
+				if(typeof fieldValue === "string" && test.test(fieldValue)) {
 					return true
 				}
 			})

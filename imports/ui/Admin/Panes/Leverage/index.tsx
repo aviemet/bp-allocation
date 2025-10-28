@@ -59,7 +59,7 @@ const Leverage = observer(({ hideAdminFields }) => {
 				<Stack direction="row" justifyContent="space-between" alignItems="center">
 					<Typography component="h2" variant="h3">Final Distribution</Typography>
 
-					<div>Leverage Remaining: { numeral(leverage.finalRoundAllcoation(rounds)).format("$0,0.00") }</div>
+					<div>Leverage Remaining: { numeral(leverage.finalRoundAllocation(rounds)).format("$0,0.00") }</div>
 					{ !hideAdminFields && <>
 						{ !leverageDistributed
 							? (

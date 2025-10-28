@@ -45,6 +45,18 @@ Server-side publications must use async methods:
 - Optional fields in SimpleSchema (`required: false`) become optional in TypeScript (`field?: type`)
 - Use `npm run generate-types` to regenerate types from schemas
 - All types exported from `imports/api/db/index.ts`
+- Custom type generator in `scripts/generate-types-real.ts` parses actual schema files
+- Generator reads your real SimpleSchema definitions and generates accurate TypeScript interfaces
+- Types are saved to `imports/types/schema.ts` (replaces old manual types in `imports/types.ts`)
+- Utility types are in `imports/types/utils.ts` (separate from generated schema types)
+- Main types index at `imports/types/index.ts` exports both schema and utility types
+- No temporary files or stale data - either works with real schemas or fails cleanly
+- All imports now use the generated schema types from `/imports/types`
+- **CRITICAL**: Collections must be declared with proper generic types: `new Mongo.Collection<DataType>("collectionName")`
+- Data types combine schema types with TrackableData: `type MemberData = Member & TrackableData`
+- This ensures `find()` methods return properly typed cursors with no type casting needed
+- Store types extend schema types with additional reactive properties for MobX integration
+- All data types exported from `/imports/api/db` for consistent usage across providers
 
 ### TrackableStore/TrackableCollection Pattern
 - Base reactive data management system for Meteor collections
@@ -52,6 +64,8 @@ Server-side publications must use async methods:
 - Provides consistent `_id`-based CRUD operations across all store types
 - Generic pattern allows type-safe extension for specific domain stores
 - Integrates with Meteor's reactive data flow through `refreshData` method
+- Collection constructors handle store instantiation with proper type assertions using `as new (data: TrackableData) => StoreType`
+- Store constructors accept specific data types (MemberData, OrgData, etc.) for full type safety
 
 ### Documentation Rules
 - ONLY document architectural decisions and WHY choices were made
@@ -76,3 +90,17 @@ Server-side publications must use async methods:
 - **MAPPED TYPES**: Use utility types like `Partial<T>`, `Pick<T, K>`, `Omit<T, K>`
 - **UNION TYPES**: Use `string | number` instead of `any`
 - **RECORD TYPES**: Use `Record<string, unknown>` instead of `any`
+
+### NO TYPE CASTING - CRITICAL RULE
+- **ABSOLUTELY FORBIDDEN**: Type casting is NOT an acceptable way to handle TypeScript errors
+- **NEVER CAST**: Do not use `as` to force types - this defeats the purpose of TypeScript
+- **FIX THE ROOT CAUSE**: If you need to cast, the types are wrong - fix the actual type definitions
+- **PROPER SOLUTIONS**: 
+  - Fix the source type definitions to be correct
+  - Use proper generic constraints
+  - Create proper interfaces that match the actual data structure
+  - Use type guards with `unknown` and narrowing
+  - Use intersection types to combine existing types
+- **WHEN STUCK**: If you think you need to cast, step back and fix the underlying type system
+- **TYPE ASSERTIONS ONLY**: The only acceptable use of `as` is for type assertions with `unknown` when you've properly narrowed the type
+- **NO SHORTCUTS**: Type casting is a shortcut that breaks type safety - never use it

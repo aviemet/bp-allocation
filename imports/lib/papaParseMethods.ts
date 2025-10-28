@@ -1,5 +1,5 @@
-import Papa, {} from "papaparse"
 import { isUndefined, indexOf, isEmpty, forEach, has } from "lodash"
+import Papa, {} from "papaparse"
 
 /**************************************
  *          PAPAPARSE METHODS         *

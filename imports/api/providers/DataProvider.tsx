@@ -1,29 +1,28 @@
-import React, { useContext } from "react"
-import PropTypes from "prop-types"
+import { configure } from "mobx"
+import React from "react"
 
 import AppStore from "/imports/api/stores/AppStore"
-
-import { configure } from "mobx"
+import { createContext } from "/imports/lib/hooks/createContext"
 
 configure({
 	useProxies: "never",
 })
 
-export const DataContext = React.createContext({})
-export const useData = () => useContext(DataContext)
+const [useData, DataContextProvider] = createContext<AppStore>()
+export { useData }
 
 const appStore = new AppStore()
 
-const DataProvider = ({ children }) => {
-	return (
-		<DataContext.Provider value={ appStore }>
-			{ children }
-		</DataContext.Provider>
-	)
+interface DataProviderProps {
+	children: React.ReactNode
 }
 
-DataProvider.propTypes = {
-	children: PropTypes.any,
+const DataProvider = ({ children }: DataProviderProps) => {
+	return (
+		<DataContextProvider value={ appStore }>
+			{ children }
+		</DataContextProvider>
+	)
 }
 
 export default DataProvider

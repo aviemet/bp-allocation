@@ -1,7 +1,5 @@
-import TrackableStore, { TrackableData } from "./lib/TrackableStore"
-import { Theme } from "/imports/api/db/generated-types"
-
-interface ThemeData extends Theme, TrackableData {}
+import TrackableStore from "./lib/TrackableStore"
+import { ThemeData } from "/imports/api/db"
 
 class ThemeStore extends TrackableStore<ThemeData> {
 	constructor(data: ThemeData) {
