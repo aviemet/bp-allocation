@@ -1,6 +1,12 @@
-import TrackableStore from "./lib/TrackableStore"
+import TrackableStore, { TrackableData } from "./lib/TrackableStore"
+import { Organization } from "/imports/api/db/generated-types"
 
-class OrgStore extends TrackableStore {
+interface OrgData extends Organization, TrackableData {}
+
+class OrgStore extends TrackableStore<OrgData> {
+	constructor(data: OrgData) {
+		super(data)
+	}
 }
 
 export default OrgStore

@@ -1,8 +1,16 @@
-import { action, extendObservable, makeObservable } from "mobx"
 import { isEqual } from "lodash"
+import { action, extendObservable, makeObservable } from "mobx"
 
-class TrackableStore {
-	constructor(data) {
+export interface TrackableData {
+	_id: string
+	[key: string]: unknown
+}
+
+class TrackableStore<T extends TrackableData = TrackableData> {
+	_id!: string
+	[key: string]: unknown
+
+	constructor(data: T) {
 		makeObservable(this, {
 			refreshData: action,
 		})
@@ -14,7 +22,7 @@ class TrackableStore {
 	}
 
 	// Used by root store to udpate values from DB changes
-	refreshData(data) {
+	refreshData(data: T) {
 		for(let [ key, value ] of Object.entries(data)) {
 			if(!isEqual(this[key], value)) {
 				this[key] = value
@@ -22,5 +30,8 @@ class TrackableStore {
 		}
 	}
 }
+
+// Helper type to create a store that has the properties of T
+export type TrackableStoreWithData<T extends TrackableData> = TrackableStore<T> & T
 
 export default TrackableStore

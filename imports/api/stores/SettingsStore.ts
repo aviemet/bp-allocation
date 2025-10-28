@@ -1,6 +1,12 @@
-import TrackableStore from "./lib/TrackableStore"
+import TrackableStore, { TrackableData } from "./lib/TrackableStore"
+import { PresentationSettings } from "/imports/api/db/generated-types"
 
-class SettingsStore extends TrackableStore {
+interface SettingsData extends PresentationSettings, TrackableData {}
+
+class SettingsStore extends TrackableStore<SettingsData> {
+	constructor(data: SettingsData) {
+		super(data)
+	}
 }
 
 export default SettingsStore

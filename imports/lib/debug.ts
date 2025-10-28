@@ -6,18 +6,19 @@ import React, { useRef, useEffect } from "react"
 
 /**
 * Hook to console.log prop changes in a useEffect block
-* @param {Object} props Props
+* @param props Props object to trace
 */
-export const useTraceUpdate = props => {
-	const prev = useRef(props)
+export const useTraceUpdate = <T extends Record<string, unknown>>(props: T): void => {
+	const prev = useRef<T>(props)
 	useEffect(() => {
-		const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
+		const changedProps = Object.entries(props).reduce((ps: Record<string, [unknown, unknown]>, [k, v]) => {
 			if(prev.current[k] !== v) {
 				ps[k] = [prev.current[k], v]
 			}
 			return ps
 		}, {})
 		if(Object.keys(changedProps).length > 0) {
+			// eslint-disable-next-line no-console
 			console.log("Changed props:", changedProps)
 		}
 		prev.current = props

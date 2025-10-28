@@ -1,7 +1,8 @@
-import { Meteor } from "meteor/meteor"
 import { isEmpty } from "lodash"
+import { Meteor } from "meteor/meteor"
+import { TrackableData } from "/imports/api/stores/lib/TrackableStore"
 
-export const roundFloat = (value, decimal) => {
+export const roundFloat = (value: string, decimal?: number) => {
 	decimal = decimal || 2
 	return parseFloat(parseFloat(value).toFixed(decimal))
 }
@@ -18,45 +19,53 @@ export const numberFormats = {
 	percent: "0.0%",
 }
 
-export function isMobileDevice() {
-	return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf("IEMobile") !== -1)
+export function isMobileDevice(): boolean {
+	if(typeof window === "undefined" || typeof navigator === "undefined") {
+		return false
+	}
+
+	return (
+		typeof screen.orientation !== "undefined" ||
+		navigator.userAgent.indexOf("IEMobile") !== -1
+	)
 }
 
-export const paginate = (collection, page, itemsPerPage) => collection.slice(page * itemsPerPage, (page + 1) * itemsPerPage)
+export const paginate = <T>(collection: T[], page: number, itemsPerPage: number) => collection.slice(page * itemsPerPage, (page + 1) * itemsPerPage)
 
 // Ensures names are in the format 'First Last'
 // Breaks apart names given as 'Last, First' and returns them as 'First Last'
-export const sanitizeNames = name => {
+export const sanitizeNames = (name: string) => {
 	const split = name.split(",")
 	const newName = []
 	for(let i = 1; i < split.length; i++) {
 		newName.push(split[i].trim())
 	}
 	newName.push(split[0])
+
 	return newName.join(" ")
 }
 
 // Format phone numbers as international numbers
 // Assume any number lacking a '+' at beginning is a US number (add +1 to start)
-export const formatPhoneNumber = number => {
+export const formatPhoneNumber = (number: string) => {
 	let newPhone = number.replace(/[^0-9+]/g, "") // Reduce number down to numbers and the + symbol
 
 	if(!isEmpty(newPhone) && !/^\+/.test(newPhone)) { // Doesn't start with +
 		newPhone = "+1" + newPhone.replace(/^1/, "") // US area codes don't start with 0 or 1
 	}
+
 	return newPhone
 }
 
-export const sanitizeString = str => `${str}`.trim()
+export const sanitizeString = (str: string|number) => `${str}`.trim()
 
 /**
- * Returns a subset of passed collection filtered by searh terms
+ * Returns a subset of passed collection filtered by search terms
  * @param {array} collection Array of objects to be filtered
  * @param {string} search Search parameter(s) to filter by
  * @param {array} fields Optional list of fields to search (omitting others)
  */
-// TODO: Should only search each field once ('avr avram') should not match firstName twice
-export const filterCollection = (collection, search, fields) => {
+export const filterCollection = <T extends TrackableData>(collection: T[], search: string, fields?: (keyof T)[]) => {
 	if(!search) return collection
 
 	// Split search terms by whitespace, discarding empty strings
@@ -67,7 +76,8 @@ export const filterCollection = (collection, search, fields) => {
 		return searchParts.every(word => {
 			const test = new RegExp(word, "i")
 			return checkFields.some(field => {
-				if(test.test(member[field])) {
+				const fieldValue = member[field]
+				if(typeof fieldValue === 'string' && test.test(fieldValue)) {
 					return true
 				}
 			})
@@ -94,11 +104,11 @@ export const uuid = () => {
 	})
 }
 
-export const emailVotingLink = (slug, code) => {
+export const emailVotingLink = (slug: string, code: string) => {
 	return `<p style='text-align: center; height: 4rem;'><a style='font-family: Arial, sans-serif; font-size: 2rem; padding: 15px; margin-bottom: 10px; border: 1px solid #CCC; border-radius: 10px; background-color: green; color: white; text-decoration: none;' href='${Meteor.settings.HOST_URL}/v/${slug}/${code}'>Vote Here</a></p>`
 }
 
 
-export const textVotingLink = (slug, code) => {
+export const textVotingLink = (slug: string, code: string) => {
 	return "\n" + `${Meteor.settings.HOST_URL}/v/${slug}/${code}`
 }

@@ -37,7 +37,6 @@ module.exports = [
 				Meteor: "readonly",
 				Package: "readonly",
 				Npm: "readonly",
-				console: "readonly",
 				process: "readonly",
 				global: "readonly",
 				Buffer: "readonly",
@@ -53,6 +52,9 @@ module.exports = [
 				beforeEach: "readonly",
 				afterEach: "readonly",
 			},
+		},
+		env: {
+			browser: true,
 		},
 		settings: {
 			react: {

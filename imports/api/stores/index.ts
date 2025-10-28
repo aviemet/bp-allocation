@@ -1,26 +1,23 @@
-// import DataStore from './DataStore.js.bak'
-import ThemeStore from "./ThemeStore"
+import MembersCollection from "./MembersCollection"
+import MemberStore from "./MemberStore"
+import MemberThemesCollection from "./MemberThemesCollection"
+import MemberThemeStore from "./MemberThemeStore"
+import MessagesCollection from "./MessagesCollection"
+import MessageStore from "./MessageStore"
 import OrgsCollection from "./OrgsCollection"
 import OrgStore from "./OrgStore"
 import SettingsStore from "./SettingsStore"
-import MemberThemesCollection from "./MemberThemesCollection"
-import MemberThemeStore from "./MemberThemeStore"
-import MembersCollection from "./MembersCollection"
-import MemberStore from "./MemberStore"
-import MessagesCollection from "./MessagesCollection"
-import MessageStore from "./MessageStore"
-
-// export default DataStore
+import ThemeStore from "./ThemeStore"
 
 export {
-	ThemeStore,
+	MembersCollection,
+	MemberStore,
+	MemberThemesCollection,
+	MemberThemeStore,
+	MessagesCollection,
+	MessageStore,
 	OrgsCollection,
 	OrgStore,
 	SettingsStore,
-	MembersCollection,
-	MemberThemesCollection,
-	MemberThemeStore,
-	MemberStore,
-	MessageStore,
-	MessagesCollection,
+	ThemeStore,
 }

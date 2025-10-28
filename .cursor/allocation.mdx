@@ -45,3 +45,34 @@ Server-side publications must use async methods:
 - Optional fields in SimpleSchema (`required: false`) become optional in TypeScript (`field?: type`)
 - Use `npm run generate-types` to regenerate types from schemas
 - All types exported from `imports/api/db/index.ts`
+
+### TrackableStore/TrackableCollection Pattern
+- Base reactive data management system for Meteor collections
+- `extendObservable` automatically makes all data fields reactive without manual declarations
+- Provides consistent `_id`-based CRUD operations across all store types
+- Generic pattern allows type-safe extension for specific domain stores
+- Integrates with Meteor's reactive data flow through `refreshData` method
+
+### Documentation Rules
+- ONLY document architectural decisions and WHY choices were made
+- NEVER document implementation details, HOW things work, or specific code patterns
+- If it would become outdated quickly or is obvious from reading the code, don't document it
+- Focus on non-obvious reasoning behind architectural choices
+
+### TypeScript Type Strategy
+- Rely on TypeScript's type inference for derived types instead of explicit annotations
+- Only add explicit types when TypeScript cannot infer them (e.g., generic constructors, complex union types)
+- Avoid redundant type annotations that duplicate what the type system already knows
+- Trust the compiler to derive types from initial values and context
+
+### NEVER USE `any` - CRITICAL RULE
+- **ABSOLUTELY FORBIDDEN**: Never use `any` as a type definition
+- **NEVER EVER**: No exceptions, no shortcuts, no "just this once"
+- **ALWAYS**: Use proper type assertions, union types, or generic constraints instead
+- **IF STUCK**: Use `unknown` and narrow the type, or create proper interfaces
+- **TYPE ASSERTIONS**: Use `as unknown as SpecificType` when necessary, never `as any`
+- **GENERIC CONSTRAINTS**: Use proper generic bounds instead of `any`
+- **INTERSECTION TYPES**: Use `TypeA & TypeB` for combining types
+- **MAPPED TYPES**: Use utility types like `Partial<T>`, `Pick<T, K>`, `Omit<T, K>`
+- **UNION TYPES**: Use `string | number` instead of `any`
+- **RECORD TYPES**: Use `Record<string, unknown>` instead of `any`

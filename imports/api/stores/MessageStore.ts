@@ -1,18 +1,22 @@
 import { makeObservable, observable } from "mobx"
-import TrackableStore from "./lib/TrackableStore"
 
-class MessageStore extends TrackableStore {
+import TrackableStore, { TrackableData } from "./lib/TrackableStore"
+import { Message } from "/imports/api/db/generated-types"
+
+interface MessageData extends Message, TrackableData {}
+
+class MessageStore extends TrackableStore<MessageData> {
 	dirty = false
 	originalMessage = ""
 
-	constructor(data) {
+	constructor(data: MessageData) {
 		super(data)
 
 		makeObservable(this, {
 			dirty: observable,
 		})
 
-		this.originalMessage = data.body
+		this.originalMessage = data.body || ""
 	}
 }
 

@@ -1,32 +1,47 @@
-import Papa from "papaparse"
+import Papa, {} from "papaparse"
 import { isUndefined, indexOf, isEmpty, forEach, has } from "lodash"
 
 /**************************************
  *          PAPAPARSE METHODS         *
  **************************************/
 
+interface AcceptedHeading {
+	name: string
+	type?: (value: unknown) => unknown
+	forms: string[]
+}
+
+interface HeadingMapping {
+	[key: string]: {
+		name: string
+		type?: (value: unknown) => unknown
+	}
+}
+
+interface Callbacks {
+	beforeInferHeadings?: (headings: string[]) => void
+	afterInferHeadings?: (headingsMap: HeadingMapping) => void
+	beforeRowParse?: (rowData: Record<string, unknown>) => void
+	afterRowParse?: (row: Record<string, unknown>) => void
+	onComplete?: (data: Record<string, unknown>[], headers?: string[]) => void
+}
+
 /**
  * Runs callback if defined, returning data as appropriate
- * @param  {Function} cb   Callback to be called
- * @return {Object}        Data response object
  */
-function _dispatchCallback(cb, ...args) {
+function _dispatchCallback<T extends unknown[]>(cb: ((...args: T) => unknown) | undefined, ...args: T): T {
 	if(!isUndefined(cb)) {
 		const response = cb(...args)
-		if(!isUndefined(response)) return response
+		if(!isUndefined(response)) return response as T
 	}
 	return args
 }
 
 /**
  * Takes a row from a csv file, maps headings in file to key values in final return object
- * @param  {Object} headings         JSON row object
- * @param  {Object} acceptedHeadings JSON object with mapping instructions
- * @param  {Object} callbacks        Lifecycle callbacks
- * @return {Object}                  JSON object of headings mapping
  */
-const _inferHeadings = (headings, acceptedHeadings, callbacks) => {
-	let headingsMap = {}
+const _inferHeadings = (headings: string[], acceptedHeadings: AcceptedHeading[], callbacks: Callbacks): HeadingMapping => {
+	let headingsMap: HeadingMapping = {}
 
 	_dispatchCallback(callbacks.beforeInferHeadings, headings)
 	// Search array of headings for matches to map
@@ -57,42 +72,34 @@ const _inferHeadings = (headings, acceptedHeadings, callbacks) => {
 /**
  * Reads a csv file, mapping headings in the file to given key values.
  * Use to convert heading values in a file to useable key values for submitting to a database.
- * @param  {File} file             File object from input
- * @param  {Object} acceptedHeadings JSON object with 'name' and 'forms' fields. 'forms' is an array of potential headings in the file which should be mapped/converted to 'name' in the final return object after parsing.
- * @param  {Object} callbacks        Lifecycle callbacks. Accepted values are:
- *                                     'beforeInferHeadings(row)',
- *                                     'afterInferHeadings(headings)',
- *                                     'beforeRowParse(row)',
- *                                     'afterRowParse(row)',
- *                                     'onComplete(data)'
- * @return {Object}                  [description]
  */
-export const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
+export const readCsvWithHeadings = (file: File, acceptedHeadings: AcceptedHeading[], callbacks: Callbacks = {}): void => {
 	// Object for headings mapping
-	let headings = {}
+	let headings: HeadingMapping = {}
 
-	let data = []
+	let data: Record<string, unknown>[] = []
 	const parser = Papa.parse(file, {
 		header: true,
 		delimiter: ",",
 		dynamicTyping: true,
 		skipEmptyLines: true,
-		step: (results, parser) => {
+		step: (results) => {
 			// Look at the first row to infer heading mapping
 			if(isEmpty(headings)) {
-				headings = _inferHeadings(results.meta.fields, acceptedHeadings, callbacks)
+				headings = _inferHeadings(results.meta.fields || [], acceptedHeadings, callbacks)
 			}
 
-			let row = {} // Return object
+			let row: Record<string, unknown> = {} // Return object
 
-			let rowData = results.data[0]
+			let rowData = (results.data as Record<string, unknown>[])[0]
 			_dispatchCallback(callbacks.beforeRowParse, rowData)
 
 			// Touch each value in the row
 			forEach(rowData, (value, key) => {
 				// Grab data with an accepted heading
 				if(has(headings, key)) {
-					row[headings[key].name] = typeof headings[key].type === "function" ? headings[key].type(value) : value
+					const headingConfig = headings[key]
+					row[headingConfig.name] = typeof headingConfig.type === "function" ? headingConfig.type(value) : value
 				}
 			})
 
@@ -100,7 +107,7 @@ export const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
 
 			data.push(row)
 		},
-		complete: results => {
+		complete: () => {
 			_dispatchCallback(callbacks.onComplete, data)
 		},
 	})
@@ -110,33 +117,25 @@ export const readCsvWithHeadings = (file, acceptedHeadings, callbacks) => {
 
 /**
  * Reads a csv file, returns an array of rows in key,value object form
- * @param {File} file File object from input
- * @param {Object} callbacks Lifecycle callbacks. Accepted values are:
- *                                     'beforeInferHeadings(row)',
- *                                     'afterInferHeadings(headings)',
- *                                     'beforeRowParse(row)',
- *                                     'afterRowParse(row)',
- *                                     'onComplete(data)'
- * @returns {Parser} Parser object containing all rows in sheet
  */
-export const readCsv = (file, callbacks) => {
+export const readCsv = (file: File, callbacks: Callbacks = {}): void => {
 	let firstRun = true
-	let headers = []
-	let data = []
+	let headers: string[] = []
+	let data: Record<string, unknown>[] = []
 
 	const parser = Papa.parse(file, {
 		header: true,
 		delimiter: ",",
 		dynamicTyping: true,
 		skipEmptyLines: true,
-		step: (results, parser) => {
+		step: (results) => {
 			if(firstRun) {
-				headers = results.meta.fields.filter(field => field !== "")
+				headers = (results.meta.fields || []).filter(field => field !== "")
 				firstRun = false
 			}
-			let row = {} // Return object
+			let row: Record<string, unknown> = {} // Return object
 
-			let rowData = results.data
+			let rowData = results.data as Record<string, unknown>
 			_dispatchCallback(callbacks.beforeRowParse, rowData)
 
 			// Touch each value in the row
@@ -146,7 +145,7 @@ export const readCsv = (file, callbacks) => {
 
 			data.push(row)
 		},
-		complete: results => {
+		complete: () => {
 			_dispatchCallback(callbacks.onComplete, data, headers)
 		},
 	})

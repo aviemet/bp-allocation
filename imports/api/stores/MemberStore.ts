@@ -1,17 +1,22 @@
 import { computed, makeObservable } from "mobx"
-import TrackableStore from "./lib/TrackableStore"
 
-class MemberStore extends TrackableStore {
-	constructor(data) {
+import TrackableStore, { TrackableData, TrackableStoreWithData } from "./lib/TrackableStore"
+import { Member } from "/imports/api/db/generated-types"
+
+export interface MemberData extends Member, TrackableData {}
+
+class MemberStore extends TrackableStore<MemberData> {
+	constructor(data: MemberData) {
 		super(data)
 		makeObservable(this, {
 			formattedName: computed,
 		})
 	}
 
-	get formattedName() {
-		if(this.fullName) return this.fullName
-		return `${this.firstName} ${this.lastName}`
+	get formattedName(): string {
+		const self = this as unknown as TrackableStoreWithData<MemberData>
+		if(self.fullName) return self.fullName
+		return `${self.firstName} ${self.lastName}`
 	}
 }
 
