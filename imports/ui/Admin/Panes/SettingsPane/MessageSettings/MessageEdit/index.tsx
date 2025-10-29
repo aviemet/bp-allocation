@@ -14,7 +14,7 @@ import { Link, useParams, useNavigate } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
 import { useMessage } from "/imports/api/providers"
 import { MessageMethods } from "/imports/api/methods"
-import { MessageSchema } from "/imports/api/db/schema"
+import { MessageSchema } from "/imports/api/db"
 import {
 	Form,
 	TextInput,

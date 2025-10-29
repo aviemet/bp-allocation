@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { ThemeMethods } from "/imports/api/methods"
 import { observer } from "mobx-react-lite"
 import { useTheme } from "/imports/api/providers"
-import { ThemeSchema } from "/imports/api/db/schema"
+import { ThemeSchema } from "/imports/api/db"
 import { formatters, roundFloat } from "/imports/lib/utils"
 
 import {

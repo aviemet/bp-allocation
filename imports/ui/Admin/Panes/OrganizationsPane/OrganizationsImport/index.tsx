@@ -7,7 +7,7 @@ import { observer } from "mobx-react-lite"
 import { useSnackbar } from "notistack"
 import { readCsv } from "/imports/lib/papaParseMethods"
 import { OrganizationMethods } from "/imports/api/methods"
-import { OrganizationSchema } from "/imports/api/db/schema"
+import { OrganizationSchema } from "/imports/api/db"
 import React, { useState, useEffect, useRef } from "react"
 
 import ImportMapping from "/imports/ui/Components/ImportMapping"

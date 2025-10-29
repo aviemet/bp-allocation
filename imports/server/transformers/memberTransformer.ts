@@ -1,6 +1,12 @@
-const MemberTransformer = (doc, memberTheme) => {
-	doc.theme = memberTheme
+import { type MemberTheme } from "/imports/types/schema"
+import { type MemberData } from "/imports/api/db"
 
+export interface MemberWithTheme extends MemberData {
+	theme?: MemberTheme
+}
+
+const MemberTransformer = (doc: MemberWithTheme, memberTheme?: MemberTheme): MemberWithTheme => {
+	doc.theme = memberTheme
 	return doc
 }
 

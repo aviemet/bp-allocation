@@ -3,11 +3,9 @@ import { merge } from "lodash"
 import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
 
-
 import { Themes, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
 import OrganizationMethods from "./OrganizationMethods"
 import PresentationSettingsMethods from "./PresentationSettingsMethods"
-
 
 const ThemeMethods = {
 	/**

@@ -1,4 +1,5 @@
 import { Mongo } from "meteor/mongo"
+import "meteor/aldeed:collection2/static"
 import { SchemaMap } from "schema-to-types"
 
 import { Images } from "./Images"
@@ -10,6 +11,8 @@ import { PresentationSettingsSchema, presentationSettingsPermissions } from "./P
 import { ThemeSchema, themesPermissions } from "./Themes"
 import { type Member, type MemberTheme, type Message, type Organization, type PresentationSettings, type Theme } from "/imports/types/schema"
 import { type TrackableData } from "/imports/api/stores/lib/TrackableStore"
+
+export { MemberSchema, MemberThemeSchema, MessageSchema, OrganizationSchema, PresentationSettingsSchema, ThemeSchema }
 
 export type MemberData = Member & TrackableData
 export type MessageData = Message & TrackableData

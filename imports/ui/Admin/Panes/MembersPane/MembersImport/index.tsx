@@ -8,7 +8,7 @@ import { sanitizeNames } from "/imports/lib/utils"
 
 import { observer } from "mobx-react-lite"
 import { MemberMethods } from "/imports/api/methods"
-import { MemberSchema, MemberThemeSchema } from "/imports/api/db/schema"
+import { MemberSchema, MemberThemeSchema } from "/imports/api/db"
 
 import { useSnackbar } from "notistack"
 import React, { useState, useEffect, useRef } from "react"

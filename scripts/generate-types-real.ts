@@ -7,8 +7,6 @@
 import * as fs from "fs"
 import * as path from "path"
 
-console.log("Generating TypeScript types from actual SimpleSchema definitions...")
-
 // Parse SimpleSchema from file content
 function parseSchemaFromFile(filePath: string): Record<string, string> {
 	if(!fs.existsSync(filePath)) {
@@ -262,7 +260,7 @@ function parseFieldDefinition(lines: string[]): { type: string, isOptional: bool
 }
 
 // Main generation function
-function generateTypes(): void {
+export function generateTypes(): void {
 	try {
 		const schemaFiles = [
 			"Members.ts",
@@ -306,6 +304,7 @@ function generateTypes(): void {
 		const outputPath = path.join(process.cwd(), "imports/types/schema.ts")
 		fs.writeFileSync(outputPath, content)
 
+
 		console.log("✅ Type generation completed successfully!")
 		console.log(`📁 Generated types written to: ${outputPath}`)
 
@@ -317,5 +316,8 @@ function generateTypes(): void {
 	}
 }
 
-// Run the generation
-generateTypes()
+// Only run when explicitly requested (prevents accidental execution during Meteor startup)
+if(process.env.GENERATE_TYPES === "1") {
+	console.log("Generating TypeScript types from actual SimpleSchema definitions...")
+	generateTypes()
+}

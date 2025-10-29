@@ -10,7 +10,7 @@ import { Link, useParams, useNavigate } from "@tanstack/react-router"
 import React, { useState, useEffect } from "react"
 import { useOrgs } from "/imports/api/providers"
 import { OrganizationMethods } from "/imports/api/methods"
-import { OrganizationSchema } from "/imports/api/db/schema"
+import { OrganizationSchema } from "/imports/api/db"
 
 import { Form, TextInput, RichTextInput, SubmitButton, STATUS } from "/imports/ui/Components/Form"
 

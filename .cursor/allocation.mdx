@@ -6,6 +6,10 @@
 
 ## Architecture Patterns
 
+### Publications and Observers
+- Server publications commonly wrap Mongo observers using a `registerObserver` utility (`imports/server/methods.ts`) that returns `{ added, changed, removed }` handlers with a shared transformer.
+- Publications use `Tracker.autorun` to reactively derive IDs from one collection (e.g., `MemberThemes`) and observe another (`Members`), and tie observer/computation cleanup to the publication via `this.onStop`.
+
 ### Data Provider Hierarchy
 The application uses a nested provider pattern established in `imports/ui/App.tsx`:
 
@@ -40,8 +44,11 @@ Server-side publications must use async methods:
 
 ### TypeScript + SimpleSchema Pattern
 - TypeScript interfaces auto-generated in `imports/api/db/generated-types.ts`
-- Collections defined in `imports/api/db/index.ts` with schemas attached
+- Collections defined in `imports/api/db/index.ts` with schemas attached via `attachSchema`
 - Individual schema files only contain SimpleSchema definitions
+ 
+### Collection2 Loading in Meteor 3
+- Use the static entry to ensure `attachSchema` is available at runtime: `import "meteor/aldeed:collection2/static"` before attaching schemas.
 - Optional fields in SimpleSchema (`required: false`) become optional in TypeScript (`field?: type`)
 - Use `npm run generate-types` to regenerate types from schemas
 - All types exported from `imports/api/db/index.ts`
@@ -73,6 +80,13 @@ Server-side publications must use async methods:
 - Integrates with Meteor's reactive data flow through `refreshData` method
 - Collection constructors handle store instantiation with proper type assertions using `as new (data: TrackableData) => StoreType`
 - Store constructors accept specific data types (MemberData, OrgData, etc.) for full type safety
+
+### Form + Validation Pattern
+- `imports/ui/Components/Form/Form.tsx` is the shared form wrapper.
+- Uses React Hook Form for state and integrates SimpleSchema validation via `schema.newContext()`.
+- `onValidSubmit(data, methods)` is debounced (leading edge) to prevent double submits.
+- `onUpdate(partialData)` is driven by `watch()` per-field updates; sanitization can run before validation of the specific key.
+- `onChange(methods)` is a generic change subscription when full form-level reactions are needed.
 
 ### Documentation Rules
 - ONLY document architectural decisions and WHY choices were made
@@ -130,3 +144,10 @@ Server-side publications must use async methods:
 - **WHEN STUCK**: If you think you need to cast, step back and fix the underlying type system
 - **TYPE ASSERTIONS ONLY**: The only acceptable use of `as` is for type assertions with `unknown` when you've properly narrowed the type
 - **NO SHORTCUTS**: Type casting is a shortcut that breaks type safety - never use it
+
+### Meteor File Loading Behavior
+- Meteor eagerly loads and executes any `.js/.ts` files at the project root (outside of `imports/`, `client/`, and `server/`).
+- Utility scripts placed in `scripts/` at the root will be executed on server startup if they have top-level code.
+- To avoid accidental execution:
+  - Place scripts under `imports/` (and only import when needed), or `private/` if treated as assets; and/or
+  - Ensure scripts have no top-level side effects and gate execution behind an environment variable check.

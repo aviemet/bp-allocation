@@ -1,26 +1,57 @@
-import React, { useEffect } from "react"
-import PropTypes from "prop-types"
-
-import { useForm, FormProvider } from "react-hook-form"
 import { debounce } from "lodash"
+import { ReactNode, useEffect, useCallback } from "react"
+import {
+	useForm,
+	FormProvider,
+	FieldValues,
+	DefaultValues,
+	UseFormReturn,
+	FieldPath,
+	PathValue,
+} from "react-hook-form"
+import SimpleSchema from "simpl-schema"
 
-const Form = ({
+interface FormProps<TValues extends FieldValues> {
+	children: ReactNode
+	schema?: SimpleSchema
+	defaultValues?: DefaultValues<TValues>
+	onValidSubmit?: (data: TValues, methods: UseFormReturn<TValues>) => void
+	onSanitize?: (data: TValues | Partial<TValues>) => TValues | Partial<TValues>
+	onValidationError?: (errors: UseFormReturn<TValues>["formState"]["errors"], data: TValues) => void
+	onUpdate?: (data: Partial<TValues>) => void
+	onChange?: (methods: UseFormReturn<TValues>) => void
+}
+
+interface SchemaValidationError {
+	name: string
+	type: string
+}
+
+const Form = <TValues extends FieldValues = FieldValues>({
 	children,
 	schema,
-	defaultValues = {},
+	defaultValues,
 	onValidSubmit,
 	onSanitize,
 	onValidationError,
 	onUpdate,
 	onChange,
 	...props
-}) => {
-	const formValidationContext = schema ? schema.newContext() : false
+}: FormProps<TValues>) => {
+	const formValidationContext = schema ? schema.newContext() : null
 
-	const formMethods = useForm({ defaultValues })
+	const formMethods = useForm<TValues>({ defaultValues })
 
-	const onSubmit = data => {
-		const sanitizedData = onSanitize ? onSanitize(data) : data
+	const sanitizeSubmit = useCallback((data: TValues) => {
+		return onSanitize ? (onSanitize(data) as TValues) : data
+	}, [onSanitize])
+
+	const sanitizePartial = useCallback((data: Partial<TValues>) => {
+		return onSanitize ? (onSanitize(data) as Partial<TValues>) : data
+	}, [onSanitize])
+
+	const onSubmit = (data: TValues) => {
+		const sanitizedData = sanitizeSubmit(data)
 
 		if(!formValidationContext || formValidationContext.validate(sanitizedData)) {
 			if(onValidSubmit) {
@@ -32,30 +63,33 @@ const Form = ({
 				debouncedPledgeSubmit()
 			}
 		} else {
-			formValidationContext.validationErrors().forEach(error => {
-				formMethods.setError(error.name, {
+			formValidationContext.validationErrors().forEach((error: SchemaValidationError) => {
+				const fieldName = error.name as FieldPath<TValues>
+				formMethods.setError(fieldName, {
 					type: error.type,
 					message: formValidationContext.keyErrorMessage(error.name),
 				})
 			})
-			if(onValidationError) onValidationError(formMethods.formState.errors, data)
+			if(onValidationError) onValidationError(formMethods.formState.errors, sanitizedData)
 		}
 	}
 
 	useEffect(() => {
 		if(!onUpdate) return
 
-		const subscription = formMethods.watch((value, { name, type }) => {
-			const valueObject = { [name]: formMethods.getValues(name) }
-			const sanitizedData = onSanitize ? onSanitize(valueObject) : valueObject
+		const subscription = formMethods.watch((_, { name }) => {
+			if(!name) return
+			const fieldName = name as FieldPath<TValues>
+			const singleValue: PathValue<TValues, typeof fieldName> = formMethods.getValues(fieldName)
+			const valueObject = ({ [fieldName]: singleValue } as unknown) as Partial<TValues>
+			const sanitizedData = sanitizePartial(valueObject)
 			if(formValidationContext) {
 				formValidationContext.validate(sanitizedData, { keys: [name] })
 			}
-
 			onUpdate(sanitizedData)
 		})
 		return () => subscription.unsubscribe()
-	}, [formMethods.watch])
+	}, [formMethods, onUpdate, sanitizePartial, formValidationContext])
 
 	useEffect(() => {
 		if(!onChange) return
@@ -64,26 +98,15 @@ const Form = ({
 			onChange(formMethods)
 		})
 		return () => subscription.unsubscribe()
-	}, [formMethods.watch])
+	}, [formMethods, onChange])
 
 	return (
 		<FormProvider { ...formMethods } { ...props }>
-			<form spacing={ 2 } onSubmit={ formMethods.handleSubmit(onSubmit) }>
+			<form onSubmit={ formMethods.handleSubmit(onSubmit) }>
 				{ children }
 			</form>
 		</FormProvider>
 	)
-}
-
-Form.propTypes = {
-	children: ChildrenType,
-	schema: PropTypes.object,
-	defaultValues: PropTypes.object.isRequired,
-	onValidSubmit: PropTypes.func,
-	onSanitize: PropTypes.func,
-	onValidationError: PropTypes.func,
-	onUpdate: PropTypes.func,
-	onChange: PropTypes.func,
 }
 
 export default Form

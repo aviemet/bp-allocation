@@ -1,7 +1,8 @@
+import "meteor/aldeed:collection2"
 import { has } from "lodash"
+import { Accounts } from "meteor/accounts-base"
 import { Meteor } from "meteor/meteor"
 import { ServiceConfiguration } from "meteor/service-configuration"
-import { Accounts } from "meteor/accounts-base"
 import "meteor/accounts-google"
 
 import textVotingLinkToMembers from "/imports/server/sms"

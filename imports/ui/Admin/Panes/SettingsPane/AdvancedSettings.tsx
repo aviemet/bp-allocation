@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { PresentationSettingsMethods } from "/imports/api/methods"
-import { PresentationSettingsSchema } from "/imports/api/db/schema"
+import { PresentationSettingsSchema } from "/imports/api/db"
 import { observer } from "mobx-react-lite"
 import { useSettings } from "/imports/api/providers"
 

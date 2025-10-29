@@ -1,50 +1,60 @@
 import { Meteor } from "meteor/meteor"
+import { Mongo } from "meteor/mongo"
+import { Tracker } from "meteor/tracker"
 
-import { Members, MemberThemes } from "/imports/api/db"
+import { Members, MemberThemes, type MemberData } from "/imports/api/db"
 import { MemberTransformer } from "/imports/server/transformers"
 import { registerObserver } from "../methods"
 
-const membersTransformer = registerObserver((doc, params) => {
-	const memberTheme = MemberThemes.findOne({ member: doc._id, theme: params.themeId })
+interface MembersTransformerParams {
+	themeId: string
+	debug?: boolean
+}
 
-	return MemberTransformer(doc, memberTheme)
+const membersTransformer = registerObserver((doc: MemberData, params: MembersTransformerParams) => {
+	const memberTheme = MemberThemes.findOne({ member: doc._id, theme: params.themeId })
+	return MemberTransformer({ ...doc, theme: memberTheme }, memberTheme)
 })
 
 // MemberThemes - Member activity for theme
-Meteor.publish("memberThemes", (themeId) => {
+Meteor.publish("memberThemes", (themeId?: string) => {
 	if(!themeId) return MemberThemes.find({})
 	return MemberThemes.find({ theme: themeId })
 })
 
 // limit of 0 == 'return no records', limit of false == 'no limit'
-Meteor.publish("members", function({ themeId, limit }) {
+Meteor.publish("members", function({ themeId, limit }: { themeId: string, limit: number | false }) {
 	if(limit === 0) {
 		this.ready()
 		return
 	}
 
-	const subOptions = { sort: { number: 1 } }
+	const subOptions: { sort: Mongo.SortSpecifier, limit?: number } = { sort: { number: 1 } }
 	if(limit !== false) {
 		subOptions.limit = limit
 	}
 
-	this.autorun(function() {
+	const computation = Tracker.autorun(() => {
 		const memberThemes = MemberThemes.find({ theme: themeId }).fetch()
-		const memberIds = memberThemes.map(memberTheme => memberTheme.member)
+		const memberIds = memberThemes
+			.map(mt => mt.member)
+			.filter((id): id is string => typeof id === "string")
 
-		const membersObserver = Members.find({ _id: { $in: memberIds } }, subOptions).observe(membersTransformer("members", this, { themeId }))
+		const membersObserver: Meteor.LiveQueryHandle = Members.find({ _id: { $in: memberIds } }, subOptions).observe(membersTransformer("members", this, { themeId }))
 		this.onStop(() => membersObserver.stop())
 		this.ready()
 	})
+
+	this.onStop(() => computation.stop())
 })
 
-Meteor.publish("member", function({ memberId, themeId }) {
+Meteor.publish("member", function({ memberId, themeId }: { memberId?: string, themeId: string }) {
 	if(!memberId) {
 		this.ready()
 		return
 	}
 
-	const memberObserver = Members.find({ _id: memberId }).observe(membersTransformer("members", this, { themeId, debug: true }))
+	const memberObserver: Meteor.LiveQueryHandle = Members.find({ _id: memberId }).observe(membersTransformer("members", this, { themeId, debug: true }))
 
 	this.onStop(() => memberObserver.stop())
 	this.ready()

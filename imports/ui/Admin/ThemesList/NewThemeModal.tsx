@@ -11,7 +11,7 @@ import { Controller, useFormContext } from "react-hook-form"
 import { Form, TextInput, SubmitButton, STATUS } from "/imports/ui/Components/Form"
 import ContentModal from "/imports/ui/Components/Dialogs/ContentModal"
 import { ThemeMethods } from "/imports/api/methods"
-import { ThemeSchema } from "/imports/api/db/schema"
+import { ThemeSchema } from "/imports/api/db"
 
 const ThemeInputs = () => {
 	const { control, formState: { errors } } = useFormContext()
