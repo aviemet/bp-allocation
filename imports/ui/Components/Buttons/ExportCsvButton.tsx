@@ -1,10 +1,14 @@
-import React from "react"
-import PropTypes from "prop-types"
-import Papa from "papaparse"
-
 import Button from "@mui/material/Button"
+import Papa from "papaparse"
+import React from "react"
 
-const ExportCsvButton = ({ options = {}, data, description }) => {
+interface ExportCsvButtonProps {
+	options?: Papa.UnparseConfig
+	data?: Record<string, unknown>[]
+	description: string
+}
+
+const ExportCsvButton = ({ options = {}, data, description }: ExportCsvButtonProps) => {
 
 	const exportData = () => {
 		if(data) {
@@ -36,12 +40,6 @@ const ExportCsvButton = ({ options = {}, data, description }) => {
 	return (
 		<Button onClick={ exportData }>Export { description }</Button>
 	)
-}
-
-ExportCsvButton.propTypes = {
-	options: PropTypes.object,
-	data: PropTypes.array,
-	description: PropTypes.string,
 }
 
 export default ExportCsvButton

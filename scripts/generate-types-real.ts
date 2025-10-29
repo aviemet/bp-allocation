@@ -1,4 +1,3 @@
-#!/usr/bin/env ts-node
 /* eslint-disable no-console */
 
 // Real solution: Parse actual schema files and generate types

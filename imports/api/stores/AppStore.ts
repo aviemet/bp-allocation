@@ -4,7 +4,7 @@ import { makeAutoObservable } from "mobx"
  * Top level Data Store for the application
  */
 class AppStore {
-	themeId = null
+	themeId: string | null = null
 	loading = true
 	sidebarOpen = false
 	defaultMenuHeading = "Battery Powered Allocation Night Themes"

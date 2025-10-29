@@ -15,17 +15,17 @@ import MembersTable from "./MembersTable"
 
 
 const MembersPane = observer(() => {
-	const { id } = useParams()
-	const history = useHistory()
+	const { id } = useParams({ strict: false })
+	const navigate = useNavigate()
 
-	const options = [
+	const options: { title: string, action: () => void }[] = [
 		{
 			title: "Add New Member",
-			action: () => history.push(`/admin/${id}/members/new`),
+			action: () => navigate({ to: "/admin/$id/members/new", params: { id: String(id) } }),
 		},
 		{
 			title: "Import From CSV",
-			action: () => history.push(`/admin/${id}/members/import`),
+			action: () => navigate({ to: "/admin/$id/members/import", params: { id: String(id) } }),
 		},
 	]
 
@@ -38,7 +38,7 @@ const MembersPane = observer(() => {
 					</Typography>
 				</Grid>
 
-				<Grid item xs={ 12 } md={ 4 } align="right">
+				<Grid item xs={ 12 } md={ 4 } sx={ { textAlign: "right" } }>
 					<SplitButton options={ options } />
 				</Grid>
 

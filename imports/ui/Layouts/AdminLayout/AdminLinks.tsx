@@ -1,5 +1,4 @@
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
-import SettingsIcon from "@mui/icons-material/Settings"
 import AllInclusiveIcon from "@mui/icons-material/AllInclusive"
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney"
 import BusinessIcon from "@mui/icons-material/Business"
@@ -9,6 +8,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore"
 import OpenInNewIcon from "@mui/icons-material/OpenInNew"
 import PeopleIcon from "@mui/icons-material/People"
 import PieChartIcon from "@mui/icons-material/PieChart"
+import SettingsIcon from "@mui/icons-material/Settings"
 import StarIcon from "@mui/icons-material/Star"
 import {
 	Collapse,
@@ -21,7 +21,6 @@ import {
 } from "@mui/material"
 import { Link } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
-import PropTypes from "prop-types"
 import React, { useState } from "react"
 import { useData } from "/imports/api/providers"
 
@@ -30,49 +29,49 @@ const navLinks = [
 		id: "orgs",
 		title: "Orgs",
 		icon: BusinessIcon,
-		route: themeId => `/admin/${themeId}/orgs`,
+		route: (themeId: string) => `/admin/${themeId}/orgs`,
 		color: "teal",
 	},
 	{
 		id: "members",
 		title: "Members",
 		icon: PeopleIcon,
-		route: themeId => `/admin/${themeId}/members`,
+		route: (themeId: string) => `/admin/${themeId}/members`,
 		color: "violet",
 	},
 	{
 		id: "chits",
 		title: "Chit Votes",
 		icon: StarIcon,
-		route: themeId => `/admin/${themeId}/chits`,
+		route: (themeId: string) => `/admin/${themeId}/chits`,
 		color: "brown",
 	},
 	{
 		id: "allocation",
 		title: "Allocations",
 		icon: AttachMoneyIcon,
-		route: themeId => `/admin/${themeId}/allocation`,
+		route: (themeId: string) => `/admin/${themeId}/allocation`,
 		color: "green",
 	},
 	{
 		id: "pledges",
 		title: "Pledges",
 		icon: AccountBalanceWalletIcon,
-		route: themeId => `/admin/${themeId}/pledges`,
+		route: (themeId: string) => `/admin/${themeId}/pledges`,
 		color: "green",
 	},
 	{
 		id: "leverage",
 		title: "Leverage",
 		icon: PieChartIcon,
-		route: themeId => `/admin/${themeId}/leverage`,
+		route: (themeId: string) => `/admin/${themeId}/leverage`,
 		color: "orange",
 	},
 	{
 		id: "messaging",
 		title: "Messaging",
 		icon: EmailIcon,
-		route: themeId => `/admin/${themeId}/messaging`,
+		route: (themeId: string) => `/admin/${themeId}/messaging`,
 		color: "olive",
 	},
 ]
@@ -81,24 +80,28 @@ const bottomLinks = [
 	{
 		id: "kiosk",
 		title: "Kiosk",
-		route: themeId => `/kiosk/${themeId}`,
+		route: (themeId: string) => `/kiosk/${themeId}`,
 		newTab: false,
 	},
 	{
 		id: "presentation",
 		title: "Presentation",
-		route: themeId => `/presentation/${themeId}`,
+		route: (themeId: string) => `/presentation/${themeId}`,
 		newTab: true,
 	},
 	{
 		id: "pledges",
 		title: "Pledges",
-		route: themeId => `/pledges/${themeId}`,
+		route: (themeId: string) => `/pledges/${themeId}`,
 		newTab: true,
 	},
 ]
 
-const Links = observer(({ activeMenuItem }) => {
+interface LinksProps {
+	activeMenuItem: string
+}
+
+const Links = observer(({ activeMenuItem }: LinksProps) => {
 	const data = useData()
 
 	const [pagesOpen, setPagesOpen] = useState(false)
@@ -176,9 +179,5 @@ const Links = observer(({ activeMenuItem }) => {
 		</>
 	)
 })
-
-Links.propTypes = {
-	activeMenuItem: PropTypes.string,
-}
 
 export default Links

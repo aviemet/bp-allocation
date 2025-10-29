@@ -1,10 +1,12 @@
-import React from "react"
-import PropTypes from "prop-types"
-
-import Container from "@mui/material/Container"
 import styled from "@emotion/styled"
+import Container from "@mui/material/Container"
+import React from "react"
 
-const WelcomeLayout = ({ children }) => {
+interface WelcomeLayoutProps {
+	children: React.ReactNode
+}
+
+const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
 	return (
 		<WelcomeContainer id="welcomeContainer">
 			<Centered id="centered">
@@ -34,12 +36,5 @@ const Centered = styled.div`
 	top: 50%;
 	transform: translateY(-50%);
 `
-
-WelcomeLayout.propTypes = {
-	children: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.node),
-		PropTypes.node,
-	]),
-}
 
 export default WelcomeLayout

@@ -1,9 +1,11 @@
-import React from "react"
-import PropTypes from "prop-types"
-
 import styled from "@emotion/styled"
+import React from "react"
 
-const PresentationLayout = ({ children }) => {
+interface PresentationLayoutProps {
+	children: React.ReactNode
+}
+
+const PresentationLayout = ({ children }: PresentationLayoutProps) => {
 	return (
 		<PresentationContainer id="presentationContainer">{ children }</PresentationContainer>
 	)
@@ -28,12 +30,5 @@ const PresentationContainer = styled.div`
 		font-family: 'TradeGothic';
 	}
 `
-
-PresentationLayout.propTypes = {
-	children: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.node),
-		PropTypes.node,
-	]),
-}
 
 export default PresentationLayout

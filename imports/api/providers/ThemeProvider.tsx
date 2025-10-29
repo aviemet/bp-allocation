@@ -21,8 +21,7 @@ interface ThemeProviderProps {
 }
 
 const ThemeProvider = observer(({ children }: ThemeProviderProps) => {
-	const appStore = useData()
-	const themeId = appStore?.themeId
+	const { themeId } = useData()
 
 	// Setup Meteor tracker to subscribe to a Theme
 	const theme = useTracker(() => {

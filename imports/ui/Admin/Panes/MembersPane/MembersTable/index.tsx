@@ -18,31 +18,17 @@ import { MemberMethods } from "/imports/api/methods"
 
 import SortableTable from "/imports/ui/Components/SortableTable"
 
-// import ActionMenu from '/imports/ui/Components/Menus/ActionMenu'
 import ContextMenu from "./ContextMenu"
 import ConfirmationModal from "/imports/ui/Components/Dialogs/ConfirmDelete"
 
-// Saving for later
-// const topHeadCells = [
-// 	{
-// 		label: '',
-// 		span: 2,
-// 	},
-// 	{
-// 		label: 'Funds',
-// 		span: 2,
-// 	},
-// 	{
-// 		label: 'Chits',
-// 		span: 2,
-// 	},
-// 	{
-// 		label: '',
-// 		span: 1,
-// 	}
-// ]
+interface HeadCell {
+	id: string
+	label: string
+	sort?: boolean
+	disablePadding?: boolean
+}
 
-const headCells = [
+const headCells: HeadCell[] = [
 	{
 		id: "fullName",
 		label: "Member Name",
@@ -67,18 +53,18 @@ const headCells = [
 // TODO: Would be cool to get the filter icon to allow filtring by keyword
 //       So, choosing 'not voted' would filter out all those who have voted
 const MembersTable = observer(() => {
-	const { members, loading: membersLoading } = useMembers()
+	const { members, isLoading: membersLoading } = useMembers()
 	const { settings } = useSettings()
 
-	const [ modalOpen, setModalOpen ] = useState(false)
-	const [ modalHeader, setModalHeader ] = useState("")
-	const [ modalContent, setModalContent ] = useState("")
-	const [ modalAction, setModalAction ] = useState()
+	const [ modalOpen, setModalOpen ] = useState<boolean>(false)
+	const [ modalHeader, setModalHeader ] = useState<string>("")
+	const [ modalContent, setModalContent ] = useState<string>("")
+	const [ modalAction, setModalAction ] = useState<(() => void) | undefined>(undefined)
 
-	const { id: themeId } = useParams()
+	const { id: themeId } = useParams({ strict: false })
 
 	// TODO: See about batching deletes
-	const bulkDelete = (selected, onSuccess) => {
+	const bulkDelete = (selected: string[], onSuccess: () => void) => {
 		const plural = selected.length > 1
 
 		setModalHeader(`Permanently unlink member${plural ? "s" : ""} from this theme?`)
@@ -86,23 +72,18 @@ const MembersTable = observer(() => {
 		// Need to curry the function since useState calls passed functions
 		setModalAction( () => () => {
 			selected.forEach(id => {
-				MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId })
+				MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: String(themeId) })
 			})
 			onSuccess()
 		})
 		setModalOpen(true)
 	}
 
-	const handleSearch = value => {
-		members.searchFilter = value
+	const handleSearch = (value: string) => {
+		if(members) members.searchFilter = value
 	}
 
-	// TODO: Get an x button to clear search filter values
-	const clearSearch = () => {
-		members.searchFilter = null
-	}
-
-	if(membersLoading || isEmpty(members)) {
+	if(membersLoading || !members || isEmpty(members.values)) {
 		return (
 			<>
 				<Skeleton height={ 100 } />
@@ -116,18 +97,20 @@ const MembersTable = observer(() => {
 	return (
 		<>
 			<SortableTable
+				title="Members"
+				tableHeadTopRow={ [] }
 				onBulkDelete={ bulkDelete }
 				headCells={ headCells }
-				rows={ members.filteredMembers }
+				rows={ members?.filteredMembers || [] }
 				defaultOrderBy="createdAt"
 				paginationCounts={ [10, 25, 50] }
-				filterParams={ members.searchFilter }
+				filterParams={ members?.searchFilter || null }
 				onFilterParamsChange={ handleSearch }
 				striped={ true }
-				render={ member => {
-					const votedTotal = member.theme.allocations.reduce((sum, allocation) => { return sum + allocation.amount }, 0)
-					const votedChits = member.theme.chitVotes.length > 0
-					const fullName = member.fullName ? member.fullName : `${member.firstName} ${member.lastName}`
+				render={ (member: any) => {
+					const votedTotal = (member.theme?.allocations || []).reduce((sum: number, allocation: any) => { return sum + (allocation.amount || 0) }, 0)
+					const votedChits = (member.theme?.chitVotes || []).length > 0
+					const fullName = member.fullName ? member.fullName : `${member.firstName || ""} ${member.lastName || ""}`
 
 					return (
 						<>
@@ -136,29 +119,33 @@ const MembersTable = observer(() => {
 
 							{ /* Funds */ }
 							<TableCell>
-								{ formatters.currency.format(member.theme.amount || 0) }
-								{ settings.useKioskFundsVoting && (votedTotal === member.theme.amount) && (
-									<CheckIcon color="success" />
-								) }
+								{ formatters.currency.format(member.theme?.amount || 0) }
+								{ settings?.useKioskFundsVoting && (votedTotal === member.theme?.amount)
+									? (
+										<CheckIcon color="success" />
+									)
+									: null }
 							</TableCell>
 
 							{ /* Chits */ }
 							<TableCell>
-								{ member.theme.chits || 0 }
-								{ settings.useKioskChitVoting && votedChits && (
-									<CheckIcon color="success" />
-								) }
+								{ member.theme?.chits || 0 }
+								{ settings?.useKioskChitVoting && votedChits
+									? (
+										<CheckIcon color="success" />
+									)
+									: null }
 							</TableCell>
 
 							{ /* Actions */ }
 							<TableCell padding="checkbox">
-								<ContextMenu themeId={ themeId } member={ member } />
+								<ContextMenu themeId={ String(themeId) } member={ member } />
 							</TableCell>
 						</>
 
 					)
 				} }
-				collapse={ member => (
+				collapse={ (member: any) => (
 					<Table size="small" aria-label="purchases" sx={ { borderLeft: "1px solid #d7d7d7" } }>
 						<TableHead>
 							<TableRow>
@@ -171,11 +158,11 @@ const MembersTable = observer(() => {
 						</TableHead>
 						<TableBody>
 							<TableRow>
-								<TableCell component="th" scope="row">{ member.code }</TableCell>
-								<TableCell>{ member.firstName }</TableCell>
-								<TableCell>{ member.lastName }</TableCell>
-								<TableCell>{ member.phone }</TableCell>
-								<TableCell>{ member.email }</TableCell>
+								<TableCell component="th" scope="row">{ member.code || "" }</TableCell>
+								<TableCell>{ member.firstName || "" }</TableCell>
+								<TableCell>{ member.lastName || "" }</TableCell>
+								<TableCell>{ member.phone || "" }</TableCell>
+								<TableCell>{ member.email || "" }</TableCell>
 							</TableRow>
 						</TableBody>
 					</Table>

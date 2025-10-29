@@ -1,6 +1,4 @@
-import React, { useState, useRef } from "react"
-import PropTypes from "prop-types"
-
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import {
 	Button,
 	ButtonGroup,
@@ -11,19 +9,29 @@ import {
 	MenuItem,
 	MenuList,
 } from "@mui/material"
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import React, { useState, useRef, MouseEvent } from "react"
 
-const SplitButton = ({ options, defaultSelected = 0 }) => {
+interface SplitButtonOption {
+	title: string
+	action: () => void
+}
+
+interface SplitButtonProps {
+	options: SplitButtonOption[]
+	defaultSelected?: number
+}
+
+const SplitButton = ({ options, defaultSelected = 0 }: SplitButtonProps) => {
 	const [selectedIndex, setSelectedIndex] = useState(defaultSelected)
 	const [open, setOpen] = useState(false)
 
-	const anchorRef = useRef(null)
+	const anchorRef = useRef<HTMLDivElement>(null)
 
 	const handleClick = () => {
 		options[selectedIndex].action()
 	}
 
-	const handleMenuItemClick = (event, index) => {
+	const handleMenuItemClick = (event: MouseEvent<HTMLLIElement>, index: number) => {
 		setSelectedIndex(index)
 		setOpen(false)
 		options[index].action()
@@ -33,8 +41,8 @@ const SplitButton = ({ options, defaultSelected = 0 }) => {
 		setOpen((prevOpen) => !prevOpen)
 	}
 
-	const handleClose = (event) => {
-		if(anchorRef.current && anchorRef.current.contains(event.target)) return
+	const handleClose = (event: Event | MouseEvent<Document, MouseEvent>) => {
+		if(anchorRef.current && anchorRef.current.contains(event.target as Node)) return
 
 		setOpen(false)
 	}
@@ -90,11 +98,6 @@ const SplitButton = ({ options, defaultSelected = 0 }) => {
 			</Popper>
 		</>
 	)
-}
-
-SplitButton.propTypes = {
-	options: PropTypes.array,
-	defaultSelected: PropTypes.number,
 }
 
 export default SplitButton

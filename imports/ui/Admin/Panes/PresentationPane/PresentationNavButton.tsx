@@ -1,18 +1,32 @@
-import React from "react"
-import PropTypes from "prop-types"
-
+import { Button, Chip, Stack, type ButtonProps } from "@mui/material"
 import useTheme from "@mui/material/styles/useTheme"
-import { Button, Chip, Stack } from "@mui/material"
-
 import { observer } from "mobx-react-lite"
+import React from "react"
 import { useSettings } from "/imports/api/providers"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
-const PresentationNavButton = observer(({ page, active, onClick, label, Icon, ...rest }) => {
-	const muiTheme = useTheme()
-	const { settings } = useSettings()
+interface PresentationNavButtonProps extends Omit<ButtonProps, "onClick"> {
+	page: string
+	label: string
+	Icon: React.ElementType
+	active?: boolean
+	onClick?: () => void
+}
 
-	const changeCurrentPage = (e, data) => {
+const PresentationNavButton = observer(({
+	page,
+	active,
+	onClick,
+	label,
+	Icon,
+	...rest
+}: PresentationNavButtonProps) => {
+	const muiTheme = useTheme()
+	const settingsContext = useSettings()
+	const settings = settingsContext?.settings
+	if(!settings) return null
+
+	const changeCurrentPage = () => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
@@ -22,8 +36,8 @@ const PresentationNavButton = observer(({ page, active, onClick, label, Icon, ..
 	}
 
 	// onClick passthrough
-	const doOnClick = (e, data) => {
-		changeCurrentPage(e, data)
+	const doOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+		changeCurrentPage()
 		if(onClick) onClick()
 		e.currentTarget.blur()
 	}
@@ -52,13 +66,5 @@ const PresentationNavButton = observer(({ page, active, onClick, label, Icon, ..
 		</Button>
 	)
 })
-
-PresentationNavButton.propTypes = {
-	page: PropTypes.string.isRequired,
-	label: PropTypes.string.isRequired,
-	Icon: PropTypes.any.isRequired,
-	onClick: PropTypes.func,
-	rest: PropTypes.any,
-}
 
 export default PresentationNavButton

@@ -1,20 +1,25 @@
+import styled from "@emotion/styled"
+import EmailIcon from "@mui/icons-material/Email"
+import SmsIcon from "@mui/icons-material/Sms"
+import { Paper, ButtonProps } from "@mui/material"
 import { Meteor } from "meteor/meteor"
+import { observer } from "mobx-react-lite"
 import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
 
 import { useTheme } from "/imports/api/providers"
-import { observer } from "mobx-react-lite"
-
-import styled from "@emotion/styled"
-import { Paper } from "@mui/material"
-import SmsIcon from "@mui/icons-material/Sms"
-import EmailIcon from "@mui/icons-material/Email"
+import { type MessageData } from "/imports/api/db"
+import { type MemberData } from "/imports/api/db"
 
 import CustomConfirm from "/imports/ui/Components/Dialogs/CustomConfirm"
 import { emailVotingLink, textVotingLink } from "/imports/lib/utils"
 import { STATUS, SubmitButton } from "/imports/ui/Components/Form"
 
-const buttonValues = {
+interface ButtonValue {
+	method: string
+	icon: typeof EmailIcon
+}
+
+const buttonValues: Record<"email" | "text", ButtonValue> = {
 	email: {
 		method: "emailVotingLinkToMembers",
 		icon: EmailIcon,
@@ -25,7 +30,12 @@ const buttonValues = {
 	},
 }
 
-const SendWithFeedbackButton = observer(({ message, members, ...rest }) => {
+interface SendWithFeedbackButtonProps extends Omit<ButtonProps, "onClick"> {
+	message: MessageData
+	members?: MemberData[] | "all"
+}
+
+const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWithFeedbackButtonProps) => {
 	const { theme } = useTheme()
 
 	const [buttonStatus, setButtonStatus] = useState(STATUS.READY)
@@ -106,11 +116,5 @@ const FormattedMessageBody = styled.div`
 		border-radius: 2px;
 	} 
 `
-
-SendWithFeedbackButton.propTypes = {
-	message: PropTypes.object.isRequired,
-	members: PropTypes.array,
-	rest: PropTypes.any,
-}
 
 export default SendWithFeedbackButton

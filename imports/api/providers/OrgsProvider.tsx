@@ -37,18 +37,16 @@ interface OrgsProviderProps {
 }
 
 const OrgsProvider = observer(({ children }: OrgsProviderProps) => {
-	const appStore = useData()
-	const themeId = appStore?.themeId
-	const themeContext = useTheme()
-	const theme = themeContext?.theme
-	const themeLoading = themeContext?.isLoading || false
+	const { themeId } = useData()
+	const { theme, isLoading: themeLoading } = useTheme()
 
 	let subscription: Meteor.SubscriptionHandle | undefined
 	let cursorObserver: Meteor.LiveQueryHandle | undefined
 	let orgsCollection: OrgsCollection | undefined
 
 	const orgs = useTracker(() => {
-		if(!themeId || themeLoading) {
+		// Wait until themeId is available and theme has loaded
+		if(!themeId || themeLoading || !theme) {
 			if(subscription) subscription.stop()
 			if(cursorObserver) cursorObserver.stop()
 
@@ -61,10 +59,6 @@ const OrgsProvider = observer(({ children }: OrgsProviderProps) => {
 
 		subscription = Meteor.subscribe("organizations", themeId, {
 			onReady: () => {
-				if(!theme) {
-					return
-				}
-
 				const cursor = Organizations.find({ theme: themeId })
 				orgsCollection = new OrgsCollection(cursor.fetch(), theme, OrgStore)
 
@@ -81,7 +75,7 @@ const OrgsProvider = observer(({ children }: OrgsProviderProps) => {
 			topOrgs: !orgsCollection || !isThemeWithVoting(theme) ? [] : filterTopOrgs(orgsCollection.values, theme),
 			isLoading: !subscription?.ready(),
 		}
-	}, [themeId, themeLoading])
+	}, [themeId, themeLoading, theme])
 
 	return (
 		<OrgsContextProvider value={ orgs }>

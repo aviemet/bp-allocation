@@ -1,8 +1,16 @@
+import { isEmpty } from "lodash"
 import React from "react"
 import { useOrgs, useMembers } from "/imports/api/providers"
 import ExportCsvButton from "/imports/ui/Components/Buttons/ExportCsvButton"
 import { Loading } from "/imports/ui/Components"
-import { isEmpty } from "lodash"
+
+interface PledgeData {
+	Organization: string
+	"Member Name": string
+	"Member Number": number
+	Amount: number
+	"Pledged At": Date
+}
 
 const ExportTopups = () => {
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
@@ -10,7 +18,7 @@ const ExportTopups = () => {
 
 	if(orgsLoading || membersLoading || isEmpty(members)) return <Loading />
 
-	const pledges = []
+	const pledges: PledgeData[] = []
 	topOrgs.forEach(org => {
 		org.pledges.forEach(pledge => {
 			const member = members.values.find(member => member._id === pledge.member)

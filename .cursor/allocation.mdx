@@ -145,9 +145,23 @@ Server-side publications must use async methods:
 - **TYPE ASSERTIONS ONLY**: The only acceptable use of `as` is for type assertions with `unknown` when you've properly narrowed the type
 - **NO SHORTCUTS**: Type casting is a shortcut that breaks type safety - never use it
 
+### Provider Data Loading Pattern
+- Providers should start with data loading enabled by default to avoid race conditions
+- `MembersProvider` starts with `subLimit: false` to immediately load members when `themeId` is available
+- Remove `useEffect` calls that trigger data loading in provider hooks - let the provider handle loading automatically
+- Server publications handle the actual data filtering (e.g., theme-based member filtering)
+- Client-side queries should be simple since the server publication does the heavy lifting
+
 ### Meteor File Loading Behavior
 - Meteor eagerly loads and executes any `.js/.ts` files at the project root (outside of `imports/`, `client/`, and `server/`).
 - Utility scripts placed in `scripts/` at the root will be executed on server startup if they have top-level code.
 - To avoid accidental execution:
   - Place scripts under `imports/` (and only import when needed), or `private/` if treated as assets; and/or
   - Ensure scripts have no top-level side effects and gate execution behind an environment variable check.
+
+### Component Props Typing
+- Replace PropTypes with TypeScript interfaces for all React component props
+- Use existing data types from `/imports/api/db` for prop types (e.g., `MessageData`, `MemberData`)
+- For MUI components, extend built-in prop types using `Omit` to exclude conflicting props (e.g., `Omit<ButtonProps, "onClick">`)
+- Use index signatures for dynamic object properties when structure varies (e.g., `[key: string]: string | number | undefined`)
+- Remove all PropTypes declarations when adding TypeScript interfaces

@@ -1,7 +1,7 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
 import { observer } from "mobx-react-lite"
-import React from "react"
+import React, { useEffect, useRef } from "react"
 
 import { useData } from "./DataProvider"
 import { useTheme } from "./ThemeProvider"
@@ -22,53 +22,37 @@ interface SettingsProviderProps {
 }
 
 const SettingsProvider = observer(({ children }: SettingsProviderProps) => {
-	const appStore = useData()
-	const themeId = appStore?.themeId
-	const themeContext = useTheme()
-	const theme = themeContext?.theme
-	const themeLoading = themeContext?.isLoading || false
+	const { themeId } = useData()
 
-	let subscription: Meteor.SubscriptionHandle | undefined
-	let cursorObserver: Meteor.LiveQueryHandle | undefined
-	let settingsStore: SettingsStore | undefined
+	useTheme()
 
-	const settings = useTracker(() => {
+	const storeRef = useRef<SettingsStore | undefined>(undefined)
+
+	const { data, ready } = useTracker(() => {
 		if(!themeId) {
-			if(subscription) subscription.stop()
-			if(cursorObserver) cursorObserver.stop()
-
-			return {
-				isLoading: true,
-				settings: undefined,
-			}
+			return { data: undefined, ready: false }
 		}
+		const sub = Meteor.subscribe("settings", themeId)
+		const data = PresentationSettings.findOne()
+		return { data, ready: sub.ready() && !!data }
+	}, [themeId])
 
-		// Begin the subscription
-		subscription = Meteor.subscribe("settings", themeId, {
-			onReady: () => {
-				if(!themeLoading && theme && theme.presentationSettings) {
-					const cursor = PresentationSettings.find({ _id: theme.presentationSettings })
-					const settingsData = cursor.fetch()[0]
-					if(settingsData) {
-						settingsStore = new SettingsStore(settingsData)
-
-						cursorObserver = cursor.observe({
-							added: (settings) => settingsStore?.refreshData(settings),
-							changed: (settings) => settingsStore?.refreshData(settings),
-						})
-					}
-				}
-			},
-		})
-
-		return {
-			settings: settingsStore,
-			isLoading: !subscription?.ready(),
+	useEffect(() => {
+		if(!data) return
+		if(!storeRef.current || storeRef.current._id !== data._id) {
+			storeRef.current = new SettingsStore(data)
+			return
 		}
-	}, [themeId, themeLoading])
+		storeRef.current.refreshData(data)
+	}, [data])
+
+	const contextValue: SettingsContextValue = {
+		settings: storeRef.current,
+		isLoading: !ready,
+	}
 
 	return (
-		<SettingsContextProvider value={ settings }>
+		<SettingsContextProvider value={ contextValue }>
 			{ children }
 		</SettingsContextProvider>
 	)

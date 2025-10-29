@@ -20,9 +20,9 @@ import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import React, { useState, useRef } from "react"
 import { useOrgs } from "/imports/api/providers"
+import { type Organization } from "/imports/types/schema"
 
 import { OrganizationMethods } from "/imports/api/methods"
-
 
 import ConfirmationModal from "/imports/ui/Components/Dialogs/ConfirmDelete"
 import SplitButton from "/imports/ui/Components/Buttons/SplitButton"
@@ -32,7 +32,7 @@ import { Loading } from "/imports/ui/Components"
 const OrganizationsPane = observer(() => {
 	const { orgs, isLoading: orgsLoading } = useOrgs()
 
-	const modalValuesRef = useRef({
+	const modalValuesRef = useRef<{ header: string, content: string, action: () => void }>({
 		header: "",
 		content: "",
 		action: () => {},
@@ -40,10 +40,10 @@ const OrganizationsPane = observer(() => {
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 
-	const { id } = useParams()
-	const history = useHistory()
+	const { id } = useParams({ strict: false })
+	const navigate = useNavigate()
 
-	const showDeleteModal = (org) => {
+	const showDeleteModal = (org: Organization) => {
 		modalValuesRef.current.header = "Permanently Delete This Organization?"
 		modalValuesRef.current.content = `This will permanently remove ${org.title} from this theme and all associated data. This process cannot be undone.`
 		modalValuesRef.current.action = () => {
@@ -54,16 +54,16 @@ const OrganizationsPane = observer(() => {
 		setModalOpen(true)
 	}
 
-	if(orgsLoading) return <Loading />
+	if(orgsLoading || !orgs) return <Loading />
 
-	const options = [
+	const options: { title: string, action: () => void }[] = [
 		{
 			title: "Add New Organization",
-			action: () => history.push(`/admin/${id}/orgs/new`),
+			action: () => navigate({ to: "/admin/$id/orgs/new", params: { id: String(id) } }),
 		},
 		{
 			title: "Import From CSV",
-			action: () => history.push(`/admin/${id}/orgs/import`),
+			action: () => navigate({ to: "/admin/$id/orgs/import", params: { id: String(id) } }),
 		},
 	]
 
@@ -76,7 +76,7 @@ const OrganizationsPane = observer(() => {
 							Organizations
 						</Typography>
 					</Grid>
-					<Grid item xs={ 12 } md={ 4 } align="right">
+					<Grid item xs={ 12 } md={ 4 } sx={ { textAlign: "right" } }>
 						<SplitButton options={ options } />
 					</Grid>
 				</Grid>
@@ -102,7 +102,7 @@ const OrganizationsPane = observer(() => {
 													horizontal: "right",
 												} }
 											>
-												<Link to={ `/admin/${id}/orgs/${org._id}` }>
+												<Link to="/admin/$id/orgs/$orgId" params={ { id: String(id), orgId: String(org._id) } }>
 													<MenuItem onClick={ popupState.close } disableRipple>
 														<EditIcon />
 														Edit
@@ -121,11 +121,11 @@ const OrganizationsPane = observer(() => {
 									) }
 								</PopupState>
 							}
-							title={ org.title }
-							subheader={ `Ask: ${numeral(org.ask).format("$0,0")}` }
+							title={ String((org as any).title ?? "") }
+							subheader={ `Ask: ${numeral(Number((org as any).ask ?? 0)).format("$0,0")}` }
 						/>
 						<CardContent>
-							<DisplayHtml>{ org.description }</DisplayHtml>
+							<DisplayHtml>{ String((org as any).description ?? "") }</DisplayHtml>
 						</CardContent>
 					</Card>
 				)) }
@@ -142,20 +142,7 @@ const OrganizationsPane = observer(() => {
 	)
 })
 
-const StyledMenu = styled((props) => (
-	<Menu
-		elevation={ 0 }
-		anchorOrigin={ {
-			vertical: "bottom",
-			horizontal: "right",
-		} }
-		transformOrigin={ {
-			vertical: "top",
-			horizontal: "right",
-		} }
-		{ ...props }
-	/>
-))(({ theme }) => ({
+const StyledMenu = styled(Menu)(({ theme }) => ({
 	"& .MuiPaper-root": {
 		borderRadius: 6,
 		marginTop: theme.spacing(1),

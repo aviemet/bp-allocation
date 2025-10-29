@@ -1,6 +1,6 @@
-import WelcomeLayout from "./WelcomeLayout"
 import AdminLayout from "./AdminLayout"
-import PresentationLayout from "./PresentationLayout"
 import KioskLayout from "./KioskLayout"
+import PresentationLayout from "./PresentationLayout"
+import WelcomeLayout from "./WelcomeLayout"
 
 export { WelcomeLayout, AdminLayout, PresentationLayout, KioskLayout }

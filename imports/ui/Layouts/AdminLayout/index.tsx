@@ -1,4 +1,3 @@
-import styled from "@emotion/styled"
 import AccountCircle from "@mui/icons-material/AccountCircle"
 import BarChartIcon from "@mui/icons-material/BarChart"
 import {
@@ -13,9 +12,9 @@ import {
 	Divider,
 	Grid,
 	Menu,
-	CircularProgress,
 	Button,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 import { useNavigate, useLocation, useParams, Link, Outlet } from "@tanstack/react-router"
 import { Meteor } from "meteor/meteor"
 import { observer } from "mobx-react-lite"
@@ -28,38 +27,30 @@ const drawerWidth = 175
 
 const AdminLayout = observer(() => {
 	const data = useData()
+	if(!data) return null
+
+	const [ anchorEl, setAnchorEl ] = useState<HTMLElement | null>(null)
+	const [ drawerOpen, setDrawerOpen ] = useState<boolean>(false)
 
 	const navigate = useNavigate()
 	const location = useLocation()
-	// Get params safely - only if we're on a route with an ID
-	let params = {}
-	try {
-		params = useParams({ strict: false })
-	} catch(error) {
-		// We're not on a route with an ID, params will be empty
-		params = {}
-	}
+	// Params from TanStack Router across matched routes
+	const params = useParams({ strict: false })
+
+	const themeContext = useTheme()
+	const theme = themeContext?.theme
+	const themeLoading = themeContext?.isLoading ?? true
 
 	// Set the theme ID in the store based on the route parameters
 	useEffect(() => {
-		if(params.id) {
-			data.themeId = params.id
-		} else {
-			data.themeId = null
-		}
+		data.themeId = params.id ?? null
 	}, [params.id, data])
-
-	const { theme, isLoading: themeLoading } = useTheme()
-
-
-	const [ anchorEl, setAnchorEl ] = useState(null)
-	const [ drawerOpen, setDrawerOpen ] = useState(false)
 
 	useEffect(() => {
 		setDrawerOpen(!["/themes", "/admin"].includes(location.pathname))
 	}, [location.pathname])
 
-	const handleMenu = event => {
+	const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
 	}
 
@@ -67,49 +58,13 @@ const AdminLayout = observer(() => {
 		setAnchorEl(null)
 	}
 
-	// const setSidebarVisibilty = () => {
-	// 	let showSidebar = window.innerWidth >= layoutTheme.screen.tablet && !/^\/(admin|themes)[/]?$/.test(location.pathname)
-	// 	setSidebarVisible(showSidebar)
-	// }
-
-	// useEffect(() => {
-	// 	setSidebarVisibilty()
-	// }, [ location.pathname ])
-
-	// useEffect(() => {
-	// 	window.addEventListener('resize', setSidebarVisibilty)
-	// 	return () => window.removeEventListener('resize', setSidebarVisibilty)
-	// })
-
 	/**
 	 * Update the main page heading when the theme changes
 	 */
 	useEffect(() => {
-		data.menuHeading = theme?.title ? theme.title : data.defaultMenuHeading
-	}, [theme])
-
-	// Show loading state while theme is loading
-	if(themeLoading || !theme) {
-		return (
-			<AdminContainer className="AdminContainer">
-				<AppBar position="relative" open={ false }>
-					<Toolbar>
-						<Logo size="mini" src="/img/BPLogo.svg" />
-						<Typography variant="h6" component="div" sx={ { flexGrow: 1 } }>
-							Loading...
-						</Typography>
-					</Toolbar>
-				</AppBar>
-				<Main open={ false }>
-					<Container>
-						<Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-							<CircularProgress />
-						</Box>
-					</Container>
-				</Main>
-			</AdminContainer>
-		)
-	}
+		const heading = typeof theme?.title === "string" && theme.title ? theme.title : data.defaultMenuHeading
+		data.menuHeading = heading
+	}, [theme, data])
 
 	return (
 		<AdminContainer className="AdminContainer">
@@ -173,7 +128,7 @@ const AdminLayout = observer(() => {
 
 				<Divider />
 
-				<AdminLinks activeMenuItem={ params?.page || "" } />
+				<AdminLinks activeMenuItem="" />
 			</Drawer>
 
 			<Main open={ drawerOpen }>
@@ -195,14 +150,18 @@ const AdminContainer = styled(Box)`
 	padding-bottom: 15px;
 `
 
-const Logo = styled.img`
+interface LogoProps {
+	size?: "mini" | "medium" | "large"
+}
+
+const Logo = styled("img", { shouldForwardProp: (prop) => prop !== "size" })<LogoProps>`
 	height: 50px;
 	padding-right: 10px;
 `
 
 const AppBar = styled(MuiAppBar, {
 	shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+})<{ open?: boolean }>(({ theme, open }) => ({
 	transition: theme.transitions.create(["margin", "width"], {
 		easing: theme.transitions.easing.sharp,
 		duration: theme.transitions.duration.leavingScreen,
@@ -217,7 +176,7 @@ const AppBar = styled(MuiAppBar, {
 	}),
 }))
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{ open?: boolean }>(
 	({ theme, open }) => ({
 		flexGrow: 1,
 		padding: theme.spacing(3),

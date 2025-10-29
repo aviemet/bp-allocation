@@ -2,7 +2,7 @@ import { Meteor } from "meteor/meteor"
 import { Mongo } from "meteor/mongo"
 import { useTracker } from "meteor/react-meteor-data"
 import { observer } from "mobx-react-lite"
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 
 import { useData } from "./DataProvider"
 import { Members, type MemberData } from "/imports/api/db"
@@ -39,14 +39,6 @@ export const useMembers = () => {
 		throw new Error("useMembers must be used within a MembersProvider")
 	}
 
-	// Unsubscribe from members upon unmounting page
-	useEffect(() => {
-		membersContext.getAllMembers()
-		return () => {
-			membersContext.hideAllMembers()
-		}
-	}, [membersContext])
-
 	return membersContext
 }
 
@@ -62,7 +54,7 @@ const MembersProvider = observer(({ children }: MembersProviderProps) => {
 	let membersCollection: MembersCollection | undefined
 
 	// limit of 0 == 'return no records', limit of false == 'no limit'
-	const [ subLimit, setSubLimit ] = useState<number | false>(0)
+	const [ subLimit, setSubLimit ] = useState<number | false>(false) // Start with false to load members immediately
 	// const [ subIndex, setSubIndex ] = useState(0)
 
 	const [ renderCount, setRenderCount ] = useState(0)
@@ -109,10 +101,8 @@ const MembersProvider = observer(({ children }: MembersProviderProps) => {
 
 			subscription = Meteor.subscribe("members", { themeId, limit: subLimit }, {
 				onReady: () => {
-					subscriptionReady(Members.find(
-						{ "theme.theme": themeId },
-						{ sort: { number: 1 } }
-					))
+					// Query all members since the server publication handles the theme filtering
+					subscriptionReady(Members.find({}, { sort: { number: 1 } }))
 				},
 			})
 		}
@@ -122,7 +112,7 @@ const MembersProvider = observer(({ children }: MembersProviderProps) => {
 			isLoading: !subscription?.ready(),
 		})
 
-	}, [themeId, subLimit, memberId])
+	}, [themeId, subLimit, memberId, renderCount])
 
 	return (
 		<MembersContextProvider value={ members }>

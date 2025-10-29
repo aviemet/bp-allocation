@@ -64,7 +64,7 @@ const adminLayoutRoute = createRoute({
 			throw redirect({ to: "/login" })
 		}
 	},
-	component: () => <AdminLayout><Outlet /></AdminLayout>,
+	component: () => <AdminLayout />,
 })
 
 const adminDefaultRoute = createRoute({

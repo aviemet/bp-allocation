@@ -6,15 +6,15 @@ import React from "react"
  * @param error Whether to throw an error if not inside a Context. Defaults to true
  * @returns Tuple of `useContext` hook for accessing this context value, and the JSX Context Provider Component
  */
-export function createContext<T extends {} | null>() {
+export function createContext<T extends {}>() {
 	const context = React.createContext<T | null>(null)
 
-	function useContext(error = true): T | null {
+	function useContext(error = true): T {
 		const c = React.useContext(context)
 		if(error && c === null) {
 			throw new Error("useContext must be inside a Provider with a value")
 		}
-		return c
+		return c as T
 	}
 
 	return [useContext, context.Provider] as const

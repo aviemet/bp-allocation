@@ -1,9 +1,17 @@
+import { format } from "date-fns"
+import { isEmpty } from "lodash"
 import React from "react"
 import { useOrgs, useMembers } from "/imports/api/providers"
 import { Loading } from "/imports/ui/Components"
 import ExportCsvButton from "/imports/ui/Components/Buttons/ExportCsvButton"
-import { isEmpty } from "lodash"
-import { format } from "date-fns"
+
+interface ChitVoteData {
+	Name: string
+	Code?: string
+	Initials?: string
+	Number: number
+	[key: string]: string | number | undefined
+}
 
 const ExportChitVotes = () => {
 	const { orgs, isLoading: orgsLoading } = useOrgs()
@@ -13,7 +21,7 @@ const ExportChitVotes = () => {
 	return (
 		<ExportCsvButton
 			data={ members.values.map(member => {
-				let newMember = {
+				let newMember: ChitVoteData = {
 					"Name": member.fullName,
 					"Code": member.code,
 					"Initials": member.initials,

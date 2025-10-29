@@ -14,7 +14,6 @@ import {
 	Grid,
 	Paper,
 } from "@mui/material"
-import { Link } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
 import React from "react"
 
@@ -29,17 +28,23 @@ import {
 } from "/imports/ui/Components/Toggles"
 
 import PresentationNavButton from "./PresentationNavButton"
-import { Loading } from "/imports/ui/Components"
+import { Link, Loading } from "/imports/ui/Components"
 
 const PresentationPane = observer(() => {
-	const { theme, isLoading: themeLoading } = useTheme()
-	const { settings, isLoading: settingsLoading } = useSettings()
+	const themeContext = useTheme()
+	const theme = themeContext?.theme
+	const themeLoading = themeContext?.isLoading ?? true
+
+	const settingsContext = useSettings()
+	const settings = settingsContext?.settings
+	const settingsLoading = settingsContext?.isLoading ?? true
 
 	if(themeLoading || !theme) return <Loading />
 	/**
 	 * Reset the values for the presentation
 	 */
 	const restoreDefaultSettings = () => {
+		if(!settings) return
 		// Reset Presentation Settings
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
@@ -55,10 +60,10 @@ const PresentationPane = observer(() => {
 				resultsOffset: 0,
 			},
 		})
-
 	}
 
 	const setResultsHaveBeenViewed = () => {
+		if(!settings) return
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
@@ -67,7 +72,7 @@ const PresentationPane = observer(() => {
 		})
 	}
 
-	if(settingsLoading) return <Loading />
+	if(settingsLoading || !settings) return <Loading />
 
 	return (
 		<>
@@ -111,7 +116,7 @@ const PresentationPane = observer(() => {
 							Icon={ TimerIcon }
 						/>
 
-						<TimerInput timerLength={ settings.timerLength } settingsId={ settings._id } />
+						<TimerInput timerLength={ Number(settings?.timerLength ?? 0) } settingsId={ String(settings?._id ?? "") } />
 						<br/>
 						<ChitVotingActiveToggle />
 						<br/>
@@ -163,15 +168,15 @@ const PresentationPane = observer(() => {
 							onClick={ setResultsHaveBeenViewed }
 						/>
 
-						<ResultsOffsetInput resultsOffset={ settings.resultsOffset } settingsId={ settings._id } />
+						<ResultsOffsetInput resultsOffset={ Number(settings?.resultsOffset ?? 0) } settingsId={ String(settings?._id ?? "") } />
 
 
 					</Grid>
 				</Grid>
 			</Paper>
 
-			<Link to={ `/presentation/${theme._id}` } target="_blank">
-				<PresentationNavButton page="intro" label="Launch Presentaion" Icon={ OpenInNewIcon } active={ false } />
+			<Link to="/presentation/$id" params={ { id: theme._id } } target="_blank">
+				<PresentationNavButton page="intro" label="Launch Presentation" Icon={ OpenInNewIcon } active={ false } />
 			</Link>
 
 		</>

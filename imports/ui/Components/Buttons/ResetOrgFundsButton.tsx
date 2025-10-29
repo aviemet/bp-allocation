@@ -1,9 +1,7 @@
-import React from "react"
 import Button from "@mui/material/Button"
+import React from "react"
 import { ThemeMethods } from "/imports/api/methods"
 import { useTheme } from "/imports/api/providers"
-
-// TODO: Needs a confirmation dialog
 
 const ResetOrgFundsButton = () => {
 	const { theme } = useTheme()
