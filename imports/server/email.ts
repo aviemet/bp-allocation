@@ -1,16 +1,18 @@
+import sgMail, { type MailDataRequired } from "@sendgrid/mail"
 import { Meteor } from "meteor/meteor"
-import { Themes, MemberThemes } from "/imports/api/db"
+import { Themes, MemberThemes, type ThemeData } from "/imports/api/db"
 import "/imports/api/methods"
 import "/imports/server/publications"
 
 import { setMessageSendingFlag, setMessageSentFlag, setMessageErrorFlag } from "./messageMethods"
 import { emailVotingLink } from "/imports/lib/utils"
+import { type Message, type Rounds } from "/imports/types/schema"
+import { coerceArray } from "../lib/collections"
 
-import sgMail from "@sendgrid/mail"
 
 sgMail.setApiKey(Meteor.settings.SENDGRID_API_KEY)
 
-const htmlEmailWrapper = yeild => `<html><head><style> 
+const htmlEmailWrapper = (emailBody: string) => `<html><head><style> 
 	img { 
 		max-width: 100% !important;
 		margin: 4px;
@@ -19,10 +21,16 @@ const htmlEmailWrapper = yeild => `<html><head><style>
 		border: solid 1px #CCC;
 		border-radius: 2px;
 	} 
-</style></head><body><div style="max-width: 600px; margin: 0 auto;">${yeild}</div></body></html>`
+</style></head><body><div style="max-width: 600px; margin: 0 auto;">${emailBody}</div></body></html>`
 
-const memberEmailsQuery = (themeId, members, skipRounds) => {
-	const match = {
+interface MemberEmailLookupResult {
+	_id: string
+	email?: string
+	code?: string
+}
+
+const memberEmailsQuery = async(themeId: string, members?: string | string[], skipRounds?: Rounds) => {
+	const match: { $match: Record<string, unknown> } = {
 		$match: {
 			"member.email": { $ne: null },
 		},
@@ -36,18 +44,13 @@ const memberEmailsQuery = (themeId, members, skipRounds) => {
 		match.$match.allocations = []
 	}
 
-	// Coerce members into an array
-	if(typeof members === "string") members = [members]
+	members = coerceArray(members)
+	if(members.length === 0) return []
 
-	// Constrain results to member ids if provided
-	if(Array.isArray(members)) {
-		// An empty array should return no results
-		if(members.length === 0) return []
+	match.$match["member._id"] = { $in: members }
 
-		match.$match["member._id"] = { $in: members }
-	}
 
-	return MemberThemes.rawCollection().aggregate([
+	return await MemberThemes.rawCollection().aggregate<MemberEmailLookupResult>([
 		{
 			$match: {
 				theme: themeId,
@@ -73,43 +76,50 @@ const memberEmailsQuery = (themeId, members, skipRounds) => {
 	]).toArray()
 }
 
-const validEmail = email => {
+const validEmail = (email: string | null | undefined) => {
 	if(!email) return false
+
 	return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)
 }
 
-const messageBuilder = (memberCode, body, slug, includeLink) => {
-	let finalMessage = body
-	if(includeLink === true && slug) {
+const messageBuilder = (memberCode: string | undefined, body: string | undefined, slug: string | undefined, includeLink: boolean | undefined) => {
+	let finalMessage = body || ""
+	if(includeLink === true && slug && memberCode) {
 		finalMessage += emailVotingLink(slug, memberCode)
 	}
 	return htmlEmailWrapper(finalMessage)
 }
 
-const emailVotingLinkToMembers = ({ themeId, message, members }) => {
-	const theme = Themes.findOne({ _id: themeId })
-	const invalidEmailMembers = []
+interface EmailVotingParams {
+	themeId: string
+	message: Message & { from?: string }
+	members?: string | string[]
+}
+
+const emailVotingLinkToMembers = async({ themeId, message, members }: EmailVotingParams) => {
+	const theme = Themes.findOne({ _id: themeId }) as ThemeData | undefined
+	const invalidEmailMembers: MemberEmailLookupResult[] = []
 
 	setMessageSendingFlag(theme, message)
 
-	const memberEmails = memberEmailsQuery(themeId, members, message.optOutRounds)
+	const memberEmails = await memberEmailsQuery(themeId, members, message.optOutRounds)
 
-	const messages = memberEmails.flatMap(member => {
+	const messages: MailDataRequired[] = memberEmails.flatMap((member: MemberEmailLookupResult) => {
 		if(!validEmail(member.email)) {
 			invalidEmailMembers.push(member)
 			return []
 		}
 		return [{
-			to: member.email.trim().toLowerCase(),
+			to: member.email!.trim().toLowerCase(),
 			from: message.from || "Battery Powered <powered@thebatterysf.com>",
-			subject: message.subject,
-			html: messageBuilder(member.code, message.body, theme.slug, message.includeLink),
+			subject: message.subject || "",
+			html: messageBuilder(member.code, message.body, theme?.slug, message.includeLink),
 		}]
 	})
 
 	const sentMail = sgMail.send(messages)
 
-	sentMail.then(response => {
+	sentMail.then(() => {
 		setMessageSentFlag(theme, message)
 		console.log({ sent: messages.map(m => m.to) })
 	}, error => {

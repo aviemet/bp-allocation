@@ -1,4 +1,6 @@
-const SettingsTransformer = (doc) => {
+import { type SettingsData } from "/imports/api/db"
+
+const SettingsTransformer = (doc: SettingsData) => {
 	return doc
 }
 
