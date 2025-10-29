@@ -18,8 +18,8 @@ function parseSchemaFromFile(filePath: string): Record<string, string> {
 	const content = fs.readFileSync(filePath, "utf8")
 	const schemas: Record<string, string> = {}
 
-	// Find all SimpleSchema exports
-	const schemaMatches = [...content.matchAll(/export const (\w+Schema) = new SimpleSchema\(/g)]
+	// Find all SimpleSchema definitions (both exported and non-exported)
+	const schemaMatches = [...content.matchAll(/(?:export\s+)?const\s+(\w+Schema)\s*=\s*new\s+SimpleSchema\(/g)]
 
 	for(const match of schemaMatches) {
 		const schemaName = match[1]
@@ -67,70 +67,198 @@ function parseSchemaFromFile(filePath: string): Record<string, string> {
 
 // Parse schema definition and generate TypeScript interface
 function generateInterfaceFromSchema(schemaName: string, schemaContent: string): string {
-	// This is a simplified parser - in a real implementation you'd use a proper AST parser
-	// For now, we'll extract the key information we need
+	// Extract the schema object definition by finding the content between the first { and matching }
+	const startIndex = schemaContent.indexOf("{")
+	const endIndex = schemaContent.lastIndexOf("}")
 
-	const lines = schemaContent.split("\n")
+	if(startIndex === -1 || endIndex === -1) {
+		throw new Error(`Could not parse schema object for ${schemaName}`)
+	}
+
+	const schemaObjectStr = schemaContent.substring(startIndex + 1, endIndex)
+
+	// Parse the schema object using a more robust approach
+	// We'll manually parse the JavaScript object structure
 	const fields: string[] = []
-
-	// Extract field definitions
 	let hasExplicitId = false
 
-	for(let i = 0; i < lines.length; i++) {
+	// Split by lines and process each field
+	const lines = schemaObjectStr.split("\n")
+	let i = 0
+
+	// First pass: collect all field definitions and array element types
+	const fieldDefinitions: Record<string, { type: string, isOptional: boolean }> = {}
+	const arrayElementTypes: Record<string, string> = {}
+
+	while(i < lines.length) {
 		const line = lines[i].trim()
 
+		// Skip empty lines and comments
+		if(!line || line.startsWith("//")) {
+			i++
+			continue
+		}
+
 		// Look for field definitions
-		if(line.match(/^\w+:\s*\{/)) {
-			const fieldName = line.split(":")[0].trim()
+		const fieldMatch = line.match(/^(\w+):\s*(.+?)(?:,|$)/)
+		if(fieldMatch) {
+			const fieldName = fieldMatch[1]
+			const fieldValue = fieldMatch[2].trim()
 
 			// Check if this is an explicit _id field
 			if(fieldName === "_id") {
 				hasExplicitId = true
 			}
 
-			// Look for type and required properties
 			let type = "unknown"
 			let isOptional = true
 
-			for(let j = i; j < lines.length && !lines[j].includes("},"); j++) {
-				const fieldLine = lines[j].trim()
+			// Handle simple type definitions (e.g., "amount: Number")
+			if(fieldValue === "String") {
+				type = "string"
+			} else if(fieldValue === "Number") {
+				type = "number"
+			} else if(fieldValue === "Boolean") {
+				type = "boolean"
+			} else if(fieldValue === "Date") {
+				type = "Date"
+			} else if(fieldValue === "Array") {
+				type = "unknown[]" // Will be resolved later
+			} else if(fieldValue.includes("SchemaRegex.Id")) {
+				type = "string"
+			} else if(fieldValue.startsWith("{")) {
+				// Handle complex field definitions
+				let braceCount = 0
+				let j = i
 
-				if(fieldLine.includes("type: String")) {
-					type = "string"
-				} else if(fieldLine.includes("type: Number")) {
-					type = "number"
-				} else if(fieldLine.includes("type: Boolean")) {
-					type = "boolean"
-				} else if(fieldLine.includes("type: Date")) {
-					type = "Date"
-				} else if(fieldLine.includes("type: Array")) {
-					type = "any[]"
-				} else if(fieldLine.includes("required: true")) {
-					isOptional = false
-				} else if(fieldLine.includes("allowedValues:")) {
-					// Extract enum values
-					const enumMatch = fieldLine.match(/\[(.*?)\]/)
-					if(enumMatch) {
-						const values = enumMatch[1].split(",").map(v => v.trim().replace(/['"]/g, ""))
-						type = values.map(v => `"${v}"`).join(" | ")
+				// Find the end of this field definition
+				while(j < lines.length) {
+					const currentLine = lines[j]
+
+					// Count braces to find the end
+					for(const char of currentLine) {
+						if(char === "{") braceCount++
+						if(char === "}") braceCount--
 					}
+
+					if(braceCount === 0) {
+						break
+					}
+					j++
 				}
+
+				// Parse the field definition object
+				const fieldDefLines = lines.slice(i, j + 1)
+				const fieldDef = parseFieldDefinition(fieldDefLines)
+				type = fieldDef.type
+				isOptional = fieldDef.isOptional
+
+				i = j // Skip to the end of this field
 			}
 
-			// _id is always required in MongoDB/Meteor, even if schema says required: false
+			// _id is always required in MongoDB/Meteor
 			if(fieldName === "_id") {
 				isOptional = false
 			}
 
-			const optionalMark = isOptional ? "?" : ""
-			fields.push(`\t${fieldName}${optionalMark}: ${type};`)
+			fieldDefinitions[fieldName] = { type, isOptional }
 		}
+
+		// Look for array element type definitions (e.g., "chitVotes.$": ChitVoteSchema)
+		const arrayElementMatch = line.match(/^"(\w+)\.\$":\s*(\w+Schema)/)
+		if(arrayElementMatch) {
+			const arrayFieldName = arrayElementMatch[1]
+			const elementSchemaName = arrayElementMatch[2]
+			const elementTypeName = elementSchemaName.replace("Schema", "")
+			arrayElementTypes[arrayFieldName] = elementTypeName
+		}
+
+		// Look for array element type definitions using SchemaRegex.Id
+		const arrayElementIdMatch = line.match(/^"(\w+)\.\$":\s*SchemaRegex\.Id/)
+		if(arrayElementIdMatch) {
+			const arrayFieldName = arrayElementIdMatch[1]
+			arrayElementTypes[arrayFieldName] = "string"
+		}
+
+		i++
+	}
+
+	// Second pass: resolve array types and generate fields
+	for(const [fieldName, fieldDef] of Object.entries(fieldDefinitions)) {
+		let type = fieldDef.type
+		let isOptional = fieldDef.isOptional
+
+		// Resolve array element types
+		if(type === "unknown[]" && arrayElementTypes[fieldName]) {
+			type = `${arrayElementTypes[fieldName]}[]`
+		} else if(type === "unknown[]") {
+			type = "unknown[]" // Fallback for arrays without element type definition
+		}
+
+		// _id is always required in MongoDB/Meteor
+		if(fieldName === "_id") {
+			isOptional = false
+		}
+
+		const optionalMark = isOptional ? "?" : ""
+		fields.push(`\t${fieldName}${optionalMark}: ${type}`)
 	}
 
 	// Add _id field only if not explicitly defined in schema
-	const allFields = hasExplicitId ? fields : [`\t_id: string;`, ...fields]
+	const allFields = hasExplicitId ? fields : [`\t_id: string`, ...fields]
 
 	return `export interface ${schemaName.replace("Schema", "")} {\n${allFields.join("\n")}\n}`
+}
+
+// Parse a complex field definition object
+function parseFieldDefinition(lines: string[]): { type: string, isOptional: boolean } {
+	let type = "unknown"
+	let isOptional = true
+
+	for(const line of lines) {
+		const trimmed = line.trim()
+
+		// Extract type
+		if(trimmed.includes("type: String")) {
+			type = "string"
+		} else if(trimmed.includes("type: Number")) {
+			type = "number"
+		} else if(trimmed.includes("type: Boolean")) {
+			type = "boolean"
+		} else if(trimmed.includes("type: Date")) {
+			type = "Date"
+		} else if(trimmed.includes("type: Array")) {
+			type = "unknown[]"
+		} else if(trimmed.includes("type: SimpleSchema.Integer")) {
+			type = "number"
+		} else if(trimmed.includes("SchemaRegex.Id")) {
+			type = "string"
+		} else if(trimmed.includes("type: ") && trimmed.includes("Schema")) {
+			// Handle type: SchemaName pattern
+			const schemaMatch = trimmed.match(/type:\s*(\w+Schema)/)
+			if(schemaMatch) {
+				const schemaName = schemaMatch[1]
+				const typeName = schemaName.replace("Schema", "")
+				type = typeName
+			}
+		}
+
+		// Check if required
+		if(trimmed.includes("required: true")) {
+			isOptional = false
+		}
+
+		// Handle enum values
+		if(trimmed.includes("allowedValues:")) {
+			const enumMatch = trimmed.match(/\[(.*?)\]/)
+			if(enumMatch) {
+				const values = enumMatch[1].split(",").map(v => v.trim().replace(/['"]/g, ""))
+				type = values.map(v => `"${v}"`).join(" | ")
+			}
+		}
+	}
+
+	return { type, isOptional }
 }
 
 // Main generation function

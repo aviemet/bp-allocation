@@ -16,35 +16,53 @@ export interface Member {
 	createdAt?: Date
 }
 
+export interface OrgSave {
+	_id: string
+	org?: string
+	amount?: number
+	name?: string
+}
+
+export interface MessageStatus {
+	_id: string
+	messageId?: string
+	sending?: boolean
+	sent?: boolean
+	error?: boolean
+}
+
 export interface Theme {
 	_id: string
 	title?: string
 	question?: string
 	quarter?: string
-	organizations?: any[]
-	topOrgsManual?: any[]
+	organizations?: string[]
+	topOrgsManual?: string[]
 	numTopOrgs?: number
-	chitWeight?: unknown
-	matchRatio?: unknown
+	chitWeight?: number
+	matchRatio?: number
 	consolationAmount?: number
 	consolationActive?: boolean
 	leverageTotal?: number
-	saves?: any[]
-	presentationSettings?: unknown
+	saves?: OrgSave[]
+	presentationSettings?: string
 	slug?: string
-	messagesStatus?: any[]
+	messagesStatus?: MessageStatus[]
 	createdAt?: Date
 }
 
 export interface ChitVote {
 	_id: string
+	organization?: string
+	votes?: number
 	voteSource?: "kiosk" | "mobile"
 	createdAt?: Date
 }
 
 export interface MatchPledge {
 	_id: string
-	member?: unknown
+	amount?: number
+	member?: string
 	anonymous?: boolean
 	notes?: string
 	createdAt?: Date
@@ -53,47 +71,53 @@ export interface MatchPledge {
 export interface Organization {
 	_id: string
 	title?: string
+	theme?: string
 	ask?: number
 	description?: string
-	image?: unknown
-	chitVotes?: unknown
-	defaultValue?: unknown
+	image?: string
+	chitVotes?: ChitVote
 	amountFromVotes?: number
 	topOff?: number
-	pledges?: any[]
+	pledges?: MatchPledge[]
 	leverageFunds?: number
 	createdAt?: Date
 }
 
 export interface Allocation {
 	_id: string
+	organization?: string
+	amount?: number
 	voteSource?: "kiosk" | "mobile"
 	createdAt?: Date
 }
 
 export interface MemberTheme {
 	_id: string
+	theme?: string
+	member?: string
 	chits?: number
 	amount?: number
-	chitVotes?: any[]
-	allocations?: any[]
+	chitVotes?: ChitVote[]
+	allocations?: Allocation[]
 	createdAt?: Date
 }
 
 export interface Rounds {
 	_id: string
+	one?: boolean
+	two?: boolean
 }
 
 export interface Message {
 	_id: string
+	title?: string
 	subject?: string
 	body?: string
 	type: "text" | "email"
 	active?: boolean
 	order?: number
 	includeLink?: boolean
-	optOutRounds?: unknown
-	defaultValue?: unknown
+	optOutRounds?: Rounds
 	createdAt?: Date
 	updatedAt?: Date
 }
@@ -101,7 +125,7 @@ export interface Message {
 export interface PresentationSettings {
 	_id: string
 	currentPage?: string
-	timerLength?: unknown
+	timerLength?: number
 	animateOrgs?: boolean
 	leverageVisible?: boolean
 	savesVisible?: boolean

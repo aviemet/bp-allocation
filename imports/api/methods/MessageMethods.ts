@@ -1,6 +1,14 @@
-import { Meteor } from "meteor/meteor"
 import { ValidatedMethod } from "meteor/mdg:validated-method"
+import { Meteor } from "meteor/meteor"
 import { Messages } from "/imports/api/db"
+import { Message } from "/imports/types/schema"
+
+interface MessageCreateData extends Omit<Message, "_id" | "createdAt" | "updatedAt"> {}
+
+interface MessageUpdateData {
+	id: string
+	data: Partial<Omit<Message, "_id" | "createdAt" | "updatedAt">>
+}
 
 const MessageMethods = {
 	/**
@@ -11,11 +19,11 @@ const MessageMethods = {
 
 		validate: null,
 
-		run(data) {
+		run(data: MessageCreateData) {
 			try {
 				return Messages.insert(data)
 			} catch(exception) {
-				throw new Meteor.Error("500", exception)
+				throw new Meteor.Error("500", String(exception))
 			}
 		},
 	}),
@@ -28,11 +36,11 @@ const MessageMethods = {
 
 		validate: null,
 
-		run({ id, data }) {
+		run({ id, data }: MessageUpdateData) {
 			try {
 				return Messages.update({ _id: id }, { $set: data })
 			} catch(exception) {
-				throw new Meteor.Error("500", exception)
+				throw new Meteor.Error("500", String(exception))
 			}
 		},
 	}),
@@ -45,7 +53,7 @@ const MessageMethods = {
 
 		validate: null,
 
-		run(id) {
+		run(id: string) {
 			return Messages.remove({ _id: id })
 		},
 	}),

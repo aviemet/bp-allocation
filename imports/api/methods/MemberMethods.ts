@@ -5,21 +5,80 @@ import { formatPhoneNumber, sanitizeString } from "/imports/lib/utils"
 
 import { Members, MemberThemes, Organizations } from "/imports/api/db"
 import { OrganizationMethods } from "/imports/api/methods"
+import { type Member, type MemberTheme, type MatchPledge } from "/imports/types/schema"
+
+interface MemberInputData extends Partial<Member> {
+	amount?: number
+	chits?: number
+	theme?: string
+}
+
+interface MemberUpsertData extends MemberInputData {
+	amount: number
+	chits: number
+	theme: string
+}
+
+interface MemberUpdateData extends Pick<Member, "firstName" | "lastName"> {
+	fullName?: string
+	initials?: string
+	number?: number
+	phone?: string
+	email?: string
+}
+
+interface MemberThemeUpdateData extends Partial<Pick<MemberTheme, "amount" | "chits">> {}
+
+interface FundVoteData {
+	theme: string
+	member: string
+	org: string
+	amount: number
+	voteSource: "kiosk" | "mobile"
+}
+
+interface ChitVoteData {
+	theme: string
+	member: string
+	org: string
+	votes: number
+	voteSource: "kiosk" | "mobile"
+}
+
+interface RemoveMemberFromThemeData {
+	memberId: string
+	themeId: string
+}
+
+interface UpdateMemberData {
+	id: string
+	data: MemberUpdateData
+}
+
+interface UpdateMemberThemeData {
+	id: string
+	data: MemberThemeUpdateData
+}
+
+interface MemberThemeInsertQuery extends Pick<MemberTheme, "member" | "amount" | "chits" | "theme"> {
+	phone?: string
+	email?: string
+}
 
 /**
  * Sanitize the data for an insert or upsert to Members
  * @param {Object} data {firstName, lastName, fullName, initials, number, amount}
  */
-const _sanitizeMemberData = function(data) {
+const _sanitizeMemberData = function(data: MemberInputData) {
 	/**********************
 	 * Normalize the data *
 	 **********************/
-	if(!isUndefined(data.number)) data.number = parseInt(data.number)
+	if(!isUndefined(data.number)) data.number = parseInt(String(data.number))
 	if(!isUndefined(data.firstName)) data.firstName = sanitizeString(data.firstName)
 	if(!isUndefined(data.lastName)) data.lastName = sanitizeString(data.lastName)
 	if(!isUndefined(data.fullName)) data.fullName = sanitizeString(data.fullName)
 	if(!isUndefined(data.initials)) data.initials = sanitizeString(data.initials)
-	if(!isEmpty(data.phone)) data.phone = formatPhoneNumber(data.phone)
+	if(!isEmpty(data.phone)) data.phone = formatPhoneNumber(data.phone!)
 	if(!isUndefined(data.email)) data.email = sanitizeString(data.email)
 
 	if(!isUndefined(data.number) && !isUndefined(data.initials)) {
@@ -33,7 +92,7 @@ const _sanitizeMemberData = function(data) {
  * Generate derived fields from given data
  * @param {object} data {firstName, lastName, fullName, initials, number, amount}
  */
-const _buildMissingData = function(data) {
+const _buildMissingData = function(data: MemberInputData) {
 	let { firstName, lastName, fullName, number, initials, phone, email, code } = _sanitizeMemberData(data)
 	// Build first/last from fullName if not present
 	if(isUndefined(firstName) && isUndefined(lastName) && !isUndefined(fullName)) {
@@ -65,7 +124,7 @@ const _buildMissingData = function(data) {
  * Upserts a member
  * @param  {Object} data {firstName, lastName, fullName, initials, number, amount}
  */
-const _memberInsert = function(data) {
+const _memberInsert = function(data: MemberInputData): Promise<string> {
 	const { firstName, lastName, fullName, number, initials, code, phone, email } = _buildMissingData(data)
 
 	/*****************
@@ -73,7 +132,7 @@ const _memberInsert = function(data) {
 	 *****************/
 
 	// Search by either of first/last or full name
-	const memberQuery = { "$or": [] }
+	const memberQuery: { $or: Array<Record<string, unknown>> } = { "$or": [] }
 	if(!isUndefined(firstName) && !isUndefined(lastName)) {
 		memberQuery.$or.push({ firstName, lastName, number })
 	}
@@ -87,7 +146,7 @@ const _memberInsert = function(data) {
 		if(!member) {
 			const newMember = { firstName, lastName, fullName, number, initials, code, phone, email }
 			try {
-				Members.insert(newMember, (err, result) => {
+				Members.insert(newMember, (err: unknown, result: string) => {
 					if(err) {
 						console.error({ newMember })
 						reject(err)
@@ -99,7 +158,7 @@ const _memberInsert = function(data) {
 				console.error(e)
 			}
 		} else {
-			const updateData = {
+			const updateData: Record<string, unknown> = {
 				initials,
 				code,
 			}
@@ -119,7 +178,7 @@ const _memberInsert = function(data) {
  * Upserts a memberTheme assocication
  * @param  {Object} query
  */
-const _memberThemeInsert = function(query) {
+const _memberThemeInsert = function(query: MemberThemeInsertQuery): Promise<string> {
 	// Check if this member is already associated with this theme
 	let memberTheme = MemberThemes.findOne({ member: query.member, theme: query.theme })
 
@@ -127,7 +186,7 @@ const _memberThemeInsert = function(query) {
 		// New member/theme association
 		if(!memberTheme) {
 			try {
-				MemberThemes.insert(query, (err, result) => {
+				MemberThemes.insert(query, (err: unknown, result: string) => {
 					if(err) {
 						reject(err)
 					} else {
@@ -140,15 +199,11 @@ const _memberThemeInsert = function(query) {
 		// Existing member/theme association
 		} else {
 			try {
-				MemberThemes.update({ _id: memberTheme._id }, { $set: { amount: query.amount } }, (err, result) => {
-					if(err) {
-						reject(err)
-					} else {
-						resolve(memberTheme._id)
-					}
-				})
+				MemberThemes.update({ _id: memberTheme._id }, { $set: { amount: query.amount } })
+				resolve(memberTheme._id)
 			} catch(e) {
 				console.error(e)
+				reject(e)
 			}
 		}
 	})
@@ -167,10 +222,10 @@ const MemberMethods = {
 
 		validate: null,
 
-		run(data) {
+		run(data: MemberUpsertData) {
 			const { amount, chits, theme, phone, email } = data
 			// Create/edit member
-			return _memberInsert(data).then(member => {
+			return _memberInsert(data).then((member: string) => {
 				const memberThemeQuery = { member, amount, chits, theme, phone, email }
 
 				// Create/edit theme association
@@ -178,6 +233,7 @@ const MemberMethods = {
 
 			}, memberError => {
 				console.error({ memberError })
+				throw memberError
 			})
 		},
 	}),
@@ -190,15 +246,17 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({ memberId, themeId }) {
+		run({ memberId, themeId }: RemoveMemberFromThemeData) {
 			const orgs = Organizations.find({ theme: themeId }).fetch()
 
 			orgs.forEach(org => {
-				org.pledges.forEach(pledge => {
-					if(pledge.member === memberId) {
-						OrganizationMethods.removePledge.call({ orgId: org._id, pledgeId: pledge._id })
-					}
-				})
+				if(org.pledges) {
+					org.pledges.forEach((pledge: MatchPledge) => {
+						if(pledge.member === memberId) {
+							OrganizationMethods.removePledge.call({ orgId: org._id, pledgeId: pledge._id })
+						}
+					})
+				}
 			})
 
 			return MemberThemes.remove({ member: memberId, theme: themeId })
@@ -214,13 +272,13 @@ const MemberMethods = {
 
 		validate: null,
 
-		run(themeId) {
-			const memberThemes = MemberThemes.find({ theme: themeId }, { _id: true, member: true }).fetch()
-			const ids = []
-			const members = []
+		run(themeId: string) {
+			const memberThemes = MemberThemes.find({ theme: themeId }).fetch()
+			const ids: string[] = []
+			const members: string[] = []
 			memberThemes.forEach(memberTheme => {
 				ids.push(memberTheme._id)
-				members.push(memberThemes.members)
+				members.push((memberTheme as any).member)
 			})
 
 			// Batch delete the MemberThemes first
@@ -234,10 +292,10 @@ const MemberMethods = {
 			const orgs = Organizations.find({ theme: themeId }).fetch()
 			orgs.forEach(org => {
 				if(org.pledges) {
-					org.pledges.forEach(pledge => {
+					org.pledges.forEach((pledge: MatchPledge) => {
 						if(pledge.member && members.some(member => pledge.member === member)) {
 							try {
-								OrganizationMethods.removePledge({ orgId: org._id, pledgeId: pledge._id })
+								OrganizationMethods.removePledge.call({ orgId: org._id, pledgeId: pledge._id })
 							} catch(e) {
 								console.error(e)
 							}
@@ -257,9 +315,10 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({ id, data }) {
+		run({ id, data }: UpdateMemberData) {
 			data.fullName = `${data.firstName} ${data.lastName}`
-			return Members.update({ _id: id }, { $set: _sanitizeMemberData(data) })
+			const sanitizedData = _sanitizeMemberData(data)
+			return Members.update({ _id: id }, { $set: sanitizedData as Record<string, unknown> })
 		},
 	}),
 
@@ -271,7 +330,7 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({ id, data }) {
+		run({ id, data }: UpdateMemberThemeData) {
 			return MemberThemes.update({ _id: id }, { $set: data })
 		},
 	}),
@@ -284,11 +343,12 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({ theme, member, org, amount, voteSource }) {
+		run({ theme, member, org, amount, voteSource }: FundVoteData) {
 			if(!Meteor.isServer) return
 
 			// Check for existing allocation for this org from this member
 			let memberTheme = MemberThemes.findOne({ theme, member })
+			if(!memberTheme) return
 
 			let allocation = find(memberTheme.allocations, ["organization", org])
 
@@ -329,10 +389,11 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({ theme, member, org, votes, voteSource }) {
+		run({ theme, member, org, votes, voteSource }: ChitVoteData) {
 			if(Meteor.isServer) {
 				// Check for existing allocation for this org from this member
 				let memberTheme = MemberThemes.findOne({ theme, member })
+				if(!memberTheme) return
 
 				let chitVote = find(memberTheme.chitVotes, ["organization", org])
 
@@ -374,8 +435,8 @@ const MemberMethods = {
 
 		validate: null,
 
-		run(id) {
-			MemberThemes.update({ _id: id }, { $set: { chitVotes: [] } })
+		run(id: string) {
+			return MemberThemes.update({ _id: id }, { $set: { chitVotes: [] } })
 		},
 	}),
 
@@ -387,8 +448,8 @@ const MemberMethods = {
 
 		validate: null,
 
-		run(id) {
-			MemberThemes.update({ _id: id }, { $set: { allocations: [] } })
+		run(id: string) {
+			return MemberThemes.update({ _id: id }, { $set: { allocations: [] } })
 		},
 	}),
 
@@ -400,19 +461,19 @@ const MemberMethods = {
 
 		validate: null,
 
-		run(id) {
+		run(id: string) {
 			let member = Members.findOne(id)
 			if(!member) {
 				throw new Meteor.Error("MemberMethods.remove", "Member to be removed was not found")
 			}
 
 			// Delete associated MemberThemes
-			MemberThemes.remove({ member: member._id }, err => {
+			MemberThemes.remove({ member: member._id }, (err: unknown) => {
 				if(err) console.error(err)
 			})
 
 			// Remove member
-			return Members.remove(id, err => {
+			return Members.remove(id, (err: unknown) => {
 				if(err) console.error(err)
 			})
 

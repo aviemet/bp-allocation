@@ -1,10 +1,46 @@
-import { Meteor } from "meteor/meteor"
 import { ValidatedMethod } from "meteor/mdg:validated-method"
+import { Meteor } from "meteor/meteor"
 
 import { roundFloat } from "/imports/lib/utils"
 
-import { Themes, Organizations } from "/imports/api/db"
+import { Themes, Organizations, type OrgData } from "/imports/api/db"
 import ImageMethods from "./ImageMethods"
+import { type Organization, type MatchPledge } from "/imports/types/schema"
+
+interface OrganizationCreateData extends Omit<OrgData, "_id" | "createdAt"> {
+	theme: string
+}
+
+interface OrganizationUpdateData {
+	id: string
+	data: Partial<Organization>
+}
+
+interface PledgeData {
+	id: string
+	amount: number
+	member: string
+	anonymous?: boolean
+}
+
+interface RemovePledgeData {
+	orgId: string
+	pledgeId: string
+}
+
+interface RemovePledgeByIdData {
+	themeId: string
+	pledgeIds: string | string[]
+}
+
+interface TopOffData {
+	id: string
+	negate?: boolean
+}
+
+interface ResetData {
+	id: string
+}
 
 const OrganizationMethods = {
 	/**
@@ -15,9 +51,9 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run(data) {
-			let result = {}
-			Organizations.insert(data, (error, response) => {
+		run(data: OrganizationCreateData) {
+			let result: { error?: unknown, response?: string } = {}
+			Organizations.insert(data, (error: unknown, response: string) => {
 				if(error) {
 					console.error(error)
 				} else {
@@ -39,7 +75,7 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ id, data }) {
+		run({ id, data }: OrganizationUpdateData) {
 			console.log({ id, data })
 			return Organizations.update({ _id: id }, { $set: data })
 		},
@@ -53,7 +89,7 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run(id) {
+		run(id: string) {
 			let org = Organizations.findOne(id)
 			if(org) {
 				// First delete any associated images
@@ -62,18 +98,15 @@ const OrganizationMethods = {
 				}
 
 				// Remove organization
-				return Organizations.remove(id, (err) => {
+				Organizations.remove(id, (err: unknown) => {
 					if(err) console.error(err)
 
-					Themes.update({ _id: org.theme }, { $pull: { organizations: id } }, (err) => {
-						if(err) console.error(err)
-					})
+					Themes.update({ _id: org.theme }, { $pull: { organizations: id } })
 				})
+				return 1
 			} else {
 				throw new Meteor.Error("OrganizationMethods.remove", "Organization to be removed was not found")
 			}
-
-
 		},
 	}),
 
@@ -85,9 +118,9 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run(ids) {
+		run(ids: string[]) {
 			// Get list of associated images to remove
-			var images = Organizations.find({ _id: { $in: ids }, image: { $exists: true } }, { _id: false, image: true }).map((org) => {
+			var images = Organizations.find({ _id: { $in: ids }, image: { $exists: true } }, { fields: { _id: 0, image: 1 } }).map((org) => {
 				return org.image
 			})
 
@@ -96,8 +129,6 @@ const OrganizationMethods = {
 
 			// Remove organization
 			Organizations.remove({ _id: { $in: ids } })
-
-
 		},
 	}),
 
@@ -110,10 +141,10 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ id, amount, member, anonymous }) {
-			amount = roundFloat(amount)
+		run({ id, amount, member, anonymous }: PledgeData) {
+			amount = roundFloat(String(amount))
 
-			const saveData = { amount, member, anonymous }
+			const saveData: MatchPledge = { _id: "", amount, member, anonymous }
 
 			return Organizations.update({ _id: id }, {
 				$push: {
@@ -131,15 +162,14 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ orgId, pledgeId }) {
+		run({ orgId, pledgeId }: RemovePledgeData) {
 			return Organizations.update(
 				{ _id: orgId },
 				{
 					$pull: {
 						pledges: { _id: pledgeId },
 					},
-				},
-				{ getAutoValues: false }
+				}
 			)
 		},
 	}),
@@ -152,20 +182,21 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ themeId, pledgeIds }) {
+		run({ themeId, pledgeIds }: RemovePledgeByIdData) {
 			if(!Array.isArray(pledgeIds)) {
 				pledgeIds = [pledgeIds]
 			}
 
-			const orgs = Themes.findOne({ _id: themeId }, { organizations: true }).organizations
+			const theme = Themes.findOne({ _id: themeId })
+			if(!theme || !theme.organizations) return 0
 			return Organizations.update(
-				{ _id: { $in: orgs } },
+				{ _id: { $in: theme.organizations } },
 				{
 					$pull: {
 						pledges: { _id: { $in: pledgeIds } },
 					},
 				},
-				{ getAutoValues: false, multi: true }
+				{ multi: true }
 			)
 		},
 	}),
@@ -178,15 +209,19 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ id, negate }) {
+		run({ id, negate }: TopOffData) {
 			negate = negate || false
 
 			let org = Organizations.find({ _id: id }).fetch()[0]
+			if(!org) return 0
 
 			let topOffAmount = 0
 
 			if(!negate)	{
-				topOffAmount = org.ask - org.amountFromVotes - org.pledges
+				const ask = org.ask || 0
+				const amountFromVotes = org.amountFromVotes || 0
+				const pledgesTotal = org.pledges?.reduce((sum, pledge) => sum + (pledge.amount || 0), 0) || 0
+				topOffAmount = ask - amountFromVotes - pledgesTotal
 			}
 
 			return Organizations.update({ _id: id }, { $set: { topOff: topOffAmount } })
@@ -202,10 +237,7 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ id }) {
-			// let org = Organizations.find({_id: id}).fetch()[0]
-			// let theme = Themes.find({_id: org.theme}).fetch()[0]
-
+		run({ id }: ResetData) {
 			return Organizations.update({ _id: id }, {
 				$set: {
 					pledges: [],

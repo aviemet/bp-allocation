@@ -1,6 +1,6 @@
 import { ValidatedMethod } from "meteor/mdg:validated-method"
 
-import { PresentationSettings } from "/imports/api/db"
+import { PresentationSettings, type SettingsData } from "/imports/api/db"
 
 const PresentationSettingsMethods = {
 	/**
@@ -24,7 +24,7 @@ const PresentationSettingsMethods = {
 
 		validate: null,
 
-		run({ id, data }) {
+		run({ id, data }: { id: string, data: Partial<SettingsData> }) {
 			return PresentationSettings.update({ _id: id }, { $set: data })
 		},
 	}),

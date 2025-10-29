@@ -44,7 +44,8 @@
     "client/**/*",
     "server/**/*",
     "tests/**/*",
-    "imports/types/meteor.d.ts"
+    "imports/types/meteor.d.ts",
+    "imports/types/meteor-mdg-validated-method.d.ts"
   ],
   "exclude": [
     "node_modules",

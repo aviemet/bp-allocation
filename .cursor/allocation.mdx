@@ -52,6 +52,13 @@ Server-side publications must use async methods:
 - Main types index at `imports/types/index.ts` exports both schema and utility types
 - No temporary files or stale data - either works with real schemas or fails cleanly
 - All imports now use the generated schema types from `/imports/types`
+- Generator handles both simple type definitions (`field: Number`) and complex object definitions (`field: { type: String, required: false }`)
+- Script properly parses array element types using SimpleSchema's `"fieldName.$": SchemaName` pattern
+- Also handles `"fieldName.$": SchemaRegex.Id` patterns for string arrays
+- Finds both exported and non-exported schema definitions to ensure all referenced types are generated
+- Array fields are correctly typed as `ElementType[]` instead of `any[]` - no `any`, `unknown`, or `unknown[]` types are ever generated
+- Handles all SimpleSchema types: `String`, `Number`, `Boolean`, `Date`, `Array`, `SimpleSchema.Integer`, `SchemaRegex.Id`, and `type: SchemaName` patterns
+- Script filters out nested properties from function definitions and autoValue callbacks to avoid generating invalid interface properties
 - **CRITICAL**: Collections must be declared with proper generic types: `new Mongo.Collection<DataType>("collectionName")`
 - Data types combine schema types with TrackableData: `type MemberData = Member & TrackableData`
 - This ensures `find()` methods return properly typed cursors with no type casting needed
@@ -75,9 +82,28 @@ Server-side publications must use async methods:
 
 ### TypeScript Type Strategy
 - Rely on TypeScript's type inference for derived types instead of explicit annotations
-- Only add explicit types when TypeScript cannot infer them (e.g., generic constructors, complex union types)
+- Only add explicit types when TypeScript cannot infer them (e.g., generic constructors, complex union types, Promise return types)
 - Avoid redundant type annotations that duplicate what the type system already knows
 - Trust the compiler to derive types from initial values and context
+- Remove explicit return types for simple functions where TypeScript can infer the type from the implementation
+
+### Meteor Package Type Declarations
+- Custom type declarations for Meteor packages without built-in TypeScript support
+- Type declarations stored in `imports/types/` directory (e.g., `meteor-mdg-validated-method.d.ts`, `mongo.d.ts`)
+- Include custom declarations in `tsconfig.json` under the `include` array
+- ValidatedMethod type declarations provide proper typing for method options, call signatures, and execution methods
+- Fix method calls to use `.call()` syntax for ValidatedMethod instances instead of direct function calls
+- MongoDB type extensions in `mongo.d.ts` provide enhanced `$pull` support for complex queries on object arrays
+- The default Meteor MongoDB types are too restrictive for complex `$pull` operations like `{ _id: { $in: [...] } }`
+- Module augmentation extends `Mongo.Modifier` to accept any valid MongoDB operation without requiring type casts
+
+### Method Parameter Typing Pattern
+- Leverage existing schema types using TypeScript utility types (`Partial<T>`, `Pick<T, K>`)
+- Extend schema types for method-specific requirements rather than duplicating field definitions
+- Use `Partial<Member>` for optional member fields, `Pick<Member, "field1" | "field2">` for required fields
+- Create minimal interfaces that extend schema types only when additional fields are needed
+- Define return types explicitly for all methods to ensure type safety
+- Use proper error handling with typed callbacks and Promise rejection patterns
 
 ### NEVER USE `any` - CRITICAL RULE
 - **ABSOLUTELY FORBIDDEN**: Never use `any` as a type definition
