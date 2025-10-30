@@ -6,7 +6,7 @@ import PropTypes from "prop-types"
 import React, { useEffect } from "react"
 
 import MediaProvider from "./MediaProvider"
-import Routes from "./Routes"
+import Routes from "./routes"
 
 import theme from "/imports/ui/theme"
 import { isMobileDevice } from "/imports/lib/utils"
