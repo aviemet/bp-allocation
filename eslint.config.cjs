@@ -68,6 +68,7 @@ module.exports = [
 			"import": importPlugin,
 		},
 		rules: {
+			"no-redeclare": "off",
 			"@stylistic/indent": ["error", "tab", {
 				SwitchCase: 1,
 				VariableDeclarator: "first",

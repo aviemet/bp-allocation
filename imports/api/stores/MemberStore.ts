@@ -1,9 +1,9 @@
 import { computed, makeObservable } from "mobx"
 
-import TrackableStore, { TrackableData, TrackableStoreWithData } from "./lib/TrackableStore"
+import TrackableStore, { TrackableData } from "./lib/TrackableStore"
 import { Member } from "/imports/types/schema"
 
-export interface MemberData extends Member, TrackableData {}
+export type MemberData = TrackableData<Member>
 
 class MemberStore extends TrackableStore<MemberData> {
 	constructor(data: MemberData) {
@@ -14,10 +14,11 @@ class MemberStore extends TrackableStore<MemberData> {
 	}
 
 	get formattedName(): string {
-		const self = this as unknown as TrackableStoreWithData<MemberData>
-		if(self.fullName) return self.fullName
-		return `${self.firstName} ${self.lastName}`
+		if(this.fullName) return this.fullName
+		return `${this.firstName} ${this.lastName}`
 	}
 }
+
+interface MemberStore extends MemberData {}
 
 export default MemberStore

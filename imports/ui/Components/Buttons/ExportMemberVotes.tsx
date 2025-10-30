@@ -22,10 +22,10 @@ const ExportMemberVotes = () => {
 		<ExportCsvButton
 			data={ members.values.map(member => {
 				let newMember: MemberVoteData = {
-					"Name": member.fullName,
-					"Code": member.code,
-					"Initials": member.initials,
-					"Number": member.number,
+					Name: member.fullName,
+					Code: member.code,
+					Initials: member.initials,
+					Number: member.number,
 				}
 
 				topOrgs.forEach(org => {

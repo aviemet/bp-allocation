@@ -1,6 +1,5 @@
 import TrackableCollection from "./lib/TrackableCollection"
-import MemberStore from "./MemberStore"
-import { MemberData } from "/imports/api/db"
+import MemberStore, { MemberData } from "./MemberStore"
 
 class MembersCollection extends TrackableCollection<MemberStore> {
 	searchableFields = ["firstName", "lastName", "fullName", "code", "initials", "number", "phone"]

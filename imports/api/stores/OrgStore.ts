@@ -1,12 +1,14 @@
 import TrackableStore, { TrackableData } from "./lib/TrackableStore"
 import { Organization } from "/imports/types/schema"
 
-interface OrgData extends Organization, TrackableData {}
+export type OrgData = TrackableData<Organization>
 
 class OrgStore extends TrackableStore<OrgData> {
 	constructor(data: OrgData) {
 		super(data)
 	}
 }
+
+interface OrgStore extends OrgData {}
 
 export default OrgStore

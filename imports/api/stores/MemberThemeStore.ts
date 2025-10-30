@@ -1,12 +1,14 @@
 import TrackableStore, { TrackableData } from "./lib/TrackableStore"
 import { MemberTheme } from "/imports/types/schema"
 
-interface MemberThemeData extends MemberTheme, TrackableData {}
+export type MemberThemeData = TrackableData<MemberTheme>
 
 class MemberThemeStore extends TrackableStore<MemberThemeData> {
 	constructor(data: MemberThemeData) {
 		super(data)
 	}
 }
+
+interface MemberThemeStore extends MemberThemeData {}
 
 export default MemberThemeStore

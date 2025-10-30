@@ -8,17 +8,13 @@ import { MemberThemeSchema, memberThemesPermissions } from "./MemberThemes"
 import { MessageSchema, messagesPermissions } from "./Messages"
 import { OrganizationSchema, organizationsPermissions } from "./Organizations"
 import { PresentationSettingsSchema, presentationSettingsPermissions } from "./PresentationSettings"
+import { type MemberTheme } from "/imports/types/schema"
 import { ThemeSchema, themesPermissions } from "./Themes"
-import { type Member, type MemberTheme, type Message, type Organization, type PresentationSettings, type Theme } from "/imports/types/schema"
-import { type TrackableData } from "/imports/api/stores/lib/TrackableStore"
-
-export { MemberSchema, MemberThemeSchema, MessageSchema, OrganizationSchema, PresentationSettingsSchema, ThemeSchema }
-
-export type MemberData = Member & TrackableData
-export type MessageData = Message & TrackableData
-export type OrgData = Organization & TrackableData
-export type SettingsData = PresentationSettings & TrackableData
-export type ThemeData = Theme & TrackableData
+import { MemberData } from "../stores/MemberStore"
+import { MessageData } from "../stores/MessageStore"
+import { OrgData } from "../stores/OrgStore"
+import { SettingsData } from "../stores/SettingsStore"
+import { ThemeData } from "../stores/ThemeStore"
 
 type PermissionFunction = (userId: string, doc: unknown) => boolean
 export interface CollectionPermissions {
@@ -64,4 +60,14 @@ PresentationSettingsCollection.allow(presentationSettingsPermissions)
 Themes.attachSchema(ThemeSchema)
 Themes.allow(themesPermissions)
 
-export { Themes, PresentationSettingsCollection as PresentationSettings, Organizations, Images, Members, MemberThemes, Messages }
+export {
+	Themes, ThemeSchema, type ThemeData,
+	PresentationSettingsCollection as PresentationSettings, PresentationSettingsSchema, type SettingsData,
+	Organizations, OrganizationSchema, type OrgData,
+	Images,
+	Members, MemberSchema, type MemberData,
+	MemberThemes, MemberThemeSchema,
+	Messages, MessageSchema, type MessageData,
+}
+
+

@@ -3,7 +3,7 @@ import { makeObservable, observable } from "mobx"
 import TrackableStore, { TrackableData } from "./lib/TrackableStore"
 import { Message } from "/imports/types/schema"
 
-interface MessageData extends Message, TrackableData {}
+export type MessageData = TrackableData<Message>
 
 class MessageStore extends TrackableStore<MessageData> {
 	dirty = false
@@ -19,5 +19,7 @@ class MessageStore extends TrackableStore<MessageData> {
 		this.originalMessage = data.body || ""
 	}
 }
+
+interface MessageStore extends MessageData {}
 
 export default MessageStore

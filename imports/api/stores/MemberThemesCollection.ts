@@ -2,11 +2,7 @@ import { remove } from "lodash"
 import { action, makeObservable } from "mobx"
 
 import TrackableCollection from "./lib/TrackableCollection"
-import { TrackableData } from "./lib/TrackableStore"
-import MemberThemeStore from "./MemberThemeStore"
-import { MemberTheme } from "/imports/types/schema"
-
-interface MemberThemeData extends MemberTheme, TrackableData {}
+import MemberThemeStore, { MemberThemeData } from "./MemberThemeStore"
 
 class MembersThemesCollection extends TrackableCollection<MemberThemeStore> {
 	constructor(data: MemberThemeData[]) {
