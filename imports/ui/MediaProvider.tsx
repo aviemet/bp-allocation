@@ -1,16 +1,19 @@
 import { createMedia } from "@artsy/fresnel"
-import PropTypes from "prop-types"
 import React, { useState, useEffect } from "react"
 
-import theme from "./theme"
+import { screen as breakpoints } from "./theme"
 
-export const { screen: breakpoints } = theme
 
 // Hook for window size
+interface WindowSize {
+	width: number | undefined
+	height: number | undefined
+}
+
 export const useWindowSize = () => {
 	// Initialize state with undefined width/height so server and client renders match
 	// Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
-	const [windowSize, setWindowSize] = useState({
+	const [windowSize, setWindowSize] = useState<WindowSize>({
 		width: undefined,
 		height: undefined,
 	})
@@ -39,7 +42,7 @@ export const useWindowSize = () => {
 }
 
 const AppMedia = createMedia({
-	breakpoints: theme.screen,
+	breakpoints: breakpoints,
 })
 
 // Fresnel context definition
@@ -48,7 +51,11 @@ const { MediaContextProvider } = AppMedia
 export const mediaStyle = AppMedia.createMediaStyle()
 export const { Media } = AppMedia
 
-const MediaProvider = ({ children }) => {
+interface MediaProviderProps {
+	children: React.ReactNode
+}
+
+const MediaProvider = ({ children }: MediaProviderProps) => {
 
 	return (
 		<>
@@ -58,11 +65,5 @@ const MediaProvider = ({ children }) => {
 	)
 }
 
-MediaProvider.propTypes = {
-	children: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.node),
-		PropTypes.node,
-	]),
-}
 
 export default MediaProvider

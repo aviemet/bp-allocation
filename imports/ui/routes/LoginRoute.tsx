@@ -6,7 +6,6 @@ import Login from "../pages/Welcome/Login"
 
 import { rootRoute } from "."
 
-
 export const loginRoute = createRoute({
 	getParentRoute: () => rootRoute,
 	path: "/login",

@@ -76,7 +76,7 @@ const adminIdRoute = createRoute({
 	getParentRoute: () => adminLayoutRoute,
 	path: "/$id",
 	beforeLoad: ({ params }) => {
-		throw redirect({ to: `/admin/${params.id}/presentation` })
+		throw redirect({ to: "/admin/$id/presentation", params: { id: params.id } })
 	},
 })
 
@@ -174,7 +174,7 @@ const adminIdSettingsRoute = createRoute({
 	getParentRoute: () => adminLayoutRoute,
 	path: "/$id/settings",
 	beforeLoad: ({ params }) => {
-		throw redirect({ to: `/admin/${params.id}/settings/general` })
+		throw redirect({ to: "/admin/$id/settings/$activeTab", params: { id: params.id, activeTab: "general" } })
 	},
 })
 
@@ -208,13 +208,15 @@ const presentationRoute = createRoute({
 	},
 })
 
+const ShortRouteComponent = () => {
+	const { themeSlug, memberCode } = useParams({ from: "/v/$themeSlug/$memberCode" })
+	return <div>Short route: { themeSlug } - { memberCode }</div>
+}
+
 const shortRoute = createRoute({
 	getParentRoute: () => rootRoute,
 	path: "/v/$themeSlug/$memberCode",
-	component: () => {
-		const { themeSlug, memberCode } = useParams({ from: "/v/$themeSlug/$memberCode" })
-		return <div>Short route: { themeSlug } - { memberCode }</div>
-	},
+	component: ShortRouteComponent,
 })
 
 const votingRoute = createRoute({
@@ -307,12 +309,6 @@ const routeTree = rootRoute.addChildren([
 ])
 
 const router = createRouter({ routeTree })
-
-declare module "@tanstack/react-router" {
-	interface Register {
-		router: typeof router
-	}
-}
 
 const Routes = () => {
 	return <RouterProvider router={ router } />

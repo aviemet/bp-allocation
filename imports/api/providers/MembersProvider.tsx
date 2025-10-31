@@ -1,5 +1,4 @@
 import { Meteor } from "meteor/meteor"
-import { Mongo } from "meteor/mongo"
 import { useTracker } from "meteor/react-meteor-data"
 import { observer } from "mobx-react-lite"
 import React, { useState } from "react"
@@ -49,15 +48,9 @@ interface MembersProviderProps {
 const MembersProvider = observer(({ children }: MembersProviderProps) => {
 	const appStore = useData()
 	const themeId = appStore?.themeId
-	let subscription: Meteor.SubscriptionHandle | undefined
-	let cursorObserver: Meteor.LiveQueryHandle | undefined
-	let membersCollection: MembersCollection | undefined
 
 	// limit of 0 == 'return no records', limit of false == 'no limit'
-	const [ subLimit, setSubLimit ] = useState<number | false>(false) // Start with false to load members immediately
-	// const [ subIndex, setSubIndex ] = useState(0)
-
-	const [ renderCount, setRenderCount ] = useState(0)
+	const [ subLimit, setSubLimit ] = useState<number | false>(false)
 	const [ memberId, setMemberId ] = useState<string | false>(false)
 
 	const getAllMembers = () => setSubLimit(false)
@@ -65,33 +58,56 @@ const MembersProvider = observer(({ children }: MembersProviderProps) => {
 
 	const methods = { getAllMembers, hideAllMembers, setMemberId }
 
-	// Method to be called when subscription is ready
-	const subscriptionReady = (cursor: Mongo.Cursor<MemberData>) => {
-		membersCollection = new MembersCollection(cursor.fetch())
-
-		cursorObserver = cursor.observe({
-			added: (members: MemberData) => membersCollection?.refreshData(members),
-			changed: (members: MemberData) => membersCollection?.refreshData(members),
-			removed: (members: MemberData) => membersCollection?.refreshData(members),
-		})
-		// Used to force re-render
-		setRenderCount(renderCount + 1)
-	}
+	let subscription: Meteor.SubscriptionHandle | undefined
+	let cursorObserver: Meteor.LiveQueryHandle | undefined
+	let membersCollection: MembersCollection | undefined
 
 	const members = useTracker(() => {
 		// Return a single user if memberId is set
 		if(memberId) {
+			if(!themeId) {
+				if(subscription) subscription.stop()
+				if(cursorObserver) cursorObserver.stop()
+				return Object.assign(methods, {
+					isLoading: true,
+					members: undefined,
+				})
+			}
+
 			subscription = Meteor.subscribe("member", { memberId, themeId }, {
 				onReady: () => {
-					subscriptionReady(Members.find({ }))
+					const cursor = Members.find({ })
+					if(cursorObserver) {
+						cursorObserver.stop()
+					}
+					membersCollection = new MembersCollection(cursor.fetch())
+					cursorObserver = cursor.observe({
+						added: (members: MemberData) => membersCollection?.refreshData(members),
+						changed: (members: MemberData) => membersCollection?.refreshData(members),
+						removed: (members: MemberData) => membersCollection?.refreshData(members),
+					})
 				},
 			})
+
+			if(subscription.ready() && !membersCollection) {
+				const cursor = Members.find({ })
+				membersCollection = new MembersCollection(cursor.fetch())
+				if(cursorObserver) {
+					cursorObserver.stop()
+				}
+				cursorObserver = cursor.observe({
+					added: (members: MemberData) => membersCollection?.refreshData(members),
+					changed: (members: MemberData) => membersCollection?.refreshData(members),
+					removed: (members: MemberData) => membersCollection?.refreshData(members),
+				})
+			}
 		// Return all users if no memberId
 		} else {
 			// Return loading or uninitialized placeholder data
 			if(!themeId || subLimit === 0) {
 				if(subscription) subscription.stop()
 				if(cursorObserver) cursorObserver.stop()
+				membersCollection = undefined
 
 				return Object.assign(methods, {
 					isLoading: subLimit === 0 ? false : true,
@@ -102,9 +118,38 @@ const MembersProvider = observer(({ children }: MembersProviderProps) => {
 			subscription = Meteor.subscribe("members", { themeId, limit: subLimit }, {
 				onReady: () => {
 					// Query all members since the server publication handles the theme filtering
-					subscriptionReady(Members.find({}, { sort: { number: 1 } }))
+					const cursor = Members.find({}, { sort: { number: 1 } })
+					if(cursorObserver) {
+						cursorObserver.stop()
+					}
+					membersCollection = new MembersCollection(cursor.fetch())
+					cursorObserver = cursor.observe({
+						added: (members: MemberData) => membersCollection?.refreshData(members),
+						changed: (members: MemberData) => membersCollection?.refreshData(members),
+						removed: (members: MemberData) => membersCollection?.refreshData(members),
+					})
 				},
 			})
+
+			if(subscription.ready() && !membersCollection) {
+				const cursor = Members.find({}, { sort: { number: 1 } })
+				membersCollection = new MembersCollection(cursor.fetch())
+				if(cursorObserver) {
+					cursorObserver.stop()
+				}
+				cursorObserver = cursor.observe({
+					added: (members: MemberData) => membersCollection?.refreshData(members),
+					changed: (members: MemberData) => membersCollection?.refreshData(members),
+					removed: (members: MemberData) => membersCollection?.refreshData(members),
+				})
+			}
+		}
+
+		// Query reactively to ensure re-render when data changes
+		if(subscription?.ready()) {
+			const cursor = memberId ? Members.find({ }) : Members.find({}, { sort: { number: 1 } })
+			// Access cursor to make it reactive
+			cursor.fetch()
 		}
 
 		return Object.assign(methods, {
@@ -112,7 +157,7 @@ const MembersProvider = observer(({ children }: MembersProviderProps) => {
 			isLoading: !subscription?.ready(),
 		})
 
-	}, [themeId, subLimit, memberId, renderCount])
+	}, [themeId, subLimit, memberId])
 
 	return (
 		<MembersContextProvider value={ members }>
