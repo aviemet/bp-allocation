@@ -11,7 +11,7 @@ import { MemberMethods } from "/imports/api/methods"
 import { MemberSchema, MemberThemeSchema } from "/imports/api/db"
 
 import { useSnackbar } from "notistack"
-import React, { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 
 import ImportMapping from "/imports/ui/components/ImportMapping"
 

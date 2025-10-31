@@ -8,7 +8,7 @@ import { useSnackbar } from "notistack"
 import { readCsv } from "/imports/lib/papaParseMethods"
 import { OrganizationMethods } from "/imports/api/methods"
 import { OrganizationSchema } from "/imports/api/db"
-import React, { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 
 import ImportMapping from "/imports/ui/components/ImportMapping"
 

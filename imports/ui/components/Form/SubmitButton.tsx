@@ -2,7 +2,7 @@ import CheckIcon from "@mui/icons-material/Check"
 import SaveIcon from "@mui/icons-material/Save"
 import { Button } from "@mui/material"
 import PropTypes from "prop-types"
-import React, { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef } from "react"
 
 export const STATUS = {
 	READY: "ready",

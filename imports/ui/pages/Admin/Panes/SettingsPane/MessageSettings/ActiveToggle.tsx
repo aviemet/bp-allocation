@@ -1,8 +1,7 @@
-import React from "react"
+import { Switch } from "@mui/material"
 import PropTypes from "prop-types"
 import { MessageMethods } from "/imports/api/methods"
 
-import { Switch } from "@mui/material"
 
 const includeVotingLinkToggle = ({ message }) => {
 	const saveValue = e => {

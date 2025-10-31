@@ -1,7 +1,6 @@
 import { isEmpty } from "lodash"
 import { observer } from "mobx-react-lite"
 import PropTypes from "prop-types"
-import React from "react"
 import { useMembers } from "/imports/api/providers"
 
 import { VotingContextProvider } from "./VotingContext"

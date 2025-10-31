@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { useParams } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
-import React, { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Transition } from "react-transition-group"
 
 import { useData, useTheme, useSettings } from "/imports/api/providers"

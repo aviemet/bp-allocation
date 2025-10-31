@@ -6,7 +6,6 @@ import {
 } from "@mui/material"
 import { useParams, useNavigate } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
-import React from "react"
 import { useMembers } from "/imports/api/providers"
 
 

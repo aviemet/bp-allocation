@@ -1,7 +1,4 @@
-import React from "react"
-import PropTypes from "prop-types"
-import numeral from "numeral"
-
+import CheckIcon from "@mui/icons-material/Check"
 import {
 	Table,
 	TableHead,
@@ -10,7 +7,9 @@ import {
 	TableRow,
 	TableCell,
 } from "@mui/material"
-import CheckIcon from "@mui/icons-material/Check"
+import numeral from "numeral"
+import PropTypes from "prop-types"
+
 
 const RoundTable = ({ orgs }) => {
 	let totals = {

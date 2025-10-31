@@ -2,10 +2,10 @@ import styled from "@emotion/styled"
 import { Container } from "@mui/material"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
 import { deepmerge } from "@mui/utils"
-import React from "react"
+import { type ReactNode } from "react"
 
 interface KioskLayoutProps {
-	children: React.ReactNode
+	children: ReactNode
 }
 
 const KioskLayout = ({ children }: KioskLayoutProps) => (

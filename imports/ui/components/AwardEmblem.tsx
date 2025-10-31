@@ -1,9 +1,7 @@
-import React from "react"
+import styled from "@emotion/styled"
+import { observer } from "mobx-react-lite"
 import PropTypes from "prop-types"
 
-import { observer } from "mobx-react-lite"
-
-import styled from "@emotion/styled"
 
 /**
  * Award Emblem

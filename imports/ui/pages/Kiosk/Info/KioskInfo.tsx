@@ -11,7 +11,7 @@ import {
 	Typography,
 } from "@mui/material"
 import { observer } from "mobx-react-lite"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useTheme, useOrgs } from "/imports/api/providers"
 
 import { Loading } from "/imports/ui/components"

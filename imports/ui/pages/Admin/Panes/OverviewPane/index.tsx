@@ -13,7 +13,6 @@ import {
 import { styled } from "@mui/material/styles"
 import { findIndex } from "lodash"
 import numeral from "numeral"
-import React from "react"
 
 import { roundFloat } from "/imports/lib/utils"
 import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
@@ -23,11 +22,11 @@ import ExportTopups from "/imports/ui/components/Buttons/ExportTopups"
 import ExportChitVotes from "/imports/ui/components/Buttons/ExportChitVotes"
 
 const Overview = () => {
-	const { settings } = useSettings()
+	const { settings, isLoading: settingsLoading } = useSettings()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	if(themeLoading || orgsLoading) return <Loading />
+	if(themeLoading || orgsLoading || settingsLoading) return <Loading />
 	return (
 		<>
 			<TableContainer style={ {
@@ -48,8 +47,8 @@ const Overview = () => {
 						</TableRow>
 						<TableRow>
 							<TableCell></TableCell>
-							<TableCell>R1 (chits)<br/>{ settings.useKioskChitVoting && `[${theme.chitVotesCast}/${theme.totalMembers}]` }</TableCell>
-							<TableCell>R2 ($)<br/>{ settings.useKioskFundsVoting && `[${theme.fundsVotesCast}/${theme.totalMembers}]` }</TableCell>
+							<TableCell>R1 (chits)<br/>{ settings?.useKioskChitVoting && `[${theme.chitVotesCast}/${theme.totalMembers}]` }</TableCell>
+							<TableCell>R2 ($)<br/>{ settings?.useKioskFundsVoting && `[${theme.fundsVotesCast}/${theme.totalMembers}]` }</TableCell>
 							<TableCell>Saves</TableCell>
 							<TableCell>Top Off</TableCell>
 							<TableCell>Pledges</TableCell>
@@ -131,7 +130,7 @@ const Overview = () => {
 									parseFloat(
 										(theme.leverageTotal || 0) +
 									theme.saves.reduce((sum, save) => {return sum + save.amount}, 0) +
-									(settings.resultsOffset || 0)
+									(settings?.resultsOffset || 0)
 									)
 								)
 							}</MoneyCell>

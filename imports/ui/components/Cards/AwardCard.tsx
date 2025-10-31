@@ -1,12 +1,8 @@
-import React from "react"
-import PropTypes from "prop-types"
-
-import { styled } from "@mui/material/styles"
 import { css } from "@emotion/react"
-
 import Paper from "@mui/material/Paper"
-
+import { styled } from "@mui/material/styles"
 import numeral from "numeral"
+import PropTypes from "prop-types"
 
 import AwardEmblem from "../AwardEmblem"
 

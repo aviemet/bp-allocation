@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material"
 import PropTypes from "prop-types"
-import React, { useState } from "react"
+import { useState } from "react"
 
 import useInterval from "/imports/ui/components/useInterval"
 

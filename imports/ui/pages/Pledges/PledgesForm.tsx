@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { Button, Grid, InputAdornment, Stack } from "@mui/material"
 import { observer } from "mobx-react-lite"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useOrgs } from "/imports/api/providers"
 import { TextInput, SubmitButton, STATUS, SwitchInput } from "/imports/ui/components/Form"
 import { useFormContext, useWatch } from "react-hook-form"

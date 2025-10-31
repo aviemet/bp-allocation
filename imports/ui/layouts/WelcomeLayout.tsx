@@ -1,9 +1,9 @@
 import styled from "@emotion/styled"
 import Container from "@mui/material/Container"
-import React from "react"
+import { type ReactNode } from "react"
 
 interface WelcomeLayoutProps {
-	children: React.ReactNode
+	children: ReactNode
 }
 
 const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {

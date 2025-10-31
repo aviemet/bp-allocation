@@ -1,7 +1,3 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { visuallyHidden } from "@mui/utils"
-import { styled } from "@mui/material/styles"
 import {
 	Box,
 	Checkbox,
@@ -10,6 +6,24 @@ import {
 	TableRow,
 	TableSortLabel,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { visuallyHidden } from "@mui/utils"
+import { type ChangeEvent, type MouseEvent } from "react"
+
+import { HeadCell, TableHeadTopRowCell } from "./types"
+
+interface EnhancedTableHeadProps {
+	headCells: HeadCell[]
+	spanForCollapse?: boolean
+	tableHeadTopRow?: TableHeadTopRowCell[]
+	onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void
+	order: "asc" | "desc"
+	orderBy: string
+	numSelected: number
+	rowCount: number
+	onRequestSort: (event: MouseEvent<unknown>, property: string) => void
+	selectable?: boolean
+}
 
 const EnhancedTableHead = ({
 	headCells,
@@ -22,9 +36,9 @@ const EnhancedTableHead = ({
 	rowCount,
 	onRequestSort,
 	selectable = true,
-}) => {
+}: EnhancedTableHeadProps) => {
 	const cellsWithDefaults = headCells.map((cell, i) => {
-		const cellWithDefaults = {
+		const cellWithDefaults: HeadCell & { span: number, align: "left" | "right" | "center" } = {
 			disablePadding: false,
 			sort: true,
 			align: "left",
@@ -37,7 +51,7 @@ const EnhancedTableHead = ({
 		return cellWithDefaults
 	})
 
-	const createSortHandler = (property) => (event) => {
+	const createSortHandler = (property: string) => (event: MouseEvent<unknown>) => {
 		onRequestSort(event, property)
 	}
 
@@ -106,18 +120,5 @@ const StyledTableHead = styled(TableHead)(({ theme }) => ({
 		},
 	},
 }))
-
-EnhancedTableHead.propTypes = {
-	headCells: PropTypes.array.isRequired,
-	spanForCollapse: PropTypes.bool,
-	tableHeadTopRow: PropTypes.array,
-	numSelected: PropTypes.number.isRequired,
-	onRequestSort: PropTypes.func.isRequired,
-	onSelectAllClick: PropTypes.func.isRequired,
-	order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-	orderBy: PropTypes.string.isRequired,
-	rowCount: PropTypes.number.isRequired,
-	selectable: PropTypes.bool,
-}
 
 export default EnhancedTableHead

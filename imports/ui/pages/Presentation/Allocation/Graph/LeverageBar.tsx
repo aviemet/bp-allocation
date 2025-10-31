@@ -1,8 +1,7 @@
-import React from "react"
-import PropTypes from "prop-types"
-import numeral from "numeral"
 import styled from "@emotion/styled"
 import { LinearProgress } from "@mui/material"
+import numeral from "numeral"
+import PropTypes from "prop-types"
 
 import { COLORS } from "/imports/lib/global"
 

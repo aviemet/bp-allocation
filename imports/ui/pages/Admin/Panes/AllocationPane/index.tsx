@@ -6,7 +6,7 @@ import {
 import { Link } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
 import PropTypes from "prop-types"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Loading } from "/imports/ui/components"
 
 import AllocationsTable from "./AllocationsTable"

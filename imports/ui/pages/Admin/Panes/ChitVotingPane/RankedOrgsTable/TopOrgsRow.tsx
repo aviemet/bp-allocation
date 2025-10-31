@@ -6,7 +6,6 @@ import {
 } from "@mui/material"
 import { useParams } from "@tanstack/react-router"
 import PropTypes from "prop-types"
-import React from "react"
 
 import { ThemeMethods } from "/imports/api/methods"
 
@@ -17,7 +16,7 @@ import SaveButton from "./SaveButton"
 import UnSaveButton from "./UnSaveButton"
 
 const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }) => {
-	const { id: themeId } = useParams()
+	const { id: themeId } = useParams({ strict: false })
 
 	/**
 	 * Manually pins an organization as a "Top Org"

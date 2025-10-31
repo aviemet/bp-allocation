@@ -1,6 +1,5 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { alpha } from "@mui/material/styles"
+import DeleteIcon from "@mui/icons-material/Delete"
+import SearchIcon from "@mui/icons-material/Search"
 import {
 	IconButton,
 	TextField,
@@ -8,10 +7,16 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material"
-import DeleteIcon from "@mui/icons-material/Delete"
-import FilterListIcon from "@mui/icons-material/FilterList"
-import SearchIcon from "@mui/icons-material/Search"
-// import ClearIcon from '@mui/icons-material/Clear'
+import { alpha } from "@mui/material/styles"
+import { type ReactNode } from "react"
+
+interface EnhancedTableToolbarProps {
+	title?: ReactNode
+	filterParams?: string | null
+	onFilterParamsChange?: (value: string) => void
+	numSelected: number
+	onDelete?: () => void
+}
 
 const EnhancedTableToolbar = ({
 	title,
@@ -19,7 +24,7 @@ const EnhancedTableToolbar = ({
 	onFilterParamsChange,
 	numSelected,
 	onDelete,
-}) => {
+}: EnhancedTableToolbarProps) => {
 	return (
 		<Toolbar
 			sx={ {
@@ -66,46 +71,21 @@ const EnhancedTableToolbar = ({
 									} }
 								/>
 							)
-							: title ? title : "" }
+							: title || "" }
 					</Typography>
 				) }
 
-			{ numSelected > 0 ? (
-				<Tooltip title="Delete">
-					<IconButton onClick={ onDelete }>
-						<DeleteIcon />
-					</IconButton>
-				</Tooltip>
-			) : ( <></>
-			// <Tooltip title="Filter list">
-			// 	<IconButton>
-			// 		<FilterListIcon sx={ { ml: 1 } } />
-			// 	</IconButton>
-			// </Tooltip>
-			) }
+			{ numSelected > 0
+				? (
+					<Tooltip title="Delete">
+						<IconButton onClick={ onDelete }>
+							<DeleteIcon />
+						</IconButton>
+					</Tooltip>
+				)
+				: null }
 		</Toolbar>
 	)
 }
 
-EnhancedTableToolbar.propTypes = {
-	title: PropTypes.any,
-	filterParams: PropTypes.string,
-	onFilterParamsChange: PropTypes.func,
-	numSelected: PropTypes.number.isRequired,
-	onDelete: PropTypes.func,
-}
-
 export default EnhancedTableToolbar
-
-
-/*
-
-
-							endAdornment: filterParams && <IconButton
-								onClick={ onFilterParamsChange('') }
-								edge="end"
-							>
-								<ClearIcon />
-							</IconButton>
-
-							*/

@@ -5,7 +5,7 @@ import {
 } from "@mui/material"
 import numeral from "numeral"
 import PropTypes from "prop-types"
-import React, { useState } from "react"
+import { useState } from "react"
 import { roundFloat } from "/imports/lib/utils"
 
 import ContentModal from "/imports/ui/components/Dialogs/ContentModal"

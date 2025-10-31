@@ -4,7 +4,7 @@ import RemoveIcon from "@mui/icons-material/Remove"
 import { IconButton } from "@mui/material"
 import { forEach } from "lodash"
 import PropTypes from "prop-types"
-import React, { useState, useLayoutEffect } from "react"
+import { useState, useLayoutEffect } from "react"
 
 import { useVoting } from "../VotingContext"
 

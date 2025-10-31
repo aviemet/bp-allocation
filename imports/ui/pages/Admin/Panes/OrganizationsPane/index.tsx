@@ -17,7 +17,7 @@ import { styled, alpha } from "@mui/material/styles"
 import { Link, useParams, useNavigate } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import React, { useState, useRef } from "react"
+import { useState, useRef, type MouseEvent } from "react"
 import { useOrgs } from "/imports/api/providers"
 import { type Organization } from "/imports/types/schema"
 
@@ -38,7 +38,7 @@ const OrgCard = ({ org, id, onDelete }: OrgCardProps) => {
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 	const open = Boolean(anchorEl)
 
-	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+	const handleClick = (event: MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
 	}
 

@@ -1,14 +1,12 @@
-import React from "react"
-
+import {
+	FormControlLabel,
+	Switch,
+} from "@mui/material"
 import { observer } from "mobx-react-lite"
 import { useSettings } from "/imports/api/providers"
 
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
-import {
-	FormControlLabel,
-	Switch,
-} from "@mui/material"
 
 const ShowSaveValuesToggle = observer(() => {
 

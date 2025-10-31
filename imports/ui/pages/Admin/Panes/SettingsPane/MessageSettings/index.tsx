@@ -3,10 +3,12 @@ import {
 	Stack,
 	TableCell,
 } from "@mui/material"
-import { Link, useLocation, useNavigate } from "@tanstack/react-router"
-import React, { useState } from "react"
-import { useData, useMessages, useMembers } from "/imports/api/providers"
+import { Link, useLocation } from "@tanstack/react-router"
+import { useState } from "react"
+import { useData, useMessages } from "/imports/api/providers"
 import { MessageMethods } from "/imports/api/methods"
+import type MessageStore from "/imports/api/stores/MessageStore"
+import { type Message } from "/imports/types/schema"
 
 import SortableTable from "/imports/ui/components/SortableTable"
 import SendWithFeedbackButton from "/imports/ui/components/Buttons/SendWithFeedbackButton"
@@ -81,24 +83,21 @@ const emailHeaderCells = [
 const Messages = () => {
 	const { themeId } = useData()
 	const { messages, isLoading: messagesLoading } = useMessages()
-	const { members } = useMembers()
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState("")
 	const [ modalContent, setModalContent ] = useState("")
-	const [ modalAction, setModalAction ] = useState()
+	const [ modalAction, setModalAction ] = useState<(() => void) | undefined>(undefined)
 
 	const { pathname } = useLocation()
-	const history = useHistory()
 
-	const handleBulkDelete = (selected, onSuccess) => {
+	const handleBulkDelete = (selected: string[], onSuccess: () => void) => {
 		console.log({ selected })
 		const plural = selected.length > 1
 
 		setModalHeader(`Permanently delete message${plural ? "s" : ""}?`)
 		setModalContent(`This will permanently remove the message${plural ? "s" : ""}. This action is not reversable.`)
-		// Need to curry the function since useState calls passed functions
-		setModalAction( () => () => {
+		setModalAction(() => () => {
 			selected.forEach(id => {
 				MessageMethods.remove.call(id)
 			})
@@ -107,15 +106,15 @@ const Messages = () => {
 		setModalOpen(true)
 	}
 
-	const handleTextEdits = (id, data) => {
-		MessageMethods.update.call({ id, data }, err => {
+	const handleTextEdits = (id: string, data: Partial<Omit<Message, "_id" | "createdAt" | "updatedAt">>) => {
+		MessageMethods.update.call({ id, data }, (err: Error | null) => {
 			if(err) {
 				console.error(err)
 			}
 		})
 	}
 
-	if(messagesLoading) return <Loading />
+	if(messagesLoading || !messages) return <Loading />
 
 	return (
 		<>
@@ -125,12 +124,16 @@ const Messages = () => {
 					<Button component={ Link } to={ `/admin/${themeId}/settings/messages/new/text` }>+ New Text Message</Button>
 				</Stack> }
 				headCells={ textHeaderCells }
-				rows={ messages.values.filter(message => message.type === "text") }
-				defaultOrderBy="craetedAt"
+				rows={ messages?.values.filter((message: MessageStore) => message.type === "text") || [] }
+				defaultOrderBy="createdAt"
 				paginate={ false }
 				onBulkDelete={ handleBulkDelete }
 				fixed={ true }
-				render={ message => (
+				tableHeadTopRow={ undefined }
+				collapse={ undefined }
+				filterParams={ undefined }
+				onFilterParamsChange={ undefined }
+				render={ (message: MessageStore) => (
 					<>
 						<TableCell>
 							<ActiveToggle message={ message } />
@@ -155,12 +158,16 @@ const Messages = () => {
 					<Button component={ Link } to={ `/admin/${themeId}/settings/messages/new/email` }>+ New Email Message</Button>
 				</Stack> }
 				headCells={ emailHeaderCells }
-				rows={ messages.values.filter(message => message.type === "email") }
-				defaultOrderBy="craetedAt"
+				rows={ messages?.values.filter((message: MessageStore) => message.type === "email") || [] }
+				defaultOrderBy="createdAt"
 				paginate={ false }
 				onBulkDelete={ handleBulkDelete }
 				fixed={ true }
-				render={ message => (
+				tableHeadTopRow={ undefined }
+				collapse={ undefined }
+				filterParams={ undefined }
+				onFilterParamsChange={ undefined }
+				render={ (message: MessageStore) => (
 					<>
 						<TableCell>
 							<ActiveToggle message={ message } />

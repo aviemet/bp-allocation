@@ -1,7 +1,6 @@
 import styled from "@emotion/styled"
 import numeral from "numeral"
 import PropTypes from "prop-types"
-import React from "react"
 import { useMembers } from "/imports/api/providers"
 import { Loading } from "/imports/ui/components"
 

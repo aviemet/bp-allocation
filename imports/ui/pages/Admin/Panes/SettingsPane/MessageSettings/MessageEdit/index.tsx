@@ -24,7 +24,7 @@ import {
 	RichTextInput,
 	CheckboxInput,
 } from "/imports/ui/components/Form"
-import React, { useState } from "react"
+import { useState } from "react"
 import { Loading } from "/imports/ui/components"
 
 const MessageEdit = observer(() => {

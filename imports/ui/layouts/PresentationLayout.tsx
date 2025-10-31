@@ -1,8 +1,8 @@
 import styled from "@emotion/styled"
-import React from "react"
+import { type ReactNode } from "react"
 
 interface PresentationLayoutProps {
-	children: React.ReactNode
+	children: ReactNode
 }
 
 const PresentationLayout = ({ children }: PresentationLayoutProps) => {

@@ -1,6 +1,5 @@
 import Button from "@mui/material/Button"
 import Papa from "papaparse"
-import React from "react"
 
 interface ExportCsvButtonProps {
 	options?: Papa.UnparseConfig

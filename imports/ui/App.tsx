@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 import CssBaseline from "@mui/material/CssBaseline"
 import { ThemeProvider as MUIProvider } from "@mui/material/styles"
 import { SnackbarProvider } from "notistack"
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 
 import MediaProvider from "./MediaProvider"
 import Routes from "./routes"

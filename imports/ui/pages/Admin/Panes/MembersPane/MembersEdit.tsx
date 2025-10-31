@@ -6,7 +6,7 @@ import {
 	Typography,
 } from "@mui/material"
 import { useParams, useNavigate } from "@tanstack/react-router"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useMembers } from "/imports/api/providers"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberSchema, MemberThemeSchema } from "/imports/api/db"
@@ -19,8 +19,8 @@ import { Loading } from "/imports/ui/components"
 const MembersEdit = () => {
 	const { members, isLoading: membersLoading } = useMembers()
 
-	const { id, memberId } = useParams()
-	const history = useHistory()
+	const { id, memberId } = useParams({ strict: false })
+	const navigate = useNavigate()
 
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 
@@ -86,9 +86,9 @@ const MembersEdit = () => {
 
 	useEffect(() => {
 		if(formStatus === STATUS.SUCCESS) {
-			setTimeout(() => history.push(`/admin/${id}/members`), 1000)
+			setTimeout(() => navigate({ to: "/admin/$id/members", params: { id } }), 1000)
 		}
-	}, [formStatus])
+	}, [formStatus, navigate, id])
 
 	const onError = (errors, data) => {
 		console.log({ errors, data })
@@ -167,7 +167,7 @@ const MembersEdit = () => {
 
 					<Grid item xs={ 12 }>
 						<Stack direction="row" spacing={ 2 } justifyContent="end">
-							<Button color="error" onClick={ () => history.push(`/admin/${id}/members`) }>Cancel</Button>
+							<Button color="error" onClick={ () => navigate({ to: "/admin/$id/members", params: { id } }) }>Cancel</Button>
 							<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Member</SubmitButton>
 						</Stack>
 					</Grid>

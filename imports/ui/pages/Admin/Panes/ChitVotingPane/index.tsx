@@ -7,7 +7,6 @@ import {
 } from "@mui/material"
 import { observer } from "mobx-react-lite"
 import PropTypes from "prop-types"
-import React from "react"
 import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
 import { ThemeMethods } from "/imports/api/methods"
 
@@ -18,7 +17,7 @@ import ChitVotingActiveToggle from "/imports/ui/components/Toggles/ChitVotingAct
 import { Loading } from "/imports/ui/components"
 
 const ChitVotingPane = observer(({ hideAdminFields }) => {
-	const { settings } = useSettings()
+	const { settings, isLoading: settingsLoading } = useSettings()
 	const { isLoading: orgsLoading } = useOrgs()
 	const { theme } = useTheme()
 
@@ -34,16 +33,16 @@ const ChitVotingPane = observer(({ hideAdminFields }) => {
 		}
 	}
 
-	if(orgsLoading) return <Loading />
+	if(orgsLoading || settingsLoading) return <Loading />
 
 	return (
 		<Grid container spacing={ 2 }>
 
-			{ !settings.useKioskChitVoting && <Grid item xs={ 12 } md={ 6 }>
+			{ !settings?.useKioskChitVoting && <Grid item xs={ 12 } md={ 6 }>
 				<ManualInputTable />
 			</Grid> }
 
-			<Grid item xs={ 12 } md={ settings.useKioskChitVoting ? 12 : 6 }>
+			<Grid item xs={ 12 } md={ settings?.useKioskChitVoting ? 12 : 6 }>
 				<Box sx={ { mb: 2 } }>
 					<Stack direction="row" justifyContent="space-between" alignItems="center">
 						<Typography component="h3" variant="h3">

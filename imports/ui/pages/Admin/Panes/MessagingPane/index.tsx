@@ -11,7 +11,6 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { Link } from "@tanstack/react-router"
-import React from "react"
 import { useTheme, useMessages } from "/imports/api/providers"
 import SendWithFeedbackButton from "/imports/ui/components/Buttons/SendWithFeedbackButton"
 import { Loading } from "/imports/ui/components"

@@ -1,7 +1,6 @@
 import styled from "@emotion/styled"
 import { Container } from "@mui/material"
 import { observer } from "mobx-react-lite"
-import React from "react"
 import { useOrgs, useSettings } from "/imports/api/providers"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
 

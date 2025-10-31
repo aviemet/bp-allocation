@@ -1,6 +1,6 @@
 import MuiLink, { LinkProps as MuiLinkProps } from "@mui/material/Link"
 import { Link as RouterLink, LinkProps as RouterLinkProps } from "@tanstack/react-router"
-import React from "react"
+import { forwardRef } from "react"
 
 type CombinedLinkProps = MuiLinkProps & {
 	to?: RouterLinkProps["to"]
@@ -9,7 +9,7 @@ type CombinedLinkProps = MuiLinkProps & {
 	hash?: RouterLinkProps["hash"]
 }
 
-const Link = React.forwardRef<HTMLAnchorElement, CombinedLinkProps>((props, ref) => {
+const Link = forwardRef<HTMLAnchorElement, CombinedLinkProps>((props, ref) => {
 	const { to, params, search, hash, href, ...rest } = props
 
 	if(to) {

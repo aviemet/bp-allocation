@@ -1,14 +1,16 @@
-import React, { useEffect } from "react"
-import PropTypes from "prop-types"
-import { useVoting } from "./VotingContext"
-import { Button } from "@mui/material"
-import { COLORS } from "/imports/lib/global"
-import { useData, useSettings } from "/imports/api/providers"
-
 import styled from "@emotion/styled"
+import { Button } from "@mui/material"
 import {
 	Box,
 } from "@mui/material"
+import PropTypes from "prop-types"
+import { useEffect } from "react"
+
+import { useVoting } from "./VotingContext"
+
+import { COLORS } from "/imports/lib/global"
+import { useData, useSettings } from "/imports/api/providers"
+
 
 const VotingComplete = ({ setVotingComplete }) => {
 	const data = useData()

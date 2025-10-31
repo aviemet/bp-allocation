@@ -1,5 +1,5 @@
 import { debounce } from "lodash"
-import { ReactNode, useEffect, useCallback } from "react"
+import { type ReactNode, useEffect, useCallback } from "react"
 import {
 	useForm,
 	FormProvider,

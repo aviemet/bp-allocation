@@ -8,7 +8,7 @@ import _ from "lodash"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import PropTypes from "prop-types"
-import React, { useState } from "react"
+import { useState } from "react"
 import { useTheme } from "/imports/api/providers"
 import { ThemeMethods } from "/imports/api/methods"
 

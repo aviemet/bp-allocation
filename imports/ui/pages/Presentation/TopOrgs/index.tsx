@@ -4,7 +4,6 @@ import {
 } from "@mui/material"
 import { observer } from "mobx-react-lite"
 import { useOrgs, useSettings } from "/imports/api/providers"
-import React from "react"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
 
 const TopOrgs = observer(() => {

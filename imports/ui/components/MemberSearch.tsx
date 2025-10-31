@@ -15,7 +15,6 @@ import { Loading } from "/imports/ui/components"
 import { toJS } from "mobx"
 import { observer } from "mobx-react-lite"
 import PropTypes from "prop-types"
-import React from "react"
 
 const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }) => {
 	const { members, isLoading: membersLoading } = useMembers()

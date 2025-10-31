@@ -1,8 +1,7 @@
-import React from "react"
-import PropTypes from "prop-types"
+import styled from "@emotion/styled"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import styled from "@emotion/styled"
+import PropTypes from "prop-types"
 
 const OrgInfo = observer(({ org, showLeverage }) => {
 	const need = org.need - org.leverageFunds

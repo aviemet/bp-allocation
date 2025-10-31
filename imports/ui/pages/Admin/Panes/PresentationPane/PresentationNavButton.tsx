@@ -1,14 +1,14 @@
 import { Button, Chip, Stack, type ButtonProps } from "@mui/material"
 import useTheme from "@mui/material/styles/useTheme"
 import { observer } from "mobx-react-lite"
-import React from "react"
+import { type ElementType, type MouseEvent } from "react"
 import { useSettings } from "/imports/api/providers"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 interface PresentationNavButtonProps extends Omit<ButtonProps, "onClick"> {
 	page: string
 	label: string
-	Icon: React.ElementType
+	Icon: ElementType
 	active?: boolean
 	onClick?: () => void
 }
@@ -35,8 +35,8 @@ const PresentationNavButton = observer(({
 		})
 	}
 
-	// onClick passthrough
-	const doOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+	// 	onClick passthrough
+	const doOnClick = (e: MouseEvent<HTMLButtonElement>) => {
 		changeCurrentPage()
 		if(onClick) onClick()
 		e.currentTarget.blur()

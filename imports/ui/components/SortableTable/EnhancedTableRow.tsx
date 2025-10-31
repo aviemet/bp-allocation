@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import PropTypes from "prop-types"
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import {
 	Box,
 	Checkbox,
@@ -8,10 +8,23 @@ import {
 	TableCell,
 	TableRow,
 } from "@mui/material"
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
+import { useState, type ReactNode, type ReactElement, Fragment } from "react"
 
-const EnhancedTableRow = ({
+import { HeadCell, SortableRow } from "./types"
+
+interface EnhancedTableRowProps<T extends SortableRow> {
+	row: T
+	headCells: HeadCell[]
+	isSelected: (id: string) => boolean
+	selectOnClick: boolean
+	handleClick: (id: string) => void
+	render: (row: T) => ReactNode
+	collapse?: (row: T) => ReactNode
+	striped?: boolean
+	selectable?: boolean
+}
+
+function EnhancedTableRow<T extends SortableRow>({
 	row,
 	headCells,
 	isSelected,
@@ -21,7 +34,7 @@ const EnhancedTableRow = ({
 	collapse,
 	striped = false,
 	selectable = true,
-}) => {
+}: EnhancedTableRowProps<T>) {
 	const [collapseOpen, setCollapseOpen] = useState(false)
 
 	const isItemSelected = isSelected(row._id)
@@ -34,7 +47,7 @@ const EnhancedTableRow = ({
 	}
 
 	return (
-		<React.Fragment key={ row._id }>
+		<Fragment key={ row._id }>
 			<TableRow
 				hover
 				onClick={ () => {
@@ -78,20 +91,8 @@ const EnhancedTableRow = ({
 					</TableCell>
 				</TableRow>
 			) }
-		</React.Fragment>
+		</Fragment>
 	)
 }
 
-EnhancedTableRow.propTypes = {
-	row: PropTypes.object.isRequired,
-	headCells: PropTypes.array,
-	isSelected: PropTypes.func,
-	selectOnClick: PropTypes.bool,
-	handleClick: PropTypes.func,
-	render: PropTypes.any,
-	collapse: PropTypes.any,
-	striped: PropTypes.bool,
-	selectable: PropTypes.bool,
-}
-
-export default EnhancedTableRow
+export default EnhancedTableRow as <T extends SortableRow>(props: EnhancedTableRowProps<T>) => ReactElement

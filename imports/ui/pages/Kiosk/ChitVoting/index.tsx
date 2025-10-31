@@ -3,7 +3,7 @@ import { Container, Button, Typography } from "@mui/material"
 import { forEach, shuffle } from "lodash"
 import { observer } from "mobx-react-lite"
 import PropTypes from "prop-types"
-import React, { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo } from "react"
 
 import { useData, useSettings, useOrgs } from "/imports/api/providers"
 
@@ -11,7 +11,6 @@ import { OrgCardContainer } from "/imports/ui/components/Cards"
 import Countown from "../Countdown"
 import VotingComplete from "../VotingComplete"
 import { FundsVoteContext } from "../VotingContext"
-
 import { COLORS } from "/imports/lib/global"
 import ChitVoteOrgCard from "./ChitVoteOrgCard"
 

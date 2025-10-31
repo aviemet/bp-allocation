@@ -1,6 +1,5 @@
 import Container from "@mui/material/Container"
 import { useParams, useLocation } from "@tanstack/react-router"
-import React from "react"
 
 import {
 	OrganizationsPane,

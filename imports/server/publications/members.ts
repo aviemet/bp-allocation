@@ -37,7 +37,14 @@ Meteor.publish("members", function({ themeId, limit }: { themeId: string, limit:
 		subOptions.limit = limit
 	}
 
+	let membersObserver: { stop: () => void } | null = null
+
 	const computation = Tracker.autorun(async() => {
+		if(membersObserver && typeof membersObserver.stop === "function") {
+			membersObserver.stop()
+			membersObserver = null
+		}
+
 		const memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
 		const memberIds = memberThemes
 			.map(mt => mt.member)
@@ -50,12 +57,17 @@ Meteor.publish("members", function({ themeId, limit }: { themeId: string, limit:
 			}
 		})
 
-		const membersObserver = Members.find({ _id: { $in: memberIds } }, subOptions).observe(membersTransformer("members", this, { themeId, memberThemesMap }))
-		this.onStop(() => membersObserver.stop())
+		const observerHandle = Members.find({ _id: { $in: memberIds } }, subOptions).observe(membersTransformer("members", this, { themeId, memberThemesMap }))
+		membersObserver = observerHandle
 		this.ready()
 	})
 
-	this.onStop(() => computation.stop())
+	this.onStop(() => {
+		if(membersObserver && typeof membersObserver.stop === "function") {
+			membersObserver.stop()
+		}
+		computation.stop()
+	})
 })
 
 Meteor.publish("member", async function({ memberId, themeId }: { memberId?: string, themeId: string }) {
@@ -72,6 +84,10 @@ Meteor.publish("member", async function({ memberId, themeId }: { memberId?: stri
 
 	const memberObserver = Members.find({ _id: memberId }).observe(membersTransformer("members", this, { themeId, memberThemesMap, debug: true }))
 
-	this.onStop(() => memberObserver.stop())
+	this.onStop(() => {
+		if(memberObserver && typeof memberObserver.stop === "function") {
+			memberObserver.stop()
+		}
+	})
 	this.ready()
 })

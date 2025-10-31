@@ -3,7 +3,6 @@ import { styled } from "@mui/system"
 import { cloneDeep } from "lodash"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import React from "react"
 import { useTheme, useSettings, useOrgs } from "/imports/api/providers"
 
 import AwardCard from "/imports/ui/components/Cards/AwardCard"

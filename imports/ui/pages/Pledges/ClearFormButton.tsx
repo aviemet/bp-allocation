@@ -1,5 +1,4 @@
 import { Button } from "@mui/material"
-import React from "react"
 import { useFormContext } from "react-hook-form"
 
 const ClearFormButton = () => {

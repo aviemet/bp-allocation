@@ -1,5 +1,3 @@
-import React from "react"
-
 import {
 	Box,
 	Divider,
@@ -7,8 +5,8 @@ import {
 	Typography,
 } from "@mui/material"
 
-import ThemeSettingsForm from "./ThemeSettingsForm"
 import PresentationSettingsForm from "./PresentationSettingsForm"
+import ThemeSettingsForm from "./ThemeSettingsForm"
 
 const GeneralSettings = () => {
 	return (

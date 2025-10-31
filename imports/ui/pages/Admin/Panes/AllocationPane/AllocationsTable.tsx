@@ -15,7 +15,7 @@ import { Map } from "immutable"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import PropTypes from "prop-types"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 
 import AllocationInputs from "./AllocationInputs"
 import { useSettings, useTheme, useOrgs } from "/imports/api/providers"

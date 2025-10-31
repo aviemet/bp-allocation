@@ -9,7 +9,7 @@ import {
 	MenuItem,
 	MenuList,
 } from "@mui/material"
-import React, { useState, useRef, MouseEvent } from "react"
+import { useState, useRef, MouseEvent } from "react"
 
 interface SplitButtonOption {
 	title: string

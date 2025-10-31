@@ -13,7 +13,7 @@ import {
 } from "@mui/material"
 import { Link } from "@tanstack/react-router"
 import PropTypes from "prop-types"
-import React, { useState } from "react"
+import { useState } from "react"
 
 import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
 import ActionMenu from "/imports/ui/components/Menus/ActionMenu"
@@ -80,7 +80,7 @@ const ContextMenu = ({ themeId, member }) => {
 					</MenuItem>
 					<Collapse in={ textSubmenuOpen } timeout="auto" unmountOnExit>
 						<Divider />
-						{ messages.values.map((message) => {
+						{ messages?.values.map((message) => {
 							if(message.active && message.type === "text") return (
 								<MenuItem key={ `${message._id}-text` } disableRipple>
 									<Stack sx={ { width: "100%" } } direction="row" justifyContent="space-between" alignItems="center">
@@ -89,7 +89,7 @@ const ContextMenu = ({ themeId, member }) => {
 									</Stack>
 								</MenuItem>
 							)
-						}) }
+						}) || null }
 					</Collapse>
 				</List>,
 
@@ -105,7 +105,7 @@ const ContextMenu = ({ themeId, member }) => {
 					</MenuItem>
 					<Collapse in={ emailSubmenuOpen } timeout="auto" unmountOnExit>
 						<Divider />
-						{ messages.values.map((message) => {
+						{ messages?.values.map((message) => {
 							if(message.active && message.type === "email") return (
 								<MenuItem key={ `${message._id}-email` } disableRipple>
 									<Stack sx={ { width: "100%" } } direction="row" justifyContent="space-between" alignItems="center">
@@ -114,7 +114,7 @@ const ContextMenu = ({ themeId, member }) => {
 									</Stack>
 								</MenuItem>
 							)
-						}) }
+						}) || null }
 					</Collapse>
 				</List>,
 

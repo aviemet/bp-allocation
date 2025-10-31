@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import MemberSearch from "/imports/ui/components/MemberSearch"
 import { useFormContext, useWatch } from "react-hook-form"
 

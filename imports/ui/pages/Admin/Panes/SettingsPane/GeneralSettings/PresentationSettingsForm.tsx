@@ -4,7 +4,7 @@ import {
 	Stack,
 } from "@mui/material"
 import { observer } from "mobx-react-lite"
-import React, { useState } from "react"
+import { useState } from "react"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 import { useSettings } from "/imports/api/providers"
 import { PresentationSettingsSchema } from "/imports/api/db"

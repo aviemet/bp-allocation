@@ -1,9 +1,10 @@
 import { format } from "date-fns"
 import { isEmpty } from "lodash"
-import React from "react"
 import { useOrgs, useMembers } from "/imports/api/providers"
+import { type MemberTheme } from "/imports/types/schema"
 import { Loading } from "/imports/ui/components"
 import ExportCsvButton from "/imports/ui/components/Buttons/ExportCsvButton"
+import { type MemberStore } from "/imports/api/stores"
 
 interface ChitVoteData {
 	Name: string
@@ -13,26 +14,36 @@ interface ChitVoteData {
 	[key: string]: string | number | undefined
 }
 
+interface MemberStoreWithTheme extends MemberStore {
+	theme?: MemberTheme
+}
+
 const ExportChitVotes = () => {
 	const { orgs, isLoading: orgsLoading } = useOrgs()
 	const { members, isLoading: membersLoading } = useMembers()
 
-	if(orgsLoading || membersLoading || isEmpty(members)) return <Loading />
+	if(orgsLoading || membersLoading || isEmpty(members) || !orgs) return <Loading />
 	return (
 		<ExportCsvButton
 			data={ members.values.map(member => {
+				const memberWithTheme = member as MemberStoreWithTheme
+				const memberTheme = memberWithTheme.theme
+
 				let newMember: ChitVoteData = {
-					"Name": member.fullName,
-					"Code": member.code,
-					"Initials": member.initials,
-					"Number": member.number,
+					Name: member.fullName || "",
+					Code: member.code,
+					Initials: member.initials,
+					Number: member.number,
 				}
 
 				orgs.values.forEach(org => {
-					const chits = member.theme.chitVotes.find(vote => vote.organization === org._id)
-					newMember[org.title] = chits ? chits.votes : 0
-					newMember["Source"] = chits ? chits.voteSource : ""
-					newMember["Voted At"] = chits ? format(chits.createdAt, "hh:mma MM/dd/yy") : ""
+					const orgTitle = org.title
+					if(!orgTitle) return
+
+					const chits = memberTheme?.chitVotes?.find((vote) => vote.organization === org._id)
+					newMember[orgTitle] = chits?.votes || 0
+					newMember["Source"] = chits?.voteSource || ""
+					newMember["Voted At"] = chits?.createdAt ? format(chits.createdAt, "hh:mma MM/dd/yy") : ""
 				})
 
 				return newMember

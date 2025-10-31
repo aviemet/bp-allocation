@@ -10,7 +10,7 @@ import {
 import { useParams } from "@tanstack/react-router"
 import { isEmpty } from "lodash"
 import { observer } from "mobx-react-lite"
-import React, { useState } from "react"
+import { useState } from "react"
 import { useMembers, useSettings } from "/imports/api/providers"
 import { formatters } from "/imports/lib/utils"
 

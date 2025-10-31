@@ -1,6 +1,5 @@
 import styled from "@emotion/styled"
 import { Container } from "@mui/material"
-import React from "react"
 
 const FourOhFour = () => {
 	return (

@@ -315,10 +315,10 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({ id, data }: UpdateMemberData) {
+		async run({ id, data }: UpdateMemberData) {
 			data.fullName = `${data.firstName} ${data.lastName}`
 			const sanitizedData = _sanitizeMemberData(data)
-			return Members.update({ _id: id }, { $set: sanitizedData as Record<string, unknown> })
+			return await Members.updateAsync({ _id: id }, { $set: sanitizedData as Record<string, unknown> })
 		},
 	}),
 
@@ -330,8 +330,8 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({ id, data }: UpdateMemberThemeData) {
-			return MemberThemes.update({ _id: id }, { $set: data })
+		async run({ id, data }: UpdateMemberThemeData) {
+			return await MemberThemes.updateAsync({ _id: id }, { $set: data })
 		},
 	}),
 

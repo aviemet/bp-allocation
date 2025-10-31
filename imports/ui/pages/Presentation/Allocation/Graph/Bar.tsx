@@ -1,11 +1,10 @@
-import React from "react"
-import PropTypes from "prop-types"
-import numeral from "numeral"
 import styled from "@emotion/styled"
+import numeral from "numeral"
+import PropTypes from "prop-types"
 import { COLORS } from "/imports/lib/global"
 
 const AwardImg = ({ show }) => {
-	if(show !== true) return <React.Fragment />
+	if(show !== true) return <></>
 	return <Award src="/img/BAT_award_logo.svg" style={ { maxHeight: "10rem" } } />
 }
 

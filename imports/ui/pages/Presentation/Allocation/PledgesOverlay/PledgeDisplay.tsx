@@ -1,8 +1,9 @@
-import React, { useLayoutEffect, useRef } from "react"
+import Fireworks from "matter-fireworks"
 import PropTypes from "prop-types"
+import { useLayoutEffect, useRef } from "react"
 
 import PledgeInfo from "./PledgeInfo"
-import Fireworks from "matter-fireworks"
+
 
 const PledgeDisplay = ({ pledge }) => {
 	const canvasRef = useRef()

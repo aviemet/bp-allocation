@@ -1,6 +1,5 @@
 import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet, Navigate, useParams, redirect } from "@tanstack/react-router"
 import { Meteor } from "meteor/meteor"
-import React from "react"
 
 import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from "/imports/ui/layouts"
 import FourOhFour from "./404"

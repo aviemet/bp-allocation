@@ -1,6 +1,6 @@
 import { useParams } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useData, useTheme, useOrgs, useSettings } from "/imports/api/providers"
 import { Loading } from "/imports/ui/components"

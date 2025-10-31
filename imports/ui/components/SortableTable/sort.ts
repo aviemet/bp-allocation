@@ -1,13 +1,26 @@
-function descendingComparator(a, b, orderBy) {
-	let orderByA = a
-	let orderByB = b
+import { SortableRow } from "./types"
 
-	// Allow for nested objects to be sorted
+type SortOrder = "asc" | "desc"
+
+function descendingComparator<T extends SortableRow>(a: T, b: T, orderBy: string): number {
+	let orderByA: unknown = a
+	let orderByB: unknown = b
+
 	const orderBySplit = orderBy.split(".")
 	orderBySplit.forEach(value => {
-		orderByA = orderByA[value]
-		orderByB = orderByB[value]
+		if(orderByA && typeof orderByA === "object" && value in orderByA) {
+			orderByA = (orderByA as Record<string, unknown>)[value]
+		}
+		if(orderByB && typeof orderByB === "object" && value in orderByB) {
+			orderByB = (orderByB as Record<string, unknown>)[value]
+		}
 	})
+
+	if(orderByA === null || orderByA === undefined) {
+		if(orderByB === null || orderByB === undefined) return 0
+		return 1
+	}
+	if(orderByB === null || orderByB === undefined) return -1
 
 	if(orderByA < orderByB) {
 		return 1
@@ -18,16 +31,20 @@ function descendingComparator(a, b, orderBy) {
 	return 0
 }
 
-export function getComparator(order, orderBy) {
+export function getComparator<T extends SortableRow>(
+	order: SortOrder,
+	orderBy: string
+): (a: T, b: T) => number {
 	return order === "desc"
 		? (a, b) => descendingComparator(a, b, orderBy)
 		: (a, b) => -descendingComparator(a, b, orderBy)
 }
 
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-export function stableSort(array, comparator) {
-	const stabilizedThis = array.map((el, index) => [el, index])
+export function stableSort<T extends SortableRow>(
+	array: T[],
+	comparator: (a: T, b: T) => number
+): T[] {
+	const stabilizedThis = array.map((el, index) => [el, index] as const)
 	stabilizedThis.sort((a, b) => {
 		const order = comparator(a[0], b[0])
 		if(order !== 0) {

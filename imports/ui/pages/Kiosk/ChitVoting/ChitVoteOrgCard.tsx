@@ -1,5 +1,4 @@
 import PropTypes from "prop-types"
-import React from "react"
 
 import { OrgCard } from "/imports/ui/components/Cards"
 import ChitTicker from "./ChitTicker"

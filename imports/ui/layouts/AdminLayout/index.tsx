@@ -18,7 +18,7 @@ import { styled } from "@mui/material/styles"
 import { useNavigate, useLocation, useParams, Link, Outlet } from "@tanstack/react-router"
 import { Meteor } from "meteor/meteor"
 import { observer } from "mobx-react-lite"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect, type MouseEvent } from "react"
 
 import AdminLinks from "./AdminLinks"
 import { useData, useTheme } from "/imports/api/providers"
@@ -50,7 +50,7 @@ const AdminLayout = observer(() => {
 		setDrawerOpen(!["/themes", "/admin"].includes(location.pathname))
 	}, [location.pathname])
 
-	const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+	const handleMenu = (event: MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
 	}
 

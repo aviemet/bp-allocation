@@ -6,7 +6,7 @@ import { useMembers } from "/imports/api/providers"
 
 import { Loading } from "/imports/ui/components"
 import PropTypes from "prop-types"
-import React, { useState } from "react"
+import { useState } from "react"
 import { Form, TextInput, SubmitButton, STATUS } from "/imports/ui/components/Form"
 
 import { VotingContextProvider } from "./VotingContext"

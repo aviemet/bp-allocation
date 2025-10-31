@@ -4,7 +4,7 @@ import SmsIcon from "@mui/icons-material/Sms"
 import { Paper, ButtonProps } from "@mui/material"
 import { Meteor } from "meteor/meteor"
 import { observer } from "mobx-react-lite"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 
 import { useTheme } from "/imports/api/providers"
 import { type MessageData } from "/imports/api/db"

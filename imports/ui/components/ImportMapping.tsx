@@ -1,6 +1,3 @@
-import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
-
 import styled from "@emotion/styled"
 import {
 	Button,
@@ -18,6 +15,8 @@ import {
 	TableRow,
 	Paper,
 } from "@mui/material"
+import PropTypes from "prop-types"
+import { useState, useEffect, Fragment } from "react"
 
 const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImport }) => {
 	const [errors, setErrors] = useState([])
@@ -144,7 +143,7 @@ const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImp
 					</TableHead>
 					<EnhancedTableBody>
 						{ values.map((org, i) => (
-							<React.Fragment key={ i }>
+							<Fragment key={ i }>
 								<TableRow className={ errors[i] === undefined ? "" : "error" }>
 									{ headings.map((heading, j) => {
 										const headingMapForType = mapping.find(map => map.name === headingMap[heading])
@@ -165,7 +164,7 @@ const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImp
 										</ul>
 									</TableCell>
 								</TableRow> }
-							</React.Fragment>
+							</Fragment>
 						)) }
 					</EnhancedTableBody>
 				</Table>

@@ -1,12 +1,5 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { findIndex } from "lodash"
-
-import { observer } from "mobx-react-lite"
-import { ThemeMethods } from "/imports/api/methods"
-import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
-
 import styled from "@emotion/styled"
+import LockIcon from "@mui/icons-material/Lock"
 import {
 	Paper,
 	Table,
@@ -19,7 +12,12 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material"
-import LockIcon from "@mui/icons-material/Lock"
+import { findIndex } from "lodash"
+import { observer } from "mobx-react-lite"
+import { ThemeMethods } from "/imports/api/methods"
+import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
+
+import PropTypes from "prop-types"
 
 import TopOrgsRow from "./TopOrgsRow"
 import { sortTopOrgs } from "/imports/lib/orgsMethods"
@@ -43,7 +41,7 @@ const TopOrgsByChitVote = observer(({ hideAdminFields }) => {
 								<FlexHeading>
 									<span className="full">Organization</span>
 									<span>
-										{ settings.useKioskChitVoting && `(${theme.chitVotesCast}/${theme.totalMembers}) Members Have Voted` }
+										{ settings?.useKioskChitVoting && `(${theme.chitVotesCast}/${theme.totalMembers}) Members Have Voted` }
 									</span>
 								</FlexHeading>
 							</TableCell>
@@ -80,7 +78,7 @@ const TopOrgsByChitVote = observer(({ hideAdminFields }) => {
 							<TableCell>
 								<div style={ { whiteSpace: "nowrap" } }>
 									<span>{ totalVotes }</span>
-									{ settings.useKioskChitVoting && ` / ${theme.totalChitVotes}` }
+									{ settings?.useKioskChitVoting && ` / ${theme.totalChitVotes}` }
 								</div>
 							</TableCell>
 							<TableCell></TableCell>

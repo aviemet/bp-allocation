@@ -21,7 +21,7 @@ import {
 } from "@mui/material"
 import { Link } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
-import React, { useState } from "react"
+import { useState } from "react"
 import { useData } from "/imports/api/providers"
 
 const navLinks = [

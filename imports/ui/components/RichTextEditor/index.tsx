@@ -1,6 +1,6 @@
 import { Checkbox, FormControlLabel } from "@mui/material"
 import PropTypes from "prop-types"
-import React, { useState, forwardRef } from "react"
+import { useState, forwardRef } from "react"
 
 import RawEditor from "./RawEditor"
 import TipTapEditor from "./TipTapEditor"

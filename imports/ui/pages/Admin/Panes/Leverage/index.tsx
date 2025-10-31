@@ -1,13 +1,3 @@
-import React from "react"
-import PropTypes from "prop-types"
-import numeral from "numeral"
-
-import { observer } from "mobx-react-lite"
-import { useTheme, useOrgs } from "/imports/api/providers"
-import { ThemeMethods } from "/imports/api/methods"
-import LeverageObject from "/imports/lib/Leverage"
-
-import { styled } from "@mui/material/styles"
 import {
 	Box,
 	Button,
@@ -16,9 +6,18 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { observer } from "mobx-react-lite"
+import numeral from "numeral"
+import PropTypes from "prop-types"
 
-import RoundTable from "./RoundTable"
+import { useTheme, useOrgs } from "/imports/api/providers"
+import { ThemeMethods } from "/imports/api/methods"
+import LeverageObject from "/imports/lib/Leverage"
+
+
 import ResultsTable from "./ResultsTable"
+import RoundTable from "./RoundTable"
 
 const Leverage = observer(({ hideAdminFields }) => {
 	const { theme } = useTheme()

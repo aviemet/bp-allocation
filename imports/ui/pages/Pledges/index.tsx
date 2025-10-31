@@ -1,7 +1,6 @@
 import { Container, Typography } from "@mui/material"
 import { isEmpty } from "lodash"
 import { observer } from "mobx-react-lite"
-import React from "react"
 import { useMembers, useOrgs } from "/imports/api/providers"
 import { OrganizationMethods } from "/imports/api/methods"
 import { Form } from "/imports/ui/components/Form"

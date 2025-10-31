@@ -7,7 +7,7 @@ import { isEmpty } from "lodash"
 
 import { OrgCard } from "/imports/ui/components/Cards"
 import { observer } from "mobx-react-lite"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 
 import { useWindowSize, breakpoints } from "/imports/ui/MediaProvider"
 import { Loading } from "/imports/ui/components"

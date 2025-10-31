@@ -1,6 +1,3 @@
-import React from "react"
-import PropTypes from "prop-types"
-
 import {
 	Button,
 	Dialog,
@@ -9,6 +6,8 @@ import {
 	DialogContentText,
 	DialogTitle,
 } from "@mui/material"
+import PropTypes from "prop-types"
+
 
 const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction, cancelAction, okText, cancelText, width }) => {
 

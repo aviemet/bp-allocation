@@ -1,12 +1,12 @@
-import React from "react"
-import PropTypes from "prop-types"
-import numeral from "numeral"
+import styled from "@emotion/styled"
 import { observer } from "mobx-react-lite"
 import { useTheme, useSettings, useOrgs } from "/imports/api/providers"
-import styled from "@emotion/styled"
-import OrgInfo from "./OrgInfo"
+import numeral from "numeral"
+import PropTypes from "prop-types"
+
 import Bar from "./Bar"
 import LeverageBar from "./LeverageBar"
+import OrgInfo from "./OrgInfo"
 
 const Graph = observer(props => {
 	const { theme } = useTheme()

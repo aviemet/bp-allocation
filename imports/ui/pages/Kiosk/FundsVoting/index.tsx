@@ -9,7 +9,6 @@ import React, { useState, useEffect } from "react"
 import { useData, useSettings, useOrgs } from "/imports/api/providers"
 import VotingComplete from "../VotingComplete"
 import { FundsVoteContext } from "../VotingContext"
-
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
 import FundsSlider from "./FundsSlider"
 import Countdown from "../Countdown"

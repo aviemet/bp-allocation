@@ -9,7 +9,7 @@ import { format } from "date-fns"
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
 import PropTypes from "prop-types"
-import React, { useState } from "react"
+import { useState } from "react"
 
 import { Themes } from "/imports/api/db"
 import { ThemeMethods } from "/imports/api/methods"

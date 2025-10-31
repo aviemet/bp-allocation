@@ -1,13 +1,12 @@
-import React, { useState, useContext } from "react"
-import PropTypes from "prop-types"
 import { forEach, find, clone } from "lodash"
-
 import { observer } from "mobx-react-lite"
+import PropTypes from "prop-types"
+import { useState, useContext, createContext } from "react"
 import { useTheme, useOrgs } from "/imports/api/providers"
 
 import { MemberMethods } from "/imports/api/methods"
 
-const FundsVoteContext = React.createContext(null)
+const FundsVoteContext = createContext(null)
 
 const VotingContextProvider = observer(({ children, member, unsetUser }) => {
 	const { theme } = useTheme()

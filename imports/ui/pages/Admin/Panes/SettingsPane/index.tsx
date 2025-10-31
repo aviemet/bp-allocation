@@ -4,7 +4,6 @@ import {
 	Tabs,
 } from "@mui/material"
 import { Link, useParams } from "@tanstack/react-router"
-import React from "react"
 
 
 import AdvancedSettings from "./AdvancedSettings"

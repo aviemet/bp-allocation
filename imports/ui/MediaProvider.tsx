@@ -1,5 +1,5 @@
 import { useMediaQuery } from "@mui/material"
-import React, { useState, useEffect, ReactNode } from "react"
+import { useState, useEffect, type ReactNode } from "react"
 
 import { screen as breakpoints } from "./theme"
 

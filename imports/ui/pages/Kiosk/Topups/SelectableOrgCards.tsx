@@ -1,6 +1,6 @@
 import numeral from "numeral"
 import PropTypes from "prop-types"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useFormContext, useWatch } from "react-hook-form"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
 

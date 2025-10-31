@@ -4,7 +4,7 @@ import KeyboardIcon from "@mui/icons-material/Keyboard"
 import { TextField, InputAdornment, IconButton, Box, Typography, Slider } from "@mui/material"
 import _ from "lodash"
 import numeral from "numeral"
-import React, { useState, useLayoutEffect, type ReactNode } from "react"
+import { useState, useLayoutEffect, type ReactNode, type MouseEvent } from "react"
 
 import { useVoting } from "../VotingContext"
 import { type MemberData, type OrgData } from "/imports/api/db"
@@ -77,7 +77,7 @@ const FundsSliderComponent = ({ member, org, allocations, updateAllocations }: F
 		updateAllocations(org._id, constrained)
 	}
 
-	const toggleAmountInput = (e: React.MouseEvent) => {
+	const toggleAmountInput = (e: MouseEvent) => {
 		e.stopPropagation()
 
 		setShowInput(true)

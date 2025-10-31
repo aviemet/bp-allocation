@@ -7,7 +7,6 @@ import {
 } from "@mui/material"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import React from "react"
 import { Loading } from "/imports/ui/components"
 
 const Breakdown = observer(() => {

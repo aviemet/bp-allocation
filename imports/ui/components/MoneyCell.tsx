@@ -1,11 +1,10 @@
-import React from "react"
-import numeral from "numeral"
-import PropTypes from "prop-types"
 import {
 	Box,
 	Stack,
 	TableCell,
 } from "@mui/material"
+import numeral from "numeral"
+import PropTypes from "prop-types"
 
 const MoneyCell = ({ children, format = "0,0.00" }) => {
 	return (
