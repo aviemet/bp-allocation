@@ -14,8 +14,9 @@ interface OrgObserverParams {
 }
 
 const orgObserver = registerObserver((doc: OrgData, params: OrgObserverParams) => {
-	if(!doc.theme) return doc
-	return OrgTransformer(doc, params)
+	if(!doc.theme) return { ...doc }
+	const transformed = OrgTransformer(doc, params)
+	return { ...transformed }
 })
 
 // Organizations - All orgs for theme
@@ -45,22 +46,3 @@ Meteor.publish("organizations", function(themeId: string) {
 	this.onStop(() => computation.stop())
 })
 
-/*
-// TopOrgs - Top voted orgs from first round of voting
-Meteor.publish('topOrgs', function(themeId) {
-	if(!themeId) return null
-	// TODO: Filter by top chit votes
-	const observer = Organizations.find({ theme: themeId }).observe(orgObserver('organizations', this))
-	this.onStop(() => observer.stop())
-	this.ready()
-})
-
-// Organization - Single org
-Meteor.publish('organization', function(orgId) {
-	if(!orgId) return null
-
-	const observer = Organizations.find({ _id: orgId }).observe(orgObserver('organization', this))
-	this.onStop(() => observer.stop())
-	this.ready()
-})
-*/

@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from "react"
-import PropTypes from "prop-types"
-import LoadingButton from "@mui/lab/LoadingButton"
-import SaveIcon from "@mui/icons-material/Save"
 import CheckIcon from "@mui/icons-material/Check"
+import SaveIcon from "@mui/icons-material/Save"
+import { Button } from "@mui/material"
+import PropTypes from "prop-types"
+import React, { useEffect, useState, useRef } from "react"
 
 export const STATUS = {
 	READY: "ready",
@@ -68,7 +68,7 @@ const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }
 	}, [])
 
 	return (
-		<LoadingButton
+		<Button
 			variant="contained"
 			loadingPosition={ buttonIcon ? "end" : undefined }
 			endIcon={ buttonIcon }
@@ -79,7 +79,7 @@ const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }
 			{ ...props }
 		>
 			{ children }
-		</LoadingButton>
+		</Button>
 	)
 }
 

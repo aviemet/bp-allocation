@@ -2,7 +2,7 @@ import { format } from "date-fns"
 import { Meteor } from "meteor/meteor"
 import twilio from "twilio"
 
-import { Themes, Members, MemberThemes, PresentationSettings, type ThemeData, type SettingsData } from "/imports/api/db"
+import { Themes, Members, MemberThemes, PresentationSettings } from "/imports/api/db"
 import "/imports/api/methods"
 import "/imports/server/publications"
 import { setMessageSendingFlag, setMessageSentFlag } from "./messageMethods"
@@ -115,14 +115,12 @@ interface SmsParams {
 
 const textVotingLinkToMembers = async({ themeId, message, members }: SmsParams) => {
 	if(members === undefined) {
-		members = Members.find(
-			{ "theme.theme": themeId },
-			{ sort: { number: 1 } }
-		)
+		const allMembers = await Members.find({ "theme.theme": themeId }, { sort: { number: 1 } }).fetchAsync()
+		members = allMembers.map(m => m._id)
 	}
 
-	const theme = Themes.findOne({ _id: themeId })
-	const settings = PresentationSettings.findOne({ _id: theme?.presentationSettings })
+	const theme = await Themes.findOneAsync({ _id: themeId })
+	const settings = theme?.presentationSettings ? await PresentationSettings.findOneAsync({ _id: theme.presentationSettings }) : undefined
 
 	setMessageSendingFlag(theme, message)
 

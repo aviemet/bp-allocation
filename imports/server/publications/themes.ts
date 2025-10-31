@@ -1,32 +1,64 @@
 import { Meteor } from "meteor/meteor"
+import { Tracker } from "meteor/tracker"
 
 import { registerObserver } from "../methods"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
 
-import { Themes, PresentationSettings, Organizations, MemberThemes } from "/imports/api/db"
+import { Themes, PresentationSettings, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
 import { ThemeTransformer, OrgTransformer } from "/imports/server/transformers"
+import { type ThemeTransformerParams } from "/imports/server/transformers/themeTransformer"
 
-const themeObserver = registerObserver((doc, params) => {
-	return ThemeTransformer(doc, params)
+const themeObserver = registerObserver((doc: ThemeData, params: ThemeTransformerParams) => {
+	const transformed = ThemeTransformer(doc, params)
+	return { ...transformed }
 })
 
-const themeObserverAutorun = (theme, publisher) => {
-	publisher.autorun(async function() {
+Meteor.publish("themes", function(themeId?: string) {
+	if(themeId) {
+		const observer = Themes.find({ _id: themeId }).observe({
+			added: (doc) => this.added("themes", doc._id, { ...doc }),
+			changed: (doc) => this.changed("themes", doc._id, { ...doc }),
+			removed: (doc) => this.removed("themes", doc._id),
+		})
+		this.onStop(() => observer.stop())
+		this.ready()
+	} else {
+		return Themes.find({}, { fields: { _id: 1, title: 1, createdAt: 1, slug: 1 } })
+	}
+})
+
+
+Meteor.publish("theme", async function(themeId: string) {
+	if(!themeId) {
+		this.ready()
+		return
+	}
+
+	const theme = await Themes.findOneAsync({ _id: themeId })
+	if(!theme) {
+		this.ready()
+		return
+	}
+
+	const computation = Tracker.autorun(async() => {
 		try {
 			const settings = await PresentationSettings.findOneAsync({ _id: theme.presentationSettings })
+			if(!settings) {
+				return
+			}
+
 			const memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
 			const orgs = await Organizations.find({ theme: theme._id }).fetchAsync()
 
 			const transformedOrgs = orgs.map(org => {
-				try {
-					return OrgTransformer(org, { theme, settings, memberThemes })
-				} catch(error) {
-					console.error("Error in OrgTransformer:", error, org)
-					throw error
-				}
+				return OrgTransformer(org, { theme, settings, memberThemes })
 			})
 
-			const topOrgs = filterTopOrgs(transformedOrgs, theme)
+			const topOrgs = filterTopOrgs(transformedOrgs, {
+				...theme,
+				numTopOrgs: theme.numTopOrgs || 0,
+				topOrgsManual: theme.topOrgsManual || [],
+			})
 
 			const observer = Themes.find({ _id: theme._id }).observe(themeObserver("themes", this, { topOrgs, memberThemes, settings }))
 			this.onStop(() => {
@@ -36,41 +68,56 @@ const themeObserverAutorun = (theme, publisher) => {
 			})
 			this.ready()
 		} catch(error) {
-			console.error("Error in themeObserverAutorun:", error)
-			this.error(error)
+			this.error(error instanceof Error ? error : new Error(String(error)))
 		}
 	})
-}
 
-Meteor.publish("themes", function(themeId) {
-	if(themeId) {
-		const observer = Themes.find({ _id: themeId }).observe(themeObserver("themes", this))
-		this.onStop(() => observer.stop())
-		this.ready()
-	} else {
-		return Themes.find({}, { fields: { _id: 1, title: 1, createdAt: 1, slug: 1 } })
-	}
+	this.onStop(() => computation.stop())
 })
 
-
-Meteor.publish("theme", async function(themeId) {
-	if(!themeId) return
-
-	const theme = await Themes.findOneAsync({ _id: themeId })
-	if(!theme) {
+Meteor.publish("themeBySlug", async function(slug: string) {
+	if(!slug) {
+		this.ready()
 		return
 	}
-
-	themeObserverAutorun(theme, this)
-})
-
-Meteor.publish("themeBySlug", async function(slug) {
-	if(!slug) return
 
 	const theme = await Themes.findOneAsync({ slug })
 	if(!theme) {
+		this.ready()
 		return
 	}
 
-	themeObserverAutorun(theme, this)
+	const computation = Tracker.autorun(async() => {
+		try {
+			const settings = await PresentationSettings.findOneAsync({ _id: theme.presentationSettings })
+			if(!settings) {
+				return
+			}
+
+			const memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
+			const orgs = await Organizations.find({ theme: theme._id }).fetchAsync()
+
+			const transformedOrgs = orgs.map(org => {
+				return OrgTransformer(org, { theme, settings, memberThemes })
+			})
+
+			const topOrgs = filterTopOrgs(transformedOrgs, {
+				...theme,
+				numTopOrgs: theme.numTopOrgs || 0,
+				topOrgsManual: theme.topOrgsManual || [],
+			})
+
+			const observer = Themes.find({ _id: theme._id }).observe(themeObserver("themes", this, { topOrgs, memberThemes, settings }))
+			this.onStop(() => {
+				if(observer && typeof observer.stop === "function") {
+					observer.stop()
+				}
+			})
+			this.ready()
+		} catch(error) {
+			this.error(error instanceof Error ? error : new Error(String(error)))
+		}
+	})
+
+	this.onStop(() => computation.stop())
 })

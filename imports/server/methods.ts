@@ -5,15 +5,15 @@ import { sortBy } from "lodash"
  * @param {*} transformer
  */
 type PublishSelf = {
-	added: (title: string, id: string, fields: unknown) => void
-	changed: (title: string, id: string, fields: unknown) => void
+	added: (title: string, id: string, fields: Record<string, unknown>) => void
+	changed: (title: string, id: string, fields: Record<string, unknown>) => void
 	removed: (title: string, id: string) => void
 }
 
-type Transformer<TDoc extends { _id: string }, TParams> = (doc: TDoc, params: TParams) => unknown
+type Transformer<TDoc extends { _id: string }, TParams> = (doc: TDoc, params: TParams) => Record<string, unknown>
 type ObserverFactory<TDoc extends { _id: string }, TParams> = (title: string, self: PublishSelf, params: TParams) => {
 	added: (doc: TDoc) => unknown
-	changed: (newDoc: TDoc, oldDoc: TDoc) => unknown
+	changed: (newDoc: TDoc) => unknown
 	removed: (oldDoc: TDoc) => unknown
 }
 type RegisterObserver = <TDoc extends { _id: string }, TParams>(transformer: Transformer<TDoc, TParams>) => ObserverFactory<TDoc, TParams>
@@ -23,7 +23,7 @@ export const registerObserver: RegisterObserver = (transformer) => (title, self,
 		added: (doc) => {
 			return self.added(title, doc._id, transformer(doc, params))
 		},
-		changed: (newDoc, oldDoc) => {
+		changed: (newDoc) => {
 			return self.changed(title, newDoc._id, transformer(newDoc, params))
 		},
 		removed: (oldDoc) => {

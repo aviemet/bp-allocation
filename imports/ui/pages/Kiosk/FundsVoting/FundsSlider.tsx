@@ -1,74 +1,83 @@
 import styled from "@emotion/styled"
 import CheckIcon from "@mui/icons-material/Check"
 import KeyboardIcon from "@mui/icons-material/Keyboard"
-import { TextField, InputAdornment, IconButton, Box, Typography } from "@mui/material"
+import { TextField, InputAdornment, IconButton, Box, Typography, Slider } from "@mui/material"
 import _ from "lodash"
 import numeral from "numeral"
-import PropTypes from "prop-types"
-import React, { useState, useLayoutEffect } from "react"
-import Slider from "react-slider"
+import React, { useState, useLayoutEffect, type ReactNode } from "react"
 
 import { useVoting } from "../VotingContext"
+import { type MemberData, type OrgData } from "/imports/api/db"
+import { type MemberTheme } from "/imports/types/schema"
 
-
-/**
- * Tactile slider for adjusting voting amount
- */
-const FundsSlider = props => {
-	const { member, allocations, updateAllocations } = useVoting()
-
-	const context = Object.assign({ member, allocations, updateAllocations }, props)
-
-	return <FundsSliderComponent { ...context }>{ props.children }</FundsSliderComponent>
+interface MemberWithTheme extends MemberData {
+	theme: MemberTheme
 }
 
-/**
- * Full Component containing Slider, Org Title and amount feedback
- */
-const FundsSliderComponent = props => {
-	const [ value, setValue ] = useState(parseInt(props.allocations[props.org._id]))
-	const [ showLabel, setShowLabel ] = useState(false) // Toggles showing slider percent label
-	const [ showInput, setShowInput ] = useState(false) // Toggles between text $ amount and input
+interface FundsSliderComponentProps {
+	member: MemberWithTheme
+	org: OrgData
+	allocations: Record<string, number>
+	updateAllocations: (orgId: string, amount: number) => void
+}
 
-	const MAX = props.member.theme.amount
+interface FundsSliderProps {
+	org: OrgData
+	children?: ReactNode
+}
+
+const FundsSlider = ({ org, children }: FundsSliderProps) => {
+	const { member, allocations, updateAllocations } = useVoting()
+
+	if(!member) {
+		return null
+	}
+
+	return (
+		<FundsSliderComponent
+			member={ member as MemberWithTheme }
+			org={ org }
+			allocations={ allocations }
+			updateAllocations={ updateAllocations }
+		>
+			{ children }
+		</FundsSliderComponent>
+	)
+}
+
+const FundsSliderComponent = ({ member, org, allocations, updateAllocations }: FundsSliderComponentProps) => {
+	const [ value, setValue ] = useState(parseInt(allocations[org._id] || "0"))
+	const [ showLabel, setShowLabel ] = useState(false)
+	const [ showInput, setShowInput ] = useState(false)
+	const [ isDragging, setIsDragging ] = useState(false)
+
+	const MAX = member.theme.amount || 0
 
 	useLayoutEffect(() => {
 		// Disable contextmenu for long press on mobile
 		// document.oncontextmenu = () => false
 	}, [])
 
-	const handleChange = value => {
-		if(value < 0 || value > MAX) return
+	const handleChange = (newValue: number) => {
+		if(newValue < 0 || newValue > MAX) return
 
-		// undefined value from empty DB field should be dealt with correctly
-		if(_.isNaN(value)) {
+		if(_.isNaN(newValue)) {
 			setValue(0)
-			props.updateAllocations(props.org._id, 0)
+			updateAllocations(org._id, 0)
 			return
 		}
 
-		// Constrain value to not exceed total funds of member
 		let sum = 0
-		_.forEach(props.allocations, (voteAmount, key) => {
-			sum += key === props.org._id ? parseInt(value) : voteAmount
+		_.forEach(allocations, (voteAmount, key) => {
+			sum += key === org._id ? parseInt(String(newValue)) : voteAmount
 		})
-		const constrained = MAX - sum < 0 ? parseInt(value) + (MAX - sum) : parseInt(value)
+		const constrained = MAX - sum < 0 ? parseInt(String(newValue)) + (MAX - sum) : parseInt(String(newValue))
 		setValue(constrained)
 
-		// Save new value to DB on every change
-		props.updateAllocations(props.org._id, constrained)
+		updateAllocations(org._id, constrained)
 	}
 
-	// Show % label for slider on click, hide on mouseup/touchend
-	const toggleSliderLabel = () => {
-		setShowLabel(true)
-		// Hopefully fix issue where onChangeComplete doesn't fire
-		window.addEventListener("mouseup", () => setShowLabel(false), { once: true })
-		window.addEventListener("touchend", () => setShowLabel(false), { once: true })
-	}
-
-	// Replace $ amount with input, switch back with click outside of input
-	const toggleAmountInput = e => {
+	const toggleAmountInput = (e: React.MouseEvent) => {
 		e.stopPropagation()
 
 		setShowInput(true)
@@ -77,18 +86,17 @@ const FundsSliderComponent = props => {
 		window.addEventListener("touchstart", handlePageClick, false)
 	}
 
-	// Listens for click outside of $ input to hide input
-	const handlePageClick = e => {
+	const handlePageClick = (e: Event) => {
 		const inputContainer = document.getElementById("inputContainer")
+		const target = e.target as Node
 
-		if(inputContainer && !inputContainer.contains(e.target)) {
+		if(inputContainer && !inputContainer.contains(target)) {
 			hideInput()
 		}
 	}
 
-	// Hide $ amount input
 	const hideInput = () => {
-		handleChange(_.isNaN(value) ? 0 : value) // Save value to DB
+		handleChange(_.isNaN(value) ? 0 : value)
 		setShowInput(false)
 		window.removeEventListener("click", handlePageClick, false)
 		window.removeEventListener("touchstart", handlePageClick, false)
@@ -101,7 +109,12 @@ const FundsSliderComponent = props => {
 
 					<TextField
 						value={ value || "" }
-						onChange={ e => handleChange(parseInt(e.currentTarget.value)) }
+						onChange={ e => {
+							const parsed = parseInt(e.currentTarget.value)
+							if(!_.isNaN(parsed)) {
+								handleChange(parsed)
+							}
+						} }
 						InputProps={ {
 							inputProps: {
 								sx: {
@@ -152,13 +165,21 @@ const FundsSliderComponent = props => {
 			<div className={ showLabel ? "visible" : "" }>
 				<div>
 					<Slider
-						disabled={ !props.member.theme.amount || props.member.theme.amount <= 0 }
+						disabled={ !member.theme.amount || member.theme.amount <= 0 }
 						min={ 0 }
-						max={ props.member.theme.amount || 1 }
+						max={ member.theme.amount || 1 }
 						value={ value || 0 }
-						onChange={ handleChange }
-						onBeforeChange={ toggleSliderLabel }
-						onAfterChange={ () => setShowLabel(false) }
+						onChange={ (_, newValue) => {
+							if(!isDragging) {
+								setIsDragging(true)
+								setShowLabel(true)
+							}
+							handleChange(typeof newValue === "number" ? newValue : newValue[0])
+						} }
+						onChangeCommitted={ () => {
+							setIsDragging(false)
+							setShowLabel(false)
+						} }
 						step={ 5 }
 					/>
 					{ showLabel && (
@@ -181,20 +202,5 @@ const FundsInputContainer = styled.div`
 	justify-content: space-between;
 	margin: 1rem 0 0.25rem 0;
 `
-
-FundsSliderComponent.propTypes = {
-	member: PropTypes.object,
-	org: PropTypes.object,
-	updateAllocations: PropTypes.func,
-	allocations: PropTypes.object,
-
-}
-
-FundsSlider.propTypes = {
-	children: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.node),
-		PropTypes.node,
-	]),
-}
 
 export default FundsSlider

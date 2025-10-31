@@ -24,7 +24,7 @@ export interface OrgWithComputed extends OrgData {
  * @param {Object} doc Object in iterating array of objects to altered
  * @param {Object} params { theme, settings, memberThemes }
  */
-const OrgTransformer = (doc: OrgWithComputed, params: OrgTransformerParams): OrgWithComputed => {
+const OrgTransformer = (doc: OrgWithComputed, params: OrgTransformerParams) => {
 	doc.save = function() {
 		// Get save amount if saved
 		let save = 0

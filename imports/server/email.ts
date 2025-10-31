@@ -1,6 +1,6 @@
 import sgMail, { type MailDataRequired } from "@sendgrid/mail"
 import { Meteor } from "meteor/meteor"
-import { Themes, MemberThemes, type ThemeData } from "/imports/api/db"
+import { Themes, MemberThemes } from "/imports/api/db"
 import "/imports/api/methods"
 import "/imports/server/publications"
 
@@ -97,7 +97,7 @@ interface EmailVotingParams {
 }
 
 const emailVotingLinkToMembers = async({ themeId, message, members }: EmailVotingParams) => {
-	const theme = Themes.findOne({ _id: themeId }) as ThemeData | undefined
+	const theme = await Themes.findOneAsync({ _id: themeId })
 	const invalidEmailMembers: MemberEmailLookupResult[] = []
 
 	setMessageSendingFlag(theme, message)

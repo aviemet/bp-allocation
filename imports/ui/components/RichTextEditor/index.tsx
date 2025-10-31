@@ -1,14 +1,14 @@
-import React, { useState, forwardRef } from "react"
-import PropTypes from "prop-types"
 import { Checkbox, FormControlLabel } from "@mui/material"
+import PropTypes from "prop-types"
+import React, { useState, forwardRef } from "react"
 
 import RawEditor from "./RawEditor"
-import Quill from "./Quill"
+import TipTapEditor from "./TipTapEditor"
 
 const RichTextEditor = forwardRef(({ value, onChange, ...rest }, ref) => {
 	const [isRaw, setIsRaw] = useState(false)
 
-	const InputComponent = isRaw ? RawEditor : Quill
+	const InputComponent = isRaw ? RawEditor : TipTapEditor
 
 	const handleChange = newValue => {
 		if(onChange) onChange(newValue)

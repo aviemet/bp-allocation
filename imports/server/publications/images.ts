@@ -6,26 +6,28 @@ import { Images, Organizations } from "/imports/api/db"
 Meteor.publish("images", (ids) => {
 	if(!ids) return false
 
-	return Images.find({ _id: { $in: ids } }).cursor // Images need the cursor
+	return Images.find({ _id: { $in: ids } }).cursor
 })
 
 // Images - All images for theme
-Meteor.publish("images.byTheme", function(themeId) {
+Meteor.publish("images.byTheme", async function(themeId) {
 	if(!themeId) return Images.find({}).cursor
 
-	let orgs = Organizations.find({ theme: themeId }, { _id: true, image: true }).fetch()
+	const orgs = await Organizations.find({ theme: themeId }).fetchAsync()
 
-	let imgIds = []
-	orgs.map((org, i) => {
-		imgIds.push(org.image)
+	const imgIds: string[] = []
+	orgs.forEach((org) => {
+		if(org.image) {
+			imgIds.push(org.image)
+		}
 	})
 
-	return Images.find({ _id: { $in: imgIds } }).cursor // Images need the cursor
+	return Images.find({ _id: { $in: imgIds } }).cursor
 })
 
 // Image - Single Image
 Meteor.publish("image", (id) => {
 	if(!id) return false
 
-	return Images.find({ _id: id }).cursor // Images need the cursor
+	return Images.find({ _id: id }).cursor
 })

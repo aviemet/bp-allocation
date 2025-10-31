@@ -5,7 +5,7 @@ export interface MemberWithTheme extends MemberData {
 	theme?: MemberTheme
 }
 
-const MemberTransformer = (doc: MemberWithTheme, memberTheme?: MemberTheme): MemberWithTheme => {
+const MemberTransformer = (doc: MemberWithTheme, memberTheme?: MemberTheme) => {
 	doc.theme = memberTheme
 	return doc
 }

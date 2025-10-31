@@ -15,7 +15,6 @@ import {
 } from "@mui/material"
 import { styled, alpha } from "@mui/material/styles"
 import { Link, useParams, useNavigate } from "@tanstack/react-router"
-import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import React, { useState, useRef } from "react"
@@ -28,6 +27,81 @@ import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
 import SplitButton from "/imports/ui/components/Buttons/SplitButton"
 import DisplayHtml from "/imports/ui/components/DisplayHtml"
 import { Loading } from "/imports/ui/components"
+
+interface OrgCardProps {
+	org: Organization
+	id: string
+	onDelete: () => void
+}
+
+const OrgCard = ({ org, id, onDelete }: OrgCardProps) => {
+	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+	const open = Boolean(anchorEl)
+
+	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget)
+	}
+
+	const handleClose = () => {
+		setAnchorEl(null)
+	}
+
+	return (
+		<Card sx={ { mb: 2 } }>
+			<CardHeader
+				action={
+					<>
+						<IconButton
+							onClick={ handleClick }
+							aria-controls={ open ? `org-${org._id}-options` : undefined }
+							aria-haspopup="true"
+							aria-expanded={ open ? "true" : undefined }
+						>
+							<MoreVertIcon />
+						</IconButton>
+						<StyledMenu
+							id={ `org-${org._id}-options` }
+							anchorEl={ anchorEl }
+							open={ open }
+							onClose={ handleClose }
+							anchorOrigin={ {
+								vertical: "bottom",
+								horizontal: "right",
+							} }
+							transformOrigin={ {
+								vertical: "top",
+								horizontal: "right",
+							} }
+						>
+							<Link to="/admin/$id/orgs/$orgId" params={ { id, orgId: String(org._id) } }>
+								<MenuItem onClick={ handleClose } disableRipple>
+									<EditIcon />
+									Edit
+								</MenuItem>
+							</Link>
+							<Divider />
+							<MenuItem
+								disableRipple
+								onClick={ () => {
+									onDelete()
+									handleClose()
+								} }
+							>
+								<DeleteIcon />
+								Delete
+							</MenuItem>
+						</StyledMenu>
+					</>
+				}
+				title={ String((org as any).title ?? "") }
+				subheader={ `Ask: ${numeral(Number((org as any).ask ?? 0)).format("$0,0")}` }
+			/>
+			<CardContent>
+				<DisplayHtml>{ String((org as any).description ?? "") }</DisplayHtml>
+			</CardContent>
+		</Card>
+	)
+}
 
 const OrganizationsPane = observer(() => {
 	const { orgs, isLoading: orgsLoading } = useOrgs()
@@ -71,63 +145,23 @@ const OrganizationsPane = observer(() => {
 		<>
 			<Container>
 				<Grid container spacing={ 4 }>
-					<Grid item xs={ 12 } md={ 8 }>
+					<Grid size={ { xs: 12, md: 8 } }>
 						<Typography component="h1" variant="h3">
 							Organizations
 						</Typography>
 					</Grid>
-					<Grid item xs={ 12 } md={ 4 } sx={ { textAlign: "right" } }>
+					<Grid size={ { xs: 12, md: 4 } } sx={ { textAlign: "right" } }>
 						<SplitButton options={ options } />
 					</Grid>
 				</Grid>
 
 				{ orgs.values.map(org => (
-					<Card key={ org._id } sx={ { mb: 2 } }>
-						<CardHeader
-							action={
-								<PopupState variant="popover" popupId={ `org-${org._id}-options` }>
-									{ popupState => (
-										<>
-											<IconButton { ...bindTrigger(popupState) }>
-												<MoreVertIcon />
-											</IconButton>
-											<StyledMenu
-												{ ...bindMenu(popupState) }
-												anchorOrigin={ {
-													vertical: "bottom",
-													horizontal: "right",
-												} }
-												transformOrigin={ {
-													vertical: "top",
-													horizontal: "right",
-												} }
-											>
-												<Link to="/admin/$id/orgs/$orgId" params={ { id: String(id), orgId: String(org._id) } }>
-													<MenuItem onClick={ popupState.close } disableRipple>
-														<EditIcon />
-														Edit
-													</MenuItem>
-												</Link>
-												<Divider />
-												<MenuItem disableRipple onClick={ () => {
-													showDeleteModal(org)
-													popupState.close()
-												} }>
-													<DeleteIcon />
-													Delete
-												</MenuItem>
-											</StyledMenu>
-										</>
-									) }
-								</PopupState>
-							}
-							title={ String((org as any).title ?? "") }
-							subheader={ `Ask: ${numeral(Number((org as any).ask ?? 0)).format("$0,0")}` }
-						/>
-						<CardContent>
-							<DisplayHtml>{ String((org as any).description ?? "") }</DisplayHtml>
-						</CardContent>
-					</Card>
+					<OrgCard
+						key={ org._id }
+						org={ org }
+						id={ String(id) }
+						onDelete={ () => showDeleteModal(org) }
+					/>
 				)) }
 			</Container>
 

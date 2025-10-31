@@ -27,9 +27,10 @@ export interface ThemeWithComputed extends ThemeData {
 	chitVotingStarted?: boolean
 	leverageRemaining?: number
 	memberFunds?: number
+	consolationTotal?: number
 }
 
-const ThemeTransformer = (doc: ThemeWithComputed, params: ThemeTransformerParams): ThemeWithComputed => {
+const ThemeTransformer = (doc: ThemeWithComputed, params: ThemeTransformerParams) => {
 	doc.pledgedTotal = function() {
 		let total = 0
 		params.topOrgs.map(org => {
@@ -131,6 +132,7 @@ const ThemeTransformer = (doc: ThemeWithComputed, params: ThemeTransformerParams
 			const consolation = doc.consolationAmount || 0
 			return (orgsCount - numTop) * consolation
 		}
+
 		return 0
 	}()
 
