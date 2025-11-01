@@ -6,10 +6,21 @@ import {
 	DialogContentText,
 	DialogTitle,
 } from "@mui/material"
-import PropTypes from "prop-types"
+import { type ReactNode } from "react"
 
+interface CustomConfirmProps {
+	header?: string
+	content?: ReactNode
+	isModalOpen: boolean
+	handleClose: () => void
+	confirmAction?: () => void
+	cancelAction?: () => void
+	okText?: string
+	cancelText?: string
+	width?: "xs" | "sm" | "md" | "lg" | "xl"
+}
 
-const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction, cancelAction, okText, cancelText, width }) => {
+const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction, cancelAction, okText, cancelText, width }: CustomConfirmProps) => {
 
 	return (
 		<Dialog
@@ -42,18 +53,6 @@ const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmA
 			</DialogActions>
 		</Dialog>
 	)
-}
-
-ConfirmationModal.propTypes = {
-	header: PropTypes.string,
-	content: PropTypes.node,
-	isModalOpen: PropTypes.bool,
-	handleClose: PropTypes.func,
-	confirmAction: PropTypes.func,
-	cancelAction: PropTypes.func,
-	okText: PropTypes.string,
-	cancelText: PropTypes.string,
-	width: PropTypes.oneOf(["xs", "sm", "md", "lg", "xl"]),
 }
 
 export default ConfirmationModal

@@ -8,7 +8,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { visuallyHidden } from "@mui/utils"
-import { type ChangeEvent, type MouseEvent } from "react"
+import React from "react"
 
 import { HeadCell, TableHeadTopRowCell } from "./types"
 
@@ -16,16 +16,16 @@ interface EnhancedTableHeadProps {
 	headCells: HeadCell[]
 	spanForCollapse?: boolean
 	tableHeadTopRow?: TableHeadTopRowCell[]
-	onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void
+	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void
 	order: "asc" | "desc"
 	orderBy: string
 	numSelected: number
 	rowCount: number
-	onRequestSort: (event: MouseEvent<unknown>, property: string) => void
+	onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void
 	selectable?: boolean
 }
 
-const EnhancedTableHead = ({
+export default function EnhancedTableHead({
 	headCells,
 	spanForCollapse = false,
 	tableHeadTopRow,
@@ -36,7 +36,7 @@ const EnhancedTableHead = ({
 	rowCount,
 	onRequestSort,
 	selectable = true,
-}: EnhancedTableHeadProps) => {
+}: EnhancedTableHeadProps) {
 	const cellsWithDefaults = headCells.map((cell, i) => {
 		const cellWithDefaults: HeadCell & { span: number, align: "left" | "right" | "center" } = {
 			disablePadding: false,
@@ -51,7 +51,7 @@ const EnhancedTableHead = ({
 		return cellWithDefaults
 	})
 
-	const createSortHandler = (property: string) => (event: MouseEvent<unknown>) => {
+	const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
 		onRequestSort(event, property)
 	}
 
@@ -120,5 +120,3 @@ const StyledTableHead = styled(TableHead)(({ theme }) => ({
 		},
 	},
 }))
-
-export default EnhancedTableHead

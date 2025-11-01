@@ -6,10 +6,16 @@ import {
 	DialogContentText,
 	DialogTitle,
 } from "@mui/material"
-import PropTypes from "prop-types"
 
+interface ConfirmDeleteProps {
+	header?: string
+	content?: string
+	isModalOpen: boolean
+	handleClose: () => void
+	confirmAction: () => void
+}
 
-const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction }) => {
+const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction }: ConfirmDeleteProps) => {
 
 	return (
 		<Dialog
@@ -42,14 +48,6 @@ const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmA
 			</DialogActions>
 		</Dialog>
 	)
-}
-
-ConfirmationModal.propTypes = {
-	header: PropTypes.string,
-	content: PropTypes.string,
-	isModalOpen: PropTypes.bool,
-	handleClose: PropTypes.func,
-	confirmAction: PropTypes.func,
 }
 
 export default ConfirmationModal

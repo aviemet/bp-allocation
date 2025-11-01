@@ -11,8 +11,8 @@ const PresentationSettingsMethods = {
 
 		validate: null,
 
-		run() {
-			return PresentationSettings.insert({})
+		async run() {
+			return await PresentationSettings.insertAsync({})
 		},
 	}),
 
@@ -24,8 +24,8 @@ const PresentationSettingsMethods = {
 
 		validate: null,
 
-		run({ id, data }: { id: string, data: Partial<SettingsData> }) {
-			return PresentationSettings.update({ _id: id }, { $set: data })
+		async run({ id, data }: { id: string, data: Partial<SettingsData> }) {
+			return await PresentationSettings.updateAsync({ _id: id }, { $set: data })
 		},
 	}),
 

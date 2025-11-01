@@ -1,14 +1,18 @@
-import { useState } from "react"
-import PropTypes from "prop-types"
 import { TextField } from "@mui/material"
+import { useState } from "react"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
-const ResultsOffsetInput = props => {
-	const [ resultsOffset, setResultsOffset ] = useState(props.resultsOffset)
+interface ResultsOffsetInputProps {
+	resultsOffset?: number
+	settingsId: string
+}
+
+const ResultsOffsetInput = ({ resultsOffset: initialResultsOffset, settingsId }: ResultsOffsetInputProps) => {
+	const [ resultsOffset, setResultsOffset ] = useState<number | undefined>(initialResultsOffset)
 
 	const saveResultsOffset = () => {
 		PresentationSettingsMethods.update.call({
-			id: props.settingsId,
+			id: settingsId,
 			data: { resultsOffset },
 		})
 	}
@@ -16,21 +20,22 @@ const ResultsOffsetInput = props => {
 	return (
 		<TextField
 			fullWidth
-			type="text"
-			pattern="[0-9]*"
+			type="number"
 			label="Results Offset Amount"
-			index="resultsOffset"
-			value={ resultsOffset || "" }
-			onChange={ e => setResultsOffset(parseFloat(e.target.value)) }
+			value={ resultsOffset ?? "" }
+			slotProps={ {
+				htmlInput: {
+					inputMode: "numeric",
+					pattern: "[0-9]*",
+				},
+			} }
+			onChange={ e => {
+				const value = parseFloat(e.target.value)
+				setResultsOffset(isNaN(value) ? undefined : value)
+			} }
 			onBlur={ saveResultsOffset }
 		/>
 	)
-
-}
-
-ResultsOffsetInput.propTypes = {
-	resultsOffset: PropTypes.number,
-	settingsId: PropTypes.string,
 }
 
 export default ResultsOffsetInput

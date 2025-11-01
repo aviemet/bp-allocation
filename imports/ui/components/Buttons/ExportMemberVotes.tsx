@@ -28,7 +28,7 @@ const ExportMemberVotes = () => {
 			data={ members.values.map(member => {
 				const memberWithTheme = member as MemberStoreWithTheme
 				const memberTheme = memberWithTheme.theme
-				
+
 				let newMember: MemberVoteData = {
 					Name: member.fullName || "",
 					Code: member.code,
@@ -39,7 +39,7 @@ const ExportMemberVotes = () => {
 				topOrgs.forEach(org => {
 					const orgTitle = org.title
 					if(!orgTitle) return
-					
+
 					const allocation = memberTheme?.allocations?.find(allocation => allocation.organization === org._id)
 					newMember[orgTitle] = allocation?.amount || 0
 					newMember["Source"] = allocation?.voteSource || ""

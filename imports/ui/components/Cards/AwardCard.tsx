@@ -1,18 +1,20 @@
-import { css } from "@emotion/react"
 import Paper from "@mui/material/Paper"
 import { styled } from "@mui/material/styles"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 
 import AwardEmblem from "../AwardEmblem"
-
+import { type OrgData } from "/imports/api/db"
 import { COLORS } from "/imports/lib/global"
 
+interface AwardCardProps {
+	org: OrgData & { allocatedFunds?: number }
+	award?: string
+	amount?: number
+}
 
-/**
- * OrgCard Component
- */
-const AwardCard = ({ org, award, amount }) => {
+const AwardCard = ({ org, award, amount }: AwardCardProps) => {
+	const totalFunds = (org.allocatedFunds || 0) + (org.leverageFunds || 0)
+
 	return (
 		<OrgCard>
 			<CardImage>
@@ -20,7 +22,7 @@ const AwardCard = ({ org, award, amount }) => {
 					type={ award }
 					amount={ amount ?
 						numeral(amount).format("$0.[0]a") :
-						org.allocatedFunds + org.leverageFunds
+						totalFunds
 					}
 				/>
 			</CardImage>
@@ -57,15 +59,8 @@ const CardImage = styled("div")`
 `
 
 const CardContent = styled("div")`
-	background-color: ${({ bgcolor }) => bgcolor} !important;
 	color: #FFF;
 	text-align: center;
 `
-
-AwardCard.propTypes = {
-	org: PropTypes.object,
-	award: PropTypes.string,
-	amount: PropTypes.number,
-}
 
 export default AwardCard

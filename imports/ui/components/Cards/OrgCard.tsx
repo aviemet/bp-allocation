@@ -1,7 +1,5 @@
-import { useState } from "react"
-import PropTypes from "prop-types"
-import numeral from "numeral"
 import styled from "@emotion/styled"
+import InfoIcon from "@mui/icons-material/InfoOutlined"
 import {
 	Box,
 	Dialog,
@@ -10,15 +8,33 @@ import {
 	DialogTitle,
 	IconButton,
 	Typography,
+	type BoxProps,
 } from "@mui/material"
-import InfoIcon from "@mui/icons-material/InfoOutlined"
-// import InfoIcon from '@mui/icons-material/Info'
 import { observer } from "mobx-react-lite"
-import { useCardContext } from "./OrgCardContainer"
+import numeral from "numeral"
+import { useState, type ReactElement, type ReactNode } from "react"
 
-// TODO: Use MUI theme
+import { type OrgData } from "/imports/api/db"
+
 const GREEN = "#0D8744"
 const BLUE = "#002B43"
+
+export const OrgCardColors = { GREEN, BLUE }
+
+interface OrgCardProps extends Omit<BoxProps, "onClick" | "content"> {
+	children?: ReactNode
+	org: OrgData
+	overlay?: ReactElement | false
+	content?: ReactElement | (() => ReactElement) | false
+	index?: number
+	size?: string | number
+	showAsk?: boolean
+	animateClass?: boolean
+	info?: boolean
+	color?: "green" | "blue"
+	onClick?: () => void
+	disabled?: boolean
+}
 
 const OrgCard = observer(({
 	children,
@@ -34,15 +50,11 @@ const OrgCard = observer(({
 	onClick,
 	disabled,
 	...props
-}) => {
+}: OrgCardProps) => {
 	const [infoOpen, setInfoOpen] = useState(false)
-	// const { cols } = useCardContext()
-
-	const Overlay = overlay || false
-	const Content = content || false
 
 	const cardClasses = ["orgCard"]
-	if(size) cardClasses.push(size)
+	if(size) cardClasses.push(String(size))
 	if(animateClass) cardClasses.push("animate-orgs")
 	if(disabled) cardClasses.push("disabled")
 	if(color) cardClasses.push(color)
@@ -61,7 +73,7 @@ const OrgCard = observer(({
 			onClick={ onClick }
 			{ ...props }
 		>
-			{ Overlay && <Overlay /> }
+			{ overlay && overlay }
 
 			{ info && <InfoLink>
 				<IconButton sx={ { color: "white" } } aria-label="info" onClick={ () => setInfoOpen(true) }>
@@ -84,7 +96,7 @@ const OrgCard = observer(({
 				style={ content === undefined ? { height: "100%" } : {} }
 			>
 
-				{ content && <Content /> }
+				{ content && (typeof content === "function" ? content() : content) }
 
 				<OrgTitle>
 					<Typography component="h3" variant="h5">{ org.title }</Typography>
@@ -96,9 +108,7 @@ const OrgCard = observer(({
 	)
 })
 
-OrgCard.colors = { GREEN, BLUE }
-
-const StyledCard = styled(Box)(({ theme }) => ({
+const StyledCard = styled(Box)<{ theme?: { palette?: { grey?: Record<number, string>, batteryGreen?: { main: string }, batteryBlue?: { main: string } } } }>(({ theme }) => ({
 	position: "relative",
 	border: "2px solid white",
 	textAlign: "center",
@@ -107,14 +117,14 @@ const StyledCard = styled(Box)(({ theme }) => ({
 	"&.disabled": {
 		filter: " opacity(0.5)",
 		"& > *": {
-			color: theme.palette.grey[100],
+			color: theme?.palette?.grey?.[100] || "#f5f5f5",
 		},
 	},
 	"&.green": {
-		backgroundColor: theme.palette.batteryGreen.main,
+		backgroundColor: theme?.palette?.batteryGreen?.main || GREEN,
 	},
 	"&.blue": {
-		backgroundColor: theme.palette.batteryBlue.main,
+		backgroundColor: theme?.palette?.batteryBlue?.main || BLUE,
 	},
 	p: {
 		margin: 16,
@@ -171,26 +181,5 @@ const InfoLink = styled.div`
 	top: 0;
 	right: 0;
 `
-
-OrgCard.propTypes = {
-	children: PropTypes.node,
-	org: PropTypes.object,
-	overlay: PropTypes.any,
-	content: PropTypes.oneOfType([
-		PropTypes.object,
-		PropTypes.func,
-	]),
-	index: PropTypes.number,
-	size: PropTypes.oneOfType([
-		PropTypes.number,
-		PropTypes.string,
-	]),
-	showAsk: PropTypes.bool,
-	animateClass: PropTypes.bool,
-	info: PropTypes.bool,
-	color: PropTypes.oneOf(["green", "blue"]),
-	onClick: PropTypes.func,
-	rest: PropTypes.any,
-}
 
 export default OrgCard

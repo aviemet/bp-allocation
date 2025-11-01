@@ -4,8 +4,7 @@ import { Form, TextInput, SubmitButton, STATUS, SwitchInput } from "/imports/ui/
 import styled from "@emotion/styled"
 import { Box, Container, InputAdornment, Typography } from "@mui/material"
 import { isEmpty } from "lodash"
-
-import { OrgCard } from "/imports/ui/components/Cards"
+import { OrgCard, OrgCardColors } from "/imports/ui/components/Cards"
 import { observer } from "mobx-react-lite"
 import { useState, useEffect } from "react"
 
@@ -124,7 +123,7 @@ const PledgesContainer = styled(Container)`
 const FinalizeButton = styled(SubmitButton)`
 	width: 100%;
 	text-align: center;
-	background-color: ${OrgCard.colors.GREEN};
+	background-color: ${OrgCardColors.GREEN};
 	color: white;
 	border: 2px solid #fff;
 	font-size: clamp(1.75rem, -3rem + 3vw + 4.5vh, 3rem);

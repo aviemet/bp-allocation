@@ -1,12 +1,12 @@
 import styled from "@emotion/styled"
 import { observer } from "mobx-react-lite"
-import PropTypes from "prop-types"
 
+interface AwardEmblemProps {
+	type?: string
+	amount?: number | string
+}
 
-/**
- * Award Emblem
- */
-const AwardEmblem = observer(({ type, amount }) => {
+const AwardEmblem = observer(({ type, amount }: AwardEmblemProps) => {
 
 	const awardImgSrc = {
 		awardee: "/img/circle_awardee.png",
@@ -46,12 +46,5 @@ const AwardAmount = styled.span`
 	z-index: 999;
 	font-weight: 700;
 `
-
-AwardEmblem.propTypes = {
-	type: PropTypes.string,
-	amount: PropTypes.oneOfType([
-		PropTypes.number, PropTypes.string,
-	]),
-}
 
 export default AwardEmblem

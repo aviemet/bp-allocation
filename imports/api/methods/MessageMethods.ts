@@ -19,9 +19,9 @@ const MessageMethods = {
 
 		validate: null,
 
-		run(data: MessageCreateData) {
+		async run(data: MessageCreateData) {
 			try {
-				return Messages.insert(data)
+				return await Messages.insertAsync(data)
 			} catch(exception) {
 				throw new Meteor.Error("500", String(exception))
 			}
@@ -36,9 +36,9 @@ const MessageMethods = {
 
 		validate: null,
 
-		run({ id, data }: MessageUpdateData) {
+		async run({ id, data }: MessageUpdateData) {
 			try {
-				return Messages.update({ _id: id }, { $set: data })
+				return await Messages.updateAsync({ _id: id }, { $set: data })
 			} catch(exception) {
 				throw new Meteor.Error("500", String(exception))
 			}
@@ -53,8 +53,8 @@ const MessageMethods = {
 
 		validate: null,
 
-		run(id: string) {
-			return Messages.remove({ _id: id })
+		async run(id: string) {
+			return await Messages.removeAsync({ _id: id })
 		},
 	}),
 

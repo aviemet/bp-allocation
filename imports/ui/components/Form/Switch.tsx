@@ -1,33 +1,37 @@
-import { useEffect } from "react"
-import PropTypes from "prop-types"
-import { Controller, useFormContext } from "react-hook-form"
+import { Switch, FormControlLabel, type SwitchProps } from "@mui/material"
+import { useEffect, type ReactElement } from "react"
+import { Controller, useFormContext, type UseFormSetValue, type FieldValues } from "react-hook-form"
 
-import { Switch, FormControlLabel } from "@mui/material"
+interface SwitchLabelProps {
+	children: ReactElement
+	label?: string
+}
 
-const SwitchLabel = ({ children, label }) => {
+const SwitchLabel = ({ children, label }: SwitchLabelProps) => {
 	return (
 		<FormControlLabel control={ children } label={ label } />
 	)
 }
 
-SwitchLabel.propTypes = {
-	children: PropTypes.any,
-	label: PropTypes.string,
+interface FormSwitchProps extends Omit<SwitchProps, "name"> {
+	name: string
+	label?: string
+	onUpdate?: (value: unknown, name: string, setValue: UseFormSetValue<FieldValues>) => void
 }
 
-const FormSwitch = ({ name, label, onUpdate, ...props }) => {
-	const { watch, setValue, control, formState: { errors } } = useFormContext()
+const FormSwitch = ({ name, label, onUpdate, ...props }: FormSwitchProps) => {
+	const { watch, setValue, control } = useFormContext<FieldValues>()
 
 	useEffect(() => {
 		if(!onUpdate) return
 
-		const subscription = watch((value, { name: watchName, type }) => {
+		const subscription = watch((value, { name: watchName }) => {
 			if(watchName === name) {
 				onUpdate(value, watchName, setValue)
 			}
 		})
 		return () => subscription.unsubscribe()
-	}, [watch])
+	}, [watch, name, onUpdate, setValue])
 
 	const ControlledSwitch = <Controller
 		name={ name }
@@ -36,7 +40,7 @@ const FormSwitch = ({ name, label, onUpdate, ...props }) => {
 			<Switch
 				{ ...field }
 				{ ...props }
-				checked={ field.value }
+				checked={ Boolean(field.value) }
 			/>
 		)
 		}
@@ -49,19 +53,5 @@ const FormSwitch = ({ name, label, onUpdate, ...props }) => {
 
 	return ControlledSwitch
 }
-
-FormSwitch.propTypes = {
-	name: PropTypes.string.isRequired,
-	label: PropTypes.string,
-	onUpdate: PropTypes.func,
-}
-
-// const SwitchWithOptionalLabel = ({ name, label, onUpdate, ...props }) => {
-// 	if(label !== undefined) {
-// 		return <SwitchLabel><ControlledSwitch /></SwitchLabel>
-// 	}
-
-// 	return <ControlledSwitch />
-// }
 
 export default FormSwitch

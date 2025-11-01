@@ -8,7 +8,7 @@ import {
 	TableCell,
 	TableRow,
 } from "@mui/material"
-import { useState, type ReactNode, type ReactElement, Fragment } from "react"
+import React, { useState } from "react"
 
 import { HeadCell, SortableRow } from "./types"
 
@@ -18,13 +18,13 @@ interface EnhancedTableRowProps<T extends SortableRow> {
 	isSelected: (id: string) => boolean
 	selectOnClick: boolean
 	handleClick: (id: string) => void
-	render: (row: T) => ReactNode
-	collapse?: (row: T) => ReactNode
+	render: (row: T) => React.ReactNode
+	collapse?: (row: T) => React.ReactNode
 	striped?: boolean
 	selectable?: boolean
 }
 
-function EnhancedTableRow<T extends SortableRow>({
+export default function EnhancedTableRow<T extends SortableRow>({
 	row,
 	headCells,
 	isSelected,
@@ -47,7 +47,7 @@ function EnhancedTableRow<T extends SortableRow>({
 	}
 
 	return (
-		<Fragment key={ row._id }>
+		<React.Fragment key={ row._id }>
 			<TableRow
 				hover
 				onClick={ () => {
@@ -91,8 +91,7 @@ function EnhancedTableRow<T extends SortableRow>({
 					</TableCell>
 				</TableRow>
 			) }
-		</Fragment>
+		</React.Fragment>
 	)
 }
 
-export default EnhancedTableRow as <T extends SortableRow>(props: EnhancedTableRowProps<T>) => ReactElement

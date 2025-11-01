@@ -1,16 +1,26 @@
 import styled from "@emotion/styled"
-import { Box } from "@mui/material"
-import PropTypes from "prop-types"
-import { createContext, useContext } from "react"
+import { Box, type SxProps, type Theme } from "@mui/material"
+import { createContext, useContext, type ReactNode } from "react"
 import { useWindowSize } from "/imports/ui/MediaProvider"
 
-const CardContext = createContext({})
+interface CardContextValue {
+	cols: number
+}
+
+const CardContext = createContext<CardContextValue>({ cols: 2 })
 export const useCardContext = () => useContext(CardContext)
 
-const OrgCardContainer = ({ children, cols = 2, sx }) => {
+interface OrgCardContainerProps {
+	children: ReactNode
+	cols?: number
+	sx?: SxProps<Theme>
+}
+
+const OrgCardContainer = ({ children, cols = 2, sx }: OrgCardContainerProps) => {
 	const { width } = useWindowSize()
 
-	const responsiveColumns = (cols) => {
+	const responsiveColumns = (cols: number): number => {
+		if(!width) return cols
 		if(width < 600) {
 			return 1
 		} else if(width < 1024) {
@@ -19,11 +29,12 @@ const OrgCardContainer = ({ children, cols = 2, sx }) => {
 		return cols
 	}
 
-	const orphans = Array.isArray(children) ? children.length % responsiveColumns(cols) : cols
+	const responsiveCols = responsiveColumns(cols)
+	const orphans = Array.isArray(children) ? children.length % responsiveCols : responsiveCols
 
 	return (
-		<StyledOrgCardContainer cols={ responsiveColumns(cols) } orphans={ orphans } sx={ sx }>
-			<CardContext.Provider value={ { cols } }>
+		<StyledOrgCardContainer cols={ responsiveCols } orphans={ orphans } sx={ sx }>
+			<CardContext.Provider value={ { cols: responsiveCols } }>
 				{ children }
 			</CardContext.Provider>
 		</StyledOrgCardContainer>
@@ -31,7 +42,13 @@ const OrgCardContainer = ({ children, cols = 2, sx }) => {
 }
 
 const gap = 16
-const StyledOrgCardContainer = styled(Box)(({ theme, cols, orphans }) => ({
+
+interface StyledOrgCardContainerProps {
+	cols: number
+	orphans: number
+}
+
+const StyledOrgCardContainer = styled(Box)<StyledOrgCardContainerProps>(({ cols, orphans }) => ({
 	display: "grid",
 	gap: `${gap}px`,
 	gridAutoRows: "1fr",
@@ -45,14 +62,5 @@ const StyledOrgCardContainer = styled(Box)(({ theme, cols, orphans }) => ({
 		},
 	},
 }))
-
-const cardContainerPropsTypes = {
-	children: PropTypes.any,
-	cols: PropTypes.number,
-	sx: PropTypes.any,
-}
-
-OrgCardContainer.propTypes = cardContainerPropsTypes
-StyledOrgCardContainer.propTypes = cardContainerPropsTypes
 
 export default OrgCardContainer

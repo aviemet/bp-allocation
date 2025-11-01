@@ -3,7 +3,7 @@ import {
 	Typography,
 	Modal,
 } from "@mui/material"
-import PropTypes from "prop-types"
+import { type ReactNode } from "react"
 
 const style = {
 	position: "absolute",
@@ -17,7 +17,14 @@ const style = {
 	p: 4,
 }
 
-const ContentModal = ({ children, title, open, setOpen }) => {
+interface ContentModalProps {
+	children: ReactNode
+	title?: string
+	open: boolean
+	setOpen: (open: boolean) => void
+}
+
+const ContentModal = ({ children, title, open, setOpen }: ContentModalProps) => {
 	return (
 		<Modal
 			open={ open }
@@ -35,13 +42,6 @@ const ContentModal = ({ children, title, open, setOpen }) => {
 			</Box>
 		</Modal>
 	)
-}
-
-ContentModal.propTypes = {
-	children: PropTypes.any,
-	title: PropTypes.string,
-	open: PropTypes.bool.isRequired,
-	setOpen: PropTypes.func.isRequired,
 }
 
 export default ContentModal

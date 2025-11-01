@@ -10,7 +10,7 @@ import {
 	TableProps,
 } from "@mui/material"
 import { Set } from "immutable"
-import { useState, type ReactNode, type ReactElement, type MouseEvent, type ChangeEvent } from "react"
+import React, { useState } from "react"
 
 import EnhancedTableHead from "./EnhancedTableHead"
 import EnhancedTableRow from "./EnhancedTableRow"
@@ -21,12 +21,12 @@ import { HeadCell, TableHeadTopRowCell, SortableRow } from "./types"
 export type { HeadCell, TableHeadTopRowCell, SortableRow } from "./types"
 
 interface SortableTableProps<T extends SortableRow> extends Omit<TableProps, "children" | "title"> {
-	title?: ReactNode
+	title?: React.ReactNode
 	headCells: HeadCell[]
 	tableHeadTopRow?: TableHeadTopRowCell[]
 	rows: T[]
-	render: (row: T) => ReactNode
-	collapse?: (row: T) => ReactNode
+	render: (row: T) => React.ReactNode
+	collapse?: (row: T) => React.ReactNode
 	striped?: boolean
 	defaultOrderBy?: string
 	defaultDirection?: "asc" | "desc"
@@ -41,7 +41,7 @@ interface SortableTableProps<T extends SortableRow> extends Omit<TableProps, "ch
 	fixed?: boolean
 }
 
-function SortableTable<T extends SortableRow>({
+export default function SortableTable<T extends SortableRow>({
 	title,
 	headCells,
 	tableHeadTopRow,
@@ -68,13 +68,13 @@ function SortableTable<T extends SortableRow>({
 	const [page, setPage] = useState(0)
 	const [rowsPerPage, setRowsPerPage] = useState(paginationCounts[0])
 
-	const handleRequestSort = (_event: MouseEvent<unknown>, property: string) => {
+	const handleRequestSort = (_event: React.MouseEvent<unknown>, property: string) => {
 		const isAsc = orderBy === property && order === "asc"
 		setOrder(isAsc ? "desc" : "asc")
 		setOrderBy(property)
 	}
 
-	const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
+	const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if(event.target.checked) {
 			setSelected(Set(rows.map((n) => n._id)))
 		} else {
@@ -102,7 +102,7 @@ function SortableTable<T extends SortableRow>({
 		setPage(newPage)
 	}
 
-	const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+	const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		setRowsPerPage(parseInt(event.target.value, 10))
 		setPage(0)
 	}
@@ -195,5 +195,3 @@ function SortableTable<T extends SortableRow>({
 		</Box>
 	)
 }
-
-export default SortableTable as <T extends SortableRow>(props: SortableTableProps<T>) => ReactElement

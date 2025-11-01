@@ -1,16 +1,20 @@
 import { Checkbox, FormControlLabel } from "@mui/material"
-import PropTypes from "prop-types"
+import { type RichTextEditorRef } from "mui-tiptap"
 import { useState, forwardRef } from "react"
 
 import RawEditor from "./RawEditor"
 import TipTapEditor from "./TipTapEditor"
 
-const RichTextEditor = forwardRef(({ value, onChange, ...rest }, ref) => {
+interface RichTextEditorProps {
+	placeholder?: string
+	value?: string
+	onChange?: (value: string) => void
+}
+
+const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(({ value, onChange, placeholder }, ref) => {
 	const [isRaw, setIsRaw] = useState(false)
 
-	const InputComponent = isRaw ? RawEditor : TipTapEditor
-
-	const handleChange = newValue => {
+	const handleChange = (newValue: string) => {
 		if(onChange) onChange(newValue)
 	}
 
@@ -21,20 +25,24 @@ const RichTextEditor = forwardRef(({ value, onChange, ...rest }, ref) => {
 					checked={ isRaw }
 					onChange={ e => setIsRaw(e.target.checked) } />
 			} />
-			<InputComponent
-				ref={ ref }
-				{ ...rest }
-				value={ value || "" }
-				onChange={ handleChange }
-			/>
+			{ isRaw
+				? (
+					<RawEditor
+						value={ value || "" }
+						onChange={ handleChange }
+						placeholder={ placeholder }
+					/>
+				)
+				: (
+					<TipTapEditor
+						ref={ ref }
+						value={ value || "" }
+						onChange={ handleChange }
+						placeholder={ placeholder }
+					/>
+				) }
 		</>
 	)
 })
-
-RichTextEditor.propTypes = {
-	placeholder: PropTypes.string,
-	value: PropTypes.string,
-	onChange: PropTypes.any,
-}
 
 export default RichTextEditor

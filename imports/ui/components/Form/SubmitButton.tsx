@@ -1,8 +1,7 @@
 import CheckIcon from "@mui/icons-material/Check"
 import SaveIcon from "@mui/icons-material/Save"
-import { Button } from "@mui/material"
-import PropTypes from "prop-types"
-import { useEffect, useState, useRef } from "react"
+import { Button, type ButtonProps } from "@mui/material"
+import { useEffect, useRef, useMemo, type ReactNode, type ComponentType } from "react"
 
 export const STATUS = {
 	READY: "ready",
@@ -10,67 +9,50 @@ export const STATUS = {
 	DISABLED: "disabled",
 	SUCCESS: "success",
 	ERROR: "error",
+} as const
+
+export type Status = typeof STATUS[keyof typeof STATUS]
+
+interface SubmitButtonProps extends Omit<ButtonProps, "children"> {
+	children: ReactNode
+	status: Status
+	setStatus: (status: Status) => void
+	icon?: ComponentType
 }
 
-const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }) => {
+const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }: SubmitButtonProps) => {
 	const Icon = icon
 
-	const [loading, setLoading] = useState(false)
-	const [buttonIcon, setButtonIcon] = useState(icon ? <Icon /> : null)
+	const statusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-	const loadingTimeoutRef = useRef()
-	const statusTimeoutRef = useRef()
+	const loading = status === STATUS.SUBMITTING
 
-	useEffect(() => {
-		switch(status) {
-			case STATUS.READY:
-				setLoading(false)
-				if(icon) setButtonIcon(<Icon />)
-				break
-			case STATUS.SUCCESS:
-				delayLoading()
-				if(icon) setButtonIcon(<CheckIcon />)
-				break
-			case STATUS.SUBMITTING:
-				setLoading(true)
-				break
-			case STATUS.DISABLED:
-				setLoading(false)
-				break
-			case STATUS.ERROR:
-				break
-			default:
-				delayLoading()
-				if(icon) setButtonIcon(<Icon />)
-		}
-	}, [status])
-
-	const delayLoading = () => {
-		if(loading) {
-			setTimeout(() => setLoading(false), 1000)
-		}
-	}
+	const buttonIcon = useMemo(() => {
+		if(!icon) return null
+		if(status === STATUS.SUCCESS) return <CheckIcon />
+		return <Icon />
+	}, [status, icon, Icon])
 
 	useEffect(() => {
 		if(status === STATUS.SUCCESS) {
-			statusTimeoutRef.current = setTimeout(() => setStatus(STATUS.READY), 4000)
+			const timeoutId = setTimeout(() => setStatus(STATUS.READY), 4000)
+			if(statusTimeoutRef.current) {
+				clearTimeout(statusTimeoutRef.current)
+			}
+			statusTimeoutRef.current = timeoutId
 		}
 
 		return () => {
-			if(typeof statusTimeoutRef.current === "function") statusTimeoutRef.current.clearTimeout()
+			if(statusTimeoutRef.current) {
+				clearTimeout(statusTimeoutRef.current)
+			}
 		}
-	}, [loading])
+	}, [status, setStatus])
 
-	useEffect(() => {
-		return () => {
-			if(typeof loadingTimeoutRef.current === "function") loadingTimeoutRef.current.clearTimeout()
-		}
-	}, [])
 
 	return (
 		<Button
 			variant="contained"
-			loadingPosition={ buttonIcon ? "end" : undefined }
 			endIcon={ buttonIcon }
 			loading={ loading }
 			disabled={ status === STATUS.DISABLED || status === STATUS.SUBMITTING }
@@ -81,13 +63,6 @@ const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }
 			{ children }
 		</Button>
 	)
-}
-
-SubmitButton.propTypes = {
-	children: PropTypes.string.isRequired,
-	status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
-	setStatus: PropTypes.func.isRequired,
-	icon: PropTypes.any,
 }
 
 export default SubmitButton

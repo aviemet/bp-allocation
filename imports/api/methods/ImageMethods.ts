@@ -8,8 +8,8 @@ const ImageMethods = {
 
 		validate: null,
 
-		run(id) {
-			Images.collection.remove({ _id: id })
+		async run(id) {
+			await Images.collection.removeAsync({ _id: id })
 		},
 	}),
 
@@ -18,8 +18,8 @@ const ImageMethods = {
 
 		validate: null,
 
-		run(ids) {
-			Images.collection.remove({ _id: { $in: ids } })
+		async run(ids) {
+			await Images.collection.removeAsync({ _id: { $in: ids } })
 		},
 	}),
 

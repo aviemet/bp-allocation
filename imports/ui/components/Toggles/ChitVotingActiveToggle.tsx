@@ -3,6 +3,7 @@ import {
 	Switch,
 } from "@mui/material"
 import { observer } from "mobx-react-lite"
+import React from "react"
 
 import { useSettings } from "/imports/api/providers"
 
@@ -14,7 +15,7 @@ const ChitVotingActiveToggle = observer(() => {
 
 	if(!settings) return <></>
 
-	const saveValue = e => {
+	const saveValue = (e: React.ChangeEvent<HTMLInputElement>) => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
@@ -30,8 +31,7 @@ const ChitVotingActiveToggle = observer(() => {
 	return (
 		<FormControlLabel
 			control={ <Switch
-				index="chitVotingActive"
-				onClick={ saveValue }
+				onChange={ saveValue }
 				checked={ settings.chitVotingActive || false }
 			/> }
 			label="Chit Voting Active"

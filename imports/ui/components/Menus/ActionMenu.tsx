@@ -2,13 +2,13 @@ import MoreVertIcon from "@mui/icons-material/MoreVert"
 import {
 	Menu,
 	MenuItem,
+	type MenuProps,
 } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
-import { styled, alpha } from "@mui/material/styles"
-import PropTypes from "prop-types"
-import { useState } from "react"
+import { styled, alpha, type Theme } from "@mui/material/styles"
+import { useState, type ReactNode, type ComponentType, type MouseEvent } from "react"
 
-const StyledMenu = styled((props) => (
+const StyledMenu = styled((props: MenuProps) => (
 	<Menu
 		elevation={ 0 }
 		anchorOrigin={ {
@@ -21,7 +21,7 @@ const StyledMenu = styled((props) => (
 		} }
 		{ ...props }
 	/>
-))(({ theme }) => ({
+))(({ theme }: { theme: Theme }) => ({
 	"& .MuiPaper-root": {
 		borderRadius: 6,
 		marginTop: theme.spacing(1),
@@ -49,31 +49,34 @@ const StyledMenu = styled((props) => (
 	},
 }))
 
+interface ActionMenuItemProps {
+	children: ReactNode
+	onClick?: (event: MouseEvent<HTMLLIElement>) => void
+}
 
-const ActionMenu = ({ render }) => {
-	const [anchorEl, setAnchorEl] = useState(null)
+interface ActionMenuProps {
+	render: (ActionMenuItem: ComponentType<ActionMenuItemProps>) => ReactNode
+}
+
+const ActionMenu = ({ render }: ActionMenuProps) => {
+	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 	const open = Boolean(anchorEl)
 
-	const handleClick = (event) => {
+	const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
 		setAnchorEl(event.currentTarget)
 	}
 
-	const handleClose = e => {
+	const handleClose = () => {
 		setAnchorEl(null)
 	}
 
-	const ActionMenuItem = ({ children, onClick }) => {
-		const handleClick = e => {
-			if(onClick !== undefined) onClick(e)
-			handleClose(e)
+	const ActionMenuItem = ({ children, onClick }: ActionMenuItemProps) => {
+		const handleItemClick = (e: MouseEvent<HTMLLIElement>) => {
+			if(onClick) onClick(e)
+			handleClose()
 		}
 
-		return <MenuItem onClick={ handleClick } disableRipple>{ children }</MenuItem>
-	}
-
-	ActionMenuItem.propTypes = {
-		children: PropTypes.any,
-		onClick: PropTypes.func,
+		return <MenuItem onClick={ handleItemClick } disableRipple>{ children }</MenuItem>
 	}
 
 	return (
@@ -89,8 +92,10 @@ const ActionMenu = ({ render }) => {
 			</IconButton>
 			<StyledMenu
 				id="demo-customized-menu"
-				MenuListProps={ {
-					"aria-labelledby": "demo-customized-button",
+				slotProps={ {
+					list: {
+						"aria-labelledby": "demo-customized-button",
+					},
 				} }
 				anchorEl={ anchorEl }
 				open={ open }
@@ -100,10 +105,6 @@ const ActionMenu = ({ render }) => {
 			</StyledMenu>
 		</div>
 	)
-}
-
-ActionMenu.propTypes = {
-	render: PropTypes.func.isRequired,
 }
 
 export default ActionMenu

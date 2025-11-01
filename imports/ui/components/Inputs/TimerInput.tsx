@@ -1,14 +1,18 @@
-import { useState } from "react"
-import PropTypes from "prop-types"
 import { TextField } from "@mui/material"
+import { useState } from "react"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
-const TimerInput = props => {
-	const [ timerLength, setTimerLength ] = useState(props.timerLength)
+interface TimerInputProps {
+	timerLength?: number
+	settingsId: string
+}
+
+const TimerInput = ({ timerLength: initialTimerLength, settingsId }: TimerInputProps) => {
+	const [ timerLength, setTimerLength ] = useState(initialTimerLength || 0)
 
 	const saveTimerLength = () => {
 		PresentationSettingsMethods.update.call({
-			id: props.settingsId,
+			id: settingsId,
 			data: { timerLength },
 		})
 	}
@@ -18,18 +22,17 @@ const TimerInput = props => {
 			fullWidth
 			type="number"
 			label="Seconds"
-			index="timerLength"
 			value={ timerLength }
-			onChange={ e => setTimerLength(parseInt(e.target.value)) }
+			slotProps={ {
+				htmlInput: {
+					inputMode: "numeric",
+					pattern: "[0-9]*",
+				},
+			} }
+			onChange={ e => setTimerLength(parseInt(e.target.value) || 0) }
 			onBlur={ saveTimerLength }
 		/>
 	)
-
-}
-
-TimerInput.propTypes = {
-	timerLength: PropTypes.number,
-	settingsId: PropTypes.string,
 }
 
 export default TimerInput

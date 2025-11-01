@@ -1,10 +1,15 @@
-import PropTypes from "prop-types"
 import { useEffect } from "react"
-import { Controller, useFormContext } from "react-hook-form"
+import { Controller, useFormContext, type FieldValues } from "react-hook-form"
 import RichTextEditor from "/imports/ui/components/RichTextEditor"
 
-const TextInput = ({ name, label, onUpdate }) => {
-	const { watch, control, formState: { errors } } = useFormContext()
+interface RichTextInputProps {
+	name: string
+	label?: string
+	onUpdate?: (value: unknown, name: string, type?: string) => void
+}
+
+const TextInput = ({ name, label: _label, onUpdate }: RichTextInputProps) => {
+	const { watch, control } = useFormContext<FieldValues>()
 
 	useEffect(() => {
 		if(!onUpdate) return
@@ -15,7 +20,7 @@ const TextInput = ({ name, label, onUpdate }) => {
 			}
 		})
 		return () => subscription.unsubscribe()
-	}, [watch])
+	}, [watch, name, onUpdate])
 
 	return (
 		<Controller
@@ -24,12 +29,6 @@ const TextInput = ({ name, label, onUpdate }) => {
 			render={ ({ field }) => <RichTextEditor { ...field } /> }
 		/>
 	)
-}
-
-TextInput.propTypes = {
-	name: PropTypes.string.isRequired,
-	label: PropTypes.string,
-	onUpdate: PropTypes.func,
 }
 
 export default TextInput

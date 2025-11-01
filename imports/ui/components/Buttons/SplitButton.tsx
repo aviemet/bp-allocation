@@ -9,7 +9,7 @@ import {
 	MenuItem,
 	MenuList,
 } from "@mui/material"
-import { useState, useRef, MouseEvent } from "react"
+import { useState, useRef, MouseEvent, useEffect } from "react"
 
 interface SplitButtonOption {
 	title: string
@@ -24,14 +24,21 @@ interface SplitButtonProps {
 const SplitButton = ({ options, defaultSelected = 0 }: SplitButtonProps) => {
 	const [selectedIndex, setSelectedIndex] = useState(defaultSelected)
 	const [open, setOpen] = useState(false)
+	const [anchorElement, setAnchorElement] = useState<HTMLDivElement | null>(null)
 
 	const anchorRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if(anchorRef.current) {
+			setAnchorElement(anchorRef.current)
+		}
+	}, [])
 
 	const handleClick = () => {
 		options[selectedIndex].action()
 	}
 
-	const handleMenuItemClick = (event: MouseEvent<HTMLLIElement>, index: number) => {
+	const handleMenuItemClick = (_event: MouseEvent<HTMLLIElement>, index: number) => {
 		setSelectedIndex(index)
 		setOpen(false)
 		options[index].action()
@@ -64,7 +71,7 @@ const SplitButton = ({ options, defaultSelected = 0 }: SplitButtonProps) => {
 			</ButtonGroup>
 			<Popper
 				open={ open }
-				anchorEl={ anchorRef.current }
+				anchorEl={ anchorElement }
 				role={ undefined }
 				transition
 				disablePortal

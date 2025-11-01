@@ -1,10 +1,13 @@
+import { Box, TextField, type TextFieldProps } from "@mui/material"
 import { forwardRef } from "react"
-import PropTypes from "prop-types"
-
-import { Box, TextField } from "@mui/material"
 import TextareaAutosize from "react-textarea-autosize"
 
-const Raw = forwardRef(({ value, onChange, ...rest }, ref) => {
+interface RawEditorProps extends Omit<TextFieldProps, "value" | "onChange" | "multiline"> {
+	value?: string
+	onChange?: (value: string) => void
+}
+
+const Raw = forwardRef<HTMLInputElement, RawEditorProps>(({ value, onChange, ...rest }, ref) => {
 	return (
 		<Box>
 			<TextField
@@ -12,18 +15,21 @@ const Raw = forwardRef(({ value, onChange, ...rest }, ref) => {
 				{ ...rest }
 				multiline
 				fullWidth
-				control={ TextareaAutosize }
-				onChange={ e => onChange(e.target.value) }
-				value={ value }
+				slotProps={ {
+					htmlInput: {
+						component: TextareaAutosize,
+						style: { resize: "vertical" },
+					},
+				} }
+				onChange={ e => {
+					if(onChange) onChange(e.target.value)
+				} }
+				value={ value || "" }
 			/>
 		</Box>
 	)
 })
 
-Raw.propTypes = {
-	placeholder: PropTypes.string,
-	value: PropTypes.string,
-	onChange: PropTypes.any,
-}
+Raw.displayName = "RawEditor"
 
 export default Raw

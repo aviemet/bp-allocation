@@ -124,7 +124,7 @@ const _buildMissingData = function(data: MemberInputData) {
  * Upserts a member
  * @param  {Object} data {firstName, lastName, fullName, initials, number, amount}
  */
-const _memberInsert = function(data: MemberInputData): Promise<string> {
+const _memberInsert = async function(data: MemberInputData): Promise<string> {
 	const { firstName, lastName, fullName, number, initials, code, phone, email } = _buildMissingData(data)
 
 	/*****************
@@ -141,72 +141,61 @@ const _memberInsert = function(data: MemberInputData): Promise<string> {
 	}
 
 	// Check if the member already exists
-	let member = Members.find(memberQuery).fetch()[0]
-	return new Promise((resolve, reject) => {
-		if(!member) {
-			const newMember = { firstName, lastName, fullName, number, initials, code, phone, email }
-			try {
-				Members.insert(newMember, (err: unknown, result: string) => {
-					if(err) {
-						console.error({ newMember })
-						reject(err)
-					} else {
-						resolve(result)
-					}
-				})
-			} catch(e) {
-				console.error(e)
-			}
-		} else {
-			const updateData: Record<string, unknown> = {
-				initials,
-				code,
-			}
+	const member = await Members.findOneAsync(memberQuery)
 
-			if(phone) updateData.phone = phone
-			if(email) updateData.email = email
-
-			if(member.initials !== initials || member.phone !== phone || member.email !== email) {
-				Members.update({ _id: member._id }, { $set: updateData })
-			}
-			resolve(member._id)
+	if(!member) {
+		if(!firstName || !lastName || number === undefined) {
+			throw new Error("firstName, lastName, and number are required to create a member")
 		}
-	})
+		const newMember = { firstName, lastName, fullName, number, initials, code, phone, email }
+		try {
+			return await Members.insertAsync(newMember)
+		} catch(e) {
+			console.error({ newMember, e })
+			throw e
+		}
+	} else {
+		const updateData: Record<string, unknown> = {
+			initials,
+			code,
+		}
+
+		if(phone) updateData.phone = phone
+		if(email) updateData.email = email
+
+		if(member.initials !== initials || member.phone !== phone || member.email !== email) {
+			await Members.updateAsync({ _id: member._id }, { $set: updateData })
+		}
+		return member._id
+	}
 }
 
 /**
  * Upserts a memberTheme assocication
  * @param  {Object} query
  */
-const _memberThemeInsert = function(query: MemberThemeInsertQuery): Promise<string> {
+const _memberThemeInsert = async function(query: MemberThemeInsertQuery): Promise<string> {
 	// Check if this member is already associated with this theme
-	let memberTheme = MemberThemes.findOne({ member: query.member, theme: query.theme })
+	const memberTheme = await MemberThemes.findOneAsync({ member: query.member, theme: query.theme })
 
-	return new Promise((resolve, reject) => {
-		// New member/theme association
-		if(!memberTheme) {
-			try {
-				MemberThemes.insert(query, (err: unknown, result: string) => {
-					if(err) {
-						reject(err)
-					} else {
-						resolve(result)
-					}
-				})
-			} catch(e) {
-				console.error(e)
-			}
-		// Existing member/theme association
-		} else {
-			try {
-				MemberThemes.update({ _id: memberTheme._id }, { $set: { amount: query.amount } })
-				resolve(memberTheme._id)
-			} catch(e) {
-				console.error(e)
-				reject(e)
-			}
+	// New member/theme association
+	if(!memberTheme) {
+		try {
+			return await MemberThemes.insertAsync(query)
+		} catch(e) {
+			console.error(e)
+			throw e
 		}
-	})
+	// Existing member/theme association
+	} else {
+		try {
+			await MemberThemes.updateAsync({ _id: memberTheme._id }, { $set: { amount: query.amount } })
+			return memberTheme._id
+		} catch(e) {
+			console.error(e)
+			throw e
+		}
+	}
 }
 
 /******************************************
@@ -222,19 +211,19 @@ const MemberMethods = {
 
 		validate: null,
 
-		run(data: MemberUpsertData) {
+		async run(data: MemberUpsertData) {
 			const { amount, chits, theme, phone, email } = data
-			// Create/edit member
-			return _memberInsert(data).then((member: string) => {
+			try {
+				// Create/edit member
+				const member = await _memberInsert(data)
 				const memberThemeQuery = { member, amount, chits, theme, phone, email }
 
 				// Create/edit theme association
-				return _memberThemeInsert(memberThemeQuery)
-
-			}, memberError => {
+				return await _memberThemeInsert(memberThemeQuery)
+			} catch(memberError) {
 				console.error({ memberError })
 				throw memberError
-			})
+			}
 		},
 	}),
 
@@ -246,20 +235,20 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({ memberId, themeId }: RemoveMemberFromThemeData) {
-			const orgs = Organizations.find({ theme: themeId }).fetch()
+		async run({ memberId, themeId }: RemoveMemberFromThemeData) {
+			const orgs = await Organizations.find({ theme: themeId }).fetchAsync()
 
-			orgs.forEach(org => {
+			for(const org of orgs) {
 				if(org.pledges) {
-					org.pledges.forEach((pledge: MatchPledge) => {
+					for(const pledge of org.pledges) {
 						if(pledge.member === memberId) {
-							OrganizationMethods.removePledge.call({ orgId: org._id, pledgeId: pledge._id })
+							await OrganizationMethods.removePledge.callAsync({ orgId: org._id, pledgeId: pledge._id })
 						}
-					})
+					}
 				}
-			})
+			}
 
-			return MemberThemes.remove({ member: memberId, theme: themeId })
+			return await MemberThemes.removeAsync({ member: memberId, theme: themeId })
 		},
 	}),
 
@@ -272,8 +261,8 @@ const MemberMethods = {
 
 		validate: null,
 
-		run(themeId: string) {
-			const memberThemes = MemberThemes.find({ theme: themeId }).fetch()
+		async run(themeId: string) {
+			const memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
 			const ids: string[] = []
 			const members: string[] = []
 			memberThemes.forEach(memberTheme => {
@@ -283,26 +272,26 @@ const MemberMethods = {
 
 			// Batch delete the MemberThemes first
 			try {
-				MemberThemes.remove({ _id: { $in: ids } })
+				await MemberThemes.removeAsync({ _id: { $in: ids } })
 			} catch(e) {
 				console.error(e)
 			}
 
 			// Then delete all matched pledges from every member
-			const orgs = Organizations.find({ theme: themeId }).fetch()
-			orgs.forEach(org => {
+			const orgs = await Organizations.find({ theme: themeId }).fetchAsync()
+			for(const org of orgs) {
 				if(org.pledges) {
-					org.pledges.forEach((pledge: MatchPledge) => {
+					for(const pledge of org.pledges) {
 						if(pledge.member && members.some(member => pledge.member === member)) {
 							try {
-								OrganizationMethods.removePledge.call({ orgId: org._id, pledgeId: pledge._id })
+								await OrganizationMethods.removePledge.callAsync({ orgId: org._id, pledgeId: pledge._id })
 							} catch(e) {
 								console.error(e)
 							}
 						}
-					})
+					}
 				}
-			})
+			}
 
 		},
 	}),
@@ -343,18 +332,18 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({ theme, member, org, amount, voteSource }: FundVoteData) {
+		async run({ theme, member, org, amount, voteSource }: FundVoteData) {
 			if(!Meteor.isServer) return
 
 			// Check for existing allocation for this org from this member
-			let memberTheme = MemberThemes.findOne({ theme, member })
+			const memberTheme = await MemberThemes.findOneAsync({ theme, member })
 			if(!memberTheme) return
 
-			let allocation = find(memberTheme.allocations, ["organization", org])
+			const allocation = find(memberTheme.allocations, ["organization", org])
 
 			// Update amount
 			if(!allocation) {
-				MemberThemes.update({ theme: theme, member: member }, {
+				await MemberThemes.updateAsync({ theme: theme, member: member }, {
 					$push: {
 						allocations: {
 							organization: org,
@@ -365,7 +354,7 @@ const MemberMethods = {
 				})
 			// Or insert allocation vote
 			} else {
-				MemberThemes.update({
+				await MemberThemes.updateAsync({
 					theme: theme, member: member, allocations: {
 						$elemMatch: {
 							organization: org,
@@ -389,17 +378,17 @@ const MemberMethods = {
 
 		validate: null,
 
-		run({ theme, member, org, votes, voteSource }: ChitVoteData) {
+		async run({ theme, member, org, votes, voteSource }: ChitVoteData) {
 			if(Meteor.isServer) {
 				// Check for existing allocation for this org from this member
-				let memberTheme = MemberThemes.findOne({ theme, member })
+				const memberTheme = await MemberThemes.findOneAsync({ theme, member })
 				if(!memberTheme) return
 
-				let chitVote = find(memberTheme.chitVotes, ["organization", org])
+				const chitVote = find(memberTheme.chitVotes, ["organization", org])
 
 				// Update votes
 				if(!chitVote) {
-					MemberThemes.update({ theme: theme, member: member }, {
+					await MemberThemes.updateAsync({ theme: theme, member: member }, {
 						$push: {
 							chitVotes: {
 								organization: org,
@@ -410,7 +399,7 @@ const MemberMethods = {
 					})
 				// Or insert chitVote vote
 				} else {
-					MemberThemes.update({
+					await MemberThemes.updateAsync({
 						theme: theme, member: member, chitVotes: {
 							$elemMatch: {
 								organization: org,
@@ -435,8 +424,8 @@ const MemberMethods = {
 
 		validate: null,
 
-		run(id: string) {
-			return MemberThemes.update({ _id: id }, { $set: { chitVotes: [] } })
+		async run(id: string) {
+			return await MemberThemes.updateAsync({ _id: id }, { $set: { chitVotes: [] } })
 		},
 	}),
 
@@ -448,8 +437,8 @@ const MemberMethods = {
 
 		validate: null,
 
-		run(id: string) {
-			return MemberThemes.update({ _id: id }, { $set: { allocations: [] } })
+		async run(id: string) {
+			return await MemberThemes.updateAsync({ _id: id }, { $set: { allocations: [] } })
 		},
 	}),
 
@@ -461,21 +450,26 @@ const MemberMethods = {
 
 		validate: null,
 
-		run(id: string) {
-			let member = Members.findOne(id)
+		async run(id: string) {
+			const member = await Members.findOneAsync(id)
 			if(!member) {
 				throw new Meteor.Error("MemberMethods.remove", "Member to be removed was not found")
 			}
 
 			// Delete associated MemberThemes
-			MemberThemes.remove({ member: member._id }, (err: unknown) => {
-				if(err) console.error(err)
-			})
+			try {
+				await MemberThemes.removeAsync({ member: member._id })
+			} catch(err) {
+				console.error(err)
+			}
 
 			// Remove member
-			return Members.remove(id, (err: unknown) => {
-				if(err) console.error(err)
-			})
+			try {
+				return await Members.removeAsync(id)
+			} catch(err) {
+				console.error(err)
+				throw err
+			}
 
 		},
 	}),

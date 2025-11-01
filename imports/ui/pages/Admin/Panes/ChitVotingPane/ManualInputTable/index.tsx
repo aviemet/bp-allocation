@@ -55,8 +55,8 @@ const ChitInputs = observer(({ org, tabInfo, topOrg }) => {
 		saveVotes()
 	}, [weightVotes, countVotes])
 
-	const saveVotes = () => {
-		OrganizationMethods.update.call({
+	const saveVotes = async () => {
+		await OrganizationMethods.update.callAsync({
 			id: org._id,
 			data: {
 				chitVotes: {

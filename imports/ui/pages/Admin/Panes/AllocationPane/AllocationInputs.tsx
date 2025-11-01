@@ -23,16 +23,16 @@ const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminField
 	const [ votedAmount, setVotedAmount ] = useState(org.votedTotal)
 
 	// Controlling input only visible if not in kiosk voting mode
-	const enterAmountFromVotes = e => {
-		OrganizationMethods.update.call({ id: org._id, data: {
+	const enterAmountFromVotes = async e => {
+		await OrganizationMethods.update.callAsync({ id: org._id, data: {
 			amountFromVotes: parseInt(e.target.value),
 		} })
 	}
 
-	const handleTopoff = () => {
+	const handleTopoff = async () => {
 		const amount = org.topOff > 0 ? 0 : org.need - org.leverageFunds
 
-		OrganizationMethods.update.call({ id: org._id, data: { topOff: amount } })
+		await OrganizationMethods.update.callAsync({ id: org._id, data: { topOff: amount } })
 	}
 
 	// Boolean help for marking fully funded orgs

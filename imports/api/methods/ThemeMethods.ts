@@ -16,7 +16,7 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run(data: Partial<ThemeData>) {
+		async run(data: Partial<ThemeData>) {
 			if(!data) return null
 
 			if(!data.quarter) {
@@ -34,17 +34,18 @@ const ThemeMethods = {
 				slug = slug.substring(0, 3)
 				let ms = now.getMilliseconds()
 
-				let checkTheme = Themes.find({ slug: slug + ms }).fetch()
+				let checkTheme = await Themes.find({ slug: slug + ms }).fetchAsync()
 				while(checkTheme.length > 0) {
 					ms++
-					checkTheme = Themes.find({ slug: slug + ms }).fetch()
+					checkTheme = await Themes.find({ slug: slug + ms }).fetchAsync()
 				}
 
 				data.slug = slug + ms
 			}
 
 			try {
-				let theme = Themes.insert(merge(data, { presentationSettings: PresentationSettingsMethods.create.call({}) }))
+				const presentationSettingsId = await PresentationSettingsMethods.create.callAsync({})
+				const theme = await Themes.insertAsync(merge(data, { presentationSettings: presentationSettingsId }))
 				return theme
 			} catch(e) {
 				console.error(e)
@@ -62,9 +63,9 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run({ id, data }: { id: string, data: Partial<ThemeData> }) {
+		async run({ id, data }: { id: string, data: Partial<ThemeData> }) {
 			try {
-				return Themes.update({ _id: id }, { $set: data })
+				return await Themes.updateAsync({ _id: id }, { $set: data })
 			} catch(exception) {
 				throw new Meteor.Error("500", String(exception))
 			}
@@ -79,13 +80,13 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run(id: string) {
-			let orgs = Themes.findOne({ _id: id }, { fields: { organizations: 1 } })
+		async run(id: string) {
+			const orgs = await Themes.findOneAsync({ _id: id }, { fields: { organizations: 1 } })
 
 			if(orgs?.organizations && orgs.organizations.length > 0) {
-				OrganizationMethods.removeMany.call(orgs.organizations)
+				await OrganizationMethods.removeMany.callAsync(orgs.organizations)
 			}
-			return Themes.remove({ _id: id })
+			return await Themes.removeAsync({ _id: id })
 		},
 	}),
 
@@ -97,17 +98,17 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run({ theme_id, org_id }: { theme_id: string, org_id: string }) {
-			let theme = Themes.findOne({ _id: theme_id }, { fields: { topOrgsManual: 1 } })
+		async run({ theme_id, org_id }: { theme_id: string, org_id: string }) {
+			const theme = await Themes.findOneAsync({ _id: theme_id }, { fields: { topOrgsManual: 1 } })
 
 			// Remove if exists
 			if(theme?.topOrgsManual?.includes(org_id)) {
-				return Themes.update({ _id: theme_id }, {
+				return await Themes.updateAsync({ _id: theme_id }, {
 					$pull: { topOrgsManual: org_id },
 				})
 			}
 			// Add if not exists
-			return Themes.update({ _id: theme_id }, {
+			return await Themes.updateAsync({ _id: theme_id }, {
 				$addToSet: { topOrgsManual: org_id },
 			})
 		},
@@ -121,20 +122,20 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run({ id, amount, name }: { id: string, amount: number, name?: string }) {
+		async run({ id, amount, name }: { id: string, amount: number, name?: string }) {
 			if(!id || !amount) return false
 
-			let org = Organizations.findOne({ _id: id })
+			const org = await Organizations.findOneAsync({ _id: id })
 			if(!org) return false
-			let theme = Themes.findOne({ _id: org.theme })
+			const theme = await Themes.findOneAsync({ _id: org.theme })
 			if(!theme) return false
 
-			let data: { org: string, amount: number, name?: string } = { org: id, amount: amount }
+			const data: { org: string, amount: number, name?: string } = { org: id, amount: amount }
 			if(name) {
 				data.name = name
 			}
 
-			let result = Themes.update({ _id: theme._id }, {
+			const result = await Themes.updateAsync({ _id: theme._id }, {
 				$push: {
 					saves: {
 						$each: [data],
@@ -156,10 +157,10 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run({ theme_id, org_id }: { theme_id: string, org_id: string }) {
+		async run({ theme_id, org_id }: { theme_id: string, org_id: string }) {
 			if(!theme_id || !org_id) return false
 
-			return Themes.update({ _id: theme_id }, {
+			return await Themes.updateAsync({ _id: theme_id }, {
 				$pull: {
 					saves: { org: org_id },
 					topOrgsManual: org_id,
@@ -177,14 +178,14 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run(orgs: Array<{ _id: string, leverageFunds: number }>) {
-			orgs.map(org => {
-				Organizations.update({ _id: org._id }, {
+		async run(orgs: Array<{ _id: string, leverageFunds: number }>) {
+			await Promise.all(orgs.map(org => {
+				return Organizations.updateAsync({ _id: org._id }, {
 					$set: {
 						leverageFunds: org.leverageFunds,
 					},
 				})
-			})
+			}))
 		},
 	}),
 
@@ -196,8 +197,9 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run(themeId: string) {
-			const theme = Themes.find({ _id: themeId }, { fields: { organizations: 1 } }).fetch()[0]
+		async run(themeId: string) {
+			const themes = await Themes.find({ _id: themeId }, { fields: { organizations: 1 } }).fetchAsync()
+			const theme = themes[0]
 			if(!theme) {
 				throw new Error("Theme ID does not match records of any Themes")
 			}
@@ -205,13 +207,13 @@ const ThemeMethods = {
 			const orgs = theme.organizations
 			if(!orgs) return []
 
-			return orgs.map((org: string) => {
-				Organizations.update({ _id: org }, {
+			return await Promise.all(orgs.map((org: string) => {
+				return Organizations.updateAsync({ _id: org }, {
 					$set: {
 						leverageFunds: 0,
 					},
 				})
-			})
+			}))
 		},
 	}),
 
@@ -220,20 +222,23 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run(themeId: string) {
-			const theme = Themes.find({ _id: themeId }).fetch()[0]
+		async run(themeId: string) {
+			const themes = await Themes.find({ _id: themeId }).fetchAsync()
+			const theme = themes[0]
 			if(!theme) return
 
-			theme.organizations?.forEach(org => {
-				OrganizationMethods.update.call({ id: org, data: {
-					amountFromVotes: 0,
-					topOff: 0,
-					pledges: [],
-					leverageFunds: 0,
-				} })
-			})
+			if(theme.organizations) {
+				await Promise.all(theme.organizations.map(org => {
+					return OrganizationMethods.update.callAsync({ id: org, data: {
+						amountFromVotes: 0,
+						topOff: 0,
+						pledges: [],
+						leverageFunds: 0,
+					} })
+				}))
+			}
 
-			MemberThemes.update({ theme: themeId }, {
+			await MemberThemes.updateAsync({ theme: themeId }, {
 				$set: {
 					allocations: [],
 					chitVotes: [],
@@ -250,8 +255,8 @@ const ThemeMethods = {
 
 		validate: null,
 
-		run(themeId: string) {
-			Themes.update({ _id: themeId }, { $set: { messagesStatus: [] } })
+		async run(themeId: string) {
+			await Themes.updateAsync({ _id: themeId }, { $set: { messagesStatus: [] } })
 		},
 	}),
 }

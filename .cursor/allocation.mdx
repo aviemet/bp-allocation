@@ -26,9 +26,12 @@ DataProvider
 This hierarchy provides global state management through MobX stores and Meteor subscriptions. Components should use the existing provider hooks (`useData()`, `useTheme()`, `useSettings()`, etc.) rather than duplicating providers.
 
 ### Meteor 3.0+ Compatibility
-Server-side publications must use async methods:
+Server-side publications and methods must use async methods:
 - `findOne()` → `findOneAsync()`
 - `find().fetch()` → `find().fetchAsync()`
+- `insert()` → `insertAsync()`
+- `update()` → `updateAsync()`
+- `remove()` → `removeAsync()`
 
 ### TanStack Router Migration
 - Uses programmatic routing with `createRouter` and `createRoute`

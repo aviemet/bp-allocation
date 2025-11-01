@@ -39,20 +39,25 @@ const OrganizationsEdit = () => {
 		return sanitizedData
 	}
 
-	const onSubmit = data => {
+	const onSubmit = async data => {
 		setFormStatus(STATUS.SUBMITTING)
-		let response
-		if(orgId) {
-			response = OrganizationMethods.update.call({ id: orgId, data })
-		} else {
-			response = OrganizationMethods.create.call(data)
-		}
+		try {
+			let response
+			if(orgId) {
+				response = await OrganizationMethods.update.callAsync({ id: orgId, data })
+			} else {
+				response = await OrganizationMethods.create.callAsync(data)
+			}
 
-		if(response) {
-			setFormStatus(STATUS.SUCCESS)
-		} else {
+			if(response) {
+				setFormStatus(STATUS.SUCCESS)
+			} else {
+				setFormStatus(STATUS.ERROR)
+				console.error({ response })
+			}
+		} catch(error) {
 			setFormStatus(STATUS.ERROR)
-			console.error({ response })
+			console.error({ error })
 		}
 	}
 

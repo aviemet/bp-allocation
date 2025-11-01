@@ -3,6 +3,7 @@ import {
 	Switch,
 } from "@mui/material"
 import { observer } from "mobx-react-lite"
+import React from "react"
 import { useSettings } from "/imports/api/providers"
 
 import { PresentationSettingsMethods } from "/imports/api/methods"
@@ -12,7 +13,9 @@ const FundsVotingActiveToggle = observer(() => {
 
 	const { settings } = useSettings()
 
-	const saveValue = e => {
+	if(!settings) return <></>
+
+	const saveValue = (e: React.ChangeEvent<HTMLInputElement>) => {
 		PresentationSettingsMethods.update.call({
 			id: settings._id,
 			data: {
@@ -28,8 +31,7 @@ const FundsVotingActiveToggle = observer(() => {
 	return (
 		<FormControlLabel
 			control={ <Switch
-				index="fundsVotingActive"
-				onClick={ saveValue }
+				onChange={ saveValue }
 				checked={ settings.fundsVotingActive || false }
 			/> }
 			label="Funds Voting Active"

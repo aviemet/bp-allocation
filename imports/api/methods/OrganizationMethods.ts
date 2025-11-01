@@ -51,19 +51,17 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run(data: OrganizationCreateData) {
-			let result: { error?: unknown, response?: string } = {}
-			Organizations.insert(data, (error: unknown, response: string) => {
-				if(error) {
-					console.error(error)
-				} else {
-					Themes.update({ _id: data.theme }, {
-						$push: { organizations: response },
-					})
-				}
-				result = { error, response }
-			})
-			return result
+		async run(data: OrganizationCreateData) {
+			try {
+				const response = await Organizations.insertAsync(data)
+				await Themes.updateAsync({ _id: data.theme }, {
+					$push: { organizations: response },
+				})
+				return { error: undefined, response }
+			} catch(error) {
+				console.error(error)
+				return { error, response: undefined }
+			}
 		},
 	}),
 
@@ -75,9 +73,9 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ id, data }: OrganizationUpdateData) {
+		async run({ id, data }: OrganizationUpdateData) {
 			console.log({ id, data })
-			return Organizations.update({ _id: id }, { $set: data })
+			return await Organizations.updateAsync({ _id: id }, { $set: data })
 		},
 	}),
 
@@ -89,20 +87,22 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run(id: string) {
-			let org = Organizations.findOne(id)
+		async run(id: string) {
+			const org = await Organizations.findOneAsync(id)
 			if(org) {
 				// First delete any associated images
 				if(org.image) {
-					ImageMethods.remove.call(org.image)
+					await ImageMethods.remove.callAsync(org.image)
 				}
 
 				// Remove organization
-				Organizations.remove(id, (err: unknown) => {
-					if(err) console.error(err)
-
-					Themes.update({ _id: org.theme }, { $pull: { organizations: id } })
-				})
+				try {
+					await Organizations.removeAsync(id)
+					await Themes.updateAsync({ _id: org.theme }, { $pull: { organizations: id } })
+				} catch(err) {
+					console.error(err)
+					throw err
+				}
 				return 1
 			} else {
 				throw new Meteor.Error("OrganizationMethods.remove", "Organization to be removed was not found")
@@ -118,17 +118,18 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run(ids: string[]) {
+		async run(ids: string[]) {
 			// Get list of associated images to remove
-			var images = Organizations.find({ _id: { $in: ids }, image: { $exists: true } }, { fields: { _id: 0, image: 1 } }).map((org) => {
+			const orgs = await Organizations.find({ _id: { $in: ids }, image: { $exists: true } }, { fields: { _id: 0, image: 1 } }).fetchAsync()
+			const images = orgs.map((org) => {
 				return org.image
 			})
 
 			// Remove the images
-			ImageMethods.removeMany.call(images)
+			await ImageMethods.removeMany.callAsync(images)
 
 			// Remove organization
-			Organizations.remove({ _id: { $in: ids } })
+			await Organizations.removeAsync({ _id: { $in: ids } })
 		},
 	}),
 
@@ -141,12 +142,12 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ id, amount, member, anonymous }: PledgeData) {
+		async run({ id, amount, member, anonymous }: PledgeData) {
 			amount = roundFloat(String(amount))
 
 			const saveData: MatchPledge = { _id: "", amount, member, anonymous }
 
-			return Organizations.update({ _id: id }, {
+			return await Organizations.updateAsync({ _id: id }, {
 				$push: {
 					pledges: saveData,
 				},
@@ -162,8 +163,8 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ orgId, pledgeId }: RemovePledgeData) {
-			return Organizations.update(
+		async run({ orgId, pledgeId }: RemovePledgeData) {
+			return await Organizations.updateAsync(
 				{ _id: orgId },
 				{
 					$pull: {
@@ -182,14 +183,14 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ themeId, pledgeIds }: RemovePledgeByIdData) {
+		async run({ themeId, pledgeIds }: RemovePledgeByIdData) {
 			if(!Array.isArray(pledgeIds)) {
 				pledgeIds = [pledgeIds]
 			}
 
-			const theme = Themes.findOne({ _id: themeId })
+			const theme = await Themes.findOneAsync({ _id: themeId })
 			if(!theme || !theme.organizations) return 0
-			return Organizations.update(
+			return await Organizations.updateAsync(
 				{ _id: { $in: theme.organizations } },
 				{
 					$pull: {
@@ -209,10 +210,11 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ id, negate }: TopOffData) {
+		async run({ id, negate }: TopOffData) {
 			negate = negate || false
 
-			let org = Organizations.find({ _id: id }).fetch()[0]
+			const orgs = await Organizations.find({ _id: id }).fetchAsync()
+			const org = orgs[0]
 			if(!org) return 0
 
 			let topOffAmount = 0
@@ -224,7 +226,7 @@ const OrganizationMethods = {
 				topOffAmount = ask - amountFromVotes - pledgesTotal
 			}
 
-			return Organizations.update({ _id: id }, { $set: { topOff: topOffAmount } })
+			return await Organizations.updateAsync({ _id: id }, { $set: { topOff: topOffAmount } })
 		},
 	}),
 
@@ -237,8 +239,8 @@ const OrganizationMethods = {
 
 		validate: null,
 
-		run({ id }: ResetData) {
-			return Organizations.update({ _id: id }, {
+		async run({ id }: ResetData) {
+			return await Organizations.updateAsync({ _id: id }, {
 				$set: {
 					pledges: [],
 					amountFromVotes: 0,

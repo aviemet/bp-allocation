@@ -45,7 +45,7 @@ const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWith
 	const messageStatus = theme?.messagesStatus?.find(status => status.messageId === message._id)
 
 	let previewMessage = message.body
-	if(message.includeLink) {
+	if(message.includeLink && theme?.slug) {
 		if(message.type === "email") {
 			previewMessage += emailVotingLink(theme.slug, "TEST")
 		} else if(message.type === "text") {
@@ -54,6 +54,7 @@ const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWith
 	}
 
 	const handleSendMessage = () => {
+		if(!theme) return
 		setModalOpen(false)
 		Meteor.call(buttonValues[message.type].method, { themeId: theme._id, message, members })
 	}
@@ -91,14 +92,17 @@ const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWith
 						<div>{ `Do you want to send the ${message.type}, "${message.title}" to ${memberCountMessage}?` }</div>
 						<div>Preview:</div>
 						<Paper elevation={ 1 } sx={ { p: 2 } }>
-							<FormattedMessageBody dangerouslySetInnerHTML={ { __html: previewMessage } } />
+							<FormattedMessageBody dangerouslySetInnerHTML={ { __html: previewMessage || "" } } />
 						</Paper>
 					</>
 				}
 				isModalOpen={ modalOpen }
 				handleClose={ () => setModalOpen(false) }
 				confirmAction={ handleSendMessage }
+				cancelAction={ () => {} }
 				okText="Send The Message"
+				cancelText="Cancel"
+				width="md"
 			/>
 		</>
 	)

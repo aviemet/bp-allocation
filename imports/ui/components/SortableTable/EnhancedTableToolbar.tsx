@@ -18,13 +18,13 @@ interface EnhancedTableToolbarProps {
 	onDelete?: () => void
 }
 
-const EnhancedTableToolbar = ({
+export default function EnhancedTableToolbar({
 	title,
 	filterParams,
 	onFilterParamsChange,
 	numSelected,
 	onDelete,
-}: EnhancedTableToolbarProps) => {
+}: EnhancedTableToolbarProps) {
 	return (
 		<Toolbar
 			sx={ {
@@ -87,5 +87,3 @@ const EnhancedTableToolbar = ({
 		</Toolbar>
 	)
 }
-
-export default EnhancedTableToolbar

@@ -1,22 +1,26 @@
-import { useEffect } from "react"
-import PropTypes from "prop-types"
-import { Controller, useFormContext } from "react-hook-form"
 import { FormControlLabel, Switch } from "@mui/material"
+import { useEffect } from "react"
+import { Controller, useFormContext, type UseFormSetValue, type FieldValues } from "react-hook-form"
 
+interface SwitchInputProps {
+	name: string
+	label: string
+	onUpdate?: (value: unknown, name: string, setValue: UseFormSetValue<FieldValues>) => void
+}
 
-const CheckboxInput = ({ name, label, onUpdate }) => {
-	const { watch, setValue, control, formState: { errors } } = useFormContext()
+const CheckboxInput = ({ name, label, onUpdate }: SwitchInputProps) => {
+	const { watch, setValue, control } = useFormContext<FieldValues>()
 
 	useEffect(() => {
 		if(!onUpdate) return
 
-		const subscription = watch((value, { name: watchName, type }) => {
+		const subscription = watch((value, { name: watchName }) => {
 			if(watchName === name) {
 				onUpdate(value, watchName, setValue)
 			}
 		})
 		return () => subscription.unsubscribe()
-	}, [watch])
+	}, [name, onUpdate, setValue, watch])
 
 	return (
 		<FormControlLabel
@@ -28,7 +32,7 @@ const CheckboxInput = ({ name, label, onUpdate }) => {
 						<Switch
 							{ ...field }
 							onChange={ e => field.onChange(e.target.checked) }
-							checked={ field.value }
+							checked={ Boolean(field.value) }
 						/>
 					) }
 				/>
@@ -36,12 +40,6 @@ const CheckboxInput = ({ name, label, onUpdate }) => {
 			label={ label }
 		/>
 	)
-}
-
-CheckboxInput.propTypes = {
-	name: PropTypes.string.isRequired,
-	label: PropTypes.string.isRequired,
-	onUpdate: PropTypes.func,
 }
 
 export default CheckboxInput
