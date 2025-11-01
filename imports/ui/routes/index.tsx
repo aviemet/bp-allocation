@@ -1,8 +1,13 @@
 import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet, Navigate, useParams, redirect } from "@tanstack/react-router"
 import { Meteor } from "meteor/meteor"
 
-import { AdminLayout, WelcomeLayout, PresentationLayout, KioskLayout } from "/imports/ui/layouts"
+import { AdminLayout, WelcomeLayout } from "/imports/ui/layouts"
 import FourOhFour from "./404"
+import KioskRoute from "./KioskRoute"
+import PledgesRoute from "./PledgesRoute"
+import PresentationRoute from "./PresentationRoute"
+import SimulationRoute from "./SimulationRoute"
+import VotingRoute from "./VotingRoute"
 import {
 	OrganizationsPane,
 	OrganizationsEdit,
@@ -20,11 +25,7 @@ import {
 	LeveragePane,
 	PresentationPane,
 } from "../pages/Admin/Panes"
-import Simulation from "../pages/Admin/Simulation"
 import ThemesList from "../pages/Admin/ThemesList"
-import Kiosk from "../pages/Kiosk"
-import Pledges from "../pages/Pledges"
-import Presentation from "../pages/Presentation"
 import Login from "../pages/Welcome/Login"
 
 export const rootRoute = createRootRoute({
@@ -198,13 +199,7 @@ const adminIdSettingsMessageEditRoute = createRoute({
 const presentationRoute = createRoute({
 	getParentRoute: () => rootRoute,
 	path: "/presentation/$id",
-	component: () => {
-		return (
-			<PresentationLayout>
-				<Presentation />
-			</PresentationLayout>
-		)
-	},
+	component: PresentationRoute,
 })
 
 const ShortRouteComponent = () => {
@@ -221,49 +216,25 @@ const shortRoute = createRoute({
 const votingRoute = createRoute({
 	getParentRoute: () => rootRoute,
 	path: "/voting/$id/$member",
-	component: () => {
-		return (
-			<KioskLayout>
-				<Kiosk />
-			</KioskLayout>
-		)
-	},
+	component: VotingRoute,
 })
 
 const kioskRoute = createRoute({
 	getParentRoute: () => rootRoute,
 	path: "/kiosk/$id",
-	component: () => {
-		return (
-			<KioskLayout>
-				<Kiosk />
-			</KioskLayout>
-		)
-	},
+	component: KioskRoute,
 })
 
 const simulationRoute = createRoute({
 	getParentRoute: () => rootRoute,
 	path: "/simulation/$id",
-	component: () => {
-		return (
-			<PresentationLayout>
-				<Simulation />
-			</PresentationLayout>
-		)
-	},
+	component: SimulationRoute,
 })
 
 const pledgesRoute = createRoute({
 	getParentRoute: () => rootRoute,
 	path: "/pledges/$id",
-	component: () => {
-		return (
-			<KioskLayout>
-				<Pledges />
-			</KioskLayout>
-		)
-	},
+	component: PledgesRoute,
 })
 
 const notFoundRoute = createRoute({

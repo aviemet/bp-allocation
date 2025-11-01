@@ -8,6 +8,7 @@ You are an expert in TypeScript, Node.js, Vite, Vitest, Inertia.js, React, Manti
 ## Code Style and Structure
 
 - Your are BANNED from typecasting or using `any` in any circumstance, no exceptions!
+- Only use explicit return types for functions if the return type can *NOT* be inferred
 - Use functional and declarative programming patterns; avoid classes.
 - Prefer iteration and modularization over code duplication.
 - Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).

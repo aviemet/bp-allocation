@@ -13,7 +13,6 @@ import StarIcon from "@mui/icons-material/Star"
 import {
 	Collapse,
 	List,
-	ListItem,
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
@@ -110,13 +109,19 @@ const Links = observer(({ activeMenuItem }: LinksProps) => {
 		setPagesOpen(!pagesOpen)
 	}
 
+	if(!data.themeId) {
+		return <></>
+	}
+
+	const themeId = data.themeId
+
 	return (
 		<>
 			<List>
 				{ navLinks.map(link => {
 					const Icon = link.icon
 					return (
-						<ListItemButton key={ link.id } component={ Link } to={ link.route(data.themeId) } selected={ activeMenuItem === link.id }>
+						<ListItemButton key={ link.id } component={ Link } to={ link.route(themeId) } selected={ activeMenuItem === link.id }>
 							{ Icon && <ListItemIcon><Icon /></ListItemIcon> }
 							<ListItemText primary={ link.title } />
 						</ListItemButton>
@@ -127,7 +132,7 @@ const Links = observer(({ activeMenuItem }: LinksProps) => {
 			<Divider />
 
 			<List>
-				<ListItemButton component={ Link } to={ `/admin/${data.themeId}/settings` } selected={ activeMenuItem === "settings" } >
+				<ListItemButton component={ Link } to={ `/admin/${themeId}/settings` } selected={ activeMenuItem === "settings" } >
 					<ListItemIcon><SettingsIcon /></ListItemIcon>
 					<ListItemText primary="Settings" />
 				</ListItemButton>
@@ -136,7 +141,7 @@ const Links = observer(({ activeMenuItem }: LinksProps) => {
 			<Divider />
 
 			<List>
-				<ListItemButton component={ Link } to={ `/admin/${data.themeId}/overview` } selected={ activeMenuItem === "overview" } >
+				<ListItemButton component={ Link } to={ `/admin/${themeId}/overview` } selected={ activeMenuItem === "overview" } >
 					<ListItemIcon><AllInclusiveIcon /></ListItemIcon>
 					<ListItemText primary="Overview" />
 				</ListItemButton>
@@ -154,22 +159,31 @@ const Links = observer(({ activeMenuItem }: LinksProps) => {
 				<Collapse in={ pagesOpen } timeout="auto" unmountOnExit>
 					<List>
 						{ bottomLinks.map(link => {
-							const linkProps = {}
+							const route = link.route(themeId)
 							if(link.newTab) {
-								linkProps.target = "_blank"
-								linkProps.rel = "noopener noreferrer"
+								return (
+									<ListItemButton
+										key={ link.id }
+										component="a"
+										href={ route }
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										<ListItemText primary={ link.title } />
+										<ListItemIcon>
+											<OpenInNewIcon />
+										</ListItemIcon>
+									</ListItemButton>
+								)
 							}
 							return (
-								<ListItem
+								<ListItemButton
 									key={ link.id }
-									button
 									component={ Link }
-									to={ link.route(data.themeId) }
-									secondaryAction={ link.newTab && <OpenInNewIcon /> }
-									{ ...linkProps }
+									to={ route }
 								>
 									<ListItemText primary={ link.title } />
-								</ListItem>
+								</ListItemButton>
 							)
 						}) }
 					</List>

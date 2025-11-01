@@ -1,67 +1,103 @@
 import { forEach, find, clone } from "lodash"
 import { observer } from "mobx-react-lite"
-import PropTypes from "prop-types"
-import { useState, useContext, createContext } from "react"
+import React, { useState, useContext, createContext } from "react"
 import { useTheme, useOrgs } from "/imports/api/providers"
-
 import { MemberMethods } from "/imports/api/methods"
+import { MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
-const FundsVoteContext = createContext(null)
+interface VotingContextValue {
+	allocations: Record<string, number>
+	updateAllocations: (org: string, amount: number) => void
+	saveAllocations: (source?: string) => void
+	chits: Record<string, number>
+	updateChits: (org: string, count: number) => void
+	saveChits: (source?: string) => void
+	member: MemberWithTheme | false
+	unsetUser?: () => void
+}
 
-const VotingContextProvider = observer(({ children, member, unsetUser }) => {
+interface VotingContextProviderProps {
+	children: React.ReactNode
+	member: MemberWithTheme
+	unsetUser?: () => void
+}
+
+const FundsVoteContext = createContext<VotingContextValue | null>(null)
+
+const VotingContextProvider = observer(({ children, member, unsetUser }: VotingContextProviderProps) => {
 	const { theme } = useTheme()
 	const { orgs, topOrgs } = useOrgs()
 
-	let initialVotesState = {}
+	const initialVotesState: Record<string, number> = {}
 	topOrgs.forEach(org => {
-		const allocations = find(member.theme.allocations, ["organization", org._id])
-		initialVotesState[org._id] = allocations ? allocations.amount : 0
+		const allocations = find(member.theme?.allocations, ["organization", org._id])
+		initialVotesState[org._id] = allocations?.amount ?? 0
 	})
 
-	let initialChitState = {}
-	orgs.values.forEach(org => {
-		const chits = find(member.theme.chitVotes, ["organization", org._id])
-		initialChitState[org._id] = chits ? chits.votes : 0
-	})
+	const initialChitState: Record<string, number> = {}
+	if(orgs) {
+		orgs.values.forEach(org => {
+			const chits = find(member.theme?.chitVotes, ["organization", org._id])
+			initialChitState[org._id] = chits?.votes ?? 0
+		})
+	}
 
 	const [ allocations, setAllocations ] = useState(initialVotesState)
 	const [ chits, setChits ] = useState(initialChitState)
 
-	const updateAllocations = (org, amount) => {
-		let newVotes = clone(allocations)
+	const updateAllocations = (org: string, amount: number) => {
+		const newVotes = clone(allocations)
 		newVotes[org] = amount
 		setAllocations(newVotes)
 	}
 
-	const updateChits = (org, count) => {
-		let newVotes = clone(chits)
+	const updateChits = (org: string, count: number) => {
+		const newVotes = clone(chits)
 		newVotes[org] = count
 		setChits(newVotes)
 	}
 
-	const saveAllocations = source => {
+	const saveAllocations = (source?: string) => {
+		if(!theme) return
 		forEach(allocations, (amount, org) => {
-			const voteData = {
+			const voteData: {
+				theme: string
+				member: string
+				org: string
+				amount: number
+				voteSource?: "kiosk" | "mobile"
+			} = {
 				theme: theme._id,
 				member: member._id,
-				org: org,
-				amount: amount,
+				org,
+				amount,
 			}
-			if(typeof source === "string") voteData.voteSource = source
-			MemberMethods.fundVote.call(voteData)
+			if(source) {
+				voteData.voteSource = source as "kiosk" | "mobile"
+			}
+			MemberMethods.fundVote.call(voteData as Parameters<typeof MemberMethods.fundVote.call>[0])
 		})
 	}
 
-	const saveChits = source => {
+	const saveChits = (source?: string) => {
+		if(!theme) return
 		forEach(chits, (votes, org) => {
-			const voteData = {
+			const voteData: {
+				theme: string
+				member: string
+				org: string
+				votes: number
+				voteSource?: "kiosk" | "mobile"
+			} = {
 				theme: theme._id,
 				member: member._id,
 				org,
 				votes,
 			}
-			if(typeof source === "string") voteData.voteSource = source
-			MemberMethods.chitVote.call(voteData)
+			if(source) {
+				voteData.voteSource = source as "kiosk" | "mobile"
+			}
+			MemberMethods.chitVote.call(voteData as Parameters<typeof MemberMethods.chitVote.call>[0])
 		})
 	}
 
@@ -80,15 +116,6 @@ const VotingContextProvider = observer(({ children, member, unsetUser }) => {
 		</FundsVoteContext.Provider>
 	)
 })
-
-VotingContextProvider.propTypes = {
-	member: PropTypes.object.isRequired,
-	unsetUser: PropTypes.func,
-	children: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.node),
-		PropTypes.node,
-	]),
-}
 
 /**
  * Context hook

@@ -1,8 +1,8 @@
 import styled from "@emotion/styled"
 import { useParams } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
-import { useState, useEffect, useRef } from "react"
-import { Transition } from "react-transition-group"
+import { useState, useEffect, useRef, useCallback } from "react"
+import { Transition, type TransitionStatus } from "react-transition-group"
 
 import { useData, useTheme, useSettings } from "/imports/api/providers"
 import ChitVotingKiosk from "./ChitVoting"
@@ -13,43 +13,53 @@ import RemoteVoting from "./RemoteVoting"
 import Topups from "./Topups"
 import Results from "../Presentation/Results"
 
+type KioskPage = "info" | "chit" | "funds" | "topups" | "results"
+type TimerRef = ReturnType<typeof setTimeout>
+
 const Kiosk = observer(() => {
-	const params = useParams({ from: "/voting/$id/$member" })
+	const params = useParams({ strict: false })
+	const member = params?.member
 
 	const data = useData()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { settings, isLoading: settingsLoading } = useSettings()
 
-	const activePage = settings.fundsVotingActive ? data.KIOSK_PAGES.funds : data.KIOSK_PAGES.info
+	const activePage: KioskPage = settings?.fundsVotingActive ? data.KIOSK_PAGES.funds : data.KIOSK_PAGES.info
 
-	const [ displayPage, setDisplayPage ] = useState(activePage) // Active presentation page
-	const [ show, setShow ] = useState(false) // Transition values
+	const [ displayPage, setDisplayPage ] = useState<KioskPage>(activePage)
+	const [ show, setShow ] = useState(false)
 
-	const timeoutRef = useRef()
+	const timeoutRef = useRef<TimerRef | undefined>(undefined)
 
-	const getActivePage = () => {
+	const doNavigation = useCallback((page: KioskPage) => {
+		clearTimeout(timeoutRef.current)
+		if(displayPage !== page) {
+			setShow(false)
+
+			setTimeout(() => {
+				setDisplayPage(page)
+				setShow(true)
+			}, FADE_DURATION)
+		}
+	}, [displayPage])
+
+	const getActivePage = useCallback((): KioskPage => {
+		if(!settings) return data.KIOSK_PAGES.info
+
 		if(settings.fundsVotingActive) {
-			// Show the funds allocation voting page:
 			return data.KIOSK_PAGES.funds
 		} else if(settings.chitVotingActive) {
-			// Show the chit voting page:
 			return data.KIOSK_PAGES.chit
 		} else if(member && settings.topupsActive) {
-			// Show the topups pledge screen to members
 			return data.KIOSK_PAGES.topups
-		// Chit and Funds voting are not active
 		} else {
-			// Voting inactive, votes have been cast, and results have been shown
-			if(theme.fundsVotingStarted && settings.resultsVisited) {
-				// Show results page
+			if(theme?.fundsVotingStarted && settings.resultsVisited) {
 				return data.KIOSK_PAGES.results
-			// Voting inactive and (no votes yet cast || results not yet shown)
 			} else {
-				// Show orgs page
 				return data.KIOSK_PAGES.info
 			}
 		}
-	}
+	}, [settings, member, theme, data.KIOSK_PAGES])
 
 	useEffect(() => {
 		if(!themeLoading && !settingsLoading) {
@@ -58,7 +68,9 @@ const Kiosk = observer(() => {
 	}, [themeLoading, settingsLoading])
 
 	useEffect(() => {
-		let pageNav = getActivePage()
+		const pageNav = getActivePage()
+
+		if(!settings) return
 
 		// Wait 1 minute before navigating a user away from a voting screen
 		if(
@@ -70,22 +82,7 @@ const Kiosk = observer(() => {
 			clearTimeout(timeoutRef.current)
 			doNavigation(pageNav)
 		}
-	}, [settings.fundsVotingActive, settings.chitVotingActive, settings.topupsActive, settings.resultsVisited])
-
-	// Change the active presentation page
-	const doNavigation = page => {
-		clearTimeout(timeoutRef.current)
-		if(displayPage !== page) {
-			setShow(false)
-
-			setTimeout(() => {
-				setDisplayPage(page)
-				setShow(true)
-			}, FADE_DURATION)
-		}
-	}
-
-	const member = params?.member
+	}, [data.KIOSK_PAGES.chit, data.KIOSK_PAGES.funds, data.votingRedirectTimeout, displayPage, doNavigation, getActivePage, settings])
 
 	const renderPage = () => {
 		switch(displayPage) {
@@ -128,9 +125,12 @@ const defaultStyle = {
 	width: "100%",
 }
 
-const transitionStyles = {
+const transitionStyles: Record<TransitionStatus, { opacity: number }> = {
 	entering: { opacity: 0 },
 	entered: { opacity: 1 },
+	exiting: { opacity: 0 },
+	exited: { opacity: 0 },
+	unmounted: { opacity: 0 },
 }
 
 const PageFader = styled.div`

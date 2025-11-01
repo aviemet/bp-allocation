@@ -38,6 +38,8 @@ Server-side publications and methods must use async methods:
 - Nested routes under `adminLayoutRoute` for admin section
 - Authentication handled in `beforeLoad` hooks
 - `AdminLayout` component wraps admin routes with `<Outlet />`
+- Route wrapper components handle data loading and theme ID initialization
+- Components used in multiple routes should use `useParams({ strict: false })` instead of specifying `from` route path
 
 ### Theme Loading Pattern
 - `AdminLayout` sets `data.themeId` from route params
