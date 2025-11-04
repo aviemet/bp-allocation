@@ -1,8 +1,7 @@
 import styled from "@emotion/styled"
 import { useNavigate, useParams } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
-import { useState, useEffect } from "react"
-import { Transition } from "react-transition-group"
+import { useState, useEffect, useCallback } from "react"
 import { useTheme, useSettings } from "/imports/api/providers"
 
 import Allocation from "./Allocation"
@@ -13,24 +12,12 @@ import Timer from "./Timer"
 import TopOrgs from "./TopOrgs"
 import { Loading } from "/imports/ui/components"
 
-// Transition group definitions
 const FADE_DURATION = 300
 
-const defaultStyle = {
-	transition: `opacity ${FADE_DURATION}ms ease-in-out`,
-	opacity: 0,
-}
-
-const transitionStyles = {
-	entering: { opacity: 0 },
-	entered: { opacity: 1 },
-	exiting: { opacity: 0 },
-	exited: { opacity: 0 },
-	unmounted: { opacity: 0 },
-}
-
-const PageFader = styled.div`
-	opacity: 0;
+const PageFader = styled.div<{ visible: boolean }>`
+	opacity: ${props => props.visible ? 1 : 0};
+	transition: opacity ${FADE_DURATION}ms ease-in-out;
+	width: 100%;
 `
 
 const Presentation = observer(() => {
@@ -41,8 +28,8 @@ const Presentation = observer(() => {
 
 	const [ show, setShow ] = useState(true)
 
-	// TODO: wait for image load before showing page
-	const doNavigation = (currentPage: string) => {
+	const doNavigation = useCallback((currentPage: string) => {
+		if(!settings) return
 		let page = `/presentation/${params.id}/${currentPage}`
 		if(globalThis.location.pathname !== page && show) {
 			setShow(false)
@@ -52,17 +39,19 @@ const Presentation = observer(() => {
 				setShow(true)
 			}, FADE_DURATION)
 		}
-	}
+	}, [params.id, show, settings, navigate])
 
 	useEffect(() => {
-		if(!settingsLoading) doNavigation(settings.currentPage)
-	}, [settings.currentPage, settingsLoading, doNavigation])
+		if(!settingsLoading && settings && settings.currentPage) {
+			doNavigation(settings.currentPage)
+		}
+	}, [settings?.currentPage, settingsLoading, doNavigation, settings])
 
-	// Component doesn't update from mobx changes unless they are referenced
+	if(themeLoading || settingsLoading || !theme || !settings) return <Loading />
+
 	const title = theme.title || ""
 	const question = theme.question || ""
 
-	if(themeLoading || settingsLoading) return <Loading />
 	const renderPage = () => {
 		const currentPage = settings.currentPage
 
@@ -76,7 +65,7 @@ const Presentation = observer(() => {
 			case "toporgs":
 				return <TopOrgs />
 			case "allocation":
-				return <Allocation />
+				return <Allocation simulation={ false } />
 			case "results":
 				return <Results />
 			default:
@@ -85,13 +74,9 @@ const Presentation = observer(() => {
 	}
 
 	return (
-		<Transition in={ show } timeout={ FADE_DURATION }>
-			{ (state) => (
-				<PageFader style={ { ...defaultStyle, ...transitionStyles[state], width: "100%" } } id="presentationFader">
-					{ renderPage() }
-				</PageFader>
-			) }
-		</Transition>
+		<PageFader visible={ show } id="presentationFader">
+			{ renderPage() }
+		</PageFader>
 	)
 })
 

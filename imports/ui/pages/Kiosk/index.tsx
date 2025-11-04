@@ -2,7 +2,6 @@ import styled from "@emotion/styled"
 import { useParams } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Transition, type TransitionStatus } from "react-transition-group"
 
 import { useData, useTheme, useSettings } from "/imports/api/providers"
 import ChitVotingKiosk from "./ChitVoting"
@@ -106,37 +105,20 @@ const Kiosk = observer(() => {
 	}
 
 	return (
-		<Transition in={ show } timeout={ FADE_DURATION }>
-			{ state => (
-				<PageFader style={ { ...defaultStyle, ...transitionStyles[state] } }>
-					{ renderPage() }
-				</PageFader>
-			) }
-		</Transition>
+		<PageFader visible={show}>
+			{renderPage()}
+		</PageFader>
 	)
 })
 
-// Transition group definitions
 const FADE_DURATION = 300
 
-const defaultStyle = {
-	transition: `opacity ${FADE_DURATION}ms ease-in-out`,
-	opacity: 0,
-	width: "100%",
-}
-
-const transitionStyles: Record<TransitionStatus, { opacity: number }> = {
-	entering: { opacity: 0 },
-	entered: { opacity: 1 },
-	exiting: { opacity: 0 },
-	exited: { opacity: 0 },
-	unmounted: { opacity: 0 },
-}
-
-const PageFader = styled.div`
-	opacity: 0;
+const PageFader = styled.div<{ visible: boolean }>`
+	opacity: ${props => props.visible ? 1 : 0};
+	transition: opacity ${FADE_DURATION}ms ease-in-out;
 	max-width: 100vw;
 	min-height: 100%;
+	width: 100%;
 `
 
 export default Kiosk

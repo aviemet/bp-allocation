@@ -57,7 +57,6 @@
     "react-hook-form": "^7.65.0",
     "react-image": "^4.1.0",
     "react-textarea-autosize": "^8.5.9",
-    "react-transition-group": "^4.4.5",
     "simpl-schema": "^3.4.6",
     "twilio": "^5.10.4"
   },
