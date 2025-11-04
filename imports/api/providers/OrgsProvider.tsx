@@ -6,7 +6,7 @@ import React from "react"
 import { useData } from "./DataProvider"
 import { useTheme } from "./ThemeProvider"
 import { Organizations, type OrgData } from "/imports/api/db"
-import { OrgsCollection, OrgStore } from "/imports/api/stores"
+import { OrgsCollection, OrgStore, type OrganizationWithComputed } from "/imports/api/stores"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
 import { Organization, Theme } from "/imports/types/schema"
 import { createContext } from "/imports/lib/hooks/createContext"
@@ -16,16 +16,13 @@ interface ThemeWithVoting extends Theme {
 	topOrgsManual: string[]
 }
 
-// Type guard to check if theme has voting properties
 const isThemeWithVoting = (theme: Theme | undefined): theme is ThemeWithVoting => {
-	return theme !== undefined &&
-		typeof theme.numTopOrgs === "number" &&
-		Array.isArray(theme.topOrgsManual)
+	return !!(theme && typeof theme.numTopOrgs === "number" && Array.isArray(theme.topOrgsManual))
 }
 
 interface OrgsContextValue {
 	orgs?: OrgsCollection
-	topOrgs: Organization[]
+	topOrgs: OrganizationWithComputed[]
 	isLoading: boolean
 }
 
@@ -45,7 +42,6 @@ const OrgsProvider = observer(({ children }: OrgsProviderProps) => {
 	let orgsCollection: OrgsCollection | undefined
 
 	const orgs = useTracker(() => {
-		// Wait until themeId is available and theme has loaded
 		if(!themeId || themeLoading || !theme) {
 			if(subscription) subscription.stop()
 			if(cursorObserver) cursorObserver.stop()
@@ -70,9 +66,19 @@ const OrgsProvider = observer(({ children }: OrgsProviderProps) => {
 			},
 		})
 
+		if(!orgsCollection || !isThemeWithVoting(theme)) {
+			return {
+				orgs: orgsCollection,
+				topOrgs: [],
+				isLoading: !subscription?.ready(),
+			}
+		}
+
+		const topOrgs = filterTopOrgs(orgsCollection.values, theme)
+
 		return {
 			orgs: orgsCollection,
-			topOrgs: !orgsCollection || !isThemeWithVoting(theme) ? [] : filterTopOrgs(orgsCollection.values, theme),
+			topOrgs,
 			isLoading: !subscription?.ready(),
 		}
 	}, [themeId, themeLoading, theme])

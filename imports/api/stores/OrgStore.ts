@@ -3,12 +3,57 @@ import { Organization } from "/imports/types/schema"
 
 export type OrgData = TrackableData<Organization>
 
+export interface OrganizationWithComputed extends Organization {
+	votedTotal: number
+	allocatedFunds: number
+	need: number
+	leverageFunds: number
+	topOff: number
+	amountFromVotes: number
+	ask: number
+}
+
+interface OrgDataWithComputed extends OrgData {
+	votedTotal?: number
+	allocatedFunds?: number
+	need?: number
+	leverageFunds?: number
+	topOff?: number
+	amountFromVotes?: number
+	ask?: number
+}
+
 class OrgStore extends TrackableStore<OrgData> {
-	constructor(data: OrgData) {
-		super(data)
+	votedTotal: number
+	allocatedFunds: number
+	need: number
+	leverageFunds: number
+	topOff: number
+	amountFromVotes: number
+	ask: number
+
+	constructor(data: OrgDataWithComputed) {
+		const initializedData: OrgData & OrganizationWithComputed = {
+			...data,
+			votedTotal: data.votedTotal ?? 0,
+			allocatedFunds: data.allocatedFunds ?? 0,
+			need: data.need ?? 0,
+			leverageFunds: data.leverageFunds ?? 0,
+			topOff: data.topOff ?? 0,
+			amountFromVotes: data.amountFromVotes ?? 0,
+			ask: data.ask ?? 0,
+		}
+		super(initializedData)
+		this.votedTotal = initializedData.votedTotal
+		this.allocatedFunds = initializedData.allocatedFunds
+		this.need = initializedData.need
+		this.leverageFunds = initializedData.leverageFunds
+		this.topOff = initializedData.topOff
+		this.amountFromVotes = initializedData.amountFromVotes
+		this.ask = initializedData.ask
 	}
 }
 
-interface OrgStore extends OrgData {}
+interface OrgStore extends OrganizationWithComputed {}
 
 export default OrgStore

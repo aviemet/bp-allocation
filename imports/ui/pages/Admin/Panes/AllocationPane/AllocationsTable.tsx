@@ -1,5 +1,4 @@
 import {
-	Grid,
 	Table,
 	TableContainer,
 	TableHead,
@@ -7,39 +6,30 @@ import {
 	TableFooter,
 	TableRow,
 	TableCell,
-	TextField,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { Link } from "@tanstack/react-router"
-import { Map } from "immutable"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import PropTypes from "prop-types"
-import { useState, useEffect } from "react"
 
 import AllocationInputs from "./AllocationInputs"
 import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
 import { Loading } from "/imports/ui/components"
+import { type OrganizationWithComputed } from "/imports/api/stores"
 
-const emptyTotals = {
-	votedTotal: 0,
-	allocatedFunds: 0,
-	ask: 0,
-	need: 0,
+interface AllocationsTableProps {
+	hideAdminFields?: boolean
 }
 
-const AllocationPane = observer(({ hideAdminFields = false }) => {
+const AllocationsTable = observer(({ hideAdminFields = false }: AllocationsTableProps) => {
 	const { settings } = useSettings()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	// const [totals, setTotals] = useState(Map(emptyTotals))
-
 	const _calculateCrowdFavorite = () => {
 		let favorite = 0
 
-		topOrgs.map((org, i) => {
-			let favoriteAmount = topOrgs[favorite].votedTotal || 0
+		topOrgs.forEach((org, i) => {
+			const favoriteAmount = topOrgs[favorite].votedTotal
 			if(org.votedTotal > favoriteAmount) {
 				favorite = i
 			}
@@ -47,30 +37,17 @@ const AllocationPane = observer(({ hideAdminFields = false }) => {
 		return favorite
 	}
 
-	// This was a failed attempt to calculate totals in a singe loop, rather than 5 separate loops
-	// useEffect(() => {
-	// 	const newTotals = Object.assign(emptyTotals, {})
-	// 	topOrgs.forEach(org => {
-	// 		for(const [key, value] of Object.entries(newTotals)) {
-	// 			newTotals[key] = org[key] + value
-
-	// 			// Additional calculations besides basic summation per key
-	// 			switch(key) {
-	// 				case 'need':
-	// 					newTotals.need -= org.leverageFunds
-	// 					break
-	// 				default:
-	// 					break
-	// 			}
-	// 		}
-	// 	})
-	// 	setTotals(Map(newTotals))
-	// }, [topOrgs, orgsLoading])
-
 	if(themeLoading || orgsLoading) return <Loading />
+
+	interface ThemeWithComputed {
+		fundsVotesCast?: number
+		totalMembers?: number
+	}
+	const themeWithComputed = theme as ThemeWithComputed | undefined
+
 	return (
 		<TableContainer>
-			<StyledTable variant="striped">
+			<StyledTable>
 				<TableHead>
 					<TableRow>
 						<TableCell width="30%"></TableCell>
@@ -87,46 +64,40 @@ const AllocationPane = observer(({ hideAdminFields = false }) => {
 						<AllocationInputs
 							key={ org._id }
 							org={ org }
-							theme={ theme }
 							crowdFavorite={ (i === _calculateCrowdFavorite()) }
 							tabInfo={ { index: i + 1, length: topOrgs.length } }
-							hideAdminFields={ hideAdminFields || false }
+							hideAdminFields={ hideAdminFields }
 						/>
 					)) }
 				</TableBody>
 
 				<TableFooter>
-					<TableRow align="right">
-
+					<TableRow>
 						<TableCell>Totals:</TableCell>
 
 						{ /* Voted Amount */ }
 						<TableCell>{
 							numeral(topOrgs.reduce((sum, org) => { return sum + org.votedTotal }, 0)).format("$0,0")
-							// numeral(totals.get('votedTotal')).format('$0,0')
 						}</TableCell>
 
 						{ /* Total Allocated */ }
 						<TableCell>{
 							numeral(topOrgs.reduce((sum, org) => { return sum + org.allocatedFunds + org.leverageFunds }, 0)).format("$0,0")
-							// numeral(totals.get('allocatedFunds')).format('$0,0')
 						}</TableCell>
 
 						{ /* Original Ask */ }
 						<TableCell>{
 							numeral(topOrgs.reduce((sum, org) => { return sum + org.ask }, 0)).format("$0,0")
-							// numeral(totals.get('ask')).format('$0,0')
 						}</TableCell>
 
 						{ /* Need (Difference remaining) */ }
 						<TableCell>{
 							numeral(topOrgs.reduce((sum, org) => { return sum + org.need - org.leverageFunds }, 0)).format("$0,0")
-							// numeral(totals.get('need')).format('$0,0')
 						}</TableCell>
 
 						{ !hideAdminFields && <TableCell>
-							{ settings.useKioskFundsVoting && <>
-								{ `(${theme.fundsVotesCast}/${theme.totalMembers})` } <span style={ { fontSize: "0.75em" } }>Members Voted</span>
+							{ settings?.useKioskFundsVoting && themeWithComputed && themeWithComputed.fundsVotesCast !== undefined && themeWithComputed.totalMembers !== undefined && <>
+								{ `(${themeWithComputed.fundsVotesCast}/${themeWithComputed.totalMembers})` } <span style={ { fontSize: "0.75em" } }>Members Voted</span>
 							</> }
 						</TableCell> }
 
@@ -178,8 +149,4 @@ const StyledTable = styled(Table)(({ theme }) => ({
 	},
 }))
 
-AllocationPane.propTypes = {
-	hideAdminFields: PropTypes.bool,
-}
-
-export default AllocationPane
+export default AllocationsTable

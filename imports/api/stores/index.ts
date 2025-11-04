@@ -5,7 +5,7 @@ import MemberThemeStore from "./MemberThemeStore"
 import MessagesCollection from "./MessagesCollection"
 import MessageStore from "./MessageStore"
 import OrgsCollection from "./OrgsCollection"
-import OrgStore from "./OrgStore"
+import OrgStore, { type OrganizationWithComputed } from "./OrgStore"
 import SettingsStore from "./SettingsStore"
 import ThemeStore from "./ThemeStore"
 
@@ -18,6 +18,7 @@ export {
 	MessageStore,
 	OrgsCollection,
 	OrgStore,
+	OrganizationWithComputed,
 	SettingsStore,
 	ThemeStore,
 }

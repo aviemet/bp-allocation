@@ -1,12 +1,4 @@
-import { useState } from "react"
-import PropTypes from "prop-types"
-import numeral from "numeral"
-
-import { observer } from "mobx-react-lite"
-import { useSettings } from "/imports/api/providers"
-
-import { OrganizationMethods } from "/imports/api/methods"
-
+import FavoriteIcon from "@mui/icons-material/Favorite"
 import {
 	Button,
 	Stack,
@@ -15,28 +7,44 @@ import {
 	TextField,
 	Tooltip,
 } from "@mui/material"
-import FavoriteIcon from "@mui/icons-material/Favorite"
+import { observer } from "mobx-react-lite"
+import numeral from "numeral"
+import { FocusEvent, useState } from "react"
+import { useSettings } from "/imports/api/providers"
+import { type OrganizationWithComputed } from "/imports/api/stores"
 
-const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminFields }) => {
+import { OrganizationMethods } from "/imports/api/methods"
+
+interface TabInfo {
+	index: number
+	length: number
+}
+
+interface AllocationInputsProps {
+	org: OrganizationWithComputed
+	crowdFavorite?: boolean
+	tabInfo?: TabInfo
+	hideAdminFields?: boolean
+}
+
+const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminFields }: AllocationInputsProps) => {
 	const { settings } = useSettings()
 
-	const [ votedAmount, setVotedAmount ] = useState(org.votedTotal)
+	const [ votedAmount, setVotedAmount ] = useState<number | string>(org.votedTotal)
 
-	// Controlling input only visible if not in kiosk voting mode
-	const enterAmountFromVotes = async e => {
+	const enterAmountFromVotes = async(e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+		const value = e.target.value
 		await OrganizationMethods.update.callAsync({ id: org._id, data: {
-			amountFromVotes: parseInt(e.target.value),
+			amountFromVotes: parseInt(value) || 0,
 		} })
 	}
 
-	const handleTopoff = async () => {
+	const reachedGoal = org.need - org.leverageFunds <= 0
+	const handleTopoff = async() => {
 		const amount = org.topOff > 0 ? 0 : org.need - org.leverageFunds
-
 		await OrganizationMethods.update.callAsync({ id: org._id, data: { topOff: amount } })
 	}
 
-	// Boolean help for marking fully funded orgs
-	const reachedGoal = org.need - org.leverageFunds <= 0
 	return (
 		<TableRow className={ reachedGoal ? "make-me-stand-out" : "" }>
 
@@ -50,15 +58,15 @@ const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminField
 
 			{ /* Voted Amount Input */ }
 			<TableCell align="right">
-				{ hideAdminFields || settings.useKioskFundsVoting ?
-					<span>{ numeral(org.votedTotal || 0).format("$0,0") }</span>
+				{ hideAdminFields || settings?.useKioskFundsVoting ?
+					<span>{ numeral(org.votedTotal).format("$0,0") }</span>
 					:
 					<TextField
 						type="number"
 						value={ votedAmount || "" }
-						onChange={ e => setVotedAmount(e.target.value === "" ? 0 : e.target.value) }
+						onChange={ e => setVotedAmount(e.target.value === "" ? "" : e.target.value) }
 						onBlur={ enterAmountFromVotes }
-						tabIndex={ tabInfo ? tabInfo.index : false }
+						tabIndex={ tabInfo?.index }
 					/>
 				}
 			</TableCell>
@@ -83,7 +91,7 @@ const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminField
 				<TableCell>
 					<Button
 						onClick={ handleTopoff }
-						color={ crowdFavorite ? "primary" : "grey" }
+						color={ crowdFavorite ? "primary" : "inherit" }
 						sx={ {
 							width: "100%",
 							whiteSpace: "nowrap",
@@ -96,12 +104,5 @@ const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminField
 		</TableRow>
 	)
 })
-
-AllocationInputs.propTypes = {
-	org: PropTypes.object,
-	crowdFavorite: PropTypes.bool,
-	tabInfo: PropTypes.object,
-	hideAdminFields: PropTypes.bool,
-}
 
 export default AllocationInputs
