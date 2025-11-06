@@ -4,15 +4,19 @@ import {
 	TextField,
 } from "@mui/material"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 import { useState } from "react"
 import { roundFloat } from "/imports/lib/utils"
 
 import ContentModal from "/imports/ui/components/Dialogs/ContentModal"
 
 import { ThemeMethods } from "/imports/api/methods"
+import { type OrgStore } from "/imports/api/stores"
 
-const SaveButton = ({ org }) => {
+interface SaveButtonProps {
+	org: OrgStore
+}
+
+const SaveButton = ({ org }: SaveButtonProps) => {
 	const [ amount, setAmount ] = useState("")
 	const [ modalOpen, setModalOpen ] = useState(false)
 
@@ -51,10 +55,6 @@ const SaveButton = ({ org }) => {
 			</ContentModal>
 		</>
 	)
-}
-
-SaveButton.propTypes = {
-	org: PropTypes.object,
 }
 
 export default SaveButton

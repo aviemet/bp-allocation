@@ -1,9 +1,12 @@
 import { Checkbox } from "@mui/material"
-import PropTypes from "prop-types"
 import { MessageMethods } from "/imports/api/methods"
+import { type MessageData } from "/imports/api/db"
 
+interface IncludeVotingLinkToggleProps {
+	message: MessageData
+}
 
-const includeVotingLinkToggle = ({ message }) => {
+const includeVotingLinkToggle = ({ message }: IncludeVotingLinkToggleProps) => {
 	const saveValue = e => {
 		MessageMethods.update.call({
 			id: message._id,
@@ -19,10 +22,6 @@ const includeVotingLinkToggle = ({ message }) => {
 			checked={ message.includeLink || false }
 		/>
 	)
-}
-
-includeVotingLinkToggle.propTypes = {
-	message: PropTypes.object.isRequired,
 }
 
 export default includeVotingLinkToggle

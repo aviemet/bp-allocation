@@ -19,7 +19,9 @@ const Messages = () => {
 	const { theme } = useTheme()
 	const { messages, isLoading: messagesLoading } = useMessages()
 
-	if(messagesLoading) return <Loading />
+	if(messagesLoading || !messages) return <Loading />
+
+	if(!theme) return <Loading />
 
 	return (
 		<>
@@ -32,7 +34,7 @@ const Messages = () => {
 
 			<MessageTypeCard>
 				<Typography component="h2" variant="h5">Texts</Typography>
-				<Table variant="striped">
+				<Table { ...({ variant: "striped" } as { variant: "striped" }) }>
 					<TableHead>
 						<TableRow>
 							<TableCell>Title</TableCell>
@@ -63,7 +65,7 @@ const Messages = () => {
 
 			<MessageTypeCard>
 				<Typography component="h2" variant="h5">Emails</Typography>
-				<Table variant="striped">
+				<Table { ...({ variant: "striped" } as { variant: "striped" }) }>
 					<TableHead>
 						<TableRow>
 							<TableCell>Title</TableCell>
@@ -96,9 +98,9 @@ const Messages = () => {
 	)
 }
 
-const MessageTypeCard = styled(Paper)(({ theme }) => ({
+const MessageTypeCard = styled(Paper)({
 	padding: 16,
 	marginBottom: 16,
-}))
+})
 
 export default Messages

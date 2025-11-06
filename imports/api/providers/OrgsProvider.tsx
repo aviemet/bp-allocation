@@ -8,7 +8,7 @@ import { useTheme } from "./ThemeProvider"
 import { Organizations, type OrgData } from "/imports/api/db"
 import { OrgsCollection, OrgStore, type OrganizationWithComputed } from "/imports/api/stores"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
-import { Organization, Theme } from "/imports/types/schema"
+import { Theme } from "/imports/types/schema"
 import { createContext } from "/imports/lib/hooks/createContext"
 
 interface ThemeWithVoting extends Theme {
@@ -66,11 +66,25 @@ const OrgsProvider = observer(({ children }: OrgsProviderProps) => {
 			},
 		})
 
+		if(subscription.ready() && !orgsCollection) {
+			const cursor = Organizations.find({ theme: themeId })
+			orgsCollection = new OrgsCollection(cursor.fetch(), theme, OrgStore)
+
+			if(cursorObserver) {
+				cursorObserver.stop()
+			}
+			cursorObserver = cursor.observe({
+				added: (orgs: OrgData) => orgsCollection?.refreshData(orgs),
+				changed: (orgs: OrgData) => orgsCollection?.refreshData(orgs),
+				removed: (orgs: OrgData) => orgsCollection?.deleteItem(orgs),
+			})
+		}
+
 		if(!orgsCollection || !isThemeWithVoting(theme)) {
 			return {
 				orgs: orgsCollection,
 				topOrgs: [],
-				isLoading: !subscription?.ready(),
+				isLoading: !subscription?.ready() || !orgsCollection,
 			}
 		}
 

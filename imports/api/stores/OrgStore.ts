@@ -24,14 +24,6 @@ interface OrgDataWithComputed extends OrgData {
 }
 
 class OrgStore extends TrackableStore<OrgData> {
-	votedTotal: number
-	allocatedFunds: number
-	need: number
-	leverageFunds: number
-	topOff: number
-	amountFromVotes: number
-	ask: number
-
 	constructor(data: OrgDataWithComputed) {
 		const initializedData: OrgData & OrganizationWithComputed = {
 			...data,
@@ -44,13 +36,6 @@ class OrgStore extends TrackableStore<OrgData> {
 			ask: data.ask ?? 0,
 		}
 		super(initializedData)
-		this.votedTotal = initializedData.votedTotal
-		this.allocatedFunds = initializedData.allocatedFunds
-		this.need = initializedData.need
-		this.leverageFunds = initializedData.leverageFunds
-		this.topOff = initializedData.topOff
-		this.amountFromVotes = initializedData.amountFromVotes
-		this.ask = initializedData.ask
 	}
 }
 

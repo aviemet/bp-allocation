@@ -3,7 +3,6 @@ import { Button } from "@mui/material"
 import {
 	Box,
 } from "@mui/material"
-import PropTypes from "prop-types"
 import { useEffect } from "react"
 
 import { useVoting } from "./VotingContext"
@@ -11,8 +10,11 @@ import { useVoting } from "./VotingContext"
 import { COLORS } from "/imports/lib/global"
 import { useData, useSettings } from "/imports/api/providers"
 
+interface VotingCompleteProps {
+	setVotingComplete: (value: boolean) => void
+}
 
-const VotingComplete = ({ setVotingComplete }) => {
+const VotingComplete = ({ setVotingComplete }: VotingCompleteProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 
@@ -110,9 +112,5 @@ const AmendVoteButton = styled(Button)`
 	text-transform: uppercase;
 	margin-bottom: 10px;
 `
-
-VotingComplete.propTypes = {
-	setVotingComplete: PropTypes.func,
-}
 
 export default VotingComplete

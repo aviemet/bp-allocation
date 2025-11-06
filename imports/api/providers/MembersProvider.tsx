@@ -154,7 +154,7 @@ const MembersProvider = observer(({ children }: MembersProviderProps) => {
 
 		return Object.assign(methods, {
 			members: membersCollection,
-			isLoading: !subscription?.ready(),
+			isLoading: !subscription?.ready() || (subscription?.ready() && !membersCollection),
 		})
 
 	}, [themeId, subLimit, memberId])

@@ -13,13 +13,13 @@ interface VotingContextValue {
 	updateChits: (org: string, count: number) => void
 	saveChits: (source?: string) => void
 	member: MemberWithTheme | false
-	unsetUser?: () => void
+	unsetUser: () => void
 }
 
 interface VotingContextProviderProps {
 	children: React.ReactNode
 	member: MemberWithTheme
-	unsetUser?: () => void
+	unsetUser: () => void
 }
 
 const FundsVoteContext = createContext<VotingContextValue | null>(null)
@@ -110,7 +110,7 @@ const VotingContextProvider = observer(({ children, member, unsetUser }: VotingC
 			updateChits,
 			saveChits,
 			member: member || false,
-			unsetUser: unsetUser,
+			unsetUser,
 		} }>
 			{ children }
 		</FundsVoteContext.Provider>

@@ -1,18 +1,28 @@
 import styled from "@emotion/styled"
 import { Button, Container, Typography } from "@mui/material"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 import { COLORS } from "/imports/lib/global"
 import { useTheme } from "/imports/api/providers"
 import { Loading } from "/imports/ui/components"
+import { type OrgStore } from "/imports/api/stores"
 
-const VotingComplete = ({ data, resetData }) => {
+interface TopupCompleteData {
+	amount: number
+	org: OrgStore
+}
+
+interface VotingCompleteProps {
+	data: TopupCompleteData
+	resetData: () => void
+}
+
+const VotingComplete = ({ data, resetData }: VotingCompleteProps) => {
 	const { theme, isLoading: themeLoading } = useTheme()
 
 	if(themeLoading) return <Loading />
 	const formatted = {
 		amount: numeral(data.amount).format("$0,0[.]00"),
-		total: numeral(data.amount * theme.matchRatio).format("$0,0[.]00"),
+		total: numeral(data.amount * (theme?.matchRatio ?? 0)).format("$0,0[.]00"),
 	}
 
 	return (
@@ -54,10 +64,5 @@ const AmendVoteButton = styled(Button)`
 	margin-bottom: 10px;
 	padding-bottom: 0;
 `
-
-VotingComplete.propTypes = {
-	data: PropTypes.object,
-	resetData: PropTypes.func,
-}
 
 export default VotingComplete

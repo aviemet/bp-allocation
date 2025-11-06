@@ -16,7 +16,6 @@ import {
 import { format } from "date-fns"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 import { useState } from "react"
 import { useTheme, useMembers, useOrgs } from "/imports/api/providers"
 import { OrganizationMethods } from "/imports/api/methods"
@@ -49,7 +48,11 @@ const headCells = [
 	},
 ]
 
-const Pledges = observer(({ hideAdminFields = false }) => {
+interface PledgesProps {
+	hideAdminFields?: boolean
+}
+
+const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 	const { theme } = useTheme()
 	const { members, isLoading: membersLoading } = useMembers()
 	const { topOrgs, orgs, isLoading: orgsLoading } = useOrgs()
@@ -76,7 +79,7 @@ const Pledges = observer(({ hideAdminFields = false }) => {
 	return (
 		<>
 			<Grid container spacing={ 2 }>
-				<Grid item xs={ 12 } md={ 8 }>
+				<Grid size={ { xs: 12, md: 8 } }>
 					<SortableTable
 						title={ <Stack direction="row" alignItems="center" justifyContent="space-between">
 							<Box>Pledges</Box>
@@ -127,7 +130,7 @@ const Pledges = observer(({ hideAdminFields = false }) => {
 					/>
 				</Grid>
 
-				<Grid item xs={ 12 } md={ 4 }>
+				<Grid size={ { xs: 12, md: 4 } }>
 					<Paper>
 						<TableContainer>
 							<Table>
@@ -178,9 +181,5 @@ const Pledges = observer(({ hideAdminFields = false }) => {
 		</>
 	)
 })
-
-Pledges.propTypes = {
-	hideAdminFields: PropTypes.bool,
-}
 
 export default Pledges

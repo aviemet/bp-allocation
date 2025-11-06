@@ -9,7 +9,6 @@ import {
 import { styled } from "@mui/material/styles"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 
 import { useTheme, useOrgs } from "/imports/api/providers"
 import { ThemeMethods } from "/imports/api/methods"
@@ -19,7 +18,11 @@ import LeverageObject from "/imports/lib/Leverage"
 import ResultsTable from "./ResultsTable"
 import RoundTable from "./RoundTable"
 
-const Leverage = observer(({ hideAdminFields }) => {
+interface LeverageProps {
+	hideAdminFields?: boolean
+}
+
+const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
 	const { theme } = useTheme()
 	const { topOrgs } = useOrgs()
 
@@ -103,9 +106,5 @@ const StageCard = styled(Paper)(({ theme }) => ({
 	padding: 16,
 	marginBottom: 16,
 }))
-
-Leverage.propTypes = {
-	hideAdminFields: PropTypes.bool,
-}
 
 export default Leverage

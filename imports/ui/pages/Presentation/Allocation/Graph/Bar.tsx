@@ -1,18 +1,25 @@
 import styled from "@emotion/styled"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 import { COLORS } from "/imports/lib/global"
+import { type OrgStore } from "/imports/api/stores"
+import { type ThemeData } from "/imports/api/db"
 
-const AwardImg = ({ show }) => {
+interface AwardImgProps {
+	show: boolean
+}
+
+const AwardImg = ({ show }: AwardImgProps) => {
 	if(show !== true) return <></>
 	return <Award src="/img/BAT_award_logo.svg" style={ { maxHeight: "10rem" } } />
 }
 
-AwardImg.propTypes = {
-	show: PropTypes.bool,
+interface BarProps {
+	org: OrgStore & { save?: number }
+	theme: ThemeData
+	savesVisible: boolean
 }
 
-const Bar = props => {
+const Bar = (props: BarProps) => {
 	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0)
 	if(!props.savesVisible) shownFunds -= props.org.save
 
@@ -81,10 +88,5 @@ const Award = styled.img`
 	animation-fill-mode: forwards;
 	-webkit-animation-fill-mode: forwards;
 `
-
-Bar.propTypes = {
-	org: PropTypes.object,
-	savesVisible: PropTypes.bool,
-}
 
 export default Bar

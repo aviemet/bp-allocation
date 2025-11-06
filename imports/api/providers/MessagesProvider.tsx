@@ -73,9 +73,23 @@ const MessagesProvider = observer(({ children }: MessagesProviderProps) => {
 			},
 		})
 
+		if(subscription.ready() && !messagesCollection) {
+			const cursor = Messages.find({ })
+			messagesCollection = new MessagesCollection(cursor.fetch())
+
+			if(handleObserver) {
+				handleObserver.stop()
+			}
+			handleObserver = cursor.observe({
+				added: (messages: MessageData) => messagesCollection?.refreshData(messages),
+				changed: (messages: MessageData) => messagesCollection?.refreshData(messages),
+				removed: (messages: MessageData) => messagesCollection?.deleteItem(messages),
+			})
+		}
+
 		return {
 			messages: messagesCollection,
-			isLoading: !subscription?.ready(),
+			isLoading: !subscription?.ready() || !messagesCollection,
 		}
 	}, [themeId, themeLoading])
 

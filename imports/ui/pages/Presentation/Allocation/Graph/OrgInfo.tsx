@@ -1,9 +1,14 @@
 import styled from "@emotion/styled"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import PropTypes from "prop-types"
+import { type OrgStore } from "/imports/api/stores"
 
-const OrgInfo = observer(({ org, showLeverage }) => {
+interface OrgInfoProps {
+	org: OrgStore
+	showLeverage: boolean
+}
+
+const OrgInfo = observer(({ org, showLeverage }: OrgInfoProps) => {
 	const need = org.need - org.leverageFunds
 	return (
 		<InfoContainer className="orginfo">
@@ -45,10 +50,5 @@ const MatchNeed = styled.div`
 const TotalNeed = styled.div`
 	color: #00853f;
 `
-
-OrgInfo.propTypes = {
-	org: PropTypes.object,
-	showLeverage: PropTypes.bool,
-}
 
 export default OrgInfo

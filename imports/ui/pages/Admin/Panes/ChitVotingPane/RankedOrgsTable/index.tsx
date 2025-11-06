@@ -17,12 +17,14 @@ import { observer } from "mobx-react-lite"
 import { ThemeMethods } from "/imports/api/methods"
 import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
 
-import PropTypes from "prop-types"
-
 import TopOrgsRow from "./TopOrgsRow"
 import { sortTopOrgs } from "/imports/lib/orgsMethods"
 
-const TopOrgsByChitVote = observer(({ hideAdminFields }) => {
+interface TopOrgsByChitVoteProps {
+	hideAdminFields?: boolean
+}
+
+const TopOrgsByChitVote = observer(({ hideAdminFields }: TopOrgsByChitVoteProps) => {
 	const { settings } = useSettings()
 	const { theme } = useTheme()
 	const { orgs } = useOrgs()
@@ -108,9 +110,5 @@ const FlexHeading = styled.div`
 		flex: 1;
 	}
 `
-
-TopOrgsByChitVote.propTypes = {
-	hideAdminFields: PropTypes.bool,
-}
 
 export default TopOrgsByChitVote

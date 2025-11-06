@@ -35,7 +35,7 @@ const Login = () => {
 	return (
 		<>
 			<Grid container justifyContent="center" alignItems="center">
-				<Grid item xs={ 10 } sm={ 8 } md={ 6 } lg={ 4 } textAlign="center">
+				<Grid size={ { xs: 10, sm: 8, md: 6, lg: 4 } } sx={ { textAlign: "center" } }>
 					<img src="/img/BPLogo.svg" alt="Battery Powered Logo" />
 					<h1>Battery Powered<br/>Allocation Night</h1>
 					<Button size="large" onClick={ handleLogin } style={ { width: "100%" } }>

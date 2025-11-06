@@ -18,7 +18,7 @@ const ThemeInputs = () => {
 
 	return (
 		<Grid container spacing={ 2 }>
-			<Grid item xs={ 12 }>
+			<Grid size={ { xs: 12 } }>
 				<Controller
 					name="title"
 					control={ control }
@@ -34,7 +34,7 @@ const ThemeInputs = () => {
 				/>
 			</Grid>
 
-			<Grid item xs={ 12 }>
+			<Grid size={ { xs: 12 } }>
 				<Controller
 					name="question"
 					control={ control }
@@ -50,7 +50,7 @@ const ThemeInputs = () => {
 				/>
 			</Grid>
 
-			<Grid item xs={ 12 }>
+			<Grid size={ { xs: 12 } }>
 				<Button type="submit">Submit</Button>
 			</Grid>
 		</Grid>
@@ -95,15 +95,15 @@ const NewThemeModal = () => {
 					onValidSubmit={ onSubmit }
 				>
 					<Grid container spacing={ 2 }>
-						<Grid item xs={ 12 }>
+						<Grid size={ { xs: 12 } }>
 							<TextInput name="title" label="Theme Title" required />
 						</Grid>
 
-						<Grid item xs={ 12 }>
+						<Grid size={ { xs: 12 } }>
 							<TextInput name="question" label="Theme Question" />
 						</Grid>
 
-						<Grid item xs={ 12 }>
+						<Grid size={ { xs: 12 } }>
 							<Stack direction="row" spacing={ 2 } justifyContent="end">
 								<Button color="error" onClick={ () => setIsModalOpen(false) }>Cancel</Button>
 								<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Theme</SubmitButton>

@@ -80,7 +80,7 @@ const OrganizationsEdit = () => {
 				onSanitize={ sanitizeData }
 			>
 				<Grid container spacing={ 2 }>
-					<Grid item xs={ 12 } md={ 8 }>
+					<Grid size={ { xs: 12, md: 8 } }>
 						<TextInput
 							name="title"
 							label="Organization Title"
@@ -88,7 +88,7 @@ const OrganizationsEdit = () => {
 						/>
 					</Grid>
 
-					<Grid item xs={ 12 } md={ 4 }>
+					<Grid size={ { xs: 12, md: 4 } }>
 						<TextInput
 							name="ask"
 							label="Funding Ask"
@@ -99,11 +99,11 @@ const OrganizationsEdit = () => {
 						/>
 					</Grid>
 
-					<Grid item xs={ 12 }>
+					<Grid size={ { xs: 12 } }>
 						<RichTextInput name="description" label="Description" />
 					</Grid>
 
-					<Grid item xs={ 12 }>
+					<Grid size={ { xs: 12 } }>
 						<Stack direction="row" spacing={ 2 } justifyContent="end">
 							<Link to={ `/admin/${id}/orgs` }><Button color="error">Cancel</Button></Link>
 							<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Organization</SubmitButton>

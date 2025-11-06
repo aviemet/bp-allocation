@@ -44,6 +44,7 @@ Meteor.publish("theme", async function(themeId: string) {
 		try {
 			const settings = await PresentationSettings.findOneAsync({ _id: theme.presentationSettings })
 			if(!settings) {
+				this.ready()
 				return
 			}
 
@@ -91,6 +92,7 @@ Meteor.publish("themeBySlug", async function(slug: string) {
 		try {
 			const settings = await PresentationSettings.findOneAsync({ _id: theme.presentationSettings })
 			if(!settings) {
+				this.ready()
 				return
 			}
 

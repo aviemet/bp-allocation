@@ -8,7 +8,6 @@ import { Link } from "@tanstack/react-router"
 import { format } from "date-fns"
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
-import PropTypes from "prop-types"
 import { useState } from "react"
 
 import { Themes } from "/imports/api/db"
@@ -107,10 +106,6 @@ const ThemesList = () => {
 			/>
 		</Container>
 	)
-}
-
-ThemesList.propTypes = {
-	themes: PropTypes.array,
 }
 
 export default ThemesList

@@ -2,13 +2,16 @@ import styled from "@emotion/styled"
 import { observer } from "mobx-react-lite"
 import { useTheme, useSettings, useOrgs } from "/imports/api/providers"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 
 import Bar from "./Bar"
 import LeverageBar from "./LeverageBar"
 import OrgInfo from "./OrgInfo"
 
-const Graph = observer(props => {
+interface GraphProps {
+	simulation?: boolean
+}
+
+const Graph = observer((props: GraphProps) => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
 	const { orgs, topOrgs } = useOrgs()
@@ -180,9 +183,5 @@ const LeverageContainer = styled.div`
 	width: 100%;
 	padding: 0.5rem 0;
 `
-
-Graph.propTypes = {
-	simulation: PropTypes.bool,
-}
 
 export default Graph

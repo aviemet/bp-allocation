@@ -1,9 +1,13 @@
 import styled from "@emotion/styled"
-import PropTypes from "prop-types"
 
 import Image from "/imports/ui/components/Image"
 
-const Intro = props => {
+interface IntroProps {
+	title?: string
+	question?: string
+}
+
+const Intro = (props: IntroProps) => {
 
 	return (
 		<TitlePage>
@@ -55,10 +59,5 @@ const ThemeQuestion = styled.h2`
 const LogoContainer = styled.div`
 	display: block;
 `
-
-Intro.propTypes = {
-	title: PropTypes.string,
-	question: PropTypes.string,
-}
 
 export default Intro

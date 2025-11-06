@@ -131,41 +131,41 @@ const MembersEdit = () => {
 				onValidationError={ onError }
 			>
 				<Grid container spacing={ 2 }>
-					<Grid item xs={ 12 } md={ 6 }>
+					<Grid size={ { xs: 12, md: 6 } }>
 						<TextInput name="firstName" label="First Name" required onUpdate={ handleInitials } />
 					</Grid>
 
-					<Grid item xs={ 12 } md={ 6 }>
+					<Grid size={ { xs: 12, md: 6 } }>
 						<TextInput name="lastName" label="Last Name" required onUpdate={ handleInitials } />
 					</Grid>
 
-					<Grid item xs={ 12 } md={ 2 }>
+					<Grid size={ { xs: 12, md: 2 } }>
 						<TextInput name="number" label="Member Number" required />
 					</Grid>
 
-					<Grid item xs={ 12 } md={ 2 }>
+					<Grid size={ { xs: 12, md: 2 } }>
 						<TextInput name="initials" label="Initials" />
 					</Grid>
 
-					<Grid item xs={ 12 } md={ 4 }>
+					<Grid size={ { xs: 12, md: 4 } }>
 						<TextInput name="phone" label="Phone Number" />
 					</Grid>
 
-					<Grid item xs={ 12 } md={ 4 }>
+					<Grid size={ { xs: 12, md: 4 } }>
 						<TextInput name="email" label="Email Address" />
 					</Grid>
 
-					<Grid item xs={ 12 } md={ 8 }>
+					<Grid size={ { xs: 12, md: 8 } }>
 						<TextInput name="amount" label="Voting Funds" InputProps={ {
 							startAdornment: <InputAdornment position="start">$</InputAdornment>,
 						} } />
 					</Grid>
 
-					<Grid item xs={ 12 } md={ 4 }>
+					<Grid size={ { xs: 12, md: 4 } }>
 						<TextInput name="chits" label="Chit Votes" />
 					</Grid>
 
-					<Grid item xs={ 12 }>
+					<Grid size={ { xs: 12 } }>
 						<Stack direction="row" spacing={ 2 } justifyContent="end">
 							<Button color="error" onClick={ () => navigate({ to: "/admin/$id/members", params: { id } }) }>Cancel</Button>
 							<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Member</SubmitButton>

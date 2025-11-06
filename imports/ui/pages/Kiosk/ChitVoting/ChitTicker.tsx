@@ -3,15 +3,19 @@ import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
 import { IconButton } from "@mui/material"
 import { forEach } from "lodash"
-import PropTypes from "prop-types"
 import { useState, useLayoutEffect } from "react"
 
 import { useVoting } from "../VotingContext"
+import { type OrgStore } from "/imports/api/stores"
+
+interface ChitTickerProps {
+	org: OrgStore
+}
 
 /**
  * Full Component containing Ticker, Org Title and amount feedback
  */
-const ChitTicker = ({ org }) => {
+const ChitTicker = ({ org }: ChitTickerProps) => {
 	const { member, chits, updateChits } = useVoting()
 	const [ value, setValue ] = useState(parseInt(chits[org._id]) || 0)
 
@@ -74,9 +78,5 @@ const TransparentButton = styled(IconButton)`
 	color: white;
 	font-size: 3rem;
 `
-
-ChitTicker.propTypes = {
-	org: PropTypes.object,
-}
 
 export default ChitTicker

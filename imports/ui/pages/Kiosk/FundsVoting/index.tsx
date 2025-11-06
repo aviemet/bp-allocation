@@ -3,7 +3,6 @@ import { Container, Button, Typography } from "@mui/material"
 import { forEach } from "lodash"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 import React, { useState, useEffect } from "react"
 
 import { useData, useSettings, useOrgs } from "/imports/api/providers"
@@ -14,8 +13,13 @@ import FundsSlider from "./FundsSlider"
 import Countdown from "../Countdown"
 
 import { COLORS } from "/imports/lib/global"
+import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
-const AmountRemaining = React.memo(({ value }) => {
+interface AmountRemainingProps {
+	value: number
+}
+
+const AmountRemaining = React.memo(({ value }: AmountRemainingProps) => {
 	return (
 		<h2>
 			FUNDS LEFT TO ALLOCATE: <NumberFormat>{ numeral(value).format("$0,0") }</NumberFormat>
@@ -26,7 +30,12 @@ const AmountRemaining = React.memo(({ value }) => {
 // TODO: Elements are too wide for screen at xl screen width
 AmountRemaining.displayName = "AmountRemaining" // To slience eslint
 
-const FundsVotingKiosk = observer(props => {
+interface FundsVotingKioskProps {
+	user: MemberWithTheme
+	source: string
+}
+
+const FundsVotingKiosk = observer((props: FundsVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
@@ -126,14 +135,5 @@ const NumberFormat = styled.span`
 	width: 12rem;
 	display: inline-block;
 `
-
-FundsVotingKiosk.propTypes = {
-	user: PropTypes.object,
-	source: PropTypes.string,
-}
-
-AmountRemaining.propTypes = {
-	value: PropTypes.number,
-}
 
 export default FundsVotingKiosk

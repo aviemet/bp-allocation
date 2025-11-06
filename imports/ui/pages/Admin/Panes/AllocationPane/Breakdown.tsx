@@ -100,6 +100,5 @@ const Arithmetic = styled.span`
 	font-size: 2rem;
 `
 
-Breakdown.propTypes = {}
 
 export default Breakdown

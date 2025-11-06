@@ -7,14 +7,18 @@ import {
 import _ from "lodash"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 import { useState } from "react"
 import { useTheme } from "/imports/api/providers"
 import { ThemeMethods } from "/imports/api/methods"
 
 import ContentModal from "/imports/ui/components/Dialogs/ContentModal"
+import { type OrgStore } from "/imports/api/stores"
 
-const UnSaveButton = observer(({ org }) => {
+interface UnSaveButtonProps {
+	org: OrgStore
+}
+
+const UnSaveButton = observer(({ org }: UnSaveButtonProps) => {
 	const [ modalOpen, setModalOpen ] = useState(false)
 
 	const { theme } = useTheme()
@@ -45,9 +49,5 @@ const UnSaveButton = observer(({ org }) => {
 		</>
 	)
 })
-
-UnSaveButton.propTypes = {
-	org: PropTypes.object,
-}
 
 export default UnSaveButton

@@ -106,17 +106,17 @@ const MessageEdit = observer(() => {
 				onUpdate={ handlePreview }
 			>
 				<Grid container spacing={ 2 }>
-					<Grid item xs={ 12 }>
+					<Grid size={ { xs: 12 } }>
 						<TextInput name="title" label="Title" />
 					</Grid>
 
 					{ messageData?.type === "email" && (
-						<Grid item xs={ 12 }>
+						<Grid size={ { xs: 12 } }>
 							<TextInput name="subject" label="Subject" required />
 						</Grid>
 					) }
 
-					<Grid item xs={ 12 }>
+					<Grid size={ { xs: 12 } }>
 						{ messageData?.type === "email" ?
 							<RichTextInput name="body" label="Body" />
 							:
@@ -124,7 +124,7 @@ const MessageEdit = observer(() => {
 						}
 					</Grid>
 
-					<Grid item xs={ 12 } sm={ 6 }>
+					<Grid size={ { xs: 12, sm: 6 } }>
 						<Paper sx={ { p: 2 } }>
 							<Box>
 								<Switch name="active" label="Active" />
@@ -135,7 +135,7 @@ const MessageEdit = observer(() => {
 						</Paper>
 					</Grid>
 
-					<Grid item xs={ 12 } sm={ 6 }>
+					<Grid size={ { xs: 12, sm: 6 } }>
 						<Paper sx={ { p: 2 } }>
 							<FormControl component="fieldset" variant="standard">
 								<FormLabel component="legend">Skip If Member Has Voted In:</FormLabel>
@@ -149,7 +149,7 @@ const MessageEdit = observer(() => {
 						</Paper>
 					</Grid>
 
-					<Grid item xs={ 12 } >
+					<Grid size={ { xs: 12 } } >
 						<Stack direction="row" spacing={ 2 } justifyContent="end">
 							<Button
 								component={ Link }

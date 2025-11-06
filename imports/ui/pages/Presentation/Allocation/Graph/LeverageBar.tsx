@@ -1,11 +1,15 @@
 import styled from "@emotion/styled"
 import { LinearProgress } from "@mui/material"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 
 import { COLORS } from "/imports/lib/global"
 
-const LeverageBar = ({ value, total }) => {
+interface LeverageBarProps {
+	value?: number
+	total?: number
+}
+
+const LeverageBar = ({ value, total }: LeverageBarProps) => {
 	return (
 		<LeverageBarContainer>
 			<LinearProgress variant="determinate"
@@ -40,9 +44,5 @@ const LeverageCount = styled.div`
 	align-items: baseline;
 	padding-top: 6px;
 `
-LeverageBar.propTypes = {
-	value: PropTypes.number,
-	total: PropTypes.number,
-}
 
 export default LeverageBar

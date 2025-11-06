@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import PropTypes from "prop-types"
 
 import {
 	TextField,
@@ -15,6 +14,7 @@ import {
 import { OrganizationMethods } from "/imports/api/methods"
 import { observer } from "mobx-react-lite"
 import { useOrgs } from "/imports/api/providers"
+import { type OrgStore } from "/imports/api/stores"
 
 const ChitTable = () => {
 	const { orgs, topOrgs } = useOrgs()
@@ -47,9 +47,17 @@ const ChitTable = () => {
 	)
 }
 
-const ChitInputs = observer(({ org, tabInfo, topOrg }) => {
-	const [ weightVotes, setWeightVotes ] = useState(org.chitVotes.weight)
-	const [ countVotes, setCountVotes ] = useState(org.chitVotes.count)
+interface ChitInputsProps {
+	org: OrgStore
+	tabInfo: { index: number; length: number }
+	topOrg: boolean
+}
+
+const ChitInputs = observer(({ org, tabInfo, topOrg }: ChitInputsProps) => {
+	// @ts-expect-error - chitVotes not fully typed in OrgStore
+	const [ weightVotes, setWeightVotes ] = useState(org.chitVotes?.weight ?? 0)
+	// @ts-expect-error - chitVotes not fully typed in OrgStore
+	const [ countVotes, setCountVotes ] = useState(org.chitVotes?.count ?? 0)
 
 	useEffect(() => {
 		saveVotes()
@@ -101,11 +109,5 @@ const ChitInputs = observer(({ org, tabInfo, topOrg }) => {
 		</TableRow>
 	)
 })
-
-ChitInputs.propTypes = {
-	org: PropTypes.object,
-	tabInfo: PropTypes.object,
-	topOrg: PropTypes.bool,
-}
 
 export default ChitTable

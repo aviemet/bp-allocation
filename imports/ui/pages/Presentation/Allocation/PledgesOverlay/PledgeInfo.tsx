@@ -1,10 +1,15 @@
 import styled from "@emotion/styled"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 import { useMembers } from "/imports/api/providers"
 import { Loading } from "/imports/ui/components"
+import { type MatchPledge } from "/imports/types/schema"
+import { type OrgStore } from "/imports/api/stores"
 
-const PledgeInfo = ({ pledge }) => {
+interface PledgeInfoProps {
+	pledge: MatchPledge & { org: OrgStore }
+}
+
+const PledgeInfo = ({ pledge }: PledgeInfoProps) => {
 	const { members, isLoading: membersLoading } = useMembers()
 
 	if(membersLoading || !members) return <></>
@@ -56,9 +61,5 @@ const AnimationContent = styled.div`
 	opacity: 0;
 	animation: fade-in-scroll-up 10s;
 `
-
-PledgeInfo.propTypes = {
-	pledge: PropTypes.object,
-}
 
 export default PledgeInfo

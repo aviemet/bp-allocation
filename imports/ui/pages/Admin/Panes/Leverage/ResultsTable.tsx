@@ -8,10 +8,21 @@ import {
 	TableCell,
 } from "@mui/material"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 
+interface ResultsTableProps {
+	round: {
+		orgs: Array<{
+			_id: string
+			title?: string
+			leverageFunds?: number
+			allocatedFunds?: number
+			ask?: number
+			need?: number
+		}>
+	}
+}
 
-const ResultsTable = ({ round }) => {
+const ResultsTable = ({ round }: ResultsTableProps) => {
 	let totals = {
 		spread: 0,
 		total: 0,
@@ -59,10 +70,6 @@ const ResultsTable = ({ round }) => {
 			</TableFooter>
 		</Table>
 	)
-}
-
-ResultsTable.propTypes = {
-	round: PropTypes.object,
 }
 
 export default ResultsTable

@@ -1,14 +1,16 @@
-import numeral from "numeral"
-import PropTypes from "prop-types"
-import { useState, useEffect } from "react"
 import { useFormContext, useWatch } from "react-hook-form"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
+import { type OrgStore } from "/imports/api/stores"
 
-const SelectableOrgCards = ({ orgs }) => {
+interface SelectableOrgCardsProps {
+	orgs: OrgStore[]
+}
+
+const SelectableOrgCards = ({ orgs }: SelectableOrgCardsProps) => {
 	const { setValue } = useFormContext()
 	const watch = useWatch({ name: "id" })
 
-	const handleSetValue = id => () => {
+	const handleSetValue = (id: string) => () => {
 		if(watch === id) return
 
 		setValue("id", id)
@@ -27,10 +29,6 @@ const SelectableOrgCards = ({ orgs }) => {
 			) ) }
 		</OrgCardContainer>
 	)
-}
-
-SelectableOrgCards.propTypes = {
-	orgs: PropTypes.array.isRequired,
 }
 
 export default SelectableOrgCards

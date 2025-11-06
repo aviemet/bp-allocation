@@ -57,7 +57,7 @@ const PresentationSettingsForm = observer(() => {
 		>
 			<Grid container spacing={ 2 }>
 				{ /* Use Chit Votes Kiosk Toggle */ }
-				<Grid item xs={ 12 }>
+				<Grid size={ { xs: 12 } }>
 					<Paper sx={ { p: 1 } }>
 						<Stack direction="row" justifyContent="space-between" alignItems="center">
 							<div>
@@ -73,7 +73,7 @@ const PresentationSettingsForm = observer(() => {
 				</Grid>
 
 				{ /* Use Kiosk Votes Kiosk Toggle */ }
-				<Grid item xs={ 12 }>
+				<Grid size={ { xs: 12 } }>
 					<Paper sx={ { p: 1 } }>
 						<Stack direction="row" justifyContent="space-between" alignItems="center">
 							<div>
@@ -89,7 +89,7 @@ const PresentationSettingsForm = observer(() => {
 				</Grid>
 
 				{ /* Presentation Type */ }
-				<Grid item xs={ 12 }>
+				<Grid size={ { xs: 12 } }>
 					<Paper sx={ { p: 1 } }>
 						<Stack direction="row" justifyContent="space-between" alignItems="center">
 							<div>
@@ -104,7 +104,7 @@ const PresentationSettingsForm = observer(() => {
 					</Paper>
 				</Grid>
 
-				<Grid item xs={ 12 } md={ 6 }>
+				<Grid size={ { xs: 12, md: 6 } }>
 					{ settings.awardsPresentation && <TextInput
 						name="awardAmount"
 						type="number"
@@ -113,7 +113,7 @@ const PresentationSettingsForm = observer(() => {
 				</Grid>
 
 				{ /* OrgCard Show Ask */ }
-				<Grid item xs={ 12 }>
+				<Grid size={ { xs: 12 } }>
 					<Paper sx={ { p: 1 } }>
 						<Stack direction="row" justifyContent="space-between" alignItems="center">
 							<div>
@@ -126,7 +126,7 @@ const PresentationSettingsForm = observer(() => {
 					</Paper>
 				</Grid>
 
-				<Grid item xs={ 12 } align="right">
+				<Grid size={ { xs: 12 } } sx={ { textAlign: "right" } }>
 					<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Changes</SubmitButton>
 				</Grid>
 

@@ -1,9 +1,12 @@
-import PropTypes from "prop-types"
-
 import { OrgCard } from "/imports/ui/components/Cards"
 import ChitTicker from "./ChitTicker"
+import { type OrgStore } from "/imports/api/stores"
 
-const ChitVoteOrgCard = ({ org }) => {
+interface ChitVoteOrgCardProps {
+	org: OrgStore
+}
+
+const ChitVoteOrgCard = ({ org }: ChitVoteOrgCardProps) => {
 	return (
 		<OrgCard
 			org={ org }
@@ -17,9 +20,5 @@ const ChitVoteOrgCard = ({ org }) => {
 			) }
 		/>
 	)
-}
-
-ChitVoteOrgCard.propTypes = {
-	org: PropTypes.any,
 }
 export default ChitVoteOrgCard

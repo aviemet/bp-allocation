@@ -2,7 +2,6 @@ import styled from "@emotion/styled"
 import { Container, Button, Typography } from "@mui/material"
 import { forEach, shuffle } from "lodash"
 import { observer } from "mobx-react-lite"
-import PropTypes from "prop-types"
 import { useState, useEffect, useMemo } from "react"
 
 import { useData, useSettings, useOrgs } from "/imports/api/providers"
@@ -13,8 +12,14 @@ import VotingComplete from "../VotingComplete"
 import { FundsVoteContext } from "../VotingContext"
 import { COLORS } from "/imports/lib/global"
 import ChitVoteOrgCard from "./ChitVoteOrgCard"
+import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
-const ChitVotingKiosk = observer(props => {
+interface ChitVotingKioskProps {
+	user: MemberWithTheme
+	source: string
+}
+
+const ChitVotingKiosk = observer((props: ChitVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { orgs } = useOrgs()
@@ -126,10 +131,5 @@ const FinalizeButton = styled(Button)(({ theme }) => ({
 const NumberFormat = styled.span`
 	display: inline-block;
 `
-
-ChitVotingKiosk.propTypes = {
-	user: PropTypes.object,
-	source: PropTypes.string,
-}
 
 export default ChitVotingKiosk

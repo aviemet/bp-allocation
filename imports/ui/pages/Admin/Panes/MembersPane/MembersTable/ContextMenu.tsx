@@ -12,14 +12,19 @@ import {
 	Stack,
 } from "@mui/material"
 import { Link } from "@tanstack/react-router"
-import PropTypes from "prop-types"
 import { useState } from "react"
 
 import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
 import ActionMenu from "/imports/ui/components/Menus/ActionMenu"
 import SendWithFeedbackButton from "/imports/ui/components/Buttons/SendWithFeedbackButton"
+import { type MemberStore } from "/imports/api/stores"
 
-const ContextMenu = ({ themeId, member }) => {
+interface ContextMenuProps {
+	themeId: string
+	member: MemberStore & { theme?: { _id: string } }
+}
+
+const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 	const { messages } = useMessages()
 
 	const [textSubmenuOpen, setTextSubmenuOpen] = useState(false)
@@ -149,11 +154,6 @@ const ContextMenu = ({ themeId, member }) => {
 			/>
 		</>
 	)
-}
-
-ContextMenu.propTypes = {
-	themeId: PropTypes.string.isRequired,
-	member: PropTypes.object.isRequired,
 }
 
 export default ContextMenu

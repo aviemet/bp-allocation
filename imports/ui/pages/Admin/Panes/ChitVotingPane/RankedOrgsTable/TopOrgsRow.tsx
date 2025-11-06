@@ -5,7 +5,6 @@ import {
 	TableCell,
 } from "@mui/material"
 import { useParams } from "@tanstack/react-router"
-import PropTypes from "prop-types"
 
 import { ThemeMethods } from "/imports/api/methods"
 
@@ -14,8 +13,17 @@ import { roundFloat } from "/imports/lib/utils"
 
 import SaveButton from "./SaveButton"
 import UnSaveButton from "./UnSaveButton"
+import { type OrgStore } from "/imports/api/stores"
 
-const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }) => {
+interface TopOrgsRowProps {
+	org: OrgStore
+	inTopOrgs: boolean
+	hideAdminFields: boolean
+	isSaved: boolean
+	isLocked: boolean
+}
+
+const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }: TopOrgsRowProps) => {
 	const { id: themeId } = useParams({ strict: false })
 
 	/**
@@ -60,14 +68,6 @@ const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }) => {
 
 		</TableRow>
 	)
-}
-
-TopOrgsRow.propTypes = {
-	org: PropTypes.object,
-	inTopOrgs: PropTypes.bool,
-	hideAdminFields: PropTypes.bool,
-	isSaved: PropTypes.bool,
-	isLocked: PropTypes.bool,
 }
 
 export default TopOrgsRow

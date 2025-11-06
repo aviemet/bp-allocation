@@ -105,8 +105,8 @@ const Kiosk = observer(() => {
 	}
 
 	return (
-		<PageFader visible={show}>
-			{renderPage()}
+		<PageFader visible={ show }>
+			{ renderPage() }
 		</PageFader>
 	)
 })

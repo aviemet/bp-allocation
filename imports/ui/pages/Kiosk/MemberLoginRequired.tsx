@@ -3,9 +3,8 @@ import { Grid, Stack, Typography } from "@mui/material"
 import { isEmpty } from "lodash"
 import { observer } from "mobx-react-lite"
 import { useMembers } from "/imports/api/providers"
-
 import { Loading } from "/imports/ui/components"
-import PropTypes from "prop-types"
+import { ComponentType } from "react"
 import { useState } from "react"
 import { Form, TextInput, SubmitButton, STATUS } from "/imports/ui/components/Form"
 
@@ -13,7 +12,12 @@ import { VotingContextProvider } from "./VotingContext"
 
 import { COLORS } from "/imports/lib/global"
 
-const MemberLoginRequired = observer(props => {
+interface MemberLoginRequiredProps {
+	component?: ComponentType<{ user: unknown }>
+	member?: string
+}
+
+const MemberLoginRequired = observer((props: MemberLoginRequiredProps) => {
 	// Pull member data from Data Store
 	const { members, isLoading: membersLoading } = useMembers()
 
@@ -82,11 +86,11 @@ const MemberLoginRequired = observer(props => {
 				>
 					<Grid container spacing={ 2 } sx={ { mt: 4 } }>
 
-						<Grid item xs={ 12 }>
+						<Grid size={ { xs: 12 } }>
 							<Typography component="h1" variant="h2" color="white" className="title" align="center">Enter Your Initials &amp; Member ID</Typography>
 						</Grid>
 
-						<Grid item xs={ 12 } md={ 6 }>
+						<Grid size={ { xs: 12, md: 6 } }>
 							<TextInput
 								name="initials"
 								placeholder="Initials"
@@ -94,7 +98,7 @@ const MemberLoginRequired = observer(props => {
 							/>
 						</Grid>
 
-						<Grid item xs={ 12 } md={ 6 }>
+						<Grid size={ { xs: 12, md: 6 } }>
 							<TextInput
 								name="number"
 								placeholder="Member #"
@@ -103,7 +107,7 @@ const MemberLoginRequired = observer(props => {
 							/>
 						</Grid>
 
-						<Grid item xs={ 12 }>
+						<Grid size={ { xs: 12 } }>
 							<StyledSubmitButton
 								type="submit"
 								status={ formStatus }
@@ -114,7 +118,7 @@ const MemberLoginRequired = observer(props => {
 							</StyledSubmitButton>
 						</Grid>
 
-						<Grid item xs={ 12 } textAlign="center">
+						<Grid size={ { xs: 12 } } sx={ { textAlign: "center" } }>
 							{ searchError && <Typography component="h2" variant="h2" className="title">Member Not Found</Typography> }
 						</Grid>
 
@@ -150,9 +154,5 @@ const BackgroundImage = styled.div`
 	background: url('/img/BPLogo.svg') no-repeat 50% 50%;
 	background-size: 1600px;
 `
-
-MemberLoginRequired.propTypes = {
-	component: PropTypes.any,
-}
 
 export default MemberLoginRequired

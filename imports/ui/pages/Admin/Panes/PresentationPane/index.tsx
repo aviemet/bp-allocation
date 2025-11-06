@@ -77,7 +77,7 @@ const PresentationPane = observer(() => {
 		<>
 			<Paper sx={ { p: 3, mb: 2 } }>
 				<Grid container spacing={ 2 }>
-					<Grid item xs={ 12 } md={ 4 }>
+					<Grid size={ { xs: 12, md: 4 } }>
 
 						{ /************
 							* Intro/Title Page
@@ -90,7 +90,7 @@ const PresentationPane = observer(() => {
 
 						<Button onClick={ restoreDefaultSettings }>Restore Defaults</Button>
 					</Grid>
-					<Grid item xs={ 12 } md={ 4 }>
+					<Grid size={ { xs: 12, md: 4 } }>
 
 						{ /************
 							* Participating Organizations
@@ -104,7 +104,7 @@ const PresentationPane = observer(() => {
 						<ColorizeTopOrgsToggle />
 
 					</Grid>
-					<Grid item xs={ 12 } md={ 4 }>
+					<Grid size={ { xs: 12, md: 4 } }>
 
 						{ /************
 							* Timer
@@ -122,7 +122,7 @@ const PresentationPane = observer(() => {
 						<FundsVotingActiveToggle />
 
 					</Grid>
-					<Grid item xs={ 12 } md={ 4 }>
+					<Grid size={ { xs: 12, md: 4 } }>
 
 						{ /************
 							* Top Organizations
@@ -136,7 +136,7 @@ const PresentationPane = observer(() => {
 						<AnimateTopOrgsToggle />
 
 					</Grid>
-					<Grid item xs={ 12 } md={ 4 }>
+					<Grid size={ { xs: 12, md: 4 } }>
 
 						{ /************
 							* Allocation/Evaluation
@@ -155,7 +155,7 @@ const PresentationPane = observer(() => {
 						<TopupsActiveToggle />
 
 					</Grid>
-					<Grid item xs={ 12 } md={ 4 }>
+					<Grid size={ { xs: 12, md: 4 } }>
 
 						{ /************
 							* Results Page

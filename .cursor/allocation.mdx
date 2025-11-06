@@ -157,6 +157,13 @@ Server-side publications and methods must use async methods:
 - Server publications handle the actual data filtering (e.g., theme-based member filtering)
 - Client-side queries should be simple since the server publication does the heavy lifting
 
+### Data Loading Race Condition Prevention
+- **Critical**: Collections must be initialized synchronously when subscriptions become ready, not only in `onReady` callbacks
+- Providers check `subscription.ready() && !collection` to initialize collections immediately if subscription is ready before `onReady` fires
+- `isLoading` state must check both `subscription.ready()` AND collection existence: `isLoading: !subscription?.ready() || !collection`
+- Server publications in `Tracker.autorun` must call `this.ready()` in ALL code paths, including early returns when data doesn't exist
+- Publications that return early without data must explicitly call `this.ready()` to prevent endless loading states
+
 ### Meteor File Loading Behavior
 - Meteor eagerly loads and executes any `.js/.ts` files at the project root (outside of `imports/`, `client/`, and `server/`).
 - Utility scripts placed in `scripts/` at the root will be executed on server startup if they have top-level code.

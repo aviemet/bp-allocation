@@ -59,13 +59,13 @@ const SettingsPane = observer(() => {
 				defaultValues={ defaultData }
 			>
 				<Grid container spacing={ 2 }>
-					<Grid item xs={ 12 }>
+					<Grid size={ { xs: 12 } }>
 						<TextInput
 							name="twilioRateLimit"
 							label="Rate limit in ms for sending texts"
 						/>
 					</Grid>
-					<Grid item xs={ 12 } align="right">
+					<Grid size={ { xs: 12 } } sx={ { textAlign: "right" } }>
 						<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Changes</SubmitButton>
 					</Grid>
 				</Grid>

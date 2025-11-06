@@ -8,10 +8,20 @@ import {
 	TableCell,
 } from "@mui/material"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 
+interface RoundTableProps {
+	orgs: Array<{
+		_id: string
+		title?: string
+		roundFunds?: number
+		percent?: number
+		allocatedFunds?: number
+		leverageFunds?: number
+		need?: number
+	}>
+}
 
-const RoundTable = ({ orgs }) => {
+const RoundTable = ({ orgs }: RoundTableProps) => {
 	let totals = {
 		percent: 0,
 		funds: 0,
@@ -64,10 +74,6 @@ const RoundTable = ({ orgs }) => {
 			</TableFooter>
 		</Table>
 	)
-}
-
-RoundTable.propTypes = {
-	orgs: PropTypes.array,
 }
 
 export default RoundTable

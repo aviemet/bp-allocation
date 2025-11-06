@@ -28,7 +28,7 @@ const Pledges = observer(() => {
 	return (
 		<Grid container spacing={ 2 }>
 
-			<Grid item xs={ 12 }>
+			<Grid size={ { xs: 12 } }>
 				<Stack direction="row" justifyContent="space-between" alignItems="space-between">
 					<SwitchInput
 						toggle
@@ -39,11 +39,11 @@ const Pledges = observer(() => {
 				</Stack>
 			</Grid>
 
-			<Grid item xs={ 12 } md={ 8 }>
+			<Grid size={ { xs: 12, md: 8 } }>
 				<MemberSearchInput required />
 			</Grid>
 
-			<Grid item xs={ 12 } md={ 4 }>
+			<Grid size={ { xs: 12, md: 4 } }>
 				<TextInput
 					name="amount"
 					placeholder="Pledge Amount"
@@ -56,12 +56,12 @@ const Pledges = observer(() => {
 				/>
 			</Grid>
 
-			<Grid item xs={ 12 }>
+			<Grid size={ { xs: 12 } }>
 				{ /* Selectable Cards for top orgs */ }
 				<SelectableOrgCards orgs={ topOrgs } />
 			</Grid>
 
-			<Grid item xs={ 12 }>
+			<Grid size={ { xs: 12 } }>
 				<FinalizeButton
 					fullWidth
 					type="submit"

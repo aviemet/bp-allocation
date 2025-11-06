@@ -1,14 +1,13 @@
 import styled from "@emotion/styled"
-import PropTypes from "prop-types"
 import { CountdownCircleTimer } from "react-countdown-circle-timer"
 
-const secondsAsMinutes = seconds => {
+const secondsAsMinutes = (seconds: number) => {
 	const m = Math.floor(seconds % 3600 / 60)
 	const s = Math.floor(seconds % 3600 % 60)
 	return `${m}:${s < 10 ? 0 : ""}${s}`
 }
 
-const renderTime = ({ remainingTime }) => {
+const renderTime = ({ remainingTime }: { remainingTime: number }) => {
 	if(remainingTime === 0) {
 		return <h1>Thank you<br/>for voting!</h1>
 	}
@@ -16,7 +15,11 @@ const renderTime = ({ remainingTime }) => {
 	return <h1>{ secondsAsMinutes(remainingTime) }</h1>
 }
 
-const Timer = ({ seconds }) => {
+interface TimerProps {
+	seconds?: number
+}
+
+const Timer = ({ seconds }: TimerProps) => {
 
 	return (
 		<TimerContainer>
@@ -59,9 +62,5 @@ const TimerContainer = styled.div`
 		text-align: center;
 	}
 `
-
-Timer.propTypes = {
-	seconds: PropTypes.number,
-}
 
 export default Timer

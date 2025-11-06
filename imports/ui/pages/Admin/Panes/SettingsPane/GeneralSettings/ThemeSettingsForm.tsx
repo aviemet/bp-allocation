@@ -63,7 +63,7 @@ const SettingsPane = observer(() => {
 			} }
 		>
 			<Grid container spacing={ 2 }>
-				<Grid item xs={ 12 }>
+				<Grid size={ { xs: 12 } }>
 					{ /* Title */ }
 					<TextInput
 						name="title"
@@ -71,7 +71,7 @@ const SettingsPane = observer(() => {
 					/>
 				</Grid>
 
-				<Grid item xs={ 12 }>
+				<Grid size={ { xs: 12 } }>
 					{ /* Question */ }
 					<TextInput
 						name="question"
@@ -79,7 +79,7 @@ const SettingsPane = observer(() => {
 					/>
 				</Grid>
 
-				<Grid item xs={ 12 } md={ 6 }>
+				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Total Leverage Amount */ }
 					<TextInput
 						name="leverageTotal"
@@ -90,12 +90,12 @@ const SettingsPane = observer(() => {
 					/>
 				</Grid>
 
-				<Grid item xs={ 12 } md={ 6 }>
+				<Grid size={ { xs: 12, md: 6 } }>
 					<b>Total from member funds</b>
 					<div>{ formatters.currency.format(theme.memberFunds) }</div>
 				</Grid>
 
-				<Grid item xs={ 12 } md={ 6 }>
+				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Chit Weight */ }
 					<TextInput
 						name="chitWeight"
@@ -104,7 +104,7 @@ const SettingsPane = observer(() => {
 					/>
 				</Grid>
 
-				<Grid item xs={ 12 } md={ 6 }>
+				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Match Ratio */ }
 					<TextInput
 						name="matchRatio"
@@ -113,7 +113,7 @@ const SettingsPane = observer(() => {
 					/>
 				</Grid>
 
-				<Grid item xs={ 12 } md={ 6 }>
+				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Consolation Amount */ }
 					<TextInput
 						name="consolationAmount"
@@ -124,7 +124,7 @@ const SettingsPane = observer(() => {
 					/>
 				</Grid>
 
-				<Grid item xs={ 12 } md={ 6 }>
+				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Consolation Active */ }
 					<FormControlLabel
 						label="Use Consolation?"
@@ -132,7 +132,7 @@ const SettingsPane = observer(() => {
 					/>
 				</Grid>
 
-				<Grid item xs={ 12 } align="right">
+				<Grid size={ { xs: 12 } } sx={ { textAlign: "right" } }>
 					<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Changes</SubmitButton>
 				</Grid>
 			</Grid>
