@@ -22,18 +22,17 @@ const PresentationSettingsForm = observer(() => {
 		return sanitizedData
 	}
 
-	const onSubmit = data => {
+	const onSubmit = async data => {
 		setFormStatus(STATUS.SUBMITTING)
-		PresentationSettingsMethods.update.call({
-			id: settings._id,
-			data: data,
-		}, (err, res) => {
-			if(err) {
-				setFormStatus(STATUS.READY)
-			} else {
-				setFormStatus(STATUS.SUCCESS)
-			}
-		})
+		try {
+			await PresentationSettingsMethods.update.callAsync({
+				id: settings._id,
+				data: data,
+			})
+			setFormStatus(STATUS.SUCCESS)
+		} catch (err) {
+			setFormStatus(STATUS.READY)
+		}
 	}
 
 	const onError = (errors, data) => {

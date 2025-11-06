@@ -10,8 +10,8 @@ interface TimerInputProps {
 const TimerInput = ({ timerLength: initialTimerLength, settingsId }: TimerInputProps) => {
 	const [ timerLength, setTimerLength ] = useState(initialTimerLength || 0)
 
-	const saveTimerLength = () => {
-		PresentationSettingsMethods.update.call({
+	const saveTimerLength = async () => {
+		await PresentationSettingsMethods.update.callAsync({
 			id: settingsId,
 			data: { timerLength },
 		})

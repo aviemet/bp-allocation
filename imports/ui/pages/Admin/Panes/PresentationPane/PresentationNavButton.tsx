@@ -26,8 +26,8 @@ const PresentationNavButton = observer(({
 	const settings = settingsContext?.settings
 	if(!settings) return null
 
-	const changeCurrentPage = () => {
-		PresentationSettingsMethods.update.call({
+	const changeCurrentPage = async () => {
+		await PresentationSettingsMethods.update.callAsync({
 			id: settings._id,
 			data: {
 				currentPage: page,
@@ -35,11 +35,15 @@ const PresentationNavButton = observer(({
 		})
 	}
 
-	// 	onClick passthrough
-	const doOnClick = (e: MouseEvent<HTMLButtonElement>) => {
-		changeCurrentPage()
-		if(onClick) onClick()
-		e.currentTarget.blur()
+	const handleClick = async (e: MouseEvent<HTMLButtonElement>) => {
+		const target = e.currentTarget
+		await changeCurrentPage()
+
+		onClick?.()
+
+		if(target) {
+			target.blur()
+		}
 	}
 
 	// Highlight the active page button
@@ -53,7 +57,7 @@ const PresentationNavButton = observer(({
 				mb: 3,
 				backgroundColor: activePage ? muiTheme.palette.success.main : muiTheme.palette.grey[300],
 			} }
-			onClick={ doOnClick }
+			onClick={ handleClick }
 			{ ...rest }
 		>
 			<Stack alignItems="center">

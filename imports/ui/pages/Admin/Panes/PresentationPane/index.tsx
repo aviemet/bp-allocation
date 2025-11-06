@@ -42,10 +42,9 @@ const PresentationPane = observer(() => {
 	/**
 	 * Reset the values for the presentation
 	 */
-	const restoreDefaultSettings = () => {
+	const restoreDefaultSettings = async () => {
 		if(!settings) return
-		// Reset Presentation Settings
-		PresentationSettingsMethods.update.call({
+		await PresentationSettingsMethods.update.callAsync({
 			id: settings._id,
 			data: {
 				currentPage: "intro",
@@ -61,9 +60,9 @@ const PresentationPane = observer(() => {
 		})
 	}
 
-	const setResultsHaveBeenViewed = () => {
+	const setResultsHaveBeenViewed = async () => {
 		if(!settings) return
-		PresentationSettingsMethods.update.call({
+		await PresentationSettingsMethods.update.callAsync({
 			id: settings._id,
 			data: {
 				resultsVisited: true,

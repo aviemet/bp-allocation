@@ -8,7 +8,8 @@ import { PresentationLayout } from "/imports/ui/layouts"
 import Presentation from "../pages/Presentation"
 
 const PresentationRoute = observer(() => {
-	const { id } = useParams({ from: "/presentation/$id" })
+	const params = useParams({ strict: false })
+	const id = params.id
 	const data = useData()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { isLoading: orgsLoading } = useOrgs()
@@ -17,15 +18,17 @@ const PresentationRoute = observer(() => {
 	const [isLoading, setIsLoading] = useState(themeLoading || orgsLoading || settingsLoading)
 
 	useEffect(() => {
-		data.themeId = id
-	}, [id])
+		if(id) {
+			data.themeId = id
+		}
+	}, [id, data])
 
 	useEffect(() => {
 		const loadingTest = themeLoading || orgsLoading || settingsLoading
 		if(loadingTest !== isLoading) {
 			setIsLoading(loadingTest)
 		}
-	}, [themeLoading, orgsLoading, settingsLoading])
+	}, [themeLoading, orgsLoading, settingsLoading, isLoading])
 
 	if(isLoading) {
 		return <Loading />

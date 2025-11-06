@@ -10,8 +10,8 @@ interface ResultsOffsetInputProps {
 const ResultsOffsetInput = ({ resultsOffset: initialResultsOffset, settingsId }: ResultsOffsetInputProps) => {
 	const [ resultsOffset, setResultsOffset ] = useState<number | undefined>(initialResultsOffset)
 
-	const saveResultsOffset = () => {
-		PresentationSettingsMethods.update.call({
+	const saveResultsOffset = async () => {
+		await PresentationSettingsMethods.update.callAsync({
 			id: settingsId,
 			data: { resultsOffset },
 		})

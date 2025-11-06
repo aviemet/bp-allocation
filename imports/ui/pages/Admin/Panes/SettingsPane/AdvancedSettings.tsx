@@ -11,13 +11,13 @@ import { useSettings } from "/imports/api/providers"
 import ResetOrgFundsButton from "/imports/ui/components/Buttons/ResetOrgFundsButton"
 import ResetMessageStatusButton from "/imports/ui/components/Buttons/ResetMessageStatusButton"
 
-import { Form, TextInput, SubmitButton, STATUS } from "/imports/ui/components/Form"
+import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { Loading } from "/imports/ui/components"
 
 const SettingsPane = observer(() => {
 	const { settings, isLoading: settingsLoading } = useSettings()
 
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
 	const defaultData = {
 		twilioRateLimit: settings?.twilioRateLimit || 100,
@@ -33,19 +33,17 @@ const SettingsPane = observer(() => {
 		console.log({ errors, data })
 	}
 
-	const onSubmit = data => {
-		// console.log({ data })
+	const onSubmit = async data => {
 		setFormStatus(STATUS.SUBMITTING)
-		PresentationSettingsMethods.update.call({
-			id: settings._id,
-			data: data,
-		}, (err, res) => {
-			if(err) {
-				setFormStatus(STATUS.ERROR)
-			} else {
-				setFormStatus(STATUS.SUCCESS)
-			}
-		})
+		try {
+			await PresentationSettingsMethods.update.callAsync({
+				id: settings._id,
+				data: data,
+			})
+			setFormStatus(STATUS.SUCCESS)
+		} catch (err) {
+			setFormStatus(STATUS.ERROR)
+		}
 	}
 
 	if(settingsLoading) return (<Loading />)

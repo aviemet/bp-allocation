@@ -9,3 +9,9 @@ export const presentationRoute = createRoute({
 	component: PresentationRoute,
 })
 
+export const presentationPageRoute = createRoute({
+	getParentRoute: () => presentationRoute,
+	path: "/$currentPage",
+	component: PresentationRoute,
+})
+

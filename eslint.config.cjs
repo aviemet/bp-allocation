@@ -121,7 +121,11 @@ module.exports = [
 				functions: "only-multiline",
 			}],
 			"@stylistic/multiline-ternary": ["error", "always-multiline"],
-			"@stylistic/space-before-function-paren": ["error", "never"],
+			"@stylistic/space-before-function-paren": ["error", {
+				named: "never",
+				anonymous: "never",
+				asyncArrow: "always",
+			}],
 			"@stylistic/arrow-spacing": "error",
 			"@stylistic/space-before-blocks": ["error", "always"],
 			"@stylistic/no-multiple-empty-lines": ["error", {

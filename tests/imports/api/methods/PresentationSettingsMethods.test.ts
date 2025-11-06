@@ -14,7 +14,7 @@ describe("Presentation Settings Methods", async function() {
 		try {
 			const settingsId = await PresentationSettingsMethods.create.call()
 			settings = await PresentationSettings.find({ _id: settingsId }).fetch()[0]
-		} catch(e) {
+		} catch (e) {
 			console.error("Error: ", e)
 		} finally {
 			done()
@@ -51,7 +51,7 @@ describe("Presentation Settings Methods", async function() {
 				useKioskChitVoting: true,
 				useKioskFundsVoting: true,
 			}
-			await PresentationSettingsMethods.update.call({ id: settings._id, data: settingsChange })
+			await PresentationSettingsMethods.update.callAsync({ id: settings._id, data: settingsChange })
 			settings = PresentationSettings.find({ _id: settings._id }).fetch()[0]
 			expect(settings).to.include(settingsChange)
 			done()

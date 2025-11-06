@@ -14,8 +14,8 @@ const ColorizeTopOrgsToggle = observer(() => {
 
 	if(!settings) return <></>
 
-	const saveValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-		PresentationSettingsMethods.update.call({
+	const saveValue = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		await PresentationSettingsMethods.update.callAsync({
 			id: settings._id,
 			data: {
 				colorizeOrgs: e.target.checked,
