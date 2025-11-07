@@ -5,6 +5,7 @@ import { registerObserver } from "../methods"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
 
 import { Themes, PresentationSettings, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
+import { initializeThemeData } from "/imports/api/stores/ThemeStore"
 import { ThemeTransformer, OrgTransformer } from "/imports/server/transformers"
 import { type ThemeTransformerParams } from "/imports/server/transformers/themeTransformer"
 
@@ -34,13 +35,14 @@ Meteor.publish("theme", async function(themeId: string) {
 		return
 	}
 
-	const theme = await Themes.findOneAsync({ _id: themeId })
-	if(!theme) {
+	const themeDoc = await Themes.findOneAsync({ _id: themeId })
+	if(!themeDoc) {
 		this.ready()
 		return
 	}
+	const theme = initializeThemeData(themeDoc)
 
-	const computation = Tracker.autorun(async() => {
+	const computation = Tracker.autorun(async () => {
 		try {
 			const settings = await PresentationSettings.findOneAsync({ _id: theme.presentationSettings })
 			if(!settings) {
@@ -55,11 +57,7 @@ Meteor.publish("theme", async function(themeId: string) {
 				return OrgTransformer(org, { theme, settings, memberThemes })
 			})
 
-			const topOrgs = filterTopOrgs(transformedOrgs, {
-				...theme,
-				numTopOrgs: theme.numTopOrgs || 0,
-				topOrgsManual: theme.topOrgsManual || [],
-			})
+			const topOrgs = filterTopOrgs(transformedOrgs, theme)
 
 			const observer = Themes.find({ _id: theme._id }).observe(themeObserver("themes", this, { topOrgs, memberThemes, settings }))
 			this.onStop(() => {
@@ -68,7 +66,7 @@ Meteor.publish("theme", async function(themeId: string) {
 				}
 			})
 			this.ready()
-		} catch(error) {
+		} catch (error) {
 			this.error(error instanceof Error ? error : new Error(String(error)))
 		}
 	})
@@ -82,13 +80,14 @@ Meteor.publish("themeBySlug", async function(slug: string) {
 		return
 	}
 
-	const theme = await Themes.findOneAsync({ slug })
-	if(!theme) {
+	const themeDoc = await Themes.findOneAsync({ slug })
+	if(!themeDoc) {
 		this.ready()
 		return
 	}
+	const theme = initializeThemeData(themeDoc)
 
-	const computation = Tracker.autorun(async() => {
+	const computation = Tracker.autorun(async () => {
 		try {
 			const settings = await PresentationSettings.findOneAsync({ _id: theme.presentationSettings })
 			if(!settings) {
@@ -103,11 +102,7 @@ Meteor.publish("themeBySlug", async function(slug: string) {
 				return OrgTransformer(org, { theme, settings, memberThemes })
 			})
 
-			const topOrgs = filterTopOrgs(transformedOrgs, {
-				...theme,
-				numTopOrgs: theme.numTopOrgs || 0,
-				topOrgsManual: theme.topOrgsManual || [],
-			})
+			const topOrgs = filterTopOrgs(transformedOrgs, theme)
 
 			const observer = Themes.find({ _id: theme._id }).observe(themeObserver("themes", this, { topOrgs, memberThemes, settings }))
 			this.onStop(() => {
@@ -116,7 +111,7 @@ Meteor.publish("themeBySlug", async function(slug: string) {
 				}
 			})
 			this.ready()
-		} catch(error) {
+		} catch (error) {
 			this.error(error instanceof Error ? error : new Error(String(error)))
 		}
 	})

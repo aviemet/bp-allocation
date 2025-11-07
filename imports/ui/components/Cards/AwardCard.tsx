@@ -6,9 +6,11 @@ import AwardEmblem from "../AwardEmblem"
 import { type OrgData } from "/imports/api/db"
 import { COLORS } from "/imports/lib/global"
 
+export type AwardType = "awardee" | "other"
+
 interface AwardCardProps {
 	org: OrgData & { allocatedFunds?: number }
-	award?: string
+	award?: AwardType
 	amount?: number
 }
 

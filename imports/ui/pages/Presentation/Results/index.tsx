@@ -6,19 +6,23 @@ import numeral from "numeral"
 import { useTheme, useSettings, useOrgs } from "/imports/api/providers"
 
 import AwardCard from "/imports/ui/components/Cards/AwardCard"
+import { OrganizationWithComputed } from "/imports/api/stores"
+import { Loading } from "/imports/ui/components"
 
 const Results = observer(() => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
 
-	let awardees = []
-	let others = []
-	let saves = theme.saves.reduce((sum, save) => {return sum + save.amount}, 0)
-	let total = parseFloat((theme.leverageTotal || 0) + saves + (settings.resultsOffset || 0))
+	if(!theme) return <Loading />
 
-	cloneDeep(topOrgs).map((org, i) => {
-		total += org.pledgeTotal / 2
+	const awardees: OrganizationWithComputed[] = []
+	const others: OrganizationWithComputed[] = []
+	const saves = theme?.saves?.reduce((sum, save) => sum + (save?.amount || 0), 0) || 0
+	let total = (theme?.leverageTotal || 0) + saves + (settings?.resultsOffset || 0)
+
+	cloneDeep(topOrgs).map((org) => {
+		total += (org?.pledgeTotal || 0) / 2
 
 		if(org.allocatedFunds + org.leverageFunds >= org.ask) {
 			awardees.push(org)
@@ -44,7 +48,7 @@ const Results = observer(() => {
 							key={ org._id }
 							org={ org }
 							award={ "awardee" }
-							amount={ org.allocatedFunds + org.leverageFunds }
+							amount={ (org?.allocatedFunds || 0) + org.leverageFunds }
 						/>
 					)
 				}) }
@@ -59,7 +63,7 @@ const Results = observer(() => {
 							key={ org._id }
 							org={ org }
 							award={ "other" }
-							amount={ org.allocatedFunds + org.leverageFunds }
+							amount={ (org?.allocatedFunds || 0) + org.leverageFunds }
 						/>
 					)
 				}) }

@@ -77,6 +77,7 @@ const Form = <TValues extends FieldValues = FieldValues>({
 	useEffect(() => {
 		if(!onUpdate) return
 
+		// eslint-disable-next-line react-hooks/incompatible-library
 		const subscription = formMethods.watch((_, { name }) => {
 			if(!name) return
 			const fieldName = name as FieldPath<TValues>

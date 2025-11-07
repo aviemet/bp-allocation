@@ -7,11 +7,6 @@ import OrgStore from "./OrgStore"
 import { Theme, MatchPledge } from "/imports/types/schema"
 import { OrgData } from "/imports/api/db"
 
-interface ThemeWithVoting extends Theme {
-	numTopOrgs: number
-	topOrgsManual: string[]
-}
-
 class OrgsCollection extends TrackableCollection<OrgStore> {
 	private _theme: Theme
 
@@ -32,17 +27,7 @@ class OrgsCollection extends TrackableCollection<OrgStore> {
 	get pledges() {
 		let pledges: Array<MatchPledge & { org: { _id: string, title: string } }> = []
 
-		if(!this._theme.numTopOrgs || !this._theme.topOrgsManual) {
-			return pledges
-		}
-
-		const themeWithVoting: ThemeWithVoting = {
-			...this._theme,
-			numTopOrgs: this._theme.numTopOrgs,
-			topOrgsManual: this._theme.topOrgsManual || [],
-		}
-
-		const topOrgs = filterTopOrgs(this.values, themeWithVoting)
+		const topOrgs = filterTopOrgs(this.values, this._theme)
 		topOrgs.forEach(org => {
 			org.pledges?.forEach((pledge: MatchPledge) => {
 				if(org.title) {

@@ -1,8 +1,10 @@
 import styled from "@emotion/styled"
 import { observer } from "mobx-react-lite"
 
+import { type AwardType } from "./Cards/AwardCard"
+
 interface AwardEmblemProps {
-	type?: string
+	type?: AwardType
 	amount?: number | string
 }
 

@@ -58,14 +58,6 @@ const OrgCard = observer(({
 	if(animateClass) cardClasses.push("animate-orgs")
 	if(disabled) cardClasses.push("disabled")
 	if(color) cardClasses.push(color)
-	// if(index !== undefined) {
-	// 	const row = parseInt(index / cols) % cols
-	// 	const parity = (index + (row % 2)) % 2
-	// 	cardClasses.push(parity)
-	// 	// console.log({ row, index, mod: (index + (row % 2)) % 2 })
-	// 	let localBgColor = (index + (row % 2)) % 2 === 0 ? 'green' : 'blue'
-	// 	cardClasses.push(localBgColor)
-	// }
 
 	return (
 		<StyledCard

@@ -12,7 +12,7 @@ import { type MemberData } from "/imports/api/db"
 
 import CustomConfirm from "/imports/ui/components/Dialogs/CustomConfirm"
 import { emailVotingLink, textVotingLink } from "/imports/lib/utils"
-import { STATUS, SubmitButton } from "/imports/ui/components/Form"
+import { type Status, STATUS, SubmitButton } from "/imports/ui/components/Form"
 
 interface ButtonValue {
 	method: string
@@ -38,7 +38,7 @@ interface SendWithFeedbackButtonProps extends Omit<ButtonProps, "onClick"> {
 const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWithFeedbackButtonProps) => {
 	const { theme } = useTheme()
 
-	const [buttonStatus, setButtonStatus] = useState(STATUS.READY)
+	const [buttonStatus, setButtonStatus] = useState<Status>(STATUS.READY)
 	const [buttonContent, setButtonContent] = useState("Send")
 	const [modalOpen, setModalOpen] = useState(false)
 

@@ -8,17 +8,7 @@ import { useTheme } from "./ThemeProvider"
 import { Organizations, type OrgData } from "/imports/api/db"
 import { OrgsCollection, OrgStore, type OrganizationWithComputed } from "/imports/api/stores"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
-import { Theme } from "/imports/types/schema"
 import { createContext } from "/imports/lib/hooks/createContext"
-
-interface ThemeWithVoting extends Theme {
-	numTopOrgs: number
-	topOrgsManual: string[]
-}
-
-const isThemeWithVoting = (theme: Theme | undefined): theme is ThemeWithVoting => {
-	return !!(theme && typeof theme.numTopOrgs === "number" && Array.isArray(theme.topOrgsManual))
-}
 
 interface OrgsContextValue {
 	orgs?: OrgsCollection
@@ -80,7 +70,7 @@ const OrgsProvider = observer(({ children }: OrgsProviderProps) => {
 			})
 		}
 
-		if(!orgsCollection || !isThemeWithVoting(theme)) {
+		if(!orgsCollection) {
 			return {
 				orgs: orgsCollection,
 				topOrgs: [],
