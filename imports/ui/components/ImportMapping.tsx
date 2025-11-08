@@ -1,9 +1,7 @@
-import styled from "@emotion/styled"
 import {
 	Button,
 	Chip,
 	FormControl,
-	InputLabel,
 	MenuItem,
 	Select,
 	Stack,
@@ -15,20 +13,47 @@ import {
 	TableRow,
 	Paper,
 } from "@mui/material"
-import PropTypes from "prop-types"
-import { useState, useEffect, Fragment } from "react"
+import { type SelectChangeEvent } from "@mui/material/Select"
+import { styled } from "@mui/material/styles"
+import { useState, Fragment } from "react"
+import SimpleSchema from "simpl-schema"
 
-const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImport }) => {
-	const [errors, setErrors] = useState([])
+type CsvRow = Record<string, unknown>
 
-	const alternateForm = heading => {
-		for(let i = 0; i < mapping.length; i++) {
-			if(mapping[i].forms.includes(heading.toLowerCase())) return mapping[i].name
+interface HeadingMapping {
+	name: string
+	label: string
+	forms: string[]
+	type?: (value: unknown) => unknown
+}
+
+interface ValidationErrorDetail {
+	name: string
+	type: string
+	message: string
+}
+
+interface ImportMappingProps {
+	headings: string[]
+	values?: CsvRow[]
+	mapping: HeadingMapping[]
+	schema: SimpleSchema
+	sanitize?: (row: CsvRow) => CsvRow
+	onImport: (data: CsvRow[]) => void
+}
+
+const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImport }: ImportMappingProps) => {
+	const [errors, setErrors] = useState<Array<ValidationErrorDetail[] | undefined>>([])
+
+	const alternateForm = (heading: string) => {
+		for(let index = 0; index < mapping.length; index++) {
+			if(mapping[index].forms.includes(heading.toLowerCase())) return mapping[index].name
 		}
+		return undefined
 	}
 
-	const [headingMap, setHeadingMap] = useState(() => {
-		const map = {}
+	const [headingMap, setHeadingMap] = useState<Record<string, string | undefined>>(() => {
+		const map: Record<string, string | undefined> = {}
 		headings.forEach(heading => {
 			// TODO: Handle case where 2 headings map to same field
 			const inferredHeading = alternateForm(heading)
@@ -37,38 +62,39 @@ const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImp
 		return map
 	})
 
-	const handleSelectChange = (value, heading) => {
-		setHeadingMap(prevState => {
-			const newState = prevState
-
-			for(const [csvHeading, dbField] of Object.entries(headingMap)) {
-				if(dbField === value) {
-					newState[csvHeading] = ""
+	const handleSelectChange = (event: SelectChangeEvent<string>, heading: string) => {
+		const selectedValue = event.target.value
+		setHeadingMap(previousHeadingMap => {
+			const updatedHeadingMap: Record<string, string | undefined> = { ...previousHeadingMap }
+			for(const [csvHeading, databaseField] of Object.entries(previousHeadingMap)) {
+				if(databaseField === selectedValue) {
+					updatedHeadingMap[csvHeading] = ""
 				}
 			}
-
 			return {
-				...newState,
-				[heading]: value,
+				...updatedHeadingMap,
+				[heading]: selectedValue,
 			}
 		})
+		setErrors([])
 	}
 
 	// TODO: Consider creating an object up front from the mapping array to avoid iterating each value on every row
 	const performImportAction = () => {
-		const batchErrors = []
+		const batchErrors: Array<ValidationErrorDetail[] | undefined> = []
 
-		const validatedData = values.map((value, i) => {
+		const validatedData = values.map((value, valueIndex) => {
 			const context = schema.newContext()
 
-			const row = {}
-			for(const [csvHeading, dbField] of Object.entries(headingMap)) {
-				if(dbField === "") continue
+			const row: CsvRow = {}
+			for(const [csvHeading, databaseField] of Object.entries(headingMap)) {
+				const fieldKey = databaseField === undefined ? String(databaseField) : databaseField
+				if(fieldKey === "") continue
 
 				const headingMapForType = mapping.find(map => map.name === headingMap[csvHeading])
 				const cellValue = headingMapForType?.type ? headingMapForType.type(value[csvHeading]) : value[csvHeading]
 
-				row[dbField] = cellValue
+				row[fieldKey] = cellValue
 			}
 
 			let sanitizedRow = row
@@ -77,10 +103,10 @@ const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImp
 			}
 
 			if(!context.validate(sanitizedRow)) {
-				batchErrors[i] = context.validationErrors().map(({ name, type }) => ({
-					name,
-					type,
-					message: context.keyErrorMessage(name),
+				batchErrors[valueIndex] = context.validationErrors().map(validationError => ({
+					name: validationError.name,
+					type: validationError.type,
+					message: context.keyErrorMessage(validationError.name),
 				}))
 			}
 
@@ -92,17 +118,7 @@ const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImp
 		} else {
 			onImport(validatedData)
 		}
-
 	}
-
-	useEffect(() => {
-		if(errors.length > 0) console.error({ errors })
-	}, [errors])
-
-	useEffect(() => {
-		setErrors([])
-		// console.log({ headingMap })
-	}, [headingMap])
 
 	return (
 		<>
@@ -111,8 +127,8 @@ const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImp
 				<Table>
 					<TableHead>
 						<TableRow>
-							{ headings.map((heading, i) => (
-								<TableCell key={ i }>
+							{ headings.map((heading, headingIndex) => (
+								<TableCell key={ headingIndex }>
 									<Stack direction="row" alignItems="baseline" spacing={ 2 } sx={ { whiteSpace: "nowrap", mb: 2 } }>
 										<div>Heading From CSV:</div>
 										<Chip label={ heading } />
@@ -122,13 +138,13 @@ const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImp
 											labelId={ `${heading}-map-label` }
 											id={ `${heading}-map` }
 											size="small"
-											onChange={ e => handleSelectChange(e.target.value, heading) }
-											value={ headingMap[heading] }
+											onChange={ event => handleSelectChange(event, heading) }
+											value={ headingMap[heading] ?? "" }
 											displayEmpty={ true }
 										>
 											<MenuItem value=""><em style={ { color: "red" } }>Do Not Import</em></MenuItem>
-											{ mapping.map((h, j) => (
-												<MenuItem key={ `option-${h}-${j}` } value={ h.name }>{ h.label }</MenuItem>
+											{ mapping.map((mappingOption, mappingIndex) => (
+												<MenuItem key={ `option-${mappingOption.name}-${mappingIndex}` } value={ mappingOption.name }>{ mappingOption.label }</MenuItem>
 											)) }
 										</Select>
 									</FormControl>
@@ -142,25 +158,24 @@ const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImp
 						</TableRow> }
 					</TableHead>
 					<EnhancedTableBody>
-						{ values.map((org, i) => (
-							<Fragment key={ i }>
-								<TableRow className={ errors[i] === undefined ? "" : "error" }>
-									{ headings.map((heading, j) => {
+						{ values.map((row, rowIndex) => (
+							<Fragment key={ rowIndex }>
+								<TableRow className={ errors[rowIndex] === undefined ? "" : "error" }>
+									{ headings.map((heading, headingIndex) => {
 										const headingMapForType = mapping.find(map => map.name === headingMap[heading])
-										const cellValue = headingMapForType?.type ? headingMapForType.type(org[heading]) : org[heading]
+										const cellValue = headingMapForType?.type ? headingMapForType.type(row[heading]) : row[heading]
 
-										const error = errors[i] !== undefined && errors[i].find(error => error.name === headingMapForType?.name)
-										if(error) console.log({ org, i, heading, headingMapForType, error: errors[i] })
+										const error = errors[rowIndex] !== undefined && errors[rowIndex].find(validationError => validationError.name === headingMapForType?.name)
 										return (
-											<TableCell key={ `${j}-${heading}` } className={ error ? "error" : "" }>{ `${cellValue}` }</TableCell>
+											<TableCell key={ `${headingIndex}-${heading}` } className={ error ? "error" : "" }>{ `${cellValue}` }</TableCell>
 										)
 									}) }
 								</TableRow>
-								{ errors[i] !== undefined && <TableRow>
+								{ errors[rowIndex] !== undefined && <TableRow>
 									<TableCell colSpan={ values.length } sx={ { backgroundColor: "red", color: "white" } }>
 										<div>Errors:</div>
 										<ul>
-											{ errors[i].map((error, k) => <li key={ k }>{ error.message }</li>) }
+											{ errors[rowIndex].map((validationError, validationErrorIndex) => <li key={ validationErrorIndex }>{ validationError.message }</li>) }
 										</ul>
 									</TableCell>
 								</TableRow> }
@@ -183,15 +198,5 @@ const EnhancedTableBody = styled(TableBody)(({ theme }) => {
 		},
 	})
 })
-
-ImportMapping.propTypes = {
-	headings: PropTypes.array.isRequired,
-	values: PropTypes.array,
-	mapping: PropTypes.array.isRequired,
-	schema: PropTypes.object.isRequired,
-	sanitize: PropTypes.func,
-	onImport: PropTypes.func.isRequired,
-	// errors: PropTypes.array,
-}
 
 export default ImportMapping

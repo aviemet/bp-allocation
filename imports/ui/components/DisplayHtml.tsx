@@ -1,13 +1,11 @@
-import PropTypes from "prop-types"
+interface DisplayHtmlProps {
+	children: string | TrustedHTML
+}
 
-const DisplayHtml = ({ children }) => {
+const DisplayHtml = ({ children }: DisplayHtmlProps) => {
 	return (
 		<div dangerouslySetInnerHTML={ { __html: children } } />
 	)
-}
-
-DisplayHtml.propTypes = {
-	children: PropTypes.string,
 }
 
 export default DisplayHtml

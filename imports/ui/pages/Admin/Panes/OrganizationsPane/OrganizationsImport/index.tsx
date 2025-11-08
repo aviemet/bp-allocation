@@ -8,54 +8,60 @@ import { useSnackbar } from "notistack"
 import { readCsv } from "/imports/lib/papaParseMethods"
 import { OrganizationMethods } from "/imports/api/methods"
 import { OrganizationSchema } from "/imports/api/db"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, type ChangeEvent } from "react"
+import type SimpleSchema from "simpl-schema"
 
 import ImportMapping from "/imports/ui/components/ImportMapping"
 
+type CsvRow = Record<string, unknown>
+
+interface HeadingMapping {
+	name: string
+	label: string
+	forms: string[]
+	type?: (value: unknown) => unknown
+}
+
 const ImportOrgs = observer(() => {
-	const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+	const { enqueueSnackbar } = useSnackbar()
 
-	const [pendingOrgs, setPendingOrgs] = useState([])
-	const [pendingHeadings, setPendingHeadings] = useState([])
+	const [pendingOrgs, setPendingOrgs] = useState<CsvRow[]>([])
+	const [pendingHeadings, setPendingHeadings] = useState<string[]>([])
 
-	const [ loading, setLoading ] = useState(false)
-
-	const fileInputRef = useRef(null)
+	const fileInputRef = useRef<HTMLInputElement>(null)
 
 	const { id: themeId } = useParams({ from: "/admin/$id" })
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		fileInputRef.current.click()
+		fileInputRef.current?.click()
 	}, [])
 
-	const importOrgs = e => {
-		const file = e.currentTarget.files[0]
+	const importOrgs = (event: ChangeEvent<HTMLInputElement>) => {
+		const file = event.currentTarget.files?.[0]
+		if(!file) return
 
-		// TODO: Display error message on error
-		const parser = readCsv(file, {
-			"onComplete": (data, headers) => {
+		readCsv(file, {
+			onComplete: (data, headers) => {
 				setPendingOrgs(data)
-				setPendingHeadings(headers)
+				setPendingHeadings(headers ?? [])
 			},
 		})
-
-		return parser
 	}
 
-	const handleImportData = data => {
+	const handleImportData = (data: CsvRow[]) => {
 		data.forEach(datum => {
-			const { error, response } = OrganizationMethods.create.call(Object.assign({ theme: themeId }, datum))
-			if(error) {
-				enqueueSnackbar("Error importing organizations", { variant: "error" })
-				console.error({ error })
-			}
+			OrganizationMethods.create.call({ theme: themeId, ...datum }, (error) => {
+				if(error) {
+					enqueueSnackbar("Error importing organizations", { variant: "error" })
+				}
+			})
 		})
-		enqueueSnackbar(`${data.length} Organization${ data.length === 1 ? "" : "s"} imported`, { variant: "success" })
+		enqueueSnackbar(`${data.length} Organization${data.length === 1 ? "" : "s"} imported`, { variant: "success" })
 		navigate({ to: `/admin/${themeId}/orgs` })
 	}
 
-	const headingsMap = [
+	const headingsMap: HeadingMapping[] = [
 		{
 			name: "title",
 			label: "Title",
@@ -66,7 +72,7 @@ const ImportOrgs = observer(() => {
 			name: "ask",
 			label: "Ask",
 			forms: ["ask", "amount", "request"],
-			type: val => typeof val === "string" ? parseFloat(val.replace(/[^0-9.]/g, "")) : val,
+			type: (value: unknown) => typeof value === "string" ? parseFloat(value.replace(/[^0-9.]/g, "")) : value,
 		},
 		{
 			name: "description",
@@ -76,7 +82,6 @@ const ImportOrgs = observer(() => {
 		},
 	]
 
-	// TODO: Set loading=true when button clicked, false when csv is loaded
 	return (
 		<>
 			{ pendingOrgs.length > 0 && pendingHeadings.length > 0 && (
@@ -84,15 +89,14 @@ const ImportOrgs = observer(() => {
 					headings={ pendingHeadings }
 					values={ pendingOrgs }
 					mapping={ headingsMap }
-					schema={ OrganizationSchema.omit("theme") }
+					schema={ OrganizationSchema.omit("theme") as SimpleSchema }
 					onImport={ handleImportData }
 				/>
 			) }
 
 			<Button
 				style={ { float: "right" } }
-				onClick={ () => fileInputRef.current.click() }
-				disabled={ loading }
+				onClick={ () => fileInputRef.current?.click() }
 			>
 				Import List as .csv
 			</Button>
@@ -100,9 +104,9 @@ const ImportOrgs = observer(() => {
 				inputRef={ fileInputRef }
 				type="file"
 				name="fileInput"
-				accept=".csv"
 				style={ { display: "none" } }
 				onChange={ importOrgs }
+				inputProps={ { accept: ".csv" } }
 			/>
 		</>
 	)

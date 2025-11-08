@@ -1,6 +1,5 @@
 import { isEmpty } from "lodash"
 import { Meteor } from "meteor/meteor"
-import { TrackableData } from "/imports/api/stores/lib/TrackableStore"
 
 export const roundFloat = (value: string, decimal?: number) => {
 	decimal = decimal || 2
@@ -65,7 +64,7 @@ export const sanitizeString = (str: string | number) => `${str}`.trim()
  * @param {string} search Search parameter(s) to filter by
  * @param {array} fields Optional list of fields to search (omitting others)
  */
-export const filterCollection = <T extends TrackableData>(collection: T[], search: string, fields?: (keyof T)[]) => {
+export const filterCollection = <T extends Record<string, unknown> & { readonly _id: string }>(collection: T[], search: string, fields?: (keyof T)[]) => {
 	if(!search) return collection
 
 	// Split search terms by whitespace, discarding empty strings

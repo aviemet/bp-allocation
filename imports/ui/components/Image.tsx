@@ -1,7 +1,11 @@
 import styled from "@emotion/styled"
-import PropTypes from "prop-types"
+import { type ImgHTMLAttributes } from "react"
 
-const Image = ({ src, ...props }) => {
+interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
+	src?: string
+}
+
+const Image = ({ src, ...props }: ImageProps) => {
 	return (
 		<Img src={ src } { ...props } />
 	)
@@ -12,9 +16,5 @@ const Img = styled.img`
 	position: relative;
 	background-color: transparent;
 `
-
-Image.propTypes = {
-	src: PropTypes.string,
-}
 
 export default Image
