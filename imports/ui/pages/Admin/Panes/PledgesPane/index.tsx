@@ -23,6 +23,8 @@ import SortableTable from "/imports/ui/components/SortableTable"
 import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
 import { TopupsActiveToggle } from "/imports/ui/components/Toggles"
 import { Loading } from "/imports/ui/components"
+import { type PledgeWithOrg } from "/imports/api/stores/OrgsCollection"
+import ReplayPledgeAnimationButton from "/imports/ui/components/Buttons/ReplayPledgeAnimationButton"
 
 const headCells = [
 	{
@@ -31,7 +33,7 @@ const headCells = [
 	},
 	{
 		id: "member",
-		label: "Pledged By",
+		label: "Pledger",
 	},
 	{
 		id: "amount",
@@ -45,6 +47,11 @@ const headCells = [
 		id: "createdAt",
 		label: "Time",
 		disablePadding: true,
+	},
+	{
+		id: "actions",
+		label: "Replay Animation",
+		sort: false,
 	},
 ]
 
@@ -60,27 +67,28 @@ const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState("")
 	const [ modalContent, setModalContent ] = useState("")
-	const [ modalAction, setModalAction ] = useState()
+	const [ modalAction, setModalAction ] = useState<(() => void) | undefined>()
 
-	const bulkDelete = (selected, onSuccess) => {
+	const bulkDelete = (selected: string[], onSuccess: () => void) => {
 		const plural = selected.length > 1
 
 		setModalHeader(`Permanently unlink member${plural ? "s" : ""} from this theme?`)
 		setModalContent(`This will permanently delete the selected pledge${plural ? "s" : ""}. This action cannot be reversed.`)
 		// Need to curry the function since useState calls passed functions
-		setModalAction( () => () => {
-			OrganizationMethods.removePledgeById.call({ themeId: theme._id, pledgeIds: selected })
+		setModalAction( () => async () => {
+			if(!theme) return
+			await OrganizationMethods.removePledgeById.callAsync({ themeId: theme._id, pledgeIds: selected })
 			onSuccess()
 		})
 		setModalOpen(true)
 	}
 
-	if(orgsLoading || membersLoading || !members) return <Loading />
+	if(orgsLoading || membersLoading || !members || !orgs) return <Loading />
 	return (
 		<>
 			<Grid container spacing={ 2 }>
 				<Grid size={ { xs: 12, md: 8 } }>
-					<SortableTable
+					<SortableTable<PledgeWithOrg>
 						title={ <Stack direction="row" alignItems="center" justifyContent="space-between">
 							<Box>Pledges</Box>
 							<Box><TopupsActiveToggle /></Box>
@@ -93,7 +101,7 @@ const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 						striped={ true }
 						selectable={ !hideAdminFields }
 						render={ pledge => {
-							const member = pledge.member ? members.values.find(value => value._id === pledge.member) : ""
+							const member = pledge.member ? members.values.find(value => value._id === pledge.member) : undefined
 							return (
 								<>
 									{ /* Org Title */ }
@@ -101,7 +109,7 @@ const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 
 									{ /* Member */ }
 									<TableCell>
-										{ member && member.hasOwnProperty("formattedName") ?
+										{ member && "formattedName" in member ?
 											member.formattedName :
 											""
 										}
@@ -111,18 +119,23 @@ const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 									<TableCell align="right">
 										<Stack direction="row" justifyContent="space-between" alignItems="baseline">
 											<div>$</div>
-											<div>{ numeral(pledge?.amount).format("0,0.00") }</div>
+											<div>{ numeral(pledge.amount).format("0,0.00") }</div>
 										</Stack>
 									</TableCell>
 
 									{ /* Anonymous */ }
 									<TableCell>
-										{ pledge?.anonymous && <CheckIcon /> }
+										{ pledge.anonymous && <CheckIcon /> }
 									</TableCell>
 
 									{ /* Pledge Timestamp */ }
 									<TableCell>
-										{ pledge?.createdAt && format(pledge.createdAt, "hh:mm a") }
+										{ pledge.createdAt && format(pledge.createdAt, "hh:mm a") }
+									</TableCell>
+
+									{ /* Replay Animation */ }
+									<TableCell>
+										<ReplayPledgeAnimationButton pledge={ pledge } />
 									</TableCell>
 								</>
 							)
@@ -148,7 +161,7 @@ const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 											<TableCell align="right">
 												<Stack direction="row" justifyContent="space-between" alignItems="baseline">
 													<Box sx={ { mr: 1 } }>$</Box>
-													<Box>{ numeral(org.pledges.reduce((sum, pledge) => sum + pledge.amount, 0)).format("0,0.00") }</Box>
+													<Box>{ numeral(org.pledges?.reduce((sum, pledge) => sum + pledge.amount, 0) ?? 0).format("0,0.00") }</Box>
 												</Stack>
 											</TableCell>
 										</TableRow>
@@ -160,7 +173,7 @@ const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 										<TableCell>
 											<Stack direction="row" justifyContent="space-between" alignItems="baseline">
 												<Box sx={ { mr: 1 } }>$</Box>
-												<Box>{ numeral(theme.pledgedTotal).format("0,0.00") }</Box>
+												<Box>{ numeral(theme?.pledgedTotal ?? 0).format("0,0.00") }</Box>
 											</Stack>
 										</TableCell>
 									</TableRow>
@@ -176,7 +189,7 @@ const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 				handleClose={ () => setModalOpen(false) }
 				header={ modalHeader }
 				content={ modalContent }
-				confirmAction={ modalAction }
+				confirmAction={ modalAction ?? (() => {}) }
 			/>
 		</>
 	)

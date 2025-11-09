@@ -9,8 +9,6 @@ class AppStore {
 	sidebarOpen = false
 	defaultMenuHeading = "Battery Powered Allocation Night Themes"
 	menuHeading = this.defaultMenuHeading
-	// Set of pledges not to be animated on allocation presentation page
-	displayedPledges = new Set<string>()
 	loadMembers = true
 
 	// Used to allow only one active editableInput at a time
@@ -24,6 +22,22 @@ class AppStore {
 		makeAutoObservable(this, {
 			KIOSK_PAGES: false,
 		})
+	}
+
+	setThemeId(id: string | null) {
+		this.themeId = id
+	}
+
+	setMenuHeading(heading: string) {
+		this.menuHeading = heading
+	}
+
+	setVotingRedirectTimeout(timeout: number) {
+		this.votingRedirectTimeout = timeout
+	}
+
+	resetVotingRedirectTimeout() {
+		this.votingRedirectTimeout = this.defaultVotingRedirectTimeout
 	}
 }
 

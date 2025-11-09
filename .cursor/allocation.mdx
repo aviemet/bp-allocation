@@ -15,16 +15,15 @@ The application uses a nested provider pattern established in `imports/ui/App.ts
 
 ```
 DataProvider
-  └── PledgeAnimationProvider
-      └── ThemeProvider
-          └── SettingsProvider
-              └── OrgsProvider
-                  └── MembersProvider
-                      └── MessagesProvider
-                          └── Routes
+  └── ThemeProvider
+      └── SettingsProvider
+          └── OrgsProvider
+              └── MembersProvider
+                  └── MessagesProvider
+                      └── Routes
 ```
 
-This hierarchy provides global state management through MobX stores and Meteor subscriptions. Components should use the existing provider hooks (`useData()`, `usePledgeAnimation()`, `useTheme()`, `useSettings()`, etc.) rather than duplicating providers.
+This hierarchy provides global state management through MobX stores and Meteor subscriptions. Components should use the existing provider hooks (`useData()`, `useTheme()`, `useSettings()`, etc.) rather than duplicating providers.
 
 ### Meteor 3.0+ Compatibility
 Server-side publications and methods must use async methods:
@@ -99,15 +98,15 @@ Server-side publications and methods must use async methods:
 - `onChange(methods)` is a generic change subscription when full form-level reactions are needed.
 
 ### Pledge Animation Queue Pattern
-- Pledge animation state lives in a dedicated PledgeAnimationStore, separate from AppStore for proper separation of concerns
-- PledgeAnimationStore provides `replayPledgeAnimation()` method to trigger animations without re-saving to database
-- Uses a reactive `shouldStartAnimation` flag to signal when replay is triggered, allowing PledgesOverlay to start animations even when not monitoring new database pledges
-- PledgesOverlay automatically animates new pledges and tracks displayed pledges via `displayedPledges` Set
-- Admin panel can replay any existing pledge animation via the replay button
-- PledgeAnimationProvider sits high in the provider hierarchy (after DataProvider) for global access across admin and presentation views
-- Cross-tab/window communication uses a Meteor collection (`PledgeReplays`) with DDP syncing - admin calls `PledgeReplayMethods.triggerPledgeReplay` which inserts server-side, the presentation screen observes it reactively via subscription and triggers the animation
-- Server-side Meteor Method prevents direct client inserts for security while maintaining real-time cross-client sync
-- This architecture separates animation state from database state, allowing flexible replay without data duplication while leveraging Meteor's reactive data protocol for cross-client communication
+- Animation queue is a server-side Meteor collection (`PledgeAnimationQueue`) - single source of truth
+- Queue items have `processed` boolean flag to track animation status
+- Two ways items enter the queue:
+  1. New pledge from database → inserted via Method on first page load
+  2. Replay button clicked → inserted via Method
+- `PledgesOverlay` subscribes to unprocessed queue items, animates in timestamp order
+- After animation completes, item is marked `processed: true` and removed from subscription
+- Cross-tab sync happens automatically via Meteor's DDP - no client-side state needed
+- Clean architecture: server owns the queue, clients just consume and mark as processed
 
 ### Documentation Rules
 - ONLY document architectural decisions and WHY choices were made
