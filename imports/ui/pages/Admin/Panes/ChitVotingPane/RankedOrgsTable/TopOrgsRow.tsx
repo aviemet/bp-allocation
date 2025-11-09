@@ -29,8 +29,8 @@ const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }: TopO
 	/**
 	 * Manually pins an organization as a "Top Org"
 	 */
-	const topOrgToggle = (e, data) => {
-		ThemeMethods.topOrgToggle.call({
+	const topOrgToggle = async (e, data) => {
+		await ThemeMethods.topOrgToggle.callAsync({
 			theme_id: themeId,
 			org_id: org._id,
 		})

@@ -21,7 +21,11 @@ export const MatchPledgeSchema = new SimpleSchema({
 			}
 		},
 	},
-	amount: Number,
+	amount: {
+		type: Number,
+		required: true,
+		defaultValue: 0,
+	},
 	member: {
 		type: SchemaRegex.Id,
 		required: false,

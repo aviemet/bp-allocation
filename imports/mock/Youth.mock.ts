@@ -1,4 +1,6 @@
-const orgs = [
+import { type Organization } from "/imports/types"
+
+const orgs: Organization[] = [
 	{
 		ask: 250000,
 		allocatedFunds: 67432,

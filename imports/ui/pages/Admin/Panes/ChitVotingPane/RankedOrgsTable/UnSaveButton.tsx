@@ -23,8 +23,8 @@ const UnSaveButton = observer(({ org }: UnSaveButtonProps) => {
 
 	const { theme } = useTheme()
 
-	const unSaveOrg = () => {
-		ThemeMethods.unSaveOrg.call({
+	const unSaveOrg = async () => {
+		await ThemeMethods.unSaveOrg.callAsync({
 			theme_id: theme._id,
 			org_id: org._id,
 		})

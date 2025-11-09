@@ -20,15 +20,16 @@ import {
 	TextInput,
 	Switch,
 	SubmitButton,
-	STATUS,
 	RichTextInput,
 	CheckboxInput,
+	STATUS,
+	type Status,
 } from "/imports/ui/components/Form"
 import { useState } from "react"
 import { Loading } from "/imports/ui/components"
 
 const MessageEdit = observer(() => {
-	const { id: themeId, messageId, type } = useParams()
+	const { id: themeId, messageId, type } = useParams({ strict: false })
 
 	let message
 	let messageLoading = false
@@ -40,9 +41,9 @@ const MessageEdit = observer(() => {
 		message = {}
 	}
 
-	const history = useHistory()
+	const navigate = useNavigate()
 
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 	const [preview, setPreview] = useState(message?.body || "")
 
 	const messageData = {
@@ -58,28 +59,19 @@ const MessageEdit = observer(() => {
 		},
 	}
 
-	const onSubmit = data => {
+	const onSubmit = async data => {
 		setFormStatus(STATUS.SUBMITTING)
-		if(message._id) {
-			MessageMethods.update.call({ id: message._id, data }, (err, res) => {
-				if(err) {
-					setFormStatus(STATUS.ERROR)
-					console.error(err)
-				} else {
-					setFormStatus(STATUS.SUCCESS)
-					history.push(`/admin/${themeId}/settings/messages`)
-				}
-			})
-		} else {
-			MessageMethods.create.call(data, (err, res) => {
-				if(err) {
-					setFormStatus(STATUS.ERROR)
-					console.error(err)
-				} else {
-					setFormStatus(STATUS.SUCCESS)
-					history.push(`/admin/${themeId}/settings/messages`)
-				}
-			})
+		try {
+			if(message._id) {
+				await MessageMethods.update.callAsync({ id: message._id, data })
+			} else {
+				await MessageMethods.create.callAsync(data)
+			}
+			setFormStatus(STATUS.SUCCESS)
+			navigate({ to: `/admin/${themeId}/settings/messages` })
+		} catch(err) {
+			setFormStatus(STATUS.ERROR)
+			console.error(err)
 		}
 	}
 

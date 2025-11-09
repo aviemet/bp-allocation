@@ -32,18 +32,16 @@ const ThemesList = () => {
 	}, [])
 
 	const bulkDelete = (selected, onSuccess) => {
-		const plural = selected.length > 1
+	const plural = selected.length > 1
 
-		setModalHeader(`Permanently Delete Theme${plural ? "s" : ""}?`)
-		setModalContent(`This is a permanent action, theme${plural ? "s" : ""} will not be recoverable`)
-		// Need to curry the function since useState calls passed functions
-		setModalAction( () => () => {
-			selected.forEach(id => {
-				ThemeMethods.remove.call(id)
-			})
-			onSuccess()
-		})
-		setModalOpen(true)
+	setModalHeader(`Permanently Delete Theme${plural ? "s" : ""}?`)
+	setModalContent(`This is a permanent action, theme${plural ? "s" : ""} will not be recoverable`)
+	// Need to curry the function since useState calls passed functions
+	setModalAction( () => async () => {
+		await Promise.all(selected.map(id => ThemeMethods.remove.callAsync(id)))
+		onSuccess()
+	})
+	setModalOpen(true)
 	}
 
 	const headCells = [

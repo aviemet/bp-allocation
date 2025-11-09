@@ -1,5 +1,5 @@
-import { expect } from "chai"
 import { faker } from "@faker-js/faker"
+import { expect } from "chai"
 
 import { Members } from "/imports/api/db"
 
@@ -12,9 +12,9 @@ const memberData = {
 describe("Members model", function() {
 	describe("Creating a record", function() {
 
-		it("Should return an _id when succesful", function() {
-			let member = Members.insert(memberData)
-			expect(member).to.not.be.null
+		it("Should return an _id when succesful", async function() {
+			const memberId = await Members.insertAsync(memberData)
+			expect(memberId).to.not.be.null
 		})
 
 	})

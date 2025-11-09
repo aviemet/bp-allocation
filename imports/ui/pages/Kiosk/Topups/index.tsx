@@ -32,18 +32,19 @@ const Pledges = observer(({ user }) => {
 		if(itemsPerRow !== n) setItemsPerRow(n)
 	}, [width])
 
-	const handleSubmit = (data, { reset }) => {
-		OrganizationMethods.pledge.call({
-			...data,
-			member: user._id,
-		}, (err, res) => {
-			if(err) {
-				console.error(err)
-			} else if(res) {
+	const handleSubmit = async (data, { reset }) => {
+		try {
+			const res = await OrganizationMethods.pledge.callAsync({
+				...data,
+				member: user._id,
+			})
+			if(res) {
 				reset()
 				setPledgeFeedbackData(data)
 			}
-		})
+		} catch (err) {
+			console.error(err)
+		}
 	}
 
 	if(orgsLoading) return <Loading />

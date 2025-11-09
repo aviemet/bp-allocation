@@ -63,19 +63,17 @@ const NewThemeModal = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 
-	const onSubmit = data => {
+	const onSubmit = async data => {
 		setFormStatus(STATUS.SUBMITTING)
-		ThemeMethods.create.call(data, (err, res) => {
-			// console.log({ err, res })
-			if(err) {
-				setFormStatus(STATUS.ERROR)
-				console.error(err)
-			} else {
-				setFormStatus(STATUS.SUCCESS)
-				setIsModalOpen(false)
-				navigate({ to: `/admin/${res}` })
-			}
-		})
+		try {
+			const res = await ThemeMethods.create.callAsync(data)
+			setFormStatus(STATUS.SUCCESS)
+			setIsModalOpen(false)
+			navigate({ to: `/admin/${res}` })
+		} catch(err) {
+			setFormStatus(STATUS.ERROR)
+			console.error(err)
+		}
 	}
 
 	return (
@@ -122,20 +120,19 @@ const NewThemeModal = props => {
 	const [ newThemeQuestion, setNewThemeQuestion ] = useState('')
 	// const [ newThemeQuarter, setNewThemeQuarter ] = useState('')
 
-	const createNewTheme = e => {
+	const createNewTheme = async e => {
 		e.preventDefault()
 
-		ThemeMethods.create.call({
-			title: newThemeTitle,
-			question: newThemeQuestion,
-			// quarter: newThemeQuarter
-		}, (err, res) => {
-			if(err) {
-				console.error(err)
-			} else {
-				setIsModalOpen(false)
-			}
-		})
+		try {
+			await ThemeMethods.create.callAsync({
+				title: newThemeTitle,
+				question: newThemeQuestion,
+				// quarter: newThemeQuarter
+			})
+			setIsModalOpen(false)
+		} catch(err) {
+			console.error(err)
+		}
 	}
 
 	const clearInputs = () => {

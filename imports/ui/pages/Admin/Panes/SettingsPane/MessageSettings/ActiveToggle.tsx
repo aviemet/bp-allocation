@@ -7,8 +7,8 @@ interface ActiveToggleProps {
 }
 
 const includeVotingLinkToggle = ({ message }: ActiveToggleProps) => {
-	const saveValue = e => {
-		MessageMethods.update.call({
+	const saveValue = async e => {
+		await MessageMethods.update.callAsync({
 			id: message._id,
 			data: {
 				active: e.target.checked,

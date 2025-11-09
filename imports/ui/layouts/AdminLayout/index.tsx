@@ -43,7 +43,7 @@ const AdminLayout = observer(() => {
 
 	// Set the theme ID in the store based on the route parameters
 	useEffect(() => {
-		data.themeId = params.id ?? null
+		data.setThemeId(params.id ?? null)
 	}, [params.id, data])
 
 	useEffect(() => {
@@ -63,7 +63,7 @@ const AdminLayout = observer(() => {
 	 */
 	useEffect(() => {
 		const heading = typeof theme?.title === "string" && theme.title ? theme.title : data.defaultMenuHeading
-		data.menuHeading = heading
+		data.setMenuHeading(heading)
 	}, [theme, data])
 
 	return (

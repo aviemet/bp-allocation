@@ -31,7 +31,7 @@ const ImportMembers = observer(() => {
 
 	const fileInputRef = useRef<HTMLInputElement>(null)
 
-	const { id: themeId } = useParams({ from: "/admin/$id/members/import" })
+	const { id: themeId } = useParams({ strict: false })
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -64,14 +64,15 @@ const ImportMembers = observer(() => {
 		return sanitizedData
 	}
 
-	const handleImportData = (data: CsvRow[]) => {
-		data.forEach(datum => {
-			MemberMethods.upsert.call(datum as unknown as Parameters<typeof MemberMethods.upsert.call>[0], (error) => {
-				if(error) {
+	const handleImportData = async (data: CsvRow[]) => {
+		const promises = data.map(datum =>
+			MemberMethods.upsert.callAsync(datum as unknown as Parameters<typeof MemberMethods.upsert.callAsync>[0])
+				.catch(error => {
 					enqueueSnackbar("Error importing members", { variant: "error" })
-				}
-			})
-		})
+					console.error(error)
+				})
+		)
+		await Promise.all(promises)
 		enqueueSnackbar(`${data.length} Member${data.length === 1 ? "" : "s"} imported`, { variant: "success" })
 		navigate({ to: `/admin/${themeId}/members` })
 	}

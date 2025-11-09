@@ -7,8 +7,8 @@ interface IncludeVotingLinkToggleProps {
 }
 
 const includeVotingLinkToggle = ({ message }: IncludeVotingLinkToggleProps) => {
-	const saveValue = e => {
-		MessageMethods.update.call({
+	const saveValue = async e => {
+		await MessageMethods.update.callAsync({
 			id: message._id,
 			data: {
 				includeLink: e.target.checked,

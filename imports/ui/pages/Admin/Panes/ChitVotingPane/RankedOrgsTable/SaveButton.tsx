@@ -20,13 +20,13 @@ const SaveButton = ({ org }: SaveButtonProps) => {
 	const [ amount, setAmount ] = useState("")
 	const [ modalOpen, setModalOpen ] = useState(false)
 
-	const saveOrg = (e, el) => {
+	const saveOrg = async (e, el) => {
 		e.preventDefault()
 
 		let input = document.getElementById("amountInput")
 		let amount = roundFloat(input.value)
 
-		ThemeMethods.saveOrg.call({ id: org._id, amount })
+		await ThemeMethods.saveOrg.callAsync({ id: org._id, amount })
 
 		setModalOpen(false)
 	}

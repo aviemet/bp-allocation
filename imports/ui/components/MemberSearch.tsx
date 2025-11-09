@@ -1,12 +1,13 @@
 import { useMembers } from "/imports/api/providers"
+import { type MemberData } from "/imports/api/db"
 
-import SearchIcon from "@mui/icons-material/Search"
 import TagIcon from "@mui/icons-material/Tag"
 import {
 	Autocomplete,
+	type AutocompleteChangeReason,
+	type AutocompleteProps,
 	Box,
 	Chip,
-	InputAdornment,
 	TextField,
 } from "@mui/material"
 import { createFilterOptions } from "@mui/material/Autocomplete"
@@ -14,24 +15,30 @@ import { isEmpty } from "lodash"
 import { Loading } from "/imports/ui/components"
 import { toJS } from "mobx"
 import { observer } from "mobx-react-lite"
-import PropTypes from "prop-types"
+import { type SyntheticEvent } from "react"
 
-const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }) => {
+interface MemberSearchProps extends Omit<AutocompleteProps<MemberData, false, false, false>, "options" | "renderInput" | "onChange" | "value"> {
+	value: MemberData | null
+	setValue?: (value: MemberData | null) => void
+	onResultSelect?: (value: MemberData | null) => void
+}
+
+const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }: MemberSearchProps) => {
 	const { members, isLoading: membersLoading } = useMembers()
 
-	const filterOptions = createFilterOptions({
+	const filterOptions = createFilterOptions<MemberData>({
 		limit: 15,
 		stringify: (option) => `${option.fullName} ${option.number}`,
 	})
 
-	const handleChange = (event, newValue, reason) => {
+	const handleChange = (_event: SyntheticEvent, newValue: MemberData | null, _reason: AutocompleteChangeReason) => {
 		if(setValue) setValue(newValue)
 		if(onResultSelect) onResultSelect(newValue)
 	}
 
 	if(membersLoading || isEmpty(members)) return <Loading />
 	return (
-		<Autocomplete
+		<Autocomplete<MemberData>
 			id="member-select-input"
 			autoComplete
 			blurOnSelect
@@ -39,13 +46,16 @@ const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }) =>
 			clearText={ "" }
 			onChange={ handleChange }
 			options={ toJS(members.values) }
-			getOptionLabel={ option => option?.fullName || "" }
+			getOptionLabel={ (option) => option.fullName || "" }
 			filterOptions={ filterOptions }
-			renderOption={ (props, option) => (
-				<Box component="li" sx={ { p: 2 } } { ...props }>
-					{ option?.fullName } <Chip icon={ <TagIcon /> } label={ option?.number } />
-				</Box>
-			) }
+			renderOption={ (props, option) => {
+				const { key, ...otherProps } = props
+				return (
+					<Box component="li" key={ key } sx={ { p: 2 } } { ...otherProps }>
+						{ option.fullName } <Chip icon={ <TagIcon /> } label={ option.number } />
+					</Box>
+				)
+			} }
 			renderInput={ (params) => (
 				<TextField
 					variant="outlined"
@@ -57,10 +67,5 @@ const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }) =>
 		/>
 	)
 })
-
-MemberSearch.propTypes = {
-	onResultSelect: PropTypes.func,
-	rest: PropTypes.any,
-}
 
 export default MemberSearch

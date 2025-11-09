@@ -95,23 +95,21 @@ const Messages = () => {
 		console.log({ selected })
 		const plural = selected.length > 1
 
-		setModalHeader(`Permanently delete message${plural ? "s" : ""}?`)
-		setModalContent(`This will permanently remove the message${plural ? "s" : ""}. This action is not reversable.`)
-		setModalAction(() => () => {
-			selected.forEach(id => {
-				MessageMethods.remove.call(id)
-			})
-			onSuccess()
-		})
-		setModalOpen(true)
+	setModalHeader(`Permanently delete message${plural ? "s" : ""}?`)
+	setModalContent(`This will permanently remove the message${plural ? "s" : ""}. This action is not reversable.`)
+	setModalAction(() => async () => {
+		await Promise.all(selected.map(id => MessageMethods.remove.callAsync(id)))
+		onSuccess()
+	})
+	setModalOpen(true)
 	}
 
-	const handleTextEdits = (id: string, data: Partial<Omit<Message, "_id" | "createdAt" | "updatedAt">>) => {
-		MessageMethods.update.call({ id, data }, (err: Error | null) => {
-			if(err) {
-				console.error(err)
-			}
-		})
+	const handleTextEdits = async (id: string, data: Partial<Omit<Message, "_id" | "createdAt" | "updatedAt">>) => {
+		try {
+			await MessageMethods.update.callAsync({ id, data })
+		} catch(err) {
+			console.error(err)
+		}
 	}
 
 	if(messagesLoading || !messages) return <Loading />

@@ -30,7 +30,7 @@ const ImportOrgs = observer(() => {
 
 	const fileInputRef = useRef<HTMLInputElement>(null)
 
-	const { id: themeId } = useParams({ from: "/admin/$id" })
+	const { id: themeId } = useParams({ strict: false })
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -49,14 +49,15 @@ const ImportOrgs = observer(() => {
 		})
 	}
 
-	const handleImportData = (data: CsvRow[]) => {
-		data.forEach(datum => {
-			OrganizationMethods.create.call({ theme: themeId, ...datum }, (error) => {
-				if(error) {
+	const handleImportData = async (data: CsvRow[]) => {
+		const promises = data.map(datum =>
+			OrganizationMethods.create.callAsync({ theme: themeId, ...datum })
+				.catch(error => {
 					enqueueSnackbar("Error importing organizations", { variant: "error" })
-				}
-			})
-		})
+					console.error(error)
+				})
+		)
+		await Promise.all(promises)
 		enqueueSnackbar(`${data.length} Organization${data.length === 1 ? "" : "s"} imported`, { variant: "success" })
 		navigate({ to: `/admin/${themeId}/orgs` })
 	}

@@ -21,7 +21,7 @@ const VotingComplete = ({ setVotingComplete }: VotingCompleteProps) => {
 	const { unsetUser } = useVoting()
 
 	useEffect(() => {
-		data.votingRedirectTimeout = 0
+		data.setVotingRedirectTimeout(0)
 
 		if(unsetUser) {
 			setTimeout(() => {
@@ -29,8 +29,8 @@ const VotingComplete = ({ setVotingComplete }: VotingCompleteProps) => {
 			}, 3000)
 		}
 
-		return () => data.votingRedirectTimeout = data.defaultVotingRedirectTimeout
-	}, [])
+		return () => data.resetVotingRedirectTimeout()
+	}, [data, unsetUser])
 
 	const showVotingPageAgain = () => {
 		// data.votingRedirectTimeout = data.defaultVotingRedirectTimeout

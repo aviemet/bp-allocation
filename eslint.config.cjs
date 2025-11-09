@@ -233,7 +233,7 @@ module.exports = [
 	},
 	// Test files
 	{
-		files: ["**/*.test.{js,jsx,ts,tsx}", "**/tests/**/*"],
+		files: ["**/*.test.{js,jsx,ts,tsx}", "**/specs/**/*"],
 		rules: {
 			"@typescript-eslint/no-explicit-any": "off",
 		},

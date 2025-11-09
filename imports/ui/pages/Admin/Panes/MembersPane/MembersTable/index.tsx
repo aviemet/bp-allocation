@@ -67,16 +67,14 @@ const MembersTable = observer(() => {
 	const bulkDelete = (selected: string[], onSuccess: () => void) => {
 		const plural = selected.length > 1
 
-		setModalHeader(`Permanently unlink member${plural ? "s" : ""} from this theme?`)
-		setModalContent(`This will permanently remove the member${plural ? "s" : ""} from this theme. It will not delete the Member record${plural ? "s" : ""}.`)
-		// Need to curry the function since useState calls passed functions
-		setModalAction( () => () => {
-			selected.forEach(id => {
-				MemberMethods.removeMemberFromTheme.call({ memberId: id, themeId: String(themeId) })
-			})
-			onSuccess()
-		})
-		setModalOpen(true)
+	setModalHeader(`Permanently unlink member${plural ? "s" : ""} from this theme?`)
+	setModalContent(`This will permanently remove the member${plural ? "s" : ""} from this theme. It will not delete the Member record${plural ? "s" : ""}.`)
+	// Need to curry the function since useState calls passed functions
+	setModalAction( () => async () => {
+		await Promise.all(selected.map(id => MemberMethods.removeMemberFromTheme.callAsync({ memberId: id, themeId: String(themeId) })))
+		onSuccess()
+	})
+	setModalOpen(true)
 	}
 
 	const handleSearch = (value: string) => {

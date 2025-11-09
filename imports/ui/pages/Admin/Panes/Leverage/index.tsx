@@ -29,12 +29,12 @@ const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
 	const leverage = new LeverageObject(topOrgs, theme.leverageRemaining)
 	const rounds = leverage.getLeverageSpreadRounds()
 
-	const saveLeverageSpread = (lastRound) => {
-		ThemeMethods.saveLeverageSpread.call(lastRound.orgs)
+	const saveLeverageSpread = async (lastRound) => {
+		await ThemeMethods.saveLeverageSpread.callAsync(lastRound.orgs)
 	}
 
-	const resetLeverage = () => {
-		ThemeMethods.resetLeverage.call(theme._id)
+	const resetLeverage = async () => {
+		await ThemeMethods.resetLeverage.callAsync(theme._id)
 	}
 
 	// const rounds = getLeverageSpreadRounds(theme.leverageRemaining)

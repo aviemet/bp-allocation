@@ -12,16 +12,17 @@ const Pledges = observer(() => {
 	const { members, isLoading: membersLoading } = useMembers()
 	const { isLoading: orgsLoading } = useOrgs()
 
-	const handleSubmit = (data, { reset }) => {
-		OrganizationMethods.pledge.call({
-			...data,
-		}, (err, res) => {
-			if(err) {
-				console.error(err)
-			} else if(res) {
+	const handleSubmit = async (data, { reset }) => {
+		try {
+			const res = await OrganizationMethods.pledge.callAsync({
+				...data,
+			})
+			if(res) {
 				reset()
 			}
-		})
+		} catch (err) {
+			console.error(err)
+		}
 	}
 
 	if(membersLoading || isEmpty(members) || orgsLoading) return <Loading />

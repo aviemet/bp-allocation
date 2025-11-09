@@ -15,15 +15,16 @@ The application uses a nested provider pattern established in `imports/ui/App.ts
 
 ```
 DataProvider
-  └── ThemeProvider
-      └── SettingsProvider
-          └── OrgsProvider
-              └── MembersProvider
-                  └── MessagesProvider
-                      └── Routes
+  └── PledgeAnimationProvider
+      └── ThemeProvider
+          └── SettingsProvider
+              └── OrgsProvider
+                  └── MembersProvider
+                      └── MessagesProvider
+                          └── Routes
 ```
 
-This hierarchy provides global state management through MobX stores and Meteor subscriptions. Components should use the existing provider hooks (`useData()`, `useTheme()`, `useSettings()`, etc.) rather than duplicating providers.
+This hierarchy provides global state management through MobX stores and Meteor subscriptions. Components should use the existing provider hooks (`useData()`, `usePledgeAnimation()`, `useTheme()`, `useSettings()`, etc.) rather than duplicating providers.
 
 ### Meteor 3.0+ Compatibility
 Server-side publications and methods must use async methods:
@@ -32,6 +33,9 @@ Server-side publications and methods must use async methods:
 - `insert()` → `insertAsync()`
 - `update()` → `updateAsync()`
 - `remove()` → `removeAsync()`
+- Client-side ValidatedMethod calls must use async variants:
+  - `Method.call()` → `Method.callAsync()`
+  - `Method.apply()` → `Method.applyAsync()`
 
 ### TanStack Router Migration
 - Uses programmatic routing with `createRouter` and `createRoute`
@@ -85,6 +89,7 @@ Server-side publications and methods must use async methods:
 - Integrates with Meteor's reactive data flow through `refreshData` method
 - Collection constructors handle store instantiation with proper type assertions using `as new (data: TrackableData) => StoreType`
 - Store constructors accept specific data types (MemberData, OrgData, etc.) for full type safety
+- When computed getters return transformed data that needs generic component compatibility (e.g., SortableTable's index signature requirement), export the transformed type from the store/collection file rather than defining it at consumer level - this ensures type consistency and prevents duplication
 
 ### Form + Validation Pattern
 - `imports/ui/Components/Form/Form.tsx` is the shared form wrapper.
@@ -92,6 +97,17 @@ Server-side publications and methods must use async methods:
 - `onValidSubmit(data, methods)` is debounced (leading edge) to prevent double submits.
 - `onUpdate(partialData)` is driven by `watch()` per-field updates; sanitization can run before validation of the specific key.
 - `onChange(methods)` is a generic change subscription when full form-level reactions are needed.
+
+### Pledge Animation Queue Pattern
+- Pledge animation state lives in a dedicated PledgeAnimationStore, separate from AppStore for proper separation of concerns
+- PledgeAnimationStore provides `replayPledgeAnimation()` method to trigger animations without re-saving to database
+- Uses a reactive `shouldStartAnimation` flag to signal when replay is triggered, allowing PledgesOverlay to start animations even when not monitoring new database pledges
+- PledgesOverlay automatically animates new pledges and tracks displayed pledges via `displayedPledges` Set
+- Admin panel can replay any existing pledge animation via the replay button
+- PledgeAnimationProvider sits high in the provider hierarchy (after DataProvider) for global access across admin and presentation views
+- Cross-tab/window communication uses a Meteor collection (`PledgeReplays`) with DDP syncing - admin calls `PledgeReplayMethods.triggerPledgeReplay` which inserts server-side, the presentation screen observes it reactively via subscription and triggers the animation
+- Server-side Meteor Method prevents direct client inserts for security while maintaining real-time cross-client sync
+- This architecture separates animation state from database state, allowing flexible replay without data duplication while leveraging Meteor's reactive data protocol for cross-client communication
 
 ### Documentation Rules
 - ONLY document architectural decisions and WHY choices were made
@@ -177,3 +193,26 @@ Server-side publications and methods must use async methods:
 - For MUI components, extend built-in prop types using `Omit` to exclude conflicting props (e.g., `Omit<ButtonProps, "onClick">`)
 - Use index signatures for dynamic object properties when structure varies (e.g., `[key: string]: string | number | undefined`)
 - Remove all PropTypes declarations when adding TypeScript interfaces
+
+### Test Structure
+- Test files use `.test.ts` or `.spec.ts` naming convention so Meteor only loads them during `meteor test`
+- Test files are co-located with the code they test (e.g., `Members.test.ts` next to `Members.ts`)
+- Mock/fixture files use `.mock.ts` suffix and live in `/imports/mock/` - they're only loaded via explicit imports
+- The `/tests/` directory is reserved for external test runners (Cypress) and files Meteor should completely ignore
+
+### Timer Management in React + Meteor
+- Use `useRef` to store timer IDs and prevent recreation on each render
+- Use `useCallback` for timer callback functions to stabilize references
+- Always cleanup timers in `useEffect` cleanup functions to prevent memory leaks
+- This pattern prevents "Can't set timers inside simulations" errors when using timers in MobX observer components
+
+### External Library Type Declarations
+- Custom type declaration files for untyped NPM packages go in `/imports/types/`
+- Use `declare module "package-name"` syntax with minimal type definitions
+- Files are auto-discovered by TypeScript via `tsconfig.json` include patterns
+
+### React 19 Key Prop Handling
+- React 19 prohibits spreading props that contain a `key` property
+- MUI Autocomplete's `renderOption` passes props containing `key` 
+- Pattern: destructure `key` from props and pass it separately: `const { key, ...otherProps } = props; return <Component key={key} {...otherProps} />`
+- This applies to any render prop that receives React-generated props with keys

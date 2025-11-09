@@ -43,45 +43,37 @@ const MembersEdit = () => {
 
 	}
 
-	const createUser = data => {
-		MemberMethods.upsert.call(data, (err, res) => {
-			if(err) {
-				setFormStatus(STATUS.ERROR)
-				console.error({ err })
-			} else {
-				setFormStatus(STATUS.SUCCESS)
-			}
-		})
+	const createUser = async data => {
+		try {
+			await MemberMethods.upsert.callAsync(data)
+			setFormStatus(STATUS.SUCCESS)
+		} catch(err) {
+			setFormStatus(STATUS.ERROR)
+			console.error({ err })
+		}
 	}
 
-	const editUser = data => {
+	const editUser = async data => {
 		const memberStore = members?.values.find(member => member._id === memberId)
 
-		MemberMethods.update.call({ id: memberStore._id, data: {
-			firstName: data.firstName || "",
-			lastName: data.lastName || "",
-			initials: data.initials || "",
-			number: data.number || "",
-			phone: data.phone || "",
-			email: data.email || "",
-		} }, (err, res) => {
-			if(err) {
-				setFormStatus(STATUS.ERROR)
-				console.error({ err })
-			} else {
-				MemberMethods.updateTheme.call({ id: memberStore.theme._id, data: {
-					amount: data.amount,
-					chits: data.chits,
-				} }, (err, res) => {
-					if(err) {
-						setFormStatus(STATUS.ERROR)
-						console.error({ err })
-					} else {
-						setFormStatus(STATUS.SUCCESS)
-					}
-				})
-			}
-		})
+		try {
+			await MemberMethods.update.callAsync({ id: memberStore._id, data: {
+				firstName: data.firstName || "",
+				lastName: data.lastName || "",
+				initials: data.initials || "",
+				number: data.number || "",
+				phone: data.phone || "",
+				email: data.email || "",
+			} })
+			await MemberMethods.updateTheme.callAsync({ id: memberStore.theme._id, data: {
+				amount: data.amount,
+				chits: data.chits,
+			} })
+			setFormStatus(STATUS.SUCCESS)
+		} catch(err) {
+			setFormStatus(STATUS.ERROR)
+			console.error({ err })
+		}
 	}
 
 	useEffect(() => {

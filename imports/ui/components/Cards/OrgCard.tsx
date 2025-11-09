@@ -77,7 +77,7 @@ const OrgCard = observer(({
 				>
 					<DialogTitle>{ org.title }</DialogTitle>
 					<DialogContent>
-						<DialogContentText>
+						<DialogContentText component="div">
 							{ org.description && <div dangerouslySetInnerHTML={ { __html: org.description } } /> }
 						</DialogContentText>
 					</DialogContent>

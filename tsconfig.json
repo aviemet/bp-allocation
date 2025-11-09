@@ -43,7 +43,7 @@
     "imports/**/*",
     "client/**/*",
     "server/**/*",
-    "tests/**/*",
+    "specs/**/*",
     "imports/types/meteor.d.ts",
     "imports/types/meteor-mdg-validated-method.d.ts"
   ],

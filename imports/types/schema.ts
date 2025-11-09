@@ -61,7 +61,7 @@ export interface ChitVote {
 
 export interface MatchPledge {
 	_id: string
-	amount?: number
+	amount: number
 	member?: string
 	anonymous?: boolean
 	notes?: string

@@ -72,12 +72,12 @@ const VotingContextProvider = observer(({ children, member, unsetUser }: VotingC
 				org,
 				amount,
 			}
-			if(source) {
-				voteData.voteSource = source as "kiosk" | "mobile"
-			}
-			MemberMethods.fundVote.call(voteData as Parameters<typeof MemberMethods.fundVote.call>[0])
-		})
-	}
+		if(source) {
+			voteData.voteSource = source as "kiosk" | "mobile"
+		}
+		MemberMethods.fundVote.callAsync(voteData as Parameters<typeof MemberMethods.fundVote.callAsync>[0])
+	})
+}
 
 	const saveChits = (source?: string) => {
 		if(!theme) return
@@ -94,12 +94,12 @@ const VotingContextProvider = observer(({ children, member, unsetUser }: VotingC
 				org,
 				votes,
 			}
-			if(source) {
-				voteData.voteSource = source as "kiosk" | "mobile"
-			}
-			MemberMethods.chitVote.call(voteData as Parameters<typeof MemberMethods.chitVote.call>[0])
-		})
-	}
+		if(source) {
+			voteData.voteSource = source as "kiosk" | "mobile"
+		}
+		MemberMethods.chitVote.callAsync(voteData as Parameters<typeof MemberMethods.chitVote.callAsync>[0])
+	})
+}
 
 	return (
 		<FundsVoteContext.Provider value={ {

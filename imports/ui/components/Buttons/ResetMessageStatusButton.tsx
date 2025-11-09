@@ -8,7 +8,7 @@ const ResetMessageStatusButton = () => {
 	if(!theme) return null
 
 	return (
-		<Button color="warning" onClick={ () => ThemeMethods.resetMessageStatus.call(theme._id) }>Reset Sent Status for All Messages</Button>
+		<Button color="warning" onClick={ async () => await ThemeMethods.resetMessageStatus.callAsync(theme._id) }>Reset Sent Status for All Messages</Button>
 	)
 }
 

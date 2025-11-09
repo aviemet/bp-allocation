@@ -7,6 +7,7 @@
     "visualize": "meteor --production --extra-packages bundle-visualizer",
     "build": "meteor build --server-only --directory ../allocation",
     "test": "meteor --settings privateSettings.json test --once --driver-package meteortesting:mocha --port 3333",
+    "test:coverage": "BABEL_ENV=COVERAGE COVERAGE=1 COVERAGE_APP_FOLDER=$PWD/ COVERAGE_OUT_HTML=1 meteor --settings privateSettings.json test --once --driver-package meteortesting:mocha --port 3333",
     "test:watch": "meteor --settings privateSettings.json test --driver-package meteortesting:mocha --port 3333",
     "test:app": "TEST_WATCH=1 TEST_BROWSER_DRIVER=chrome meteor --settings privateSettings.json test --full-app --driver-package meteortesting:mocha --port 3333",
     "test:server": "TEST_WATCH=1 meteor --settings privateSettings.json test --full-app --driver-package meteortesting:mocha --port 3333 TEST_CLIENT=0",
@@ -87,6 +88,7 @@
     "@types/react-slider": "^1.3.6",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
+    "babel-plugin-istanbul": "^7.0.1",
     "chai": "^6.2.0",
     "chromedriver": "^142.0.0",
     "commitizen": "^4.3.1",
@@ -103,6 +105,15 @@
     "selenium-webdriver": "^4.38.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "babel": {
+    "env": {
+      "COVERAGE": {
+        "plugins": [
+          "istanbul"
+        ]
+      }
+    }
   },
   "meteor": {
     "modern": true

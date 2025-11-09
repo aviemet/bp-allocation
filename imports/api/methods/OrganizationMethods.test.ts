@@ -21,16 +21,16 @@ describe("Organization Methods", async function() {
 	 */
 	describe("Create", function() {
 
-		it("Should create a record", function() {
-			let orgId
-			try {
-				orgId = OrganizationMethods.create.call(OrgTestData())
-			} catch(e) {
-				console.error(e)
-			} finally {
-				expect(orgId).to.not.be.undefined
-			}
-		})
+	it("Should create a record", async function() {
+		let orgId
+		try {
+			orgId = await OrganizationMethods.create.callAsync(OrgTestData())
+		} catch(e) {
+			console.error(e)
+		} finally {
+			expect(orgId).to.not.be.undefined
+		}
+	})
 
 	})
 
@@ -43,11 +43,11 @@ describe("Organization Methods", async function() {
 			const orgChange = {
 				title: faker.company.name()
 			}
-			const beforeOrg = Organizations.findOne({}, function(err, org) {
-				OrganizationMethods.update.call({ id: beforeOrg._id, data: orgChange })
-				const afterOrg = Organizations.findOne({ _id: beforeOrg._id })
-				expect(afterOrg).to.include(orgChange)
-			})
+		const beforeOrg = Organizations.findOne({}, async function(err, org) {
+			await OrganizationMethods.update.callAsync({ id: beforeOrg._id, data: orgChange })
+			const afterOrg = Organizations.findOne({ _id: beforeOrg._id })
+			expect(afterOrg).to.include(orgChange)
+		})
 
 		})
 

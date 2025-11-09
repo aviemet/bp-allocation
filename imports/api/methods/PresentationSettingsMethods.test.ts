@@ -1,24 +1,21 @@
 import { expect } from "chai"
 import { resetDatabase } from "meteor/xolvio:cleaner"
+import { _ } from "meteor/underscore"
 
 import { PresentationSettings } from "/imports/api/db"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
-var settings
+;(globalThis as { _: typeof _ | undefined })._ = _
 
-describe("Presentation Settings Methods", async function() {
+let settings
 
-	before(async function(done) {
+describe("Presentation Settings Methods", function() {
+
+	before(async function() {
 		resetDatabase()
 
-		try {
-			const settingsId = await PresentationSettingsMethods.create.call()
-			settings = await PresentationSettings.find({ _id: settingsId }).fetch()[0]
-		} catch (e) {
-			console.error("Error: ", e)
-		} finally {
-			done()
-		}
+		const settingsId = await PresentationSettingsMethods.create.callAsync()
+		settings = (await PresentationSettings.find({ _id: settingsId }).fetchAsync())[0]
 	})
 
 	/**
@@ -37,7 +34,7 @@ describe("Presentation Settings Methods", async function() {
 	 */
 	describe("Update", function() {
 
-		it("Should update specified fields on the object", async function(done) {
+		it("Should update specified fields on the object", async function() {
 			const settingsChange = {
 				currentPage: "orgs",
 				timerLength: 800,
@@ -52,9 +49,8 @@ describe("Presentation Settings Methods", async function() {
 				useKioskFundsVoting: true,
 			}
 			await PresentationSettingsMethods.update.callAsync({ id: settings._id, data: settingsChange })
-			settings = PresentationSettings.find({ _id: settings._id }).fetch()[0]
+			settings = (await PresentationSettings.find({ _id: settings._id }).fetchAsync())[0]
 			expect(settings).to.include(settingsChange)
-			done()
 		})
 
 	})

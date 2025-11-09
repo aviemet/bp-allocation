@@ -25,9 +25,9 @@ const ChitVotingPane = observer(({ hideAdminFields }: ChitVotingPaneProps) => {
 	const { theme } = useTheme()
 
 
-	const updateNumTopOrgs = e => {
+	const updateNumTopOrgs = async e => {
 		if(e.target.value !== theme.numTopOrgs) {
-			ThemeMethods.update.call({
+			await ThemeMethods.update.callAsync({
 				id: theme._id,
 				data: {
 					numTopOrgs: e.target.value,

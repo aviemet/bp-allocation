@@ -17,8 +17,8 @@ const settingsDefaults = {
 	chitVotingActive: false,
 	fundsVotingActive: false,
 	resultsOffset: 0,
-	useKioskChitVoting: false,
-	useKioskFundsVoting: false,
+	useKioskChitVoting: true,
+	useKioskFundsVoting: true,
 	resultsVisited: false,
 	awardsPresentation: false,
 	awardAmount: 0,
@@ -27,8 +27,8 @@ const settingsDefaults = {
 let presentationSettings
 
 describe("PresentationSettings model", function() {
-	before(function() {
-		presentationSettings = PresentationSettings.insert({})
+	before(async function() {
+		presentationSettings = await PresentationSettings.insertAsync({})
 	})
 
 	describe("Creating a record", function() {
@@ -38,8 +38,8 @@ describe("PresentationSettings model", function() {
 			expect(presentationSettings).to.not.be.null
 		})
 
-		it("Should have default values", function() {
-			let settings = PresentationSettings.find({ _id: presentationSettings }).fetch()[0]
+		it("Should have default values", async function() {
+			const settings = (await PresentationSettings.find({ _id: presentationSettings }).fetchAsync())[0]
 			expect(settings).to.include(settingsDefaults)
 		})
 

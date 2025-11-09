@@ -5,9 +5,9 @@ import { useTheme } from "/imports/api/providers"
 const ResetOrgFundsButton = () => {
 	const { theme } = useTheme()
 
-	const resetOrgFunds = () => {
+	const resetOrgFunds = async () => {
 		if(!theme) return
-		ThemeMethods.resetAllOrgFunds.call(theme._id)
+		await ThemeMethods.resetAllOrgFunds.callAsync(theme._id)
 	}
 
 	if(!theme) return null

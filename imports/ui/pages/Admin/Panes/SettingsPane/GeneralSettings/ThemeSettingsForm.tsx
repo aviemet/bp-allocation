@@ -27,18 +27,17 @@ const SettingsPane = observer(() => {
 		return sanitizedData
 	}
 
-	const onSubmit = data => {
+	const onSubmit = async data => {
 		setFormStatus(STATUS.SUBMITTING)
-		ThemeMethods.update.call({
-			id: theme._id,
-			data: data,
-		}, (err, res) => {
-			if(err) {
-				setFormStatus(STATUS.READY)
-			} else {
-				setFormStatus(STATUS.SUCCESS)
-			}
-		})
+		try {
+			await ThemeMethods.update.callAsync({
+				id: theme._id,
+				data: data,
+			})
+			setFormStatus(STATUS.SUCCESS)
+		} catch(err) {
+			setFormStatus(STATUS.READY)
+		}
 	}
 
 	const onError = (errors, data) => {

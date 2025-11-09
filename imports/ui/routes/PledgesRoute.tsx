@@ -17,8 +17,8 @@ const PledgesRoute = observer(() => {
 	const [isLoading, setIsLoading] = useState(themeLoading || orgsLoading || settingsLoading)
 
 	useEffect(() => {
-		data.themeId = id
-	}, [id])
+		data.setThemeId(id)
+	}, [id, data])
 
 	useEffect(() => {
 		const loadingTest = themeLoading || orgsLoading || settingsLoading

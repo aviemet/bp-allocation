@@ -19,7 +19,7 @@ const PresentationRoute = observer(() => {
 
 	useEffect(() => {
 		if(id) {
-			data.themeId = id
+			data.setThemeId(id)
 		}
 	}, [id, data])
 

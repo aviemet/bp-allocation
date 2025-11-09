@@ -18,8 +18,8 @@ import { Form, TextInput, RichTextInput, SubmitButton, STATUS } from "/imports/u
 const OrganizationsEdit = () => {
 	const { orgs } = useOrgs()
 
-	const { id, orgId } = useParams()
-	const history = useHistory()
+	const { id, orgId } = useParams({ strict: false })
+	const navigate = useNavigate()
 
 	const [formStatus, setFormStatus] = useState(STATUS.READY)
 
@@ -55,7 +55,7 @@ const OrganizationsEdit = () => {
 				setFormStatus(STATUS.ERROR)
 				console.error({ response })
 			}
-		} catch(error) {
+		} catch (error) {
 			setFormStatus(STATUS.ERROR)
 			console.error({ error })
 		}
@@ -63,7 +63,7 @@ const OrganizationsEdit = () => {
 
 	useEffect(() => {
 		if(formStatus === STATUS.SUCCESS) {
-			setTimeout(() => history.push(`/admin/${id}/orgs`), 1000)
+			setTimeout(() => navigate({ to: `/admin/${id}/orgs` }), 1000)
 		}
 	}, [formStatus])
 

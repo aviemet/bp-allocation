@@ -18,7 +18,7 @@ shell-server@0.6.2            # Server-side component of the `meteor shell` comm
 static-html@1.4.0
 mdg:validated-method
 promise@1.0.0
-meteortesting:mocha
+meteortesting:mocha@3.3.0
 percolate:migrations
 mikowals:batch-insert
 dburles:factory
@@ -34,3 +34,5 @@ nachocodoner:reactive-publish
 less
 typescript
 accounts-base
+xolvio:cleaner
+lmieulet:meteor-coverage@5.0.0

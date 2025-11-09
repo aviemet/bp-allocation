@@ -45,8 +45,8 @@ const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 		setTextSubmenuOpen(false)
 	}
 
-	const resetMemberChitVotes = id => () => MemberMethods.resetChitVotes.call(id)
-	const resetMemberFundsVotes = id => () => MemberMethods.resetFundsVotes.call(id)
+	const resetMemberChitVotes = id => async () => await MemberMethods.resetChitVotes.callAsync(id)
+	const resetMemberFundsVotes = id => async () => await MemberMethods.resetFundsVotes.callAsync(id)
 
 	return (
 		<>

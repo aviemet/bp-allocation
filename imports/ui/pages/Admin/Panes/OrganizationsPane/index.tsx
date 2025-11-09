@@ -120,10 +120,12 @@ const OrganizationsPane = observer(() => {
 	const showDeleteModal = (org: Organization) => {
 		modalValuesRef.current.header = "Permanently Delete This Organization?"
 		modalValuesRef.current.content = `This will permanently remove ${org.title} from this theme and all associated data. This process cannot be undone.`
-		modalValuesRef.current.action = () => {
-			OrganizationMethods.remove.call(org._id, (err, res) => {
-				if(err) console.error(err)
-			})
+		modalValuesRef.current.action = async () => {
+			try {
+				await OrganizationMethods.remove.callAsync(org._id)
+			} catch(err) {
+				console.error(err)
+			}
 		}
 		setModalOpen(true)
 	}
