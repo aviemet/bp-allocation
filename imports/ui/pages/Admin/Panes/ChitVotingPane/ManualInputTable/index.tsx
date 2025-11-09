@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react"
-
 import {
 	TextField,
 	Paper,
@@ -10,16 +8,19 @@ import {
 	TableRow,
 	TableCell,
 } from "@mui/material"
-
 import { OrganizationMethods } from "/imports/api/methods"
 import { observer } from "mobx-react-lite"
+import { useState, useEffect } from "react"
 import { useOrgs } from "/imports/api/providers"
 import { type OrgStore } from "/imports/api/stores"
+import { Loading } from "/imports/ui/components"
 
 const ChitTable = () => {
 	const { orgs, topOrgs } = useOrgs()
 
 	const topOrgIds = topOrgs.map(org => org._id)
+
+	if(!orgs) return <Loading />
 
 	return (
 		<TableContainer component={ Paper }>
@@ -37,7 +38,7 @@ const ChitTable = () => {
 						<ChitInputs
 							org={ org }
 							key={ i }
-							tabInfo={ { index: i + 1, length: orgs.length } }
+							tabInfo={ { index: i + 1, length: orgs.values.length } }
 							topOrg={ topOrgIds.includes(org._id) }
 						/>
 					)) }
@@ -49,19 +50,13 @@ const ChitTable = () => {
 
 interface ChitInputsProps {
 	org: OrgStore
-	tabInfo: { index: number; length: number }
+	tabInfo: { index: number, length: number }
 	topOrg: boolean
 }
 
 const ChitInputs = observer(({ org, tabInfo, topOrg }: ChitInputsProps) => {
-	// @ts-expect-error - chitVotes not fully typed in OrgStore
 	const [ weightVotes, setWeightVotes ] = useState(org.chitVotes?.weight ?? 0)
-	// @ts-expect-error - chitVotes not fully typed in OrgStore
 	const [ countVotes, setCountVotes ] = useState(org.chitVotes?.count ?? 0)
-
-	useEffect(() => {
-		saveVotes()
-	}, [weightVotes, countVotes])
 
 	const saveVotes = async () => {
 		await OrganizationMethods.update.callAsync({
@@ -74,6 +69,10 @@ const ChitInputs = observer(({ org, tabInfo, topOrg }: ChitInputsProps) => {
 			},
 		})
 	}
+
+	useEffect(() => {
+		saveVotes()
+	}, [weightVotes, countVotes])
 
 	const rowSx = topOrg ? { sx: { backgroundColor: "table.highlight" } } : {}
 

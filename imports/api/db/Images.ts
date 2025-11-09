@@ -1,13 +1,13 @@
 import { Meteor } from "meteor/meteor"
 import { FilesCollection } from "meteor/ostrio:files"
+import { type FilesCollectionConfig, type FileData } from "meteor/ostrio:files"
 
-let config = {
+const config: FilesCollectionConfig = {
 	collectionName: "images",
-	allowClientCode: true, // Disallow remove files from Client
+	allowClientCode: true,
 	downloadRoute: "/uploads/",
 	public: true,
-	onBeforeUpload(file) {
-		// Allow upload files under 10MB, and only in png/jpg/jpeg/gif formats
+	onBeforeUpload(file: FileData) {
 		if(file.size <= 20971520 && /png|jpg|jpeg|gif/i.test(file.extension)) {
 			return true
 		}

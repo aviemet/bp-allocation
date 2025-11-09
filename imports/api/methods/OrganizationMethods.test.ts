@@ -1,12 +1,10 @@
-import { expect } from "chai"
-
 import { faker } from "@faker-js/faker"
+import { expect } from "chai"
 import { Random } from "meteor/random"
 
-import { Organizations, Themes } from "/imports/api/db"
 import { OrganizationMethods } from "/imports/api/methods"
 
-const OrgTestData = (id) => {
+const OrgTestData = () => {
 	return {
 		title: faker.company.name(),
 		ask: faker.number.int(),
@@ -21,16 +19,16 @@ describe("Organization Methods", async function() {
 	 */
 	describe("Create", function() {
 
-	it("Should create a record", async function() {
-		let orgId
-		try {
-			orgId = await OrganizationMethods.create.callAsync(OrgTestData())
-		} catch(e) {
-			console.error(e)
-		} finally {
-			expect(orgId).to.not.be.undefined
-		}
-	})
+		it("Should create a record", async function() {
+			let orgId
+			try {
+				orgId = await OrganizationMethods.create.callAsync(OrgTestData())
+			} catch (e) {
+				console.error(e)
+			} finally {
+				expect(orgId).to.not.be.undefined
+			}
+		})
 
 	})
 

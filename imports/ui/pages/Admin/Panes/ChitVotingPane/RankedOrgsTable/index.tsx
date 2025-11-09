@@ -65,7 +65,6 @@ const TopOrgsByChitVote = observer(({ hideAdminFields }: TopOrgsByChitVoteProps)
 									inTopOrgs={ inTopOrgs }
 									isLocked={ _isLocked }
 									isSaved={ _isSaved }
-									themeId={ theme._id }
 									org={ org }
 									hideAdminFields={ hideAdminFields || false }
 								/>

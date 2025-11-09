@@ -1,9 +1,8 @@
 import { type Organization } from "/imports/types"
 
-const orgs: Organization[] = [
+const orgs: Record<string, unknown>[] = [
 	{
 		ask: 250000,
-		allocatedFunds: 67432,
 		amountFromVotes: 42432,
 		chitVotes:
 		{
@@ -33,7 +32,6 @@ const orgs: Organization[] = [
 
 	{
 		ask: 250000,
-		allocatedFunds: 74984,
 		amountFromVotes: 54984,
 		chitVotes:
 		{
@@ -58,7 +56,6 @@ const orgs: Organization[] = [
 	},
 	{
 		ask: 250000,
-		allocatedFunds: 83095,
 		amountFromVotes: 73095,
 		chitVotes:
 		{
@@ -83,7 +80,6 @@ const orgs: Organization[] = [
 	},
 	{
 		ask: 300000,
-		allocatedFunds: 50882,
 		amountFromVotes: 48882,
 		chitVotes:
 		{
@@ -108,7 +104,6 @@ const orgs: Organization[] = [
 	},
 	{
 		ask: 250000,
-		allocatedFunds: 250000,
 		amountFromVotes: 77145,
 		chitVotes:
 		{

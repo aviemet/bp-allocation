@@ -193,6 +193,33 @@ Server-side publications and methods must use async methods:
 - Use index signatures for dynamic object properties when structure varies (e.g., `[key: string]: string | number | undefined`)
 - Remove all PropTypes declarations when adding TypeScript interfaces
 
+### Schema Type Generation
+- Embedded schemas (used within other schemas) should not have `_id` fields in generated types
+- `OrgChitVoteSummary` is an embedded document type (used in Organization.chitVotes), distinct from `ChitVote` (used in MemberTheme.chitVotes)
+- When schemas with the same base name exist in different files, ensure they serve different purposes and have unique type names
+
+### Chit Voting System Architecture
+The application supports two modes of chit voting controlled by `PresentationSettings.useKioskChitVoting`:
+
+**Manual Mode (useKioskChitVoting = false)**:
+- Historical mode for physical wooden chits placed in boxes
+- Admins weigh/count chits and manually enter data in `ManualInputTable`
+- Data stored in `Organization.chitVotes` as `OrgChitVoteSummary { weight?: number, count?: number }`
+- `count` takes precedence over `weight` when both present
+- `weight` divided by `Theme.chitWeight` to calculate vote count
+- One summary record per organization
+
+**Kiosk Mode (useKioskChitVoting = true)**:
+- Digital voting through the application interface
+- Members distribute chits across organizations using `ChitTicker` component
+- Data stored in `MemberTheme.chitVotes[]` as array of `ChitVote { organization, votes, voteSource, createdAt }`
+- One `ChitVote` record per organization per member
+- `OrgTransformer` aggregates votes from all member records
+
+The two data structures serve different purposes and should not be conflated:
+- `OrgChitVoteSummary`: Aggregate summary for manual entry (no _id needed)
+- `ChitVote`: Individual vote records for kiosk mode (needs _id for array updates)
+
 ### Test Structure
 - Test files use `.test.ts` or `.spec.ts` naming convention so Meteor only loads them during `meteor test`
 - Test files are co-located with the code they test (e.g., `Members.test.ts` next to `Members.ts`)

@@ -33,9 +33,9 @@ const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState("")
 	const [ modalContent, setModalContent ] = useState("")
-	const [ modalAction, setModalAction ] = useState()
+	const [ modalAction, setModalAction ] = useState<(() => void) | undefined>()
 
-	const toggleTextSubmenu = e => {
+	const toggleTextSubmenu = () => {
 		setTextSubmenuOpen(!textSubmenuOpen)
 		setEmailSubmenuOpen(false)
 	}
@@ -45,8 +45,8 @@ const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 		setTextSubmenuOpen(false)
 	}
 
-	const resetMemberChitVotes = id => async () => await MemberMethods.resetChitVotes.callAsync(id)
-	const resetMemberFundsVotes = id => async () => await MemberMethods.resetFundsVotes.callAsync(id)
+	const resetMemberChitVotes = (id: string) => async () => await MemberMethods.resetChitVotes.callAsync(id)
+	const resetMemberFundsVotes = (id: string) => async () => await MemberMethods.resetFundsVotes.callAsync(id)
 
 	return (
 		<>

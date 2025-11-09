@@ -8,8 +8,10 @@ if(window.location.host.indexOf("batterysf.com") >= 0 && window.location.host.in
 }
 
 Meteor.startup(() => {
-	const root = createRoot(
-		document.getElementById("app")
-	)
+	const appElement = document.getElementById("app")
+	if(!appElement) {
+		throw new Error("Could not find app element")
+	}
+	const root = createRoot(appElement)
 	root.render(<App />)
 })

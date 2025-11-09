@@ -92,7 +92,7 @@ const OrganizationMethods = {
 			if(org) {
 				// First delete any associated images
 				if(org.image) {
-					await ImageMethods.remove.callAsync(org.image)
+					await ImageMethods.remove.callAsync({ id: org.image })
 				}
 
 				// Remove organization
@@ -123,10 +123,10 @@ const OrganizationMethods = {
 			const orgs = await Organizations.find({ _id: { $in: ids }, image: { $exists: true } }, { fields: { _id: 0, image: 1 } }).fetchAsync()
 			const images = orgs.map((org) => {
 				return org.image
-			})
+			}).filter((image): image is string => typeof image === "string")
 
 			// Remove the images
-			await ImageMethods.removeMany.callAsync(images)
+			await ImageMethods.removeMany.callAsync({ ids: images })
 
 			// Remove organization
 			await Organizations.removeAsync({ _id: { $in: ids } })

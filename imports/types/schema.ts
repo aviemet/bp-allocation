@@ -51,12 +51,9 @@ export interface Theme {
 	createdAt?: Date
 }
 
-export interface ChitVote {
-	_id: string
-	organization?: string
-	votes?: number
-	voteSource?: "kiosk" | "mobile"
-	createdAt?: Date
+export interface OrgChitVoteSummary {
+	weight?: number
+	count?: number
 }
 
 export interface MatchPledge {
@@ -75,7 +72,7 @@ export interface Organization {
 	ask?: number
 	description?: string
 	image?: string
-	chitVotes?: ChitVote
+	chitVotes?: OrgChitVoteSummary
 	amountFromVotes?: number
 	topOff?: number
 	pledges?: MatchPledge[]
@@ -87,6 +84,14 @@ export interface Allocation {
 	_id: string
 	organization?: string
 	amount?: number
+	voteSource?: "kiosk" | "mobile"
+	createdAt?: Date
+}
+
+export interface ChitVote {
+	_id: string
+	organization?: string
+	votes?: number
 	voteSource?: "kiosk" | "mobile"
 	createdAt?: Date
 }

@@ -1,6 +1,4 @@
 import { faker } from "@faker-js/faker"
-import { expect } from "chai"
-import { formatPhoneNumber } from "/imports/lib/utils"
 
 import { ThemeMethods, MemberMethods, OrganizationMethods } from "/imports/api/methods"
 import { Themes, Members, MemberThemes, Organizations } from "/imports/api/db"
@@ -18,18 +16,19 @@ const memberStub = (themeId: string) => ({
 	number: faker.number.int(),
 	amount: faker.number.int(),
 	phone: faker.phone.number(),
-	themeId,
+	theme: themeId,
+	chits: 10,
 })
 
-const orgStub = (themeId: string) => ({
+const orgStub = (themeId: string, leverage: number) => ({
 	title: faker.company.name(),
 	ask: faker.number.int(),
 	theme: themeId,
-	leverageFunds: faker.number.int(),
+	leverageFunds: leverage,
 })
 
-let orgs = []
-let memberThemes = []
+let orgs: string[] = []
+let memberThemes: string[] = []
 
 describe("Promises with rate limiting", function() {
 	beforeEach(async function() {
@@ -40,9 +39,9 @@ describe("Promises with rate limiting", function() {
 		await Organizations.removeAsync({})
 		await Themes.removeAsync({})
 
-		const themeId = await ThemeMethods.create.call(themeDataStub())
+		const themeData = themeDataStub()
+		const themeId = await ThemeMethods.create.call(themeData)
 		const createdTheme = (await Themes.find({ _id: themeId }).fetchAsync())[0]
-		theme = createdTheme
 
 		const tasks: Array<Promise<unknown>> = []
 
@@ -54,10 +53,9 @@ describe("Promises with rate limiting", function() {
 			)
 
 			tasks.push(
-				OrganizationMethods.create.call({
-					...orgStub(createdTheme._id),
-					leverageFunds: createdTheme.leverage / NUM_TEST_RECORDS,
-				}).then(orgId => {
+				OrganizationMethods.create.call(
+					orgStub(createdTheme._id, themeData.leverage / NUM_TEST_RECORDS)
+				).then(orgId => {
 					orgs.push(orgId)
 				})
 			)

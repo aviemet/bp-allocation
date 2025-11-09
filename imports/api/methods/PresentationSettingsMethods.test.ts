@@ -1,20 +1,17 @@
 import { expect } from "chai"
 import { resetDatabase } from "meteor/xolvio:cleaner"
-import { _ } from "meteor/underscore"
 
-import { PresentationSettings } from "/imports/api/db"
+import { PresentationSettings, SettingsData } from "/imports/api/db"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
-;(globalThis as { _: typeof _ | undefined })._ = _
-
-let settings
+let settings: SettingsData
 
 describe("Presentation Settings Methods", function() {
 
 	before(async function() {
 		resetDatabase()
 
-		const settingsId = await PresentationSettingsMethods.create.callAsync()
+		const settingsId = await PresentationSettingsMethods.create.callAsync({})
 		settings = (await PresentationSettings.find({ _id: settingsId }).fetchAsync())[0]
 	})
 

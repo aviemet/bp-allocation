@@ -1,12 +1,6 @@
 import { expect } from "chai"
 import { PresentationSettings } from "/imports/api/db"
 
-/** Things to test:
- * - Required fields are required
- * - Validation
- * - Permissions
- */
-
 const settingsDefaults = {
 	currentPage: "intro",
 	timerLength: 600,
@@ -24,22 +18,22 @@ const settingsDefaults = {
 	awardAmount: 0,
 }
 
-let presentationSettings
+let presentationSettingsId: string
 
 describe("PresentationSettings model", function() {
 	before(async function() {
-		presentationSettings = await PresentationSettings.insertAsync({})
+		presentationSettingsId = await PresentationSettings.insertAsync({})
 	})
 
 	describe("Creating a record", function() {
 
 
 		it("Should return an _id when succesful", function() {
-			expect(presentationSettings).to.not.be.null
+			expect(presentationSettingsId).to.not.be.null
 		})
 
 		it("Should have default values", async function() {
-			const settings = (await PresentationSettings.find({ _id: presentationSettings }).fetchAsync())[0]
+			const settings = (await PresentationSettings.find({ _id: presentationSettingsId }).fetchAsync())[0]
 			expect(settings).to.include(settingsDefaults)
 		})
 

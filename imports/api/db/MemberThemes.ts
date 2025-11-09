@@ -25,6 +25,11 @@ export const AllocationSchema = new SimpleSchema({
 	},
 })
 
+/**
+ * Individual chit vote record for kiosk/digital voting mode
+ * Tracks a single member's vote allocation to a specific organization
+ * Used when settings.useKioskChitVoting is true
+ */
 export const ChitVoteSchema = new SimpleSchema({
 	organization: SchemaRegex.Id,
 	votes: Number,
@@ -90,13 +95,13 @@ export const MemberThemeSchema = new SimpleSchema({
 
 // Set permissions
 export const memberThemesPermissions: CollectionPermissions = {
-	insert: (userId, doc) => {
+	insert: (_userId, _doc) => {
 		return true
 	},
-	update: (userId, doc) => {
+	update: (_userId, _doc) => {
 		return true
 	},
-	remove: (userId, doc) => {
+	remove: (_userId, _doc) => {
 		return true
 	},
 }

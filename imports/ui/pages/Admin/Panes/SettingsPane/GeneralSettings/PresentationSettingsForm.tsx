@@ -9,20 +9,20 @@ import { PresentationSettingsMethods } from "/imports/api/methods"
 import { useSettings } from "/imports/api/providers"
 import { PresentationSettingsSchema } from "/imports/api/db"
 
-import { Form, TextInput, Switch, SubmitButton, STATUS } from "/imports/ui/components/Form"
+import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { Loading } from "/imports/ui/components"
 
 const PresentationSettingsForm = observer(() => {
 	const { settings, isLoading: settingsLoading } = useSettings()
 
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
-	const sanitizeData = data => {
+	const sanitizeData = (data: Record<string, unknown>) => {
 		const sanitizedData = data
 		return sanitizedData
 	}
 
-	const onSubmit = async data => {
+	const onSubmit = async (data: Record<string, unknown>) => {
 		setFormStatus(STATUS.SUBMITTING)
 		try {
 			await PresentationSettingsMethods.update.callAsync({
@@ -35,7 +35,7 @@ const PresentationSettingsForm = observer(() => {
 		}
 	}
 
-	const onError = (errors, data) => {
+	const onError = (errors: unknown, data: unknown) => {
 		console.error({ errors, data })
 	}
 

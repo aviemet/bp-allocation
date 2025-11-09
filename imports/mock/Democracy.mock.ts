@@ -29,7 +29,7 @@ const theme = {
 	createdAt: "2019-10-28T17:28:59.960Z",
 }
 
-const settings = {
+const settings: Partial<{ useKioskChitVoting?: boolean; useKioskFundsVoting?: boolean }> = {
 	useKioskFundsVoting: false,
 }
 
@@ -132,6 +132,10 @@ const orgs = [
 		leverageFunds: 0,
 		createdAt: "2019-10-28T20:27:08.429Z",
 	},
-].map(org => orgTransformer(org, { theme, settings }))
+].map(org => orgTransformer({
+	...org,
+	createdAt: new Date(org.createdAt),
+	pledges: org.pledges?.map(p => ({ ...p, createdAt: new Date(p.createdAt) }))
+}, { theme, settings }))
 
 export default { orgs, theme, settings }

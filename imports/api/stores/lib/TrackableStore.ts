@@ -1,12 +1,13 @@
 import { isEqual } from "lodash"
 import { action, extendObservable, makeObservable } from "mobx"
 
-export type TrackableData<T extends Record<string, unknown> = Record<string, unknown>> = T & {
-	readonly _id: string
+export type TrackableData<T = Record<string, unknown>> = T & {
+	_id: string
+	[key: string]: unknown
 }
 
 class TrackableStore<T extends TrackableData = TrackableData> {
-	readonly _id!: string
+	_id!: string
 	[key: string]: unknown
 
 	constructor(data: T) {

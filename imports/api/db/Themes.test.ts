@@ -2,15 +2,10 @@ import { faker } from "@faker-js/faker"
 import { assert, expect } from "chai"
 import { Random } from "meteor/random"
 
-import { type ThemeData, Themes } from "/imports/api/db"
+import { Themes } from "/imports/api/db"
+import { Theme } from "/imports/types"
 
-/** Things to test:
- * - Required fields are required
- * - Validation
- * - Permissions
- */
-
-const themeData: Partial<ThemeData> = {
+const themeData: Partial<Theme> = {
 	title: faker.lorem.words(1),
 	question: faker.lorem.words(3),
 	quarter: "2019Q1",

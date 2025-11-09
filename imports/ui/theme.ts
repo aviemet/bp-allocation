@@ -53,7 +53,7 @@ const theme = createTheme({
 			variants: [
 				{
 					props: { variant: "striped" },
-					style: ({ ownerState, theme }) => ({
+					style: ({ theme }) => ({
 						"& > tbody > tr:nth-of-type(2n)": {
 							backgroundColor: theme.palette.grey[100],
 						},
@@ -61,7 +61,7 @@ const theme = createTheme({
 				},
 				{
 					props: { variant: "striped-collapse" },
-					style: ({ ownerState, theme }) => ({
+					style: ({ theme }) => ({
 						"& > tbody > tr:nth-of-type(4n), & > tbody > tr:nth-of-type(4n-1)": {
 							backgroundColor: theme.palette.grey[100],
 						},
@@ -71,7 +71,7 @@ const theme = createTheme({
 		},
 		MuiTableHead: {
 			styleOverrides: {
-				root: ({ ownerState, theme }) => ({
+				root: ({ theme }) => ({
 					backgroundColor: theme.palette.grey[100],
 					"& > th": {
 						borderRight: theme.palette.grey[200],
@@ -81,7 +81,7 @@ const theme = createTheme({
 		},
 		MuiTableRow: {
 			styleOverrides: {
-				root: ({ ownerState, theme }) => ({
+				root: ({ theme }) => ({
 					"&:first-of-type": {
 						borderLeft: `1px solid ${theme.palette.grey[200]}`,
 					},

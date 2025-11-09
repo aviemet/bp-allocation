@@ -1,9 +1,8 @@
 import { sortBy } from "lodash"
 
-import { Organization } from "../types/schema"
-import { ThemeWithVotingDefaults } from "/imports/api/stores/ThemeStore"
+import { Organization, Theme } from "../types/schema"
 
-type ThemeVotingFields = Pick<ThemeWithVotingDefaults, "numTopOrgs" | "topOrgsManual">
+type ThemeVotingFields = Pick<Theme, "numTopOrgs" | "topOrgsManual">
 
 export interface ThemeVotingConfig {
 	numTopOrgs: number
@@ -19,8 +18,8 @@ export const createThemeVotingConfig = (theme?: ThemeVotingFields): ThemeVotingC
 	}
 
 	return {
-		numTopOrgs: theme.numTopOrgs,
-		topOrgsManual: theme.topOrgsManual,
+		numTopOrgs: theme.numTopOrgs ?? 0,
+		topOrgsManual: theme.topOrgsManual ?? [],
 	}
 }
 

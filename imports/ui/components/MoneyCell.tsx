@@ -4,9 +4,13 @@ import {
 	TableCell,
 } from "@mui/material"
 import numeral from "numeral"
-import PropTypes from "prop-types"
 
-const MoneyCell = ({ children, format = "0,0.00" }) => {
+interface MoneyCellProps {
+	children: number | string
+	format?: string
+}
+
+const MoneyCell = ({ children, format = "0,0.00" }: MoneyCellProps) => {
 	return (
 		<TableCell align="right">
 			<Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -15,11 +19,6 @@ const MoneyCell = ({ children, format = "0,0.00" }) => {
 			</Stack>
 		</TableCell>
 	)
-}
-
-MoneyCell.propTypes = {
-	children: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-	format: PropTypes.string,
 }
 
 export default MoneyCell

@@ -10,24 +10,24 @@ import { useTheme } from "/imports/api/providers"
 import { ThemeSchema } from "/imports/api/db"
 import { formatters, roundFloat } from "/imports/lib/utils"
 
-import { Form, TextInput, Switch, SubmitButton, STATUS } from "/imports/ui/components/Form"
+import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { Loading } from "/imports/ui/components"
 
 const SettingsPane = observer(() => {
 	const { theme } = useTheme()
 
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
-	const sanitizeData = data => {
+	const sanitizeData = (data: Record<string, unknown>) => {
 		const sanitizedData = data
-		if(sanitizedData.leverageTotal) sanitizedData.leverageTotal = roundFloat(sanitizedData.leverageTotal)
-		if(sanitizedData.consolationAmount) sanitizedData.consolationAmount = roundFloat(sanitizedData.consolationAmount)
-		if(sanitizedData.matchRatio) sanitizedData.matchRatio = parseInt(sanitizedData.matchRatio)
-		if(sanitizedData.chitWeight) sanitizedData.chitWeight = parseInt(sanitizedData.chitWeight)
+		if(sanitizedData.leverageTotal) sanitizedData.leverageTotal = roundFloat(String(sanitizedData.leverageTotal))
+		if(sanitizedData.consolationAmount) sanitizedData.consolationAmount = roundFloat(String(sanitizedData.consolationAmount))
+		if(sanitizedData.matchRatio) sanitizedData.matchRatio = parseInt(String(sanitizedData.matchRatio))
+		if(sanitizedData.chitWeight) sanitizedData.chitWeight = parseInt(String(sanitizedData.chitWeight))
 		return sanitizedData
 	}
 
-	const onSubmit = async data => {
+	const onSubmit = async (data: Record<string, unknown>) => {
 		setFormStatus(STATUS.SUBMITTING)
 		try {
 			await ThemeMethods.update.callAsync({
@@ -40,7 +40,7 @@ const SettingsPane = observer(() => {
 		}
 	}
 
-	const onError = (errors, data) => {
+	const onError = (errors: unknown, data: unknown) => {
 		console.log({ errors, data })
 	}
 

@@ -23,17 +23,17 @@ const SettingsPane = observer(() => {
 		twilioRateLimit: settings?.twilioRateLimit || 100,
 	}
 
-	const sanitizeData = data => {
+	const sanitizeData = (data: Record<string, unknown>) => {
 		const sanitizedData = data
-		sanitizedData.twilioRateLimit = parseInt(sanitizedData.twilioRateLimit)
+		sanitizedData.twilioRateLimit = parseInt(String(sanitizedData.twilioRateLimit))
 		return data
 	}
 
-	const onError = (errors, data) => {
+	const onError = (errors: unknown, data: unknown) => {
 		console.log({ errors, data })
 	}
 
-	const onSubmit = async data => {
+	const onSubmit = async (data: Record<string, unknown>) => {
 		setFormStatus(STATUS.SUBMITTING)
 		try {
 			await PresentationSettingsMethods.update.callAsync({

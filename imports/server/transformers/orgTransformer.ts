@@ -1,6 +1,6 @@
 import { isEmpty } from "lodash"
 import { roundFloat } from "/imports/lib/utils"
-import { type MemberTheme, type ChitVote } from "/imports/types/schema"
+import { type MemberTheme } from "/imports/types/schema"
 import { type OrgData, type ThemeData, type SettingsData } from "/imports/api/db"
 
 export interface OrgTransformerParams {
@@ -8,8 +8,6 @@ export interface OrgTransformerParams {
 	settings?: SettingsData
 	memberThemes: MemberTheme[]
 }
-
-type ChitVoteLike = ChitVote | { count?: number, weight?: number } | undefined
 
 export interface OrgWithComputed extends OrgData {
 	save?: number
@@ -75,7 +73,7 @@ const OrgTransformer = (doc: OrgWithComputed, params: OrgTransformerParams) => {
 	doc.votes = function() {
 		let votes = 0
 
-		// If chit voting by kiosk, get chit votes for this org from each member
+		// Kiosk mode: aggregate individual member votes from MemberTheme.chitVotes[]
 		if(params.settings && params.settings.useKioskChitVoting) {
 			votes = params.memberThemes.reduce((sum, memberTheme) => {
 				if(!isEmpty(memberTheme.chitVotes)) {
@@ -84,15 +82,14 @@ const OrgTransformer = (doc: OrgWithComputed, params: OrgTransformerParams) => {
 				}
 				return sum
 			}, 0)
+		// Manual mode: use aggregated count/weight from Organization.chitVotes
 		} else if(params.theme && doc.chitVotes) {
-			const chit: ChitVoteLike = doc.chitVotes as unknown as ChitVoteLike
-			if(typeof chit === "object" && chit !== null && "count" in chit && typeof chit.count === "number") {
-				// Token count has higher specificity, therefor higher precedence
-				// If present, return this number
-				votes = chit.count
-			} else if(typeof chit === "object" && chit !== null && "weight" in chit && typeof chit.weight === "number") {
-				// Token weight must be set in params.theme settings
-				votes = chit.weight / ((params.theme.chitWeight || 1))
+			// Direct count takes precedence (more accurate than weight calculation)
+			if(doc.chitVotes.count) {
+				votes = doc.chitVotes.count
+			// Fallback to weight-based calculation if count not provided
+			} else if(doc.chitVotes.weight && params.theme.chitWeight) {
+				votes = doc.chitVotes.weight / params.theme.chitWeight
 			}
 		}
 

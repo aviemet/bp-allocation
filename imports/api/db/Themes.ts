@@ -124,13 +124,13 @@ export const ThemeSchema = new SimpleSchema({
 
 // Set permissions
 export const themesPermissions: CollectionPermissions = {
-	insert: (userId, doc) => {
+	insert: (_userId, _doc) => {
 		return true
 	},
-	update: (userId, doc) => {
+	update: (_userId, _doc) => {
 		return true
 	},
-	remove: (userId, doc) => {
+	remove: (_userId, _doc) => {
 		return true
 	},
 }

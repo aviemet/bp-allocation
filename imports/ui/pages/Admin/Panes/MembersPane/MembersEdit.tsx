@@ -12,7 +12,7 @@ import { MemberMethods } from "/imports/api/methods"
 import { MemberSchema, MemberThemeSchema } from "/imports/api/db"
 import { roundFloat } from "/imports/lib/utils"
 
-import { Form, TextInput, SubmitButton, STATUS } from "/imports/ui/components/Form"
+import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 
 import { Loading } from "/imports/ui/components"
 
@@ -22,18 +22,17 @@ const MembersEdit = () => {
 	const { id, memberId } = useParams({ strict: false })
 	const navigate = useNavigate()
 
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
-	const sanitizeData = data => {
+	const sanitizeData = (data: Record<string, unknown>) => {
 		const sanitizedData = data
-		if(sanitizedData.amount) sanitizedData.amount = roundFloat(sanitizedData.amount)
-		if(sanitizedData.number) sanitizedData.number = parseInt(sanitizedData.number)
-		if(sanitizedData.chits) sanitizedData.chits = parseInt(sanitizedData.chits)
+		if(sanitizedData.amount) sanitizedData.amount = roundFloat(String(sanitizedData.amount))
+		if(sanitizedData.number) sanitizedData.number = parseInt(String(sanitizedData.number))
+		if(sanitizedData.chits) sanitizedData.chits = parseInt(String(sanitizedData.chits))
 		return sanitizedData
 	}
 
-	const onSubmit = data => {
-		// console.log({ data })
+	const onSubmit = (data: Record<string, unknown>) => {
 		setFormStatus(STATUS.SUBMITTING)
 		if(memberId) {
 			editUser(data)
@@ -43,9 +42,20 @@ const MembersEdit = () => {
 
 	}
 
-	const createUser = async data => {
+	const createUser = async (data: Record<string, unknown>) => {
 		try {
-			await MemberMethods.upsert.callAsync(data)
+			const upsertData = {
+				firstName: String(data.firstName || ""),
+				lastName: String(data.lastName || ""),
+				initials: String(data.initials || ""),
+				number: Number(data.number || 0),
+				phone: String(data.phone || ""),
+				email: String(data.email || ""),
+				amount: Number(data.amount || 0),
+				chits: Number(data.chits || 0),
+				theme: String(data.theme),
+			}
+			await MemberMethods.upsert.callAsync(upsertData)
 			setFormStatus(STATUS.SUCCESS)
 		} catch(err) {
 			setFormStatus(STATUS.ERROR)
@@ -53,21 +63,22 @@ const MembersEdit = () => {
 		}
 	}
 
-	const editUser = async data => {
+	const editUser = async (data: Record<string, unknown>) => {
 		const memberStore = members?.values.find(member => member._id === memberId)
+		if(!memberStore) return
 
 		try {
 			await MemberMethods.update.callAsync({ id: memberStore._id, data: {
-				firstName: data.firstName || "",
-				lastName: data.lastName || "",
-				initials: data.initials || "",
-				number: data.number || "",
-				phone: data.phone || "",
-				email: data.email || "",
+				firstName: String(data.firstName || ""),
+				lastName: String(data.lastName || ""),
+				initials: String(data.initials || ""),
+				number: Number(data.number || 0),
+				phone: String(data.phone || ""),
+				email: String(data.email || ""),
 			} })
 			await MemberMethods.updateTheme.callAsync({ id: memberStore.theme._id, data: {
-				amount: data.amount,
-				chits: data.chits,
+				amount: Number(data.amount || 0),
+				chits: Number(data.chits || 0),
 			} })
 			setFormStatus(STATUS.SUCCESS)
 		} catch(err) {
@@ -82,14 +93,16 @@ const MembersEdit = () => {
 		}
 	}, [formStatus, navigate, id])
 
-	const onError = (errors, data) => {
+	const onError = (errors: unknown, data: unknown) => {
 		console.log({ errors, data })
 	}
 
-	const handleInitials = (value, name, setValue) => {
-		if(!["firstName", "lastName"].includes(name) || !value.firstName || !value.lastName) return
+	const handleInitials = (value: unknown, name: string, form: { setValue: (field: string, val: string) => void }) => {
+		if(!["firstName", "lastName"].includes(name)) return
+		const values = value as Record<string, string>
+		if(!values.firstName || !values.lastName) return
 
-		setValue("initials", (value.firstName.charAt(0) + value.lastName.charAt(0)).toUpperCase())
+		form.setValue("initials", (values.firstName.charAt(0) + values.lastName.charAt(0)).toUpperCase())
 	}
 
 	const schema = MemberSchema.omit("fullName", "code")
@@ -98,16 +111,17 @@ const MembersEdit = () => {
 	if(membersLoading) return <Loading />
 
 	const memberStore = members?.values.find(member => member._id === memberId)
+	const memberTheme = memberStore?.theme
 	const member = {
 		theme: id,
 		firstName: memberStore?.firstName || "",
 		lastName: memberStore?.lastName || "",
 		initials: memberStore?.initials || "",
-		number: memberStore?.number || "",
-		amount: memberStore?.theme?.amount || "",
+		number: memberStore?.number || 0,
+		amount: memberTheme?.amount || 0,
 		phone: memberStore?.phone || "",
 		email: memberStore?.email || "",
-		chits: memberStore?.theme?.chits || "",
+		chits: memberTheme?.chits || 0,
 	}
 	return (
 		<>

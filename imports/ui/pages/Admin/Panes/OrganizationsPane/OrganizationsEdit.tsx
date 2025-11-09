@@ -12,7 +12,7 @@ import { useOrgs } from "/imports/api/providers"
 import { OrganizationMethods } from "/imports/api/methods"
 import { OrganizationSchema } from "/imports/api/db"
 
-import { Form, TextInput, RichTextInput, SubmitButton, STATUS } from "/imports/ui/components/Form"
+import { Form, TextInput, RichTextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 
 
 const OrganizationsEdit = () => {
@@ -21,7 +21,7 @@ const OrganizationsEdit = () => {
 	const { id, orgId } = useParams({ strict: false })
 	const navigate = useNavigate()
 
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
 	const orgStore = orgs?.values.find(org => org._id === orgId)
 	const org = {
@@ -31,7 +31,7 @@ const OrganizationsEdit = () => {
 		description: orgStore?.description || "",
 	}
 
-	const sanitizeData = data => {
+	const sanitizeData = (data: Record<string, unknown>) => {
 		const sanitizedData = data
 		if(typeof sanitizedData.ask === "string") {
 			sanitizedData.ask = parseFloat(sanitizedData.ask.replace(/[^\d.]/g, ""))
@@ -39,7 +39,7 @@ const OrganizationsEdit = () => {
 		return sanitizedData
 	}
 
-	const onSubmit = async data => {
+	const onSubmit = async (data: Record<string, unknown>) => {
 		setFormStatus(STATUS.SUBMITTING)
 		try {
 			let response

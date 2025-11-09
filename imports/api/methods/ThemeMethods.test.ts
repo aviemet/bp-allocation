@@ -2,18 +2,17 @@ import { faker } from "@faker-js/faker"
 import { expect } from "chai"
 import { resetDatabase } from "meteor/xolvio:cleaner"
 import { ThemeMethods, OrganizationMethods } from "/imports/api/methods"
-import { Themes, Organizations } from "/imports/api/db"
+import { Themes, Organizations, ThemeData } from "/imports/api/db"
 
-const themeData = {
+const themeData: { title: string; leverage: number; _id?: string } = {
 	title: faker.company.buzzNoun(),
 	leverage: 1200000,
 }
 
-// Will get populated by before method
-let orgIds = []
-let theme
-let orgId
-let numTopOrgsDefault
+let orgIds: string[] = []
+let theme: ThemeData
+let orgId: string
+let numTopOrgsDefault: number
 
 describe("Theme Methods", function() {
 
@@ -21,6 +20,7 @@ describe("Theme Methods", function() {
 		resetDatabase()
 
 		const themeId = await ThemeMethods.create.callAsync(themeData)
+		if(!themeId) throw new Error("Failed to create theme")
 		const createdTheme = (await Themes.find({ _id: themeId }).fetchAsync())[0]
 		theme = createdTheme
 		themeData._id = createdTheme._id
@@ -88,7 +88,7 @@ describe("Theme Methods", function() {
 		})
 		theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
 
-		expect(theme.saves[0]).to.include({ org: orgId, amount: amount })
+		expect(theme.saves?.[0]).to.include({ org: orgId, amount: amount })
 	})
 
 		it("Should increment numTopOrgs", function() {

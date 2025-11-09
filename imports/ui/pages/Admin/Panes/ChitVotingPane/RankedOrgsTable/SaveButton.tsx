@@ -4,7 +4,7 @@ import {
 	TextField,
 } from "@mui/material"
 import numeral from "numeral"
-import { useState } from "react"
+import React, { useRef, useState } from "react"
 import { roundFloat } from "/imports/lib/utils"
 
 import ContentModal from "/imports/ui/components/Dialogs/ContentModal"
@@ -17,16 +17,17 @@ interface SaveButtonProps {
 }
 
 const SaveButton = ({ org }: SaveButtonProps) => {
-	const [ amount, setAmount ] = useState("")
-	const [ modalOpen, setModalOpen ] = useState(false)
+	const [amount, setAmount] = useState("")
+	const [modalOpen, setModalOpen] = useState(false)
+	const amountInputRef = useRef<HTMLInputElement>(null)
 
-	const saveOrg = async (e, el) => {
+	const saveOrg = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 
-		let input = document.getElementById("amountInput")
-		let amount = roundFloat(input.value)
+		if(!amountInputRef.current) return
+		const parsedAmount = roundFloat(amountInputRef.current.value)
 
-		await ThemeMethods.saveOrg.callAsync({ id: org._id, amount })
+		await ThemeMethods.saveOrg.callAsync({ id: org._id, amount: parsedAmount })
 
 		setModalOpen(false)
 	}
@@ -41,8 +42,8 @@ const SaveButton = ({ org }: SaveButtonProps) => {
 			>
 				<p>This org can be saved for { numeral(org.ask / 2).format("$0,0") }</p>
 				<TextField
+					ref={ amountInputRef }
 					id="amountInput"
-					icon="dollar"
 					placeholder={ `Need: ${numeral(org.ask / 2).format("$0,0")}` }
 					value={ amount }
 					onChange={ e => setAmount(e.target.value) }

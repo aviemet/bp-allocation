@@ -4,7 +4,7 @@ import { expect } from "chai"
 import { formatPhoneNumber } from "/imports/lib/utils"
 
 import { ThemeMethods, MemberMethods, OrganizationMethods } from "/imports/api/methods"
-import { Themes, Members, MemberThemes } from "/imports/api/db"
+import { Themes, Members, MemberThemes, ThemeData } from "/imports/api/db"
 import { Organizations } from "/imports/api/db"
 
 const NUM_TEST_RECORDS = 5
@@ -15,7 +15,6 @@ let themeData: {
 	leverage: number
 }
 
-let theme
 let orgIds: string[] = []
 let memberThemeIds: string[] = []
 let memberIds: string[] = []
@@ -33,8 +32,8 @@ describe("Member Methods", function() {
 		}
 
 		const themeId = await ThemeMethods.create.callAsync(themeData)
+		if(!themeId) throw new Error("Failed to create theme")
 		const createdTheme = (await Themes.find({ _id: themeId }).fetchAsync())[0]
-		theme = createdTheme
 		themeData._id = createdTheme._id
 
 		for(let i = 0; i < NUM_TEST_RECORDS; i++) {
@@ -43,13 +42,13 @@ describe("Member Methods", function() {
 				lastName: faker.person.lastName(),
 				number: faker.number.int(),
 				theme: createdTheme._id,
-				themeId: createdTheme._id,
 				amount: faker.number.int(),
 				phone: faker.phone.number(),
+				chits: 10,
 			})
 			memberThemeIds.push(memberThemeId)
 			const memberThemeDoc = await MemberThemes.findOneAsync({ _id: memberThemeId })
-			if(memberThemeDoc) {
+			if(memberThemeDoc?.member) {
 				memberIds.push(memberThemeDoc.member)
 			}
 
@@ -135,6 +134,7 @@ describe("Member Methods", function() {
 			if(!member) {
 				throw new Error("Member not found")
 			}
+			if(!themeData._id) throw new Error("Theme ID not found")
 			await MemberMethods.removeMemberFromTheme.callAsync({ memberId: member._id, themeId: themeData._id })
 
 			const memberCount = await Members.find({ _id: { $in: memberIds } }).countAsync()
@@ -152,11 +152,12 @@ describe("Member Methods", function() {
 			const orgDocuments = await Organizations.find({ _id: { $in: orgIds } }).fetchAsync()
 			await OrganizationMethods.pledge.callAsync({ id: orgDocuments[0]._id, amount: 1000, member: member._id })
 
+			if(!themeData._id) throw new Error("Theme ID not found")
 			await MemberMethods.removeMemberFromTheme.callAsync({ memberId: member._id, themeId: themeData._id })
 
 			const org = (await Organizations.find({ _id: orgDocuments[0]._id }).fetchAsync())[0]
 
-			expect(org.pledges.length).to.equal(0)
+			expect(org.pledges?.length).to.equal(0)
 		})
 	})
 

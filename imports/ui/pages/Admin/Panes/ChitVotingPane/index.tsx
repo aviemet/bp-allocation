@@ -25,12 +25,13 @@ const ChitVotingPane = observer(({ hideAdminFields }: ChitVotingPaneProps) => {
 	const { theme } = useTheme()
 
 
-	const updateNumTopOrgs = async e => {
-		if(e.target.value !== theme.numTopOrgs) {
+	const updateNumTopOrgs = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const newValue = parseInt(e.target.value, 10)
+		if(newValue !== theme.numTopOrgs) {
 			await ThemeMethods.update.callAsync({
 				id: theme._id,
 				data: {
-					numTopOrgs: e.target.value,
+					numTopOrgs: newValue,
 				},
 			})
 		}
@@ -51,11 +52,11 @@ const ChitVotingPane = observer(({ hideAdminFields }: ChitVotingPaneProps) => {
 						<Typography component="h3" variant="h3">
 							Top { !hideAdminFields ?
 								<TextField
-									size="mini"
+									size="small"
 									type="number"
 									value={ theme.numTopOrgs }
 									onChange={ updateNumTopOrgs }
-									width={ 1 }
+									sx={ { width: "4em" } }
 								/> :
 								theme.numTopOrgs
 							} Organizations

@@ -26,10 +26,10 @@ const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
 	const { theme } = useTheme()
 	const { topOrgs } = useOrgs()
 
-	const leverage = new LeverageObject(topOrgs, theme.leverageRemaining)
+	const leverage = new LeverageObject(topOrgs, Number(theme.leverageRemaining))
 	const rounds = leverage.getLeverageSpreadRounds()
 
-	const saveLeverageSpread = async (lastRound) => {
+	const saveLeverageSpread = async (lastRound: { orgs: Array<{ _id: string; leverageFunds: number }> }) => {
 		await ThemeMethods.saveLeverageSpread.callAsync(lastRound.orgs)
 	}
 
@@ -61,7 +61,7 @@ const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
 				<Stack direction="row" justifyContent="space-between" alignItems="center">
 					<Typography component="h2" variant="h3">Final Distribution</Typography>
 
-					<div>Leverage Remaining: { numeral(leverage.finalRoundAllocation(rounds)).format("$0,0.00") }</div>
+					<div>Leverage Remaining: { numeral(leverage.finalRoundAllocation()).format("$0,0.00") }</div>
 					{ !hideAdminFields && <>
 						{ !leverageDistributed
 							? (

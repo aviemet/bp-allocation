@@ -20,8 +20,8 @@ describe("Leverage object", function() {
 })
 
 describe("Education Theme leverage spread", function() {
-	const orgs = new OrgsCollection(Education.orgs, { theme: Education.theme, settings: Education.settings, displayedPledges: new Set() }, OrgStore)
-	const topOrgs = filterTopOrgs(orgs.values, Education.theme)
+	const orgs = new OrgsCollection(Education.orgs, { theme: Education.theme as unknown as Record<string, unknown>, settings: Education.settings, displayedPledges: new Set() }, OrgStore)
+	const topOrgs = filterTopOrgs(orgs.values, Education.theme as unknown as Record<string, unknown>)
 	const leverage = new Leverage(topOrgs, 639169.6)
 	const rounds = leverage.getLeverageSpreadRounds()
 
@@ -31,7 +31,7 @@ describe("Education Theme leverage spread", function() {
 	})
 
 	it("Should spread leverage correctly to the orgs - Education", function() {
-		const orgSpreadByRound = {
+		const orgSpreadByRound: Record<string, number[]> = {
 			// Center for good food purchasing
 			"7JudfyraRLNbLAQuF": [66600, 0, 0],
 			// Code for America
@@ -49,16 +49,16 @@ describe("Education Theme leverage spread", function() {
 		rounds.forEach((round, nRounds) => {
 			// Step through each org in each round
 			round.orgs.forEach(org => {
-				if(org.roundFunds !== orgSpreadByRound[org._id][nRounds]) {}
+				if(org.roundFunds !== orgSpreadByRound[org._id]?.[nRounds]) {}
 				// Compare the org leverage funds in the round to the expected value from above
-				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id][nRounds])
+				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id]?.[nRounds])
 			})
 		})
 	})
 })
 
 describe("Democracy Theme leverage spread", function() {
-	const orgs = new OrgsCollection(Democracy.orgs, { theme: Democracy.theme, settings: Democracy.settings, displayedPledges: new Set() }, OrgStore)
+	const orgs = new OrgsCollection(Democracy.orgs, { theme: Democracy.theme as unknown as Record<string, unknown>, settings: Democracy.settings, displayedPledges: new Set() }, OrgStore)
 	const leverage = new Leverage(orgs.values, 802759)
 	const rounds = leverage.getLeverageSpreadRounds()
 
@@ -68,7 +68,7 @@ describe("Democracy Theme leverage spread", function() {
 	})
 
 	it("Should spread leverage correctly to the orgs - Democracy", function() {
-		const orgSpreadByRound = {
+		const orgSpreadByRound: Record<string, number[]> = {
 			// Campaign Legal Center
 			"iBTQcWD9NZppHfrJ8": [60453.02, 61665.87, 61930.24, 26509.87],
 			// 'CommunityConnect Labs'
@@ -85,7 +85,7 @@ describe("Democracy Theme leverage spread", function() {
 			// Step through each org in each round
 			round.orgs.forEach(org => {
 				// Compare the org leverage funds in the round to the expected value from above
-				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id][nRounds])
+				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id]?.[nRounds])
 			})
 		})
 	})

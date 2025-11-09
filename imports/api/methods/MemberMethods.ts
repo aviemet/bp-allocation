@@ -5,7 +5,7 @@ import { formatPhoneNumber, sanitizeString } from "/imports/lib/utils"
 
 import { Members, MemberThemes, Organizations } from "/imports/api/db"
 import { OrganizationMethods } from "/imports/api/methods"
-import { type Member, type MemberTheme, type MatchPledge } from "/imports/types/schema"
+import { type Member, type MemberTheme } from "/imports/types/schema"
 
 interface MemberInputData extends Partial<Member> {
 	amount?: number
@@ -150,7 +150,7 @@ const _memberInsert = async function(data: MemberInputData): Promise<string> {
 		const newMember = { firstName, lastName, fullName, number, initials, code, phone, email }
 		try {
 			return await Members.insertAsync(newMember)
-		} catch(e) {
+		} catch (e) {
 			console.error({ newMember, e })
 			throw e
 		}
@@ -182,7 +182,7 @@ const _memberThemeInsert = async function(query: MemberThemeInsertQuery): Promis
 	if(!memberTheme) {
 		try {
 			return await MemberThemes.insertAsync(query)
-		} catch(e) {
+		} catch (e) {
 			console.error(e)
 			throw e
 		}
@@ -191,7 +191,7 @@ const _memberThemeInsert = async function(query: MemberThemeInsertQuery): Promis
 		try {
 			await MemberThemes.updateAsync({ _id: memberTheme._id }, { $set: { amount: query.amount } })
 			return memberTheme._id
-		} catch(e) {
+		} catch (e) {
 			console.error(e)
 			throw e
 		}
@@ -220,7 +220,7 @@ const MemberMethods = {
 
 				// Create/edit theme association
 				return await _memberThemeInsert(memberThemeQuery)
-			} catch(memberError) {
+			} catch (memberError) {
 				console.error({ memberError })
 				throw memberError
 			}
@@ -273,7 +273,7 @@ const MemberMethods = {
 			// Batch delete the MemberThemes first
 			try {
 				await MemberThemes.removeAsync({ _id: { $in: ids } })
-			} catch(e) {
+			} catch (e) {
 				console.error(e)
 			}
 
@@ -285,7 +285,7 @@ const MemberMethods = {
 						if(pledge.member && members.some(member => pledge.member === member)) {
 							try {
 								await OrganizationMethods.removePledge.callAsync({ orgId: org._id, pledgeId: pledge._id })
-							} catch(e) {
+							} catch (e) {
 								console.error(e)
 							}
 						}
@@ -459,14 +459,14 @@ const MemberMethods = {
 			// Delete associated MemberThemes
 			try {
 				await MemberThemes.removeAsync({ member: member._id })
-			} catch(err) {
+			} catch (err) {
 				console.error(err)
 			}
 
 			// Remove member
 			try {
 				return await Members.removeAsync(id)
-			} catch(err) {
+			} catch (err) {
 				console.error(err)
 				throw err
 			}

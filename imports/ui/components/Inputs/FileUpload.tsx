@@ -46,7 +46,7 @@ const FileUpload = ({ width, fileLocator, onStart, onProgress, onUploaded, onEnd
 					streams: "dynamic",
 					chunkSize: "dynamic",
 					allowWebWorkers: true,
-				}, false) as unknown as UploadInstance
+				}) as unknown as UploadInstance
 
 				setUploading(uploadInstance)
 				setInProgress(true)

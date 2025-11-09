@@ -4,9 +4,23 @@ import SimpleSchema from "simpl-schema"
 import SchemaRegex from "/imports/lib/schema"
 import { CollectionPermissions } from "./index"
 
-export const ChitVoteSchema = new SimpleSchema({
-	weight: Number,
-	count: Number,
+/**
+ * Aggregate chit vote summary for manual entry mode
+ * Used when physical wooden chits are weighed/counted and entered by admins
+ * weight: Total weight of chits in grams
+ * count: Direct count of chits (takes precedence over weight)
+ */
+export const OrgChitVoteSummarySchema = new SimpleSchema({
+	weight: {
+		type: Number,
+		optional: true,
+		defaultValue: 0,
+	},
+	count: {
+		type: Number,
+		optional: true,
+		defaultValue: 0,
+	},
 })
 
 export const MatchPledgeSchema = new SimpleSchema({
@@ -75,7 +89,7 @@ export const OrganizationSchema = new SimpleSchema({
 		required: false,
 	},
 	chitVotes: {
-		type: ChitVoteSchema,
+		type: OrgChitVoteSummarySchema,
 		required: false,
 		defaultValue: { weight: 0, count: 0 },
 		label: "Amount of chit votes from first voting round",
@@ -123,13 +137,13 @@ export const OrganizationSchema = new SimpleSchema({
 
 // Set permissions
 export const organizationsPermissions: CollectionPermissions = {
-	insert: (userId, doc) => {
+	insert: (_userId, _doc) => {
 		return true
 	},
-	update: (userId, doc) => {
+	update: (_userId, _doc) => {
 		return true
 	},
-	remove: (userId, doc) => {
+	remove: (_userId, _doc) => {
 		return true
 	},
 }

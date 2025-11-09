@@ -29,7 +29,7 @@ const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }: TopO
 	/**
 	 * Manually pins an organization as a "Top Org"
 	 */
-	const topOrgToggle = async (e, data) => {
+	const topOrgToggle = async () => {
 		await ThemeMethods.topOrgToggle.callAsync({
 			theme_id: themeId,
 			org_id: org._id,
@@ -55,7 +55,7 @@ const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }: TopO
 			</TableCell>
 
 			{ /* Votes */ }
-			<TableCell align="center">{ roundFloat(org.votes, 1) }</TableCell>
+			<TableCell align="center">{ roundFloat(String(org.votes), 1) }</TableCell>
 
 			{ /* Lock */ }
 			<TableCell padding="checkbox">
