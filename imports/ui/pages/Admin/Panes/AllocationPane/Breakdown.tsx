@@ -13,18 +13,17 @@ const Breakdown = observer(() => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	if(themeLoading || orgsLoading ) return <Loading />
+	if(themeLoading || orgsLoading || !theme) return <Loading />
 
-	const saves = theme.saves.reduce((sum, save) => {return sum + save.amount}, 0)
+	const saves = theme.saves?.reduce((sum, save) => {return sum + (save.amount || 0)}, 0) || 0
 	const topOff = topOrgs.reduce((sum, org) => { return sum + org.topOff }, 0)
 
 	// Values in order of appearance
-	const totalPot = theme.leverageTotal + saves
-	/* theme.consolationTotal */
-	const fundsAllocated = theme.votedFunds + saves + topOff
-	const leverage = theme.leverageTotal - theme.consolationTotal - theme.votedFunds - topOff
-	/* theme.pledgeTotal */
-	/* theme.leverageRemaining */
+	const totalPot = (theme.leverageTotal || 0) + saves
+	const votedFunds = Number(theme.votedFunds || 0)
+	const consolationTotal = Number(theme.consolationTotal || 0)
+	const fundsAllocated = votedFunds + saves + topOff
+	const leverage = (theme.leverageTotal || 0) - consolationTotal - votedFunds - topOff
 
 
 	return (

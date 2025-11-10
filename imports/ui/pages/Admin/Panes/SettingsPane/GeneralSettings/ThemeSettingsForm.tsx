@@ -28,6 +28,7 @@ const SettingsPane = observer(() => {
 	}
 
 	const onSubmit = async (data: Record<string, unknown>) => {
+		if(!theme) return
 		setFormStatus(STATUS.SUBMITTING)
 		try {
 			await ThemeMethods.update.callAsync({
@@ -35,7 +36,7 @@ const SettingsPane = observer(() => {
 				data: data,
 			})
 			setFormStatus(STATUS.SUCCESS)
-		} catch(err) {
+		} catch (err) {
 			setFormStatus(STATUS.READY)
 		}
 	}
@@ -91,7 +92,7 @@ const SettingsPane = observer(() => {
 
 				<Grid size={ { xs: 12, md: 6 } }>
 					<b>Total from member funds</b>
-					<div>{ formatters.currency.format(theme.memberFunds) }</div>
+					<div>{ formatters.currency.format(Number(theme.memberFunds || 0)) }</div>
 				</Grid>
 
 				<Grid size={ { xs: 12, md: 6 } }>

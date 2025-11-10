@@ -125,23 +125,27 @@ const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 
 				<Divider key={ `${member._id}-divider-4` } />,
 
-				<ActionMenuItem key={ `${member._id}-chit-reset` } onClick={ () => {
-					setModalHeader(`Permanently Delete ${member.fullName}'s Chit Votes?`)
-					setModalContent(`This will permanently delete the chit votes of ${member.fullName} for this theme. This operation cannot be undone.`)
-					setModalAction( () => resetMemberChitVotes(member.theme._id) )
-					setModalOpen(true)
-				} }>
-					Reset Chit Votes
-				</ActionMenuItem>,
+			<ActionMenuItem key={ `${member._id}-chit-reset` } onClick={ () => {
+				const themeId = member.theme?._id
+				if(!themeId) return
+				setModalHeader(`Permanently Delete ${member.fullName}'s Chit Votes?`)
+				setModalContent(`This will permanently delete the chit votes of ${member.fullName} for this theme. This operation cannot be undone.`)
+				setModalAction( () => resetMemberChitVotes(themeId) )
+				setModalOpen(true)
+			} }>
+				Reset Chit Votes
+			</ActionMenuItem>,
 
-				<ActionMenuItem key={ `${member._id}-funds-reset` } onClick={ () => {
-					setModalHeader(`Permanently Delete ${member.fullName}'s Votes?`)
-					setModalContent(`This will permanently delete the funds votes of ${member.fullName} for this theme. This operation cannot be undone.`)
-					setModalAction( () => resetMemberFundsVotes(member.theme._id) )
-					setModalOpen(true)
-				} }>
-					Reset Funds Votes
-				</ActionMenuItem>,
+			<ActionMenuItem key={ `${member._id}-funds-reset` } onClick={ () => {
+				const themeId = member.theme?._id
+				if(!themeId) return
+				setModalHeader(`Permanently Delete ${member.fullName}'s Votes?`)
+				setModalContent(`This will permanently delete the funds votes of ${member.fullName} for this theme. This operation cannot be undone.`)
+				setModalAction( () => resetMemberFundsVotes(themeId) )
+				setModalOpen(true)
+			} }>
+				Reset Funds Votes
+			</ActionMenuItem>,
 
 			]) } />
 
@@ -150,7 +154,7 @@ const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 				handleClose={ () => setModalOpen(false) }
 				header={ modalHeader }
 				content={ modalContent }
-				confirmAction={ modalAction }
+				confirmAction={ modalAction || (() => {}) }
 			/>
 		</>
 	)

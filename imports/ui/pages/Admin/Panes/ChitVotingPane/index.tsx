@@ -8,7 +8,7 @@ import {
 import { observer } from "mobx-react-lite"
 import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
 import { ThemeMethods } from "/imports/api/methods"
-
+import React from "react"
 
 import ManualInputTable from "./ManualInputTable"
 import RankedOrgsTable from "./RankedOrgsTable"
@@ -24,6 +24,7 @@ const ChitVotingPane = observer(({ hideAdminFields }: ChitVotingPaneProps) => {
 	const { isLoading: orgsLoading } = useOrgs()
 	const { theme } = useTheme()
 
+	if(orgsLoading || settingsLoading || !theme) return <Loading />
 
 	const updateNumTopOrgs = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newValue = parseInt(e.target.value, 10)
@@ -36,8 +37,6 @@ const ChitVotingPane = observer(({ hideAdminFields }: ChitVotingPaneProps) => {
 			})
 		}
 	}
-
-	if(orgsLoading || settingsLoading) return <Loading />
 
 	return (
 		<Grid container spacing={ 2 }>

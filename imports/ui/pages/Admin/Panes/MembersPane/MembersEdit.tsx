@@ -11,6 +11,7 @@ import { useMembers } from "/imports/api/providers"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberSchema, MemberThemeSchema } from "/imports/api/db"
 import { roundFloat } from "/imports/lib/utils"
+import { type MemberTheme } from "/imports/types/schema"
 
 import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 
@@ -66,6 +67,9 @@ const MembersEdit = () => {
 	const editUser = async (data: Record<string, unknown>) => {
 		const memberStore = members?.values.find(member => member._id === memberId)
 		if(!memberStore) return
+		
+		const memberTheme = memberStore.theme as MemberTheme
+		if(!memberTheme?._id) return
 
 		try {
 			await MemberMethods.update.callAsync({ id: memberStore._id, data: {
@@ -76,7 +80,7 @@ const MembersEdit = () => {
 				phone: String(data.phone || ""),
 				email: String(data.email || ""),
 			} })
-			await MemberMethods.updateTheme.callAsync({ id: memberStore.theme._id, data: {
+			await MemberMethods.updateTheme.callAsync({ id: memberTheme._id, data: {
 				amount: Number(data.amount || 0),
 				chits: Number(data.chits || 0),
 			} })
@@ -111,7 +115,7 @@ const MembersEdit = () => {
 	if(membersLoading) return <Loading />
 
 	const memberStore = members?.values.find(member => member._id === memberId)
-	const memberTheme = memberStore?.theme
+	const memberTheme = memberStore?.theme as MemberTheme | undefined
 	const member = {
 		theme: id,
 		firstName: memberStore?.firstName || "",

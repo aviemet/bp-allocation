@@ -1,5 +1,5 @@
 import Container from "@mui/material/Container"
-import { useParams, useLocation } from "@tanstack/react-router"
+import { useLocation } from "@tanstack/react-router"
 
 import {
 	OrganizationsPane,
@@ -21,7 +21,6 @@ import {
 
 const Admin = () => {
 	const location = useLocation()
-	const params = useParams({ strict: false })
 
 	// Extract the path segments to determine which component to render
 	const pathSegments = location.pathname.split("/").filter(Boolean)

@@ -4,7 +4,7 @@ import { expect } from "chai"
 import { formatPhoneNumber } from "/imports/lib/utils"
 
 import { ThemeMethods, MemberMethods, OrganizationMethods } from "/imports/api/methods"
-import { Themes, Members, MemberThemes, ThemeData } from "/imports/api/db"
+import { Themes, Members, MemberThemes } from "/imports/api/db"
 import { Organizations } from "/imports/api/db"
 
 const NUM_TEST_RECORDS = 5

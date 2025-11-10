@@ -27,7 +27,7 @@ accounts-google@1.4.1
 react-meteor-data
 reywood:publish-composite
 email@3.1.2
-hot-module-replacement@0.5.4
+hot-module-replacement
 ostrio:files
 aldeed:collection2
 nachocodoner:reactive-publish

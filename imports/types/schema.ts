@@ -17,14 +17,12 @@ export interface Member {
 }
 
 export interface OrgSave {
-	_id: string
 	org?: string
 	amount?: number
 	name?: string
 }
 
 export interface MessageStatus {
-	_id: string
 	messageId?: string
 	sending?: boolean
 	sent?: boolean
@@ -81,7 +79,6 @@ export interface Organization {
 }
 
 export interface Allocation {
-	_id: string
 	organization?: string
 	amount?: number
 	voteSource?: "kiosk" | "mobile"
@@ -89,7 +86,6 @@ export interface Allocation {
 }
 
 export interface ChitVote {
-	_id: string
 	organization?: string
 	votes?: number
 	voteSource?: "kiosk" | "mobile"
@@ -108,7 +104,6 @@ export interface MemberTheme {
 }
 
 export interface Rounds {
-	_id: string
 	one?: boolean
 	two?: boolean
 }

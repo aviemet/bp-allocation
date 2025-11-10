@@ -1,7 +1,5 @@
 import {
-	Box,
 	Button,
-	Grid,
 	Paper,
 	Stack,
 	Typography,
@@ -26,10 +24,12 @@ const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
 	const { theme } = useTheme()
 	const { topOrgs } = useOrgs()
 
+	if(!theme) return null
+
 	const leverage = new LeverageObject(topOrgs, Number(theme.leverageRemaining))
 	const rounds = leverage.getLeverageSpreadRounds()
 
-	const saveLeverageSpread = async (lastRound: { orgs: Array<{ _id: string; leverageFunds: number }> }) => {
+	const saveLeverageSpread = async (lastRound: { orgs: Array<{ _id: string, leverageFunds?: number }> }) => {
 		await ThemeMethods.saveLeverageSpread.callAsync(lastRound.orgs)
 	}
 
@@ -48,8 +48,8 @@ const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
 		)
 	}
 
-	const orgSpreadSum = topOrgs.reduce((sum, org) => { return sum + org.leverageFunds }, 0)
-	const roundSpreadSum = rounds[rounds.length - 1].orgs.reduce((sum, org) => { return sum + org.leverageFunds }, 0)
+	const orgSpreadSum = topOrgs.reduce((sum, org) => { return sum + (org.leverageFunds || 0) }, 0)
+	const roundSpreadSum = rounds[rounds.length - 1].orgs.reduce((sum, org) => { return sum + (org.leverageFunds || 0) }, 0)
 
 	// console.log({ orgSpreadSum, roundSpreadSum })
 
@@ -102,7 +102,7 @@ const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
 	)
 })
 
-const StageCard = styled(Paper)(({ theme }) => ({
+const StageCard = styled(Paper)(() => ({
 	padding: 16,
 	marginBottom: 16,
 }))

@@ -9,7 +9,7 @@ import { useData, useSettings, useOrgs } from "/imports/api/providers"
 import { OrgCardContainer } from "/imports/ui/components/Cards"
 import Countown from "../Countdown"
 import VotingComplete from "../VotingComplete"
-import { FundsVoteContext } from "../VotingContext"
+import { useVoting } from "../VotingContext"
 import { COLORS } from "/imports/lib/global"
 import ChitVoteOrgCard from "./ChitVoteOrgCard"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
@@ -23,6 +23,7 @@ const ChitVotingKiosk = observer((props: ChitVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { orgs } = useOrgs()
+	const { chits, saveChits, member } = useVoting()
 
 	// const voted = props.user.theme.chitVotes.some(org => org.votes > 0)
 
@@ -39,16 +40,23 @@ const ChitVotingKiosk = observer((props: ChitVotingKioskProps) => {
 
 	useEffect(() => {
 		// Display countdown if user is on voting screen when voting becomes disabled
-		if(!settings.chitVotingActive) displayCountDown()
-	}, [settings.chitVotingActive])
+		if(settings && !settings.chitVotingActive) displayCountDown()
+	}, [settings?.chitVotingActive])
 
 	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName
 
 	const shuffledOrgs = useMemo(() => {
+		if(!orgs) return []
+
 		return shuffle(orgs.values.map(org => {
 			return <ChitVoteOrgCard key={ org._id } org={ org } />
 		}))
-	}, [])
+	}, [orgs])
+
+	let chitsSum = 0
+	forEach(chits, value => chitsSum += value)
+	const remaining = (member.theme?.chits || 0) - chitsSum
+	const buttonDisabled = remaining !== 0
 
 	if(votingComplete) {
 		return <VotingComplete setVotingComplete={ setVotingComplete } />
@@ -65,7 +73,6 @@ const ChitVotingKiosk = observer((props: ChitVotingKioskProps) => {
 
 			<Container maxWidth="xl" sx={ { height: "100%" } }>
 				<OrgCardContainer
-					centered
 					cols={ 2 }
 					sx={ { paddingBottom: "clamp(0rem, -58.1818rem + 90.9091vh, 10rem)" } }
 				>
@@ -73,29 +80,19 @@ const ChitVotingKiosk = observer((props: ChitVotingKioskProps) => {
 				</OrgCardContainer>
 			</Container>
 
-			<FundsVoteContext.Consumer>{ ({ chits, saveChits, member }) => {
-				let sum = 0
-				forEach(chits, value => sum += value)
-				const remaining = member.theme.chits - sum
-				const buttonDisabled = remaining !== 0
+			<>
+				<h2>ROUND 1 VOTES LEFT: <NumberFormat>{ remaining }</NumberFormat></h2>
 
-				return (
-					<>
-						<h2>ROUND 1 VOTES LEFT: <NumberFormat>{ remaining }</NumberFormat></h2>
-
-						<FinalizeButton
-							size="huge"
-							disabled={ buttonDisabled }
-							onClick={ () => {
-								saveChits(props.source)
-								setVotingComplete(true)
-							} }
-						>
-							Finalize Vote
-						</FinalizeButton>
-					</>
-				)
-			} }</FundsVoteContext.Consumer>
+				<FinalizeButton
+					disabled={ buttonDisabled }
+					onClick={ () => {
+						saveChits(props.source)
+						setVotingComplete(true)
+					} }
+				>
+					Finalize Vote
+				</FinalizeButton>
+			</>
 		</OrgsContainer>
 	)
 })
@@ -114,19 +111,19 @@ const OrgsContainer = styled.div`
 	}
 `
 
-const FinalizeButton = styled(Button)(({ theme }) => ({
+const FinalizeButton = styled(Button)({
 	width: "100%",
-	textAlign: "center",
+	textAlign: "center" as const,
 	color: "white",
 	border: "2px solid #fff",
 	fontSize: "2rem",
-	textTransform: "uppercase",
+	textTransform: "uppercase" as const,
 	backgroundColor: COLORS.blue,
 
 	"&.Mui-disabled": {
 		backgroundColor: COLORS.blue,
 	},
-}))
+})
 
 const NumberFormat = styled.span`
 	display: inline-block;

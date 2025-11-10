@@ -30,7 +30,7 @@ const panes = [
 
 const Settings = () => {
 	// Get params safely - only if we're on a route with an ID and activeTab
-	let params = {}
+	let params: { id?: string; activeTab?: string } = {}
 	try {
 		params = useParams({ from: "/admin/$id/settings/$activeTab" })
 	} catch(error) {

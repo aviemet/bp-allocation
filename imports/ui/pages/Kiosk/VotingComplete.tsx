@@ -23,11 +23,9 @@ const VotingComplete = ({ setVotingComplete }: VotingCompleteProps) => {
 	useEffect(() => {
 		data.setVotingRedirectTimeout(0)
 
-		if(unsetUser) {
-			setTimeout(() => {
-				unsetUser()
-			}, 3000)
-		}
+		setTimeout(() => {
+			unsetUser()
+		}, 3000)
 
 		return () => data.resetVotingRedirectTimeout()
 	}, [data, unsetUser])
@@ -39,9 +37,9 @@ const VotingComplete = ({ setVotingComplete }: VotingCompleteProps) => {
 
 	const getRoundNumberFeedback = () => {
 		const roundStr = " in Round"
-		if(settings.chitVotingActive) {
+		if(settings && settings.chitVotingActive) {
 			return `${roundStr} 1`
-		} else if(settings.fundsVotingActive) {
+		} else if(settings && settings.fundsVotingActive) {
 			return `${roundStr} 2`
 		}
 		return false
@@ -54,13 +52,12 @@ const VotingComplete = ({ setVotingComplete }: VotingCompleteProps) => {
 			</Box>
 			<Box><p>Results will be available shortly</p></Box>
 			<Box>
-				<AmendVoteButton
-					size="huge"
-					disabled={ false }
-					onClick={ showVotingPageAgain }
-				>
-					Amend Vote
-				</AmendVoteButton>
+			<AmendVoteButton
+				disabled={ false }
+				onClick={ showVotingPageAgain }
+			>
+				Amend Vote
+			</AmendVoteButton>
 			</Box>
 		</VotingCompleteContainer>
 	)
@@ -84,7 +81,7 @@ const VotingCompleteContainer = styled.div`
 		line-height: 6rem;
 		color: white;
 		
-		@media screen and (min-width: 351px) and (max-width: ${({ theme }) => theme.screen.tablet}px) {
+		@media screen and (min-width: 351px) and (max-width: 768px) {
 			font-size: 4rem !important;
 			line-height: 4.5rem;
 		}

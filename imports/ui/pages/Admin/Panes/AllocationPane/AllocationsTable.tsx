@@ -14,7 +14,6 @@ import numeral from "numeral"
 import AllocationInputs from "./AllocationInputs"
 import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
 import { Loading } from "/imports/ui/components"
-import { type OrganizationWithComputed } from "/imports/api/stores"
 
 interface AllocationsTableProps {
 	hideAdminFields?: boolean

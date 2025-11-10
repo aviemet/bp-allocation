@@ -55,7 +55,7 @@ const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }: TopO
 			</TableCell>
 
 			{ /* Votes */ }
-			<TableCell align="center">{ roundFloat(String(org.votes), 1) }</TableCell>
+			<TableCell align="center">{ roundFloat(org.votes, 1) }</TableCell>
 
 			{ /* Lock */ }
 			<TableCell padding="checkbox">

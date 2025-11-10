@@ -30,10 +30,10 @@ const RoundTable = ({ orgs }: RoundTableProps) => {
 	}
 
 	orgs.map(org => {
-		totals.percent += org.percent
-		totals.funds += org.roundFunds
-		totals.total += org.allocatedFunds + org.leverageFunds
-		totals.needed += org.need
+		totals.percent += org.percent || 0
+		totals.funds += org.roundFunds || 0
+		totals.total += (org.allocatedFunds || 0) + (org.leverageFunds || 0)
+		totals.needed += org.need || 0
 	})
 
 	return (
@@ -49,18 +49,18 @@ const RoundTable = ({ orgs }: RoundTableProps) => {
 			</TableHead>
 
 			<TableBody>
-				{ orgs.map(org => (
-					<TableRow
-						key={ org._id }
-						className={ org.need === 0 && org.roundFunds > 0 ? "fully-funded" : "" }
-					>
-						<TableCell>{ org.title }</TableCell>
-						<TableCell>{ org.roundFunds === 0 ? "-" : numeral(org.roundFunds).format("$0,0.00") }</TableCell>
-						<TableCell>{ org.percent === 0 ? "-" : numeral(org.percent).format("0.0000%") }</TableCell>
-						<TableCell>{ numeral(org.allocatedFunds + org.leverageFunds).format("$0,0.00") }</TableCell>
-						<TableCell>{ org.need === 0 ? <CheckIcon color="success" /> : numeral(org.need).format("$0,0.00") }</TableCell>
-					</TableRow>
-				)) }
+		{ orgs.map(org => (
+			<TableRow
+				key={ org._id }
+				className={ (org.need || 0) === 0 && (org.roundFunds || 0) > 0 ? "fully-funded" : "" }
+			>
+				<TableCell>{ org.title }</TableCell>
+				<TableCell>{ (org.roundFunds || 0) === 0 ? "-" : numeral(org.roundFunds || 0).format("$0,0.00") }</TableCell>
+				<TableCell>{ (org.percent || 0) === 0 ? "-" : numeral(org.percent || 0).format("0.0000%") }</TableCell>
+				<TableCell>{ numeral((org.allocatedFunds || 0) + (org.leverageFunds || 0)).format("$0,0.00") }</TableCell>
+				<TableCell>{ (org.need || 0) === 0 ? <CheckIcon color="success" /> : numeral(org.need || 0).format("$0,0.00") }</TableCell>
+			</TableRow>
+		)) }
 			</TableBody>
 
 			<TableFooter>

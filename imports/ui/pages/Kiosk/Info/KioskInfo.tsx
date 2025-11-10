@@ -1,13 +1,4 @@
-import styled from "@emotion/styled"
 import {
-	Box,
-	Button,
-	Container,
-	Grid,
-	InputAdornment,
-	Stack,
-	Switch,
-	OutlinedInput,
 	Typography,
 } from "@mui/material"
 import { observer } from "mobx-react-lite"
@@ -28,9 +19,9 @@ const KioskInfo = observer(() => {
 
 	useEffect(() => {
 		let n = itemsPerRow
-		if(width < breakpoints.tablet) {
+		if(width && width < breakpoints.tablet) {
 			n = 1
-		} else if(width >= breakpoints.tablet && width < breakpoints.tabletL) {
+		} else if(width && width >= breakpoints.tablet && width < breakpoints.tabletL) {
 			n = 2
 		} else {
 			n = 3
@@ -38,6 +29,8 @@ const KioskInfo = observer(() => {
 
 		if(itemsPerRow !== n) setItemsPerRow(n)
 	}, [width])
+
+	if(orgsLoading || !theme || !orgs) return <Loading />
 
 	const title = theme.chitVotingStarted ?
 		`TOP ${theme.numTopOrgs} ORGANIZATIONS` :
@@ -53,8 +46,6 @@ const KioskInfo = observer(() => {
 	}
 
 	const orgsToDisplay = theme.chitVotingStarted ? topOrgs : orgs.values
-
-	if(orgsLoading) return <Loading />
 	return (
 		<>
 			<Typography component="h1" variant="h3" align="center">{ title }</Typography>

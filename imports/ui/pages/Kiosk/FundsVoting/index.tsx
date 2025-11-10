@@ -7,9 +7,9 @@ import React, { useState, useEffect } from "react"
 
 import { useData, useSettings, useOrgs } from "/imports/api/providers"
 import VotingComplete from "../VotingComplete"
-import { FundsVoteContext } from "../VotingContext"
+import { useVoting } from "../VotingContext"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
-import FundsSlider from "./FundsSlider"
+import VotingCardContent from "./VotingCardContent"
 import Countdown from "../Countdown"
 
 import { COLORS } from "/imports/lib/global"
@@ -27,9 +27,6 @@ const AmountRemaining = React.memo(({ value }: AmountRemainingProps) => {
 	)
 })
 
-// TODO: Elements are too wide for screen at xl screen width
-AmountRemaining.displayName = "AmountRemaining" // To slience eslint
-
 interface FundsVotingKioskProps {
 	user: MemberWithTheme
 	source: string
@@ -39,8 +36,9 @@ const FundsVotingKiosk = observer((props: FundsVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
+	const { allocations, saveAllocations, member } = useVoting()
 
-	const voted = props.user.theme.allocations.some(org => org.amount > 0)
+	const voted = props.user.theme?.allocations?.some(org => (org.amount || 0) > 0) || false
 
 	const [ votingComplete, setVotingComplete ] = useState(voted)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
@@ -53,10 +51,15 @@ const FundsVotingKiosk = observer((props: FundsVotingKioskProps) => {
 
 	useEffect(() => {
 		// Display countdown if user is on voting screen when voting becomes disabled
-		if(!settings.fundsVotingActive) displayCountDown()
-	}, [settings.fundsVotingActive])
+		if(settings && !settings.fundsVotingActive) displayCountDown()
+	}, [settings?.fundsVotingActive])
 
 	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName
+
+	let allocationsSum = 0
+	forEach(allocations, value => allocationsSum += value)
+	const remaining = (member.theme?.amount || 0) - allocationsSum
+	const buttonDisabled = remaining !== 0
 
 	if(votingComplete) {
 		return <VotingComplete setVotingComplete={ setVotingComplete } />
@@ -76,33 +79,21 @@ const FundsVotingKiosk = observer((props: FundsVotingKioskProps) => {
 							showAsk={ false }
 							size="small"
 							info={ true }
-							content={ () => <FundsSlider org={ org } /> }
+							content={ () => <VotingCardContent org={ org } /> }
 						/>
 					)
 				}) }
 			</OrgCardContainer>
 
-			<FundsVoteContext.Consumer>
-				{ ({ allocations, saveAllocations, member }) => {
-					let sum = 0
-					forEach(allocations, value => sum += value)
-					const remaining = member.theme.amount - sum
-					const buttonDisabled = remaining !== 0
-
-					return (
-						<>
-							<AmountRemaining value={ remaining } />
-							<FinalizeButton
-								size="huge"
-								disabled={ buttonDisabled }
-								onClick={ () => {
-									saveAllocations(props.source)
-									setVotingComplete(true)
-								} }>Finalize Vote</FinalizeButton>
-						</>
-					)
-				} }
-			</FundsVoteContext.Consumer>
+			<>
+				<AmountRemaining value={ remaining } />
+				<FinalizeButton
+					disabled={ buttonDisabled }
+					onClick={ () => {
+						saveAllocations(props.source)
+						setVotingComplete(true)
+					} }>Finalize Vote</FinalizeButton>
+			</>
 		</OrgsContainer>
 	)
 })
@@ -117,19 +108,19 @@ const OrgsContainer = styled(Container)`
 	}
 `
 
-const FinalizeButton = styled(Button)(({ theme }) => ({
+const FinalizeButton = styled(Button)({
 	width: "100%",
-	textAlign: "center",
+	textAlign: "center" as const,
 	color: "white",
 	border: "2px solid #fff",
 	fontSize: "2rem",
-	textTransform: "uppercase",
+	textTransform: "uppercase" as const,
 	backgroundColor: COLORS.blue,
 
 	"&.Mui-disabled": {
 		backgroundColor: COLORS.blue,
 	},
-}))
+})
 
 const NumberFormat = styled.span`
 	width: 12rem;

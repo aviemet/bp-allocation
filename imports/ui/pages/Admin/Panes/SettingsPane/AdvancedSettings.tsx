@@ -34,6 +34,7 @@ const SettingsPane = observer(() => {
 	}
 
 	const onSubmit = async (data: Record<string, unknown>) => {
+		if (!settings) return
 		setFormStatus(STATUS.SUBMITTING)
 		try {
 			await PresentationSettingsMethods.update.callAsync({
@@ -46,7 +47,7 @@ const SettingsPane = observer(() => {
 		}
 	}
 
-	if(settingsLoading) return (<Loading />)
+	if(settingsLoading || !settings) return (<Loading />)
 	return (
 		<>
 			<Form

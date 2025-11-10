@@ -2,75 +2,32 @@ import {
 	Button,
 	Grid,
 	Stack,
-	TextField,
 } from "@mui/material"
 import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
-import { Controller, useFormContext } from "react-hook-form"
 
-import { Form, TextInput, SubmitButton, STATUS } from "/imports/ui/components/Form"
+import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import ContentModal from "/imports/ui/components/Dialogs/ContentModal"
 import { ThemeMethods } from "/imports/api/methods"
 import { ThemeSchema } from "/imports/api/db"
-
-const ThemeInputs = () => {
-	const { control, formState: { errors } } = useFormContext()
-
-	return (
-		<Grid container spacing={ 2 }>
-			<Grid size={ { xs: 12 } }>
-				<Controller
-					name="title"
-					control={ control }
-					render={ ({ field }) => (
-						<TextField
-							{ ...field }
-							label="Theme Title"
-							fullWidth
-							error={ !!errors.title }
-							helperText={ errors.title && errors.title.message }
-						/>
-					) }
-				/>
-			</Grid>
-
-			<Grid size={ { xs: 12 } }>
-				<Controller
-					name="question"
-					control={ control }
-					render={ ({ field }) => (
-						<TextField
-							{ ...field }
-							label="Theme Question"
-							fullWidth
-							error={ !!errors.question }
-							helperText={ errors.question && errors.question.message }
-						/>
-					) }
-				/>
-			</Grid>
-
-			<Grid size={ { xs: 12 } }>
-				<Button type="submit">Submit</Button>
-			</Grid>
-		</Grid>
-	)
-}
 
 const NewThemeModal = () => {
 	const navigate = useNavigate()
 
 	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
-	const onSubmit = async data => {
+	const onSubmit = async (data: Record<string, unknown>) => {
 		setFormStatus(STATUS.SUBMITTING)
 		try {
-			const res = await ThemeMethods.create.callAsync(data)
+			const res = await ThemeMethods.create.callAsync({
+				title: String(data.title || ""),
+				question: String(data.question || ""),
+			})
 			setFormStatus(STATUS.SUCCESS)
 			setIsModalOpen(false)
 			navigate({ to: `/admin/${res}` })
-		} catch(err) {
+		} catch (err) {
 			setFormStatus(STATUS.ERROR)
 			console.error(err)
 		}

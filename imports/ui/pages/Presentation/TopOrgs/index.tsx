@@ -14,14 +14,14 @@ const TopOrgs = observer(() => {
 		<TopOrgsContainer maxWidth="xl">
 			<PageTitle>Top { topOrgs.length } Organizations</PageTitle>
 			<Container maxWidth="lg" sx={ { height: "100%", paddingBottom: "2rem" } }>
-				<OrgCardContainer centered cols={ 3 } sx={ { height: "80%" } }>
+				<OrgCardContainer cols={ 3 } sx={ { height: "80%" } }>
 					{ topOrgs.map((org) => (
 						<OrgCard
 							key={ org._id }
 							org={ org }
-							animateClass={ settings.animateOrgs }
+							animateClass={ settings?.animateOrgs || false }
 							size="big"
-							showAsk={ settings.showAskOnOrgCards }
+							showAsk={ settings?.showAskOnOrgCards || false }
 						/>
 					)) }
 				</OrgCardContainer>

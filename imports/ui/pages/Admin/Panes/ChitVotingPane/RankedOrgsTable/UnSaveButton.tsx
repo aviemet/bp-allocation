@@ -1,8 +1,6 @@
 import {
 	Button,
 	Chip,
-	InputAdornment,
-	TextField,
 } from "@mui/material"
 import _ from "lodash"
 import { observer } from "mobx-react-lite"
@@ -23,6 +21,8 @@ const UnSaveButton = observer(({ org }: UnSaveButtonProps) => {
 
 	const { theme } = useTheme()
 
+	if(!theme) return null
+
 	const unSaveOrg = async () => {
 		await ThemeMethods.unSaveOrg.callAsync({
 			theme_id: theme._id,
@@ -33,9 +33,11 @@ const UnSaveButton = observer(({ org }: UnSaveButtonProps) => {
 
 	const save = _.find(theme.saves, ["org", org._id])
 
+	if(!save) return null
+
 	return (
 		<>
-			<Chip label={ `Saved for ${numeral(save.amount).format("$0,0")}` } />
+			<Chip label={ `Saved for ${numeral(save.amount || 0).format("$0,0")}` } />
 			<Button onClick={ () => setModalOpen(true) }>Un-Save</Button>
 			<ContentModal
 				title={ `Un-Saving ${org.title}` }

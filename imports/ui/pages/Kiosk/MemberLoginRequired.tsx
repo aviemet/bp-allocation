@@ -6,14 +6,15 @@ import { useMembers } from "/imports/api/providers"
 import { Loading } from "/imports/ui/components"
 import { ComponentType } from "react"
 import { useState } from "react"
-import { Form, TextInput, SubmitButton, STATUS } from "/imports/ui/components/Form"
+import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
+import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
-import { VotingContextProvider } from "./VotingContext"
+import { FundsVoteProvider } from "./VotingContext"
 
 import { COLORS } from "/imports/lib/global"
 
 interface MemberLoginRequiredProps {
-	component?: ComponentType<{ user: unknown }>
+	component?: ComponentType<{ user: MemberWithTheme, source: string }>
 	member?: string
 }
 
@@ -21,15 +22,15 @@ const MemberLoginRequired = observer((props: MemberLoginRequiredProps) => {
 	// Pull member data from Data Store
 	const { members, isLoading: membersLoading } = useMembers()
 
-	const [formStatus, setFormStatus] = useState(STATUS.DISABLED)
+	const [formStatus, setFormStatus] = useState<Status>(STATUS.DISABLED)
 
 	const [ searchError, setSearchError ] = useState(false)
 
-	let member = false
+	let member: MemberWithTheme | undefined = undefined
 	if(!membersLoading && !isEmpty(members) && !isEmpty(members.values)) {
 		member = members.values.find(mem => mem._id === props.member)
 	}
-	const [user, setUser] = useState(member || false)
+	const [user, setUser] = useState<MemberWithTheme | false>(member || false)
 
 	if(membersLoading || isEmpty(members)) return <Loading />
 
@@ -40,9 +41,9 @@ const MemberLoginRequired = observer((props: MemberLoginRequiredProps) => {
 		}, 5000)
 	}
 
-	const chooseMember = data => {
+	const chooseMember = (data: Record<string, unknown>) => {
 		setSearchError(false)
-		const code = `${data.initials.trim().toUpperCase()}${data.number}`
+		const code = `${String(data.initials || "").trim().toUpperCase()}${data.number}`
 
 		const member = members.values.find(mem => mem.code === code)
 
@@ -53,7 +54,7 @@ const MemberLoginRequired = observer((props: MemberLoginRequiredProps) => {
 		}
 	}
 
-	const handleUpdate = form => {
+	const handleUpdate = (form: { getValues: () => Record<string, unknown> }) => {
 		const data = form.getValues()
 		if(data.initials !== "" && data.number !== "" ) {
 			setFormStatus(STATUS.READY)
@@ -62,14 +63,13 @@ const MemberLoginRequired = observer((props: MemberLoginRequiredProps) => {
 		}
 	}
 
-	const ChildComponent = props.component
-
 	// Member is chosen, display the voting panel
-	if(user) {
+	if(user && props.component) {
+		const ChildComponent = props.component
 		return (
-			<VotingContextProvider member={ user } unsetUser={ () => setUser(false) }>
-				<ChildComponent user={ user } />
-			</VotingContextProvider>
+			<FundsVoteProvider member={ user } unsetUser={ () => setUser(false) }>
+				<ChildComponent user={ user } source="kiosk" />
+			</FundsVoteProvider>
 		)
 	}
 
@@ -112,7 +112,6 @@ const MemberLoginRequired = observer((props: MemberLoginRequiredProps) => {
 								type="submit"
 								status={ formStatus }
 								setStatus={ setFormStatus }
-								icon={ false }
 							>
 								Begin Voting!
 							</StyledSubmitButton>
@@ -129,19 +128,19 @@ const MemberLoginRequired = observer((props: MemberLoginRequiredProps) => {
 	)
 })
 
-const StyledSubmitButton = styled(SubmitButton)(({ theme }) => ({
-	width: "100%",
-	textAlign: "center",
-	color: "white",
-	border: "2px solid #fff",
-	fontSize: "2rem",
-	textTransform: "uppercase",
-	backgroundColor: COLORS.blue,
+const StyledSubmitButton = styled(SubmitButton)`
+	width: 100%;
+	text-align: center;
+	color: #fff;
+	border: 2px solid #fff;
+	font-size: 2rem;
+	text-transform: uppercase;
+	background-color: ${COLORS.blue};
 
-	"&.Mui-disabled": {
-		backgroundColor: COLORS.blue,
-	},
-}))
+	&.Mui-disabled {
+		background-color: ${COLORS.blue};
+	}
+`
 
 const BackgroundImage = styled.div`
 	position: absolute;

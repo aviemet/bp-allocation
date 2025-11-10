@@ -6,13 +6,13 @@ import React from "react"
 import { useData } from "./DataProvider"
 import { useTheme } from "./ThemeProvider"
 import { Organizations, type OrgData } from "/imports/api/db"
-import { OrgsCollection, OrgStore, type OrganizationWithComputed } from "/imports/api/stores"
+import { OrgsCollection, OrgStore } from "/imports/api/stores"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
 import { createContext } from "/imports/lib/hooks/createContext"
 
 interface OrgsContextValue {
 	orgs?: OrgsCollection
-	topOrgs: OrganizationWithComputed[]
+	topOrgs: OrgStore[]
 	isLoading: boolean
 }
 
@@ -60,9 +60,6 @@ const OrgsProvider = observer(({ children }: OrgsProviderProps) => {
 			const cursor = Organizations.find({ theme: themeId })
 			orgsCollection = new OrgsCollection(cursor.fetch(), theme, OrgStore)
 
-			if(cursorObserver) {
-				cursorObserver.stop()
-			}
 			cursorObserver = cursor.observe({
 				added: (orgs: OrgData) => orgsCollection?.refreshData(orgs),
 				changed: (orgs: OrgData) => orgsCollection?.refreshData(orgs),

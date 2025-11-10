@@ -10,7 +10,7 @@ import Kiosk from "../pages/Kiosk"
 const KioskRoute = observer(() => {
 	const { id } = useParams({ from: "/kiosk/$id" })
 	const data = useData()
-	const { theme, isLoading: themeLoading } = useTheme()
+	const { isLoading: themeLoading } = useTheme()
 	const { isLoading: orgsLoading } = useOrgs()
 	const { isLoading: settingsLoading } = useSettings()
 

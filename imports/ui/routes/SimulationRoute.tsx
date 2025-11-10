@@ -10,7 +10,7 @@ import Simulation from "../pages/Admin/Simulation"
 const SimulationRoute = observer(() => {
 	const { id } = useParams({ from: "/simulation/$id" })
 	const data = useData()
-	const { theme, isLoading: themeLoading } = useTheme()
+	const { isLoading: themeLoading } = useTheme()
 	const { isLoading: orgsLoading } = useOrgs()
 	const { isLoading: settingsLoading } = useSettings()
 

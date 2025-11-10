@@ -5,7 +5,6 @@ import {
 } from "@mui/material"
 import { Link } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
-import { useState, useEffect } from "react"
 import { Loading } from "/imports/ui/components"
 
 import AllocationsTable from "./AllocationsTable"
@@ -22,7 +21,7 @@ const AllocationPane = observer(({ hideAdminFields = false }: AllocationPaneProp
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	if(themeLoading || orgsLoading) return <Loading />
+	if(themeLoading || orgsLoading || !theme) return <Loading />
 
 	return (
 		<Grid container spacing={ 2 }>

@@ -30,11 +30,10 @@ const VotingComplete = ({ data, resetData }: VotingCompleteProps) => {
 			<Typography component="h1" variant="h4" align="center">Thank You For Your Pledge!</Typography>
 			<p>Your generous donation to <b><u>{ data.org.title }</u></b> of <b>{ formatted.amount }</b> was matched by the remaining leverage bringing them <b>{ formatted.total }</b> closer to being fully funded.</p>
 
-			<AmendVoteButton
-				size="huge"
-				disabled={ false }
-				onClick={ resetData }
-			>Pledge Again</AmendVoteButton>
+		<AmendVoteButton
+			disabled={ false }
+			onClick={ resetData }
+		>Pledge Again</AmendVoteButton>
 		</TopupCompleteContainer>
 	)
 }

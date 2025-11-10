@@ -10,10 +10,10 @@ import {
 	Typography,
 	type BoxProps,
 } from "@mui/material"
+import clsx from "clsx"
 import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import { useState, type ReactElement, type ReactNode } from "react"
-
 import { type OrgData } from "/imports/api/db"
 
 const GREEN = "#0D8744"
@@ -43,7 +43,7 @@ const OrgCard = observer(({
 	content,
 	index,
 	size,
-	showAsk,
+	showAsk = false,
 	animateClass,
 	info,
 	color = "green",
@@ -61,7 +61,7 @@ const OrgCard = observer(({
 
 	return (
 		<StyledCard
-			className={ cardClasses.join(" ") }
+			className={ clsx(["orgCard", color, size, { "animate-orgs": animateClass, disabled }]) }
 			onClick={ onClick }
 			{ ...props }
 		>
@@ -87,7 +87,6 @@ const OrgCard = observer(({
 			<CardContent
 				style={ content === undefined ? { height: "100%" } : {} }
 			>
-
 				{ content && (typeof content === "function" ? content() : content) }
 
 				<OrgTitle>
@@ -148,7 +147,7 @@ const OrgTitle = styled.div`
 	h3 {
 		font-family: TradeGothic20;
 		font-size: clamp(1.75rem, -3rem + 3vw + 4.5vh, 3rem);
-		// line-height: clamp(1.75rem, -3rem + 3vw + 4.5vh, 3rem);
+		line-height: clamp(1.75rem, -3rem + 3vw + 4.5vh, 3rem);
 		font-weight: 700;
 		letter-spacing: -1px;
 	}

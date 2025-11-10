@@ -1,11 +1,11 @@
 import styled from "@emotion/styled"
 import { observer } from "mobx-react-lite"
 import { useTheme, useSettings, useOrgs } from "/imports/api/providers"
-import numeral from "numeral"
 
 import Bar from "./Bar"
 import LeverageBar from "./LeverageBar"
 import OrgInfo from "./OrgInfo"
+import { Loading } from "/imports/ui/components"
 
 interface GraphProps {
 	simulation?: boolean
@@ -16,15 +16,17 @@ const Graph = observer((props: GraphProps) => {
 	const { settings } = useSettings()
 	const { orgs, topOrgs } = useOrgs()
 
+	if(!theme || !settings || !orgs) return <Loading />
+
 	const startingLeverage = () => {
-		let leverage = theme.leverageTotal
+		let leverage = Number(theme.leverageTotal || 0)
 
 		topOrgs.map((org) => {
-			leverage -= org.votedAmounts || 0
+			leverage -= org.votedTotal || 0
 			leverage -= org.topOff || 0
 		})
-		if(theme.consolationActive) {
-			leverage -= (theme.organizations.length - orgs.values.length) * theme.consolationAmount
+		if(theme.consolationActive && theme.organizations) {
+			leverage -= (theme.organizations.length - orgs.values.length) * (theme.consolationAmount || 0)
 		}
 		return leverage
 	}
@@ -34,7 +36,7 @@ const Graph = observer((props: GraphProps) => {
 		if(org.leverageFunds) return sum + org.leverageFunds
 		return sum
 	}, 0)
-	const leverageAfterDistribution = theme.leverageRemaining - orgLeverage
+	const leverageAfterDistribution = Number(theme.leverageRemaining || 0) - orgLeverage
 
 	return (
 		<GraphPageContainer>
@@ -51,12 +53,12 @@ const Graph = observer((props: GraphProps) => {
 				<Goal style={ { top: "50%" } } />
 
 				<BarsContainer cols={ topOrgs.length }>
-					{ topOrgs.map((org, i) => (
+					{ topOrgs.map((org) => (
 						<Bar
 							key={ org._id }
 							org={ org }
 							theme={ theme }
-							savesVisible={ settings.savesVisible }
+							savesVisible={ settings.savesVisible || false }
 						/>
 					)) }
 				</BarsContainer>
@@ -68,9 +70,8 @@ const Graph = observer((props: GraphProps) => {
 					{ topOrgs.map((org) => (
 						<OrgInfo
 							org={ org }
-							theme={ theme }
 							key={ org._id }
-							showLeverage={ settings.leverageVisible }
+							showLeverage={ settings.leverageVisible || false }
 						/>
 					)) }
 				</InfoGrid>
@@ -149,7 +150,7 @@ const Goal = styled.div`
 	border-style: dashed;
 `
 
-const BarsContainer = styled.div(({ cols }) => ({
+const BarsContainer = styled.div<{ cols: number }>(({ cols }) => ({
 	display: "grid",
 	gridTemplateColumns: `repeat(${cols}, 1fr)`,
 	width: "100%",
@@ -160,17 +161,17 @@ const BarsContainer = styled.div(({ cols }) => ({
 	},
 }))
 
-const InfoContainer = styled.div(({ cols }) => ({
-	flex: 0.5,
-	textAlign: "left",
-	margin: "2vh auto 2vh 7rem",
-	width: "calc(100% - 12rem)",
-	display: "flex",
-	flexDirection: "column",
-	justifyContent: "space-between",
-}))
+const InfoContainer = styled.div`
+	flex: 0.5;
+	text-align: left;
+	margin: 2vh auto 2vh 7rem;
+	width: calc(100% - 12rem);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+`
 
-const InfoGrid = styled.div(({ cols }) => ({
+const InfoGrid = styled.div<{ cols: number }>(({ cols }) => ({
 	display: "grid",
 	gridTemplateColumns: `repeat(${cols}, 1fr)`,
 	"&&": {

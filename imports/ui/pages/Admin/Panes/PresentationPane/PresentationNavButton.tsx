@@ -1,5 +1,4 @@
-import { Button, Chip, Stack, type ButtonProps } from "@mui/material"
-import useTheme from "@mui/material/styles/useTheme"
+import { Button, Chip, Stack, useTheme, type ButtonProps } from "@mui/material"
 import { observer } from "mobx-react-lite"
 import { type ElementType, type MouseEvent } from "react"
 import { useSettings } from "/imports/api/providers"

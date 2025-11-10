@@ -3,9 +3,8 @@ import { merge } from "lodash"
 import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
 
-import { Themes, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
+import { Themes, Organizations, MemberThemes, PresentationSettings, type ThemeData } from "/imports/api/db"
 import OrganizationMethods from "./OrganizationMethods"
-import PresentationSettingsMethods from "./PresentationSettingsMethods"
 
 const ThemeMethods = {
 	/**
@@ -44,10 +43,11 @@ const ThemeMethods = {
 			}
 
 			try {
-				const presentationSettingsId = await PresentationSettingsMethods.create.callAsync({})
+				// Directly insert PresentationSettings instead of calling method
+				const presentationSettingsId = await PresentationSettings.insertAsync({})
 				const theme = await Themes.insertAsync(merge(data, { presentationSettings: presentationSettingsId }))
 				return theme
-			} catch(e) {
+			} catch (e) {
 				console.error(e)
 				return null
 			}
@@ -66,7 +66,7 @@ const ThemeMethods = {
 		async run({ id, data }: { id: string, data: Partial<ThemeData> }) {
 			try {
 				return await Themes.updateAsync({ _id: id }, { $set: data })
-			} catch(exception) {
+			} catch (exception) {
 				throw new Meteor.Error("500", String(exception))
 			}
 		},
@@ -178,11 +178,11 @@ const ThemeMethods = {
 
 		validate: null,
 
-		async run(orgs: Array<{ _id: string, leverageFunds: number }>) {
+		async run(orgs: Array<{ _id: string, leverageFunds?: number }>) {
 			await Promise.all(orgs.map(org => {
 				return Organizations.updateAsync({ _id: org._id }, {
 					$set: {
-						leverageFunds: org.leverageFunds,
+						leverageFunds: org.leverageFunds || 0,
 					},
 				})
 			}))

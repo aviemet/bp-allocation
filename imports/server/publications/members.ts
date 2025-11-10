@@ -39,7 +39,7 @@ Meteor.publish("members", function({ themeId, limit }: { themeId: string, limit:
 
 	let membersObserver: { stop: () => void } | null = null
 
-	const computation = Tracker.autorun(async() => {
+	const computation = Tracker.autorun(async () => {
 		if(membersObserver && typeof membersObserver.stop === "function") {
 			membersObserver.stop()
 			membersObserver = null

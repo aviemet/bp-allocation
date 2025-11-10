@@ -3,7 +3,7 @@ import { Button, Grid, InputAdornment, Stack } from "@mui/material"
 import { observer } from "mobx-react-lite"
 import { useState, useEffect } from "react"
 import { useOrgs } from "/imports/api/providers"
-import { TextInput, SubmitButton, STATUS, SwitchInput } from "/imports/ui/components/Form"
+import { TextInput, SubmitButton, STATUS, SwitchInput, type Status } from "/imports/ui/components/Form"
 import { useFormContext, useWatch } from "react-hook-form"
 
 import MemberSearchInput from "./MemberSearchInput"
@@ -15,7 +15,7 @@ const Pledges = observer(() => {
 
 	const { topOrgs } = useOrgs()
 
-	const [formStatus, setFormStatus] = useState(STATUS.DISABLED)
+	const [formStatus, setFormStatus] = useState<Status>(STATUS.DISABLED)
 
 	useEffect(() => {
 		if(formStatus === STATUS.DISABLED && watch.member !== "" && watch.amount !== "" && watch.id !== "") {
@@ -31,7 +31,6 @@ const Pledges = observer(() => {
 			<Grid size={ { xs: 12 } }>
 				<Stack direction="row" justifyContent="space-between" alignItems="space-between">
 					<SwitchInput
-						toggle
 						label="Anonymous"
 						name="anonymous"
 					/>
@@ -40,7 +39,7 @@ const Pledges = observer(() => {
 			</Grid>
 
 			<Grid size={ { xs: 12, md: 8 } }>
-				<MemberSearchInput required />
+				<MemberSearchInput />
 			</Grid>
 
 			<Grid size={ { xs: 12, md: 4 } }>
@@ -67,7 +66,6 @@ const Pledges = observer(() => {
 					type="submit"
 					status={ formStatus }
 					setStatus={ setFormStatus }
-					icon={ false }
 				>Submit Matched Pledge</FinalizeButton>
 			</Grid>
 
@@ -75,14 +73,11 @@ const Pledges = observer(() => {
 	)
 })
 
-const FinalizeButton = styled(SubmitButton)(({ theme }) => ({
-	textAalign: "center",
+const FinalizeButton = styled(SubmitButton)({
+	textAlign: "center",
 	border: "2px solid #fff",
-	fontSize:" 2rem",
+	fontSize: "2rem",
 	textTransform: "uppercase",
-	"&.Mui-disabled": {
-		backgroundColor: theme.palette.batteryGreen.dark,
-	},
-}))
+})
 
 export default Pledges

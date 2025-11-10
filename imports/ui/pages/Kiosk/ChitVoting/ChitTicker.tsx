@@ -17,20 +17,20 @@ interface ChitTickerProps {
  */
 const ChitTicker = ({ org }: ChitTickerProps) => {
 	const { member, chits, updateChits } = useVoting()
-	const [ value, setValue ] = useState(parseInt(chits[org._id]) || 0)
+	const [ value, setValue ] = useState(chits[org._id] || 0)
 
-	const MAX = member.theme.chits
+	const MAX = member.theme?.chits || 0
 
 	useLayoutEffect(() => {
 		// Disable contextmenu for long press on mobile
 		document.oncontextmenu = () => false
 	}, [])
 
-	const handleChange = value => {
+	const handleChange = (value: number) => {
 		if(value < 0 || value > MAX) return
 
 		let sumAfterThisVote = 0
-		forEach(chits, (votes, orgId) => sumAfterThisVote += orgId === org._id ? parseInt(value) : votes)
+		forEach(chits, (votes, orgId) => sumAfterThisVote += orgId === org._id ? value : votes)
 
 		if(sumAfterThisVote > MAX || sumAfterThisVote < 0) return
 
@@ -43,13 +43,13 @@ const ChitTicker = ({ org }: ChitTickerProps) => {
 
 	return (
 		<TickerContainer>
-			<TransparentButton variant="text" onClick={ () => handleChange(value - 1) }>
+			<TransparentButton onClick={ () => handleChange(value - 1) }>
 				<RemoveIcon />
 			</TransparentButton>
 
 			<Amount>{ value }</Amount>
 
-			<TransparentButton variant="text" onClick={ () => handleChange(value + 1) }>
+			<TransparentButton onClick={ () => handleChange(value + 1) }>
 				<AddIcon />
 			</TransparentButton>
 		</TickerContainer>

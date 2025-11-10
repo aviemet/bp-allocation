@@ -1,9 +1,9 @@
 import { isEmpty } from "lodash"
 import { Meteor } from "meteor/meteor"
 
-export const roundFloat = (value: string, decimal?: number) => {
-	decimal = decimal || 2
-	return parseFloat(parseFloat(value).toFixed(decimal))
+export const roundFloat = (value: string | number, decimal = 2) => {
+	const numberValue = typeof value === "string" ? parseFloat(value) : value
+	return parseFloat(numberValue.toFixed(decimal))
 }
 
 export const formatters = {

@@ -35,6 +35,7 @@ Server-side publications and methods must use async methods:
 - Client-side ValidatedMethod calls must use async variants:
   - `Method.call()` → `Method.callAsync()`
   - `Method.apply()` → `Method.applyAsync()`
+- **IMPORTANT**: When calling ValidatedMethod from within another server method, `.callAsync()` may hang - directly access collections instead of calling another method
 
 ### TanStack Router Migration
 - Uses programmatic routing with `createRouter` and `createRoute`
@@ -194,12 +195,15 @@ Server-side publications and methods must use async methods:
 - Remove all PropTypes declarations when adding TypeScript interfaces
 
 ### Schema Type Generation
-- Embedded schemas (used within other schemas) should not have `_id` fields in generated types
+- Type generation script (`scripts/generate-types-real.ts`) distinguishes between collection-level and embedded schemas
+- Collection-level schemas (used with `.attachSchema()` in `index.ts`) automatically get `_id: string` added to their generated types
+- Embedded schemas (like `RoundsSchema`, `OrgChitVoteSummary`) do NOT get `_id` added - they're embedded documents without their own identity
+- The script parses `imports/api/db/index.ts` to identify which schemas are attached to Mongo collections
 - `OrgChitVoteSummary` is an embedded document type (used in Organization.chitVotes), distinct from `ChitVote` (used in MemberTheme.chitVotes)
 - When schemas with the same base name exist in different files, ensure they serve different purposes and have unique type names
 
 ### Chit Voting System Architecture
-The application supports two modes of chit voting controlled by `PresentationSettings.useKioskChitVoting`:
+The application supports two modes of chit voting controlled by `PresentationSettings.useKioskChitVoting`r:
 
 **Manual Mode (useKioskChitVoting = false)**:
 - Historical mode for physical wooden chits placed in boxes

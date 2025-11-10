@@ -1,9 +1,10 @@
 import { forEach, find, clone } from "lodash"
 import { observer } from "mobx-react-lite"
-import React, { useState, useContext, createContext } from "react"
+import { useState, type ReactNode } from "react"
 import { useTheme, useOrgs } from "/imports/api/providers"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { createContext } from "/imports/lib/hooks/createContext"
 
 interface VotingContextValue {
 	allocations: Record<string, number>
@@ -12,19 +13,19 @@ interface VotingContextValue {
 	chits: Record<string, number>
 	updateChits: (org: string, count: number) => void
 	saveChits: (source?: string) => void
-	member: MemberWithTheme | false
-	unsetUser: () => void
-}
-
-interface VotingContextProviderProps {
-	children: React.ReactNode
 	member: MemberWithTheme
 	unsetUser: () => void
 }
 
-const FundsVoteContext = createContext<VotingContextValue | null>(null)
+interface VotingContextProviderProps {
+	children: ReactNode
+	member: MemberWithTheme
+	unsetUser: () => void
+}
 
-const VotingContextProvider = observer(({ children, member, unsetUser }: VotingContextProviderProps) => {
+const [useVoting, FundsVoteContextProvider] = createContext<VotingContextValue>()
+
+const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingContextProviderProps) => {
 	const { theme } = useTheme()
 	const { orgs, topOrgs } = useOrgs()
 
@@ -72,12 +73,12 @@ const VotingContextProvider = observer(({ children, member, unsetUser }: VotingC
 				org,
 				amount,
 			}
-		if(source) {
-			voteData.voteSource = source as "kiosk" | "mobile"
-		}
-		MemberMethods.fundVote.callAsync(voteData as Parameters<typeof MemberMethods.fundVote.callAsync>[0])
-	})
-}
+			if(source) {
+				voteData.voteSource = source as "kiosk" | "mobile"
+			}
+			MemberMethods.fundVote.callAsync(voteData as Parameters<typeof MemberMethods.fundVote.callAsync>[0])
+		})
+	}
 
 	const saveChits = (source?: string) => {
 		if(!theme) return
@@ -94,32 +95,27 @@ const VotingContextProvider = observer(({ children, member, unsetUser }: VotingC
 				org,
 				votes,
 			}
-		if(source) {
-			voteData.voteSource = source as "kiosk" | "mobile"
-		}
-		MemberMethods.chitVote.callAsync(voteData as Parameters<typeof MemberMethods.chitVote.callAsync>[0])
-	})
-}
+			if(source) {
+				voteData.voteSource = source as "kiosk" | "mobile"
+			}
+			MemberMethods.chitVote.callAsync(voteData as Parameters<typeof MemberMethods.chitVote.callAsync>[0])
+		})
+	}
 
 	return (
-		<FundsVoteContext.Provider value={ {
+		<FundsVoteContextProvider value={ {
 			allocations,
 			updateAllocations,
 			saveAllocations,
 			chits,
 			updateChits,
 			saveChits,
-			member: member || false,
+			member,
 			unsetUser,
 		} }>
 			{ children }
-		</FundsVoteContext.Provider>
+		</FundsVoteContextProvider>
 	)
 })
 
-/**
- * Context hook
- */
-const useVoting = () => useContext(FundsVoteContext)
-
-export { VotingContextProvider, FundsVoteContext, useVoting }
+export { useVoting, FundsVoteProvider }

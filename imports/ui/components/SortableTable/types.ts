@@ -1,6 +1,8 @@
+import React from "react"
+
 export interface HeadCell {
 	id: string
-	label: string
+	label: React.ReactNode
 	sort?: boolean
 	disablePadding?: boolean
 	align?: "left" | "right" | "center"

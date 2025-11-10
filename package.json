@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "meteor run",
-    "dev": "METEOR_OFFLINE_CATALOG=1 ROOT_URL=http://0.0.0.0:3000 meteor --settings privateSettings.json run",
+    "dev": "ROOT_URL=http://0.0.0.0:3000 meteor --settings privateSettings.json run",
     "visualize": "meteor --production --extra-packages bundle-visualizer",
     "build": "meteor build --server-only --directory ../allocation",
     "test": "meteor --settings privateSettings.json test --once --driver-package meteortesting:mocha --port 3333",
@@ -39,6 +39,7 @@
     "@tiptap/react": "^3.10.1",
     "@tiptap/starter-kit": "^3.10.1",
     "classnames": "^2.5.1",
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "immutable": "^5.1.4",
     "libphonenumber-js": "^1.12.25",

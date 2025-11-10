@@ -8,7 +8,6 @@ import { useState } from "react"
 import { useData, useMessages } from "/imports/api/providers"
 import { MessageMethods } from "/imports/api/methods"
 import type MessageStore from "/imports/api/stores/MessageStore"
-import { type Message } from "/imports/types/schema"
 
 import SortableTable from "/imports/ui/components/SortableTable"
 import SendWithFeedbackButton from "/imports/ui/components/Buttons/SendWithFeedbackButton"
@@ -92,24 +91,15 @@ const Messages = () => {
 	const { pathname } = useLocation()
 
 	const handleBulkDelete = (selected: string[], onSuccess: () => void) => {
-		console.log({ selected })
 		const plural = selected.length > 1
 
-	setModalHeader(`Permanently delete message${plural ? "s" : ""}?`)
-	setModalContent(`This will permanently remove the message${plural ? "s" : ""}. This action is not reversable.`)
-	setModalAction(() => async () => {
-		await Promise.all(selected.map(id => MessageMethods.remove.callAsync(id)))
-		onSuccess()
-	})
-	setModalOpen(true)
-	}
-
-	const handleTextEdits = async (id: string, data: Partial<Omit<Message, "_id" | "createdAt" | "updatedAt">>) => {
-		try {
-			await MessageMethods.update.callAsync({ id, data })
-		} catch(err) {
-			console.error(err)
-		}
+		setModalHeader(`Permanently delete message${plural ? "s" : ""}?`)
+		setModalContent(`This will permanently remove the message${plural ? "s" : ""}. This action is not reversable.`)
+		setModalAction(() => async () => {
+			await Promise.all(selected.map(id => MessageMethods.remove.callAsync(id)))
+			onSuccess()
+		})
+		setModalOpen(true)
 	}
 
 	if(messagesLoading || !messages) return <Loading />

@@ -23,19 +23,20 @@ const Timer = ({ seconds }: TimerProps) => {
 
 	return (
 		<TimerContainer>
-			<CountdownCircleTimer
-				className="countdown-clock"
-				isPlaying
-				duration={ seconds }
-				colors="white"
-				trailColor="#AAA"
-				strokeWidth={ 12 }
-				strokeLinecap="square"
-				size={ 500 }
-				onComplete={ () => ({ shouldRepeat: false, delay: 1 }) }
-			>
-				{ renderTime }
-			</CountdownCircleTimer>
+			<TimerWrapper>
+				<CountdownCircleTimer
+					isPlaying
+					duration={ seconds || 0 }
+					colors="#FFFFFF"
+					trailColor="#AAA"
+					strokeWidth={ 12 }
+					strokeLinecap="square"
+					size={ 500 }
+					onComplete={ () => ({ shouldRepeat: false, delay: 1 }) }
+				>
+					{ renderTime }
+				</CountdownCircleTimer>
+			</TimerWrapper>
 		</TimerContainer>
 	)
 }
@@ -47,20 +48,18 @@ const TimerContainer = styled.div`
 	min-height: 100%;
 	padding: 16px 0 16px 0;
 
-	.countdown-clock {
-		flex: 1;
-
-		/* & canvas:nth-child(2){
-			position: relative !important;
-		} */
-	}
-
 	h1{
 		color: #FFF;
 		font-family: TradeGothic;
 		font-size: 6em;
 		text-align: center;
 	}
+`
+
+const TimerWrapper = styled.div`
+	flex: 1;
+	display: flex;
+	justify-content: center;
 `
 
 export default Timer

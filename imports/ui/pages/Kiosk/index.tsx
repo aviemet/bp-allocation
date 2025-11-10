@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { useParams } from "@tanstack/react-router"
 import { observer } from "mobx-react-lite"
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 
 import { useData, useTheme, useSettings } from "/imports/api/providers"
 import ChitVotingKiosk from "./ChitVoting"
@@ -23,7 +23,37 @@ const Kiosk = observer(() => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { settings, isLoading: settingsLoading } = useSettings()
 
-	const activePage: KioskPage = settings?.fundsVotingActive ? data.KIOSK_PAGES.funds : data.KIOSK_PAGES.info
+	const activePage = useMemo<KioskPage>(() => {
+		if(settings?.fundsVotingActive) {
+			return data.KIOSK_PAGES.funds
+		}
+
+		if(settings?.chitVotingActive) {
+			return data.KIOSK_PAGES.chit
+		}
+
+		if(member && settings?.topupsActive) {
+			return data.KIOSK_PAGES.topups
+		}
+
+		if(theme?.fundsVotingStarted && settings?.resultsVisited) {
+			return data.KIOSK_PAGES.results
+		}
+
+		return data.KIOSK_PAGES.info
+	}, [
+		data.KIOSK_PAGES.chit,
+		data.KIOSK_PAGES.funds,
+		data.KIOSK_PAGES.info,
+		data.KIOSK_PAGES.results,
+		data.KIOSK_PAGES.topups,
+		member,
+		settings?.chitVotingActive,
+		settings?.fundsVotingActive,
+		settings?.resultsVisited,
+		settings?.topupsActive,
+		theme?.fundsVotingStarted,
+	])
 
 	const [ displayPage, setDisplayPage ] = useState<KioskPage>(activePage)
 	const [ show, setShow ] = useState(false)
@@ -42,24 +72,6 @@ const Kiosk = observer(() => {
 		}
 	}, [displayPage])
 
-	const getActivePage = useCallback((): KioskPage => {
-		if(!settings) return data.KIOSK_PAGES.info
-
-		if(settings.fundsVotingActive) {
-			return data.KIOSK_PAGES.funds
-		} else if(settings.chitVotingActive) {
-			return data.KIOSK_PAGES.chit
-		} else if(member && settings.topupsActive) {
-			return data.KIOSK_PAGES.topups
-		} else {
-			if(theme?.fundsVotingStarted && settings.resultsVisited) {
-				return data.KIOSK_PAGES.results
-			} else {
-				return data.KIOSK_PAGES.info
-			}
-		}
-	}, [settings, member, theme, data.KIOSK_PAGES])
-
 	useEffect(() => {
 		if(!themeLoading && !settingsLoading) {
 			setShow(true)
@@ -67,21 +79,35 @@ const Kiosk = observer(() => {
 	}, [themeLoading, settingsLoading])
 
 	useEffect(() => {
-		const pageNav = getActivePage()
-
-		if(!settings) return
+		const shouldDelayFunds = displayPage === data.KIOSK_PAGES.funds && settings?.fundsVotingActive === false
+		const shouldDelayChit = displayPage === data.KIOSK_PAGES.chit && settings?.chitVotingActive === false
 
 		// Wait 1 minute before navigating a user away from a voting screen
 		if(
-			(displayPage === data.KIOSK_PAGES.funds && !settings.fundsVotingActive) ||
-			(displayPage === data.KIOSK_PAGES.chit && !settings.chitVotingActive)
+			shouldDelayFunds ||
+			shouldDelayChit
 		) {
-			timeoutRef.current = setTimeout(() => doNavigation(pageNav), data.votingRedirectTimeout * 1000)
-		} else {
-			clearTimeout(timeoutRef.current)
-			doNavigation(pageNav)
+			const timeout = setTimeout(() => doNavigation(activePage), data.votingRedirectTimeout * 1000)
+			timeoutRef.current = timeout
+
+			return () => {
+				clearTimeout(timeout)
+				timeoutRef.current = undefined
+			}
 		}
-	}, [data.KIOSK_PAGES.chit, data.KIOSK_PAGES.funds, data.votingRedirectTimeout, displayPage, doNavigation, getActivePage, settings])
+
+		timeoutRef.current = undefined
+		doNavigation(activePage)
+	}, [
+		activePage,
+		data.KIOSK_PAGES.chit,
+		data.KIOSK_PAGES.funds,
+		data.votingRedirectTimeout,
+		displayPage,
+		doNavigation,
+		settings?.chitVotingActive,
+		settings?.fundsVotingActive,
+	])
 
 	const renderPage = () => {
 		switch(displayPage) {

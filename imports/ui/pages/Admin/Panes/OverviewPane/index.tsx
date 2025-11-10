@@ -26,14 +26,14 @@ const Overview = () => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	if(themeLoading || orgsLoading || settingsLoading) return <Loading />
+	if(themeLoading || orgsLoading || settingsLoading || !theme) return <Loading />
 	return (
 		<>
 			<TableContainer style={ {
 				minWidth: 1005,
 				overflow: "auto",
 			} }>
-				<StyledTable variant="striped">
+				<StyledTable>
 					<TableHead>
 						<TableRow>
 							<TableCell></TableCell>
@@ -66,11 +66,11 @@ const Overview = () => {
 										<Box>{ org.title }</Box>
 										<Box><Chip label={ `Ask: ${numeral(org.ask).format("$0,0")}` } /></Box>
 									</TableCell>
-									<TableCell align="center">{ roundFloat(org.votes, 1) }</TableCell>
+									<TableCell align="center">{ roundFloat(String(org.votes), 1) }</TableCell>
 									<MoneyCell>{ org.votedTotal || 0 }</MoneyCell>
-									<MoneyCell>{ saveIndex >= 0 ? theme.saves[saveIndex] : 0 }</MoneyCell>
+									<MoneyCell>{ saveIndex >= 0 ? (theme.saves?.[saveIndex]?.amount || 0) : 0 }</MoneyCell>
 									<MoneyCell>{ org.topOff }</MoneyCell>
-									<MoneyCell>{ org.pledges.reduce((sum, pledge) => sum + pledge.amount, 0) }</MoneyCell>
+									<MoneyCell>{ org.pledges?.reduce((sum, pledge) => sum + pledge.amount, 0) || 0 }</MoneyCell>
 									<MoneyCell>{ org.leverageFunds }</MoneyCell>
 									<MoneyCell>{ org.allocatedFunds + org.leverageFunds }</MoneyCell>
 								</TableRow>
@@ -79,7 +79,7 @@ const Overview = () => {
 					</TableBody>
 
 					<TableFooter>
-						<TableRow align="right">
+						<TableRow>
 
 							<TableCell>Totals:</TableCell>
 
@@ -96,7 +96,7 @@ const Overview = () => {
 
 							{ /* Saves */ }
 							<MoneyCell>{
-								theme.saves.reduce((sum, save) => sum + save, 0)
+								theme.saves?.reduce((sum, save) => sum + (save.amount || 0), 0) || 0
 							}</MoneyCell>
 
 							{ /* Topoff */ }
@@ -107,12 +107,12 @@ const Overview = () => {
 							{ /* Pledges */ }
 							<MoneyCell>{
 								topOrgs.reduce((finalSum, org) => {
-									return finalSum + org.pledges.reduce((sum, pledge) => sum + pledge.amount, 0)
+									return finalSum + (org.pledges?.reduce((sum, pledge) => sum + pledge.amount, 0) || 0)
 								}, 0)
 							}</MoneyCell>
 
-							{ /* Leverage */ }
-							<MoneyCell>{ theme.leverageRemaining }</MoneyCell>
+						{ /* Leverage */ }
+						<MoneyCell>{ Number(theme.leverageRemaining || 0) }</MoneyCell>
 
 							{ /* Total Allocated */ }
 							<MoneyCell>{
@@ -127,10 +127,10 @@ const Overview = () => {
 							<MoneyCell>{
 								topOrgs.reduce(
 									(sum, org) => sum + (org.pledgeTotal / 2),
-									parseFloat(
+									Number(
 										(theme.leverageTotal || 0) +
-									theme.saves.reduce((sum, save) => {return sum + save.amount}, 0) +
-									(settings?.resultsOffset || 0)
+										(theme.saves?.reduce((sum, save) => {return sum + (save.amount || 0)}, 0) || 0) +
+										(settings?.resultsOffset || 0)
 									)
 								)
 							}</MoneyCell>

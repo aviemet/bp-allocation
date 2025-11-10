@@ -46,7 +46,13 @@ const OrganizationsEdit = () => {
 			if(orgId) {
 				response = await OrganizationMethods.update.callAsync({ id: orgId, data })
 			} else {
-				response = await OrganizationMethods.create.callAsync(data)
+				const createData = {
+					theme: String(data.theme),
+					title: String(data.title),
+					ask: Number(data.ask),
+					description: String(data.description || ""),
+				}
+				response = await OrganizationMethods.create.callAsync(createData)
 			}
 
 			if(response) {

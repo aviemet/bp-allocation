@@ -9,12 +9,9 @@ import {
 	TableFooter,
 	TableRow,
 	TableCell,
-	TextField,
-	Typography,
 } from "@mui/material"
 import { findIndex } from "lodash"
 import { observer } from "mobx-react-lite"
-import { ThemeMethods } from "/imports/api/methods"
 import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
 
 import TopOrgsRow from "./TopOrgsRow"
@@ -29,8 +26,11 @@ const TopOrgsByChitVote = observer(({ hideAdminFields }: TopOrgsByChitVoteProps)
 	const { theme } = useTheme()
 	const { orgs } = useOrgs()
 
+	if(!theme || !orgs) return null
+
 	let sortedOrgs = sortTopOrgs(orgs.values, theme)
 	let totalVotes = 0
+
 	return (
 		<>
 
@@ -91,14 +91,6 @@ const TopOrgsByChitVote = observer(({ hideAdminFields }: TopOrgsByChitVoteProps)
 		</>
 	)
 })
-
-const NumTopOrgsInput = styled(TextField)`
-	width: 65px;
-
-	&& input {
-		padding: 0.3em 0.4em;
-	}
-`
 
 const FlexHeading = styled.div`
 	display: flex;

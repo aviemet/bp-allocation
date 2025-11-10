@@ -15,6 +15,7 @@ import { observer } from "mobx-react-lite"
 import { useMessage } from "/imports/api/providers"
 import { MessageMethods } from "/imports/api/methods"
 import { MessageSchema } from "/imports/api/db"
+import { type Message } from "/imports/types/schema"
 import {
 	Form,
 	TextInput,
@@ -27,6 +28,8 @@ import {
 } from "/imports/ui/components/Form"
 import { useState } from "react"
 import { Loading } from "/imports/ui/components"
+
+type MessageFormData = Omit<Message, "_id" | "createdAt" | "updatedAt">
 
 const MessageEdit = observer(() => {
 	const { id: themeId, messageId, type } = useParams({ strict: false })
@@ -46,11 +49,11 @@ const MessageEdit = observer(() => {
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 	const [preview, setPreview] = useState(message?.body || "")
 
-	const messageData = {
+	const messageData: MessageFormData = {
 		title: message?.title || "",
 		subject: message?.subject || "",
 		body: message?.body || "",
-		type: message?.type || type || "",
+		type: (message?.type || type || "text"),
 		active: message?.active || true,
 		includeLink: message?.includeLink || false,
 		optOutRounds: {
@@ -59,38 +62,38 @@ const MessageEdit = observer(() => {
 		},
 	}
 
-	const onSubmit = async data => {
+	const onSubmit = async (data: MessageFormData) => {
 		setFormStatus(STATUS.SUBMITTING)
 		try {
-			if(message._id) {
+			if(message?._id) {
 				await MessageMethods.update.callAsync({ id: message._id, data })
 			} else {
 				await MessageMethods.create.callAsync(data)
 			}
 			setFormStatus(STATUS.SUCCESS)
 			navigate({ to: `/admin/${themeId}/settings/messages` })
-		} catch(err) {
+		} catch (err) {
 			setFormStatus(STATUS.ERROR)
 			console.error(err)
 		}
 	}
 
-	const onError = (error, data) => {
+	const onError = (error: unknown, data: unknown) => {
 		console.error(error, data)
 	}
 
-	const handlePreview = data => {
-		setPreview(data.body)
+	const handlePreview = (data: Partial<MessageFormData>) => {
+		setPreview(data.body || "")
 	}
 
-	if(messageLoading) return <Loading />
+	if(messageLoading || !message) return <Loading />
 	return (
 		<>
 			<Typography component="h1" variant="h3" sx={ { mb: 1 } }>
 				{ message?._id ? "Edit" : "New" } { messageData?.type[0].toUpperCase() + messageData?.type.substring(1) } Message
 			</Typography>
 
-			<Form
+			<Form<MessageFormData>
 				schema={ MessageSchema }
 				defaultValues={ messageData }
 				onValidSubmit={ onSubmit }
@@ -132,9 +135,7 @@ const MessageEdit = observer(() => {
 							<FormControl component="fieldset" variant="standard">
 								<FormLabel component="legend">Skip If Member Has Voted In:</FormLabel>
 								<FormGroup>
-									<CheckboxInput name="optOutRounds.one" label="Round One" onUpdate={ (value, name, setValue) => {
-										// console.log({ value, name })
-									} } />
+									<CheckboxInput name="optOutRounds.one" label="Round One" />
 									<CheckboxInput name="optOutRounds.two" label="Round Two" />
 								</FormGroup>
 							</FormControl>
@@ -148,7 +149,7 @@ const MessageEdit = observer(() => {
 								color="error"
 								to={ `/admin/${themeId}/settings/messages` }
 							>Cancel</Button>
-							<SubmitButton type="submt" status={ formStatus } setStatus={ setFormStatus }>Save Message</SubmitButton>
+							<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Message</SubmitButton>
 						</Stack>
 					</Grid>
 				</Grid>

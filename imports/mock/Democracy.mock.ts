@@ -1,6 +1,8 @@
+import { SettingsData, ThemeData } from "../api/db"
+import { uuid } from "../lib/utils"
 import orgTransformer from "/imports/server/transformers/orgTransformer"
 
-const theme = {
+const theme: ThemeData = {
 	_id: "ArtXBdjZYvYSWcW5N",
 	title: "T12 Test Theme",
 	presentationSettings: "hnJb4SBPkFQ8KBnRa",
@@ -26,10 +28,11 @@ const theme = {
 	consolationActive: true,
 	leverageTotal: 1337842,
 	saves: [],
-	createdAt: "2019-10-28T17:28:59.960Z",
+	createdAt: new Date("2019-10-28T17:28:59.960Z"),
 }
 
-const settings: Partial<{ useKioskChitVoting?: boolean; useKioskFundsVoting?: boolean }> = {
+const settings: SettingsData = {
+	_id: uuid(),
 	useKioskFundsVoting: false,
 }
 
@@ -135,7 +138,7 @@ const orgs = [
 ].map(org => orgTransformer({
 	...org,
 	createdAt: new Date(org.createdAt),
-	pledges: org.pledges?.map(p => ({ ...p, createdAt: new Date(p.createdAt) }))
-}, { theme, settings }))
+	pledges: org.pledges?.map(p => ({ ...p, createdAt: new Date(p.createdAt) })),
+}, { theme, settings, memberThemes: [] }))
 
 export default { orgs, theme, settings }

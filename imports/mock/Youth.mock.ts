@@ -1,6 +1,17 @@
 import { type Organization } from "/imports/types"
 
-const orgs: Record<string, unknown>[] = [
+interface OrganizationWithFunding extends Organization {
+	save?: number
+	pledgeTotal?: number
+	allocatedFunds?: number
+	need?: number
+	leverageFunds?: number
+	roundFunds?: number
+	percent?: number
+	votes?: number
+}
+
+const orgs: OrganizationWithFunding[] = [
 	{
 		ask: 250000,
 		amountFromVotes: 42432,

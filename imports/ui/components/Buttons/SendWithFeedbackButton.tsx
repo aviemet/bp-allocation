@@ -8,7 +8,6 @@ import { useState, useEffect } from "react"
 
 import { useTheme } from "/imports/api/providers"
 import { type MessageData } from "/imports/api/db"
-import { type MemberData } from "/imports/api/db"
 
 import CustomConfirm from "/imports/ui/components/Dialogs/CustomConfirm"
 import { emailVotingLink, textVotingLink } from "/imports/lib/utils"
@@ -32,7 +31,7 @@ const buttonValues: Record<"email" | "text", ButtonValue> = {
 
 interface SendWithFeedbackButtonProps extends Omit<ButtonProps, "onClick"> {
 	message: MessageData
-	members?: MemberData[] | "all"
+	members?: string[] | "all"
 }
 
 const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWithFeedbackButtonProps) => {

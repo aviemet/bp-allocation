@@ -1,10 +1,10 @@
 import { useOrgs } from "/imports/api/providers"
 import { OrganizationMethods } from "/imports/api/methods"
-import { Form, TextInput, SubmitButton, STATUS, SwitchInput } from "/imports/ui/components/Form"
+import { Form, TextInput, SubmitButton, STATUS, SwitchInput, type Status } from "/imports/ui/components/Form"
 import styled from "@emotion/styled"
 import { Box, Container, InputAdornment, Typography } from "@mui/material"
 import { isEmpty } from "lodash"
-import { OrgCard, OrgCardColors } from "/imports/ui/components/Cards"
+import { OrgCardColors } from "/imports/ui/components/Cards"
 import { observer } from "mobx-react-lite"
 import { useState, useEffect } from "react"
 
@@ -12,31 +12,38 @@ import { useWindowSize, breakpoints } from "/imports/ui/MediaProvider"
 import { Loading } from "/imports/ui/components"
 import SelectableOrgCards from "./SelectableOrgCards"
 import TopupComplete from "./TopupComplete"
+import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
-const Pledges = observer(({ user }) => {
+interface PledgesProps {
+	user: MemberWithTheme
+}
+
+const Pledges = observer(({ user }: PledgesProps) => {
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
-	const [formStatus, setFormStatus] = useState(STATUS.READY)
+	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
 	const [ itemsPerRow, setItemsPerRow ] = useState(2)
-	const [ pledgeFeedbackData, setPledgeFeedbackData ] = useState({})
+	const [ pledgeFeedbackData, setPledgeFeedbackData ] = useState<Record<string, unknown>>({})
 
 	const { width } = useWindowSize()
 
 	useEffect(() => {
 		let n = itemsPerRow
-		if(width < breakpoints.tablet) n = 1
-		else if(width >= breakpoints.tablet && width < breakpoints.tabletL) n = 2
+		if(width && width < breakpoints.tablet) n = 1
+		else if(width && width >= breakpoints.tablet && width < breakpoints.tabletL) n = 2
 		else n = 3
 
 		if(itemsPerRow !== n) setItemsPerRow(n)
 	}, [width])
 
-	const handleSubmit = async (data, { reset }) => {
+	const handleSubmit = async (data: Record<string, unknown>, { reset }: { reset: () => void }) => {
 		try {
 			const res = await OrganizationMethods.pledge.callAsync({
-				...data,
+				id: String(data.id || ""),
+				amount: Number(data.amount || 0),
 				member: user._id,
+				anonymous: Boolean(data.anonymous),
 			})
 			if(res) {
 				reset()
@@ -50,7 +57,8 @@ const Pledges = observer(({ user }) => {
 	if(orgsLoading) return <Loading />
 	if(!isEmpty(pledgeFeedbackData)) {
 		const org = topOrgs.find(org => org._id === pledgeFeedbackData.id)
-		return <TopupComplete data={ { ...pledgeFeedbackData, org } } resetData={ () => setPledgeFeedbackData({}) } />
+		if(!org) return <Loading />
+		return <TopupComplete data={ { amount: Number(pledgeFeedbackData.amount || 0), org } } resetData={ () => setPledgeFeedbackData({}) } />
 	}
 	return (
 		<PledgesContainer>
@@ -67,11 +75,10 @@ const Pledges = observer(({ user }) => {
 			>
 				<Container>
 					<Box sx={ { textAlign: "right", marginBottom: "0.5rem" } }>
-						<SwitchInput
-							toggle
-							label="Anonymous"
-							name="anonymous"
-						/>
+					<SwitchInput
+						label="Anonymous"
+						name="anonymous"
+					/>
 					</Box>
 					<TextInput
 						name="amount"

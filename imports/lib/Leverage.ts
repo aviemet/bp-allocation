@@ -85,18 +85,18 @@ class Leverage {
 				const updatedOrg = this._orgRoundValues(org, nRounds)
 
 				// Decrease remaining leverage by amount awarded
-				trackers.givenThisRound = roundFloat(String(trackers.givenThisRound + (updatedOrg.roundFunds || 0)))
+				trackers.givenThisRound = roundFloat(trackers.givenThisRound + (updatedOrg.roundFunds || 0))
 
 				// Only orgs not yet funded are counted in the percentage ratio for next round
 				if((updatedOrg.need || 0) > 0) {
-					trackers.newSumRemainingOrgs = roundFloat(String(trackers.newSumRemainingOrgs + (updatedOrg.allocatedFunds || 0)))
+					trackers.newSumRemainingOrgs = roundFloat(trackers.newSumRemainingOrgs + (updatedOrg.allocatedFunds || 0))
 				}
 
 				return updatedOrg
 			})
 
 			this.sumRemainingOrgs = trackers.newSumRemainingOrgs
-			this.leverageRemaining = roundFloat(String(this.leverageRemaining - trackers.givenThisRound))
+			this.leverageRemaining = roundFloat(this.leverageRemaining - trackers.givenThisRound)
 
 			round.orgs = _.cloneDeep(roundOrgs)
 			this.rounds.push(round)
@@ -148,7 +148,7 @@ class Leverage {
 			return sum + ((org.leverageFunds || 0) > 0 ? (org.roundFunds || 0) : 0)
 		}, 0)
 
-		return roundFloat(String(leverageRemaining - funds))
+		return roundFloat(leverageRemaining - funds)
 	}
 }
 

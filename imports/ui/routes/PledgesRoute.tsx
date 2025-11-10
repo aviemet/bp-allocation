@@ -10,7 +10,7 @@ import Pledges from "../pages/Pledges"
 const PledgesRoute = observer(() => {
 	const { id } = useParams({ from: "/pledges/$id" })
 	const data = useData()
-	const { theme, isLoading: themeLoading } = useTheme()
+	const { isLoading: themeLoading } = useTheme()
 	const { isLoading: orgsLoading } = useOrgs()
 	const { isLoading: settingsLoading } = useSettings()
 

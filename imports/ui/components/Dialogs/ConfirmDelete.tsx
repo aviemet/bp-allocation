@@ -12,7 +12,7 @@ interface ConfirmDeleteProps {
 	content?: string
 	isModalOpen: boolean
 	handleClose: () => void
-	confirmAction: () => void
+	confirmAction?: () => void
 }
 
 const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction }: ConfirmDeleteProps) => {
@@ -40,7 +40,7 @@ const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmA
 					color="error"
 					onClick={ () => {
 						handleClose()
-						confirmAction()
+						confirmAction?.()
 					} }
 				>Delete!
 				</Button>

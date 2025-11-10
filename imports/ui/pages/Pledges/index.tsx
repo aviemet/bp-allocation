@@ -12,10 +12,13 @@ const Pledges = observer(() => {
 	const { members, isLoading: membersLoading } = useMembers()
 	const { isLoading: orgsLoading } = useOrgs()
 
-	const handleSubmit = async (data, { reset }) => {
+	const handleSubmit = async (data: Record<string, unknown>, { reset }: { reset: () => void }) => {
 		try {
 			const res = await OrganizationMethods.pledge.callAsync({
-				...data,
+				id: String(data.id || ""),
+				amount: Number(data.amount || 0),
+				member: String(data.member || ""),
+				anonymous: Boolean(data.anonymous),
 			})
 			if(res) {
 				reset()

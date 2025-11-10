@@ -1,6 +1,5 @@
 import {
 	Box,
-	Divider,
 	Grid,
 	Typography,
 } from "@mui/material"
