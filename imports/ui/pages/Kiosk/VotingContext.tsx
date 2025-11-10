@@ -5,14 +5,16 @@ import { useTheme, useOrgs } from "/imports/api/providers"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 import { createContext } from "/imports/lib/hooks/createContext"
+import { VotingSource } from "/imports/api/methods/MemberMethods"
+
 
 interface VotingContextValue {
 	allocations: Record<string, number>
 	updateAllocations: (org: string, amount: number) => void
-	saveAllocations: (source?: string) => void
+	saveAllocations: (source?: VotingSource) => void
 	chits: Record<string, number>
 	updateChits: (org: string, count: number) => void
-	saveChits: (source?: string) => void
+	saveChits: (source?: VotingSource) => void
 	member: MemberWithTheme
 	unsetUser: () => void
 }
@@ -58,7 +60,7 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 		setChits(newVotes)
 	}
 
-	const saveAllocations = (source?: string) => {
+	const saveAllocations = (source?: VotingSource) => {
 		if(!theme) return
 		forEach(allocations, (amount, org) => {
 			const voteData: {
@@ -66,7 +68,7 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 				member: string
 				org: string
 				amount: number
-				voteSource?: "kiosk" | "mobile"
+				voteSource?: VotingSource
 			} = {
 				theme: theme._id,
 				member: member._id,
@@ -74,31 +76,25 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 				amount,
 			}
 			if(source) {
-				voteData.voteSource = source as "kiosk" | "mobile"
+				voteData.voteSource = source
 			}
 			MemberMethods.fundVote.callAsync(voteData as Parameters<typeof MemberMethods.fundVote.callAsync>[0])
 		})
 	}
 
-	const saveChits = (source?: string) => {
+	const saveChits = (source?: VotingSource) => {
 		if(!theme) return
+
 		forEach(chits, (votes, org) => {
-			const voteData: {
-				theme: string
-				member: string
-				org: string
-				votes: number
-				voteSource?: "kiosk" | "mobile"
-			} = {
+			const voteData = {
 				theme: theme._id,
 				member: member._id,
 				org,
 				votes,
+				voteSource: source,
 			}
-			if(source) {
-				voteData.voteSource = source as "kiosk" | "mobile"
-			}
-			MemberMethods.chitVote.callAsync(voteData as Parameters<typeof MemberMethods.chitVote.callAsync>[0])
+
+			MemberMethods.chitVote.call(voteData)
 		})
 	}
 

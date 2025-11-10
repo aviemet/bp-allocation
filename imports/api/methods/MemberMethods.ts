@@ -29,20 +29,22 @@ interface MemberUpdateData extends Pick<Member, "firstName" | "lastName"> {
 
 interface MemberThemeUpdateData extends Partial<Pick<MemberTheme, "amount" | "chits">> {}
 
+export type VotingSource = "kiosk" | "mobile"
+
 interface FundVoteData {
 	theme: string
 	member: string
 	org: string
 	amount: number
-	voteSource: "kiosk" | "mobile"
+	voteSource?: VotingSource
 }
 
-interface ChitVoteData {
+export interface ChitVoteData {
 	theme: string
 	member: string
 	org: string
 	votes: number
-	voteSource: "kiosk" | "mobile"
+	voteSource?: VotingSource
 }
 
 interface RemoveMemberFromThemeData {
@@ -379,40 +381,41 @@ const MemberMethods = {
 		validate: null,
 
 		async run({ theme, member, org, votes, voteSource }: ChitVoteData) {
-			if(Meteor.isServer) {
-				// Check for existing allocation for this org from this member
-				const memberTheme = await MemberThemes.findOneAsync({ theme, member })
-				if(!memberTheme) return
+			if(!Meteor.isServer) return
 
-				const chitVote = find(memberTheme.chitVotes, ["organization", org])
+			// Check for existing allocation for this org from this member
+			const memberTheme = await MemberThemes.findOneAsync({ theme, member })
+			if(!memberTheme) return
 
-				// Update votes
-				if(!chitVote) {
-					await MemberThemes.updateAsync({ theme: theme, member: member }, {
-						$push: {
-							chitVotes: {
-								organization: org,
-								votes,
-								voteSource,
-							},
+			const chitVote = find(memberTheme.chitVotes, ["organization", org])
+
+			// Update votes
+			if(!chitVote) {
+				await MemberThemes.updateAsync({ theme: theme, member: member }, {
+					$push: {
+						chitVotes: {
+							organization: org,
+							votes,
+							voteSource,
 						},
-					})
+					},
+				})
 				// Or insert chitVote vote
-				} else {
-					await MemberThemes.updateAsync({
-						theme: theme, member: member, chitVotes: {
-							$elemMatch: {
-								organization: org,
-							},
+			} else {
+				await MemberThemes.updateAsync({
+					theme: theme, member: member, chitVotes: {
+						$elemMatch: {
+							organization: org,
 						},
-					}, {
-						$set: {
-							"chitVotes.$.votes": votes,
-							"chitVotes.$.voteSource": voteSource,
-						},
-					})
-				}
+					},
+				}, {
+					$set: {
+						"chitVotes.$.votes": votes,
+						"chitVotes.$.voteSource": voteSource,
+					},
+				})
 			}
+
 		},
 	}),
 

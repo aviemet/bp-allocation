@@ -3,7 +3,7 @@ import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
 import { IconButton } from "@mui/material"
 import { forEach } from "lodash"
-import { useState, useLayoutEffect } from "react"
+import { useState } from "react"
 
 import { useVoting } from "../VotingContext"
 import { type OrgStore } from "/imports/api/stores"
@@ -21,10 +21,6 @@ const ChitTicker = ({ org }: ChitTickerProps) => {
 
 	const MAX = member.theme?.chits || 0
 
-	useLayoutEffect(() => {
-		// Disable contextmenu for long press on mobile
-		document.oncontextmenu = () => false
-	}, [])
 
 	const handleChange = (value: number) => {
 		if(value < 0 || value > MAX) return

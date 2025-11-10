@@ -13,13 +13,14 @@ import { useVoting } from "../VotingContext"
 import { COLORS } from "/imports/lib/global"
 import ChitVoteOrgCard from "./ChitVoteOrgCard"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { VotingSource } from "/imports/api/methods/MemberMethods"
 
 interface ChitVotingKioskProps {
 	user: MemberWithTheme
-	source: string
+	source: VotingSource
 }
 
-const ChitVotingKiosk = observer((props: ChitVotingKioskProps) => {
+const ChitVotingKiosk = observer(({ user, source }: ChitVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { orgs } = useOrgs()
@@ -40,10 +41,13 @@ const ChitVotingKiosk = observer((props: ChitVotingKioskProps) => {
 
 	useEffect(() => {
 		// Display countdown if user is on voting screen when voting becomes disabled
-		if(settings && !settings.chitVotingActive) displayCountDown()
+		if(settings?.chitVotingActive === false) displayCountDown()
 	}, [settings?.chitVotingActive])
 
-	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName
+	const handleFinalizeVote = () => {
+		saveChits(source)
+		setVotingComplete(true)
+	}
 
 	const shuffledOrgs = useMemo(() => {
 		if(!orgs) return []
@@ -62,11 +66,13 @@ const ChitVotingKiosk = observer((props: ChitVotingKioskProps) => {
 		return <VotingComplete setVotingComplete={ setVotingComplete } />
 	}
 
+	const memberName = user.firstName ? user.firstName : user.fullName
+
 	return (
 		<OrgsContainer>
 
 			<Typography variant="h4" component="h1" align="center">
-				{ props.user.firstName && "Voting for" } { memberName }
+				{ user.firstName && "Voting for" } { memberName }
 			</Typography>
 
 			{ countdownVisible && <Countown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
@@ -85,10 +91,7 @@ const ChitVotingKiosk = observer((props: ChitVotingKioskProps) => {
 
 				<FinalizeButton
 					disabled={ buttonDisabled }
-					onClick={ () => {
-						saveChits(props.source)
-						setVotingComplete(true)
-					} }
+					onClick={ handleFinalizeVote }
 				>
 					Finalize Vote
 				</FinalizeButton>

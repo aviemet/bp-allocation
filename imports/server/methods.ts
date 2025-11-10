@@ -23,12 +23,15 @@ type RegisterObserver = <TDoc extends { _id: string }, TParams>(transformer: Tra
 export const registerObserver: RegisterObserver = (transformer) => (title, self, params) => {
 	return {
 		added: (doc) => {
+			// console.log({ doc })
 			return self.added(title, doc._id, transformer(doc, params))
 		},
 		changed: (newDoc) => {
+			// console.log({ newDoc })
 			return self.changed(title, newDoc._id, transformer(newDoc, params))
 		},
 		removed: (oldDoc) => {
+			// console.log({ oldDoc })
 			return self.removed(title, oldDoc._id)
 		},
 	}

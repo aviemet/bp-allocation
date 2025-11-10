@@ -29,7 +29,10 @@ const orgObserver = registerObserver((doc: OrgData, params: OrgObserverParams) =
 
 // Organizations - All orgs for theme
 Meteor.publish("organizations", function(themeId: string) {
-	if(!themeId) return
+	if(!themeId) {
+		this.ready()
+		return
+	}
 
 	const computation = Tracker.autorun(async () => {
 		const theme = await Themes.findOneAsync({ _id: themeId })
@@ -40,7 +43,11 @@ Meteor.publish("organizations", function(themeId: string) {
 
 		const orgsObserver = Organizations.find({ theme: themeId }).observe(orgObserver("organizations", this, { theme, settings, memberThemes } ))
 
-		this.onStop(() => orgsObserver.stop())
+		this.onStop(() => {
+			if(orgsObserver && typeof orgsObserver.stop === "function") {
+				orgsObserver.stop()
+			}
+		})
 		this.ready()
 	})
 
