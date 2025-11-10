@@ -58,7 +58,7 @@ const MembersEdit = () => {
 			}
 			await MemberMethods.upsert.callAsync(upsertData)
 			setFormStatus(STATUS.SUCCESS)
-		} catch(err) {
+		} catch (err) {
 			setFormStatus(STATUS.ERROR)
 			console.error({ err })
 		}
@@ -67,7 +67,7 @@ const MembersEdit = () => {
 	const editUser = async (data: Record<string, unknown>) => {
 		const memberStore = members?.values.find(member => member._id === memberId)
 		if(!memberStore) return
-		
+
 		const memberTheme = memberStore.theme as MemberTheme
 		if(!memberTheme?._id) return
 
@@ -85,7 +85,7 @@ const MembersEdit = () => {
 				chits: Number(data.chits || 0),
 			} })
 			setFormStatus(STATUS.SUCCESS)
-		} catch(err) {
+		} catch (err) {
 			setFormStatus(STATUS.ERROR)
 			console.error({ err })
 		}
@@ -98,7 +98,7 @@ const MembersEdit = () => {
 	}, [formStatus, navigate, id])
 
 	const onError = (errors: unknown, data: unknown) => {
-		console.log({ errors, data })
+		console.error({ errors, data })
 	}
 
 	const handleInitials = (value: unknown, name: string, form: { setValue: (field: string, val: string) => void }) => {

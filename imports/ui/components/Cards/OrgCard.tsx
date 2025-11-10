@@ -146,8 +146,7 @@ const OrgTitle = styled.div`
 
 	h3 {
 		font-family: TradeGothic20;
-		font-size: clamp(1.75rem, -3rem + 3vw + 4.5vh, 3rem);
-		line-height: clamp(1.75rem, -3rem + 3vw + 4.5vh, 3rem);
+		font-size: 2rem;
 		font-weight: 700;
 		letter-spacing: -1px;
 	}

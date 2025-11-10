@@ -3,7 +3,7 @@ import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
 import { IconButton } from "@mui/material"
 import { forEach } from "lodash"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useVoting } from "../VotingContext"
 import { type OrgStore } from "/imports/api/stores"
@@ -20,6 +20,13 @@ const ChitTicker = ({ org }: ChitTickerProps) => {
 	const [ value, setValue ] = useState(chits[org._id] || 0)
 
 	const MAX = member.theme?.chits || 0
+
+	useEffect(() => {
+		const nextValue = chits[org._id] || 0
+		if(value !== nextValue) {
+			setValue(nextValue)
+		}
+	}, [chits, org._id, value])
 
 
 	const handleChange = (value: number) => {

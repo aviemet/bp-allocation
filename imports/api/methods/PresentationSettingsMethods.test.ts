@@ -1,8 +1,8 @@
 import { expect } from "chai"
-import { resetDatabase } from "meteor/xolvio:cleaner"
 
 import { PresentationSettings, SettingsData } from "/imports/api/db"
 import { PresentationSettingsMethods } from "/imports/api/methods"
+import { resetDatabase } from "../../tests/resetDatabase"
 
 let settings: SettingsData
 

@@ -1,6 +1,6 @@
-import { forEach, find, clone } from "lodash"
+import { forEach, find, clone, isEqual } from "lodash"
 import { observer } from "mobx-react-lite"
-import { useState, type ReactNode } from "react"
+import { useEffect, useMemo, useState, type ReactNode } from "react"
 import { useTheme, useOrgs } from "/imports/api/providers"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberWithTheme } from "/imports/server/transformers/memberTransformer"
@@ -37,16 +37,36 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 		initialVotesState[org._id] = allocations?.amount ?? 0
 	})
 
-	const initialChitState: Record<string, number> = {}
-	if(orgs) {
-		orgs.values.forEach(org => {
+	const orgValues = useMemo(() => {
+		if(!orgs) return []
+		return orgs.values.slice()
+	}, [orgs])
+
+	const initialChitState = useMemo(() => {
+		const state: Record<string, number> = {}
+		orgValues.forEach(org => {
 			const chits = find(member.theme?.chitVotes, ["organization", org._id])
-			initialChitState[org._id] = chits?.votes ?? 0
+			state[org._id] = chits?.votes ?? 0
 		})
-	}
+		return state
+	}, [member.theme?.chitVotes, orgValues])
 
 	const [ allocations, setAllocations ] = useState(initialVotesState)
 	const [ chits, setChits ] = useState(initialChitState)
+
+	useEffect(() => {
+		if(!orgs) return
+		const orgsCount = orgValues.length
+		if(orgsCount === 0) return
+		const nextChits: Record<string, number> = {}
+		orgValues.forEach(org => {
+			const chitsValue = find(member.theme?.chitVotes, ["organization", org._id])
+			nextChits[org._id] = chitsValue?.votes ?? 0
+		})
+		setChits(previous => {
+			return isEqual(previous, nextChits) ? previous : nextChits
+		})
+	}, [member.theme?.chitVotes, orgs, orgValues])
 
 	const updateAllocations = (org: string, amount: number) => {
 		const newVotes = clone(allocations)

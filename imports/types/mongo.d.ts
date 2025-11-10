@@ -3,6 +3,14 @@
 
 declare module "meteor/mongo" {
 	namespace Mongo {
+		interface RemoteCollectionDriver {
+			mongo: {
+				db: {
+					dropDatabase(): Promise<void>
+				}
+			}
+		}
+
 		// Simple enhanced modifier that allows complex $pull operations
 		type EnhancedModifier<T> = {
 			$pull?: { [key: string]: any }
@@ -40,4 +48,10 @@ declare module "meteor/mongo" {
 			): Promise<any>
 		}
 	}
+
+	interface MongoInternalsStatic {
+		defaultRemoteCollectionDriver(): Mongo.RemoteCollectionDriver
+	}
+
+	export const MongoInternals: MongoInternalsStatic
 }

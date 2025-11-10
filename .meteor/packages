@@ -34,5 +34,4 @@ nachocodoner:reactive-publish
 less
 typescript
 accounts-base
-xolvio:cleaner
 lmieulet:meteor-coverage@5.0.0

@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker"
 import { expect } from "chai"
-import { resetDatabase } from "meteor/xolvio:cleaner"
 import { ThemeMethods, OrganizationMethods } from "/imports/api/methods"
 import { Themes, Organizations, ThemeData } from "/imports/api/db"
+import { resetDatabase } from "../../tests/resetDatabase"
 
-const themeData: { title: string; leverage: number; _id?: string } = {
+const themeData: { title: string, leverage: number, _id?: string } = {
 	title: faker.company.buzzNoun(),
 	leverage: 1200000,
 }
@@ -58,19 +58,19 @@ describe("Theme Methods", function() {
 	 * Top Org Toggle
 	 */
 	describe("TopOrgToggle", function() {
-	it("Should add an org id to the set of topOrgsManual", async function() {
-		orgId = orgIds[ 0 ]
+		it("Should add an org id to the set of topOrgsManual", async function() {
+			orgId = orgIds[ 0 ]
 
-		await ThemeMethods.topOrgToggle.callAsync({ theme_id: theme._id, org_id: orgId })
-		theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
-		expect(theme.topOrgsManual).to.include(orgId)
-	})
+			await ThemeMethods.topOrgToggle.callAsync({ theme_id: theme._id, org_id: orgId })
+			theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
+			expect(theme.topOrgsManual).to.include(orgId)
+		})
 
-	it("Should remove an org id from the set of topOrgsManual", async function() {
-		await ThemeMethods.topOrgToggle.callAsync({ theme_id: theme._id, org_id: orgId })
-		theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
-		expect(theme.topOrgsManual).to.not.include(orgId)
-	})
+		it("Should remove an org id from the set of topOrgsManual", async function() {
+			await ThemeMethods.topOrgToggle.callAsync({ theme_id: theme._id, org_id: orgId })
+			theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
+			expect(theme.topOrgsManual).to.not.include(orgId)
+		})
 
 	})
 
@@ -79,17 +79,17 @@ describe("Theme Methods", function() {
 	 */
 	describe("SaveOrg", function() {
 
-	it("Should add a save record to the theme", async function() {
-		orgId = orgIds[ faker.number.int({ min: 0, max: orgIds.length - 1 }) ]
-		const amount = faker.number.int()
-		await ThemeMethods.saveOrg.callAsync({
-			id: orgId,
-			amount: amount,
-		})
-		theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
+		it("Should add a save record to the theme", async function() {
+			orgId = orgIds[ faker.number.int({ min: 0, max: orgIds.length - 1 }) ]
+			const amount = faker.number.int()
+			await ThemeMethods.saveOrg.callAsync({
+				id: orgId,
+				amount: amount,
+			})
+			theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
 
-		expect(theme.saves?.[0]).to.include({ org: orgId, amount: amount })
-	})
+			expect(theme.saves?.[0]).to.include({ org: orgId, amount: amount })
+		})
 
 		it("Should increment numTopOrgs", function() {
 			expect(theme.numTopOrgs).to.equal(numTopOrgsDefault + 1)
@@ -106,15 +106,15 @@ describe("Theme Methods", function() {
 	 */
 	describe("UnSaveOrg", function() {
 
-	it("Should remove a save record from the theme", async function() {
-		await ThemeMethods.unSaveOrg.callAsync({
-			theme_id: theme._id,
-			org_id: orgId,
-		})
-		theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
+		it("Should remove a save record from the theme", async function() {
+			await ThemeMethods.unSaveOrg.callAsync({
+				theme_id: theme._id,
+				org_id: orgId,
+			})
+			theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
 
-		expect(theme.saves).to.be.empty
-	})
+			expect(theme.saves).to.be.empty
+		})
 
 		it("Should increment numTopOrgs", function() {
 			expect(theme.numTopOrgs).to.equal(numTopOrgsDefault)
@@ -140,12 +140,12 @@ describe("Theme Methods", function() {
 				}
 			})
 
-		await ThemeMethods.saveLeverageSpread.callAsync(orgs)
+			await ThemeMethods.saveLeverageSpread.callAsync(orgs)
 
-		const orgRecords = await Organizations.find({ _id: { $in: orgIds } }).fetchAsync()
-		orgRecords.forEach(org => {
-			expect(org.leverageFunds).to.equal(leverage)
-		})
+			const orgRecords = await Organizations.find({ _id: { $in: orgIds } }).fetchAsync()
+			orgRecords.forEach(org => {
+				expect(org.leverageFunds).to.equal(leverage)
+			})
 
 		})
 
@@ -155,15 +155,15 @@ describe("Theme Methods", function() {
 	 * Reset Leverage Spread
 	 */
 	describe("ResetLeverage", function() {
-	it("Should set leverageFunds back to 0 for all orgs in theme", async function() {
-		await ThemeMethods.resetLeverage.callAsync(theme._id)
-		theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
+		it("Should set leverageFunds back to 0 for all orgs in theme", async function() {
+			await ThemeMethods.resetLeverage.callAsync(theme._id)
+			theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
 
-		const orgRecords = await Organizations.find({ _id: { $in: orgIds } }).fetchAsync()
-		orgRecords.forEach(org => {
-			expect(org.leverageFunds).to.equal(0)
+			const orgRecords = await Organizations.find({ _id: { $in: orgIds } }).fetchAsync()
+			orgRecords.forEach(org => {
+				expect(org.leverageFunds).to.equal(0)
+			})
 		})
-	})
 	})
 
 	/**
@@ -171,14 +171,14 @@ describe("Theme Methods", function() {
 	 */
 	describe("Update", function() {
 
-	it("Should update specified fields on the object", async function() {
-		const question = faker.lorem.words(3)
-		await ThemeMethods.update.callAsync({ id: theme._id, data: {
-			question: question,
-		} })
-		theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
-		expect(theme.question).to.equal(question)
-	})
+		it("Should update specified fields on the object", async function() {
+			const question = faker.lorem.words(3)
+			await ThemeMethods.update.callAsync({ id: theme._id, data: {
+				question: question,
+			} })
+			theme = (await Themes.find({ _id: theme._id }).fetchAsync())[0]
+			expect(theme.question).to.equal(question)
+		})
 
 	})
 

@@ -45,7 +45,7 @@ class TrackableCollection<T extends TrackableStore<TrackableData> = TrackableSto
 		if(i >= 0) {
 			// Update values
 			for(let [ key, value ] of Object.entries(data)) {
-				if(!isEqual((this.values[i] as any)[key], value)) {
+				if(!isEqual((this.values[i])[key], value)) {
 					(this.values[i] as any)[key] = value
 				}
 			}

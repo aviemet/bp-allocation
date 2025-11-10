@@ -9,6 +9,8 @@
 ### Publications and Observers
 - Server publications commonly wrap Mongo observers using a `registerObserver` utility (`imports/server/methods.ts`) that returns `{ added, changed, removed }` handlers with a shared transformer.
 - Publications use `Tracker.autorun` to reactively derive IDs from one collection (e.g., `MemberThemes`) and observe another (`Members`), and tie observer/computation cleanup to the publication via `this.onStop`.
+- Tracker server reactivity still relies on synchronous reads; use `find()` / `findOne()` / `fetch()` inside the autorun and avoid awaiting `fetchAsync` or `findOneAsync` in the reactive block, otherwise downstream subscribers stop receiving updates.
+- To keep Meteor 3 async fetches reactive, publications now pair lightweight `observeChanges` watchers with a single live query handle; watchers trigger a debounced async refresh that refetches the dependent data and restarts the shared observer without spawning duplicate handles.
 
 ### Data Provider Hierarchy
 The application uses a nested provider pattern established in `imports/ui/App.tsx`:
@@ -229,6 +231,9 @@ The two data structures serve different purposes and should not be conflated:
 - Test files are co-located with the code they test (e.g., `Members.test.ts` next to `Members.ts`)
 - Mock/fixture files use `.mock.ts` suffix and live in `/imports/mock/` - they're only loaded via explicit imports
 - The `/tests/` directory is reserved for external test runners (Cypress) and files Meteor should completely ignore
+
+### Test Database Reset Helper
+- Unit and integration tests reset their database state through `imports/tests/resetDatabase`, which calls `MongoInternals.defaultRemoteCollectionDriver().mongo.db.dropDatabase()`; this targets only the isolated database started for the current Meteor test process.
 
 ### Timer Management in React + Meteor
 - Use `useRef` to store timer IDs and prevent recreation on each render

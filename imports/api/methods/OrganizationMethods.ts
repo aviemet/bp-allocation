@@ -58,7 +58,7 @@ const OrganizationMethods = {
 					$push: { organizations: response },
 				})
 				return { error: undefined, response }
-			} catch(error) {
+			} catch (error) {
 				console.error(error)
 				return { error, response: undefined }
 			}
@@ -74,7 +74,6 @@ const OrganizationMethods = {
 		validate: null,
 
 		async run({ id, data }: OrganizationUpdateData) {
-			console.log({ id, data })
 			return await Organizations.updateAsync({ _id: id }, { $set: data })
 		},
 	}),
@@ -99,7 +98,7 @@ const OrganizationMethods = {
 				try {
 					await Organizations.removeAsync(id)
 					await Themes.updateAsync({ _id: org.theme }, { $pull: { organizations: id } })
-				} catch(err) {
+				} catch (err) {
 					console.error(err)
 					throw err
 				}

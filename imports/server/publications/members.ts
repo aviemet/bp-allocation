@@ -1,6 +1,5 @@
 import { Meteor } from "meteor/meteor"
 import { Mongo } from "meteor/mongo"
-import { Tracker } from "meteor/tracker"
 
 import { Members, MemberThemes, type MemberData } from "/imports/api/db"
 import { MemberTransformer } from "/imports/server/transformers"
@@ -13,7 +12,8 @@ interface MembersTransformerParams {
 }
 
 const membersTransformer = registerObserver((doc: MemberData, params: MembersTransformerParams) => {
-	const memberTheme = params.memberThemes.find(theme => theme.member === doc._id)
+	const memberTheme = params.memberThemes
+		.find(theme => theme.member === doc._id && theme.theme === params.themeId)
 	return MemberTransformer(doc, memberTheme)
 })
 
@@ -36,33 +36,96 @@ Meteor.publish("members", function({ themeId, limit }: { themeId: string, limit:
 		subOptions.limit = limit
 	}
 
-	const computation = Tracker.autorun(async () => {
-		const memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
-		const memberIds = memberThemes
-			.map(mt => mt.member)
-			.filter((id): id is string => typeof id === "string")
+	let membersObserver: Meteor.LiveQueryHandle | null = null
+	let hasCalledReady = false
 
-		const membersObserver = Members
-			.find({ _id: { $in: memberIds } }, subOptions)
-			.observe(membersTransformer("members", this, { themeId, memberThemes }))
-		this.ready()
+	const stopMembersObserver = () => {
+		if(membersObserver && typeof membersObserver.stop === "function") {
+			membersObserver.stop()
+		}
+		membersObserver = null
+	}
 
-		this.onStop(() => {
-			if(membersObserver && typeof membersObserver.stop === "function") {
-				membersObserver.stop()
+	const publication = this
+	let isStopped = false
+	const memberThemesCursor = MemberThemes.find({ theme: themeId })
+	const watchers: Meteor.LiveQueryHandle[] = []
+	let refreshInProgress = false
+	let refreshQueued = false
+
+	const refreshMembers = async () => {
+		try {
+			const memberThemes = await memberThemesCursor.fetchAsync()
+			if(isStopped) {
+				return
 			}
-			computation.stop()
+
+			stopMembersObserver()
+
+			const memberIds = memberThemes
+				.map(memberTheme => memberTheme.member)
+				.filter((memberId): memberId is string => typeof memberId === "string")
+
+			if(memberIds.length > 0) {
+				membersObserver = Members
+					.find({ _id: { $in: memberIds } }, subOptions)
+					.observe(membersTransformer("members", publication, { themeId, memberThemes }))
+			}
+
+			if(!hasCalledReady) {
+				publication.ready()
+				hasCalledReady = true
+			}
+		} catch (error) {
+			const castError = error instanceof Error ? error : new Error(String(error))
+			publication.error(castError)
+		}
+	}
+
+	const scheduleRefresh = () => {
+		if(isStopped) {
+			return
+		}
+		if(refreshInProgress) {
+			refreshQueued = true
+			return
+		}
+		refreshInProgress = true
+		void refreshMembers().finally(() => {
+			refreshInProgress = false
+			if(refreshQueued) {
+				refreshQueued = false
+				scheduleRefresh()
+			}
+		})
+	}
+
+	watchers.push(memberThemesCursor.observeChanges({
+		added: scheduleRefresh,
+		changed: scheduleRefresh,
+		removed: scheduleRefresh,
+	}))
+
+	scheduleRefresh()
+
+	this.onStop(() => {
+		isStopped = true
+		stopMembersObserver()
+		watchers.forEach(handle => {
+			if(handle && typeof handle.stop === "function") {
+				handle.stop()
+			}
 		})
 	})
 })
 
-Meteor.publish("member", async function({ memberId, themeId }: { memberId?: string, themeId: string }) {
+Meteor.publish("member", function({ memberId, themeId }: { memberId?: string, themeId: string }) {
 	if(!memberId) {
 		this.ready()
 		return
 	}
 
-	const memberTheme = await MemberThemes.findOneAsync({ member: memberId, theme: themeId })
+	const memberTheme = MemberThemes.findOne({ member: memberId, theme: themeId })
 	const memberThemes = memberTheme ? [memberTheme] : []
 
 	const memberObserver = Members.find({ _id: memberId }).observe(membersTransformer("members", this, { themeId, memberThemes }))

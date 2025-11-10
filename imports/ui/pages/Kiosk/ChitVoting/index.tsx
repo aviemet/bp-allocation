@@ -1,19 +1,20 @@
 import styled from "@emotion/styled"
 import { Container, Button, Typography } from "@mui/material"
-import { forEach, shuffle } from "lodash"
+import { forEach } from "lodash"
 import { observer } from "mobx-react-lite"
 import { useState, useEffect, useMemo } from "react"
 
 import { useData, useSettings, useOrgs } from "/imports/api/providers"
 
 import { OrgCardContainer } from "/imports/ui/components/Cards"
-import Countown from "../Countdown"
+import Countdown from "../Countdown"
 import VotingComplete from "../VotingComplete"
 import { useVoting } from "../VotingContext"
 import { COLORS } from "/imports/lib/global"
 import ChitVoteOrgCard from "./ChitVoteOrgCard"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
+import { shuffleWithSeed } from "/imports/lib/shuffleWithSeed"
 
 interface ChitVotingKioskProps {
 	user: MemberWithTheme
@@ -25,10 +26,6 @@ const ChitVotingKiosk = observer(({ user, source }: ChitVotingKioskProps) => {
 	const { settings } = useSettings()
 	const { orgs } = useOrgs()
 	const { chits, saveChits, member } = useVoting()
-
-	// const voted = props.user.theme.chitVotes.some(org => org.votes > 0)
-
-	// const [voted, setVoted] = useState(false)
 
 	const [ votingComplete, setVotingComplete ] = useState(false)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
@@ -52,10 +49,9 @@ const ChitVotingKiosk = observer(({ user, source }: ChitVotingKioskProps) => {
 	const shuffledOrgs = useMemo(() => {
 		if(!orgs) return []
 
-		return shuffle(orgs.values.map(org => {
-			return <ChitVoteOrgCard key={ org._id } org={ org } />
-		}))
-	}, [orgs])
+		const sorted = orgs.values.slice().sort((a, b) => a._id.localeCompare(b._id))
+		return shuffleWithSeed(sorted, user._id).map(org => <ChitVoteOrgCard key={ org._id } org={ org } />)
+	}, [orgs, user._id])
 
 	let chitsSum = 0
 	forEach(chits, value => chitsSum += value)
@@ -75,7 +71,7 @@ const ChitVotingKiosk = observer(({ user, source }: ChitVotingKioskProps) => {
 				{ user.firstName && "Voting for" } { memberName }
 			</Typography>
 
-			{ countdownVisible && <Countown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
+			{ countdownVisible && <Countdown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
 
 			<Container maxWidth="xl" sx={ { height: "100%" } }>
 				<OrgCardContainer
