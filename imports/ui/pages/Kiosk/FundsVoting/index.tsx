@@ -14,6 +14,7 @@ import Countdown from "../Countdown"
 
 import { COLORS } from "/imports/lib/global"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { VotingSource } from "/imports/api/methods/MemberMethods"
 
 interface AmountRemainingProps {
 	value: number
@@ -29,16 +30,16 @@ const AmountRemaining = React.memo(({ value }: AmountRemainingProps) => {
 
 interface FundsVotingKioskProps {
 	user: MemberWithTheme
-	source: string
+	source: VotingSource
 }
 
-const FundsVotingKiosk = observer((props: FundsVotingKioskProps) => {
+const FundsVotingKiosk = observer(({ user, source }: FundsVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
 	const { allocations, saveAllocations, member } = useVoting()
 
-	const voted = props.user.theme?.allocations?.some(org => (org.amount || 0) > 0) || false
+	const voted = user.theme?.allocations?.some(org => (org.amount || 0) > 0) || false
 
 	const [ votingComplete, setVotingComplete ] = useState(voted)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
@@ -54,7 +55,7 @@ const FundsVotingKiosk = observer((props: FundsVotingKioskProps) => {
 		if(settings && !settings.fundsVotingActive) displayCountDown()
 	}, [settings?.fundsVotingActive])
 
-	const memberName = props.user.firstName ? props.user.firstName : props.user.fullName
+	const memberName = user.firstName ? user.firstName : user.fullName
 
 	let allocationsSum = 0
 	forEach(allocations, value => allocationsSum += value)
@@ -66,7 +67,7 @@ const FundsVotingKiosk = observer((props: FundsVotingKioskProps) => {
 	}
 	return (
 		<OrgsContainer>
-			<Typography variant="h4" component="h1" align="center">{ props.user.firstName && "Voting for" } { memberName }</Typography>
+			<Typography variant="h4" component="h1" align="center">{ user.firstName && "Voting for" } { memberName }</Typography>
 
 			{ countdownVisible && <Countdown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
 
@@ -90,7 +91,7 @@ const FundsVotingKiosk = observer((props: FundsVotingKioskProps) => {
 				<FinalizeButton
 					disabled={ buttonDisabled }
 					onClick={ () => {
-						saveAllocations(props.source)
+						saveAllocations(source)
 						setVotingComplete(true)
 					} }>Finalize Vote</FinalizeButton>
 			</>

@@ -1,4 +1,4 @@
-import { createRouter, createRoute, RouterProvider, Navigate, useParams, redirect } from "@tanstack/react-router"
+import { createRouter, createRoute, RouterProvider, Navigate, redirect } from "@tanstack/react-router"
 import { Meteor } from "meteor/meteor"
 
 import { WelcomeLayout } from "/imports/ui/layouts"
@@ -8,6 +8,7 @@ import { kioskRoute } from "./kiosk"
 import { pledgesRoute } from "./pledges"
 import { presentationRoute, presentationPageRoute } from "./presentation"
 import { rootRoute } from "./rootRoute"
+import ShortRoute from "./ShortRoute"
 import SimulationRoute from "./SimulationRoute"
 import VotingRoute from "./VotingRoute"
 import Login from "../pages/Welcome/Login"
@@ -35,15 +36,10 @@ const loginRoute = createRoute({
 	},
 })
 
-const ShortRouteComponent = () => {
-	const { themeSlug, memberCode } = useParams({ from: "/v/$themeSlug/$memberCode" })
-	return <div>Short route: { themeSlug } - { memberCode }</div>
-}
-
 const shortRoute = createRoute({
 	getParentRoute: () => rootRoute,
 	path: "/v/$themeSlug/$memberCode",
-	component: ShortRouteComponent,
+	component: ShortRoute,
 })
 
 const votingRoute = createRoute({
