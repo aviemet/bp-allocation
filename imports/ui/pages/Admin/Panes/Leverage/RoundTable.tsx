@@ -49,18 +49,18 @@ const RoundTable = ({ orgs }: RoundTableProps) => {
 			</TableHead>
 
 			<TableBody>
-		{ orgs.map(org => (
-			<TableRow
-				key={ org._id }
-				className={ (org.need || 0) === 0 && (org.roundFunds || 0) > 0 ? "fully-funded" : "" }
-			>
-				<TableCell>{ org.title }</TableCell>
-				<TableCell>{ (org.roundFunds || 0) === 0 ? "-" : numeral(org.roundFunds || 0).format("$0,0.00") }</TableCell>
-				<TableCell>{ (org.percent || 0) === 0 ? "-" : numeral(org.percent || 0).format("0.0000%") }</TableCell>
-				<TableCell>{ numeral((org.allocatedFunds || 0) + (org.leverageFunds || 0)).format("$0,0.00") }</TableCell>
-				<TableCell>{ (org.need || 0) === 0 ? <CheckIcon color="success" /> : numeral(org.need || 0).format("$0,0.00") }</TableCell>
-			</TableRow>
-		)) }
+				{ orgs.map(org => (
+					<TableRow
+						key={ org._id }
+						className={ (org.need || 0) === 0 && (org.roundFunds || 0) > 0 ? "fully-funded" : "" }
+					>
+						<TableCell>{ org.title }</TableCell>
+						<TableCell>{ (org.roundFunds || 0) === 0 ? "-" : numeral(org.roundFunds || 0).format("$0,0.00") }</TableCell>
+						<TableCell>{ (org.percent || 0) === 0 ? "-" : numeral(org.percent || 0).format("0.0000%") }</TableCell>
+						<TableCell>{ numeral((org.allocatedFunds || 0) + (org.leverageFunds || 0)).format("$0,0.00") }</TableCell>
+						<TableCell>{ (org.need || 0) === 0 ? <CheckIcon color="success" /> : numeral(org.need || 0).format("$0,0.00") }</TableCell>
+					</TableRow>
+				)) }
 			</TableBody>
 
 			<TableFooter>

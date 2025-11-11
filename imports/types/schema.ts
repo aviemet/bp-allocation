@@ -42,6 +42,8 @@ export interface Theme {
 	consolationAmount?: number
 	consolationActive?: boolean
 	leverageTotal?: number
+	minLeverageAmount?: number
+	minLeverageAmountActive?: boolean
 	saves?: OrgSave[]
 	presentationSettings?: string
 	slug?: string

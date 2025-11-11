@@ -20,7 +20,6 @@ const MessageStatusSchema = new SimpleSchema({
 	error: Boolean,
 })
 
-
 export const ThemeSchema = new SimpleSchema({
 	title: {
 		type: String,
@@ -58,13 +57,13 @@ export const ThemeSchema = new SimpleSchema({
 	},
 	chitWeight: {
 		type: SimpleSchema.Integer,
-		label: "Multiplicant weight of chits vs. non-present votes",
+		label: "Multiplicand weight of chits vs. non-present votes",
 		required: false,
 		defaultValue: 3,
 	},
 	matchRatio: {
 		type: SimpleSchema.Integer,
-		label: "Multiplicant of dollar match values in pledge round",
+		label: "Multiplicand of dollar match values in pledge round",
 		required: false,
 		defaultValue: 2,
 	},
@@ -85,6 +84,17 @@ export const ThemeSchema = new SimpleSchema({
 		label: "Total amount to allocate for this theme",
 		required: false,
 		defaultValue: 0,
+	},
+	minLeverageAmount: {
+		type: Number,
+		label: "Minimum amount to allocate per org before leverage spread",
+		required: false,
+	},
+	minLeverageAmountActive: {
+		type: Boolean,
+		label: "Guarantee a minimum amount to each org before leverage?",
+		required: false,
+		defaultValue: true,
 	},
 	saves: {
 		type: Array,

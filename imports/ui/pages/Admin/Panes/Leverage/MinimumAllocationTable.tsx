@@ -1,4 +1,3 @@
-import CheckIcon from "@mui/icons-material/Check"
 import {
 	Table,
 	TableHead,
@@ -9,28 +8,27 @@ import {
 } from "@mui/material"
 import numeral from "numeral"
 
-interface ResultsTableProps {
-	round: {
-		orgs: Array<{
-			_id: string
-			title?: string
-			leverageFunds?: number
-			allocatedFunds?: number
-			ask?: number
-			need?: number
-		}>
-	}
+interface MinimumAllocationTableProps {
+	orgs: Array<{
+		_id: string
+		title?: string
+		minimumLeverageAllocation?: number
+		allocatedFunds?: number
+		leverageFunds?: number
+		need?: number
+		ask?: number
+	}>
 }
 
-const ResultsTable = ({ round }: ResultsTableProps) => {
+const MinimumAllocationTable = ({ orgs }: MinimumAllocationTableProps) => {
 	let totals = {
-		spread: 0,
+		minimum: 0,
 		total: 0,
 		needed: 0,
 	}
 
-	round.orgs.map(org => {
-		totals.spread += org.leverageFunds || 0
+	orgs.forEach(org => {
+		totals.minimum += org.minimumLeverageAllocation || 0
 		totals.total += (org.allocatedFunds || 0) + (org.leverageFunds || 0)
 		totals.needed += org.need || 0
 	})
@@ -40,21 +38,21 @@ const ResultsTable = ({ round }: ResultsTableProps) => {
 			<TableHead>
 				<TableRow>
 					<TableCell>Organization</TableCell>
-					<TableCell>Leverage Spread</TableCell>
+					<TableCell>Minimum Allocation</TableCell>
 					<TableCell>Ask</TableCell>
-					<TableCell>Total Earned</TableCell>
+					<TableCell>Total After Minimum</TableCell>
 					<TableCell>Still Needed</TableCell>
 				</TableRow>
 			</TableHead>
 
 			<TableBody>
-				{ round.orgs.map(org => (
-					<TableRow key={ org._id } className={ (org.need || 0) === 0 ? "fully-funded" : "" }>
+				{ orgs.map(org => (
+					<TableRow key={ org._id }>
 						<TableCell>{ org.title }</TableCell>
-						<TableCell>{ (org.leverageFunds || 0) === 0 ? "-" : numeral(org.leverageFunds || 0).format("$0,0.00") }</TableCell>
+						<TableCell>{ (org.minimumLeverageAllocation || 0) === 0 ? "-" : numeral(org.minimumLeverageAllocation || 0).format("$0,0.00") }</TableCell>
 						<TableCell>{ numeral(org.ask).format("$0,0.00") }</TableCell>
 						<TableCell>{ numeral((org.allocatedFunds || 0) + (org.leverageFunds || 0)).format("$0,0.00") }</TableCell>
-						<TableCell>{ (org.need || 0) === 0 ? <CheckIcon color="success" /> : numeral(org.need || 0).format("$0,0.00") }</TableCell>
+						<TableCell>{ numeral(org.need || 0).format("$0,0.00") }</TableCell>
 					</TableRow>
 				)) }
 			</TableBody>
@@ -62,7 +60,7 @@ const ResultsTable = ({ round }: ResultsTableProps) => {
 			<TableFooter>
 				<TableRow>
 					<TableCell align="right">Totals:</TableCell>
-					<TableCell>{ numeral(totals.spread).format("$0,0.00") }</TableCell>
+					<TableCell>{ numeral(totals.minimum).format("$0,0.00") }</TableCell>
 					<TableCell></TableCell>
 					<TableCell>{ numeral(totals.total).format("$0,0.00") }</TableCell>
 					<TableCell>{ numeral(totals.needed).format("$0,0.00") }</TableCell>
@@ -72,4 +70,5 @@ const ResultsTable = ({ round }: ResultsTableProps) => {
 	)
 }
 
-export default ResultsTable
+export default MinimumAllocationTable
+

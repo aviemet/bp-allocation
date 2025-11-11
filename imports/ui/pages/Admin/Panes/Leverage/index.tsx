@@ -12,7 +12,6 @@ import { useTheme, useOrgs } from "/imports/api/providers"
 import { ThemeMethods } from "/imports/api/methods"
 import LeverageObject from "/imports/lib/Leverage"
 
-
 import ResultsTable from "./ResultsTable"
 import RoundTable from "./RoundTable"
 
@@ -26,7 +25,11 @@ const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
 
 	if(!theme) return null
 
-	const leverage = new LeverageObject(topOrgs, Number(theme.leverageRemaining))
+	const leverage = new LeverageObject(topOrgs, Number(theme.leverageRemaining), {
+		minLeverageAmountActive: theme.minLeverageAmountActive || false,
+		minLeverageAmount: theme.minLeverageAmount || 0,
+	})
+
 	const rounds = leverage.getLeverageSpreadRounds()
 
 	const saveLeverageSpread = async (lastRound: { orgs: Array<{ _id: string, leverageFunds?: number }> }) => {

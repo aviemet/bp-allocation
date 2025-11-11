@@ -25,26 +25,39 @@ interface LeverageRound {
 	orgs: OrganizationWithFunding[]
 }
 
+interface ThemeLeverageSettings {
+	minLeverageAmountActive: boolean
+	minLeverageAmount: number
+}
+
 class Leverage {
 	rounds: LeverageRound[] = []
 	leverageRemaining: number
 	orgs: OrganizationWithFunding[]
 	sumRemainingOrgs: number
+	themeLeverageSettings: ThemeLeverageSettings
 
 	/**
 	 * Clone top orgs (so no reference issues)
 	 * Add an accumulator for the leverage allocation per round
 	 * Also calculate sumRemainingOrgs for first round leverage
 	 */
-	constructor(orgs: OrganizationWithFunding[], leverageRemaining: number) {
+	constructor(
+		orgs: OrganizationWithFunding[],
+		leverageRemaining: number,
+		themeLeverageSettings: ThemeLeverageSettings = {
+			minLeverageAmountActive: false,
+			minLeverageAmount: 0,
+		}) {
+
 		this.leverageRemaining = leverageRemaining
+		this.themeLeverageSettings = themeLeverageSettings
 
 		let sumRemainingOrgs = 0
 		this.orgs = orgs.map(org => {
 			const orgClone = toJS(org)
 
-			delete (orgClone as any).parent
-			delete (orgClone as any).createdAt
+			delete (orgClone).createdAt
 			orgClone.save = org.save
 			orgClone.pledgeTotal = org.pledgeTotal
 			orgClone.amountFromVotes = org.amountFromVotes
@@ -68,6 +81,7 @@ class Leverage {
 	 */
 	getLeverageSpreadRounds() {
 		let nRounds = 1
+
 		while(this.leverageRemaining >= 1 && this._numFullyFundedOrgs() < this.orgs.length && nRounds < 10) {
 
 			const round: LeverageRound = {
@@ -111,18 +125,28 @@ class Leverage {
 		org.roundFunds = 0 // Amount allocated to org this round
 		org.percent = 0 // Percentage of remaining pot used for allocation
 
-		// Calculate all percentage on 1st, subsequently
-		// only calculate percentage if not fully funded
-		if(nRounds === 1 || (org.need || 0) > 0 && this.sumRemainingOrgs !== 0) {
-			// Percent: (funding amount from voting/pledges) / (sum of that amount for orgs not yet fully funded)
-			org.percent = (org.allocatedFunds || 0) / this.sumRemainingOrgs
-		}
+		const shouldApplyMinimum = this.themeLeverageSettings.minLeverageAmountActive && nRounds === 1
 
-		// Give funds for this round
-		org.roundFunds = roundFloat(String(Math.min(
-			(org.percent || 0) * this.leverageRemaining,
-			org.need || 0
-		)))
+		if(shouldApplyMinimum) {
+			const minimumTarget = this.themeLeverageSettings.minLeverageAmount
+			const currentAllocated = org.allocatedFunds || 0
+			const need = org.need || 0
+			const remainingLeverage = this.leverageRemaining
+			const difference = Math.max(minimumTarget - currentAllocated, 0)
+			org.roundFunds = roundFloat(String(Math.min(difference, need, remainingLeverage)))
+		} else {
+			// Calculate all percentage on 1st, subsequently only calculate percentage if not fully funded
+			if(nRounds === 1 || (org.need || 0) > 0 && this.sumRemainingOrgs !== 0) {
+				// Percent: (funding amount from voting/pledges) / (sum of that amount for orgs not yet fully funded)
+				org.percent = (org.allocatedFunds || 0) / this.sumRemainingOrgs
+			}
+
+			// Give funds for this round
+			org.roundFunds = roundFloat(String(Math.min(
+				(org.percent || 0) * this.leverageRemaining,
+				org.need || 0
+			)))
+		}
 
 		// Accumulate the running total of all accrued funds during leverage rounds
 		org.leverageFunds = roundFloat(String((org.leverageFunds || 0) + (org.roundFunds || 0)))
@@ -150,6 +174,7 @@ class Leverage {
 
 		return roundFloat(leverageRemaining - funds)
 	}
+
 }
 
 export default Leverage

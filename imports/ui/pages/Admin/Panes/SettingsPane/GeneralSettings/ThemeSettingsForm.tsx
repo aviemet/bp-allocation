@@ -22,6 +22,7 @@ const SettingsPane = observer(() => {
 		const sanitizedData = data
 		if(sanitizedData.leverageTotal) sanitizedData.leverageTotal = roundFloat(String(sanitizedData.leverageTotal))
 		if(sanitizedData.consolationAmount) sanitizedData.consolationAmount = roundFloat(String(sanitizedData.consolationAmount))
+		if(sanitizedData.minLeverageAmount) sanitizedData.minLeverageAmount = roundFloat(String(sanitizedData.minLeverageAmount))
 		if(sanitizedData.matchRatio) sanitizedData.matchRatio = parseInt(String(sanitizedData.matchRatio))
 		if(sanitizedData.chitWeight) sanitizedData.chitWeight = parseInt(String(sanitizedData.chitWeight))
 		return sanitizedData
@@ -37,6 +38,7 @@ const SettingsPane = observer(() => {
 			})
 			setFormStatus(STATUS.SUCCESS)
 		} catch (err) {
+			console.error(err)
 			setFormStatus(STATUS.READY)
 		}
 	}
@@ -60,6 +62,8 @@ const SettingsPane = observer(() => {
 				matchRatio: theme.matchRatio || "",
 				consolationAmount: theme.consolationAmount || "",
 				consolationActive: theme.consolationActive || false,
+				minLeverageAmount: theme.minLeverageAmount || "",
+				minLeverageAmountActive: theme.minLeverageAmountActive || false,
 			} }
 		>
 			<Grid container spacing={ 2 }>
@@ -84,8 +88,10 @@ const SettingsPane = observer(() => {
 					<TextInput
 						name="leverageTotal"
 						label="Total Pot"
-						InputProps={ {
-							startAdornment: <InputAdornment position="start">$</InputAdornment>,
+						slotProps={ {
+							input: {
+								startAdornment: <InputAdornment position="start">$</InputAdornment>,
+							},
 						} }
 					/>
 				</Grid>
@@ -118,8 +124,10 @@ const SettingsPane = observer(() => {
 					<TextInput
 						name="consolationAmount"
 						label="Amount for bottom orgs"
-						InputProps={ {
-							startAdornment: <InputAdornment position="start">$</InputAdornment>,
+						slotProps={ {
+							input: {
+								startAdornment: <InputAdornment position="start">$</InputAdornment>,
+							},
 						} }
 					/>
 				</Grid>
@@ -129,6 +137,27 @@ const SettingsPane = observer(() => {
 					<FormControlLabel
 						label="Use Consolation?"
 						control={ <Switch name="consolationActive" /> }
+					/>
+				</Grid>
+
+				<Grid size={ { xs: 12, md: 6 } }>
+					{ /* Minimum Leverage Amount */ }
+					<TextInput
+						name="minLeverageAmount"
+						label="Minimum Leverage Amount"
+						slotProps={ {
+							input: {
+								startAdornment: <InputAdornment position="start">$</InputAdornment>,
+							},
+						} }
+					/>
+				</Grid>
+
+				<Grid size={ { xs: 12, md: 6 } }>
+					{ /* Minimum Leverage Amount Active */ }
+					<FormControlLabel
+						label="Use Minimum Leverage Amount"
+						control={ <Switch name="minLeverageAmountActive" /> }
 					/>
 				</Grid>
 

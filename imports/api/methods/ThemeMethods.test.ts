@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker"
 import { expect } from "chai"
 import { ThemeMethods, OrganizationMethods } from "/imports/api/methods"
 import { Themes, Organizations, ThemeData } from "/imports/api/db"
-import { resetDatabase } from "../../tests/resetDatabase"
+import { resetDatabase } from "/imports/tests/resetDatabase"
 
 const themeData: { title: string, leverage: number, _id?: string } = {
 	title: faker.company.buzzNoun(),

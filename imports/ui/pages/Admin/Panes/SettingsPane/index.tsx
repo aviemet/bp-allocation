@@ -29,35 +29,30 @@ const panes = [
 ]
 
 const Settings = () => {
-	// Get params safely - only if we're on a route with an ID and activeTab
-	let params: { id?: string; activeTab?: string } = {}
-	try {
-		params = useParams({ from: "/admin/$id/settings/$activeTab" })
-	} catch(error) {
-		// We're not on a route with the expected structure, params will be empty
-		params = {}
-	}
+	const params = useParams({ strict: false })
+	const themeId = params.id
+	const activeTab = params.activeTab ?? panes[0].slug
+
+	if(!themeId) return null
+
+	const tabsValue = `/admin/${themeId}/settings/${activeTab}`
+	const selectedPane = panes.find(pane => pane.slug === activeTab)
 
 	return (
 		<>
-			<Tabs value={ `/admin/${params.id}/settings/${params.activeTab}` }>
+			<Tabs value={ tabsValue }>
 				{ panes.map(pane => (
 					<Tab
 						key={ `tab-${pane.slug}` }
 						label={ pane.label }
-						value={ `/admin/${params.id}/settings/${pane.slug}` }
-						to={ `/admin/${params.id}/settings/${pane.slug}` }
+						value={ `/admin/${themeId}/settings/${pane.slug}` }
+						to={ `/admin/${themeId}/settings/${pane.slug}` }
 						component={ Link }
 					/>
 				)) }
 			</Tabs>
 			<Box sx={ { mt: 2 } }>
-				{ panes.map(pane => {
-					if(pane.slug === params.activeTab) {
-						return <div key={ `content-${pane.slug}` }>{ pane.render }</div>
-					}
-					return null
-				}) }
+				{ selectedPane ? <div key={ `content-${selectedPane.slug}` }>{ selectedPane.render }</div> : null }
 			</Box>
 		</>
 	)

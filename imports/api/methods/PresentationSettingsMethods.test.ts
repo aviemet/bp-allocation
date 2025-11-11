@@ -2,7 +2,7 @@ import { expect } from "chai"
 
 import { PresentationSettings, SettingsData } from "/imports/api/db"
 import { PresentationSettingsMethods } from "/imports/api/methods"
-import { resetDatabase } from "../../tests/resetDatabase"
+import { resetDatabase } from "/imports/tests/resetDatabase"
 
 let settings: SettingsData
 
