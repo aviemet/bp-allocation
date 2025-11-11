@@ -42,6 +42,7 @@ const Overview = () => {
 								<Stack direction="row" justifyContent="space-around" alignItems="center">
 									<ExportMemberVotes />
 									<ExportTopups />
+									<ExportChitVotes />
 								</Stack>
 							</TableCell>
 						</TableRow>
@@ -111,8 +112,8 @@ const Overview = () => {
 								}, 0)
 							}</MoneyCell>
 
-						{ /* Leverage */ }
-						<MoneyCell>{ Number(theme.leverageRemaining || 0) }</MoneyCell>
+							{ /* Leverage */ }
+							<MoneyCell>{ Number(theme.leverageRemaining || 0) }</MoneyCell>
 
 							{ /* Total Allocated */ }
 							<MoneyCell>{
@@ -139,7 +140,6 @@ const Overview = () => {
 				</StyledTable>
 			</TableContainer>
 
-			<ExportChitVotes />
 		</>
 	)
 }

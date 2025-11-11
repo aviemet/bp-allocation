@@ -51,12 +51,14 @@ const PresentationPane = observer(() => {
 				currentPage: "intro",
 				fundsVotingActive: false,
 				chitVotingActive: false,
+				topupsActive: false,
 				animateOrgs: true,
 				leverageVisible: false,
 				savesVisible: false,
 				colorizeOrgs: false,
 				resultsVisited: false,
 				resultsOffset: 0,
+				timerLength: 600,
 			},
 		})
 	}
