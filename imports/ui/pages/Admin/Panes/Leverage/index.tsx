@@ -1,5 +1,6 @@
 import {
 	Button,
+	Container,
 	Paper,
 	Stack,
 	Typography,
@@ -59,7 +60,7 @@ const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
 	const leverageDistributed = orgSpreadSum === roundSpreadSum && roundSpreadSum > 0
 
 	return (
-		<>
+		<Container>
 			<StageCard>
 				<Stack direction="row" justifyContent="space-between" alignItems="center">
 					<Typography component="h2" variant="h3">Final Distribution</Typography>
@@ -101,7 +102,7 @@ const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
 					<RoundTable orgs={ round.orgs } />
 				</StageCard>
 			)) }
-		</>
+		</Container>
 	)
 })
 

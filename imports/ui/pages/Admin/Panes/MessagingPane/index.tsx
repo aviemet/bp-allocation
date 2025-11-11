@@ -8,6 +8,7 @@ import {
 	TableRow,
 	TableCell,
 	Typography,
+	Container,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { Link } from "@tanstack/react-router"
@@ -27,7 +28,7 @@ const Messages = () => {
 	if(!theme) return <Loading />
 
 	return (
-		<>
+		<Container>
 			<Box sx={ { mb: 2 } }>
 				<Stack direction="row" justifyContent="space-between" alignItems="center">
 					<Typography component="h1" variant="h4">Messages</Typography>
@@ -97,7 +98,7 @@ const Messages = () => {
 				</Table>
 
 			</MessageTypeCard>
-		</>
+		</Container>
 	)
 }
 

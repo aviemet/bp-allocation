@@ -132,11 +132,9 @@ const AdminLayout = observer(() => {
 			</Drawer>
 
 			<Main open={ drawerOpen }>
-				<Container>
-					<Grid container direction="column">
-						<Outlet />
-					</Grid>
-				</Container>
+				<Grid container direction="column">
+					<Outlet />
+				</Grid>
 			</Main>
 
 		</AdminContainer>

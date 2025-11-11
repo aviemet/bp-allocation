@@ -1,5 +1,6 @@
 import {
 	Box,
+	Container,
 	Tab,
 	Tabs,
 } from "@mui/material"
@@ -39,7 +40,7 @@ const Settings = () => {
 	const selectedPane = panes.find(pane => pane.slug === activeTab)
 
 	return (
-		<>
+		<Container>
 			<Tabs value={ tabsValue }>
 				{ panes.map(pane => (
 					<Tab
@@ -54,7 +55,7 @@ const Settings = () => {
 			<Box sx={ { mt: 2 } }>
 				{ selectedPane ? <div key={ `content-${selectedPane.slug}` }>{ selectedPane.render }</div> : null }
 			</Box>
-		</>
+		</Container>
 	)
 }
 

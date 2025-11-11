@@ -4,6 +4,7 @@ import {
 	Stack,
 	Typography,
 	TextField,
+	Container,
 } from "@mui/material"
 import { observer } from "mobx-react-lite"
 import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
@@ -39,37 +40,39 @@ const ChitVotingPane = observer(({ hideAdminFields }: ChitVotingPaneProps) => {
 	}
 
 	return (
-		<Grid container spacing={ 2 }>
+		<Container>
+			<Grid container spacing={ 2 }>
 
-			{ !settings?.useKioskChitVoting && <Grid size={ { xs: 12, md: 6 } }>
-				<ManualInputTable />
-			</Grid> }
+				{ !settings?.useKioskChitVoting && <Grid size={ { xs: 12, md: 6 } }>
+					<ManualInputTable />
+				</Grid> }
 
-			<Grid size={ { xs: 12, md: settings?.useKioskChitVoting ? 12 : 6 } }>
-				<Box sx={ { mb: 2 } }>
-					<Stack direction="row" justifyContent="space-between" alignItems="center">
-						<Typography component="h3" variant="h3">
-							Top { !hideAdminFields ?
-								<TextField
-									size="small"
-									type="number"
-									value={ theme.numTopOrgs }
-									onChange={ updateNumTopOrgs }
-									sx={ { width: "4em" } }
-								/> :
-								theme.numTopOrgs
-							} Organizations
-						</Typography>
+				<Grid size={ { xs: 12, md: settings?.useKioskChitVoting ? 12 : 6 } }>
+					<Box sx={ { mb: 2 } }>
+						<Stack direction="row" justifyContent="space-between" alignItems="center">
+							<Typography component="h3" variant="h3">
+								Top { !hideAdminFields ?
+									<TextField
+										size="small"
+										type="number"
+										value={ theme.numTopOrgs }
+										onChange={ updateNumTopOrgs }
+										sx={ { width: "4em" } }
+									/> :
+									theme.numTopOrgs
+								} Organizations
+							</Typography>
 
-						<Typography component="h3" variant="h3">
-							<ChitVotingActiveToggle />
-						</Typography>
-					</Stack>
-				</Box>
-				<RankedOrgsTable />
+							<Typography component="h3" variant="h3">
+								<ChitVotingActiveToggle />
+							</Typography>
+						</Stack>
+					</Box>
+					<RankedOrgsTable />
+				</Grid>
+
 			</Grid>
-
-		</Grid>
+		</Container>
 	)
 })
 

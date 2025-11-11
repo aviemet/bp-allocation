@@ -11,6 +11,7 @@ import TimerIcon from "@mui/icons-material/Timer"
 import ViewComfyIcon from "@mui/icons-material/ViewComfy"
 import {
 	Button,
+	Container,
 	Grid,
 	Paper,
 } from "@mui/material"
@@ -73,7 +74,7 @@ const PresentationPane = observer(() => {
 	if(settingsLoading || !settings) return <Loading />
 
 	return (
-		<>
+		<Container>
 			<Paper sx={ { p: 3, mb: 2 } }>
 				<Grid container spacing={ 2 }>
 					<Grid size={ { xs: 12, md: 4 } }>
@@ -177,7 +178,7 @@ const PresentationPane = observer(() => {
 				<PresentationNavButton page="intro" label="Launch Presentation" Icon={ OpenInNewIcon } active={ false } />
 			</Link>
 
-		</>
+		</Container>
 	)
 })
 
