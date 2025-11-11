@@ -95,9 +95,8 @@ const FontSize = Extension.create({
 	},
 })
 
-const Editor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ value, onChange, placeholder }, ref) => {
-	const internalRef = useRef<RichTextEditorRef>(null)
-	const editorRef = ref || internalRef
+const Editor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ value, onChange, placeholder }, _ref) => {
+	const editorRef = useRef<RichTextEditorRef>(null)
 
 	const extensions = [
 		StarterKit.configure({
@@ -131,22 +130,21 @@ const Editor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ value, onChan
 	]
 
 	useEffect(() => {
-		if(!editorRef || typeof editorRef === "function") return
-		if(!editorRef.current?.editor) return
+		const editorInstance = editorRef.current?.editor
+		if(!editorInstance) return
 
-		const editor = editorRef.current.editor
-		const currentContent = editor.getHTML()
+		const currentContent = editorInstance.getHTML()
 
 		if(value !== undefined && value !== currentContent) {
-			editor.commands.setContent(value || "")
+			editorInstance.commands.setContent(value || "")
 		}
-	}, [value, editorRef])
+	}, [value])
 
 	const handleUpdate = () => {
-		if(!editorRef || typeof editorRef === "function") return
-		if(!editorRef.current?.editor || !onChange) return
+		const editorInstance = editorRef.current?.editor
+		if(!editorInstance || !onChange) return
 
-		const html = editorRef.current.editor.getHTML()
+		const html = editorInstance.getHTML()
 		onChange(html)
 	}
 
@@ -158,7 +156,7 @@ const Editor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ value, onChan
 				content={ value || "" }
 				onUpdate={ handleUpdate }
 				renderControls={ () => {
-					if(!editorRef || typeof editorRef === "function" || !editorRef.current?.editor) {
+					if(!editorRef.current?.editor) {
 						return null
 					}
 					const editor = editorRef.current.editor

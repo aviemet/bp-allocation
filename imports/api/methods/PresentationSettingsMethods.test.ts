@@ -2,14 +2,14 @@ import { expect } from "chai"
 
 import { PresentationSettings, SettingsData } from "/imports/api/db"
 import { PresentationSettingsMethods } from "/imports/api/methods"
-import { resetDatabase } from "/imports/tests/resetDatabase"
+import { resetDatabase } from "../../test-support/resetDatabase"
 
 let settings: SettingsData
 
 describe("Presentation Settings Methods", function() {
 
 	before(async function() {
-		resetDatabase()
+		await resetDatabase()
 
 		const settingsId = await PresentationSettingsMethods.create.callAsync({})
 		settings = (await PresentationSettings.find({ _id: settingsId }).fetchAsync())[0]

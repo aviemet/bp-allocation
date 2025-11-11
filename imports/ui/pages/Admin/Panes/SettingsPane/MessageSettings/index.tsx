@@ -5,7 +5,7 @@ import {
 } from "@mui/material"
 import { Link, useLocation } from "@tanstack/react-router"
 import { useState } from "react"
-import { useData, useMessages } from "/imports/api/providers"
+import { useData, useMessages, useMembers } from "/imports/api/providers"
 import { MessageMethods } from "/imports/api/methods"
 import type MessageStore from "/imports/api/stores/MessageStore"
 
@@ -82,6 +82,9 @@ const emailHeaderCells = [
 const Messages = () => {
 	const { themeId } = useData()
 	const { messages, isLoading: messagesLoading } = useMessages()
+	const { members, isLoading: membersLoading } = useMembers()
+
+	const allMemberIds = members ? members.values.map(member => member._id) : []
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState("")
@@ -102,7 +105,7 @@ const Messages = () => {
 		setModalOpen(true)
 	}
 
-	if(messagesLoading || !messages) return <Loading />
+	if(messagesLoading || membersLoading || !messages || !members) return <Loading />
 
 	return (
 		<>
@@ -134,7 +137,7 @@ const Messages = () => {
 							<IncludeVotingLinkToggle message={ message } />
 						</TableCell>
 						<TableCell>
-							<SendWithFeedbackButton message={ message } />
+							<SendWithFeedbackButton message={ message } members={ allMemberIds } />
 						</TableCell>
 					</>
 				) }
@@ -166,7 +169,7 @@ const Messages = () => {
 							<IncludeVotingLinkToggle message={ message } />
 						</TableCell>
 						<TableCell>
-							<SendWithFeedbackButton message={ message } />
+							<SendWithFeedbackButton message={ message } members={ allMemberIds } />
 						</TableCell>
 					</>
 				) }

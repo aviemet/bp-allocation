@@ -11,15 +11,18 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { Link } from "@tanstack/react-router"
-import { useTheme, useMessages } from "/imports/api/providers"
+import { useTheme, useMessages, useMembers } from "/imports/api/providers"
 import SendWithFeedbackButton from "/imports/ui/components/Buttons/SendWithFeedbackButton"
 import { Loading } from "/imports/ui/components"
 
 const Messages = () => {
 	const { theme } = useTheme()
 	const { messages, isLoading: messagesLoading } = useMessages()
+	const { members, isLoading: membersLoading } = useMembers()
 
-	if(messagesLoading || !messages) return <Loading />
+	const allMemberIds = members ? members.values.map(member => member._id) : []
+
+	if(messagesLoading || membersLoading || !messages || !members) return <Loading />
 
 	if(!theme) return <Loading />
 
@@ -34,7 +37,7 @@ const Messages = () => {
 
 			<MessageTypeCard>
 				<Typography component="h2" variant="h5">Texts</Typography>
-				<Table { ...({ variant: "striped" } as { variant: "striped" }) }>
+				<Table>
 					<TableHead>
 						<TableRow>
 							<TableCell>Title</TableCell>
@@ -54,7 +57,7 @@ const Messages = () => {
 										{ message.body }
 									</TableCell>
 									<TableCell>
-										<SendWithFeedbackButton message={ message } />
+										<SendWithFeedbackButton message={ message } members={ allMemberIds } />
 									</TableCell>
 								</TableRow>
 							)
@@ -65,7 +68,7 @@ const Messages = () => {
 
 			<MessageTypeCard>
 				<Typography component="h2" variant="h5">Emails</Typography>
-				<Table { ...({ variant: "striped" } as { variant: "striped" }) }>
+				<Table>
 					<TableHead>
 						<TableRow>
 							<TableCell>Title</TableCell>
@@ -85,7 +88,7 @@ const Messages = () => {
 										{ message.subject }
 									</TableCell>
 									<TableCell>
-										<SendWithFeedbackButton message={ message } />
+										<SendWithFeedbackButton message={ message } members={ allMemberIds } />
 									</TableCell>
 								</TableRow>
 							)

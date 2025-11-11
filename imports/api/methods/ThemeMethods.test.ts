@@ -1,8 +1,9 @@
 import { faker } from "@faker-js/faker"
 import { expect } from "chai"
+
 import { ThemeMethods, OrganizationMethods } from "/imports/api/methods"
 import { Themes, Organizations, ThemeData } from "/imports/api/db"
-import { resetDatabase } from "/imports/tests/resetDatabase"
+import { resetDatabase } from "../../test-support/resetDatabase"
 
 const themeData: { title: string, leverage: number, _id?: string } = {
 	title: faker.company.buzzNoun(),
@@ -17,7 +18,7 @@ let numTopOrgsDefault: number
 describe("Theme Methods", function() {
 
 	before(async function() {
-		resetDatabase()
+		await resetDatabase()
 
 		const themeId = await ThemeMethods.create.callAsync(themeData)
 		if(!themeId) throw new Error("Failed to create theme")

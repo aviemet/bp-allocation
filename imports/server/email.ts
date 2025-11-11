@@ -6,8 +6,8 @@ import "/imports/server/publications"
 
 import { setMessageSendingFlag, setMessageSentFlag, setMessageErrorFlag } from "./messageMethods"
 import { emailVotingLink } from "/imports/lib/utils"
-import { type Message, type Rounds } from "/imports/types/schema"
 import { coerceArray } from "../lib/collections"
+import { type Message, type Rounds } from "/imports/types/schema"
 
 
 sgMail.setApiKey(Meteor.settings.SENDGRID_API_KEY)
@@ -29,7 +29,7 @@ interface MemberEmailLookupResult {
 	code?: string
 }
 
-const memberEmailsQuery = async(themeId: string, members?: string | string[], skipRounds?: Rounds) => {
+const memberEmailsQuery = async (themeId: string, members?: string | string[], skipRounds?: Rounds) => {
 	const match: { $match: Record<string, unknown> } = {
 		$match: {
 			"member.email": { $ne: null },
@@ -96,7 +96,7 @@ interface EmailVotingParams {
 	members?: string | string[]
 }
 
-const emailVotingLinkToMembers = async({ themeId, message, members }: EmailVotingParams) => {
+const emailVotingLinkToMembers = async ({ themeId, message, members }: EmailVotingParams) => {
 	const theme = await Themes.findOneAsync({ _id: themeId })
 	const invalidEmailMembers: MemberEmailLookupResult[] = []
 
@@ -109,19 +109,41 @@ const emailVotingLinkToMembers = async({ themeId, message, members }: EmailVotin
 			invalidEmailMembers.push(member)
 			return []
 		}
-		return [{
+		const mail = {
 			to: member.email!.trim().toLowerCase(),
 			from: message.from || "Battery Powered <powered@thebatterysf.com>",
 			subject: message.subject || "",
 			html: messageBuilder(member.code, message.body, theme?.slug, message.includeLink),
-		}]
+		}
+		console.log({
+			action: "email-message-prepared",
+			messageId: message._id,
+			memberThemeId: member._id,
+			to: mail.to,
+			from: mail.from,
+			subject: mail.subject,
+			includeLink: message.includeLink === true,
+			hasBody: !!message.body,
+			bodyLength: message.body ? message.body.length : 0,
+			themeId,
+		})
+		return [mail]
 	})
 
 	const sentMail = sgMail.send(messages)
 
-	sentMail.then(() => {
+	sentMail.then(([clientResponse, responseBody]) => {
 		setMessageSentFlag(theme, message)
-		console.log({ sent: messages.map(m => m.to) })
+		console.log({
+			action: "email-batch-sent",
+			messageId: message._id,
+			themeId,
+			sent: messages.map(m => m.to),
+			totalSent: messages.length,
+			statusCode: clientResponse?.statusCode,
+			headers: clientResponse?.headers,
+			responseBody,
+		})
 	}, error => {
 		console.error(error)
 
