@@ -68,6 +68,7 @@ const Pledges = observer(() => {
 					type="submit"
 					status={ formStatus }
 					setStatus={ setFormStatus }
+					icon={ false }
 				>Submit Matched Pledge</FinalizeButton>
 			</Grid>
 

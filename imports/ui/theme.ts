@@ -43,31 +43,27 @@ const theme = createTheme({
 			defaultProps: {
 				variant: "contained",
 			},
+			styleOverrides: {
+				root: ({ theme }) => ({
+					"&.Mui-disabled": {
+						backgroundColor: theme.palette.grey[900],
+						color: "#999",
+					},
+				}),
+			},
 		},
 		MuiTable: {
 			styleOverrides: {
-				root: {
+				root: ({ theme }) => ({
 					borderCollapse: "collapse",
-				},
+					"&.striped > tbody > tr:nth-of-type(2n)": {
+						backgroundColor: theme.palette.grey[100],
+					},
+					"&.striped-collapse > tbody > tr:nth-of-type(4n), &.striped-collapse > tbody > tr:nth-of-type(4n-1)": {
+						backgroundColor: theme.palette.grey[100],
+					},
+				}),
 			},
-			variants: [
-				{
-					props: { variant: "striped" },
-					style: ({ theme }) => ({
-						"& > tbody > tr:nth-of-type(2n)": {
-							backgroundColor: theme.palette.grey[100],
-						},
-					}),
-				},
-				{
-					props: { variant: "striped-collapse" },
-					style: ({ theme }) => ({
-						"& > tbody > tr:nth-of-type(4n), & > tbody > tr:nth-of-type(4n-1)": {
-							backgroundColor: theme.palette.grey[100],
-						},
-					}),
-				},
-			],
 		},
 		MuiTableHead: {
 			styleOverrides: {
@@ -112,22 +108,22 @@ const theme = createTheme({
 				}),
 			},
 		},
+		MuiTooltip: {
+			defaultProps: {
+				arrow: true,
+			},
+		},
+		MuiAppBar: {
+			styleOverrides: {
+				colorInherit: {
+					backgroundColor: "#002b45",
+					color: "#fff",
+				},
+			},
+		},
 	},
 	typography: {
 		fontFamily: "Roboto",
-	},
-	props: {
-		MuiTooltip: {
-			arrow: true,
-		},
-	},
-	overrides: {
-		MuiAppBar: {
-			colorInherit: {
-				backgroundColor: "#002b45",
-				color: "#fff",
-			},
-		},
 	},
 })
 
