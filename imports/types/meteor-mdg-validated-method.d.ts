@@ -11,7 +11,7 @@ declare module "meteor/mdg:validated-method" {
 			noRetry?: boolean
 			onResultReceived?: (result: TResult) => void
 		}
-		run: (args: TArgs) => TResult
+		run: (args: TArgs) => TResult | Promise<TResult>
 	}
 
 	export class ValidatedMethod<TArgs = unknown, TResult = unknown> {

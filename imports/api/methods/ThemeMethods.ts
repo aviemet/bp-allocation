@@ -217,28 +217,29 @@ const ThemeMethods = {
 		},
 	}),
 
-	resetAllOrgFunds: new ValidatedMethod({
+	resetAllOrgFunds: new ValidatedMethod<string, { organizationsUpdated: number, memberThemesUpdated: number }>({
 		name: "organizations.resetAllOrgFunds",
 
 		validate: null,
 
 		async run(themeId: string) {
-			const themes = await Themes.find({ _id: themeId }).fetchAsync()
-			const theme = themes[0]
-			if(!theme) return
-
-			if(theme.organizations) {
-				await Promise.all(theme.organizations.map(org => {
-					return OrganizationMethods.update.callAsync({ id: org, data: {
-						amountFromVotes: 0,
-						topOff: 0,
-						pledges: [],
-						leverageFunds: 0,
-					} })
-				}))
+			const theme = await Themes.findOneAsync({ _id: themeId })
+			if(!theme) {
+				return {
+					organizationsUpdated: 0,
+					memberThemesUpdated: 0,
+				}
 			}
+			const organizationsUpdated = await Organizations.updateAsync({ theme: themeId }, {
+				$set: {
+					amountFromVotes: 0,
+					topOff: 0,
+					pledges: [],
+					leverageFunds: 0,
+				},
+			}, { multi: true })
 
-			await MemberThemes.updateAsync({ theme: themeId }, {
+			const memberThemesUpdated = await MemberThemes.updateAsync({ theme: themeId }, {
 				$set: {
 					allocations: [],
 					chitVotes: [],
@@ -247,6 +248,10 @@ const ThemeMethods = {
 				multi: true,
 			})
 
+			return {
+				organizationsUpdated,
+				memberThemesUpdated,
+			}
 		},
 	}),
 
