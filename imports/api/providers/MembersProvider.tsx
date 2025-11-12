@@ -70,7 +70,7 @@ const MembersProvider = observer(({ children }: MembersProviderProps) => {
 		cursorObserver = cursor.observe({
 			added: members => membersCollection!.refreshData(members),
 			changed: members => membersCollection!.refreshData(members),
-			removed: members => membersCollection!.refreshData(members),
+			removed: members => membersCollection!.deleteItem(members),
 		})
 
 		// Used to force re-render

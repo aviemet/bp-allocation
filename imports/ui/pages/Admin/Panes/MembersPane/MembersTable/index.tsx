@@ -8,7 +8,6 @@ import {
 	TableRow,
 } from "@mui/material"
 import { useParams } from "@tanstack/react-router"
-import { isEmpty } from "lodash"
 import { observer } from "mobx-react-lite"
 import { useState } from "react"
 import { useMembers, useSettings } from "/imports/api/providers"
@@ -81,7 +80,7 @@ const MembersTable = observer(() => {
 		if(members) members.searchFilter = value
 	}
 
-	if(membersLoading || !members || isEmpty(members.values)) {
+	if(membersLoading || !members) {
 		return (
 			<>
 				<Skeleton height={ 100 } />
@@ -91,6 +90,9 @@ const MembersTable = observer(() => {
 		)
 	}
 
+	const tableRows = members.filteredMembers
+	const filterParams = members.searchFilter
+
 	// TODO: Why isn't striping working now?
 	return (
 		<>
@@ -99,10 +101,10 @@ const MembersTable = observer(() => {
 				tableHeadTopRow={ [] }
 				onBulkDelete={ bulkDelete }
 				headCells={ headCells }
-				rows={ members?.filteredMembers || [] }
+				rows={ tableRows }
 				defaultOrderBy="createdAt"
 				paginationCounts={ [10, 25, 50] }
-				filterParams={ members?.searchFilter || null }
+				filterParams={ filterParams || null }
 				onFilterParamsChange={ handleSearch }
 				striped={ true }
 				render={ (member: any) => {

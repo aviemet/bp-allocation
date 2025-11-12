@@ -56,8 +56,9 @@ class TrackableCollection<T extends TrackableStore<TrackableData> = TrackableSto
 		}
 	}
 
-	deleteItem(data: TrackableData) {
-		remove(this.values, value => value._id === data._id)
+	deleteItem(data: TrackableData | string) {
+		const id = typeof data === "string" ? data : data._id
+		remove(this.values, value => value._id === id)
 	}
 
 	sortBy(column: string, direction: "ascending" | "descending" | "asc" | "desc") {

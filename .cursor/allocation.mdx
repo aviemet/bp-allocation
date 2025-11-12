@@ -11,6 +11,7 @@
 - Publications use `Tracker.autorun` to reactively derive IDs from one collection (e.g., `MemberThemes`) and observe another (`Members`), and tie observer/computation cleanup to the publication via `this.onStop`.
 - Tracker server reactivity still relies on synchronous reads; use `find()` / `findOne()` / `fetch()` inside the autorun and avoid awaiting `fetchAsync` or `findOneAsync` in the reactive block, otherwise downstream subscribers stop receiving updates.
 - To keep Meteor 3 async fetches reactive, publications now pair lightweight `observeChanges` watchers with a single live query handle; watchers trigger a debounced async refresh that refetches the dependent data and restarts the shared observer without spawning duplicate handles.
+- Publications that derive membership through join tables must diff published IDs before recreating their observers (`imports/server/publications/members.ts`). The diff explicitly emits `removed` messages for IDs dropped from the join table and reuses the shared transformer so downstream UI collections immediately drop stale rows when the join changes.
 
 ### Data Provider Hierarchy
 The application uses a nested provider pattern established in `imports/ui/App.tsx`:

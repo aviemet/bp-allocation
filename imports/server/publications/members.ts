@@ -52,6 +52,7 @@ Meteor.publish("members", function({ themeId, limit }: { themeId: string, limit:
 	const watchers: Meteor.LiveQueryHandle[] = []
 	let refreshInProgress = false
 	let refreshQueued = false
+	let currentMemberIds = new Set<string>()
 
 	const refreshMembers = async () => {
 		try {
@@ -66,10 +67,38 @@ Meteor.publish("members", function({ themeId, limit }: { themeId: string, limit:
 				.map(memberTheme => memberTheme.member)
 				.filter((memberId): memberId is string => typeof memberId === "string")
 
+			const nextMemberIds = new Set(memberIds)
+			const previousMemberIds = currentMemberIds
+			previousMemberIds.forEach(memberId => {
+				if(!nextMemberIds.has(memberId)) {
+					publication.removed("members", memberId)
+				}
+			})
+			currentMemberIds = new Set(nextMemberIds)
+
 			if(memberIds.length > 0) {
+				const observerCallbacks = membersTransformer("members", publication, { themeId, memberThemes })
 				membersObserver = Members
 					.find({ _id: { $in: memberIds } }, subOptions)
-					.observe(membersTransformer("members", publication, { themeId, memberThemes }))
+					.observe({
+						added: doc => {
+							if(previousMemberIds.has(doc._id)) {
+								observerCallbacks.changed(doc)
+							} else {
+								observerCallbacks.added(doc)
+							}
+							currentMemberIds.add(doc._id)
+						},
+						changed: doc => {
+							observerCallbacks.changed(doc)
+						},
+						removed: doc => {
+							observerCallbacks.removed(doc)
+							currentMemberIds.delete(doc._id)
+						},
+					})
+			} else {
+				currentMemberIds.clear()
 			}
 
 			if(!hasCalledReady) {
