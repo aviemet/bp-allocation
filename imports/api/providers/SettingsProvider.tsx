@@ -33,8 +33,10 @@ const SettingsProvider = observer(({ children }: SettingsProviderProps) => {
 			return { data: undefined, ready: false }
 		}
 		const sub = Meteor.subscribe("settings", themeId)
+		const subscriptionReady = sub.ready()
+		const hasSettingsData = subscriptionReady && PresentationSettings.find().count() > 0
 		const data = PresentationSettings.findOne()
-		return { data, ready: sub.ready() && !!data }
+		return { data, ready: hasSettingsData }
 	}, [themeId])
 
 	useEffect(() => {

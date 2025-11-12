@@ -34,16 +34,25 @@ const ThemeProvider = observer(({ children }: ThemeProviderProps) => {
 
 		// Begin the subscription
 		const subscription = Meteor.subscribe("theme", themeId)
+		const subscriptionReady = subscription.ready()
 
-		// Get the theme data directly
+		// Get the theme data directly (reactive query)
 		const themeData = Themes.findOne({ _id: themeId })
+
+		// Check if data has synced to local collection
+		const collectionHasData = Themes.find().count() > 0
 
 		// Create the theme store if we have data
 		const themeStore = themeData ? new ThemeStore(themeData) : undefined
 
+		// Mark as loaded when subscription is ready AND data has synced to collection
+		// If subscription is ready but collection is empty, wait for data to sync
+		// Once data syncs (or we confirm it doesn't exist), mark as loaded
+		const isLoading = !subscriptionReady || (subscriptionReady && !collectionHasData && !themeData)
+
 		return {
 			theme: themeStore,
-			isLoading: !subscription.ready(),
+			isLoading,
 		}
 	}, [themeId])
 

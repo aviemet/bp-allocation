@@ -31,11 +31,14 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 	const { theme } = useTheme()
 	const { orgs, topOrgs } = useOrgs()
 
-	const initialVotesState: Record<string, number> = {}
-	topOrgs.forEach(org => {
-		const allocations = find(member.theme?.allocations, ["organization", org._id])
-		initialVotesState[org._id] = allocations?.amount ?? 0
-	})
+	const initialVotesState = useMemo(() => {
+		const state: Record<string, number> = {}
+		topOrgs.forEach(org => {
+			const allocations = find(member.theme?.allocations, ["organization", org._id])
+			state[org._id] = allocations?.amount ?? 0
+		})
+		return state
+	}, [member.theme?.allocations, topOrgs])
 
 	const orgValues = useMemo(() => {
 		if(!orgs) return []
@@ -53,6 +56,18 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 
 	const [ allocations, setAllocations ] = useState(initialVotesState)
 	const [ chits, setChits ] = useState(initialChitState)
+
+	useEffect(() => {
+		if(!topOrgs || topOrgs.length === 0) return
+		const nextAllocations: Record<string, number> = {}
+		topOrgs.forEach(org => {
+			const allocation = find(member.theme?.allocations, ["organization", org._id])
+			nextAllocations[org._id] = allocation?.amount ?? 0
+		})
+		setAllocations(previous => {
+			return isEqual(previous, nextAllocations) ? previous : nextAllocations
+		})
+	}, [member.theme?.allocations, topOrgs])
 
 	useEffect(() => {
 		if(!orgs) return
