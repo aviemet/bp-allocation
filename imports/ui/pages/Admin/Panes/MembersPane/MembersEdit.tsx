@@ -166,8 +166,10 @@ const MembersEdit = () => {
 					</Grid>
 
 					<Grid size={ { xs: 12, md: 8 } }>
-						<TextInput name="amount" label="Voting Funds" InputProps={ {
-							startAdornment: <InputAdornment position="start">$</InputAdornment>,
+						<TextInput name="amount" label="Voting Funds" slotProps={ {
+							input: {
+								startAdornment: <InputAdornment position="start">$</InputAdornment>,
+							},
 						} } />
 					</Grid>
 

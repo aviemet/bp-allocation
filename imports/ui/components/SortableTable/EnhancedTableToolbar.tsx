@@ -63,8 +63,10 @@ export default function EnhancedTableToolbar({
 									label="Search"
 									value={ filterParams || "" }
 									onChange={ e => onFilterParamsChange(e.target.value) }
-									InputProps={ {
-										startAdornment: <SearchIcon sx={ { mr: 1 } } />,
+									slotProps={ {
+										input: {
+											startAdornment: <SearchIcon sx={ { mr: 1 } } />,
+										},
 									} }
 									sx={ {
 										mb: 1,

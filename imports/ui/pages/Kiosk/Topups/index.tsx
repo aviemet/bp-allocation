@@ -75,18 +75,25 @@ const Pledges = observer(({ user }: PledgesProps) => {
 			>
 				<Container>
 					<Box sx={ { textAlign: "right", marginBottom: "0.5rem" } }>
-					<SwitchInput
-						label="Anonymous"
-						name="anonymous"
-					/>
+						<SwitchInput
+							label="Anonymous"
+							name="anonymous"
+						/>
 					</Box>
 					<TextInput
 						name="amount"
 						placeholder="Pledge Amount"
 						required
 						sx={ { mb: 2 } }
-						InputProps={ {
-							inputProps: {
+						slotProps={ {
+							input: {
+								startAdornment: (
+									<InputAdornment position="start" sx={ { margin: 0 } }>
+										<Typography sx={ { fontFamily: "Roboto", margin: "0 !important" } }>$</Typography>
+									</InputAdornment>
+								),
+							},
+							htmlInput: {
 								sx: {
 									padding: "0.5rem",
 									textAlign: "center",
@@ -94,11 +101,6 @@ const Pledges = observer(({ user }: PledgesProps) => {
 								inputMode: "numeric",
 								pattern: "[0-9.]*",
 							},
-							startAdornment: (
-								<InputAdornment position="start" sx={ { margin: 0 } }>
-									<Typography sx={ { fontFamily: "Roboto", margin: "0 !important" } }>$</Typography>
-								</InputAdornment>
-							),
 						} }
 					/>
 

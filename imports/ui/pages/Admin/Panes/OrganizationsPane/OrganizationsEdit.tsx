@@ -99,8 +99,10 @@ const OrganizationsEdit = () => {
 							name="ask"
 							label="Funding Ask"
 							required
-							InputProps={ {
-								startAdornment: <InputAdornment position="start">$</InputAdornment>,
+							slotProps={ {
+								input: {
+									startAdornment: <InputAdornment position="start">$</InputAdornment>,
+								},
 							} }
 						/>
 					</Grid>

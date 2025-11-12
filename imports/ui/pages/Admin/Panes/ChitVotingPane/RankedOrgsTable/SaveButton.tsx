@@ -47,8 +47,10 @@ const SaveButton = ({ org }: SaveButtonProps) => {
 					placeholder={ `Need: ${numeral(org.ask / 2).format("$0,0")}` }
 					value={ amount }
 					onChange={ e => setAmount(e.target.value) }
-					InputProps={ {
-						startAdornment: <InputAdornment position="start">$</InputAdornment>,
+					slotProps={ {
+						input: {
+							startAdornment: <InputAdornment position="start">$</InputAdornment>,
+						},
 					} }
 				/>
 				<br />

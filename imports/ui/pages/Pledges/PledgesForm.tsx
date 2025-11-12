@@ -49,8 +49,10 @@ const Pledges = observer(() => {
 					required
 					pattern="[0-9]*"
 					onChange={ value => value.replace(/[^0-9]*/, "") }
-					InputProps={ {
-						startAdornment: <InputAdornment position="start">$</InputAdornment>,
+					slotProps={ {
+						input: {
+							startAdornment: <InputAdornment position="start">$</InputAdornment>,
+						},
 					} }
 				/>
 			</Grid>
