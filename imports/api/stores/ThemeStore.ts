@@ -1,9 +1,19 @@
 import TrackableStore, { TrackableData } from "./lib/TrackableStore"
-import { Theme } from "/imports/types"
+import { Theme, type MatchPledge } from "/imports/types"
+
+export interface PledgeWithOrg extends MatchPledge {
+	org: {
+		_id: string
+		title: string
+	}
+	[key: string]: unknown
+}
 
 export interface ThemeWithVotingDefaults extends Theme {
 	numTopOrgs: number
 	topOrgsManual: string[]
+	topOrgs?: string[]
+	pledges?: PledgeWithOrg[]
 }
 
 export type ThemeData = TrackableData<ThemeWithVotingDefaults>

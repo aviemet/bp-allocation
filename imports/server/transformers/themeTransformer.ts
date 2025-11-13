@@ -1,8 +1,8 @@
-import { isEmpty } from "lodash"
+import { isEmpty, sortBy } from "lodash"
 import { roundFloat } from "/imports/lib/utils"
 
 import { type ThemeData, type SettingsData } from "/imports/api/db"
-import { type MemberTheme } from "/imports/types/schema"
+import { type MemberTheme, type MatchPledge } from "/imports/types/schema"
 import { type OrgWithComputed } from "./orgTransformer"
 
 /**
@@ -14,6 +14,14 @@ export interface ThemeTransformerParams {
 	topOrgs: OrgWithComputed[]
 	memberThemes: MemberTheme[]
 	settings: SettingsData
+}
+
+export interface PledgeWithOrg extends MatchPledge {
+	org: {
+		_id: string
+		title: string
+	}
+	[key: string]: unknown
 }
 
 export interface ThemeWithComputed extends ThemeData {
@@ -28,6 +36,8 @@ export interface ThemeWithComputed extends ThemeData {
 	leverageRemaining?: number
 	memberFunds?: number
 	consolationTotal?: number
+	topOrgs?: string[]
+	pledges?: PledgeWithOrg[]
 }
 
 const ThemeTransformer = (doc: ThemeWithComputed, params: ThemeTransformerParams) => {
@@ -171,6 +181,29 @@ const ThemeTransformer = (doc: ThemeWithComputed, params: ThemeTransformerParams
 	}()
 
 	doc.memberFunds = params.memberThemes.reduce((sum, member) => { return sum + (member.amount || 0) }, 0)
+
+	doc.topOrgs = function() {
+		return params.topOrgs.map(org => org._id)
+	}()
+
+	doc.pledges = function() {
+		let pledges: PledgeWithOrg[] = []
+		params.topOrgs.forEach(org => {
+			org.pledges?.forEach((pledge: MatchPledge) => {
+				if(org.title) {
+					pledges.push({
+						...pledge,
+						org: {
+							_id: org._id,
+							title: org.title,
+						},
+					})
+				}
+			})
+		})
+		pledges = sortBy(pledges, ["createdAt"])
+		return pledges
+	}()
 
 	return doc
 }

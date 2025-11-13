@@ -1,7 +1,4 @@
-import { sortBy } from "lodash"
-
 import TrackableCollection from "./lib/TrackableCollection"
-import { filterTopOrgs } from "/imports/lib/orgsMethods"
 import OrgStore from "./OrgStore"
 import { Theme, MatchPledge } from "/imports/types/schema"
 import { OrgData } from "/imports/api/db"
@@ -23,24 +20,7 @@ class OrgsCollection extends TrackableCollection<OrgStore> {
 	}
 
 	get pledges(): PledgeWithOrg[] {
-		let pledges: PledgeWithOrg[] = []
-
-		const topOrgs = filterTopOrgs(this.values, this._theme)
-		topOrgs.forEach(org => {
-			org.pledges?.forEach((pledge: MatchPledge) => {
-				if(org.title) {
-					pledges.push({
-						...pledge,
-						org: {
-							_id: org._id,
-							title: org.title,
-						},
-					})
-				}
-			})
-		})
-		pledges = sortBy(pledges, ["createdAt"])
-		return pledges
+		return (this._theme.pledges || []) as PledgeWithOrg[]
 	}
 }
 

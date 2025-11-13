@@ -6,7 +6,6 @@ import { useData } from "./DataProvider"
 import { useTheme } from "./ThemeProvider"
 import { Organizations, type OrgData } from "/imports/api/db"
 import { OrgsCollection, OrgStore } from "/imports/api/stores"
-import { filterTopOrgs } from "/imports/lib/orgsMethods"
 import { createContext } from "/imports/lib/hooks/createContext"
 
 interface OrgsContextValue {
@@ -74,7 +73,8 @@ const OrgsProvider = ({ children }: OrgsProviderProps) => {
 			}
 		}
 
-		const topOrgs = filterTopOrgs(orgsCollection.values, theme)
+		const topOrgIds = theme.topOrgs || []
+		const topOrgs = topOrgIds.map(id => orgsCollection.values.find(org => org._id === id)).filter((org): org is OrgStore => org !== undefined)
 
 		return {
 			orgs: orgsCollection,

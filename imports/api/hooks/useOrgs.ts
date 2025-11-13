@@ -1,12 +1,10 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
-import { sortBy } from "lodash"
 
 import { useData } from "../providers/DataProvider"
 import { useTheme } from "./useTheme"
 import { Organizations, type OrgData } from "../db"
-import { filterTopOrgs } from "/imports/lib/orgsMethods"
-import { type Organization, type MatchPledge, type Theme } from "/imports/types/schema"
+import { type MatchPledge } from "/imports/types/schema"
 
 export interface PledgeWithOrg extends MatchPledge {
 	org: {
@@ -14,27 +12,6 @@ export interface PledgeWithOrg extends MatchPledge {
 		title: string
 	}
 	[key: string]: unknown
-}
-
-const computePledges = (orgs: Organization[], theme?: Pick<Theme, "numTopOrgs" | "topOrgsManual">): PledgeWithOrg[] => {
-	let pledges: PledgeWithOrg[] = []
-
-	const topOrgs = filterTopOrgs(orgs, theme)
-	topOrgs.forEach(org => {
-		org.pledges?.forEach((pledge: MatchPledge) => {
-			if(org.title) {
-				pledges.push({
-					...pledge,
-					org: {
-						_id: org._id,
-						title: org.title,
-					},
-				})
-			}
-		})
-	})
-	pledges = sortBy(pledges, ["createdAt"])
-	return pledges
 }
 
 export const useOrgs = () => {
@@ -65,8 +42,9 @@ export const useOrgs = () => {
 			}
 		}
 
-		const topOrgs = filterTopOrgs(orgs, theme)
-		const pledges = computePledges(orgs, theme)
+		const topOrgIds = theme.topOrgs || []
+		const topOrgs = topOrgIds.map(id => orgs.find(org => org._id === id)).filter((org): org is OrgData => org !== undefined)
+		const pledges = (theme.pledges || []) as PledgeWithOrg[]
 
 		return {
 			orgs,
