@@ -49,7 +49,7 @@ const headCells: HeadCell[] = [
 ]
 
 // TODO: Also, the sorting and icon indicators for voting status
-// TODO: Would be cool to get the filter icon to allow filtring by keyword
+// TODO: Would be cool to get the filter icon to allow filtering by keyword
 //       So, choosing 'not voted' would filter out all those who have voted
 const MembersTable = () => {
 	const { filteredMembers, searchFilter, setSearchFilter, membersLoading } = useMembers()
@@ -90,10 +90,8 @@ const MembersTable = () => {
 		)
 	}
 
-	const tableRows = filteredMembers
 	const filterParams = searchFilter
 
-	// TODO: Why isn't striping working now?
 	return (
 		<>
 			<SortableTable
@@ -101,15 +99,15 @@ const MembersTable = () => {
 				tableHeadTopRow={ [] }
 				onBulkDelete={ bulkDelete }
 				headCells={ headCells }
-				rows={ tableRows }
+				rows={ filteredMembers }
 				defaultOrderBy="createdAt"
 				paginationCounts={ [10, 25, 50] }
 				filterParams={ filterParams || null }
 				onFilterParamsChange={ handleSearch }
 				striped={ true }
 				render={ (member: any) => {
-					const votedTotal = (member.theme?.allocations || []).reduce((sum: number, allocation: any) => { return sum + (allocation.amount || 0) }, 0)
-					const votedChits = (member.theme?.chitVotes || []).length > 0
+					const votedTotal = member._computed?.votedTotal ?? 0
+					const votedChits = member._computed?.votedChits ?? false
 					const fullName = member.fullName ? member.fullName : `${member.firstName || ""} ${member.lastName || ""}`
 
 					return (
@@ -121,9 +119,7 @@ const MembersTable = () => {
 							<TableCell>
 								{ formatters.currency.format(member.theme?.amount || 0) }
 								{ settings?.useKioskFundsVoting && (votedTotal === member.theme?.amount)
-									? (
-										<CheckIcon color="success" />
-									)
+									? <CheckIcon color="success" />
 									: null }
 							</TableCell>
 
@@ -131,9 +127,7 @@ const MembersTable = () => {
 							<TableCell>
 								{ member.theme?.chits || 0 }
 								{ settings?.useKioskChitVoting && votedChits
-									? (
-										<CheckIcon color="success" />
-									)
+									? <CheckIcon color="success" />
 									: null }
 							</TableCell>
 

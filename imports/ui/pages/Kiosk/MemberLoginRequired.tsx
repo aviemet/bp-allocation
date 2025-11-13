@@ -112,6 +112,7 @@ const MemberLoginRequired = (props: MemberLoginRequiredProps) => {
 								type="submit"
 								status={ formStatus }
 								setStatus={ setFormStatus }
+								icon={ false }
 							>
 								Begin Voting!
 							</StyledSubmitButton>

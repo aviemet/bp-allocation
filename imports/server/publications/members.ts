@@ -5,6 +5,7 @@ import { Members, MemberThemes, type MemberData } from "/imports/api/db"
 import { MemberTransformer } from "/imports/server/transformers"
 import { registerObserver, type PublishSelf } from "../methods"
 import { type MemberTheme } from "/imports/types/schema"
+import { createDebouncedFunction } from "/imports/lib/utils"
 
 interface MembersTransformerParams {
 	themeId: string
@@ -28,16 +29,51 @@ const publishMembers = async (themeId: string, limit: number | false, publisher:
 		subOptions.limit = limit
 	}
 
-	const memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
+	let memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
 	const memberIds = memberThemes
 		.map(memberTheme => memberTheme.member)
 		.filter((memberId): memberId is string => typeof memberId === "string")
 
 	const membersObserver = Members.find({ _id: { $in: memberIds } }, subOptions).observe(membersTransformer("members", publisher, { themeId, memberThemes }))
 
+	const refreshMembersFromMemberThemes = async () => {
+		try {
+			memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
+			const updatedMemberIds = memberThemes
+				.map(memberTheme => memberTheme.member)
+				.filter((memberId): memberId is string => typeof memberId === "string")
+
+			const members = await Members.find({ _id: { $in: updatedMemberIds } }, subOptions).fetchAsync()
+			members.forEach(member => {
+				const transformed = MemberTransformer(member, memberThemes.find(theme => theme.member === member._id && theme.theme === themeId))
+				publisher.changed("members", member._id, transformed)
+			})
+		} catch (_error) {
+			// Error refreshing members from memberThemes
+		}
+	}
+
+	const debouncedRefresh = createDebouncedFunction(refreshMembersFromMemberThemes, 100)
+
+	const memberThemesWatcher = MemberThemes.find({ theme: themeId }).observeChanges({
+		added: () => {
+			debouncedRefresh()
+		},
+		changed: () => {
+			debouncedRefresh()
+		},
+		removed: () => {
+			debouncedRefresh()
+		},
+	})
+
 	publisher.onStop(() => {
+		debouncedRefresh.cancel()
 		if(membersObserver && typeof membersObserver.stop === "function") {
 			membersObserver.stop()
+		}
+		if(memberThemesWatcher && typeof memberThemesWatcher.stop === "function") {
+			memberThemesWatcher.stop()
 		}
 	})
 

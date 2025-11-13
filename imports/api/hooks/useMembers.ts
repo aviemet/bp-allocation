@@ -5,6 +5,7 @@ import { useMemo, useState } from "react"
 import { Members, type MemberData } from "../db"
 import { useData } from "../providers/DataProvider"
 import { filterCollection } from "/imports/lib/utils"
+import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
 export const MEMBER_SEARCHABLE_FIELDS: (keyof MemberData)[] = ["firstName", "lastName", "fullName", "code", "initials", "number", "phone"]
 
@@ -28,8 +29,22 @@ export const useMembers = () => {
 			{ sort: { number: 1 } }
 		).fetch()
 
+		const membersWithComputed = (members as MemberWithTheme[]).map(member => {
+			const allocations = member.theme?.allocations || []
+			const chitVotes = member.theme?.chitVotes || []
+			const votedTotal = allocations.reduce((sum: number, allocation: { amount?: number }) => sum + (allocation.amount || 0), 0)
+			const votedChits = chitVotes.length > 0
+			return {
+				...member,
+				_computed: {
+					votedTotal,
+					votedChits,
+				},
+			}
+		})
+
 		return {
-			members,
+			members: membersWithComputed,
 			membersLoading: !subscriptionReady,
 		}
 	}, [themeId])
