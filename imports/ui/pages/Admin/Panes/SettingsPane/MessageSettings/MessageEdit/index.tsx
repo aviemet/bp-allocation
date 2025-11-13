@@ -11,8 +11,7 @@ import {
 	Typography,
 } from "@mui/material"
 import { Link, useParams, useNavigate } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
-import { useMessage } from "/imports/api/providers"
+import { useMessage } from "/imports/api/hooks"
 import { MessageMethods } from "/imports/api/methods"
 import { MessageSchema } from "/imports/api/db"
 import { type Message } from "/imports/types/schema"
@@ -31,7 +30,7 @@ import { Loading } from "/imports/ui/components"
 
 type MessageFormData = Omit<Message, "_id" | "createdAt" | "updatedAt">
 
-const MessageEdit = observer(() => {
+const MessageEdit = () => {
 	const { id: themeId, messageId, type } = useParams({ strict: false })
 
 	let message
@@ -164,8 +163,8 @@ const MessageEdit = observer(() => {
 				</>
 			) }
 		</>
-	)
-})
+	}
+	}
 
 const Preview = styled.div`
 	& > div {

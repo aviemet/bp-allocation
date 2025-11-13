@@ -1,17 +1,16 @@
 import {
 	Typography,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import { useEffect, useState } from "react"
-import { useTheme, useOrgs } from "/imports/api/providers"
+import { useTheme, useOrgs } from "/imports/api/hooks"
 
 import { Loading } from "/imports/ui/components"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
 import { useWindowSize, breakpoints } from "/imports/ui/MediaProvider"
 
-const KioskInfo = observer(() => {
+const KioskInfo = () => {
 	const { theme } = useTheme()
-	const { orgs, topOrgs, isLoading: orgsLoading } = useOrgs()
+	const { values: orgs, topOrgs, isLoading: orgsLoading } = useOrgs()
 
 	const [ itemsPerRow, setItemsPerRow ] = useState(3)
 
@@ -45,7 +44,7 @@ const KioskInfo = observer(() => {
 		subHeading = "Votes Are In, Results Coming Soon"
 	}
 
-	const orgsToDisplay = theme.chitVotingStarted ? topOrgs : orgs.values
+	const orgsToDisplay = theme.chitVotingStarted ? topOrgs : orgs
 	return (
 		<>
 			<Typography component="h1" variant="h3" align="center">{ title }</Typography>
@@ -65,6 +64,6 @@ const KioskInfo = observer(() => {
 			</OrgCardContainer>
 		</>
 	)
-})
+}
 
 export default KioskInfo

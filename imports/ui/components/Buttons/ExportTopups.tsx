@@ -1,5 +1,5 @@
 import { isEmpty } from "lodash"
-import { useOrgs, useMembers } from "/imports/api/providers"
+import { useOrgs, useMembers } from "/imports/api/hooks"
 import ExportCsvButton from "/imports/ui/components/Buttons/ExportCsvButton"
 import { Loading } from "/imports/ui/components"
 

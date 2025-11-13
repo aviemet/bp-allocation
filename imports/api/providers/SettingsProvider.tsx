@@ -1,6 +1,5 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
-import { observer } from "mobx-react-lite"
 import React, { useEffect, useRef } from "react"
 
 import { useData } from "./DataProvider"
@@ -21,7 +20,7 @@ interface SettingsProviderProps {
 	children: React.ReactNode
 }
 
-const SettingsProvider = observer(({ children }: SettingsProviderProps) => {
+const SettingsProvider = ({ children }: SettingsProviderProps) => {
 	const { themeId } = useData()
 
 	useTheme()
@@ -58,6 +57,6 @@ const SettingsProvider = observer(({ children }: SettingsProviderProps) => {
 			{ children }
 		</SettingsContextProvider>
 	)
-})
+}
 
 export default SettingsProvider

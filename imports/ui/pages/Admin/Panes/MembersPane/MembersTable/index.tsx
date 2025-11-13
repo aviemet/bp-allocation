@@ -8,9 +8,9 @@ import {
 	TableRow,
 } from "@mui/material"
 import { useParams } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { useState } from "react"
-import { useMembers, useSettings } from "/imports/api/providers"
+import { useMembers } from "/imports/api/hooks"
+import { useSettings } from "/imports/api/hooks"
 import { formatters } from "/imports/lib/utils"
 
 import { MemberMethods } from "/imports/api/methods"
@@ -51,8 +51,8 @@ const headCells: HeadCell[] = [
 // TODO: Also, the sorting and icon indicators for voting status
 // TODO: Would be cool to get the filter icon to allow filtring by keyword
 //       So, choosing 'not voted' would filter out all those who have voted
-const MembersTable = observer(() => {
-	const { members, isLoading: membersLoading } = useMembers()
+const MembersTable = () => {
+	const { filteredMembers, searchFilter, setSearchFilter, isLoading: membersLoading } = useMembers()
 	const { settings } = useSettings()
 
 	const [ modalOpen, setModalOpen ] = useState<boolean>(false)
@@ -69,7 +69,7 @@ const MembersTable = observer(() => {
 		setModalHeader(`Permanently unlink member${plural ? "s" : ""} from this theme?`)
 		setModalContent(`This will permanently remove the member${plural ? "s" : ""} from this theme. It will not delete the Member record${plural ? "s" : ""}.`)
 		// Need to curry the function since useState calls passed functions
-		setModalAction( () => async () => {
+		setModalAction(() => async () => {
 			await Promise.all(selected.map(id => MemberMethods.removeMemberFromTheme.callAsync({ memberId: id, themeId: String(themeId) })))
 			onSuccess()
 		})
@@ -77,10 +77,10 @@ const MembersTable = observer(() => {
 	}
 
 	const handleSearch = (value: string) => {
-		if(members) members.searchFilter = value
+		setSearchFilter(value)
 	}
 
-	if(membersLoading || !members) {
+	if(membersLoading) {
 		return (
 			<>
 				<Skeleton height={ 100 } />
@@ -90,8 +90,8 @@ const MembersTable = observer(() => {
 		)
 	}
 
-	const tableRows = members.filteredMembers
-	const filterParams = members.searchFilter
+	const tableRows = filteredMembers
+	const filterParams = searchFilter
 
 	// TODO: Why isn't striping working now?
 	return (
@@ -142,7 +142,6 @@ const MembersTable = observer(() => {
 								<ContextMenu themeId={ String(themeId) } member={ member } />
 							</TableCell>
 						</>
-
 					)
 				} }
 				collapse={ (member: any) => (
@@ -178,6 +177,6 @@ const MembersTable = observer(() => {
 			/>
 		</>
 	)
-})
+}
 
 export default MembersTable

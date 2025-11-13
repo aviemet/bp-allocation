@@ -5,7 +5,8 @@ import {
 } from "@mui/material"
 import { Link, useLocation } from "@tanstack/react-router"
 import { useState } from "react"
-import { useData, useMessages, useMembers } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
+import { useMessages, useMembers } from "/imports/api/hooks"
 import { MessageMethods } from "/imports/api/methods"
 import type MessageStore from "/imports/api/stores/MessageStore"
 
@@ -81,10 +82,10 @@ const emailHeaderCells = [
 
 const Messages = () => {
 	const { themeId } = useData()
-	const { messages, isLoading: messagesLoading } = useMessages()
-	const { members, isLoading: membersLoading } = useMembers()
+	const { values: messages, isLoading: messagesLoading } = useMessages()
+	const { values: members, isLoading: membersLoading } = useMembers()
 
-	const allMemberIds = members ? members.values.map(member => member._id) : []
+	const allMemberIds = members ? members.map(member => member._id) : []
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState("")
@@ -115,7 +116,7 @@ const Messages = () => {
 					<Button component={ Link } to={ `/admin/${themeId}/settings/messages/new/text` }>+ New Text Message</Button>
 				</Stack> }
 				headCells={ textHeaderCells }
-				rows={ messages?.values.filter((message: MessageStore) => message.type === "text") || [] }
+				rows={ messages?.filter((message: MessageStore) => message.type === "text") || [] }
 				defaultOrderBy="createdAt"
 				paginate={ false }
 				onBulkDelete={ handleBulkDelete }
@@ -149,7 +150,7 @@ const Messages = () => {
 					<Button component={ Link } to={ `/admin/${themeId}/settings/messages/new/email` }>+ New Email Message</Button>
 				</Stack> }
 				headCells={ emailHeaderCells }
-				rows={ messages?.values.filter((message: MessageStore) => message.type === "email") || [] }
+				rows={ messages?.filter((message: MessageStore) => message.type === "email") || [] }
 				defaultOrderBy="createdAt"
 				paginate={ false }
 				onBulkDelete={ handleBulkDelete }

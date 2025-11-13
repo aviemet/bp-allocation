@@ -1,15 +1,14 @@
 import styled from "@emotion/styled"
 import { Button, Grid, InputAdornment, Stack } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import { useState, useEffect } from "react"
-import { useOrgs } from "/imports/api/providers"
+import { useOrgs } from "/imports/api/hooks"
 import { TextInput, SubmitButton, STATUS, SwitchInput, type Status } from "/imports/ui/components/Form"
 import { useFormContext, useWatch } from "react-hook-form"
 
 import MemberSearchInput from "./MemberSearchInput"
 import SelectableOrgCards from "../Kiosk/Topups/SelectableOrgCards"
 
-const Pledges = observer(() => {
+const Pledges = () => {
 	const { reset } = useFormContext()
 	const watch = useWatch()
 
@@ -74,13 +73,13 @@ const Pledges = observer(() => {
 
 		</Grid>
 	)
-})
+}
 
 const FinalizeButton = styled(SubmitButton)({
 	textAlign: "center",
 	border: "2px solid #fff",
 	fontSize: "2rem",
 	textTransform: "uppercase",
-})
+	}
 
 export default Pledges

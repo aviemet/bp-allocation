@@ -1,5 +1,4 @@
 import styled from "@emotion/styled"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import { type OrgStore } from "/imports/api/stores"
 
@@ -8,7 +7,7 @@ interface OrgInfoProps {
 	showLeverage: boolean
 }
 
-const OrgInfo = observer(({ org, showLeverage }: OrgInfoProps) => {
+const OrgInfo = ({ org, showLeverage }: OrgInfoProps) => {
 	const need = org.need - org.leverageFunds
 	return (
 		<InfoContainer className="orginfo">
@@ -25,8 +24,8 @@ const OrgInfo = observer(({ org, showLeverage }: OrgInfoProps) => {
 			}
 
 		</InfoContainer>
-	)
-})
+	}
+	}
 
 const InfoContainer = styled.div`
 	&& {

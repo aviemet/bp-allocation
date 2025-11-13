@@ -1,6 +1,5 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
-import { observer } from "mobx-react-lite"
 import React from "react"
 
 import { useData } from "./DataProvider"
@@ -23,7 +22,7 @@ interface OrgsProviderProps {
 	children: React.ReactNode
 }
 
-const OrgsProvider = observer(({ children }: OrgsProviderProps) => {
+const OrgsProvider = ({ children }: OrgsProviderProps) => {
 	const { themeId } = useData()
 	const { theme, isLoading: themeLoading } = useTheme()
 
@@ -89,6 +88,6 @@ const OrgsProvider = observer(({ children }: OrgsProviderProps) => {
 			{ children }
 		</OrgsContextProvider>
 	)
-})
+}
 
 export default OrgsProvider

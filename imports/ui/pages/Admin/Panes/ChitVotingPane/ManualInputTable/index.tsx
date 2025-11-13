@@ -9,14 +9,13 @@ import {
 	TableCell,
 } from "@mui/material"
 import { OrganizationMethods } from "/imports/api/methods"
-import { observer } from "mobx-react-lite"
 import { useState, useEffect } from "react"
-import { useOrgs } from "/imports/api/providers"
+import { useOrgs } from "/imports/api/hooks"
 import { type OrgStore } from "/imports/api/stores"
 import { Loading } from "/imports/ui/components"
 
 const ChitTable = () => {
-	const { orgs, topOrgs } = useOrgs()
+	const { values: orgs, topOrgs } = useOrgs()
 
 	const topOrgIds = topOrgs.map(org => org._id)
 
@@ -34,18 +33,18 @@ const ChitTable = () => {
 				</TableHead>
 
 				<TableBody>
-					{ orgs.values.map((org, i) => (
+					{ orgs.map((org, i) => (
 						<ChitInputs
 							org={ org }
 							key={ i }
-							tabInfo={ { index: i + 1, length: orgs.values.length } }
+							tabInfo={ { index: i + 1, length: orgs.length } }
 							topOrg={ topOrgIds.includes(org._id) }
 						/>
 					)) }
 				</TableBody>
 			</Table>
 		</TableContainer>
-	)
+	}
 }
 
 interface ChitInputsProps {
@@ -54,7 +53,7 @@ interface ChitInputsProps {
 	topOrg: boolean
 }
 
-const ChitInputs = observer(({ org, tabInfo, topOrg }: ChitInputsProps) => {
+const ChitInputs = ({ org, tabInfo, topOrg }: ChitInputsProps) => {
 	const [ weightVotes, setWeightVotes ] = useState(org.chitVotes?.weight ?? 0)
 	const [ countVotes, setCountVotes ] = useState(org.chitVotes?.count ?? 0)
 
@@ -67,7 +66,7 @@ const ChitInputs = observer(({ org, tabInfo, topOrg }: ChitInputsProps) => {
 					weight: weightVotes,
 				},
 			},
-		})
+	}
 	}
 
 	useEffect(() => {
@@ -106,7 +105,7 @@ const ChitInputs = observer(({ org, tabInfo, topOrg }: ChitInputsProps) => {
 			</TableCell>
 
 		</TableRow>
-	)
-})
+	}
+	}
 
 export default ChitTable

@@ -7,7 +7,7 @@ import {
 } from "@mui/material"
 import { useParams, useNavigate } from "@tanstack/react-router"
 import { useState, useEffect } from "react"
-import { useMembers } from "/imports/api/providers"
+import { useMembers } from "/imports/api/hooks"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberSchema, MemberThemeSchema } from "/imports/api/db"
 import { roundFloat } from "/imports/lib/utils"

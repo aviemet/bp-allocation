@@ -5,7 +5,6 @@ import {
 import { useNavigate, useParams } from "@tanstack/react-router"
 import { readCsv } from "/imports/lib/papaParseMethods"
 import { sanitizeNames } from "/imports/lib/utils"
-import { observer } from "mobx-react-lite"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberSchema, MemberThemeSchema } from "/imports/api/db"
 import { useSnackbar } from "notistack"
@@ -23,7 +22,7 @@ interface HeadingMapping {
 	type?: (value: unknown) => unknown
 }
 
-const ImportMembers = observer(() => {
+const ImportMembers = () => {
 	const { enqueueSnackbar } = useSnackbar()
 
 	const [pendingMembers, setPendingMembers] = useState<CsvRow[]>([])
@@ -166,6 +165,6 @@ const ImportMembers = observer(() => {
 			/>
 		</>
 	)
-})
+}
 
 export default ImportMembers

@@ -1,7 +1,6 @@
 import { Meteor } from "meteor/meteor"
 import { Mongo } from "meteor/mongo"
 import { useTracker } from "meteor/react-meteor-data"
-import { observer } from "mobx-react-lite"
 import React, { useEffect, useState } from "react"
 
 import { useData } from "./DataProvider"
@@ -19,7 +18,6 @@ interface MembersContextValue {
 
 const [useMembersContext, MembersContextProvider] = createContext<MembersContextValue>()
 
-// Get a single member
 export const useMember = (memberId: string) => {
 	const membersContext = useMembersContext()
 
@@ -27,11 +25,9 @@ export const useMember = (memberId: string) => {
 	return membersContext
 }
 
-// Get all members
 export const useMembers = () => {
 	const membersContext = useMembersContext()
 
-	// Unsubscribe from members upon unmounting page
 	useEffect(() => {
 		membersContext.getAllMembers()
 		return () => {
@@ -46,7 +42,7 @@ interface MembersProviderProps {
 	children: React.ReactNode
 }
 
-const MembersProvider = observer(({ children }: MembersProviderProps) => {
+const MembersProvider = ({ children }: MembersProviderProps) => {
 	const { themeId } = useData()
 
 	// limit of 0 == 'return no records', limit of false == 'no limit'
@@ -127,7 +123,6 @@ const MembersProvider = observer(({ children }: MembersProviderProps) => {
 			{ children }
 		</MembersContextProvider>
 	)
-
-})
+}
 
 export default MembersProvider

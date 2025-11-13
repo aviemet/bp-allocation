@@ -4,14 +4,13 @@ import {
 	Typography,
 } from "@mui/material"
 import { useParams, useNavigate } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 
 
 import SplitButton from "/imports/ui/components/Buttons/SplitButton"
 import MembersTable from "./MembersTable"
 
 
-const MembersPane = observer(() => {
+const MembersPane = () => {
 	const { id } = useParams({ strict: false })
 	const navigate = useNavigate()
 
@@ -45,6 +44,6 @@ const MembersPane = observer(() => {
 			</Grid>
 		</Container>
 	)
-})
+}
 
 export default MembersPane

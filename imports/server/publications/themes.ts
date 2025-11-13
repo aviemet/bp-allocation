@@ -18,6 +18,7 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	}
 
 	const settings = theme.presentationSettings ? await PresentationSettings.findOneAsync({ _id: theme.presentationSettings }) : null
+
 	if(!settings) {
 		publisher.ready()
 		return
@@ -29,11 +30,7 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	const topOrgs = filterTopOrgs(transformedOrgs, theme)
 
 	const observer = Themes.find({ _id: theme._id }).observe(themeObserver("themes", publisher, { topOrgs, memberThemes, settings }))
-	publisher.onStop(() => {
-		if(observer && typeof observer.stop === "function") {
-			observer.stop()
-		}
-	})
+	publisher.onStop(() => observer?.stop())
 
 	publisher.ready()
 }
@@ -47,21 +44,11 @@ Meteor.publish("themes", function(themeId?: string) {
 })
 
 Meteor.publish("theme", async function(themeId: string) {
-	if(!themeId) {
-		this.ready()
-		return
-	}
-
 	const theme = await Themes.findOneAsync({ _id: themeId })
 	await publishTheme(theme || null, this)
 })
 
 Meteor.publish("themeBySlug", async function(slug: string) {
-	if(!slug) {
-		this.ready()
-		return
-	}
-
 	const theme = await Themes.findOneAsync({ slug })
 	await publishTheme(theme || null, this)
 })

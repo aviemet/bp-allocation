@@ -1,4 +1,4 @@
-import { useMessages } from "/imports/api/providers"
+import { useMessages } from "/imports/api/hooks"
 import { MemberMethods } from "/imports/api/methods"
 import ExpandLess from "@mui/icons-material/ExpandLess"
 import ExpandMore from "@mui/icons-material/ExpandMore"

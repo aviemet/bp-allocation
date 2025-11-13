@@ -12,7 +12,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { Link } from "@tanstack/react-router"
-import { useTheme, useMessages, useMembers } from "/imports/api/providers"
+import { useTheme, useMessages, useMembers } from "/imports/api/hooks"
 import SendWithFeedbackButton from "/imports/ui/components/Buttons/SendWithFeedbackButton"
 import { Loading } from "/imports/ui/components"
 

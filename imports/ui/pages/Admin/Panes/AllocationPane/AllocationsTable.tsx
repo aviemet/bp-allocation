@@ -8,18 +8,17 @@ import {
 	TableCell,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 
 import AllocationInputs from "./AllocationInputs"
-import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
+import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 
 interface AllocationsTableProps {
 	hideAdminFields?: boolean
 }
 
-const AllocationsTable = observer(({ hideAdminFields = false }: AllocationsTableProps) => {
+const AllocationsTable = ({ hideAdminFields = false }: AllocationsTableProps) => {
 	const { settings } = useSettings()
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
@@ -105,7 +104,7 @@ const AllocationsTable = observer(({ hideAdminFields = false }: AllocationsTable
 			</StyledTable>
 		</TableContainer>
 	)
-})
+}
 
 const fontSize = "1.1rem"
 const StyledTable = styled(Table)(({ theme }) => ({

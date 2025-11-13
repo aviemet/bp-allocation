@@ -1,9 +1,8 @@
 import styled from "@emotion/styled"
 import { useParams } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 
-import { useData, useTheme, useSettings } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
 import ChitVotingKiosk from "./ChitVoting"
 import FundsVotingKiosk from "./FundsVoting"
 import KioskInfo from "./Info/KioskInfo"
@@ -15,7 +14,7 @@ import Results from "../Presentation/Results"
 type KioskPage = "info" | "chit" | "funds" | "topups" | "results"
 type TimerRef = ReturnType<typeof setTimeout>
 
-const Kiosk = observer(() => {
+const Kiosk = () => {
 	const params = useParams({ strict: false })
 	const member = params?.member
 
@@ -135,7 +134,7 @@ const Kiosk = observer(() => {
 			{ renderPage() }
 		</PageFader>
 	)
-})
+}
 
 const FADE_DURATION = 300
 

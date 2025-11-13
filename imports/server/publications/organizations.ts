@@ -40,7 +40,11 @@ const publishOrganizations = async (themeId: string, publisher: PublishSelf) => 
 
 	const orgsCursor = Organizations.find({ theme: themeId }).observe(observerCallbacks)
 
-	publisher.onStop(() => orgsCursor.stop())
+	publisher.onStop(() => {
+		if(orgsCursor && typeof orgsCursor.stop === "function") {
+			orgsCursor.stop()
+		}
+	})
 
 	publisher.ready()
 }

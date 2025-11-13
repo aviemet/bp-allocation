@@ -1,7 +1,6 @@
 import { isEmpty } from "lodash"
-import { observer } from "mobx-react-lite"
 import { ComponentType } from "react"
-import { useMembers } from "/imports/api/providers"
+import { useMembers } from "/imports/api/hooks"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
 import { FundsVoteProvider } from "./VotingContext"
@@ -14,17 +13,17 @@ interface RemoteVotingProps {
 	unsetUser?: () => void
 }
 
-const RemoteVoting = observer(({
+const RemoteVoting = ({
 	memberId,
 	component,
 	unsetUser = () => {},
 }: RemoteVotingProps) => {
-	const { members, isLoading: membersLoading } = useMembers()
+	const { values: members, isLoading: membersLoading } = useMembers()
 
 	if(membersLoading || isEmpty(members)) return <Loading />
 
 	// TODO: This should be a subscription to a single member
-	const member = members.values.find(member => member._id === memberId)
+	const member = members.find(member => member._id === memberId)
 	// console.log({ member })
 
 	// if(membersLoading) return <Loader active />
@@ -38,6 +37,6 @@ const RemoteVoting = observer(({
 			<Component user={ member } source="mobile" />
 		</FundsVoteProvider>
 	)
-})
+}
 
 export default RemoteVoting

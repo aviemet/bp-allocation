@@ -1,5 +1,4 @@
 import { remove } from "lodash"
-import { action, makeObservable } from "mobx"
 
 import TrackableCollection from "./lib/TrackableCollection"
 import MemberThemeStore, { MemberThemeData } from "./MemberThemeStore"
@@ -7,9 +6,6 @@ import MemberThemeStore, { MemberThemeData } from "./MemberThemeStore"
 class MembersThemesCollection extends TrackableCollection<MemberThemeStore> {
 	constructor(data: MemberThemeData[]) {
 		super(data, MemberThemeStore)
-		makeObservable(this, {
-			deleteItem: action,
-		})
 	}
 
 	deleteItem(data: MemberThemeData) {

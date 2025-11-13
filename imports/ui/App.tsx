@@ -10,7 +10,7 @@ import Routes from "./routes"
 import theme from "/imports/ui/theme"
 import { isMobileDevice } from "/imports/lib/utils"
 
-import { DataProvider, ThemeProvider, SettingsProvider, OrgsProvider, MembersProvider, MessagesProvider } from "/imports/api/providers"
+import { DataProvider } from "/imports/api/providers"
 
 const App = () => {
 	useEffect(() => {
@@ -29,17 +29,7 @@ const App = () => {
 				<SnackbarProvider>
 					<GlobalContainer id="globalContainer">
 						<DataProvider>
-							<ThemeProvider>
-								<SettingsProvider>
-									<OrgsProvider>
-										<MembersProvider>
-											<MessagesProvider>
-												<Routes />
-											</MessagesProvider>
-										</MembersProvider>
-									</OrgsProvider>
-								</SettingsProvider>
-							</ThemeProvider>
+							<Routes />
 						</DataProvider>
 					</GlobalContainer>
 				</SnackbarProvider>

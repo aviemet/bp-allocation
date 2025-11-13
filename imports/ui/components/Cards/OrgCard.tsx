@@ -11,7 +11,6 @@ import {
 	type BoxProps,
 } from "@mui/material"
 import clsx from "clsx"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import { useState, type ReactElement, type ReactNode } from "react"
 import { type OrgData } from "/imports/api/db"
@@ -36,7 +35,7 @@ interface OrgCardProps extends Omit<BoxProps, "onClick" | "content"> {
 	disabled?: boolean
 }
 
-const OrgCard = observer(({
+const OrgCard = ({
 	children,
 	org,
 	overlay,
@@ -97,7 +96,7 @@ const OrgCard = observer(({
 			</CardContent>
 		</StyledCard>
 	)
-})
+}
 
 const StyledCard = styled(Box)<{ theme?: { palette?: { grey?: Record<number, string>, batteryGreen?: { main: string }, batteryBlue?: { main: string } } } }>(({ theme }) => ({
 	position: "relative",

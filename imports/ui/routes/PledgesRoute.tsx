@@ -1,13 +1,13 @@
 import { useParams } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { useEffect, useState } from "react"
 
-import { useData, useTheme, useOrgs, useSettings } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
+import { useTheme, useOrgs, useSettings } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { KioskLayout } from "/imports/ui/layouts"
 import Pledges from "../pages/Pledges"
 
-const PledgesRoute = observer(() => {
+const PledgesRoute = () => {
 	const { id } = useParams({ from: "/pledges/$id" })
 	const data = useData()
 	const { isLoading: themeLoading } = useTheme()
@@ -36,6 +36,6 @@ const PledgesRoute = observer(() => {
 			<Pledges />
 		</KioskLayout>
 	)
-})
+}
 
 export default PledgesRoute

@@ -2,11 +2,10 @@ import styled from "@emotion/styled"
 import {
 	Container,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
-import { useOrgs, useSettings } from "/imports/api/providers"
+import { useOrgs, useSettings } from "/imports/api/hooks"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
 
-const TopOrgs = observer(() => {
+const TopOrgs = () => {
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
 
@@ -28,7 +27,7 @@ const TopOrgs = observer(() => {
 			</Container>
 		</TopOrgsContainer>
 	)
-})
+}
 
 const TopOrgsContainer = styled(Container)`
 	padding: 16px;

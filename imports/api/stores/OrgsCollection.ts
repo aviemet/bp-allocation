@@ -1,5 +1,4 @@
 import { sortBy } from "lodash"
-import { computed, makeObservable } from "mobx"
 
 import TrackableCollection from "./lib/TrackableCollection"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
@@ -18,20 +17,11 @@ export interface PledgeWithOrg extends MatchPledge {
 class OrgsCollection extends TrackableCollection<OrgStore> {
 	private _theme: Theme
 
-	// Cache list of pre-existing pledges to prevent animating stale data
 	constructor(data: OrgData[], theme: Theme, Store: typeof OrgStore) {
 		super(data, Store)
-
-		makeObservable(this, {
-			pledges: computed,
-		})
-
 		this._theme = theme
 	}
 
-	/**
-	 * Queue for displaying pledges on screen
-	 */
 	get pledges(): PledgeWithOrg[] {
 		let pledges: PledgeWithOrg[] = []
 

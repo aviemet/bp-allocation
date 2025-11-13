@@ -3,10 +3,9 @@ import {
 	Chip,
 } from "@mui/material"
 import _ from "lodash"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import { useState } from "react"
-import { useTheme } from "/imports/api/providers"
+import { useTheme } from "/imports/api/hooks"
 import { ThemeMethods } from "/imports/api/methods"
 
 import ContentModal from "/imports/ui/components/Dialogs/ContentModal"
@@ -16,7 +15,7 @@ interface UnSaveButtonProps {
 	org: OrgStore
 }
 
-const UnSaveButton = observer(({ org }: UnSaveButtonProps) => {
+const UnSaveButton = ({ org }: UnSaveButtonProps) => {
 	const [ modalOpen, setModalOpen ] = useState(false)
 
 	const { theme } = useTheme()
@@ -27,7 +26,7 @@ const UnSaveButton = observer(({ org }: UnSaveButtonProps) => {
 		await ThemeMethods.unSaveOrg.callAsync({
 			theme_id: theme._id,
 			org_id: org._id,
-		})
+	}
 		setModalOpen(false)
 	}
 
@@ -49,7 +48,7 @@ const UnSaveButton = observer(({ org }: UnSaveButtonProps) => {
 				<Button onClick={ unSaveOrg }>Yes</Button>
 			</ContentModal>
 		</>
-	)
-})
+	}
+	}
 
 export default UnSaveButton

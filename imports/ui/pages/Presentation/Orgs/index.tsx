@@ -1,7 +1,6 @@
 import styled from "@emotion/styled"
 import { Container } from "@mui/material"
-import { observer } from "mobx-react-lite"
-import { useOrgs, useSettings } from "/imports/api/providers"
+import { useOrgs, useSettings } from "/imports/api/hooks"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
 
 const Overlay = ({ visible }: { visible: boolean }) => (
@@ -10,12 +9,12 @@ const Overlay = ({ visible }: { visible: boolean }) => (
 	</DimOverlay>
 )
 
-const Orgs = observer(() => {
+const Orgs = () => {
 	const { settings } = useSettings()
-	const { orgs, topOrgs } = useOrgs()
+	const { values: orgs, topOrgs } = useOrgs()
 
 	const colorOrgs: Record<string, boolean> = {}
-	topOrgs.map((org) => {
+	topOrgs.forEach((org) => {
 		colorOrgs[org._id] = true
 	})
 
@@ -24,7 +23,7 @@ const Orgs = observer(() => {
 			<PageTitle>Participating Organizations</PageTitle>
 			<Container maxWidth="xl" sx={ { height: "100%" } }>
 				<OrgCardContainer cols={ 3 } sx={ { paddingBottom: "clamp(0rem, -58.1818rem + 90.9091vh, 10rem)", height: "100%" } }>
-					{ orgs?.values.map((org, i) => {
+					{ orgs?.map((org, i) => {
 						return <OrgCard
 							key={ org._id }
 							org={ org }
@@ -38,7 +37,7 @@ const Orgs = observer(() => {
 			</Container>
 		</OrgsContainer>
 	)
-})
+}
 
 const OrgsContainer = styled.div`
 	display: flex;

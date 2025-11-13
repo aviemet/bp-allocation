@@ -1,13 +1,13 @@
 import { useParams } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { useEffect, useState } from "react"
 
-import { useData, useTheme, useOrgs, useSettings } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
+import { useTheme, useOrgs, useSettings } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { PresentationLayout } from "/imports/ui/layouts"
 import Simulation from "../pages/Admin/Simulation"
 
-const SimulationRoute = observer(() => {
+const SimulationRoute = () => {
 	const { id } = useParams({ from: "/simulation/$id" })
 	const data = useData()
 	const { isLoading: themeLoading } = useTheme()
@@ -36,6 +36,6 @@ const SimulationRoute = observer(() => {
 			<Simulation />
 		</PresentationLayout>
 	)
-})
+}
 
 export default SimulationRoute

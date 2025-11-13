@@ -47,8 +47,6 @@
     "matter-fireworks": "^1.0.2",
     "matter-js": "^0.20.0",
     "meteor-node-stubs": "^1.2.24",
-    "mobx": "^6.15.0",
-    "mobx-react-lite": "^4.1.1",
     "mui-tiptap": "^1.28.1",
     "notistack": "^3.0.2",
     "numeral": "^2.0.6",

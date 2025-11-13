@@ -15,7 +15,7 @@ import { findIndex } from "lodash"
 import numeral from "numeral"
 
 import { roundFloat } from "/imports/lib/utils"
-import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
+import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 import { Loading, MoneyCell } from "/imports/ui/components"
 import ExportMemberVotes from "/imports/ui/components/Buttons/ExportMemberVotes"
 import ExportTopups from "/imports/ui/components/Buttons/ExportTopups"

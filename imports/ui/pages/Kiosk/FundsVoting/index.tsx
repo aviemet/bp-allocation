@@ -1,11 +1,11 @@
 import styled from "@emotion/styled"
 import { Container, Button, Typography } from "@mui/material"
 import { forEach } from "lodash"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import React, { useState, useEffect } from "react"
 
-import { useData, useSettings, useOrgs } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
+import { useSettings, useOrgs } from "/imports/api/hooks"
 import VotingComplete from "../VotingComplete"
 import { useVoting } from "../VotingContext"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
@@ -33,7 +33,7 @@ interface FundsVotingKioskProps {
 	source: VotingSource
 }
 
-const FundsVotingKiosk = observer(({ user, source }: FundsVotingKioskProps) => {
+const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
@@ -97,7 +97,7 @@ const FundsVotingKiosk = observer(({ user, source }: FundsVotingKioskProps) => {
 			</>
 		</OrgsContainer>
 	)
-})
+}
 
 const OrgsContainer = styled(Container)`
 	padding-top: 16px;
@@ -121,7 +121,7 @@ const FinalizeButton = styled(Button)({
 	"&.Mui-disabled": {
 		backgroundColor: COLORS.blue,
 	},
-})
+)
 
 const NumberFormat = styled.span`
 	width: 12rem;

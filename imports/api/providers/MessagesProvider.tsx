@@ -1,6 +1,5 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
-import { observer } from "mobx-react-lite"
 import React from "react"
 
 import { useData } from "./DataProvider"
@@ -17,7 +16,6 @@ interface MessagesContextValue {
 const [useMessages, MessagesContextProvider] = createContext<MessagesContextValue>()
 export { useMessages }
 
-// Get a single message
 export const useMessage = (messageId: string) => {
 	const messagesContext = useMessages()
 
@@ -39,7 +37,7 @@ interface MessagesProviderProps {
 	children: React.ReactNode
 }
 
-const MessagesProvider = observer(({ children }: MessagesProviderProps) => {
+const MessagesProvider = ({ children }: MessagesProviderProps) => {
 	const appStore = useData()
 	const themeId = appStore?.themeId
 	const themeContext = useTheme()
@@ -98,6 +96,6 @@ const MessagesProvider = observer(({ children }: MessagesProviderProps) => {
 			{ children }
 		</MessagesContextProvider>
 	)
-})
+}
 
 export default MessagesProvider

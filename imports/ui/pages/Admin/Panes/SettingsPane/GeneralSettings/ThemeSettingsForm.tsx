@@ -3,17 +3,16 @@ import {
 	Grid,
 	InputAdornment,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import { useState } from "react"
 import { ThemeMethods } from "/imports/api/methods"
-import { useTheme } from "/imports/api/providers"
+import { useTheme } from "/imports/api/hooks"
 import { ThemeSchema } from "/imports/api/db"
 import { formatters, roundFloat } from "/imports/lib/utils"
 
 import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { Loading } from "/imports/ui/components"
 
-const SettingsPane = observer(() => {
+const SettingsPane = () => {
 	const { theme } = useTheme()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
@@ -167,6 +166,6 @@ const SettingsPane = observer(() => {
 			</Grid>
 		</Form>
 	)
-})
+}
 
 export default SettingsPane

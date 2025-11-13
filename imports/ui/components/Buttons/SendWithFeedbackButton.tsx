@@ -3,10 +3,9 @@ import EmailIcon from "@mui/icons-material/Email"
 import SmsIcon from "@mui/icons-material/Sms"
 import { Paper, ButtonProps } from "@mui/material"
 import { Meteor } from "meteor/meteor"
-import { observer } from "mobx-react-lite"
 import { useState, useEffect } from "react"
 
-import { useTheme } from "/imports/api/providers"
+import { useTheme } from "/imports/api/hooks"
 import { type MessageData } from "/imports/api/db"
 
 import CustomConfirm from "/imports/ui/components/Dialogs/CustomConfirm"
@@ -34,7 +33,7 @@ interface SendWithFeedbackButtonProps extends Omit<ButtonProps, "onClick"> {
 	members?: string[] | "all"
 }
 
-const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWithFeedbackButtonProps) => {
+const SendWithFeedbackButton = ({ message, members, ...rest }: SendWithFeedbackButtonProps) => {
 	const { theme } = useTheme()
 
 	const [buttonStatus, setButtonStatus] = useState<Status>(STATUS.READY)
@@ -105,7 +104,7 @@ const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWith
 			/>
 		</>
 	)
-})
+}
 
 const FormattedMessageBody = styled.div`
 	white-space: 'pre-wrap';

@@ -1,6 +1,6 @@
 import { format } from "date-fns"
 import { isEmpty } from "lodash"
-import { useOrgs, useMembers } from "/imports/api/providers"
+import { useOrgs, useMembers } from "/imports/api/hooks"
 import { type MemberTheme } from "/imports/types/schema"
 import { Loading } from "/imports/ui/components"
 import ExportCsvButton from "/imports/ui/components/Buttons/ExportCsvButton"

@@ -1,8 +1,3 @@
-import { makeAutoObservable } from "mobx"
-
-/**
- * Top level Data Store for the application
- */
 class AppStore {
 	themeId: string | null = null
 	loading = true
@@ -11,18 +6,11 @@ class AppStore {
 	menuHeading = this.defaultMenuHeading
 	loadMembers = true
 
-	// Used to allow only one active editableInput at a time
 	openEditor = null
 
 	KIOSK_PAGES = { info: "info", chit: "chit", funds: "funds", topups: "topups", results: "results" } as const
 	defaultVotingRedirectTimeout = 60
 	votingRedirectTimeout = this.defaultVotingRedirectTimeout
-
-	constructor() {
-		makeAutoObservable(this, {
-			KIOSK_PAGES: false,
-		})
-	}
 
 	setThemeId(id: string | null) {
 		this.themeId = id

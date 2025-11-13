@@ -8,7 +8,7 @@ import { useEffect } from "react"
 import { useVoting } from "./VotingContext"
 
 import { COLORS } from "/imports/lib/global"
-import { useData, useSettings } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
 
 interface VotingCompleteProps {
 	setVotingComplete: (value: boolean) => void

@@ -1,7 +1,6 @@
 import { forEach, find, clone, isEqual } from "lodash"
-import { observer } from "mobx-react-lite"
 import { useEffect, useMemo, useState, type ReactNode } from "react"
-import { useTheme, useOrgs } from "/imports/api/providers"
+import { useTheme, useOrgs } from "/imports/api/hooks"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 import { createContext } from "/imports/lib/hooks/createContext"
@@ -27,22 +26,22 @@ interface VotingContextProviderProps {
 
 const [useVoting, FundsVoteContextProvider] = createContext<VotingContextValue>()
 
-const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingContextProviderProps) => {
+const FundsVoteProvider = ({ children, member, unsetUser }: VotingContextProviderProps) => {
 	const { theme } = useTheme()
-	const { orgs, topOrgs } = useOrgs()
+	const { values: orgs, topOrgs } = useOrgs()
 
 	const initialVotesState = useMemo(() => {
 		const state: Record<string, number> = {}
 		topOrgs.forEach(org => {
 			const allocations = find(member.theme?.allocations, ["organization", org._id])
 			state[org._id] = allocations?.amount ?? 0
-		})
+		}
 		return state
 	}, [member.theme?.allocations, topOrgs])
 
 	const orgValues = useMemo(() => {
 		if(!orgs) return []
-		return orgs.values.slice()
+		return orgs.slice()
 	}, [orgs])
 
 	const initialChitState = useMemo(() => {
@@ -50,7 +49,7 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 		orgValues.forEach(org => {
 			const chits = find(member.theme?.chitVotes, ["organization", org._id])
 			state[org._id] = chits?.votes ?? 0
-		})
+	}
 		return state
 	}, [member.theme?.chitVotes, orgValues])
 
@@ -114,7 +113,7 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 				voteData.voteSource = source
 			}
 			MemberMethods.fundVote.callAsync(voteData as Parameters<typeof MemberMethods.fundVote.callAsync>[0])
-		})
+	}
 	}
 
 	const saveChits = (source?: VotingSource) => {
@@ -130,7 +129,7 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 			}
 
 			MemberMethods.chitVote.call(voteData)
-		})
+	}
 	}
 
 	return (
@@ -147,6 +146,6 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 			{ children }
 		</FundsVoteContextProvider>
 	)
-})
+}
 
 export { useVoting, FundsVoteProvider }

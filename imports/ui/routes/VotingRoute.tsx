@@ -1,13 +1,13 @@
 import { useParams } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { useEffect, useState } from "react"
 
-import { useData, useTheme, useOrgs, useSettings } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
+import { useTheme, useOrgs, useSettings } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { KioskLayout } from "/imports/ui/layouts"
 import Kiosk from "../pages/Kiosk"
 
-const VotingRoute = observer(() => {
+const VotingRoute = () => {
 	const { id } = useParams({ from: "/voting/$id/$member" })
 	const data = useData()
 	const { isLoading: themeLoading } = useTheme()
@@ -36,6 +36,6 @@ const VotingRoute = observer(() => {
 			<Kiosk />
 		</KioskLayout>
 	)
-})
+}
 
 export default VotingRoute

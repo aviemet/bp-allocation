@@ -1,4 +1,4 @@
-import { useTheme, useSettings } from "/imports/api/providers"
+// import { useTheme, useSettings } from "/imports/api/hooks"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 import { TimerInput, ResultsOffsetInput } from "/imports/ui/components/Inputs"
@@ -15,7 +15,6 @@ import {
 	Grid,
 	Paper,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 
 import {
 	ChitVotingActiveToggle,
@@ -29,8 +28,9 @@ import {
 
 import PresentationNavButton from "./PresentationNavButton"
 import { Link, Loading } from "/imports/ui/components"
+import { useSettings, useTheme } from "/imports/api/hooks"
 
-const PresentationPane = observer(() => {
+const PresentationPane = () => {
 	const themeContext = useTheme()
 	const theme = themeContext?.theme
 	const themeLoading = themeContext?.isLoading ?? true
@@ -182,6 +182,6 @@ const PresentationPane = observer(() => {
 
 		</Container>
 	)
-})
+}
 
 export default PresentationPane

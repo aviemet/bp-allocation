@@ -1,15 +1,14 @@
 import { Container, Typography } from "@mui/material"
 import { styled } from "@mui/system"
 import { cloneDeep } from "lodash"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import { useTheme, useSettings, useOrgs } from "/imports/api/providers"
+import { useTheme, useSettings, useOrgs } from "/imports/api/hooks"
 
 import AwardCard from "/imports/ui/components/Cards/AwardCard"
 import { OrganizationWithComputed } from "/imports/api/stores"
 import { Loading } from "/imports/ui/components"
 
-const Results = observer(() => {
+const Results = () => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
@@ -71,7 +70,7 @@ const Results = observer(() => {
 
 		</ResultsPageContainer>
 	)
-})
+}
 
 const ResultsPageContainer = styled(Container)( ({ theme }) => ({
 	color: "#FFF",

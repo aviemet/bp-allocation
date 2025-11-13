@@ -1,11 +1,10 @@
-import { useOrgs } from "/imports/api/providers"
+import { useOrgs } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
 import { Form, TextInput, SubmitButton, STATUS, SwitchInput, type Status } from "/imports/ui/components/Form"
 import styled from "@emotion/styled"
 import { Box, Container, InputAdornment, Typography } from "@mui/material"
 import { isEmpty } from "lodash"
 import { OrgCardColors } from "/imports/ui/components/Cards"
-import { observer } from "mobx-react-lite"
 import { useState, useEffect } from "react"
 
 import { useWindowSize, breakpoints } from "/imports/ui/MediaProvider"
@@ -18,7 +17,7 @@ interface PledgesProps {
 	user: MemberWithTheme
 }
 
-const Pledges = observer(({ user }: PledgesProps) => {
+const Pledges = ({ user }: PledgesProps) => {
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
@@ -44,7 +43,7 @@ const Pledges = observer(({ user }: PledgesProps) => {
 				amount: Number(data.amount || 0),
 				member: user._id,
 				anonymous: Boolean(data.anonymous),
-			})
+)
 			if(res) {
 				reset()
 				setPledgeFeedbackData(data)
@@ -120,7 +119,7 @@ const Pledges = observer(({ user }: PledgesProps) => {
 
 		</PledgesContainer>
 	)
-})
+}
 
 const PledgesContainer = styled(Container)`
 	h1 {

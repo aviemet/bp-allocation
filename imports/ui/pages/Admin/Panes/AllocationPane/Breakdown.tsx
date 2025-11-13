@@ -1,15 +1,14 @@
-import { useTheme, useOrgs } from "/imports/api/providers"
+import { useTheme, useOrgs } from "/imports/api/hooks"
 
 import styled from "@emotion/styled"
 import {
 	Paper,
 	Stack,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import { Loading } from "/imports/ui/components"
 
-const Breakdown = observer(() => {
+const Breakdown = () => {
 	const { theme, isLoading: themeLoading } = useTheme()
 	const { topOrgs, isLoading: orgsLoading } = useOrgs()
 
@@ -79,8 +78,7 @@ const Breakdown = observer(() => {
 			</Stack>
 		</Paper>
 	)
-
-})
+}
 
 const Segment = styled.div`
 	text-align: center;

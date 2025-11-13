@@ -1,5 +1,4 @@
 import _ from "lodash"
-import { toJS } from "mobx"
 
 import { roundFloat } from "/imports/lib/utils"
 import { Organization } from "../types/schema"
@@ -55,7 +54,7 @@ class Leverage {
 
 		let sumRemainingOrgs = 0
 		this.orgs = orgs.map(org => {
-			const orgClone = toJS(org)
+			const orgClone = { ...org }
 
 			delete (orgClone).createdAt
 			orgClone.save = org.save

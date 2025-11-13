@@ -1,13 +1,13 @@
 import { Navigate, useParams } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { useEffect, useState } from "react"
 
-import { useData, useTheme, useOrgs, useSettings } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
+import { useTheme, useOrgs, useSettings } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { PresentationLayout } from "/imports/ui/layouts"
 import Presentation from "../pages/Presentation"
 
-const PresentationRoute = observer(() => {
+const PresentationRoute = () => {
 	const params = useParams({ strict: false })
 	const id = params.id
 	const data = useData()
@@ -43,6 +43,6 @@ const PresentationRoute = observer(() => {
 			<Presentation />
 		</PresentationLayout>
 	)
-})
+}
 
 export default PresentationRoute

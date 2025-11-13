@@ -1,6 +1,5 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
-import { observer } from "mobx-react-lite"
 import React from "react"
 
 import { useData } from "./DataProvider"
@@ -20,7 +19,7 @@ interface ThemeProviderProps {
 	children: React.ReactNode
 }
 
-const ThemeProvider = observer(({ children }: ThemeProviderProps) => {
+const ThemeProvider = ({ children }: ThemeProviderProps) => {
 	const { themeId } = useData()
 
 	// Setup Meteor tracker to subscribe to a Theme
@@ -61,6 +60,6 @@ const ThemeProvider = observer(({ children }: ThemeProviderProps) => {
 			{ children }
 		</ThemeContextProvider>
 	)
-})
+}
 
 export default ThemeProvider

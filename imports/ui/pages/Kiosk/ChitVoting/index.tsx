@@ -1,10 +1,10 @@
 import styled from "@emotion/styled"
 import { Container, Button, Typography } from "@mui/material"
 import { forEach } from "lodash"
-import { observer } from "mobx-react-lite"
 import { useState, useEffect, useMemo } from "react"
 
-import { useData, useSettings, useOrgs } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
+import { useSettings, useOrgs } from "/imports/api/hooks"
 
 import { OrgCardContainer } from "/imports/ui/components/Cards"
 import Countdown from "../Countdown"
@@ -21,10 +21,10 @@ interface ChitVotingKioskProps {
 	source: VotingSource
 }
 
-const ChitVotingKiosk = observer(({ user, source }: ChitVotingKioskProps) => {
+const ChitVotingKiosk = ({ user, source }: ChitVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
-	const { orgs } = useOrgs()
+	const { values: orgs } = useOrgs()
 	const { chits, saveChits, member } = useVoting()
 
 	const [ votingComplete, setVotingComplete ] = useState(false)
@@ -49,7 +49,7 @@ const ChitVotingKiosk = observer(({ user, source }: ChitVotingKioskProps) => {
 	const shuffledOrgs = useMemo(() => {
 		if(!orgs) return []
 
-		const sorted = orgs.values.slice().sort((a, b) => a._id.localeCompare(b._id))
+		const sorted = orgs.slice().sort((a, b) => a._id.localeCompare(b._id))
 		return shuffleWithSeed(sorted, user._id).map(org => <ChitVoteOrgCard key={ org._id } org={ org } />)
 	}, [orgs, user._id])
 
@@ -94,7 +94,7 @@ const ChitVotingKiosk = observer(({ user, source }: ChitVotingKioskProps) => {
 			</>
 		</OrgsContainer>
 	)
-})
+}
 
 const OrgsContainer = styled.div`
 	display: flex;
@@ -122,7 +122,7 @@ const FinalizeButton = styled(Button)({
 	"&.Mui-disabled": {
 		backgroundColor: COLORS.blue,
 	},
-})
+)
 
 const NumberFormat = styled.span`
 	display: inline-block;

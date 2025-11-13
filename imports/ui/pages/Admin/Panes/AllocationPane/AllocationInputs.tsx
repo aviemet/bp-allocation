@@ -7,10 +7,9 @@ import {
 	TextField,
 	Tooltip,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import { FocusEvent, useState } from "react"
-import { useSettings } from "/imports/api/providers"
+import { useSettings } from "/imports/api/hooks"
 import { type OrganizationWithComputed } from "/imports/api/stores"
 
 import { OrganizationMethods } from "/imports/api/methods"
@@ -27,12 +26,12 @@ interface AllocationInputsProps {
 	hideAdminFields?: boolean
 }
 
-const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminFields }: AllocationInputsProps) => {
+const AllocationInputs = ({ org, crowdFavorite, tabInfo, hideAdminFields }: AllocationInputsProps) => {
 	const { settings } = useSettings()
 
 	const [ votedAmount, setVotedAmount ] = useState<number | string>(org.votedTotal)
 
-	const enterAmountFromVotes = async(e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+	const enterAmountFromVotes = async (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const value = e.target.value
 		await OrganizationMethods.update.callAsync({ id: org._id, data: {
 			amountFromVotes: parseInt(value) || 0,
@@ -40,7 +39,7 @@ const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminField
 	}
 
 	const reachedGoal = org.need - org.leverageFunds <= 0
-	const handleTopoff = async() => {
+	const handleTopoff = async () => {
 		const amount = org.topOff > 0 ? 0 : org.need - org.leverageFunds
 		await OrganizationMethods.update.callAsync({ id: org._id, data: { topOff: amount } })
 	}
@@ -103,6 +102,6 @@ const AllocationInputs = observer(({ org, crowdFavorite, tabInfo, hideAdminField
 			}
 		</TableRow>
 	)
-})
+}
 
 export default AllocationInputs

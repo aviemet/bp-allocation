@@ -1,5 +1,4 @@
 import { findIndex, remove, orderBy, isEqual } from "lodash"
-import { action, observable, computed, makeObservable } from "mobx"
 
 import { filterCollection } from "/imports/lib/utils"
 import TrackableStore, { TrackableData } from "./TrackableStore"
@@ -7,19 +6,12 @@ import TrackableStore, { TrackableData } from "./TrackableStore"
 class TrackableCollection<T extends TrackableStore<TrackableData> = TrackableStore> {
 	values: T[] = []
 	searchFilter: string | null = null
-	// Override with String array of field names to search against in collection filter
 	searchableFields: string[] | null = null
 	private _store: (new (data: any) => T) | null = null
 
-	/**
-	 * @param data Array of data to be stored in the collection
-	 * @param Store Mobx Store object for data being stored
-	 */
 	constructor(data: TrackableData[], Store: (new (data: any) => T) | null = null) {
 		this._store = Store
 
-		// If a Store was provided, instantiate a new store for each element in data
-		// Either the Store object, or the raw data variable gets stored as the values for the collection
 		if(Store) {
 			this.values = data.map(value => {
 				const store = new Store(value)
@@ -28,16 +20,6 @@ class TrackableCollection<T extends TrackableStore<TrackableData> = TrackableSto
 		} else {
 			this.values = data as T[]
 		}
-
-		makeObservable(this, {
-			values: observable,
-			searchFilter: observable,
-			refreshData: action,
-			deleteItem: action,
-			sortBy: action,
-			reverse: action,
-			filteredMembers: computed,
-		})
 	}
 
 	refreshData(data: TrackableData) {
