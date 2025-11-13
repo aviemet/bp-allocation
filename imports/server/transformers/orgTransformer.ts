@@ -7,6 +7,36 @@ export interface OrgTransformerParams {
 	theme?: ThemeData
 	settings?: SettingsData
 	memberThemes: MemberTheme[]
+	fundsVotesByOrg?: Record<string, number>
+	chitVotesByOrg?: Record<string, number>
+}
+
+export function aggregateVotesByOrganization(memberThemes: MemberTheme[], useKioskFundsVoting: boolean, useKioskChitVoting: boolean): {
+	fundsVotesByOrg: Record<string, number>
+	chitVotesByOrg: Record<string, number>
+} {
+	const fundsVotesByOrg: Record<string, number> = {}
+	const chitVotesByOrg: Record<string, number> = {}
+
+	for(const memberTheme of memberThemes) {
+		if(useKioskFundsVoting && memberTheme.allocations) {
+			for(const allocation of memberTheme.allocations) {
+				if(allocation.organization && allocation.amount) {
+					fundsVotesByOrg[allocation.organization] = (fundsVotesByOrg[allocation.organization] || 0) + allocation.amount
+				}
+			}
+		}
+
+		if(useKioskChitVoting && memberTheme.chitVotes && !isEmpty(memberTheme.chitVotes)) {
+			for(const chitVote of memberTheme.chitVotes) {
+				if(chitVote.organization && chitVote.votes) {
+					chitVotesByOrg[chitVote.organization] = (chitVotesByOrg[chitVote.organization] || 0) + chitVote.votes
+				}
+			}
+		}
+	}
+
+	return { fundsVotesByOrg, chitVotesByOrg }
 }
 
 export interface OrgWithComputed extends OrgData {
@@ -47,13 +77,8 @@ const OrgTransformer = (doc: OrgWithComputed, params: OrgTransformerParams) => {
 	}()
 
 	doc.votedTotal = function() {
-		// If voting with kiosk mode, get votes for this org from each member
-		if(params.settings && params.settings.useKioskFundsVoting) {
-			const amount = params.memberThemes.reduce((sum, memberTheme) => {
-				const vote = memberTheme.allocations?.find(allocation => allocation.organization === doc._id)
-				return sum + (vote && vote.amount ? vote.amount : 0)
-			}, 0)
-			return amount
+		if(params.settings && params.settings.useKioskFundsVoting && params.fundsVotesByOrg) {
+			return params.fundsVotesByOrg[doc._id] || 0
 		}
 		return doc.amountFromVotes
 	}()
@@ -73,21 +98,11 @@ const OrgTransformer = (doc: OrgWithComputed, params: OrgTransformerParams) => {
 	doc.votes = function() {
 		let votes = 0
 
-		// Kiosk mode: aggregate individual member votes from MemberTheme.chitVotes[]
-		if(params.settings && params.settings.useKioskChitVoting) {
-			votes = params.memberThemes.reduce((sum, memberTheme) => {
-				if(!isEmpty(memberTheme.chitVotes)) {
-					const vote = memberTheme.chitVotes?.find(chit => chit.organization === doc._id)
-					return sum + (vote && vote.votes ? vote.votes : 0)
-				}
-				return sum
-			}, 0)
-		// Manual mode: use aggregated count/weight from Organization.chitVotes
+		if(params.settings && params.settings.useKioskChitVoting && params.chitVotesByOrg) {
+			votes = params.chitVotesByOrg[doc._id] || 0
 		} else if(params.theme && doc.chitVotes) {
-			// Direct count takes precedence (more accurate than weight calculation)
 			if(doc.chitVotes.count) {
 				votes = doc.chitVotes.count
-			// Fallback to weight-based calculation if count not provided
 			} else if(doc.chitVotes.weight && params.theme.chitWeight) {
 				votes = doc.chitVotes.weight / params.theme.chitWeight
 			}

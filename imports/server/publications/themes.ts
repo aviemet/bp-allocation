@@ -5,7 +5,7 @@ import { filterTopOrgs } from "/imports/lib/orgsMethods"
 import { createDebouncedFunction } from "/imports/lib/utils"
 
 import { Themes, PresentationSettings, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
-import { ThemeTransformer, OrgTransformer } from "/imports/server/transformers"
+import { ThemeTransformer, OrgTransformer, aggregateVotesByOrganization } from "/imports/server/transformers"
 import { type ThemeTransformerParams } from "/imports/server/transformers/themeTransformer"
 
 const themeObserver = registerObserver((doc: ThemeData, params: ThemeTransformerParams) => {
@@ -26,8 +26,13 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	}
 
 	let memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
+	const { fundsVotesByOrg, chitVotesByOrg } = aggregateVotesByOrganization(
+		memberThemes,
+		settings.useKioskFundsVoting || false,
+		settings.useKioskChitVoting || false
+	)
 	const orgs = await Organizations.find({ theme: theme._id }).fetchAsync()
-	const transformedOrgs = orgs.map(org => OrgTransformer(org, { theme, settings, memberThemes }))
+	const transformedOrgs = orgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg }))
 	const topOrgs = filterTopOrgs(transformedOrgs, theme)
 
 	const themeObserverHandle = Themes.find({ _id: theme._id }).observe(themeObserver("themes", publisher, { topOrgs, memberThemes, settings }))
@@ -35,8 +40,13 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	const refreshThemeFromMemberThemes = async () => {
 		try {
 			memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
+			const { fundsVotesByOrg, chitVotesByOrg } = aggregateVotesByOrganization(
+				memberThemes,
+				settings.useKioskFundsVoting || false,
+				settings.useKioskChitVoting || false
+			)
 			const updatedOrgs = await Organizations.find({ theme: theme._id }).fetchAsync()
-			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme, settings, memberThemes }))
+			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg }))
 			const updatedTopOrgs = filterTopOrgs(updatedTransformedOrgs, theme)
 			const transformed = ThemeTransformer(theme, { topOrgs: updatedTopOrgs, memberThemes, settings })
 			publisher.changed("themes", theme._id, transformed)

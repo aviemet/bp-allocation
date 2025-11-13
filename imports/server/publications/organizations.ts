@@ -1,7 +1,7 @@
 import { Meteor } from "meteor/meteor"
 
 import { registerObserver, type PublishSelf } from "../methods"
-import { OrgTransformer } from "/imports/server/transformers"
+import { OrgTransformer, aggregateVotesByOrganization } from "/imports/server/transformers"
 import { createDebouncedFunction } from "/imports/lib/utils"
 
 import {
@@ -19,6 +19,8 @@ interface OrgObserverParams {
 	theme?: ThemeData
 	settings?: SettingsData
 	memberThemes: MemberTheme[]
+	fundsVotesByOrg?: Record<string, number>
+	chitVotesByOrg?: Record<string, number>
 }
 
 const orgObserver = registerObserver((doc: OrgData, params: OrgObserverParams) => {
@@ -37,16 +39,26 @@ const publishOrganizations = async (themeId: string, publisher: PublishSelf) => 
 	const settings = theme.presentationSettings ? await PresentationSettings.findOneAsync({ _id: theme.presentationSettings }) : undefined
 
 	let memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
-	const observerCallbacks = orgObserver("organizations", publisher, { theme, settings, memberThemes })
+	const { fundsVotesByOrg, chitVotesByOrg } = aggregateVotesByOrganization(
+		memberThemes,
+		settings?.useKioskFundsVoting || false,
+		settings?.useKioskChitVoting || false
+	)
+	const observerCallbacks = orgObserver("organizations", publisher, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg })
 
 	const orgsCursor = Organizations.find({ theme: themeId }).observe(observerCallbacks)
 
 	const refreshOrgsFromMemberThemes = async () => {
 		try {
 			memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
+			const { fundsVotesByOrg, chitVotesByOrg } = aggregateVotesByOrganization(
+				memberThemes,
+				settings?.useKioskFundsVoting || false,
+				settings?.useKioskChitVoting || false
+			)
 			const orgs = await Organizations.find({ theme: themeId }).fetchAsync()
 			orgs.forEach(org => {
-				const transformed = OrgTransformer(org, { theme, settings, memberThemes })
+				const transformed = OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg })
 				publisher.changed("organizations", org._id, transformed)
 			})
 		} catch (_error) {
