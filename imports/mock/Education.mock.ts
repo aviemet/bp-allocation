@@ -31,7 +31,6 @@ const theme: ThemeData = {
 	leverageTotal: 1197552.6,
 	saves: [
 		{
-			_id: uuid(),
 			org: "7JudfyraRLNbLAQuF",
 			amount: 125000,
 		},

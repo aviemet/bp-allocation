@@ -2,7 +2,7 @@ import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
 
 import { useTheme } from "./useTheme"
-import { Messages, type MessageData } from "../db"
+import { Messages } from "../db"
 import { useData } from "../providers/DataProvider"
 
 export const useMessages = () => {

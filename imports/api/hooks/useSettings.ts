@@ -1,7 +1,7 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
 
-import { PresentationSettings, type SettingsData } from "../db"
+import { PresentationSettings } from "../db"
 import { useData } from "../providers/DataProvider"
 
 export const useSettings = () => {

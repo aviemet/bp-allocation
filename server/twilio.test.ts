@@ -40,23 +40,28 @@ describe("Promises with rate limiting", function() {
 		await Themes.removeAsync({})
 
 		const themeData = themeDataStub()
-		const themeId = await ThemeMethods.create.call(themeData)
+		const themeId = await ThemeMethods.create.callAsync(themeData)
+		if(!themeId) {
+			throw new Error("Failed to create theme")
+		}
 		const createdTheme = (await Themes.find({ _id: themeId }).fetchAsync())[0]
 
 		const tasks: Array<Promise<unknown>> = []
 
 		for(let i = 0; i < NUM_TEST_RECORDS; i++) {
 			tasks.push(
-				MemberMethods.upsert.call(memberStub(createdTheme._id)).then(memberTheme => {
+				MemberMethods.upsert.callAsync(memberStub(createdTheme._id)).then(memberTheme => {
 					memberThemes.push(memberTheme)
 				})
 			)
 
 			tasks.push(
-				OrganizationMethods.create.call(
+				OrganizationMethods.create.callAsync(
 					orgStub(createdTheme._id, themeData.leverage / NUM_TEST_RECORDS)
-				).then(orgId => {
-					orgs.push(orgId)
+				).then(result => {
+					if(result.response) {
+						orgs.push(result.response)
+					}
 				})
 			)
 		}

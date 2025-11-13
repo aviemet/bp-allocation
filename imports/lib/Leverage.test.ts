@@ -4,8 +4,6 @@ import Education from "/imports/mock/Education.mock"
 import Democracy from "/imports/mock/Democracy.mock"
 import Youth from "/imports/mock/Youth.mock"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
-import OrgsCollection from "/imports/api/stores/OrgsCollection"
-import OrgStore from "/imports/api/stores/OrgStore"
 
 describe("Leverage object", function() {
 
@@ -20,8 +18,7 @@ describe("Leverage object", function() {
 })
 
 describe("Education Theme leverage spread", function() {
-	const orgs = new OrgsCollection(Education.orgs, Education.theme, OrgStore)
-	const topOrgs = filterTopOrgs(orgs.values, Education.theme)
+	const topOrgs = filterTopOrgs(Education.orgs, Education.theme)
 	const leverage = new Leverage(topOrgs, 639169.6)
 	const rounds = leverage.getLeverageSpreadRounds()
 
@@ -49,7 +46,6 @@ describe("Education Theme leverage spread", function() {
 		rounds.forEach((round, nRounds) => {
 			// Step through each org in each round
 			round.orgs.forEach(org => {
-				if(org.roundFunds !== orgSpreadByRound[org._id]?.[nRounds]) {}
 				// Compare the org leverage funds in the round to the expected value from above
 				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id]?.[nRounds])
 			})
@@ -58,8 +54,7 @@ describe("Education Theme leverage spread", function() {
 })
 
 describe("Democracy Theme leverage spread", function() {
-	const orgs = new OrgsCollection(Democracy.orgs, Democracy.theme, OrgStore)
-	const leverage = new Leverage(orgs.values, 802759)
+	const leverage = new Leverage(Democracy.orgs, 802759)
 	const rounds = leverage.getLeverageSpreadRounds()
 
 	it("Should generate leverage rounds", function() {
