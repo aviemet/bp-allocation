@@ -2,15 +2,19 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import IconButton from "@mui/material/IconButton"
 import Tooltip from "@mui/material/Tooltip"
 import PledgeAnimationMethods from "/imports/api/methods/PledgeAnimationMethods"
-import { type PledgeWithOrg } from "/imports/api/hooks"
+import { type PledgeWithOrg, useTheme } from "/imports/api/hooks"
 
 interface ReplayPledgeAnimationButtonProps {
 	pledge: PledgeWithOrg
 }
 
 const ReplayPledgeAnimationButton = ({ pledge }: ReplayPledgeAnimationButtonProps) => {
+	const { theme } = useTheme()
+
 	const handleClick = () => {
+		if(!theme) return
 		PledgeAnimationMethods.enqueuePledgeAnimation.callAsync({
+			themeId: theme._id,
 			pledgeId: pledge._id,
 			orgId: pledge.org._id,
 			orgTitle: pledge.org.title,

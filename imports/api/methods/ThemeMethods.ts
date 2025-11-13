@@ -4,6 +4,7 @@ import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
 
 import { Themes, Organizations, MemberThemes, PresentationSettings, type ThemeData, DEFAULT_NUM_TOP_ORGS } from "/imports/api/db"
+import { PledgeAnimationQueue } from "/imports/api/db/PledgeAnimationQueue"
 import OrganizationMethods from "./OrganizationMethods"
 
 const ThemeMethods = {
@@ -250,6 +251,8 @@ const ThemeMethods = {
 			}, {
 				multi: true,
 			})
+
+			await PledgeAnimationQueue.removeAsync({ themeId })
 
 			return {
 				organizationsUpdated,

@@ -1,17 +1,16 @@
 import styled from "@emotion/styled"
-import { Meteor } from "meteor/meteor"
-import { useTracker } from "meteor/react-meteor-data"
-import { useOrgs } from "/imports/api/hooks"
+import { useOrgs, usePledgeAnimationQueue, useTheme } from "/imports/api/hooks"
 import { useEffect, useRef, useState } from "react"
 
 import PledgeDisplay from "./PledgeDisplay"
-import { PledgeAnimationQueue } from "/imports/api/db/PledgeAnimationQueue"
 import { type PledgeWithOrg } from "/imports/api/hooks"
 import { convertPledgeToPlainObject } from "./utils"
 import PledgeAnimationMethods from "/imports/api/methods/PledgeAnimationMethods"
 
 const PledgesOverlay = () => {
 	const { pledges } = useOrgs()
+	const { queueItems } = usePledgeAnimationQueue()
+	const { theme } = useTheme()
 
 	const [ currentPledge, setCurrentPledge ] = useState<PledgeWithOrg | null>(null)
 	const [ isAnimating, setIsAnimating ] = useState(false)
@@ -19,7 +18,7 @@ const PledgesOverlay = () => {
 	const initializedPledgeIds = useRef<Set<string>>(new Set())
 
 	useEffect(() => {
-		if(!pledges) return
+		if(!pledges || !theme) return
 
 		if(initializedPledgeIds.current.size === 0) {
 			pledges.forEach(p => initializedPledgeIds.current.add(p._id))
@@ -30,18 +29,14 @@ const PledgesOverlay = () => {
 			if(!initializedPledgeIds.current.has(pledge._id)) {
 				initializedPledgeIds.current.add(pledge._id)
 				PledgeAnimationMethods.enqueuePledgeAnimation.callAsync({
+					themeId: theme._id,
 					pledgeId: pledge._id,
 					orgId: pledge.org._id,
 					orgTitle: pledge.org.title,
 				})
 			}
 		})
-	}, [pledges])
-
-	const queueItems = useTracker(() => {
-		Meteor.subscribe("pledgeAnimationQueue")
-		return PledgeAnimationQueue.find({}, { sort: { timestamp: 1 } }).fetch()
-	}, [])
+	}, [pledges, theme])
 
 	useEffect(() => {
 		if(isAnimating || queueItems.length === 0) return

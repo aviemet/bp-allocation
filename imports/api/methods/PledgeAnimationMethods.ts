@@ -2,6 +2,7 @@ import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { PledgeAnimationQueue } from "/imports/api/db/PledgeAnimationQueue"
 
 interface EnqueuePledgeAnimationData {
+	themeId: string
 	pledgeId: string
 	orgId: string
 	orgTitle: string
@@ -16,6 +17,7 @@ const enqueuePledgeAnimation = new ValidatedMethod({
 	validate: null,
 	async run(data: EnqueuePledgeAnimationData) {
 		await PledgeAnimationQueue.insertAsync({
+			themeId: data.themeId,
 			pledgeId: data.pledgeId,
 			orgId: data.orgId,
 			orgTitle: data.orgTitle,

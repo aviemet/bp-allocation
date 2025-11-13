@@ -69,6 +69,18 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 		},
 	})
 
+	const organizationsWatcher = Organizations.find({ theme: theme._id }).observeChanges({
+		added: () => {
+			debouncedRefresh()
+		},
+		changed: () => {
+			debouncedRefresh()
+		},
+		removed: () => {
+			debouncedRefresh()
+		},
+	})
+
 	publisher.onStop(() => {
 		debouncedRefresh.cancel()
 		if(themeObserverHandle && typeof themeObserverHandle.stop === "function") {
@@ -76,6 +88,9 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 		}
 		if(memberThemesWatcher && typeof memberThemesWatcher.stop === "function") {
 			memberThemesWatcher.stop()
+		}
+		if(organizationsWatcher && typeof organizationsWatcher.stop === "function") {
+			organizationsWatcher.stop()
 		}
 	})
 

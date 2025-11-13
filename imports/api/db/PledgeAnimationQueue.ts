@@ -2,6 +2,7 @@ import { Mongo } from "meteor/mongo"
 
 interface PledgeAnimationQueueItem {
 	_id: string
+	themeId: string
 	pledgeId: string
 	orgId: string
 	orgTitle: string
