@@ -13,10 +13,10 @@ import { roundFloat } from "/imports/lib/utils"
 
 import SaveButton from "./SaveButton"
 import UnSaveButton from "./UnSaveButton"
-import { type OrgStore } from "/imports/api/stores"
+import { type OrgDataWithComputed } from "/imports/api/hooks"
 
 interface TopOrgsRowProps {
-	org: OrgStore
+	org: OrgDataWithComputed
 	inTopOrgs: boolean
 	hideAdminFields: boolean
 	isSaved: boolean

@@ -10,10 +10,10 @@ import { roundFloat } from "/imports/lib/utils"
 import ContentModal from "/imports/ui/components/Dialogs/ContentModal"
 
 import { ThemeMethods } from "/imports/api/methods"
-import { type OrgStore } from "/imports/api/stores"
+import { type OrgDataWithComputed } from "/imports/api/hooks"
 
 interface SaveButtonProps {
-	org: OrgStore
+	org: OrgDataWithComputed
 }
 
 const SaveButton = ({ org }: SaveButtonProps) => {

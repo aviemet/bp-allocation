@@ -66,13 +66,13 @@ const Leverage = ({ hideAdminFields }: LeverageProps) => {
 
 					<div>Leverage Remaining: { numeral(leverage.finalRoundAllocation()).format("$0,0.00") }</div>
 					{ !hideAdminFields && <>
-					{ !leverageDistributed
-						? (
-							<Button onClick={ () => saveLeverageSpread(rounds[rounds.length - 1]) }>
-								Submit Final Values
-							</Button>
-						)
-						: (
+						{ !leverageDistributed
+							? (
+								<Button onClick={ () => saveLeverageSpread(rounds[rounds.length - 1]) }>
+									Submit Final Values
+								</Button>
+							)
+							: (
 								<Button color="warning" onClick={ resetLeverage }>
 									Reset Leverage Distribution
 								</Button>

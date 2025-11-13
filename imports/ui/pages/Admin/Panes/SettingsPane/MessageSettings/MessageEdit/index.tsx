@@ -32,20 +32,13 @@ type MessageFormData = Omit<Message, "_id" | "createdAt" | "updatedAt">
 
 const MessageEdit = () => {
 	const { id: themeId, messageId, type } = useParams({ strict: false })
-
-	let message
-	let messageLoading = false
-	if(messageId) {
-		const { message: loadedMessage, isLoading } = useMessage(messageId)
-		message = loadedMessage
-		messageLoading = isLoading
-	} else {
-		message = {}
-	}
+	const { message: loadedMessage, messageLoading } = useMessage(messageId || "")
 
 	const navigate = useNavigate()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
+
+	const message = messageId ? loadedMessage : undefined
 	const [preview, setPreview] = useState(message?.body || "")
 
 	const messageData: MessageFormData = {
@@ -85,7 +78,7 @@ const MessageEdit = () => {
 		setPreview(data.body || "")
 	}
 
-	if(messageLoading || !message) return <Loading />
+	if(messageId && (messageLoading || !message)) return <Loading />
 	return (
 		<>
 			<Typography component="h1" variant="h3" sx={ { mb: 1 } }>
@@ -163,8 +156,8 @@ const MessageEdit = () => {
 				</>
 			) }
 		</>
-	}
-	}
+	)
+}
 
 const Preview = styled.div`
 	& > div {

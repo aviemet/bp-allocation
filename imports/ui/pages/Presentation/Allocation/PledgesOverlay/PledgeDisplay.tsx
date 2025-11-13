@@ -2,7 +2,7 @@ import Fireworks from "matter-fireworks"
 import { useLayoutEffect, useRef } from "react"
 
 import PledgeInfo from "./PledgeInfo"
-import { type PledgeWithOrg } from "/imports/api/stores/OrgsCollection"
+import { type PledgeWithOrg } from "/imports/api/hooks"
 
 interface PledgeDisplayProps {
 	pledge: PledgeWithOrg

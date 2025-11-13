@@ -16,13 +16,12 @@ import {
 import { format } from "date-fns"
 import numeral from "numeral"
 import { useState } from "react"
-import { useTheme, useMembers, useOrgs } from "/imports/api/hooks"
+import { useTheme, useMembers, useOrgs, type PledgeWithOrg, getFormattedName } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
 import SortableTable from "/imports/ui/components/SortableTable"
 import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
 import { TopupsActiveToggle } from "/imports/ui/components/Toggles"
 import { Loading } from "/imports/ui/components"
-import { type PledgeWithOrg } from "/imports/api/stores/OrgsCollection"
 import ReplayPledgeAnimationButton from "/imports/ui/components/Buttons/ReplayPledgeAnimationButton"
 
 const headCells = [
@@ -108,10 +107,7 @@ const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 
 									{ /* Member */ }
 									<TableCell>
-										{ member && "formattedName" in member ?
-											member.formattedName :
-											""
-										}
+										{ member ? getFormattedName(member) : "" }
 									</TableCell>
 
 									{ /* Amount */ }

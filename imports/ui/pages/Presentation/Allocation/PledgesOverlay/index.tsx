@@ -50,14 +50,16 @@ const PledgesOverlay = () => {
 		const pledge = pledges?.find(p => p._id === queueItem.pledgeId)
 		if(!pledge) return
 
-		setIsAnimating(true)
-		setCurrentPledge(convertPledgeToPlainObject(pledge))
+		setTimeout(() => {
+			setIsAnimating(true)
+			setCurrentPledge(convertPledgeToPlainObject(pledge))
 
-		timerRef.current = setTimeout(async () => {
-			await PledgeAnimationMethods.markProcessed.callAsync({ queueItemId: queueItem._id })
-			setCurrentPledge(null)
-			setIsAnimating(false)
-		}, 10000)
+			timerRef.current = setTimeout(async () => {
+				await PledgeAnimationMethods.markProcessed.callAsync({ queueItemId: queueItem._id })
+				setCurrentPledge(null)
+				setIsAnimating(false)
+			}, 10000)
+		}, 0)
 	}, [queueItems.length, isAnimating, pledges, queueItems])
 
 	useEffect(() => {

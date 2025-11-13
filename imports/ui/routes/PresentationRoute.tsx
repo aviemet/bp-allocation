@@ -1,5 +1,5 @@
 import { Navigate, useParams } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo } from "react"
 
 import { useData } from "/imports/api/providers"
 import { useTheme, useOrgs, useSettings } from "/imports/api/hooks"
@@ -15,20 +15,15 @@ const PresentationRoute = () => {
 	const { orgsLoading } = useOrgs()
 	const { settingsLoading } = useSettings()
 
-	const [isLoading, setIsLoading] = useState(themeLoading || orgsLoading || settingsLoading)
+	const isLoading = useMemo(() => (
+		themeLoading || orgsLoading || settingsLoading
+	), [themeLoading, orgsLoading, settingsLoading])
 
 	useEffect(() => {
 		if(id) {
 			data.setThemeId(id)
 		}
 	}, [id, data])
-
-	useEffect(() => {
-		const loadingTest = themeLoading || orgsLoading || settingsLoading
-		if(loadingTest !== isLoading) {
-			setIsLoading(loadingTest)
-		}
-	}, [themeLoading, orgsLoading, settingsLoading, isLoading])
 
 	if(isLoading) {
 		return <Loading />

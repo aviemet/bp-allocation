@@ -18,11 +18,15 @@ const Pledges = () => {
 
 	useEffect(() => {
 		if(formStatus === STATUS.DISABLED && watch.member !== "" && watch.amount !== "" && watch.id !== "") {
-			setFormStatus(STATUS.READY)
+			setTimeout(() => {
+				setFormStatus(STATUS.READY)
+			}, 0)
 		} else if(formStatus === STATUS.READY && (watch.member === "" || watch.amount === "" || watch.id === "")) {
-			setFormStatus(STATUS.DISABLED)
+			setTimeout(() => {
+				setFormStatus(STATUS.DISABLED)
+			}, 0)
 		}
-	}, [watch])
+	}, [watch, formStatus])
 
 	return (
 		<Grid container spacing={ 2 }>
@@ -75,11 +79,11 @@ const Pledges = () => {
 	)
 }
 
-const FinalizeButton = styled(SubmitButton)({
-	textAlign: "center",
-	border: "2px solid #fff",
-	fontSize: "2rem",
-	textTransform: "uppercase",
-	}
+const FinalizeButton = styled(SubmitButton)`
+	text-align: center;
+	border: 2px solid #fff;
+	font-size: 2rem;
+	text-transform: uppercase;
+`
 
 export default Pledges

@@ -54,8 +54,8 @@ const TopOrgsByChitVote = ({ hideAdminFields }: TopOrgsByChitVoteProps) => {
 					<TableBody>
 						{ sortedOrgs.map((org, i) => {
 							const inTopOrgs = i < theme.numTopOrgs
-							const _isLocked = theme.topOrgsManual.includes(org._id)
-							const _isSaved = (findIndex(theme.saves, ["org", org._id]) >= 0)
+							const _isLocked = theme.topOrgsManual?.includes(org._id) ?? false
+							const _isSaved = (findIndex(theme.saves ?? [], ["org", org._id]) >= 0)
 
 							return (
 								<TopOrgsRow

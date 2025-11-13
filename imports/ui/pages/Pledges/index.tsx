@@ -18,7 +18,7 @@ const Pledges = () => {
 				amount: Number(data.amount || 0),
 				member: String(data.member || ""),
 				anonymous: Boolean(data.anonymous),
-)
+			})
 			if(res) {
 				reset()
 			}

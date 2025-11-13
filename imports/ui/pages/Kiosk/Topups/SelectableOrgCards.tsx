@@ -1,9 +1,9 @@
 import { useFormContext, useWatch } from "react-hook-form"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
-import { type OrgStore } from "/imports/api/stores"
+import { type OrgDataWithComputed } from "/imports/api/hooks"
 
 interface SelectableOrgCardsProps {
-	orgs: OrgStore[]
+	orgs: OrgDataWithComputed[]
 }
 
 const SelectableOrgCards = ({ orgs }: SelectableOrgCardsProps) => {

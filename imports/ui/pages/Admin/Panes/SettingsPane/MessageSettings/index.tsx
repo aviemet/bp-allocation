@@ -8,7 +8,7 @@ import { useState } from "react"
 import { useData } from "/imports/api/providers"
 import { useMessages, useMembers } from "/imports/api/hooks"
 import { MessageMethods } from "/imports/api/methods"
-import type MessageStore from "/imports/api/stores/MessageStore"
+import { type MessageData } from "/imports/api/db"
 
 import SortableTable from "/imports/ui/components/SortableTable"
 import SendWithFeedbackButton from "/imports/ui/components/Buttons/SendWithFeedbackButton"
@@ -17,6 +17,15 @@ import ActiveToggle from "./ActiveToggle"
 import IncludeVotingLinkToggle from "./IncludevotingLinkToggle"
 import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
 import { Loading } from "/imports/ui/components"
+
+interface MessageRow extends MessageData {
+	[key: string]: unknown
+}
+
+const createMessageRow = (message: MessageData): MessageRow => {
+	const row: MessageRow = { ...message }
+	return row
+}
 
 const textHeaderCells = [
 	{
@@ -110,13 +119,13 @@ const Messages = () => {
 
 	return (
 		<>
-			<SortableTable
+			<SortableTable<MessageRow>
 				title={ <Stack direction="row" alignItems="center" justifyContent="space-between">
 					<div>Text Messages</div>
 					<Button component={ Link } to={ `/admin/${themeId}/settings/messages/new/text` }>+ New Text Message</Button>
 				</Stack> }
 				headCells={ textHeaderCells }
-				rows={ messages?.filter((message: MessageStore) => message.type === "text") || [] }
+				rows={ messages.filter(message => message.type === "text").map(createMessageRow) }
 				defaultOrderBy="createdAt"
 				paginate={ false }
 				onBulkDelete={ handleBulkDelete }
@@ -125,7 +134,7 @@ const Messages = () => {
 				collapse={ undefined }
 				filterParams={ undefined }
 				onFilterParamsChange={ undefined }
-				render={ (message: MessageStore) => (
+				render={ (message: MessageRow) => (
 					<>
 						<TableCell>
 							<ActiveToggle message={ message } />
@@ -144,13 +153,13 @@ const Messages = () => {
 				) }
 			/>
 
-			<SortableTable
+			<SortableTable<MessageRow>
 				title={ <Stack direction="row" alignItems="center" justifyContent="space-between">
 					<div>Email Messages</div>
 					<Button component={ Link } to={ `/admin/${themeId}/settings/messages/new/email` }>+ New Email Message</Button>
 				</Stack> }
 				headCells={ emailHeaderCells }
-				rows={ messages?.filter((message: MessageStore) => message.type === "email") || [] }
+				rows={ messages.filter(message => message.type === "email").map(createMessageRow) }
 				defaultOrderBy="createdAt"
 				paginate={ false }
 				onBulkDelete={ handleBulkDelete }
@@ -159,7 +168,7 @@ const Messages = () => {
 				collapse={ undefined }
 				filterParams={ undefined }
 				onFilterParamsChange={ undefined }
-				render={ (message: MessageStore) => (
+				render={ (message: MessageRow) => (
 					<>
 						<TableCell>
 							<ActiveToggle message={ message } />

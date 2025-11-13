@@ -9,9 +9,8 @@ import {
 	TableCell,
 } from "@mui/material"
 import { OrganizationMethods } from "/imports/api/methods"
-import { useState, useEffect } from "react"
-import { useOrgs } from "/imports/api/hooks"
-import { type OrgStore } from "/imports/api/stores"
+import { useState, useEffect, useCallback } from "react"
+import { useOrgs, type OrgDataWithComputed } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 
 const ChitTable = () => {
@@ -44,11 +43,11 @@ const ChitTable = () => {
 				</TableBody>
 			</Table>
 		</TableContainer>
-	}
+	)
 }
 
 interface ChitInputsProps {
-	org: OrgStore
+	org: OrgDataWithComputed
 	tabInfo: { index: number, length: number }
 	topOrg: boolean
 }
@@ -57,7 +56,7 @@ const ChitInputs = ({ org, tabInfo, topOrg }: ChitInputsProps) => {
 	const [ weightVotes, setWeightVotes ] = useState(org.chitVotes?.weight ?? 0)
 	const [ countVotes, setCountVotes ] = useState(org.chitVotes?.count ?? 0)
 
-	const saveVotes = async () => {
+	const saveVotes = useCallback(async () => {
 		await OrganizationMethods.update.callAsync({
 			id: org._id,
 			data: {
@@ -66,12 +65,12 @@ const ChitInputs = ({ org, tabInfo, topOrg }: ChitInputsProps) => {
 					weight: weightVotes,
 				},
 			},
-	}
-	}
+		})
+	}, [org._id, countVotes, weightVotes])
 
 	useEffect(() => {
 		saveVotes()
-	}, [weightVotes, countVotes])
+	}, [saveVotes])
 
 	const rowSx = topOrg ? { sx: { backgroundColor: "table.highlight" } } : {}
 
@@ -105,7 +104,7 @@ const ChitInputs = ({ org, tabInfo, topOrg }: ChitInputsProps) => {
 			</TableCell>
 
 		</TableRow>
-	}
-	}
+	)
+}
 
 export default ChitTable

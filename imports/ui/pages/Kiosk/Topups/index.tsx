@@ -5,9 +5,8 @@ import styled from "@emotion/styled"
 import { Box, Container, InputAdornment, Typography } from "@mui/material"
 import { isEmpty } from "lodash"
 import { OrgCardColors } from "/imports/ui/components/Cards"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
-import { useWindowSize, breakpoints } from "/imports/ui/MediaProvider"
 import { Loading } from "/imports/ui/components"
 import SelectableOrgCards from "./SelectableOrgCards"
 import TopupComplete from "./TopupComplete"
@@ -22,19 +21,7 @@ const Pledges = ({ user }: PledgesProps) => {
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
-	const [ itemsPerRow, setItemsPerRow ] = useState(2)
 	const [ pledgeFeedbackData, setPledgeFeedbackData ] = useState<Record<string, unknown>>({})
-
-	const { width } = useWindowSize()
-
-	useEffect(() => {
-		let n = itemsPerRow
-		if(width && width < breakpoints.tablet) n = 1
-		else if(width && width >= breakpoints.tablet && width < breakpoints.tabletL) n = 2
-		else n = 3
-
-		if(itemsPerRow !== n) setItemsPerRow(n)
-	}, [width])
 
 	const handleSubmit = async (data: Record<string, unknown>, { reset }: { reset: () => void }) => {
 		try {
@@ -43,7 +30,7 @@ const Pledges = ({ user }: PledgesProps) => {
 				amount: Number(data.amount || 0),
 				member: user._id,
 				anonymous: Boolean(data.anonymous),
-)
+			})
 			if(res) {
 				reset()
 				setPledgeFeedbackData(data)

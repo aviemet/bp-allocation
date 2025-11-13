@@ -45,15 +45,15 @@ const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
 	const [ isCounting, setIsCounting ] = useState(false)
 
-	const displayCountDown = () => {
-		setCountdownVisible(true)
-		setIsCounting(true)
-	}
-
 	useEffect(() => {
 		// Display countdown if user is on voting screen when voting becomes disabled
-		if(settings && !settings.fundsVotingActive) displayCountDown()
-	}, [settings?.fundsVotingActive])
+		if(settings && !settings.fundsVotingActive) {
+			setTimeout(() => {
+				setCountdownVisible(true)
+				setIsCounting(true)
+			}, 0)
+		}
+	}, [settings])
 
 	const memberName = user.firstName ? user.firstName : user.fullName
 
@@ -109,19 +109,19 @@ const OrgsContainer = styled(Container)`
 	}
 `
 
-const FinalizeButton = styled(Button)({
-	width: "100%",
-	textAlign: "center" as const,
-	color: "white",
-	border: "2px solid #fff",
-	fontSize: "2rem",
-	textTransform: "uppercase" as const,
-	backgroundColor: COLORS.blue,
+const FinalizeButton = styled(Button)`
+	width: 100%;
+	text-align: center;
+	color: white;
+	border: 2px solid #fff;
+	font-size: 2rem;
+	text-transform: uppercase;
+	background-color: ${COLORS.blue};
 
-	"&.Mui-disabled": {
-		backgroundColor: COLORS.blue,
-	},
-)
+	&.Mui-disabled {
+		background-color: ${COLORS.blue};
+	}
+`
 
 const NumberFormat = styled.span`
 	width: 12rem;

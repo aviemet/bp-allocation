@@ -1,7 +1,7 @@
 import {
 	Typography,
 } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useMemo } from "react"
 import { useTheme, useOrgs } from "/imports/api/hooks"
 
 import { Loading } from "/imports/ui/components"
@@ -12,21 +12,16 @@ const KioskInfo = () => {
 	const { theme } = useTheme()
 	const { orgs, topOrgs, orgsLoading } = useOrgs()
 
-	const [ itemsPerRow, setItemsPerRow ] = useState(3)
-
 	const { width } = useWindowSize()
 
-	useEffect(() => {
-		let n = itemsPerRow
+	const itemsPerRow = useMemo(() => {
 		if(width && width < breakpoints.tablet) {
-			n = 1
-		} else if(width && width >= breakpoints.tablet && width < breakpoints.tabletL) {
-			n = 2
-		} else {
-			n = 3
+			return 1
 		}
-
-		if(itemsPerRow !== n) setItemsPerRow(n)
+		if(width && width >= breakpoints.tablet && width < breakpoints.tabletL) {
+			return 2
+		}
+		return 3
 	}, [width])
 
 	if(orgsLoading || !theme || !orgs) return <Loading />

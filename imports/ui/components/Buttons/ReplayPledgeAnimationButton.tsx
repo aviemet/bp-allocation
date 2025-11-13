@@ -2,7 +2,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import IconButton from "@mui/material/IconButton"
 import Tooltip from "@mui/material/Tooltip"
 import PledgeAnimationMethods from "/imports/api/methods/PledgeAnimationMethods"
-import { type PledgeWithOrg } from "/imports/api/stores/OrgsCollection"
+import { type PledgeWithOrg } from "/imports/api/hooks"
 
 interface ReplayPledgeAnimationButtonProps {
 	pledge: PledgeWithOrg

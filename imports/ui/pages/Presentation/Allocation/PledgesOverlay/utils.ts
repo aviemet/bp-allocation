@@ -1,4 +1,4 @@
-import { type PledgeWithOrg } from "/imports/api/stores/OrgsCollection"
+import { type PledgeWithOrg } from "/imports/api/hooks"
 
 export const convertPledgeToPlainObject = (pledge: PledgeWithOrg): PledgeWithOrg => ({
 	_id: pledge._id,

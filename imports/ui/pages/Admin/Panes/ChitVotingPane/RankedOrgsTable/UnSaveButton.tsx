@@ -9,10 +9,10 @@ import { useTheme } from "/imports/api/hooks"
 import { ThemeMethods } from "/imports/api/methods"
 
 import ContentModal from "/imports/ui/components/Dialogs/ContentModal"
-import { type OrgStore } from "/imports/api/stores"
+import { type OrgDataWithComputed } from "/imports/api/hooks"
 
 interface UnSaveButtonProps {
-	org: OrgStore
+	org: OrgDataWithComputed
 }
 
 const UnSaveButton = ({ org }: UnSaveButtonProps) => {
@@ -26,11 +26,11 @@ const UnSaveButton = ({ org }: UnSaveButtonProps) => {
 		await ThemeMethods.unSaveOrg.callAsync({
 			theme_id: theme._id,
 			org_id: org._id,
-	}
+		})
 		setModalOpen(false)
 	}
 
-	const save = _.find(theme.saves, ["org", org._id])
+	const save = _.find(theme.saves ?? [], ["org", org._id])
 
 	if(!save) return null
 
@@ -48,7 +48,7 @@ const UnSaveButton = ({ org }: UnSaveButtonProps) => {
 				<Button onClick={ unSaveOrg }>Yes</Button>
 			</ContentModal>
 		</>
-	}
-	}
+	)
+}
 
 export default UnSaveButton

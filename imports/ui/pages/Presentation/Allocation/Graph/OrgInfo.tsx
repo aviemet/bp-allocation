@@ -1,9 +1,9 @@
 import styled from "@emotion/styled"
 import numeral from "numeral"
-import { type OrgStore } from "/imports/api/stores"
+import { type OrgDataWithComputed } from "/imports/api/hooks"
 
 interface OrgInfoProps {
-	org: OrgStore
+	org: OrgDataWithComputed
 	showLeverage: boolean
 }
 
