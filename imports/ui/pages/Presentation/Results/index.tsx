@@ -5,7 +5,7 @@ import numeral from "numeral"
 import { useTheme, useSettings, useOrgs } from "/imports/api/hooks"
 
 import AwardCard from "/imports/ui/components/Cards/AwardCard"
-import { OrganizationWithComputed } from "/imports/api/stores"
+import { type OrgDataWithComputed } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 
 const Results = () => {
@@ -15,8 +15,8 @@ const Results = () => {
 
 	if(!theme) return <Loading />
 
-	const awardees: OrganizationWithComputed[] = []
-	const others: OrganizationWithComputed[] = []
+	const awardees: OrgDataWithComputed[] = []
+	const others: OrgDataWithComputed[] = []
 	const saves = theme?.saves?.reduce((sum, save) => sum + (save?.amount || 0), 0) || 0
 	let total = (theme?.leverageTotal || 0) + saves + (settings?.resultsOffset || 0)
 

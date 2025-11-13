@@ -1,10 +1,10 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
 
-import { useData } from "../providers/DataProvider"
 import { useTheme } from "./useTheme"
 import { Organizations, type OrgData } from "../db"
-import { type MatchPledge } from "/imports/types/schema"
+import { useData } from "../providers/DataProvider"
+import { type MatchPledge, type Organization } from "/imports/types/schema"
 
 export interface PledgeWithOrg extends MatchPledge {
 	org: {
@@ -14,17 +14,37 @@ export interface PledgeWithOrg extends MatchPledge {
 	[key: string]: unknown
 }
 
+export interface OrganizationWithComputed extends Organization {
+	votedTotal: number
+	allocatedFunds: number
+	pledgeTotal: number
+	save: number
+	need: number
+	leverageFunds: number
+	topOff: number
+	amountFromVotes: number
+	ask: number
+	votes: number
+}
+
+export type OrgDataWithComputed = OrgData & OrganizationWithComputed
+
 export const useOrgs = () => {
 	const data = useData()
 	const themeId = data?.themeId
 	const { theme, themeLoading } = useTheme()
 
-	return useTracker(() => {
+	return useTracker((): {
+		orgs: OrgDataWithComputed[]
+		topOrgs: OrgDataWithComputed[]
+		pledges: PledgeWithOrg[]
+		orgsLoading: boolean
+	} => {
 		if(!themeId || themeLoading || !theme) {
 			return {
-				orgs: [] as OrgData[],
-				topOrgs: [] as OrgData[],
-				pledges: [] as PledgeWithOrg[],
+				orgs: [],
+				topOrgs: [],
+				pledges: [],
 				orgsLoading: true,
 			}
 		}
@@ -35,16 +55,16 @@ export const useOrgs = () => {
 
 		if(!subscriptionReady) {
 			return {
-				orgs: [] as OrgData[],
-				topOrgs: [] as OrgData[],
-				pledges: [] as PledgeWithOrg[],
+				orgs: [],
+				topOrgs: [],
+				pledges: [],
 				orgsLoading: true,
 			}
 		}
 
 		const topOrgIds = theme.topOrgs || []
-		const topOrgs = topOrgIds.map(id => orgs.find(org => org._id === id)).filter((org): org is OrgData => org !== undefined)
-		const pledges = (theme.pledges || []) as PledgeWithOrg[]
+		const topOrgs = topOrgIds.map(id => orgs.find(org => org._id === id)).filter((org): org is OrgDataWithComputed => org !== undefined)
+		const pledges = (theme.pledges || [])
 
 		return {
 			orgs,

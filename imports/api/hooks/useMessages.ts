@@ -13,7 +13,7 @@ export const useMessages = () => {
 	return useTracker(() => {
 		if(!themeId || themeLoading) {
 			return {
-				messages: [] as MessageData[],
+				messages: [],
 				messagesLoading: true,
 			}
 		}
@@ -47,7 +47,7 @@ export const useMessage = (messageId: string) => {
 		const message = Messages.findOne({ _id: messageId })
 
 		return {
-			message: message as MessageData | undefined,
+			message: message,
 			messageLoading: !subscriptionReady,
 		}
 	}, [themeId, messageId, themeLoading])

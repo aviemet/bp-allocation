@@ -16,7 +16,7 @@ export const useMembers = () => {
 	const membersData = useTracker(() => {
 		if(!themeId) {
 			return {
-				members: [] as MemberData[],
+				members: [],
 				membersLoading: true,
 			}
 		}
@@ -66,7 +66,7 @@ export const useMember = (memberId: string) => {
 		const member = Members.findOne()
 
 		return {
-			member: member as MemberData | undefined,
+			member: member,
 			memberLoading: !subscriptionReady,
 		}
 	}, [themeId, memberId])

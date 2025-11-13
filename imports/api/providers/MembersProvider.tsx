@@ -1,7 +1,7 @@
 import { Meteor } from "meteor/meteor"
 import { Mongo } from "meteor/mongo"
 import { useTracker } from "meteor/react-meteor-data"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 import { useData } from "./DataProvider"
 import { Members, type MemberData } from "/imports/api/db"
@@ -55,18 +55,18 @@ const MembersProvider = ({ children }: MembersProviderProps) => {
 
 	const methods = { getAllMembers, hideAllMembers, setMemberId }
 
-	let subscription: Meteor.SubscriptionHandle | undefined
-	let cursorObserver: Meteor.LiveQueryHandle | undefined
-	let membersCollection: MembersCollection | undefined
+	const subscriptionRef = useRef<Meteor.SubscriptionHandle | undefined>(undefined)
+	const cursorObserverRef = useRef<Meteor.LiveQueryHandle | undefined>(undefined)
+	const membersCollectionRef = useRef<MembersCollection | undefined>(undefined)
 
 	// Method to be called when subscription is ready
 	const subscriptionReady = (cursor: Mongo.Cursor<MemberData, MemberData>) => {
-		membersCollection = new MembersCollection(cursor.fetch())
+		membersCollectionRef.current = new MembersCollection(cursor.fetch())
 
-		cursorObserver = cursor.observe({
-			added: members => membersCollection!.refreshData(members),
-			changed: members => membersCollection!.refreshData(members),
-			removed: members => membersCollection!.deleteItem(members),
+		cursorObserverRef.current = cursor.observe({
+			added: members => membersCollectionRef.current!.refreshData(members),
+			changed: members => membersCollectionRef.current!.refreshData(members),
+			removed: members => membersCollectionRef.current!.deleteItem(members),
 		})
 
 		// Used to force re-render
@@ -77,8 +77,8 @@ const MembersProvider = ({ children }: MembersProviderProps) => {
 		// Return a single user if memberId is set
 		if(memberId) {
 			if(!themeId) {
-				subscription?.stop()
-				cursorObserver?.stop()
+				subscriptionRef.current?.stop()
+				cursorObserverRef.current?.stop()
 
 				return Object.assign(methods, {
 					isLoading: true,
@@ -86,7 +86,8 @@ const MembersProvider = ({ children }: MembersProviderProps) => {
 				})
 			}
 
-			subscription = Meteor.subscribe("member", { memberId, themeId }, {
+			subscriptionRef.current?.stop()
+			subscriptionRef.current = Meteor.subscribe("member", { memberId, themeId }, {
 				onReady: () => subscriptionReady(Members.find({ })),
 			})
 
@@ -94,8 +95,8 @@ const MembersProvider = ({ children }: MembersProviderProps) => {
 		} else {
 			// Return loading or uninitialized placeholder data
 			if(!themeId || subLimit === 0) {
-				subscription?.stop()
-				cursorObserver?.stop()
+				subscriptionRef.current?.stop()
+				cursorObserverRef.current?.stop()
 
 				return Object.assign(methods, {
 					isLoading: subLimit === 0 ? false : true,
@@ -103,7 +104,8 @@ const MembersProvider = ({ children }: MembersProviderProps) => {
 				})
 			}
 
-			subscription = Meteor.subscribe("members", { themeId, limit: subLimit }, {
+			subscriptionRef.current?.stop()
+			subscriptionRef.current = Meteor.subscribe("members", { themeId, limit: subLimit }, {
 				onReady: () => subscriptionReady(Members.find(
 					{ "theme.theme": themeId },
 					{ sort: { number: 1 } }
@@ -112,8 +114,8 @@ const MembersProvider = ({ children }: MembersProviderProps) => {
 		}
 
 		return Object.assign(methods, {
-			members: membersCollection,
-			isLoading: !subscription?.ready() || (subscription?.ready() && !membersCollection),
+			members: membersCollectionRef.current,
+			isLoading: !subscriptionRef.current?.ready() || (subscriptionRef.current?.ready() && !membersCollectionRef.current),
 		})
 
 	}, [themeId, subLimit, memberId])

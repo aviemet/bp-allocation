@@ -11,7 +11,7 @@ import { styled } from "@mui/material/styles"
 import numeral from "numeral"
 
 import AllocationInputs from "./AllocationInputs"
-import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
+import { useSettings, useTheme, useOrgs, type OrgDataWithComputed } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 
 interface AllocationsTableProps {
@@ -23,12 +23,15 @@ const AllocationsTable = ({ hideAdminFields = false }: AllocationsTableProps) =>
 	const { theme, themeLoading } = useTheme()
 	const { topOrgs, orgsLoading } = useOrgs()
 
-	const _calculateCrowdFavorite = () => {
+	const _calculateCrowdFavorite = (orgs: OrgDataWithComputed[]) => {
+		if(orgs.length === 0) return 0
+
 		let favorite = 0
 
-		topOrgs.forEach((org, i) => {
-			const favoriteAmount = topOrgs[favorite].votedTotal
-			if(org.votedTotal > favoriteAmount) {
+		orgs.forEach((org, i) => {
+			const favoriteAmount = orgs[favorite].votedTotal
+			const currentAmount = org.votedTotal
+			if(currentAmount > favoriteAmount) {
 				favorite = i
 			}
 		})
@@ -37,11 +40,7 @@ const AllocationsTable = ({ hideAdminFields = false }: AllocationsTableProps) =>
 
 	if(themeLoading || orgsLoading) return <Loading />
 
-	interface ThemeWithComputed {
-		fundsVotesCast?: number
-		totalMembers?: number
-	}
-	const themeWithComputed = theme as ThemeWithComputed | undefined
+	const favoriteIndex = _calculateCrowdFavorite(topOrgs)
 
 	return (
 		<TableContainer>
@@ -62,7 +61,7 @@ const AllocationsTable = ({ hideAdminFields = false }: AllocationsTableProps) =>
 						<AllocationInputs
 							key={ org._id }
 							org={ org }
-							crowdFavorite={ (i === _calculateCrowdFavorite()) }
+							crowdFavorite={ (i === favoriteIndex) }
 							tabInfo={ { index: i + 1, length: topOrgs.length } }
 							hideAdminFields={ hideAdminFields }
 						/>
@@ -94,8 +93,8 @@ const AllocationsTable = ({ hideAdminFields = false }: AllocationsTableProps) =>
 						}</TableCell>
 
 						{ !hideAdminFields && <TableCell>
-							{ settings?.useKioskFundsVoting && themeWithComputed && themeWithComputed.fundsVotesCast !== undefined && themeWithComputed.totalMembers !== undefined && <>
-								{ `(${themeWithComputed.fundsVotesCast}/${themeWithComputed.totalMembers})` } <span style={ { fontSize: "0.75em" } }>Members Voted</span>
+							{ settings?.useKioskFundsVoting && theme && theme.fundsVotesCast !== undefined && theme.totalMembers !== undefined && <>
+								{ `(${theme.fundsVotesCast}/${theme.totalMembers})` } <span style={ { fontSize: "0.75em" } }>Members Voted</span>
 							</> }
 						</TableCell> }
 

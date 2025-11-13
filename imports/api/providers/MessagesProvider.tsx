@@ -1,6 +1,6 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
-import React from "react"
+import React, { useRef } from "react"
 
 import { useData } from "./DataProvider"
 import { useTheme } from "./ThemeProvider"
@@ -43,14 +43,14 @@ const MessagesProvider = ({ children }: MessagesProviderProps) => {
 	const themeContext = useTheme()
 	const themeLoading = themeContext?.isLoading || false
 
-	let subscription: Meteor.SubscriptionHandle | undefined
-	let handleObserver: Meteor.LiveQueryHandle | undefined
-	let messagesCollection: MessagesCollection | undefined
+	const subscriptionRef = useRef<Meteor.SubscriptionHandle | undefined>(undefined)
+	const handleObserverRef = useRef<Meteor.LiveQueryHandle | undefined>(undefined)
+	const messagesCollectionRef = useRef<MessagesCollection | undefined>(undefined)
 
 	const messages = useTracker(() => {
 		if(!themeId || themeLoading) {
-			if(subscription) subscription.stop()
-			if(handleObserver) handleObserver.stop()
+			subscriptionRef.current?.stop()
+			handleObserverRef.current?.stop()
 
 			return {
 				isLoading: true,
@@ -58,36 +58,35 @@ const MessagesProvider = ({ children }: MessagesProviderProps) => {
 			}
 		}
 
-		subscription = Meteor.subscribe("messages", themeId, {
+		subscriptionRef.current?.stop()
+		subscriptionRef.current = Meteor.subscribe("messages", themeId, {
 			onReady: () => {
 				const cursor = Messages.find({ })
-				messagesCollection = new MessagesCollection(cursor.fetch())
+				messagesCollectionRef.current = new MessagesCollection(cursor.fetch())
 
-				handleObserver = cursor.observe({
-					added: (messages: MessageData) => messagesCollection?.refreshData(messages),
-					changed: (messages: MessageData) => messagesCollection?.refreshData(messages),
-					removed: (messages: MessageData) => messagesCollection?.deleteItem(messages),
+				handleObserverRef.current = cursor.observe({
+					added: (messages: MessageData) => messagesCollectionRef.current?.refreshData(messages),
+					changed: (messages: MessageData) => messagesCollectionRef.current?.refreshData(messages),
+					removed: (messages: MessageData) => messagesCollectionRef.current?.deleteItem(messages),
 				})
 			},
 		})
 
-		if(subscription.ready() && !messagesCollection) {
+		if(subscriptionRef.current.ready() && !messagesCollectionRef.current) {
 			const cursor = Messages.find({ })
-			messagesCollection = new MessagesCollection(cursor.fetch())
+			messagesCollectionRef.current = new MessagesCollection(cursor.fetch())
 
-			if(handleObserver) {
-				handleObserver.stop()
-			}
-			handleObserver = cursor.observe({
-				added: (messages: MessageData) => messagesCollection?.refreshData(messages),
-				changed: (messages: MessageData) => messagesCollection?.refreshData(messages),
-				removed: (messages: MessageData) => messagesCollection?.deleteItem(messages),
+			handleObserverRef.current?.stop()
+			handleObserverRef.current = cursor.observe({
+				added: (messages: MessageData) => messagesCollectionRef.current?.refreshData(messages),
+				changed: (messages: MessageData) => messagesCollectionRef.current?.refreshData(messages),
+				removed: (messages: MessageData) => messagesCollectionRef.current?.deleteItem(messages),
 			})
 		}
 
 		return {
-			messages: messagesCollection,
-			isLoading: !subscription?.ready() || !messagesCollection,
+			messages: messagesCollectionRef.current,
+			isLoading: !subscriptionRef.current?.ready() || !messagesCollectionRef.current,
 		}
 	}, [themeId, themeLoading])
 

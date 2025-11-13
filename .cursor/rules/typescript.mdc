@@ -7,7 +7,8 @@ You are an expert in TypeScript, Node.js, Vite, Vitest, Inertia.js, React, Manti
 
 ## Code Style and Structure
 
-- Your are BANNED from typecasting or using `any` in any circumstance, no exceptions!
+- You are BANNED from typecasting or using `any` in any circumstance, no exceptions!
+- You are BANNED from using `as` to bypass type errors, no exceptions! If a type is too loose or too narrow, fix it at the source. Do not EVER bypass type errors where they're used, always find the source and reconcile the type at the source.
 - Only use explicit return types for functions if the return type can *NOT* be inferred
 - Use functional and declarative programming patterns; avoid classes.
 - Prefer iteration and modularization over code duplication.

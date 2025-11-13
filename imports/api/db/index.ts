@@ -10,6 +10,8 @@ import { OrganizationSchema, organizationsPermissions } from "./Organizations"
 import { PresentationSettingsSchema, presentationSettingsPermissions } from "./PresentationSettings"
 import { type MemberTheme } from "/imports/types/schema"
 import { ThemeSchema, themesPermissions } from "./Themes"
+import { type OrgDataWithComputed } from "../hooks/useOrgs"
+import { type ThemeWithComputed } from "../hooks/useTheme"
 import { MemberData } from "../stores/MemberStore"
 import { MessageData } from "../stores/MessageStore"
 import { OrgData } from "../stores/OrgStore"
@@ -27,9 +29,9 @@ export interface CollectionPermissions {
 const Members = new Mongo.Collection<MemberData>("members")
 const MemberThemes = new Mongo.Collection<MemberTheme>("memberThemes")
 const Messages = new Mongo.Collection<MessageData>("messages")
-const Organizations = new Mongo.Collection<OrgData>("organizations")
+const Organizations = new Mongo.Collection<OrgDataWithComputed>("organizations")
 const PresentationSettingsCollection = new Mongo.Collection<SettingsData>("presentationSettings")
-const Themes = new Mongo.Collection<ThemeData>("themes")
+const Themes = new Mongo.Collection<ThemeWithComputed>("themes")
 
 // Collect all schemas for schema-to-types generation
 export const schemas: SchemaMap = {

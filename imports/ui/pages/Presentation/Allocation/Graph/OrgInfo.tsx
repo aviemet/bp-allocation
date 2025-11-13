@@ -24,8 +24,8 @@ const OrgInfo = ({ org, showLeverage }: OrgInfoProps) => {
 			}
 
 		</InfoContainer>
-	}
-	}
+	)
+}
 
 const InfoContainer = styled.div`
 	&& {

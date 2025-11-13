@@ -9,9 +9,7 @@ import {
 } from "@mui/material"
 import numeral from "numeral"
 import { FocusEvent, useState } from "react"
-import { useSettings } from "/imports/api/hooks"
-import { type OrganizationWithComputed } from "/imports/api/stores"
-
+import { useSettings, type OrganizationWithComputed } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
 
 interface TabInfo {
