@@ -43,7 +43,6 @@ const ThemeMethods = {
 			}
 
 			try {
-				// Directly insert PresentationSettings instead of calling method
 				const presentationSettingsId = await PresentationSettings.insertAsync({})
 				const theme = await Themes.insertAsync(merge(data, { presentationSettings: presentationSettingsId }))
 				return theme

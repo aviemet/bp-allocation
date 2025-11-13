@@ -6,10 +6,12 @@ import { ThemeWithVotingDefaults } from "/imports/api/stores/ThemeStore"
  * Sets Meteor publication callback events to transform data
  * @param {*} transformer
  */
-type PublishSelf = {
+export interface PublishSelf {
 	added: (title: string, id: string, fields: Record<string, unknown>) => void
 	changed: (title: string, id: string, fields: Record<string, unknown>) => void
 	removed: (title: string, id: string) => void
+	onStop: (fn: () => void) => void
+	ready: () => void
 }
 
 type Transformer<TDoc extends { _id: string }, TParams> = (doc: TDoc, params: TParams) => Record<string, unknown>

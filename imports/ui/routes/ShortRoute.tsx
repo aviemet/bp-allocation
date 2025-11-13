@@ -12,7 +12,6 @@ const ShortRouteComponent = () => {
 		const themeSubscription = Meteor.subscribe("themeBySlug", themeSlug)
 		const themeReady = themeSubscription.ready()
 		const theme = Themes.findOne({ slug: themeSlug })
-		const hasThemeData = themeReady && Themes.find().count() > 0
 
 		let membersSubscription: Meteor.SubscriptionHandle | undefined
 		let memberReady = false
@@ -21,19 +20,17 @@ const ShortRouteComponent = () => {
 		if(theme && themeReady) {
 			membersSubscription = Meteor.subscribe("members", { themeId: theme._id })
 			memberReady = membersSubscription.ready()
+			if(memberReady) {
+				member = Members.findOne({ code: memberCode })
+			}
 		}
 
-		if(membersSubscription) {
-			member = Members.findOne({ code: memberCode })
-		}
-
-		const hasMemberData = !theme || (memberReady && Members.find().count() > 0)
-		const allDataLoaded = hasThemeData && (theme ? hasMemberData : true)
+		const allDataLoaded = themeReady && (!theme || memberReady)
 
 		return {
 			allDataLoaded,
-			hasThemeData,
-			hasMemberData,
+			themeReady,
+			memberReady,
 			theme,
 			member,
 		}
@@ -47,8 +44,8 @@ const ShortRouteComponent = () => {
 		return <Navigate to={ `/voting/${data.theme._id}/${data.member._id}` } />
 	}
 
-	if((data.hasThemeData && !data.theme) || (data.hasMemberData && data.theme && data.member === undefined)) {
-		// return <Navigate to="/404" />
+	if((data.themeReady && !data.theme) || (data.memberReady && data.theme && !data.member)) {
+		return <Navigate to="/404" />
 	}
 
 	return <Loading />
