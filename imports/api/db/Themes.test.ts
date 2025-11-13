@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker"
 import { assert, expect } from "chai"
 import { Random } from "meteor/random"
 
-import { Themes } from "/imports/api/db"
+import { Themes, DEFAULT_NUM_TOP_ORGS } from "/imports/api/db"
 import { Theme } from "/imports/types"
 
 const themeData: Partial<Theme> = {
@@ -10,6 +10,7 @@ const themeData: Partial<Theme> = {
 	question: faker.lorem.words(3),
 	quarter: "2019Q1",
 	presentationSettings: Random.id(),
+	numTopOrgs: DEFAULT_NUM_TOP_ORGS,
 }
 
 describe("Themes model", function() {

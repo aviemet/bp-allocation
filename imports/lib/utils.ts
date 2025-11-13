@@ -1,4 +1,4 @@
-import { debounce, isEmpty } from "lodash"
+import { debounce, isEmpty, type DebouncedFunc } from "lodash"
 import { Meteor } from "meteor/meteor"
 
 export const roundFloat = (value: string | number, decimal = 2) => {
@@ -64,21 +64,22 @@ export const sanitizeString = (str: string | number) => `${str}`.trim()
  * @param {string} search Search parameter(s) to filter by
  * @param {array} fields Optional list of fields to search (omitting others)
  */
-export const filterCollection = <T extends Record<string, unknown> & { readonly _id: string }>(collection: T[], search: string, fields?: (keyof T)[]) => {
+export const filterCollection = <T extends { readonly _id: string }>(collection: T[], search: string, fields?: (keyof T)[]) => {
 	if(!search) return collection
 
 	// Split search terms by whitespace, discarding empty strings
 	const searchParts = search.split(/\s+/).filter(part => part.length > 0)
-	const checkFields = fields || Object.keys(collection[0])
+	const checkFields: (keyof T)[] = fields || (collection.length > 0 ? (Object.keys(collection[0]) as Array<keyof T>) : [])
 
 	return collection.filter(member => {
 		return searchParts.every(word => {
 			const test = new RegExp(word, "i")
-			return checkFields.some(field => {
+			return checkFields.some((field) => {
 				const fieldValue = member[field]
-				if(typeof fieldValue === "string" && test.test(fieldValue)) {
+				if(fieldValue !== null && typeof fieldValue === "string" && test.test(fieldValue)) {
 					return true
 				}
+				return false
 			})
 		})
 	})
@@ -112,6 +113,6 @@ export const textVotingLink = (slug: string, code: string) => {
 	return "\n" + `${Meteor.settings.HOST_URL}/v/${slug}/${code}`
 }
 
-export const createDebouncedFunction = <T extends (...args: unknown[]) => void>(fn: T, wait: number): T & { cancel: () => void } => {
-	return debounce(fn, wait) as T & { cancel: () => void }
+export const createDebouncedFunction = <T extends (...args: unknown[]) => void>(fn: T, wait: number): DebouncedFunc<T> => {
+	return debounce(fn, wait)
 }

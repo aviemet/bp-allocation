@@ -5,9 +5,12 @@ export interface MemberWithTheme extends MemberData {
 	theme?: MemberTheme
 }
 
-const MemberTransformer = (doc: MemberWithTheme, memberTheme?: MemberTheme) => {
-	doc.theme = memberTheme
-	return doc
+const MemberTransformer = (doc: MemberData, memberTheme?: MemberTheme) => {
+	const result: Record<string, unknown> = {
+		...doc,
+		theme: memberTheme,
+	}
+	return result
 }
 
 export default MemberTransformer

@@ -2,8 +2,8 @@ import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
 
 import { Themes, type ThemeData } from "../db"
+import { type PledgeWithOrg } from "./useOrgs"
 import { useData } from "../providers/DataProvider"
-import { initializeThemeData } from "../stores/ThemeStore"
 
 export interface ThemeWithComputed extends ThemeData {
 	pledgedTotal?: number
@@ -18,6 +18,7 @@ export interface ThemeWithComputed extends ThemeData {
 	memberFunds?: number
 	consolationTotal?: number
 	topOrgs?: string[]
+	pledges?: PledgeWithOrg[]
 }
 
 export const useTheme = () => {
@@ -46,26 +47,21 @@ export const useTheme = () => {
 			}
 		}
 
-		const initializedTheme = initializeThemeData(themeRaw)
+		function hasComputedProperties(theme: ThemeData): theme is ThemeWithComputed {
+			return (
+				"topOrgs" in theme
+			)
+		}
 
-		const theme: ThemeWithComputed = {
-			...initializedTheme,
-			pledgedTotal: themeRaw.pledgedTotal,
-			votedFunds: themeRaw.votedFunds,
-			fundsVotesCast: themeRaw.fundsVotesCast,
-			chitVotesCast: themeRaw.chitVotesCast,
-			totalChitVotes: themeRaw.totalChitVotes,
-			totalMembers: themeRaw.totalMembers,
-			fundsVotingStarted: themeRaw.fundsVotingStarted,
-			chitVotingStarted: themeRaw.chitVotingStarted,
-			leverageRemaining: themeRaw.leverageRemaining,
-			memberFunds: themeRaw.memberFunds,
-			consolationTotal: themeRaw.consolationTotal,
-			topOrgs: themeRaw.topOrgs,
+		if(!hasComputedProperties(themeRaw)) {
+			return {
+				theme: undefined,
+				themeLoading: true,
+			}
 		}
 
 		return {
-			theme,
+			theme: themeRaw,
 			themeLoading: false,
 		}
 	}, [themeId])

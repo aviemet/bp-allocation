@@ -1,6 +1,8 @@
 import { sortBy } from "lodash"
 import { createThemeVotingConfig } from "/imports/lib/orgsMethods"
-import { ThemeWithVotingDefaults } from "/imports/api/stores/ThemeStore"
+import { type Theme } from "/imports/types/schema"
+
+type ThemeVotingFields = Pick<Theme, "numTopOrgs" | "topOrgsManual">
 
 /**
  * Sets Meteor publication callback events to transform data
@@ -44,7 +46,7 @@ export const registerObserver: RegisterObserver = (transformer) => (title, self,
  * @param {*} orgs
  * @param {*} theme
  */
-export const sortTopOrgs = (orgs: { _id: string, votes: number }[], theme?: Pick<ThemeWithVotingDefaults, "numTopOrgs" | "topOrgsManual">) => {
+export const sortTopOrgs = (orgs: { _id: string, votes: number }[], theme?: ThemeVotingFields) => {
 	// Save manual top orgs as key/value true/false pairs for reference
 	const votingConfig = createThemeVotingConfig(theme)
 	const manualTopOrgs = votingConfig.topOrgsManual.reduce<Record<string, boolean>>((acc, orgId) => {
@@ -92,7 +94,7 @@ export const sortTopOrgs = (orgs: { _id: string, votes: number }[], theme?: Pick
  * Returns the number of top orgs in the theme
  * @param {*} theme
  */
-export const getNumTopOrgs = (theme?: Pick<ThemeWithVotingDefaults, "numTopOrgs" | "topOrgsManual">) => {
+export const getNumTopOrgs = (theme?: ThemeVotingFields) => {
 	const votingConfig = createThemeVotingConfig(theme)
 	return votingConfig.numTopOrgs >= votingConfig.topOrgsManual.length ? votingConfig.numTopOrgs : votingConfig.topOrgsManual.length
 }
@@ -103,7 +105,7 @@ export const getNumTopOrgs = (theme?: Pick<ThemeWithVotingDefaults, "numTopOrgs"
  * @param {*} orgs
  * @param {*} theme
  */
-export const filterTopOrgs = (orgs: { _id: string, votes: number }[], theme?: Pick<ThemeWithVotingDefaults, "numTopOrgs" | "topOrgsManual">) => {
+export const filterTopOrgs = (orgs: { _id: string, votes: number }[], theme?: ThemeVotingFields) => {
 	const sortedOrgs = sortTopOrgs(orgs, theme)
 	return sortedOrgs.slice(0, getNumTopOrgs(theme))
 }

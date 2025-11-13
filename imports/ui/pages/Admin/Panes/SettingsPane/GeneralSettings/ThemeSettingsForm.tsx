@@ -6,7 +6,7 @@ import {
 import { useState } from "react"
 import { ThemeMethods } from "/imports/api/methods"
 import { useTheme } from "/imports/api/hooks"
-import { ThemeSchema } from "/imports/api/db"
+import { ThemeSchema, DEFAULT_NUM_TOP_ORGS } from "/imports/api/db"
 import { formatters, roundFloat } from "/imports/lib/utils"
 
 import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
@@ -24,6 +24,9 @@ const SettingsPane = () => {
 		if(sanitizedData.minLeverageAmount) sanitizedData.minLeverageAmount = roundFloat(String(sanitizedData.minLeverageAmount))
 		if(sanitizedData.matchRatio) sanitizedData.matchRatio = parseInt(String(sanitizedData.matchRatio))
 		if(sanitizedData.chitWeight) sanitizedData.chitWeight = parseInt(String(sanitizedData.chitWeight))
+		if(!sanitizedData.numTopOrgs && theme) {
+			sanitizedData.numTopOrgs = theme.numTopOrgs || DEFAULT_NUM_TOP_ORGS
+		}
 		return sanitizedData
 	}
 
@@ -43,7 +46,8 @@ const SettingsPane = () => {
 	}
 
 	const onError = (errors: unknown, data: unknown) => {
-		console.log({ errors, data })
+		console.error("Validation errors:", JSON.stringify(errors, null, 2))
+		console.error("Data:", JSON.stringify(data, null, 2))
 	}
 
 	if(!theme) return <Loading />

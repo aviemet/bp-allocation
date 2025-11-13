@@ -51,7 +51,7 @@ export const useOrgs = () => {
 
 		const subscription = Meteor.subscribe("organizations", themeId)
 		const subscriptionReady = subscription.ready()
-		const orgs = Organizations.find({ theme: themeId }).fetch()
+		const orgsRaw = Organizations.find({ theme: themeId }).fetch()
 
 		if(!subscriptionReady) {
 			return {
@@ -62,6 +62,15 @@ export const useOrgs = () => {
 			}
 		}
 
+		function hasComputedProperties(org: OrgData): org is OrgDataWithComputed {
+			return (
+				"votedTotal" in org && typeof org.votedTotal === "number" &&
+				"allocatedFunds" in org && typeof org.allocatedFunds === "number" &&
+				"need" in org && typeof org.need === "number"
+			)
+		}
+
+		const orgs = orgsRaw.filter(hasComputedProperties)
 		const topOrgIds = theme.topOrgs || []
 		const topOrgs = topOrgIds.map(id => orgs.find(org => org._id === id)).filter((org): org is OrgDataWithComputed => org !== undefined)
 		const pledges = (theme.pledges || [])

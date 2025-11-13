@@ -3,6 +3,8 @@ import SimpleSchema from "simpl-schema"
 import SchemaRegex from "/imports/lib/schema"
 import { CollectionPermissions } from "./index"
 
+export const DEFAULT_NUM_TOP_ORGS = 5
+
 const OrgSaveSchema = new SimpleSchema({
 	org: SchemaRegex.Id,
 	amount: Number,
@@ -52,8 +54,8 @@ export const ThemeSchema = new SimpleSchema({
 	"topOrgsManual.$": SchemaRegex.Id,
 	numTopOrgs: {
 		type: Number,
-		defaultValue: 5,
-		required: false,
+		defaultValue: DEFAULT_NUM_TOP_ORGS,
+		required: true,
 	},
 	chitWeight: {
 		type: SimpleSchema.Integer,

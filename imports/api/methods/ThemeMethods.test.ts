@@ -22,7 +22,8 @@ describe("Theme Methods", function() {
 
 		const themeId = await ThemeMethods.create.callAsync(themeData)
 		if(!themeId) throw new Error("Failed to create theme")
-		const createdTheme = (await Themes.find({ _id: themeId }).fetchAsync())[0]
+		const createdTheme = await Themes.findOneAsync({ _id: themeId })
+		if(!createdTheme) throw new Error("Failed to fetch created theme")
 		theme = createdTheme
 		themeData._id = createdTheme._id
 		numTopOrgsDefault = createdTheme.numTopOrgs
