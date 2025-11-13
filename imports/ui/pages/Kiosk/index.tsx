@@ -10,6 +10,7 @@ import MemberLoginRequired from "./MemberLoginRequired"
 import RemoteVoting from "./RemoteVoting"
 import Topups from "./Topups"
 import Results from "../Presentation/Results"
+import { useSettings, useTheme } from "/imports/api/hooks"
 
 type KioskPage = "info" | "chit" | "funds" | "topups" | "results"
 type TimerRef = ReturnType<typeof setTimeout>
@@ -19,8 +20,8 @@ const Kiosk = () => {
 	const member = params?.member
 
 	const data = useData()
-	const { theme, isLoading: themeLoading } = useTheme()
-	const { settings, isLoading: settingsLoading } = useSettings()
+	const { theme, themeLoading } = useTheme()
+	const { settings, settingsLoading } = useSettings()
 
 	const activePage = useMemo<KioskPage>(() => {
 		if(settings?.fundsVotingActive) {

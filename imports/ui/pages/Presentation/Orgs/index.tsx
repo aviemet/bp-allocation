@@ -11,7 +11,7 @@ const Overlay = ({ visible }: { visible: boolean }) => (
 
 const Orgs = () => {
 	const { settings } = useSettings()
-	const { values: orgs, topOrgs } = useOrgs()
+	const { orgs, topOrgs } = useOrgs()
 
 	const colorOrgs: Record<string, boolean> = {}
 	topOrgs.forEach((org) => {

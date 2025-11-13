@@ -8,8 +8,8 @@ import { Loading } from "/imports/ui/components"
 import PledgesForm from "./PledgesForm"
 
 const Pledges = () => {
-	const { members, isLoading: membersLoading } = useMembers()
-	const { isLoading: orgsLoading } = useOrgs()
+	const { members, membersLoading } = useMembers()
+	const { orgsLoading } = useOrgs()
 
 	const handleSubmit = async (data: Record<string, unknown>, { reset }: { reset: () => void }) => {
 		try {

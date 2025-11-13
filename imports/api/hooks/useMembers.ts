@@ -16,8 +16,8 @@ export const useMembers = () => {
 	const membersData = useTracker(() => {
 		if(!themeId) {
 			return {
-				values: [] as MemberData[],
-				isLoading: true,
+				members: [] as MemberData[],
+				membersLoading: true,
 			}
 		}
 
@@ -29,20 +29,20 @@ export const useMembers = () => {
 		).fetch()
 
 		return {
-			values: members,
-			isLoading: !subscriptionReady,
+			members,
+			membersLoading: !subscriptionReady,
 		}
 	}, [themeId])
 
 	const filteredMembers = useMemo(() => {
-		if(!searchFilter || !membersData.values.length) return membersData.values
-		return filterCollection(membersData.values, searchFilter, MEMBER_SEARCHABLE_FIELDS)
-	}, [membersData.values, searchFilter])
+		if(!searchFilter || !membersData.members.length) return membersData.members
+		return filterCollection(membersData.members, searchFilter, MEMBER_SEARCHABLE_FIELDS)
+	}, [membersData.members, searchFilter])
 
 	return {
-		...membersData,
-		values: membersData.values,
+		members: membersData.members,
 		filteredMembers,
+		membersLoading: membersData.membersLoading,
 		searchFilter,
 		setSearchFilter,
 		searchableFields: MEMBER_SEARCHABLE_FIELDS,
@@ -57,7 +57,7 @@ export const useMember = (memberId: string) => {
 		if(!themeId || !memberId) {
 			return {
 				member: undefined,
-				isLoading: true,
+				memberLoading: true,
 			}
 		}
 
@@ -67,7 +67,7 @@ export const useMember = (memberId: string) => {
 
 		return {
 			member: member as MemberData | undefined,
-			isLoading: !subscriptionReady,
+			memberLoading: !subscriptionReady,
 		}
 	}, [themeId, memberId])
 }

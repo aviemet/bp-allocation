@@ -32,9 +32,7 @@ const AdminLayout = () => {
 	const location = useLocation()
 	const params = useParams({ strict: false })
 
-	const themeContext = useTheme()
-	const theme = themeContext?.theme
-	const themeLoading = themeContext?.isLoading ?? true
+	const { theme, themeLoading } = useTheme()
 
 	const drawerOpen = useMemo(() => !["/themes", "/admin"].includes(location.pathname), [location.pathname])
 

@@ -23,7 +23,7 @@ interface TopOrgsByChitVoteProps {
 const TopOrgsByChitVote = ({ hideAdminFields }: TopOrgsByChitVoteProps) => {
 	const { settings } = useSettings()
 	const { theme } = useTheme()
-	const { values: orgs } = useOrgs()
+	const { orgs } = useOrgs()
 
 	if(!theme || !orgs) return null
 

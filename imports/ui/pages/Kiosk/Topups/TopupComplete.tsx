@@ -17,7 +17,7 @@ interface VotingCompleteProps {
 }
 
 const VotingComplete = ({ data, resetData }: VotingCompleteProps) => {
-	const { theme, isLoading: themeLoading } = useTheme()
+	const { theme, themeLoading } = useTheme()
 
 	if(themeLoading) return <Loading />
 	const formatted = {

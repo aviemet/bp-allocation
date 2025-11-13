@@ -9,8 +9,8 @@ import numeral from "numeral"
 import { Loading } from "/imports/ui/components"
 
 const Breakdown = () => {
-	const { theme, isLoading: themeLoading } = useTheme()
-	const { topOrgs, isLoading: orgsLoading } = useOrgs()
+	const { theme, themeLoading } = useTheme()
+	const { topOrgs, orgsLoading } = useOrgs()
 
 	if(themeLoading || orgsLoading || !theme) return <Loading />
 

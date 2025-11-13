@@ -10,7 +10,7 @@ import { useWindowSize, breakpoints } from "/imports/ui/MediaProvider"
 
 const KioskInfo = () => {
 	const { theme } = useTheme()
-	const { values: orgs, topOrgs, isLoading: orgsLoading } = useOrgs()
+	const { orgs, topOrgs, orgsLoading } = useOrgs()
 
 	const [ itemsPerRow, setItemsPerRow ] = useState(3)
 

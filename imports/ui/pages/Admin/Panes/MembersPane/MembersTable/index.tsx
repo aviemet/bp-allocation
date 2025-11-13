@@ -52,7 +52,7 @@ const headCells: HeadCell[] = [
 // TODO: Would be cool to get the filter icon to allow filtring by keyword
 //       So, choosing 'not voted' would filter out all those who have voted
 const MembersTable = () => {
-	const { filteredMembers, searchFilter, setSearchFilter, isLoading: membersLoading } = useMembers()
+	const { filteredMembers, searchFilter, setSearchFilter, membersLoading } = useMembers()
 	const { settings } = useSettings()
 
 	const [ modalOpen, setModalOpen ] = useState<boolean>(false)

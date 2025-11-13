@@ -2,6 +2,7 @@ import { Meteor } from "meteor/meteor"
 
 import { registerObserver, type PublishSelf } from "../methods"
 import { OrgTransformer } from "/imports/server/transformers"
+import { createDebouncedFunction } from "/imports/lib/utils"
 
 import {
 	Organizations,
@@ -34,15 +35,46 @@ const publishOrganizations = async (themeId: string, publisher: PublishSelf) => 
 	}
 
 	const settings = theme.presentationSettings ? await PresentationSettings.findOneAsync({ _id: theme.presentationSettings }) : undefined
-	const memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
 
+	let memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
 	const observerCallbacks = orgObserver("organizations", publisher, { theme, settings, memberThemes })
 
 	const orgsCursor = Organizations.find({ theme: themeId }).observe(observerCallbacks)
 
+	const refreshOrgsFromMemberThemes = async () => {
+		try {
+			memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
+			const orgs = await Organizations.find({ theme: themeId }).fetchAsync()
+			orgs.forEach(org => {
+				const transformed = OrgTransformer(org, { theme, settings, memberThemes })
+				publisher.changed("organizations", org._id, transformed)
+			})
+		} catch (_error) {
+			// Error refreshing organizations from memberThemes
+		}
+	}
+
+	const debouncedRefresh = createDebouncedFunction(refreshOrgsFromMemberThemes, 100)
+
+	const memberThemesWatcher = MemberThemes.find({ theme: themeId }).observeChanges({
+		added: () => {
+			debouncedRefresh()
+		},
+		changed: () => {
+			debouncedRefresh()
+		},
+		removed: () => {
+			debouncedRefresh()
+		},
+	})
+
 	publisher.onStop(() => {
+		debouncedRefresh.cancel()
 		if(orgsCursor && typeof orgsCursor.stop === "function") {
 			orgsCursor.stop()
+		}
+		if(memberThemesWatcher && typeof memberThemesWatcher.stop === "function") {
+			memberThemesWatcher.stop()
 		}
 	})
 

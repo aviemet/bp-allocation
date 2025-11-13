@@ -23,7 +23,7 @@ const OrganizationsEdit = () => {
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
-	const orgStore = orgs?.values.find(org => org._id === orgId)
+	const orgStore = orgs?.find(org => org._id === orgId)
 	const org = {
 		theme: id,
 		title: orgStore?.title || "",

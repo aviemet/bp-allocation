@@ -12,7 +12,7 @@ import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imp
 import { Loading } from "/imports/ui/components"
 
 const PresentationSettingsForm = () => {
-	const { settings, isLoading: settingsLoading } = useSettings()
+	const { settings, settingsLoading } = useSettings()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 

@@ -3,13 +3,13 @@ import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
 import { IconButton } from "@mui/material"
 import { forEach } from "lodash"
-import { useEffect, useState } from "react"
+import { useEffect, useState, startTransition } from "react"
 
 import { useVoting } from "../VotingContext"
-import { type OrgStore } from "/imports/api/stores"
+import { type OrgData } from "/imports/api/db"
 
 interface ChitTickerProps {
-	org: OrgStore
+	org: OrgData
 }
 
 /**
@@ -24,7 +24,9 @@ const ChitTicker = ({ org }: ChitTickerProps) => {
 	useEffect(() => {
 		const nextValue = chits[org._id] || 0
 		if(value !== nextValue) {
-			setValue(nextValue)
+			startTransition(() => {
+				setValue(nextValue)
+			})
 		}
 	}, [chits, org._id, value])
 

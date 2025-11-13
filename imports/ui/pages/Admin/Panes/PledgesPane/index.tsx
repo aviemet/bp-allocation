@@ -60,8 +60,8 @@ interface PledgesProps {
 
 const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 	const { theme } = useTheme()
-	const { values: members, isLoading: membersLoading } = useMembers()
-	const { topOrgs, pledges, isLoading: orgsLoading } = useOrgs()
+	const { members, membersLoading } = useMembers()
+	const { topOrgs, pledges, orgsLoading } = useOrgs()
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState("")

@@ -18,7 +18,7 @@ interface PledgesProps {
 }
 
 const Pledges = ({ user }: PledgesProps) => {
-	const { topOrgs, isLoading: orgsLoading } = useOrgs()
+	const { topOrgs, orgsLoading } = useOrgs()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 

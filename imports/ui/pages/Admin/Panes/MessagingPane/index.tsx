@@ -18,10 +18,10 @@ import { Loading } from "/imports/ui/components"
 
 const Messages = () => {
 	const { theme } = useTheme()
-	const { messages, isLoading: messagesLoading } = useMessages()
-	const { members, isLoading: membersLoading } = useMembers()
+	const { messages, messagesLoading } = useMessages()
+	const { members, membersLoading } = useMembers()
 
-	const allMemberIds = members ? members.values.map(member => member._id) : []
+	const allMemberIds = members ? members.map(member => member._id) : []
 
 	if(messagesLoading || membersLoading || !messages || !members) return <Loading />
 
@@ -48,7 +48,7 @@ const Messages = () => {
 					</TableHead>
 
 					<TableBody>
-						{ messages.values.map(message => {
+						{ messages.map(message => {
 							if(message.active && message.type === "text") return (
 								<TableRow key={ message._id }>
 									<TableCell>
@@ -79,7 +79,7 @@ const Messages = () => {
 					</TableHead>
 
 					<TableBody>
-						{ messages.values.map(message => {
+						{ messages.map(message => {
 							if(message.active && message.type === "email") return (
 								<TableRow key={ message._id }>
 									<TableCell>

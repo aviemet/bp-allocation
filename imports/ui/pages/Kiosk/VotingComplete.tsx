@@ -9,6 +9,7 @@ import { useVoting } from "./VotingContext"
 
 import { COLORS } from "/imports/lib/global"
 import { useData } from "/imports/api/providers"
+import { useSettings } from "/imports/api/hooks"
 
 interface VotingCompleteProps {
 	setVotingComplete: (value: boolean) => void
@@ -52,12 +53,12 @@ const VotingComplete = ({ setVotingComplete }: VotingCompleteProps) => {
 			</Box>
 			<Box><p>Results will be available shortly</p></Box>
 			<Box>
-			<AmendVoteButton
-				disabled={ false }
-				onClick={ showVotingPageAgain }
-			>
-				Amend Vote
-			</AmendVoteButton>
+				<AmendVoteButton
+					disabled={ false }
+					onClick={ showVotingPageAgain }
+				>
+					Amend Vote
+				</AmendVoteButton>
 			</Box>
 		</VotingCompleteContainer>
 	)

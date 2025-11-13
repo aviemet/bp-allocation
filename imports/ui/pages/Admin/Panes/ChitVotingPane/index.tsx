@@ -20,8 +20,8 @@ interface ChitVotingPaneProps {
 }
 
 const ChitVotingPane = ({ hideAdminFields }: ChitVotingPaneProps) => {
-	const { settings, isLoading: settingsLoading } = useSettings()
-	const { isLoading: orgsLoading } = useOrgs()
+	const { settings, settingsLoading } = useSettings()
+	const { orgsLoading } = useOrgs()
 	const { theme } = useTheme()
 
 	if(orgsLoading || settingsLoading || !theme) return <Loading />
@@ -34,7 +34,7 @@ const ChitVotingPane = ({ hideAdminFields }: ChitVotingPaneProps) => {
 				data: {
 					numTopOrgs: newValue,
 				},
-	}
+			})
 		}
 	}
 
@@ -72,7 +72,7 @@ const ChitVotingPane = ({ hideAdminFields }: ChitVotingPaneProps) => {
 
 			</Grid>
 		</Container>
-	}
-	}
+	)
+}
 
 export default ChitVotingPane

@@ -1,20 +1,20 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
 
-import { useData } from "../providers/DataProvider"
 import { useTheme } from "./useTheme"
 import { Messages, type MessageData } from "../db"
+import { useData } from "../providers/DataProvider"
 
 export const useMessages = () => {
 	const data = useData()
 	const themeId = data?.themeId
-	const { isLoading: themeLoading } = useTheme()
+	const { themeLoading } = useTheme()
 
 	return useTracker(() => {
 		if(!themeId || themeLoading) {
 			return {
-				values: [] as MessageData[],
-				isLoading: true,
+				messages: [] as MessageData[],
+				messagesLoading: true,
 			}
 		}
 
@@ -23,8 +23,8 @@ export const useMessages = () => {
 		const messages = Messages.find().fetch()
 
 		return {
-			values: messages,
-			isLoading: !subscriptionReady,
+			messages,
+			messagesLoading: !subscriptionReady,
 		}
 	}, [themeId, themeLoading])
 }
@@ -32,13 +32,13 @@ export const useMessages = () => {
 export const useMessage = (messageId: string) => {
 	const data = useData()
 	const themeId = data?.themeId
-	const { isLoading: themeLoading } = useTheme()
+	const { themeLoading } = useTheme()
 
 	return useTracker(() => {
 		if(!themeId || !messageId || themeLoading) {
 			return {
 				message: undefined,
-				isLoading: true,
+				messageLoading: true,
 			}
 		}
 
@@ -48,7 +48,7 @@ export const useMessage = (messageId: string) => {
 
 		return {
 			message: message as MessageData | undefined,
-			isLoading: !subscriptionReady,
+			messageLoading: !subscriptionReady,
 		}
 	}, [themeId, messageId, themeLoading])
 }

@@ -11,8 +11,8 @@ import TopOrgs from "./TopOrgs"
 import { Loading, PageTransitionFader } from "/imports/ui/components"
 
 const Presentation = () => {
-	const { theme, isLoading: themeLoading } = useTheme()
-	const { settings, isLoading: settingsLoading } = useSettings()
+	const { theme, themeLoading } = useTheme()
+	const { settings, settingsLoading } = useSettings()
 	const navigate = useNavigate()
 	const params = useParams({ strict: false })
 

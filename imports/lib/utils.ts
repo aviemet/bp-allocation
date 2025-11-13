@@ -1,4 +1,4 @@
-import { isEmpty } from "lodash"
+import { debounce, isEmpty } from "lodash"
 import { Meteor } from "meteor/meteor"
 
 export const roundFloat = (value: string | number, decimal = 2) => {
@@ -110,4 +110,8 @@ export const emailVotingLink = (slug: string, code: string) => {
 
 export const textVotingLink = (slug: string, code: string) => {
 	return "\n" + `${Meteor.settings.HOST_URL}/v/${slug}/${code}`
+}
+
+export const createDebouncedFunction = <T extends (...args: unknown[]) => void>(fn: T, wait: number): T & { cancel: () => void } => {
+	return debounce(fn, wait) as T & { cancel: () => void }
 }

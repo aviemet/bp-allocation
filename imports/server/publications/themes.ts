@@ -2,6 +2,7 @@ import { Meteor } from "meteor/meteor"
 
 import { registerObserver, type PublishSelf } from "../methods"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
+import { createDebouncedFunction } from "/imports/lib/utils"
 
 import { Themes, PresentationSettings, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
 import { ThemeTransformer, OrgTransformer } from "/imports/server/transformers"
@@ -24,13 +25,49 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 		return
 	}
 
-	const memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
+	let memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
 	const orgs = await Organizations.find({ theme: theme._id }).fetchAsync()
 	const transformedOrgs = orgs.map(org => OrgTransformer(org, { theme, settings, memberThemes }))
 	const topOrgs = filterTopOrgs(transformedOrgs, theme)
 
-	const observer = Themes.find({ _id: theme._id }).observe(themeObserver("themes", publisher, { topOrgs, memberThemes, settings }))
-	publisher.onStop(() => observer?.stop())
+	const themeObserverHandle = Themes.find({ _id: theme._id }).observe(themeObserver("themes", publisher, { topOrgs, memberThemes, settings }))
+
+	const refreshThemeFromMemberThemes = async () => {
+		try {
+			memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
+			const updatedOrgs = await Organizations.find({ theme: theme._id }).fetchAsync()
+			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme, settings, memberThemes }))
+			const updatedTopOrgs = filterTopOrgs(updatedTransformedOrgs, theme)
+			const transformed = ThemeTransformer(theme, { topOrgs: updatedTopOrgs, memberThemes, settings })
+			publisher.changed("themes", theme._id, transformed)
+		} catch (_error) {
+			// Error refreshing theme from memberThemes
+		}
+	}
+
+	const debouncedRefresh = createDebouncedFunction(refreshThemeFromMemberThemes, 100)
+
+	const memberThemesWatcher = MemberThemes.find({ theme: theme._id }).observeChanges({
+		added: () => {
+			debouncedRefresh()
+		},
+		changed: () => {
+			debouncedRefresh()
+		},
+		removed: () => {
+			debouncedRefresh()
+		},
+	})
+
+	publisher.onStop(() => {
+		debouncedRefresh.cancel()
+		if(themeObserverHandle && typeof themeObserverHandle.stop === "function") {
+			themeObserverHandle.stop()
+		}
+		if(memberThemesWatcher && typeof memberThemesWatcher.stop === "function") {
+			memberThemesWatcher.stop()
+		}
+	})
 
 	publisher.ready()
 }

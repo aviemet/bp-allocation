@@ -13,7 +13,7 @@ export const useTheme = () => {
 		if(!themeId) {
 			return {
 				theme: undefined,
-				isLoading: true,
+				themeLoading: true,
 			}
 		}
 
@@ -24,7 +24,7 @@ export const useTheme = () => {
 		if(!subscriptionReady || !themeData) {
 			return {
 				theme: undefined,
-				isLoading: !subscriptionReady,
+				themeLoading: !subscriptionReady,
 			}
 		}
 
@@ -32,7 +32,7 @@ export const useTheme = () => {
 
 		return {
 			theme: initializedTheme,
-			isLoading: false,
+			themeLoading: false,
 		}
 	}, [themeId])
 }

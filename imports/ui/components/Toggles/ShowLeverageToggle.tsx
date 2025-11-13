@@ -10,7 +10,7 @@ import { PresentationSettingsMethods } from "/imports/api/methods"
 
 const ShowLeverageToggle = () => {
 
-	const { settings, isLoading: settingsLoading } = useSettings()
+	const { settings, settingsLoading } = useSettings()
 
 	if(!settings) return <></>
 

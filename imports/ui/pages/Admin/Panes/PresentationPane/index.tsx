@@ -31,13 +31,8 @@ import { Link, Loading } from "/imports/ui/components"
 import { useSettings, useTheme } from "/imports/api/hooks"
 
 const PresentationPane = () => {
-	const themeContext = useTheme()
-	const theme = themeContext?.theme
-	const themeLoading = themeContext?.isLoading ?? true
-
-	const settingsContext = useSettings()
-	const settings = settingsContext?.settings
-	const settingsLoading = settingsContext?.isLoading ?? true
+	const { theme, themeLoading } = useTheme()
+	const { settings, settingsLoading } = useSettings()
 
 	if(themeLoading || !theme) return <Loading />
 	/**

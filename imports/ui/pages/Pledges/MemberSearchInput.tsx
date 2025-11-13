@@ -7,7 +7,7 @@ import { type MemberData } from "/imports/api/db"
 const MemberSearchInput = () => {
 	const { setValue } = useFormContext()
 	const { member } = useWatch<{ member: string }>()
-	const { values: members, isLoading: membersLoading } = useMembers()
+	const { members, membersLoading } = useMembers()
 
 	const selectedMember = useMemo<MemberData | null>(() => {
 		if(membersLoading || !member) return null

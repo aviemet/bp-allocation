@@ -13,7 +13,7 @@ interface GraphProps {
 const Graph = (props: GraphProps) => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
-	const { values: orgs, topOrgs } = useOrgs()
+	const { orgs, topOrgs } = useOrgs()
 
 	if(!theme || !settings || !orgs) return <Loading />
 

@@ -40,15 +40,15 @@ const computePledges = (orgs: Organization[], theme?: Pick<Theme, "numTopOrgs" |
 export const useOrgs = () => {
 	const data = useData()
 	const themeId = data?.themeId
-	const { theme, isLoading: themeLoading } = useTheme()
+	const { theme, themeLoading } = useTheme()
 
 	return useTracker(() => {
 		if(!themeId || themeLoading || !theme) {
 			return {
-				values: [] as OrgData[],
+				orgs: [] as OrgData[],
 				topOrgs: [] as OrgData[],
 				pledges: [] as PledgeWithOrg[],
-				isLoading: true,
+				orgsLoading: true,
 			}
 		}
 
@@ -58,10 +58,10 @@ export const useOrgs = () => {
 
 		if(!subscriptionReady) {
 			return {
-				values: [] as OrgData[],
+				orgs: [] as OrgData[],
 				topOrgs: [] as OrgData[],
 				pledges: [] as PledgeWithOrg[],
-				isLoading: true,
+				orgsLoading: true,
 			}
 		}
 
@@ -69,10 +69,10 @@ export const useOrgs = () => {
 		const pledges = computePledges(orgs, theme)
 
 		return {
-			values: orgs,
+			orgs,
 			topOrgs,
 			pledges,
-			isLoading: false,
+			orgsLoading: false,
 		}
 	}, [themeId, themeLoading, theme])
 }

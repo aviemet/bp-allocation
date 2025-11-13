@@ -10,9 +10,9 @@ import Kiosk from "../pages/Kiosk"
 const VotingRoute = () => {
 	const { id } = useParams({ from: "/voting/$id/$member" })
 	const data = useData()
-	const { isLoading: themeLoading } = useTheme()
-	const { isLoading: orgsLoading } = useOrgs()
-	const { isLoading: settingsLoading } = useSettings()
+	const { themeLoading } = useTheme()
+	const { orgsLoading } = useOrgs()
+	const { settingsLoading } = useSettings()
 
 	const [isLoading, setIsLoading] = useState(themeLoading || orgsLoading || settingsLoading)
 

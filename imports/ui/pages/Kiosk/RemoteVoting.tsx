@@ -2,6 +2,7 @@ import { isEmpty } from "lodash"
 import { ComponentType } from "react"
 import { useMembers } from "/imports/api/hooks"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { VotingSource } from "/imports/api/methods/MemberMethods"
 
 import { FundsVoteProvider } from "./VotingContext"
 
@@ -9,7 +10,7 @@ import { Loading } from "/imports/ui/components"
 
 interface RemoteVotingProps {
 	memberId: string
-	component: ComponentType<{ user: MemberWithTheme, source: string }>
+	component: ComponentType<{ user: MemberWithTheme, source: VotingSource }> | ComponentType<{ user: MemberWithTheme }>
 	unsetUser?: () => void
 }
 
@@ -18,7 +19,7 @@ const RemoteVoting = ({
 	component,
 	unsetUser = () => {},
 }: RemoteVotingProps) => {
-	const { values: members, isLoading: membersLoading } = useMembers()
+	const { members, membersLoading } = useMembers()
 
 	if(membersLoading || isEmpty(members)) return <Loading />
 

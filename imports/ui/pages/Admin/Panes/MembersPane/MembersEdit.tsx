@@ -18,7 +18,7 @@ import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/
 import { Loading } from "/imports/ui/components"
 
 const MembersEdit = () => {
-	const { members, isLoading: membersLoading } = useMembers()
+	const { members, membersLoading } = useMembers()
 
 	const { id, memberId } = useParams({ strict: false })
 	const navigate = useNavigate()
@@ -65,7 +65,7 @@ const MembersEdit = () => {
 	}
 
 	const editUser = async (data: Record<string, unknown>) => {
-		const memberStore = members?.values.find(member => member._id === memberId)
+		const memberStore = members?.find(member => member._id === memberId)
 		if(!memberStore) return
 
 		const memberTheme = memberStore.theme as MemberTheme
@@ -114,7 +114,7 @@ const MembersEdit = () => {
 
 	if(membersLoading) return <Loading />
 
-	const memberStore = members?.values.find(member => member._id === memberId)
+	const memberStore = members?.find(member => member._id === memberId)
 	const memberTheme = memberStore?.theme as MemberTheme | undefined
 	const member = {
 		theme: id,

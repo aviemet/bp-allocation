@@ -12,7 +12,7 @@ export const useSettings = () => {
 		if(!themeId) {
 			return {
 				settings: undefined,
-				isLoading: true,
+				settingsLoading: true,
 			}
 		}
 
@@ -23,13 +23,13 @@ export const useSettings = () => {
 		if(!subscriptionReady || !settingsData) {
 			return {
 				settings: undefined,
-				isLoading: !subscriptionReady,
+				settingsLoading: !subscriptionReady,
 			}
 		}
 
 		return {
 			settings: settingsData,
-			isLoading: false,
+			settingsLoading: false,
 		}
 	}, [themeId])
 }

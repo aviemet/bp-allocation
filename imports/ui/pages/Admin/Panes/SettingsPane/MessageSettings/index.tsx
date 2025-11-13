@@ -82,8 +82,8 @@ const emailHeaderCells = [
 
 const Messages = () => {
 	const { themeId } = useData()
-	const { values: messages, isLoading: messagesLoading } = useMessages()
-	const { values: members, isLoading: membersLoading } = useMembers()
+	const { messages, messagesLoading } = useMessages()
+	const { members, membersLoading } = useMembers()
 
 	const allMemberIds = members ? members.map(member => member._id) : []
 

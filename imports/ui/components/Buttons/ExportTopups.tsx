@@ -13,8 +13,8 @@ interface PledgeData {
 }
 
 const ExportTopups = () => {
-	const { topOrgs, isLoading: orgsLoading } = useOrgs()
-	const { members, isLoading: membersLoading } = useMembers()
+	const { topOrgs, orgsLoading } = useOrgs()
+	const { members, membersLoading } = useMembers()
 
 	if(orgsLoading || membersLoading || isEmpty(members)) return <Loading />
 
@@ -24,7 +24,7 @@ const ExportTopups = () => {
 		if(!orgTitle || !org.pledges) return
 
 		org.pledges.forEach(pledge => {
-			const member = members.values.find(member => member._id === pledge.member)
+			const member = members.find(member => member._id === pledge.member)
 			if(member && pledge.amount && pledge.createdAt) {
 				const pledgeData: PledgeData = {
 					"Organization": orgTitle,

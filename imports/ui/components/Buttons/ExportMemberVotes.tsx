@@ -19,13 +19,13 @@ interface MemberStoreWithTheme extends MemberStore {
 }
 
 const ExportMemberVotes = () => {
-	const { topOrgs, isLoading: orgsLoading } = useOrgs()
-	const { members, isLoading: membersLoading } = useMembers()
+	const { topOrgs, orgsLoading } = useOrgs()
+	const { members, membersLoading } = useMembers()
 
 	if(orgsLoading || membersLoading || isEmpty(members)) return <Loading />
 	return (
 		<ExportCsvButton
-			data={ members.values.map(member => {
+			data={ members.map(member => {
 				const memberWithTheme = member as MemberStoreWithTheme
 				const memberTheme = memberWithTheme.theme
 

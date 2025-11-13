@@ -22,7 +22,7 @@ interface MemberSearchProps extends Omit<AutocompleteProps<MemberData, false, fa
 }
 
 const MemberSearch = ({ value, setValue, onResultSelect, ...props }: MemberSearchProps) => {
-	const { values: members, isLoading: membersLoading } = useMembers()
+	const { members, membersLoading } = useMembers()
 
 	const filterOptions = createFilterOptions<MemberData>({
 		limit: 15,

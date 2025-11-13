@@ -7,19 +7,20 @@ import { ComponentType } from "react"
 import { useState } from "react"
 import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { VotingSource } from "/imports/api/methods/MemberMethods"
 
 import { FundsVoteProvider } from "./VotingContext"
 
 import { COLORS } from "/imports/lib/global"
 
 interface MemberLoginRequiredProps {
-	component?: ComponentType<{ user: MemberWithTheme, source: string }>
+	component?: ComponentType<{ user: MemberWithTheme, source: VotingSource }> | ComponentType<{ user: MemberWithTheme }>
 	member?: string
 }
 
 const MemberLoginRequired = (props: MemberLoginRequiredProps) => {
 	// Pull member data from Data Store
-	const { values: members, isLoading: membersLoading } = useMembers()
+	const { members, membersLoading } = useMembers()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.DISABLED)
 

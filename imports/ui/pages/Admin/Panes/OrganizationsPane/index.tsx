@@ -103,7 +103,7 @@ const OrgCard = ({ org, id, onDelete }: OrgCardProps) => {
 }
 
 const OrganizationsPane = () => {
-	const { values: orgs, isLoading: orgsLoading } = useOrgs()
+	const { orgs, orgsLoading } = useOrgs()
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState("")

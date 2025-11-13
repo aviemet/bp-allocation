@@ -20,8 +20,8 @@ interface AllocationsTableProps {
 
 const AllocationsTable = ({ hideAdminFields = false }: AllocationsTableProps) => {
 	const { settings } = useSettings()
-	const { theme, isLoading: themeLoading } = useTheme()
-	const { topOrgs, isLoading: orgsLoading } = useOrgs()
+	const { theme, themeLoading } = useTheme()
+	const { topOrgs, orgsLoading } = useOrgs()
 
 	const _calculateCrowdFavorite = () => {
 		let favorite = 0

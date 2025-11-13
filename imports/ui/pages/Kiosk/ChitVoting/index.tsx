@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { Container, Button, Typography } from "@mui/material"
 import { forEach } from "lodash"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, startTransition } from "react"
 
 import { useData } from "/imports/api/providers"
 import { useSettings, useOrgs } from "/imports/api/hooks"
@@ -24,21 +24,20 @@ interface ChitVotingKioskProps {
 const ChitVotingKiosk = ({ user, source }: ChitVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
-	const { values: orgs } = useOrgs()
+	const { orgs } = useOrgs()
 	const { chits, saveChits, member } = useVoting()
 
 	const [ votingComplete, setVotingComplete ] = useState(false)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
 	const [ isCounting, setIsCounting ] = useState(false)
 
-	const displayCountDown = () => {
-		setCountdownVisible(true)
-		setIsCounting(true)
-	}
-
 	useEffect(() => {
-		// Display countdown if user is on voting screen when voting becomes disabled
-		if(settings?.chitVotingActive === false) displayCountDown()
+		if(settings?.chitVotingActive === false) {
+			startTransition(() => {
+				setCountdownVisible(true)
+				setIsCounting(true)
+			})
+		}
 	}, [settings?.chitVotingActive])
 
 	const handleFinalizeVote = () => {
@@ -110,19 +109,19 @@ const OrgsContainer = styled.div`
 	}
 `
 
-const FinalizeButton = styled(Button)({
-	width: "100%",
-	textAlign: "center" as const,
-	color: "white",
-	border: "2px solid #fff",
-	fontSize: "2rem",
-	textTransform: "uppercase" as const,
-	backgroundColor: COLORS.blue,
+const FinalizeButton = styled(Button)`
+	width: 100%;
+	text-align: center;
+	color: white;
+	border: 2px solid #fff;
+	font-size: 2rem;
+	text-transform: uppercase;
+	background-color: ${COLORS.blue};
 
-	"&.Mui-disabled": {
-		backgroundColor: COLORS.blue,
-	},
-)
+	&.Mui-disabled {
+		background-color: ${COLORS.blue};
+	}
+`
 
 const NumberFormat = styled.span`
 	display: inline-block;

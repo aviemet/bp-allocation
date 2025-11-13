@@ -7,7 +7,7 @@ interface PledgeInfoProps {
 }
 
 const PledgeInfo = ({ pledge }: PledgeInfoProps) => {
-	const { values: members, isLoading: membersLoading } = useMembers()
+	const { members, membersLoading } = useMembers()
 
 	if(membersLoading || !members || !pledge || !pledge.org) {
 		return <></>

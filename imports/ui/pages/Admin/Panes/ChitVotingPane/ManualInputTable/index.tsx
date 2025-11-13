@@ -15,7 +15,7 @@ import { type OrgStore } from "/imports/api/stores"
 import { Loading } from "/imports/ui/components"
 
 const ChitTable = () => {
-	const { values: orgs, topOrgs } = useOrgs()
+	const { orgs, topOrgs } = useOrgs()
 
 	const topOrgIds = topOrgs.map(org => org._id)
 

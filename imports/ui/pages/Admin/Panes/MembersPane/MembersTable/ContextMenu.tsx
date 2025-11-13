@@ -85,7 +85,7 @@ const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 					</MenuItem>
 					<Collapse in={ textSubmenuOpen } timeout="auto" unmountOnExit>
 						<Divider />
-						{ messages?.values.map((message) => {
+						{ messages?.map((message) => {
 							if(message.active && message.type === "text") return (
 								<MenuItem key={ `${message._id}-text` } disableRipple>
 									<Stack sx={ { width: "100%" } } direction="row" justifyContent="space-between" alignItems="center">
@@ -110,7 +110,7 @@ const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 					</MenuItem>
 					<Collapse in={ emailSubmenuOpen } timeout="auto" unmountOnExit>
 						<Divider />
-						{ messages?.values.map((message) => {
+						{ messages?.map((message) => {
 							if(message.active && message.type === "email") return (
 								<MenuItem key={ `${message._id}-email` } disableRipple>
 									<Stack sx={ { width: "100%" } } direction="row" justifyContent="space-between" alignItems="center">

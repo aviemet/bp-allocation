@@ -22,9 +22,9 @@ import ExportTopups from "/imports/ui/components/Buttons/ExportTopups"
 import ExportChitVotes from "/imports/ui/components/Buttons/ExportChitVotes"
 
 const Overview = () => {
-	const { settings, isLoading: settingsLoading } = useSettings()
-	const { theme, isLoading: themeLoading } = useTheme()
-	const { topOrgs, isLoading: orgsLoading } = useOrgs()
+	const { settings, settingsLoading } = useSettings()
+	const { theme, themeLoading } = useTheme()
+	const { topOrgs, orgsLoading } = useOrgs()
 
 	if(themeLoading || orgsLoading || settingsLoading || !theme) return <Loading />
 	return (

@@ -14,7 +14,7 @@ import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/
 import { Loading } from "/imports/ui/components"
 
 const SettingsPane = () => {
-	const { settings, isLoading: settingsLoading } = useSettings()
+	const { settings, settingsLoading } = useSettings()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
