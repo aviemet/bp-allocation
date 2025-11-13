@@ -48,7 +48,7 @@ const ShortRouteComponent = () => {
 	}
 
 	if((data.hasThemeData && !data.theme) || (data.hasMemberData && data.theme && data.member === undefined)) {
-		return <Navigate to="/404" />
+		// return <Navigate to="/404" />
 	}
 
 	return <Loading />
