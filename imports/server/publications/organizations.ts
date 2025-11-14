@@ -46,6 +46,11 @@ const publishOrganizations = async (themeId: string, publisher: PublishSelf) => 
 	)
 	const observerCallbacks = orgObserver("organizations", publisher, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg })
 
+	const orgs = await Organizations.find({ theme: themeId }).fetchAsync()
+	orgs.forEach(org => {
+		observerCallbacks.added(org)
+	})
+
 	const orgsCursor = Organizations.find({ theme: themeId }).observe(observerCallbacks)
 
 	const refreshOrgsFromMemberThemes = async () => {

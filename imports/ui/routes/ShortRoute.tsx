@@ -18,37 +18,35 @@ const ShortRouteComponent = () => {
 		let member: ReturnType<typeof Members.findOne> | undefined
 
 		if(theme && themeReady) {
-			membersSubscription = Meteor.subscribe("members", { themeId: theme._id })
+			membersSubscription = Meteor.subscribe("members", { themeId: theme._id, limit: false })
 			memberReady = membersSubscription.ready()
 			if(memberReady) {
 				member = Members.findOne({ code: memberCode })
 			}
 		}
 
-		const allDataLoaded = themeReady && (!theme || memberReady)
+		const themeDataLoaded = themeReady
+		const memberDataLoaded = !theme || (theme && themeReady && memberReady)
 
 		return {
-			allDataLoaded,
 			themeReady,
 			memberReady,
+			themeDataLoaded,
+			memberDataLoaded,
 			theme,
 			member,
 		}
 	}, [themeSlug, memberCode])
 
-	if(!data.allDataLoaded) {
+	if(!data.themeDataLoaded || (data.theme && !data.memberDataLoaded)) {
 		return <Loading />
 	}
 
-	if(data.theme && data.member) {
-		return <Navigate to={ `/voting/${data.theme._id}/${data.member._id}` } />
-	}
-
-	if((data.themeReady && !data.theme) || (data.memberReady && data.theme && !data.member)) {
+	if(!data.theme || !data.member) {
 		return <Navigate to="/404" />
 	}
 
-	return <Loading />
+	return <Navigate to={ `/voting/${data.theme._id}/${data.member._id}` } />
 }
 
 export default ShortRouteComponent

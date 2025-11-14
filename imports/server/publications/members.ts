@@ -34,7 +34,13 @@ const publishMembers = async (themeId: string, limit: number | false, publisher:
 		.map(memberTheme => memberTheme.member)
 		.filter((memberId): memberId is string => typeof memberId === "string")
 
-	const membersObserver = Members.find({ _id: { $in: memberIds } }, subOptions).observe(membersTransformer("members", publisher, { themeId, memberThemes }))
+	const membersTransformerCallbacks = membersTransformer("members", publisher, { themeId, memberThemes })
+	const members = await Members.find({ _id: { $in: memberIds } }, subOptions).fetchAsync()
+	members.forEach(member => {
+		membersTransformerCallbacks.added(member)
+	})
+
+	const membersObserver = Members.find({ _id: { $in: memberIds } }, subOptions).observe(membersTransformerCallbacks)
 
 	const refreshMembersFromMemberThemes = async () => {
 		try {
@@ -91,7 +97,14 @@ Meteor.publish("members", async function({ themeId, limit }: { themeId: string, 
 
 Meteor.publish("member", async function({ memberId, themeId }: { memberId: string, themeId: string }) {
 	const memberThemes = await MemberThemes.find({ member: memberId, theme: themeId }).fetchAsync()
-	const memberObserver = Members.find({ _id: memberId }).observe(membersTransformer("members", this, { themeId, memberThemes }))
+	const membersTransformerCallbacks = membersTransformer("members", this, { themeId, memberThemes })
+
+	const member = await Members.findOneAsync({ _id: memberId })
+	if(member) {
+		membersTransformerCallbacks.added(member)
+	}
+
+	const memberObserver = Members.find({ _id: memberId }).observe(membersTransformerCallbacks)
 
 	this.onStop(() => memberObserver.stop())
 

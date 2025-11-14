@@ -35,7 +35,10 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	const transformedOrgs = orgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg }))
 	const topOrgs = filterTopOrgs(transformedOrgs, theme)
 
-	const themeObserverHandle = Themes.find({ _id: theme._id }).observe(themeObserver("themes", publisher, { topOrgs, memberThemes, settings }))
+	const themeObserverCallbacks = themeObserver("themes", publisher, { topOrgs, memberThemes, settings })
+	themeObserverCallbacks.added(theme)
+
+	const themeObserverHandle = Themes.find({ _id: theme._id }).observe(themeObserverCallbacks)
 
 	const refreshThemeFromMemberThemes = async () => {
 		try {
@@ -97,12 +100,39 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	publisher.ready()
 }
 
-Meteor.publish("themes", function(themeId?: string) {
+Meteor.publish("themes", async function(themeId?: string) {
+	let themes
+
 	if(themeId) {
-		return Themes.find({ _id: themeId })
+		themes = await Themes.find({ _id: themeId }).fetchAsync()
 	} else {
-		return Themes.find({}, { fields: { _id: 1, title: 1, createdAt: 1, slug: 1 } })
+		themes = await Themes.find({}, { fields: { _id: 1, title: 1, createdAt: 1, slug: 1 } }).fetchAsync()
 	}
+
+	themes.forEach(theme => {
+		this.added("themes", theme._id, theme as unknown as Record<string, unknown>)
+	})
+
+	const query = themeId ? { _id: themeId } : {}
+	const fields = themeId ? undefined : { _id: 1, title: 1, createdAt: 1, slug: 1 }
+	const observer = Themes.find(query, fields ? { fields } : {}).observe({
+		added: (doc) => {
+			this.added("themes", doc._id, doc as unknown as Record<string, unknown>)
+		},
+		changed: (doc) => {
+			this.changed("themes", doc._id, doc as unknown as Record<string, unknown>)
+		},
+		removed: (doc) => {
+			this.removed("themes", doc._id)
+		},
+	})
+
+	this.onStop(() => {
+		if(observer && typeof observer.stop === "function") {
+			observer.stop()
+		}
+	})
+	this.ready()
 })
 
 Meteor.publish("theme", async function(themeId: string) {
