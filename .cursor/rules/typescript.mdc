@@ -94,11 +94,6 @@ You are an expert in TypeScript, Node.js, Vite, Vitest, Inertia.js, React, Manti
   - Use Playwright to write end to end tests, putting test files in /tests/e2e.
   - Don't mock the server, assume that the server will be running in a test environment when running e2e tests.
 
-## Global State
-
-- Use mobx for global state, reactive state.
-- Don't store values in global state unless they are truly frontend only. Most state should be managed on the server.
-
 ## Performance Optimization
 
 - Minimize `useEffect`, and `setState`.
