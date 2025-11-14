@@ -1,10 +1,9 @@
 import { format } from "date-fns"
 import { isEmpty } from "lodash"
-import { useOrgs, useMembers } from "/imports/api/providers"
-import { type MemberTheme } from "/imports/types/schema"
+import { useOrgs, useMembers } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import ExportCsvButton from "/imports/ui/components/Buttons/ExportCsvButton"
-import { type MemberStore } from "/imports/api/stores"
+import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
 interface MemberVoteData {
 	Name: string
@@ -14,19 +13,15 @@ interface MemberVoteData {
 	[key: string]: string | number | undefined
 }
 
-interface MemberStoreWithTheme extends MemberStore {
-	theme?: MemberTheme
-}
-
 const ExportMemberVotes = () => {
-	const { topOrgs, isLoading: orgsLoading } = useOrgs()
-	const { members, isLoading: membersLoading } = useMembers()
+	const { topOrgs, orgsLoading } = useOrgs()
+	const { members, membersLoading } = useMembers()
 
 	if(orgsLoading || membersLoading || isEmpty(members)) return <Loading />
 	return (
 		<ExportCsvButton
-			data={ members.values.map(member => {
-				const memberWithTheme = member as MemberStoreWithTheme
+			data={ members.map(member => {
+				const memberWithTheme = member as MemberWithTheme
 				const memberTheme = memberWithTheme.theme
 
 				let newMember: MemberVoteData = {

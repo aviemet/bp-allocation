@@ -3,7 +3,8 @@ import { merge } from "lodash"
 import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
 
-import { Themes, Organizations, MemberThemes, PresentationSettings, type ThemeData } from "/imports/api/db"
+import { Themes, Organizations, MemberThemes, PresentationSettings, type ThemeData, DEFAULT_NUM_TOP_ORGS } from "/imports/api/db"
+import { PledgeAnimationQueue } from "/imports/api/db/PledgeAnimationQueue"
 import OrganizationMethods from "./OrganizationMethods"
 
 const ThemeMethods = {
@@ -43,9 +44,12 @@ const ThemeMethods = {
 			}
 
 			try {
-				// Directly insert PresentationSettings instead of calling method
 				const presentationSettingsId = await PresentationSettings.insertAsync({})
-				const theme = await Themes.insertAsync(merge(data, { presentationSettings: presentationSettingsId }))
+				const themeData = merge(data, {
+					presentationSettings: presentationSettingsId,
+					numTopOrgs: data.numTopOrgs ?? DEFAULT_NUM_TOP_ORGS,
+				})
+				const theme = await Themes.insertAsync(themeData)
 				return theme
 			} catch (e) {
 				console.error(e)
@@ -247,6 +251,8 @@ const ThemeMethods = {
 			}, {
 				multi: true,
 			})
+
+			await PledgeAnimationQueue.removeAsync({ themeId })
 
 			return {
 				organizationsUpdated,

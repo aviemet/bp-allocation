@@ -1,11 +1,11 @@
 import styled from "@emotion/styled"
 import { Container, Button, Typography } from "@mui/material"
 import { forEach } from "lodash"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import React, { useState, useEffect } from "react"
 
-import { useData, useSettings, useOrgs } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
+import { useSettings, useOrgs } from "/imports/api/hooks"
 import VotingComplete from "../VotingComplete"
 import { useVoting } from "../VotingContext"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
@@ -33,7 +33,7 @@ interface FundsVotingKioskProps {
 	source: VotingSource
 }
 
-const FundsVotingKiosk = observer(({ user, source }: FundsVotingKioskProps) => {
+const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
@@ -45,15 +45,15 @@ const FundsVotingKiosk = observer(({ user, source }: FundsVotingKioskProps) => {
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
 	const [ isCounting, setIsCounting ] = useState(false)
 
-	const displayCountDown = () => {
-		setCountdownVisible(true)
-		setIsCounting(true)
-	}
-
 	useEffect(() => {
 		// Display countdown if user is on voting screen when voting becomes disabled
-		if(settings && !settings.fundsVotingActive) displayCountDown()
-	}, [settings?.fundsVotingActive])
+		if(settings && !settings.fundsVotingActive) {
+			setTimeout(() => {
+				setCountdownVisible(true)
+				setIsCounting(true)
+			}, 0)
+		}
+	}, [settings])
 
 	const memberName = user.firstName ? user.firstName : user.fullName
 
@@ -97,7 +97,7 @@ const FundsVotingKiosk = observer(({ user, source }: FundsVotingKioskProps) => {
 			</>
 		</OrgsContainer>
 	)
-})
+}
 
 const OrgsContainer = styled(Container)`
 	padding-top: 16px;
@@ -109,19 +109,19 @@ const OrgsContainer = styled(Container)`
 	}
 `
 
-const FinalizeButton = styled(Button)({
-	width: "100%",
-	textAlign: "center" as const,
-	color: "white",
-	border: "2px solid #fff",
-	fontSize: "2rem",
-	textTransform: "uppercase" as const,
-	backgroundColor: COLORS.blue,
+const FinalizeButton = styled(Button)`
+	width: 100%;
+	text-align: center;
+	color: white;
+	border: 2px solid #fff;
+	font-size: 2rem;
+	text-transform: uppercase;
+	background-color: ${COLORS.blue};
 
-	"&.Mui-disabled": {
-		backgroundColor: COLORS.blue,
-	},
-})
+	&.Mui-disabled {
+		background-color: ${COLORS.blue};
+	}
+`
 
 const NumberFormat = styled.span`
 	width: 12rem;

@@ -2,11 +2,10 @@ import {
 	Grid,
 	Stack,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import { useState } from "react"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 import { PresentationSettingsSchema } from "/imports/api/db"
-import { useSettings } from "/imports/api/providers"
+import { useSettings } from "/imports/api/hooks"
 
 import ResetOrgFundsButton from "/imports/ui/components/Buttons/ResetOrgFundsButton"
 import ResetMessageStatusButton from "/imports/ui/components/Buttons/ResetMessageStatusButton"
@@ -14,8 +13,8 @@ import ResetMessageStatusButton from "/imports/ui/components/Buttons/ResetMessag
 import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { Loading } from "/imports/ui/components"
 
-const SettingsPane = observer(() => {
-	const { settings, isLoading: settingsLoading } = useSettings()
+const SettingsPane = () => {
+	const { settings, settingsLoading } = useSettings()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
@@ -78,6 +77,6 @@ const SettingsPane = observer(() => {
 			</Stack>
 		</>
 	)
-})
+}
 
 export default SettingsPane

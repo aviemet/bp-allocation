@@ -1,33 +1,27 @@
 import {
 	Typography,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
-import { useEffect, useState } from "react"
-import { useTheme, useOrgs } from "/imports/api/providers"
+import { useMemo } from "react"
+import { useTheme, useOrgs } from "/imports/api/hooks"
 
 import { Loading } from "/imports/ui/components"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
 import { useWindowSize, breakpoints } from "/imports/ui/MediaProvider"
 
-const KioskInfo = observer(() => {
+const KioskInfo = () => {
 	const { theme } = useTheme()
-	const { orgs, topOrgs, isLoading: orgsLoading } = useOrgs()
-
-	const [ itemsPerRow, setItemsPerRow ] = useState(3)
+	const { orgs, topOrgs, orgsLoading } = useOrgs()
 
 	const { width } = useWindowSize()
 
-	useEffect(() => {
-		let n = itemsPerRow
+	const itemsPerRow = useMemo(() => {
 		if(width && width < breakpoints.tablet) {
-			n = 1
-		} else if(width && width >= breakpoints.tablet && width < breakpoints.tabletL) {
-			n = 2
-		} else {
-			n = 3
+			return 1
 		}
-
-		if(itemsPerRow !== n) setItemsPerRow(n)
+		if(width && width >= breakpoints.tablet && width < breakpoints.tabletL) {
+			return 2
+		}
+		return 3
 	}, [width])
 
 	if(orgsLoading || !theme || !orgs) return <Loading />
@@ -45,7 +39,7 @@ const KioskInfo = observer(() => {
 		subHeading = "Votes Are In, Results Coming Soon"
 	}
 
-	const orgsToDisplay = theme.chitVotingStarted ? topOrgs : orgs.values
+	const orgsToDisplay = theme.chitVotingStarted ? topOrgs : orgs
 	return (
 		<>
 			<Typography component="h1" variant="h3" align="center">{ title }</Typography>
@@ -65,6 +59,6 @@ const KioskInfo = observer(() => {
 			</OrgCardContainer>
 		</>
 	)
-})
+}
 
 export default KioskInfo

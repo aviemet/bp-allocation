@@ -1,34 +1,34 @@
 import styled from "@emotion/styled"
 import { Grid, Stack, Typography } from "@mui/material"
 import { isEmpty } from "lodash"
-import { observer } from "mobx-react-lite"
-import { useMembers } from "/imports/api/providers"
+import { useMembers } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { ComponentType } from "react"
 import { useState } from "react"
 import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { VotingSource } from "/imports/api/methods/MemberMethods"
 
 import { FundsVoteProvider } from "./VotingContext"
 
 import { COLORS } from "/imports/lib/global"
 
 interface MemberLoginRequiredProps {
-	component?: ComponentType<{ user: MemberWithTheme, source: string }>
+	component?: ComponentType<{ user: MemberWithTheme, source: VotingSource }> | ComponentType<{ user: MemberWithTheme }>
 	member?: string
 }
 
-const MemberLoginRequired = observer((props: MemberLoginRequiredProps) => {
+const MemberLoginRequired = (props: MemberLoginRequiredProps) => {
 	// Pull member data from Data Store
-	const { members, isLoading: membersLoading } = useMembers()
+	const { members, membersLoading } = useMembers()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.DISABLED)
 
 	const [ searchError, setSearchError ] = useState(false)
 
 	let member: MemberWithTheme | undefined = undefined
-	if(!membersLoading && !isEmpty(members) && !isEmpty(members.values)) {
-		member = members.values.find(mem => mem._id === props.member)
+	if(!membersLoading && !isEmpty(members)) {
+		member = members.find(mem => mem._id === props.member)
 	}
 	const [user, setUser] = useState<MemberWithTheme | false>(member || false)
 
@@ -45,7 +45,7 @@ const MemberLoginRequired = observer((props: MemberLoginRequiredProps) => {
 		setSearchError(false)
 		const code = `${String(data.initials || "").trim().toUpperCase()}${data.number}`
 
-		const member = members.values.find(mem => mem.code === code)
+		const member = members.find(mem => mem.code === code)
 
 		if(member) {
 			setUser(member)
@@ -112,6 +112,7 @@ const MemberLoginRequired = observer((props: MemberLoginRequiredProps) => {
 								type="submit"
 								status={ formStatus }
 								setStatus={ setFormStatus }
+								icon={ false }
 							>
 								Begin Voting!
 							</StyledSubmitButton>
@@ -126,7 +127,7 @@ const MemberLoginRequired = observer((props: MemberLoginRequiredProps) => {
 			</Stack>
 		</>
 	)
-})
+}
 
 const StyledSubmitButton = styled(SubmitButton)`
 	width: 100%;

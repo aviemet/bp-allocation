@@ -3,20 +3,19 @@ import {
 	Chip,
 } from "@mui/material"
 import _ from "lodash"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import { useState } from "react"
-import { useTheme } from "/imports/api/providers"
+import { useTheme } from "/imports/api/hooks"
 import { ThemeMethods } from "/imports/api/methods"
 
 import ContentModal from "/imports/ui/components/Dialogs/ContentModal"
-import { type OrgStore } from "/imports/api/stores"
+import { type OrgDataWithComputed } from "/imports/api/hooks"
 
 interface UnSaveButtonProps {
-	org: OrgStore
+	org: OrgDataWithComputed
 }
 
-const UnSaveButton = observer(({ org }: UnSaveButtonProps) => {
+const UnSaveButton = ({ org }: UnSaveButtonProps) => {
 	const [ modalOpen, setModalOpen ] = useState(false)
 
 	const { theme } = useTheme()
@@ -31,7 +30,7 @@ const UnSaveButton = observer(({ org }: UnSaveButtonProps) => {
 		setModalOpen(false)
 	}
 
-	const save = _.find(theme.saves, ["org", org._id])
+	const save = _.find(theme.saves ?? [], ["org", org._id])
 
 	if(!save) return null
 
@@ -50,6 +49,6 @@ const UnSaveButton = observer(({ org }: UnSaveButtonProps) => {
 			</ContentModal>
 		</>
 	)
-})
+}
 
 export default UnSaveButton

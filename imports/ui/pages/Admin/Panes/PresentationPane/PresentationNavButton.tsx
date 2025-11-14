@@ -1,7 +1,6 @@
 import { Button, Chip, Stack, useTheme, type ButtonProps } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import { type ElementType, type MouseEvent } from "react"
-import { useSettings } from "/imports/api/providers"
+import { useSettings } from "/imports/api/hooks"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 interface PresentationNavButtonProps extends Omit<ButtonProps, "onClick"> {
@@ -12,7 +11,7 @@ interface PresentationNavButtonProps extends Omit<ButtonProps, "onClick"> {
 	onClick?: () => void
 }
 
-const PresentationNavButton = observer(({
+const PresentationNavButton = ({
 	page,
 	active,
 	onClick,
@@ -68,6 +67,6 @@ const PresentationNavButton = observer(({
 			</Stack>
 		</Button>
 	)
-})
+}
 
 export default PresentationNavButton

@@ -4,7 +4,7 @@ import Button from "@mui/material/Button"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { ThemeMethods } from "/imports/api/methods"
-import { useTheme } from "/imports/api/providers"
+import { useTheme } from "/imports/api/hooks"
 import { STATUS, type Status } from "/imports/ui/components/Form"
 import CustomConfirm from "/imports/ui/components/Dialogs/CustomConfirm"
 

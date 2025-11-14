@@ -36,7 +36,7 @@ export interface Theme {
 	quarter?: string
 	organizations?: string[]
 	topOrgsManual?: string[]
-	numTopOrgs?: number
+	numTopOrgs: number
 	chitWeight?: number
 	matchRatio?: number
 	consolationAmount?: number

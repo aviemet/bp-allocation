@@ -4,22 +4,21 @@ import {
 	Typography,
 } from "@mui/material"
 import { Link } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { Loading } from "/imports/ui/components"
 
 import AllocationsTable from "./AllocationsTable"
 import Breakdown from "./Breakdown"
 
 import { ShowLeverageToggle } from "/imports/ui/components/Toggles"
-import { useTheme, useOrgs } from "/imports/api/providers"
+import { useTheme, useOrgs } from "/imports/api/hooks"
 
 interface AllocationPaneProps {
 	hideAdminFields?: boolean
 }
 
-const AllocationPane = observer(({ hideAdminFields = false }: AllocationPaneProps) => {
-	const { theme, isLoading: themeLoading } = useTheme()
-	const { topOrgs, isLoading: orgsLoading } = useOrgs()
+const AllocationPane = ({ hideAdminFields = false }: AllocationPaneProps) => {
+	const { theme, themeLoading } = useTheme()
+	const { topOrgs, orgsLoading } = useOrgs()
 
 	if(themeLoading || orgsLoading || !theme) return <Loading />
 
@@ -52,6 +51,6 @@ const AllocationPane = observer(({ hideAdminFields = false }: AllocationPaneProp
 			</Grid>
 		</Grid>
 	)
-})
+}
 
 export default AllocationPane

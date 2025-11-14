@@ -8,13 +8,14 @@ import { MemberThemeSchema, memberThemesPermissions } from "./MemberThemes"
 import { MessageSchema, messagesPermissions } from "./Messages"
 import { OrganizationSchema, organizationsPermissions } from "./Organizations"
 import { PresentationSettingsSchema, presentationSettingsPermissions } from "./PresentationSettings"
-import { type MemberTheme } from "/imports/types/schema"
-import { ThemeSchema, themesPermissions } from "./Themes"
-import { MemberData } from "../stores/MemberStore"
-import { MessageData } from "../stores/MessageStore"
-import { OrgData } from "../stores/OrgStore"
-import { SettingsData } from "../stores/SettingsStore"
-import { ThemeData } from "../stores/ThemeStore"
+import { type Member, type MemberTheme, type Message, type Organization, type PresentationSettings, type Theme } from "/imports/types/schema"
+import { ThemeSchema, themesPermissions, DEFAULT_NUM_TOP_ORGS } from "./Themes"
+
+export type MemberData = Member
+export type MessageData = Message
+export type OrgData = Organization
+export type SettingsData = PresentationSettings
+export type ThemeData = Theme
 
 type PermissionFunction = (userId: string, doc: unknown) => boolean
 export interface CollectionPermissions {
@@ -61,13 +62,13 @@ Themes.attachSchema(ThemeSchema)
 Themes.allow(themesPermissions)
 
 export {
-	Themes, ThemeSchema, type ThemeData,
-	PresentationSettingsCollection as PresentationSettings, PresentationSettingsSchema, type SettingsData,
-	Organizations, OrganizationSchema, type OrgData,
+	Themes, ThemeSchema, DEFAULT_NUM_TOP_ORGS,
+	PresentationSettingsCollection as PresentationSettings, PresentationSettingsSchema,
+	Organizations, OrganizationSchema,
 	Images,
-	Members, MemberSchema, type MemberData,
+	Members, MemberSchema,
 	MemberThemes, MemberThemeSchema,
-	Messages, MessageSchema, type MessageData,
+	Messages, MessageSchema,
 }
 
 

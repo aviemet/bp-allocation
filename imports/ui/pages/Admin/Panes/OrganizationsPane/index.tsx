@@ -15,10 +15,9 @@ import {
 } from "@mui/material"
 import { styled, alpha } from "@mui/material/styles"
 import { Link, useParams, useNavigate } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
-import { useState, useRef, type MouseEvent } from "react"
-import { useOrgs } from "/imports/api/providers"
+import { useState, type MouseEvent } from "react"
+import { useOrgs } from "/imports/api/hooks"
 import { type Organization } from "/imports/types/schema"
 
 import { OrganizationMethods } from "/imports/api/methods"
@@ -103,30 +102,27 @@ const OrgCard = ({ org, id, onDelete }: OrgCardProps) => {
 	)
 }
 
-const OrganizationsPane = observer(() => {
-	const { orgs, isLoading: orgsLoading } = useOrgs()
-
-	const modalValuesRef = useRef<{ header: string, content: string, action: () => void }>({
-		header: "",
-		content: "",
-		action: () => {},
-	})
+const OrganizationsPane = () => {
+	const { orgs, orgsLoading } = useOrgs()
 
 	const [ modalOpen, setModalOpen ] = useState(false)
+	const [ modalHeader, setModalHeader ] = useState("")
+	const [ modalContent, setModalContent ] = useState("")
+	const [ modalAction, setModalAction ] = useState<() => void>(() => {})
 
 	const { id } = useParams({ strict: false })
 	const navigate = useNavigate()
 
 	const showDeleteModal = (org: Organization) => {
-		modalValuesRef.current.header = "Permanently Delete This Organization?"
-		modalValuesRef.current.content = `This will permanently remove ${org.title} from this theme and all associated data. This process cannot be undone.`
-		modalValuesRef.current.action = async () => {
+		setModalHeader("Permanently Delete This Organization?")
+		setModalContent(`This will permanently remove ${org.title} from this theme and all associated data. This process cannot be undone.`)
+		setModalAction(async () => {
 			try {
 				await OrganizationMethods.remove.callAsync(org._id)
-			} catch(err) {
+			} catch (err) {
 				console.error(err)
 			}
-		}
+		})
 		setModalOpen(true)
 	}
 
@@ -157,7 +153,7 @@ const OrganizationsPane = observer(() => {
 					</Grid>
 				</Grid>
 
-				{ orgs.values.map(org => (
+				{ orgs.map(org => (
 					<OrgCard
 						key={ org._id }
 						org={ org }
@@ -170,13 +166,13 @@ const OrganizationsPane = observer(() => {
 			<ConfirmationModal
 				isModalOpen={ modalOpen }
 				handleClose={ () => setModalOpen(false) }
-				header={ modalValuesRef.current.header }
-				content={ modalValuesRef.current.content }
-				confirmAction={ modalValuesRef.current.action }
+				header={ modalHeader }
+				content={ modalContent }
+				confirmAction={ modalAction }
 			/>
 		</>
 	)
-})
+}
 
 const StyledMenu = styled(Menu)(({ theme }) => ({
 	"& .MuiPaper-root": {

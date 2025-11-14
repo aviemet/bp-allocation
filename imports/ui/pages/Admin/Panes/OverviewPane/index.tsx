@@ -15,16 +15,16 @@ import { findIndex } from "lodash"
 import numeral from "numeral"
 
 import { roundFloat } from "/imports/lib/utils"
-import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
+import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 import { Loading, MoneyCell } from "/imports/ui/components"
 import ExportMemberVotes from "/imports/ui/components/Buttons/ExportMemberVotes"
 import ExportTopups from "/imports/ui/components/Buttons/ExportTopups"
 import ExportChitVotes from "/imports/ui/components/Buttons/ExportChitVotes"
 
 const Overview = () => {
-	const { settings, isLoading: settingsLoading } = useSettings()
-	const { theme, isLoading: themeLoading } = useTheme()
-	const { topOrgs, isLoading: orgsLoading } = useOrgs()
+	const { settings, settingsLoading } = useSettings()
+	const { theme, themeLoading } = useTheme()
+	const { topOrgs, orgsLoading } = useOrgs()
 
 	if(themeLoading || orgsLoading || settingsLoading || !theme) return <Loading />
 	return (

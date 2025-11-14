@@ -1,4 +1,4 @@
-import { useMembers } from "/imports/api/providers"
+import { useMembers } from "/imports/api/hooks"
 import { type MemberData } from "/imports/api/db"
 
 import TagIcon from "@mui/icons-material/Tag"
@@ -13,8 +13,6 @@ import {
 import { createFilterOptions } from "@mui/material/Autocomplete"
 import { isEmpty } from "lodash"
 import { Loading } from "/imports/ui/components"
-import { toJS } from "mobx"
-import { observer } from "mobx-react-lite"
 import { type SyntheticEvent } from "react"
 
 interface MemberSearchProps extends Omit<AutocompleteProps<MemberData, false, false, false>, "options" | "renderInput" | "onChange" | "value"> {
@@ -23,8 +21,8 @@ interface MemberSearchProps extends Omit<AutocompleteProps<MemberData, false, fa
 	onResultSelect?: (value: MemberData | null) => void
 }
 
-const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }: MemberSearchProps) => {
-	const { members, isLoading: membersLoading } = useMembers()
+const MemberSearch = ({ value, setValue, onResultSelect, ...props }: MemberSearchProps) => {
+	const { members, membersLoading } = useMembers()
 
 	const filterOptions = createFilterOptions<MemberData>({
 		limit: 15,
@@ -45,7 +43,7 @@ const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }: Me
 			value={ value }
 			clearText={ "" }
 			onChange={ handleChange }
-			options={ toJS(members.values) }
+			options={ members }
 			getOptionLabel={ (option) => option.fullName || "" }
 			filterOptions={ filterOptions }
 			renderOption={ (props, option) => {
@@ -66,6 +64,6 @@ const MemberSearch = observer(({ value, setValue, onResultSelect, ...props }: Me
 			{ ...props }
 		/>
 	)
-})
+}
 
 export default MemberSearch

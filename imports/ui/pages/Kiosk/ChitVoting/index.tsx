@@ -1,10 +1,10 @@
 import styled from "@emotion/styled"
 import { Container, Button, Typography } from "@mui/material"
 import { forEach } from "lodash"
-import { observer } from "mobx-react-lite"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, startTransition } from "react"
 
-import { useData, useSettings, useOrgs } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
+import { useSettings, useOrgs } from "/imports/api/hooks"
 
 import { OrgCardContainer } from "/imports/ui/components/Cards"
 import Countdown from "../Countdown"
@@ -21,7 +21,7 @@ interface ChitVotingKioskProps {
 	source: VotingSource
 }
 
-const ChitVotingKiosk = observer(({ user, source }: ChitVotingKioskProps) => {
+const ChitVotingKiosk = ({ user, source }: ChitVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { orgs } = useOrgs()
@@ -31,14 +31,13 @@ const ChitVotingKiosk = observer(({ user, source }: ChitVotingKioskProps) => {
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
 	const [ isCounting, setIsCounting ] = useState(false)
 
-	const displayCountDown = () => {
-		setCountdownVisible(true)
-		setIsCounting(true)
-	}
-
 	useEffect(() => {
-		// Display countdown if user is on voting screen when voting becomes disabled
-		if(settings?.chitVotingActive === false) displayCountDown()
+		if(settings?.chitVotingActive === false) {
+			startTransition(() => {
+				setCountdownVisible(true)
+				setIsCounting(true)
+			})
+		}
 	}, [settings?.chitVotingActive])
 
 	const handleFinalizeVote = () => {
@@ -49,7 +48,7 @@ const ChitVotingKiosk = observer(({ user, source }: ChitVotingKioskProps) => {
 	const shuffledOrgs = useMemo(() => {
 		if(!orgs) return []
 
-		const sorted = orgs.values.slice().sort((a, b) => a._id.localeCompare(b._id))
+		const sorted = orgs.slice().sort((a, b) => a._id.localeCompare(b._id))
 		return shuffleWithSeed(sorted, user._id).map(org => <ChitVoteOrgCard key={ org._id } org={ org } />)
 	}, [orgs, user._id])
 
@@ -94,7 +93,7 @@ const ChitVotingKiosk = observer(({ user, source }: ChitVotingKioskProps) => {
 			</>
 		</OrgsContainer>
 	)
-})
+}
 
 const OrgsContainer = styled.div`
 	display: flex;
@@ -110,19 +109,19 @@ const OrgsContainer = styled.div`
 	}
 `
 
-const FinalizeButton = styled(Button)({
-	width: "100%",
-	textAlign: "center" as const,
-	color: "white",
-	border: "2px solid #fff",
-	fontSize: "2rem",
-	textTransform: "uppercase" as const,
-	backgroundColor: COLORS.blue,
+const FinalizeButton = styled(Button)`
+	width: 100%;
+	text-align: center;
+	color: white;
+	border: 2px solid #fff;
+	font-size: 2rem;
+	text-transform: uppercase;
+	background-color: ${COLORS.blue};
 
-	"&.Mui-disabled": {
-		backgroundColor: COLORS.blue,
-	},
-})
+	&.Mui-disabled {
+		background-color: ${COLORS.blue};
+	}
+`
 
 const NumberFormat = styled.span`
 	display: inline-block;

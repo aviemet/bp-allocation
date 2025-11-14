@@ -11,8 +11,7 @@ import {
 	TableCell,
 } from "@mui/material"
 import { findIndex } from "lodash"
-import { observer } from "mobx-react-lite"
-import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
+import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 
 import TopOrgsRow from "./TopOrgsRow"
 import { sortTopOrgs } from "/imports/lib/orgsMethods"
@@ -21,15 +20,15 @@ interface TopOrgsByChitVoteProps {
 	hideAdminFields?: boolean
 }
 
-const TopOrgsByChitVote = observer(({ hideAdminFields }: TopOrgsByChitVoteProps) => {
+const TopOrgsByChitVote = ({ hideAdminFields }: TopOrgsByChitVoteProps) => {
 	const { settings } = useSettings()
 	const { theme } = useTheme()
 	const { orgs } = useOrgs()
 
 	if(!theme || !orgs) return null
 
-	let sortedOrgs = sortTopOrgs(orgs.values, theme)
-	let totalVotes = 0
+	const sortedOrgs = sortTopOrgs(orgs, theme)
+	const totalVotes = sortedOrgs.reduce((sum, org) => sum + (org.votes || 0), 0)
 
 	return (
 		<>
@@ -55,9 +54,8 @@ const TopOrgsByChitVote = observer(({ hideAdminFields }: TopOrgsByChitVoteProps)
 					<TableBody>
 						{ sortedOrgs.map((org, i) => {
 							const inTopOrgs = i < theme.numTopOrgs
-							const _isLocked = theme.topOrgsManual.includes(org._id)
-							const _isSaved = (findIndex(theme.saves, ["org", org._id]) >= 0)
-							totalVotes += org.votes || 0
+							const _isLocked = theme.topOrgsManual?.includes(org._id) ?? false
+							const _isSaved = (findIndex(theme.saves ?? [], ["org", org._id]) >= 0)
 
 							return (
 								<TopOrgsRow
@@ -69,7 +67,6 @@ const TopOrgsByChitVote = observer(({ hideAdminFields }: TopOrgsByChitVoteProps)
 									hideAdminFields={ hideAdminFields || false }
 								/>
 							)
-
 						}) }
 					</TableBody>
 
@@ -90,7 +87,7 @@ const TopOrgsByChitVote = observer(({ hideAdminFields }: TopOrgsByChitVoteProps)
 			</TableContainer>
 		</>
 	)
-})
+}
 
 const FlexHeading = styled.div`
 	display: flex;

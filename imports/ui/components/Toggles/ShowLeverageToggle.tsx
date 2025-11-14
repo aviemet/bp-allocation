@@ -2,16 +2,15 @@ import {
 	FormControlLabel,
 	Switch,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import React from "react"
-import { useSettings } from "/imports/api/providers"
+import { useSettings } from "/imports/api/hooks"
 
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 
-const ShowLeverageToggle = observer(() => {
+const ShowLeverageToggle = () => {
 
-	const { settings, isLoading: settingsLoading } = useSettings()
+	const { settings, settingsLoading } = useSettings()
 
 	if(!settings) return <></>
 
@@ -35,6 +34,6 @@ const ShowLeverageToggle = observer(() => {
 			label="Show Leverage"
 		/>
 	)
-})
+}
 
 export default ShowLeverageToggle

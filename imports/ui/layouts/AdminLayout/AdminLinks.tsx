@@ -19,7 +19,6 @@ import {
 	Divider,
 } from "@mui/material"
 import { Link } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { useState } from "react"
 import { useData } from "/imports/api/providers"
 
@@ -100,7 +99,7 @@ interface LinksProps {
 	activeMenuItem: string
 }
 
-const Links = observer(({ activeMenuItem }: LinksProps) => {
+const Links = ({ activeMenuItem }: LinksProps) => {
 	const data = useData()
 
 	const [pagesOpen, setPagesOpen] = useState(false)
@@ -192,6 +191,6 @@ const Links = observer(({ activeMenuItem }: LinksProps) => {
 
 		</>
 	)
-})
+}
 
 export default Links

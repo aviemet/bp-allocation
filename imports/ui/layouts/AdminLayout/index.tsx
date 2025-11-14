@@ -1,7 +1,6 @@
 import AccountCircle from "@mui/icons-material/AccountCircle"
 import BarChartIcon from "@mui/icons-material/BarChart"
 import {
-	Container,
 	AppBar as MuiAppBar,
 	Toolbar,
 	Box,
@@ -17,38 +16,32 @@ import {
 import { styled } from "@mui/material/styles"
 import { useNavigate, useLocation, useParams, Link, Outlet } from "@tanstack/react-router"
 import { Meteor } from "meteor/meteor"
-import { observer } from "mobx-react-lite"
-import { useState, useEffect, type MouseEvent } from "react"
+import { useState, useEffect, useMemo, type MouseEvent } from "react"
 
 import AdminLinks from "./AdminLinks"
-import { useData, useTheme } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
+import { useTheme } from "/imports/api/hooks"
 
 const drawerWidth = 175
 
-const AdminLayout = observer(() => {
+const AdminLayout = () => {
 	const data = useData()
-	if(!data) return null
-
 	const [ anchorEl, setAnchorEl ] = useState<HTMLElement | null>(null)
-	const [ drawerOpen, setDrawerOpen ] = useState<boolean>(false)
 
 	const navigate = useNavigate()
 	const location = useLocation()
-	// Params from TanStack Router across matched routes
 	const params = useParams({ strict: false })
 
-	const themeContext = useTheme()
-	const theme = themeContext?.theme
-	const themeLoading = themeContext?.isLoading ?? true
+	const { theme, themeLoading } = useTheme()
+
+	const drawerOpen = useMemo(() => !["/themes", "/admin"].includes(location.pathname), [location.pathname])
 
 	// Set the theme ID in the store based on the route parameters
 	useEffect(() => {
-		data.setThemeId(params.id ?? null)
+		if(data) {
+			data.setThemeId(params.id ?? null)
+		}
 	}, [params.id, data])
-
-	useEffect(() => {
-		setDrawerOpen(!["/themes", "/admin"].includes(location.pathname))
-	}, [location.pathname])
 
 	const handleMenu = (event: MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
@@ -62,9 +55,13 @@ const AdminLayout = observer(() => {
 	 * Update the main page heading when the theme changes
 	 */
 	useEffect(() => {
-		const heading = typeof theme?.title === "string" && theme.title ? theme.title : data.defaultMenuHeading
-		data.setMenuHeading(heading)
+		if(data) {
+			const heading = typeof theme?.title === "string" && theme.title ? theme.title : data.defaultMenuHeading
+			data.setMenuHeading(heading)
+		}
 	}, [theme, data])
+
+	if(!data) return null
 
 	return (
 		<AdminContainer className="AdminContainer">
@@ -139,7 +136,7 @@ const AdminLayout = observer(() => {
 
 		</AdminContainer>
 	)
-})
+}
 
 const AdminContainer = styled(Box)`
 	background: #FAFCFC;

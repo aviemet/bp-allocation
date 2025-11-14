@@ -3,17 +3,16 @@ import {
 	Paper,
 	Stack,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import { useState } from "react"
 import { PresentationSettingsMethods } from "/imports/api/methods"
-import { useSettings } from "/imports/api/providers"
+import { useSettings } from "/imports/api/hooks"
 import { PresentationSettingsSchema } from "/imports/api/db"
 
 import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { Loading } from "/imports/ui/components"
 
-const PresentationSettingsForm = observer(() => {
-	const { settings, isLoading: settingsLoading } = useSettings()
+const PresentationSettingsForm = () => {
+	const { settings, settingsLoading } = useSettings()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
@@ -133,6 +132,6 @@ const PresentationSettingsForm = observer(() => {
 			</Grid>
 		</Form>
 	)
-})
+}
 
 export default PresentationSettingsForm

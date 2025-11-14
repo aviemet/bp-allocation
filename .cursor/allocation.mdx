@@ -177,9 +177,14 @@ Server-side publications and methods must use async methods:
 - Client-side queries should be simple since the server publication does the heavy lifting
 
 ### Data Loading Race Condition Prevention
-- **Critical**: Collections must be initialized synchronously when subscriptions become ready, not only in `onReady` callbacks
-- Providers check `subscription.ready() && !collection` to initialize collections immediately if subscription is ready before `onReady` fires
-- `isLoading` state must check both `subscription.ready()` AND collection existence: `isLoading: !subscription?.ready() || !collection`
+- **Critical Fix**: Publications now fetch and publish initial data synchronously BEFORE setting up observers and calling `this.ready()`. This ensures `subscription.ready()` means data is actually synced to the client.
+- **Publication Pattern**: 
+  1. Fetch initial data with `fetchAsync()`
+  2. Publish it synchronously using observer callbacks (e.g., `observerCallbacks.added(doc)`)
+  3. Then set up the observer for future changes
+  4. Only then call `this.ready()`
+- This eliminates the race condition where `ready()` fired before observer callbacks completed
+- Collections must be initialized synchronously when subscriptions become ready, not only in `onReady` callbacks
 - Server publications in `Tracker.autorun` must call `this.ready()` in ALL code paths, including early returns when data doesn't exist
 - Publications that return early without data must explicitly call `this.ready()` to prevent endless loading states
 

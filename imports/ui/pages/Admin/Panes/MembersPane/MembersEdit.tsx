@@ -7,18 +7,23 @@ import {
 } from "@mui/material"
 import { useParams, useNavigate } from "@tanstack/react-router"
 import { useState, useEffect } from "react"
-import { useMembers } from "/imports/api/providers"
+import { useMembers } from "/imports/api/hooks"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberSchema, MemberThemeSchema } from "/imports/api/db"
 import { roundFloat } from "/imports/lib/utils"
-import { type MemberTheme } from "/imports/types/schema"
+import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
 import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 
 import { Loading } from "/imports/ui/components"
 
+function isMemberWithTheme(member: unknown): member is MemberWithTheme {
+	if(!member || typeof member !== "object") return false
+	return "_id" in member && "theme" in member
+}
+
 const MembersEdit = () => {
-	const { members, isLoading: membersLoading } = useMembers()
+	const { members, membersLoading } = useMembers()
 
 	const { id, memberId } = useParams({ strict: false })
 	const navigate = useNavigate()
@@ -65,14 +70,14 @@ const MembersEdit = () => {
 	}
 
 	const editUser = async (data: Record<string, unknown>) => {
-		const memberStore = members?.values.find(member => member._id === memberId)
-		if(!memberStore) return
+		const foundMember = members?.find(member => member._id === memberId)
+		if(!foundMember || !isMemberWithTheme(foundMember)) return
 
-		const memberTheme = memberStore.theme as MemberTheme
+		const memberTheme = foundMember.theme
 		if(!memberTheme?._id) return
 
 		try {
-			await MemberMethods.update.callAsync({ id: memberStore._id, data: {
+			await MemberMethods.update.callAsync({ id: foundMember._id, data: {
 				firstName: String(data.firstName || ""),
 				lastName: String(data.lastName || ""),
 				initials: String(data.initials || ""),
@@ -103,10 +108,12 @@ const MembersEdit = () => {
 
 	const handleInitials = (value: unknown, name: string, form: { setValue: (field: string, val: string) => void }) => {
 		if(!["firstName", "lastName"].includes(name)) return
-		const values = value as Record<string, string>
-		if(!values.firstName || !values.lastName) return
+		if(typeof value !== "object" || value === null) return
+		if(!("firstName" in value) || !("lastName" in value)) return
+		if(typeof value.firstName !== "string" || typeof value.lastName !== "string") return
+		if(!value.firstName || !value.lastName) return
 
-		form.setValue("initials", (values.firstName.charAt(0) + values.lastName.charAt(0)).toUpperCase())
+		form.setValue("initials", (value.firstName.charAt(0) + value.lastName.charAt(0)).toUpperCase())
 	}
 
 	const schema = MemberSchema.omit("fullName", "code")
@@ -114,8 +121,9 @@ const MembersEdit = () => {
 
 	if(membersLoading) return <Loading />
 
-	const memberStore = members?.values.find(member => member._id === memberId)
-	const memberTheme = memberStore?.theme as MemberTheme | undefined
+	const foundMember = members?.find(member => member._id === memberId)
+	const memberStore = foundMember && isMemberWithTheme(foundMember) ? foundMember : undefined
+	const memberTheme = memberStore?.theme
 	const member = {
 		theme: id,
 		firstName: memberStore?.firstName || "",

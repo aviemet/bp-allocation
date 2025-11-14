@@ -3,17 +3,16 @@ import {
 	Grid,
 	InputAdornment,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import { useState } from "react"
 import { ThemeMethods } from "/imports/api/methods"
-import { useTheme } from "/imports/api/providers"
-import { ThemeSchema } from "/imports/api/db"
+import { useTheme } from "/imports/api/hooks"
+import { ThemeSchema, DEFAULT_NUM_TOP_ORGS } from "/imports/api/db"
 import { formatters, roundFloat } from "/imports/lib/utils"
 
 import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { Loading } from "/imports/ui/components"
 
-const SettingsPane = observer(() => {
+const SettingsPane = () => {
 	const { theme } = useTheme()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
@@ -25,6 +24,9 @@ const SettingsPane = observer(() => {
 		if(sanitizedData.minLeverageAmount) sanitizedData.minLeverageAmount = roundFloat(String(sanitizedData.minLeverageAmount))
 		if(sanitizedData.matchRatio) sanitizedData.matchRatio = parseInt(String(sanitizedData.matchRatio))
 		if(sanitizedData.chitWeight) sanitizedData.chitWeight = parseInt(String(sanitizedData.chitWeight))
+		if(!sanitizedData.numTopOrgs && theme) {
+			sanitizedData.numTopOrgs = theme.numTopOrgs || DEFAULT_NUM_TOP_ORGS
+		}
 		return sanitizedData
 	}
 
@@ -44,7 +46,8 @@ const SettingsPane = observer(() => {
 	}
 
 	const onError = (errors: unknown, data: unknown) => {
-		console.log({ errors, data })
+		console.error("Validation errors:", JSON.stringify(errors, null, 2))
+		console.error("Data:", JSON.stringify(data, null, 2))
 	}
 
 	if(!theme) return <Loading />
@@ -167,6 +170,6 @@ const SettingsPane = observer(() => {
 			</Grid>
 		</Form>
 	)
-})
+}
 
 export default SettingsPane

@@ -14,16 +14,14 @@ import {
 	Typography,
 } from "@mui/material"
 import { format } from "date-fns"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 import { useState } from "react"
-import { useTheme, useMembers, useOrgs } from "/imports/api/providers"
+import { useTheme, useMembers, useOrgs, type PledgeWithOrg, getFormattedName } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
 import SortableTable from "/imports/ui/components/SortableTable"
 import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
 import { TopupsActiveToggle } from "/imports/ui/components/Toggles"
 import { Loading } from "/imports/ui/components"
-import { type PledgeWithOrg } from "/imports/api/stores/OrgsCollection"
 import ReplayPledgeAnimationButton from "/imports/ui/components/Buttons/ReplayPledgeAnimationButton"
 
 const headCells = [
@@ -59,10 +57,10 @@ interface PledgesProps {
 	hideAdminFields?: boolean
 }
 
-const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
+const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 	const { theme } = useTheme()
-	const { members, isLoading: membersLoading } = useMembers()
-	const { topOrgs, orgs, isLoading: orgsLoading } = useOrgs()
+	const { members, membersLoading } = useMembers()
+	const { topOrgs, pledges, orgsLoading } = useOrgs()
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState("")
@@ -83,7 +81,7 @@ const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 		setModalOpen(true)
 	}
 
-	if(orgsLoading || membersLoading || !members || !orgs) return <Loading />
+	if(orgsLoading || membersLoading || !members) return <Loading />
 	return (
 		<>
 			<Grid container spacing={ 2 }>
@@ -95,13 +93,13 @@ const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 						</Stack> }
 						onBulkDelete={ bulkDelete }
 						headCells={ headCells }
-						rows={ orgs.pledges }
+						rows={ pledges }
 						defaultOrderBy="createdAt"
 						paginate={ false }
 						striped={ true }
 						selectable={ !hideAdminFields }
 						render={ pledge => {
-							const member = pledge.member ? members.values.find(value => value._id === pledge.member) : undefined
+							const member = pledge.member ? members.find(value => value._id === pledge.member) : undefined
 							return (
 								<>
 									{ /* Org Title */ }
@@ -109,10 +107,7 @@ const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 
 									{ /* Member */ }
 									<TableCell>
-										{ member && "formattedName" in member ?
-											member.formattedName :
-											""
-										}
+										{ member ? getFormattedName(member) : "" }
 									</TableCell>
 
 									{ /* Amount */ }
@@ -193,6 +188,6 @@ const Pledges = observer(({ hideAdminFields = false }: PledgesProps) => {
 			/>
 		</>
 	)
-})
+}
 
 export default Pledges

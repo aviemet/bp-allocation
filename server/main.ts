@@ -13,7 +13,7 @@ import "/imports/api/methods"
 // Meteor publication definitions
 import "/imports/server/publications"
 
-Meteor.startup(async() => {
+Meteor.startup(async () => {
 	// Save API info to DB once (upsert)
 	await ServiceConfiguration.configurations.upsertAsync(
 		{ service: "google" },

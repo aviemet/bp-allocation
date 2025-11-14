@@ -12,7 +12,7 @@ import textVotingLinkToMembers, {
 	type SmsMessageCreateParams,
 	type SmsMessageResponse,
 } from "./sms"
-import { Members, PresentationSettings, Themes } from "/imports/api/db"
+import { Members, PresentationSettings, Themes, DEFAULT_NUM_TOP_ORGS } from "/imports/api/db"
 import { type Message } from "/imports/types/schema"
 import { resetDatabase } from "../test-support/resetDatabase"
 
@@ -86,6 +86,7 @@ describe("SMS sending", function() {
 			slug: "test-theme",
 			presentationSettings: presentationSettingsId,
 			messagesStatus: [],
+			numTopOrgs: DEFAULT_NUM_TOP_ORGS,
 		})
 
 		memberId = await Members.insertAsync({

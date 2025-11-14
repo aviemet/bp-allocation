@@ -22,7 +22,7 @@ const MessageMethods = {
 		async run(data: MessageCreateData) {
 			try {
 				return await Messages.insertAsync(data)
-			} catch(exception) {
+			} catch (exception) {
 				throw new Meteor.Error("500", String(exception))
 			}
 		},
@@ -39,7 +39,7 @@ const MessageMethods = {
 		async run({ id, data }: MessageUpdateData) {
 			try {
 				return await Messages.updateAsync({ _id: id }, { $set: data })
-			} catch(exception) {
+			} catch (exception) {
 				throw new Meteor.Error("500", String(exception))
 			}
 		},

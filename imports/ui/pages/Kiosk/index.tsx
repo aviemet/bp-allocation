@@ -1,9 +1,8 @@
 import styled from "@emotion/styled"
 import { useParams } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 
-import { useData, useTheme, useSettings } from "/imports/api/providers"
+import { useData } from "/imports/api/providers"
 import ChitVotingKiosk from "./ChitVoting"
 import FundsVotingKiosk from "./FundsVoting"
 import KioskInfo from "./Info/KioskInfo"
@@ -11,17 +10,18 @@ import MemberLoginRequired from "./MemberLoginRequired"
 import RemoteVoting from "./RemoteVoting"
 import Topups from "./Topups"
 import Results from "../Presentation/Results"
+import { useSettings, useTheme } from "/imports/api/hooks"
 
 type KioskPage = "info" | "chit" | "funds" | "topups" | "results"
 type TimerRef = ReturnType<typeof setTimeout>
 
-const Kiosk = observer(() => {
+const Kiosk = () => {
 	const params = useParams({ strict: false })
 	const member = params?.member
 
 	const data = useData()
-	const { theme, isLoading: themeLoading } = useTheme()
-	const { settings, isLoading: settingsLoading } = useSettings()
+	const { theme, themeLoading } = useTheme()
+	const { settings, settingsLoading } = useSettings()
 
 	const activePage = useMemo<KioskPage>(() => {
 		if(settings?.fundsVotingActive) {
@@ -135,7 +135,7 @@ const Kiosk = observer(() => {
 			{ renderPage() }
 		</PageFader>
 	)
-})
+}
 
 const FADE_DURATION = 300
 

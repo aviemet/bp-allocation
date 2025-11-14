@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import numeral from "numeral"
 import { COLORS } from "/imports/lib/global"
-import { type OrgStore } from "/imports/api/stores"
+import { type OrgDataWithComputed } from "/imports/api/hooks"
 import { type ThemeData } from "/imports/api/db"
 
 interface AwardImgProps {
@@ -14,7 +14,7 @@ const AwardImg = ({ show }: AwardImgProps) => {
 }
 
 interface BarProps {
-	org: OrgStore & { save?: number }
+	org: OrgDataWithComputed
 	theme: ThemeData
 	savesVisible: boolean
 }

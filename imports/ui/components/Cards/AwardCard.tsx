@@ -3,13 +3,13 @@ import { styled } from "@mui/material/styles"
 import numeral from "numeral"
 
 import AwardEmblem from "../AwardEmblem"
-import { type OrgData } from "/imports/api/db"
+import { type OrgDataWithComputed } from "/imports/api/hooks"
 import { COLORS } from "/imports/lib/global"
 
 export type AwardType = "awardee" | "other"
 
 interface AwardCardProps {
-	org: OrgData & { allocatedFunds?: number }
+	org: OrgDataWithComputed
 	award?: AwardType
 	amount?: number
 }

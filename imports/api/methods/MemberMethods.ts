@@ -79,7 +79,7 @@ const _sanitizeMemberData = function(data: MemberInputData) {
 	if(!isUndefined(data.firstName)) data.firstName = sanitizeString(data.firstName)
 	if(!isUndefined(data.lastName)) data.lastName = sanitizeString(data.lastName)
 	if(!isUndefined(data.fullName)) data.fullName = sanitizeString(data.fullName)
-	if(!isUndefined(data.initials)) data.initials = sanitizeString(data.initials)
+	if(!isUndefined(data.initials)) data.initials = sanitizeString(data.initials).toUpperCase()
 	if(!isEmpty(data.phone)) data.phone = formatPhoneNumber(data.phone!)
 	if(!isUndefined(data.email)) data.email = sanitizeString(data.email)
 
@@ -119,7 +119,7 @@ const _buildMissingData = function(data: MemberInputData) {
 	if(!isUndefined(initials) && !isUndefined(number)) {
 		code = `${initials}${String(number)}`
 	}
-	return { firstName, lastName, fullName, number, initials, phone, email, code }
+	return { firstName, lastName, fullName, number, initials: initials ? initials.toUpperCase() : initials, phone, email, code }
 }
 
 /**

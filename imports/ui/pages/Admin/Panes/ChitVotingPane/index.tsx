@@ -6,8 +6,7 @@ import {
 	TextField,
 	Container,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
-import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
+import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 import { ThemeMethods } from "/imports/api/methods"
 import React from "react"
 
@@ -20,9 +19,9 @@ interface ChitVotingPaneProps {
 	hideAdminFields?: boolean
 }
 
-const ChitVotingPane = observer(({ hideAdminFields }: ChitVotingPaneProps) => {
-	const { settings, isLoading: settingsLoading } = useSettings()
-	const { isLoading: orgsLoading } = useOrgs()
+const ChitVotingPane = ({ hideAdminFields }: ChitVotingPaneProps) => {
+	const { settings, settingsLoading } = useSettings()
+	const { orgsLoading } = useOrgs()
 	const { theme } = useTheme()
 
 	if(orgsLoading || settingsLoading || !theme) return <Loading />
@@ -74,6 +73,6 @@ const ChitVotingPane = observer(({ hideAdminFields }: ChitVotingPaneProps) => {
 			</Grid>
 		</Container>
 	)
-})
+}
 
 export default ChitVotingPane

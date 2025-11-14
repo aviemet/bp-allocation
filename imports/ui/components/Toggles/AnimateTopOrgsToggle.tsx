@@ -2,14 +2,13 @@ import {
 	FormControlLabel,
 	Switch,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import React from "react"
-import { useSettings } from "/imports/api/providers"
+import { useSettings } from "/imports/api/hooks"
 
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 
-const AnimateTopOrgsToggle = observer(() => {
+const AnimateTopOrgsToggle = () => {
 	const { settings } = useSettings()
 
 	if(!settings) return <></>
@@ -32,6 +31,6 @@ const AnimateTopOrgsToggle = observer(() => {
 			label="Animate"
 		/>
 	)
-})
+}
 
 export default AnimateTopOrgsToggle

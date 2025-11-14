@@ -7,96 +7,108 @@ export interface OrgTransformerParams {
 	theme?: ThemeData
 	settings?: SettingsData
 	memberThemes: MemberTheme[]
+	fundsVotesByOrg?: Record<string, number>
+	chitVotesByOrg?: Record<string, number>
+}
+
+export function aggregateVotesByOrganization(memberThemes: MemberTheme[], useKioskFundsVoting: boolean, useKioskChitVoting: boolean): {
+	fundsVotesByOrg: Record<string, number>
+	chitVotesByOrg: Record<string, number>
+} {
+	const fundsVotesByOrg: Record<string, number> = {}
+	const chitVotesByOrg: Record<string, number> = {}
+
+	for(const memberTheme of memberThemes) {
+		if(useKioskFundsVoting && memberTheme.allocations) {
+			for(const allocation of memberTheme.allocations) {
+				if(allocation.organization && allocation.amount) {
+					fundsVotesByOrg[allocation.organization] = (fundsVotesByOrg[allocation.organization] || 0) + allocation.amount
+				}
+			}
+		}
+
+		if(useKioskChitVoting && memberTheme.chitVotes && !isEmpty(memberTheme.chitVotes)) {
+			for(const chitVote of memberTheme.chitVotes) {
+				if(chitVote.organization && chitVote.votes) {
+					chitVotesByOrg[chitVote.organization] = (chitVotesByOrg[chitVote.organization] || 0) + chitVote.votes
+				}
+			}
+		}
+	}
+
+	return { fundsVotesByOrg, chitVotesByOrg }
 }
 
 export interface OrgWithComputed extends OrgData {
-	save?: number
-	pledgeTotal?: number
-	votedTotal?: number
-	allocatedFunds?: number
-	need?: number
-	votes?: number
+	save: number
+	pledgeTotal: number
+	votedTotal: number
+	allocatedFunds: number
+	need: number
+	votes: number
+	[key: string]: unknown
 }
 /**
  * Document transformer for records in the Organization table
  * @param {Object} doc Object in iterating array of objects to altered
  * @param {Object} params { theme, settings, memberThemes }
  */
-const OrgTransformer = (doc: OrgWithComputed, params: OrgTransformerParams) => {
-	doc.save = function() {
-		// Get save amount if saved
-		let save = 0
-		if(params.theme && !isEmpty(params.theme.saves)) {
-			save = (() => {
-				let saveObj = params?.theme?.saves?.find( save => save.org === doc._id)
-				return saveObj ? (saveObj.amount || 0) : 0
-			})()
+const OrgTransformer = (doc: OrgData, params: OrgTransformerParams) => {
+	// Get save amount if saved
+	let save = 0
+	if(params.theme?.saves && !isEmpty(params.theme.saves)) {
+		const saveObj = params.theme.saves.find(save => save.org === doc._id)
+		save = saveObj ? (saveObj.amount || 0) : 0
+	}
+
+	// Total of funds pledged for this org multiplied by the match ratio
+	let pledgeTotal = 0
+	if(params.theme && doc.pledges) {
+		pledgeTotal = doc.pledges.reduce(
+			(sum, pledge) => { return sum + (pledge.amount || 0) },
+			0) * (params.theme.matchRatio || 0)
+	}
+
+	// Voted total
+	let votedTotal = 0
+	if(params.settings && params.settings.useKioskFundsVoting && params.fundsVotesByOrg) {
+		votedTotal = params.fundsVotesByOrg[doc._id] || 0
+	} else {
+		votedTotal = doc.amountFromVotes || 0
+	}
+
+	// Total amount of money allocated to this org aside from leverage distribution
+	const allocatedFundsNum = votedTotal + pledgeTotal + save + (doc.topOff || 0)
+	const allocatedFunds = roundFloat(String(allocatedFundsNum))
+
+	// Amount needed to reach goal
+	const needNum = (doc.ask || 0) - allocatedFundsNum
+	const need = roundFloat(String(needNum > 0 ? needNum : 0))
+
+	// Votes
+	let votes = 0
+	if(params.settings && params.settings.useKioskChitVoting && params.chitVotesByOrg) {
+		votes = params.chitVotesByOrg[doc._id] || 0
+	} else if(params.theme && doc.chitVotes) {
+		if(doc.chitVotes.count) {
+			votes = doc.chitVotes.count
+		} else if(doc.chitVotes.weight && params.theme.chitWeight) {
+			votes = doc.chitVotes.weight / params.theme.chitWeight
 		}
-		return save
-	}()
+	}
+	const votesRounded = roundFloat(String(votes), 1)
 
-	doc.pledgeTotal = function() {
-		// Total of funds pledged for this org multiplied by the match ratio
-		let pledgeTotal = 0
-		if(params.theme && doc.pledges) {
-			pledgeTotal = doc.pledges.reduce(
-				(sum, pledge) => { return sum + (pledge.amount || 0) },
-				0) * (params.theme.matchRatio || 0)
-		}
-		return pledgeTotal
-	}()
+	const result: OrgWithComputed = {
+		...doc,
+		save,
+		pledgeTotal,
+		votedTotal,
+		allocatedFunds,
+		need,
+		votes: votesRounded,
+	}
 
-	doc.votedTotal = function() {
-		// If voting with kiosk mode, get votes for this org from each member
-		if(params.settings && params.settings.useKioskFundsVoting) {
-			const amount = params.memberThemes.reduce((sum, memberTheme) => {
-				const vote = memberTheme.allocations?.find(allocation => allocation.organization === doc._id)
-				return sum + (vote && vote.amount ? vote.amount : 0)
-			}, 0)
-			return amount
-		}
-		return doc.amountFromVotes
-	}()
-
-	doc.allocatedFunds = function() {
-		// Total amount of money allocted to this org aside from leverage distribution
-		const total = (doc.votedTotal || 0) + (doc.pledgeTotal || 0) + (doc.save || 0) + (doc.topOff || 0)
-		return roundFloat(String(total))
-	}()
-
-	doc.need = function() {
-		// Amount needed to reach goal
-		let need = (doc.ask || 0) - (doc.allocatedFunds || 0)
-		return roundFloat(String(need > 0 ? need : 0))
-	}()
-
-	doc.votes = function() {
-		let votes = 0
-
-		// Kiosk mode: aggregate individual member votes from MemberTheme.chitVotes[]
-		if(params.settings && params.settings.useKioskChitVoting) {
-			votes = params.memberThemes.reduce((sum, memberTheme) => {
-				if(!isEmpty(memberTheme.chitVotes)) {
-					const vote = memberTheme.chitVotes?.find(chit => chit.organization === doc._id)
-					return sum + (vote && vote.votes ? vote.votes : 0)
-				}
-				return sum
-			}, 0)
-		// Manual mode: use aggregated count/weight from Organization.chitVotes
-		} else if(params.theme && doc.chitVotes) {
-			// Direct count takes precedence (more accurate than weight calculation)
-			if(doc.chitVotes.count) {
-				votes = doc.chitVotes.count
-			// Fallback to weight-based calculation if count not provided
-			} else if(doc.chitVotes.weight && params.theme.chitWeight) {
-				votes = doc.chitVotes.weight / params.theme.chitWeight
-			}
-		}
-
-		return roundFloat(String(votes), 1)
-	}()
-
-	return doc
+	return result
 }
 
 export default OrgTransformer

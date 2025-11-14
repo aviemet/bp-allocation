@@ -2,15 +2,14 @@ import {
 	FormControlLabel,
 	Switch,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import React from "react"
 
-import { useSettings } from "/imports/api/providers"
+import { useSettings } from "/imports/api/hooks"
 
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 
-const TopupsActiveToggle = observer(() => {
+const TopupsActiveToggle = () => {
 	const { settings } = useSettings()
 
 	if(!settings) return <></>
@@ -37,6 +36,6 @@ const TopupsActiveToggle = observer(() => {
 			label="Topups Active"
 		/>
 	)
-})
+}
 
 export default TopupsActiveToggle

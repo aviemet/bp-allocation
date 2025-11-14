@@ -23,7 +23,7 @@ const ImageMethods = {
 		},
 	}),
 
-	rename: new ValidatedMethod<{ id: string; name: string }, void>({
+	rename: new ValidatedMethod<{ id: string, name: string }, void>({
 		name: "images.rename",
 
 		validate: null,

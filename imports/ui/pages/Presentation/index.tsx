@@ -1,7 +1,6 @@
 import { useNavigate, useParams } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { useEffect } from "react"
-import { useTheme, useSettings } from "/imports/api/providers"
+import { useTheme, useSettings } from "/imports/api/hooks"
 
 import Allocation from "./Allocation"
 import Intro from "./Intro"
@@ -11,9 +10,9 @@ import Timer from "./Timer"
 import TopOrgs from "./TopOrgs"
 import { Loading, PageTransitionFader } from "/imports/ui/components"
 
-const Presentation = observer(() => {
-	const { theme, isLoading: themeLoading } = useTheme()
-	const { settings, isLoading: settingsLoading } = useSettings()
+const Presentation = () => {
+	const { theme, themeLoading } = useTheme()
+	const { settings, settingsLoading } = useSettings()
 	const navigate = useNavigate()
 	const params = useParams({ strict: false })
 
@@ -60,7 +59,6 @@ const Presentation = observer(() => {
 			} }
 		</PageTransitionFader>
 	)
-})
-
+}
 
 export default Presentation

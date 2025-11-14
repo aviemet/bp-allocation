@@ -1,25 +1,24 @@
 import styled from "@emotion/styled"
 import numeral from "numeral"
-import { useMembers } from "/imports/api/providers"
-import { type PledgeWithOrg } from "/imports/api/stores/OrgsCollection"
+import { useMembers, type PledgeWithOrg, getFormattedName } from "/imports/api/hooks"
 
 interface PledgeInfoProps {
 	pledge: PledgeWithOrg
 }
 
 const PledgeInfo = ({ pledge }: PledgeInfoProps) => {
-	const { members, isLoading: membersLoading } = useMembers()
+	const { members, membersLoading } = useMembers()
 
 	if(membersLoading || !members || !pledge || !pledge.org) {
 		return <></>
 	}
 
-	const member = pledge.anonymous ? undefined : members.values.find(mem => mem._id === pledge.member)
+	const member = pledge.anonymous ? undefined : members.find(mem => mem._id === pledge.member)
 
 	return (
 		<AnimationContainer>
 			<AnimationContent>
-				<h1 className="memberName">{ member && member.formattedName }</h1>
+				<h1 className="memberName">{ member && getFormattedName(member) }</h1>
 				<h1 className="orgTitle">{ pledge.org.title }</h1>
 				<h1 className="amount">{ numeral(pledge.amount).format("$0,0") }</h1>
 			</AnimationContent>

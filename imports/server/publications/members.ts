@@ -3,8 +3,9 @@ import { Mongo } from "meteor/mongo"
 
 import { Members, MemberThemes, type MemberData } from "/imports/api/db"
 import { MemberTransformer } from "/imports/server/transformers"
-import { registerObserver } from "../methods"
+import { registerObserver, type PublishSelf } from "../methods"
 import { type MemberTheme } from "/imports/types/schema"
+import { createDebouncedFunction } from "/imports/lib/utils"
 
 interface MembersTransformerParams {
 	themeId: string
@@ -12,157 +13,100 @@ interface MembersTransformerParams {
 }
 
 const membersTransformer = registerObserver((doc: MemberData, params: MembersTransformerParams) => {
-	const memberTheme = params.memberThemes
-		.find(theme => theme.member === doc._id && theme.theme === params.themeId)
+	const memberTheme = params.memberThemes.find(theme => theme.member === doc._id && theme.theme === params.themeId)
 	return MemberTransformer(doc, memberTheme)
 })
 
-// MemberThemes - Member activity for theme
 Meteor.publish("memberThemes", (themeId?: string) => {
 	if(!themeId) return MemberThemes.find({})
 
 	return MemberThemes.find({ theme: themeId })
 })
 
-// limit of 0 == 'return no records', limit of false == 'no limit'
-Meteor.publish("members", function({ themeId, limit }: { themeId: string, limit: number | false }) {
-	if(limit === 0) {
-		this.ready()
-		return
-	}
-
+const publishMembers = async (themeId: string, limit: number | false, publisher: PublishSelf) => {
 	const subOptions: { sort: Mongo.SortSpecifier, limit?: number } = { sort: { number: 1 } }
 	if(limit !== false) {
 		subOptions.limit = limit
 	}
 
-	let membersObserver: Meteor.LiveQueryHandle | null = null
-	let hasCalledReady = false
+	let memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
+	const memberIds = memberThemes
+		.map(memberTheme => memberTheme.member)
+		.filter((memberId): memberId is string => typeof memberId === "string")
 
-	const stopMembersObserver = () => {
-		if(membersObserver && typeof membersObserver.stop === "function") {
-			membersObserver.stop()
-		}
-		membersObserver = null
-	}
+	const membersTransformerCallbacks = membersTransformer("members", publisher, { themeId, memberThemes })
+	const members = await Members.find({ _id: { $in: memberIds } }, subOptions).fetchAsync()
+	members.forEach(member => {
+		membersTransformerCallbacks.added(member)
+	})
 
-	const publication = this
-	let isStopped = false
-	const memberThemesCursor = MemberThemes.find({ theme: themeId })
-	const watchers: Meteor.LiveQueryHandle[] = []
-	let refreshInProgress = false
-	let refreshQueued = false
-	let currentMemberIds = new Set<string>()
+	const membersObserver = Members.find({ _id: { $in: memberIds } }, subOptions).observe(membersTransformerCallbacks)
 
-	const refreshMembers = async () => {
+	const refreshMembersFromMemberThemes = async () => {
 		try {
-			const memberThemes = await memberThemesCursor.fetchAsync()
-			if(isStopped) {
-				return
-			}
-
-			stopMembersObserver()
-
-			const memberIds = memberThemes
+			memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
+			const updatedMemberIds = memberThemes
 				.map(memberTheme => memberTheme.member)
 				.filter((memberId): memberId is string => typeof memberId === "string")
 
-			const nextMemberIds = new Set(memberIds)
-			const previousMemberIds = currentMemberIds
-			previousMemberIds.forEach(memberId => {
-				if(!nextMemberIds.has(memberId)) {
-					publication.removed("members", memberId)
-				}
+			const members = await Members.find({ _id: { $in: updatedMemberIds } }, subOptions).fetchAsync()
+			members.forEach(member => {
+				const transformed = MemberTransformer(member, memberThemes.find(theme => theme.member === member._id && theme.theme === themeId))
+				publisher.changed("members", member._id, transformed)
 			})
-			currentMemberIds = new Set(nextMemberIds)
-
-			if(memberIds.length > 0) {
-				const observerCallbacks = membersTransformer("members", publication, { themeId, memberThemes })
-				membersObserver = Members
-					.find({ _id: { $in: memberIds } }, subOptions)
-					.observe({
-						added: doc => {
-							if(previousMemberIds.has(doc._id)) {
-								observerCallbacks.changed(doc)
-							} else {
-								observerCallbacks.added(doc)
-							}
-							currentMemberIds.add(doc._id)
-						},
-						changed: doc => {
-							observerCallbacks.changed(doc)
-						},
-						removed: doc => {
-							observerCallbacks.removed(doc)
-							currentMemberIds.delete(doc._id)
-						},
-					})
-			} else {
-				currentMemberIds.clear()
-			}
-
-			if(!hasCalledReady) {
-				publication.ready()
-				hasCalledReady = true
-			}
-		} catch (error) {
-			const castError = error instanceof Error ? error : new Error(String(error))
-			publication.error(castError)
+		} catch (_error) {
+			// Error refreshing members from memberThemes
 		}
 	}
 
-	const scheduleRefresh = () => {
-		if(isStopped) {
-			return
-		}
-		if(refreshInProgress) {
-			refreshQueued = true
-			return
-		}
-		refreshInProgress = true
-		void refreshMembers().finally(() => {
-			refreshInProgress = false
-			if(refreshQueued) {
-				refreshQueued = false
-				scheduleRefresh()
-			}
-		})
-	}
+	const debouncedRefresh = createDebouncedFunction(refreshMembersFromMemberThemes, 100)
 
-	watchers.push(memberThemesCursor.observeChanges({
-		added: scheduleRefresh,
-		changed: scheduleRefresh,
-		removed: scheduleRefresh,
-	}))
-
-	scheduleRefresh()
-
-	this.onStop(() => {
-		isStopped = true
-		stopMembersObserver()
-		watchers.forEach(handle => {
-			if(handle && typeof handle.stop === "function") {
-				handle.stop()
-			}
-		})
+	const memberThemesWatcher = MemberThemes.find({ theme: themeId }).observeChanges({
+		added: () => {
+			debouncedRefresh()
+		},
+		changed: () => {
+			debouncedRefresh()
+		},
+		removed: () => {
+			debouncedRefresh()
+		},
 	})
-})
 
-Meteor.publish("member", function({ memberId, themeId }: { memberId?: string, themeId: string }) {
-	if(!memberId) {
+	publisher.onStop(() => {
+		debouncedRefresh.cancel()
+		if(membersObserver && typeof membersObserver.stop === "function") {
+			membersObserver.stop()
+		}
+		if(memberThemesWatcher && typeof memberThemesWatcher.stop === "function") {
+			memberThemesWatcher.stop()
+		}
+	})
+
+	publisher.ready()
+}
+
+Meteor.publish("members", async function({ themeId, limit }: { themeId: string, limit: number | false }) {
+	if(limit === 0) {
 		this.ready()
 		return
 	}
 
-	const memberTheme = MemberThemes.findOne({ member: memberId, theme: themeId })
-	const memberThemes = memberTheme ? [memberTheme] : []
+	await publishMembers(themeId, limit, this)
+})
 
-	const memberObserver = Members.find({ _id: memberId }).observe(membersTransformer("members", this, { themeId, memberThemes }))
+Meteor.publish("member", async function({ memberId, themeId }: { memberId: string, themeId: string }) {
+	const memberThemes = await MemberThemes.find({ member: memberId, theme: themeId }).fetchAsync()
+	const membersTransformerCallbacks = membersTransformer("members", this, { themeId, memberThemes })
 
-	this.onStop(() => {
-		if(memberObserver && typeof memberObserver.stop === "function") {
-			memberObserver.stop()
-		}
-	})
+	const member = await Members.findOneAsync({ _id: memberId })
+	if(member) {
+		membersTransformerCallbacks.added(member)
+	}
+
+	const memberObserver = Members.find({ _id: memberId }).observe(membersTransformerCallbacks)
+
+	this.onStop(() => memberObserver.stop())
+
 	this.ready()
 })

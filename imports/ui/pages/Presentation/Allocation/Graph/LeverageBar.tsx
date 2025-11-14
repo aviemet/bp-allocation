@@ -11,7 +11,7 @@ interface LeverageBarProps {
 
 const LeverageBar = ({ value = 0, total = 1 }: LeverageBarProps) => {
 	const percentage = total > 0 ? Math.floor((value / total) * 100) : 0
-	
+
 	return (
 		<LeverageBarContainer>
 			<LinearProgress variant="determinate"

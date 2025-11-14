@@ -2,14 +2,13 @@ import {
 	FormControlLabel,
 	Switch,
 } from "@mui/material"
-import { observer } from "mobx-react-lite"
 import React from "react"
-import { useSettings } from "/imports/api/providers"
+import { useSettings } from "/imports/api/hooks"
 
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 
-const ShowSaveValuesToggle = observer(() => {
+const ShowSaveValuesToggle = () => {
 
 	const { settings } = useSettings()
 
@@ -33,6 +32,6 @@ const ShowSaveValuesToggle = observer(() => {
 			label="Show Save Values"
 		/>
 	)
-})
+}
 
 export default ShowSaveValuesToggle

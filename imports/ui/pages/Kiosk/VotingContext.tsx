@@ -1,7 +1,6 @@
-import { forEach, find, clone, isEqual } from "lodash"
-import { observer } from "mobx-react-lite"
-import { useEffect, useMemo, useState, type ReactNode } from "react"
-import { useTheme, useOrgs } from "/imports/api/providers"
+import { forEach, find, isEqual } from "lodash"
+import { useMemo, useState, useRef, useEffect, startTransition, type ReactNode } from "react"
+import { useTheme, useOrgs } from "/imports/api/hooks"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 import { createContext } from "/imports/lib/hooks/createContext"
@@ -27,11 +26,17 @@ interface VotingContextProviderProps {
 
 const [useVoting, FundsVoteContextProvider] = createContext<VotingContextValue>()
 
-const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingContextProviderProps) => {
+const FundsVoteProvider = ({ children, member, unsetUser }: VotingContextProviderProps) => {
 	const { theme } = useTheme()
 	const { orgs, topOrgs } = useOrgs()
 
-	const initialVotesState = useMemo(() => {
+	const orgValues = useMemo(() => {
+		if(!orgs) return []
+		return orgs.slice()
+	}, [orgs])
+
+	const baseAllocations = useMemo(() => {
+		if(!topOrgs || topOrgs.length === 0) return {}
 		const state: Record<string, number> = {}
 		topOrgs.forEach(org => {
 			const allocations = find(member.theme?.allocations, ["organization", org._id])
@@ -40,59 +45,75 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 		return state
 	}, [member.theme?.allocations, topOrgs])
 
-	const orgValues = useMemo(() => {
-		if(!orgs) return []
-		return orgs.values.slice()
-	}, [orgs])
-
-	const initialChitState = useMemo(() => {
+	const baseChits = useMemo(() => {
+		if(!orgs || orgValues.length === 0) return {}
 		const state: Record<string, number> = {}
 		orgValues.forEach(org => {
 			const chits = find(member.theme?.chitVotes, ["organization", org._id])
 			state[org._id] = chits?.votes ?? 0
 		})
 		return state
-	}, [member.theme?.chitVotes, orgValues])
+	}, [member.theme?.chitVotes, orgValues, orgs])
 
-	const [ allocations, setAllocations ] = useState(initialVotesState)
-	const [ chits, setChits ] = useState(initialChitState)
-
-	useEffect(() => {
-		if(!topOrgs || topOrgs.length === 0) return
-		const nextAllocations: Record<string, number> = {}
-		topOrgs.forEach(org => {
-			const allocation = find(member.theme?.allocations, ["organization", org._id])
-			nextAllocations[org._id] = allocation?.amount ?? 0
-		})
-		setAllocations(previous => {
-			return isEqual(previous, nextAllocations) ? previous : nextAllocations
-		})
-	}, [member.theme?.allocations, topOrgs])
+	const [localAllocationEdits, setLocalAllocationEdits] = useState<Record<string, number>>({})
+	const [localChitEdits, setLocalChitEdits] = useState<Record<string, number>>({})
+	const baseAllocationsRef = useRef(baseAllocations)
+	const baseChitsRef = useRef(baseChits)
 
 	useEffect(() => {
-		if(!orgs) return
-		const orgsCount = orgValues.length
-		if(orgsCount === 0) return
-		const nextChits: Record<string, number> = {}
-		orgValues.forEach(org => {
-			const chitsValue = find(member.theme?.chitVotes, ["organization", org._id])
-			nextChits[org._id] = chitsValue?.votes ?? 0
-		})
-		setChits(previous => {
-			return isEqual(previous, nextChits) ? previous : nextChits
-		})
-	}, [member.theme?.chitVotes, orgs, orgValues])
+		if(!isEqual(baseAllocationsRef.current, baseAllocations)) {
+			baseAllocationsRef.current = baseAllocations
+			startTransition(() => {
+				setLocalAllocationEdits({})
+			})
+		}
+	}, [baseAllocations])
+
+	useEffect(() => {
+		if(!isEqual(baseChitsRef.current, baseChits)) {
+			baseChitsRef.current = baseChits
+			startTransition(() => {
+				setLocalChitEdits({})
+			})
+		}
+	}, [baseChits])
+
+	const allocations = useMemo(() => {
+		const merged = { ...baseAllocations }
+		Object.assign(merged, localAllocationEdits)
+		return merged
+	}, [baseAllocations, localAllocationEdits])
+
+	const chits = useMemo(() => {
+		const merged = { ...baseChits }
+		Object.assign(merged, localChitEdits)
+		return merged
+	}, [baseChits, localChitEdits])
 
 	const updateAllocations = (org: string, amount: number) => {
-		const newVotes = clone(allocations)
-		newVotes[org] = amount
-		setAllocations(newVotes)
+		const baseValue = baseAllocations[org] ?? 0
+		setLocalAllocationEdits(previous => {
+			if(amount === baseValue) {
+				const updated = { ...previous }
+				delete updated[org]
+				return updated
+			} else {
+				return { ...previous, [org]: amount }
+			}
+		})
 	}
 
 	const updateChits = (org: string, count: number) => {
-		const newVotes = clone(chits)
-		newVotes[org] = count
-		setChits(newVotes)
+		const baseValue = baseChits[org] ?? 0
+		setLocalChitEdits(previous => {
+			if(count === baseValue) {
+				const updated = { ...previous }
+				delete updated[org]
+				return updated
+			} else {
+				return { ...previous, [org]: count }
+			}
+		})
 	}
 
 	const saveAllocations = (source?: VotingSource) => {
@@ -129,7 +150,7 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 				voteSource: source,
 			}
 
-			MemberMethods.chitVote.call(voteData)
+			MemberMethods.chitVote.callAsync(voteData)
 		})
 	}
 
@@ -147,6 +168,6 @@ const FundsVoteProvider = observer(({ children, member, unsetUser }: VotingConte
 			{ children }
 		</FundsVoteContextProvider>
 	)
-})
+}
 
 export { useVoting, FundsVoteProvider }

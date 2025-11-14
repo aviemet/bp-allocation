@@ -1,9 +1,9 @@
 import { OrgCard } from "/imports/ui/components/Cards"
 import ChitTicker from "./ChitTicker"
-import { type OrgStore } from "/imports/api/stores"
+import { type OrgData } from "/imports/api/db"
 
 interface ChitVoteOrgCardProps {
-	org: OrgStore
+	org: OrgData
 }
 
 const ChitVoteOrgCard = ({ org }: ChitVoteOrgCardProps) => {

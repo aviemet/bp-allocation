@@ -8,10 +8,19 @@ import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
 import { useState } from "react"
 
-import { Themes } from "/imports/api/db"
+import { Themes, type ThemeData } from "/imports/api/db"
 import { ThemeMethods } from "/imports/api/methods"
 
 import SortableTable, { type HeadCell } from "/imports/ui/components/SortableTable"
+
+interface ThemeRow extends ThemeData {
+	[key: string]: unknown
+}
+
+const createThemeRow = (theme: ThemeData): ThemeRow => {
+	const row: ThemeRow = { ...theme }
+	return row
+}
 
 import ActionMenu from "/imports/ui/components/Menus/ActionMenu"
 import NewThemeModal from "./NewThemeModal"
@@ -26,7 +35,7 @@ const ThemesList = () => {
 	Meteor.subscribe("themes")
 
 	const themes = useTracker(() => {
-		return Themes.find({}).fetch()
+		return Themes.find({}).fetch().map(createThemeRow)
 	}, [])
 
 	const bulkDelete = (selected: string[], onSuccess: () => void) => {
@@ -64,7 +73,7 @@ const ThemesList = () => {
 
 	return (
 		<Container>
-			<SortableTable
+			<SortableTable<ThemeRow>
 				title="Battery Powered Themes!"
 				onBulkDelete={ bulkDelete }
 				headCells={ headCells }
@@ -75,7 +84,7 @@ const ThemesList = () => {
 				render={ row => (
 					<>
 						<TableCell><Link to={ `/admin/${row._id}` }>{ row.title }</Link></TableCell>
-						<TableCell align="center">{ format(row?.createdAt || new Date(), "MM/dd/y") }</TableCell>
+						<TableCell align="center">{ format(row.createdAt ?? new Date(), "MM/dd/y") }</TableCell>
 						<TableCell align="right">
 							<ActionMenu render={ MenuItem => [
 								<MenuItem key="edit" onClick={ () => window.open(`/kiosk/${row._id}`) }>

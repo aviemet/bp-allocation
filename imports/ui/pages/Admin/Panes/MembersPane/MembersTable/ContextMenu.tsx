@@ -1,4 +1,4 @@
-import { useMessages } from "/imports/api/providers"
+import { useMessages } from "/imports/api/hooks"
 import { MemberMethods } from "/imports/api/methods"
 import ExpandLess from "@mui/icons-material/ExpandLess"
 import ExpandMore from "@mui/icons-material/ExpandMore"
@@ -17,11 +17,11 @@ import { useState } from "react"
 import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
 import ActionMenu from "/imports/ui/components/Menus/ActionMenu"
 import SendWithFeedbackButton from "/imports/ui/components/Buttons/SendWithFeedbackButton"
-import { type MemberStore } from "/imports/api/stores"
+import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
 interface ContextMenuProps {
 	themeId: string
-	member: MemberStore & { theme?: { _id: string } }
+	member: MemberWithTheme
 }
 
 const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
@@ -85,7 +85,7 @@ const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 					</MenuItem>
 					<Collapse in={ textSubmenuOpen } timeout="auto" unmountOnExit>
 						<Divider />
-						{ messages?.values.map((message) => {
+						{ messages?.map((message) => {
 							if(message.active && message.type === "text") return (
 								<MenuItem key={ `${message._id}-text` } disableRipple>
 									<Stack sx={ { width: "100%" } } direction="row" justifyContent="space-between" alignItems="center">
@@ -110,7 +110,7 @@ const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 					</MenuItem>
 					<Collapse in={ emailSubmenuOpen } timeout="auto" unmountOnExit>
 						<Divider />
-						{ messages?.values.map((message) => {
+						{ messages?.map((message) => {
 							if(message.active && message.type === "email") return (
 								<MenuItem key={ `${message._id}-email` } disableRipple>
 									<Stack sx={ { width: "100%" } } direction="row" justifyContent="space-between" alignItems="center">
@@ -125,27 +125,27 @@ const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 
 				<Divider key={ `${member._id}-divider-4` } />,
 
-			<ActionMenuItem key={ `${member._id}-chit-reset` } onClick={ () => {
-				const themeId = member.theme?._id
-				if(!themeId) return
-				setModalHeader(`Permanently Delete ${member.fullName}'s Chit Votes?`)
-				setModalContent(`This will permanently delete the chit votes of ${member.fullName} for this theme. This operation cannot be undone.`)
-				setModalAction( () => resetMemberChitVotes(themeId) )
-				setModalOpen(true)
-			} }>
-				Reset Chit Votes
-			</ActionMenuItem>,
+				<ActionMenuItem key={ `${member._id}-chit-reset` } onClick={ () => {
+					const themeId = member.theme?._id
+					if(!themeId) return
+					setModalHeader(`Permanently Delete ${member.fullName}'s Chit Votes?`)
+					setModalContent(`This will permanently delete the chit votes of ${member.fullName} for this theme. This operation cannot be undone.`)
+					setModalAction( () => resetMemberChitVotes(themeId) )
+					setModalOpen(true)
+				} }>
+					Reset Chit Votes
+				</ActionMenuItem>,
 
-			<ActionMenuItem key={ `${member._id}-funds-reset` } onClick={ () => {
-				const themeId = member.theme?._id
-				if(!themeId) return
-				setModalHeader(`Permanently Delete ${member.fullName}'s Votes?`)
-				setModalContent(`This will permanently delete the funds votes of ${member.fullName} for this theme. This operation cannot be undone.`)
-				setModalAction( () => resetMemberFundsVotes(themeId) )
-				setModalOpen(true)
-			} }>
-				Reset Funds Votes
-			</ActionMenuItem>,
+				<ActionMenuItem key={ `${member._id}-funds-reset` } onClick={ () => {
+					const themeId = member.theme?._id
+					if(!themeId) return
+					setModalHeader(`Permanently Delete ${member.fullName}'s Votes?`)
+					setModalContent(`This will permanently delete the funds votes of ${member.fullName} for this theme. This operation cannot be undone.`)
+					setModalAction( () => resetMemberFundsVotes(themeId) )
+					setModalOpen(true)
+				} }>
+					Reset Funds Votes
+				</ActionMenuItem>,
 
 			]) } />
 

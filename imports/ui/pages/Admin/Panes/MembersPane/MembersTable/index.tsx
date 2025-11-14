@@ -8,9 +8,9 @@ import {
 	TableRow,
 } from "@mui/material"
 import { useParams } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { useState } from "react"
-import { useMembers, useSettings } from "/imports/api/providers"
+import { useMembers } from "/imports/api/hooks"
+import { useSettings } from "/imports/api/hooks"
 import { formatters } from "/imports/lib/utils"
 
 import { MemberMethods } from "/imports/api/methods"
@@ -49,10 +49,10 @@ const headCells: HeadCell[] = [
 ]
 
 // TODO: Also, the sorting and icon indicators for voting status
-// TODO: Would be cool to get the filter icon to allow filtring by keyword
+// TODO: Would be cool to get the filter icon to allow filtering by keyword
 //       So, choosing 'not voted' would filter out all those who have voted
-const MembersTable = observer(() => {
-	const { members, isLoading: membersLoading } = useMembers()
+const MembersTable = () => {
+	const { filteredMembers, searchFilter, setSearchFilter, membersLoading } = useMembers()
 	const { settings } = useSettings()
 
 	const [ modalOpen, setModalOpen ] = useState<boolean>(false)
@@ -69,7 +69,7 @@ const MembersTable = observer(() => {
 		setModalHeader(`Permanently unlink member${plural ? "s" : ""} from this theme?`)
 		setModalContent(`This will permanently remove the member${plural ? "s" : ""} from this theme. It will not delete the Member record${plural ? "s" : ""}.`)
 		// Need to curry the function since useState calls passed functions
-		setModalAction( () => async () => {
+		setModalAction(() => async () => {
 			await Promise.all(selected.map(id => MemberMethods.removeMemberFromTheme.callAsync({ memberId: id, themeId: String(themeId) })))
 			onSuccess()
 		})
@@ -77,10 +77,10 @@ const MembersTable = observer(() => {
 	}
 
 	const handleSearch = (value: string) => {
-		if(members) members.searchFilter = value
+		setSearchFilter(value)
 	}
 
-	if(membersLoading || !members) {
+	if(membersLoading) {
 		return (
 			<>
 				<Skeleton height={ 100 } />
@@ -90,10 +90,8 @@ const MembersTable = observer(() => {
 		)
 	}
 
-	const tableRows = members.filteredMembers
-	const filterParams = members.searchFilter
+	const filterParams = searchFilter
 
-	// TODO: Why isn't striping working now?
 	return (
 		<>
 			<SortableTable
@@ -101,15 +99,15 @@ const MembersTable = observer(() => {
 				tableHeadTopRow={ [] }
 				onBulkDelete={ bulkDelete }
 				headCells={ headCells }
-				rows={ tableRows }
+				rows={ filteredMembers }
 				defaultOrderBy="createdAt"
 				paginationCounts={ [10, 25, 50] }
 				filterParams={ filterParams || null }
 				onFilterParamsChange={ handleSearch }
 				striped={ true }
 				render={ (member: any) => {
-					const votedTotal = (member.theme?.allocations || []).reduce((sum: number, allocation: any) => { return sum + (allocation.amount || 0) }, 0)
-					const votedChits = (member.theme?.chitVotes || []).length > 0
+					const votedTotal = member._computed?.votedTotal ?? 0
+					const votedChits = member._computed?.votedChits ?? false
 					const fullName = member.fullName ? member.fullName : `${member.firstName || ""} ${member.lastName || ""}`
 
 					return (
@@ -121,9 +119,7 @@ const MembersTable = observer(() => {
 							<TableCell>
 								{ formatters.currency.format(member.theme?.amount || 0) }
 								{ settings?.useKioskFundsVoting && (votedTotal === member.theme?.amount)
-									? (
-										<CheckIcon color="success" />
-									)
+									? <CheckIcon color="success" />
 									: null }
 							</TableCell>
 
@@ -131,9 +127,7 @@ const MembersTable = observer(() => {
 							<TableCell>
 								{ member.theme?.chits || 0 }
 								{ settings?.useKioskChitVoting && votedChits
-									? (
-										<CheckIcon color="success" />
-									)
+									? <CheckIcon color="success" />
 									: null }
 							</TableCell>
 
@@ -142,7 +136,6 @@ const MembersTable = observer(() => {
 								<ContextMenu themeId={ String(themeId) } member={ member } />
 							</TableCell>
 						</>
-
 					)
 				} }
 				collapse={ (member: any) => (
@@ -178,6 +171,6 @@ const MembersTable = observer(() => {
 			/>
 		</>
 	)
-})
+}
 
 export default MembersTable

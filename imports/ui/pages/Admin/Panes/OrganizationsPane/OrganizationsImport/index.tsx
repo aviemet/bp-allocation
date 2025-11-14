@@ -3,7 +3,6 @@ import {
 	Input,
 } from "@mui/material"
 import { useNavigate, useParams } from "@tanstack/react-router"
-import { observer } from "mobx-react-lite"
 import { useSnackbar } from "notistack"
 import { readCsv } from "/imports/lib/papaParseMethods"
 import { OrganizationMethods } from "/imports/api/methods"
@@ -22,7 +21,7 @@ interface HeadingMapping {
 	type?: (value: unknown) => unknown
 }
 
-const ImportOrgs = observer(() => {
+const ImportOrgs = () => {
 	const { enqueueSnackbar } = useSnackbar()
 
 	const [pendingOrgs, setPendingOrgs] = useState<CsvRow[]>([])
@@ -111,6 +110,6 @@ const ImportOrgs = observer(() => {
 			/>
 		</>
 	)
-})
+}
 
 export default ImportOrgs

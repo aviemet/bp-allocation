@@ -9,10 +9,8 @@ import {
 	TableCell,
 } from "@mui/material"
 import { OrganizationMethods } from "/imports/api/methods"
-import { observer } from "mobx-react-lite"
-import { useState, useEffect } from "react"
-import { useOrgs } from "/imports/api/providers"
-import { type OrgStore } from "/imports/api/stores"
+import { useState, useEffect, useCallback } from "react"
+import { useOrgs, type OrgDataWithComputed } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 
 const ChitTable = () => {
@@ -34,11 +32,11 @@ const ChitTable = () => {
 				</TableHead>
 
 				<TableBody>
-					{ orgs.values.map((org, i) => (
+					{ orgs.map((org, i) => (
 						<ChitInputs
 							org={ org }
 							key={ i }
-							tabInfo={ { index: i + 1, length: orgs.values.length } }
+							tabInfo={ { index: i + 1, length: orgs.length } }
 							topOrg={ topOrgIds.includes(org._id) }
 						/>
 					)) }
@@ -49,16 +47,16 @@ const ChitTable = () => {
 }
 
 interface ChitInputsProps {
-	org: OrgStore
+	org: OrgDataWithComputed
 	tabInfo: { index: number, length: number }
 	topOrg: boolean
 }
 
-const ChitInputs = observer(({ org, tabInfo, topOrg }: ChitInputsProps) => {
+const ChitInputs = ({ org, tabInfo, topOrg }: ChitInputsProps) => {
 	const [ weightVotes, setWeightVotes ] = useState(org.chitVotes?.weight ?? 0)
 	const [ countVotes, setCountVotes ] = useState(org.chitVotes?.count ?? 0)
 
-	const saveVotes = async () => {
+	const saveVotes = useCallback(async () => {
 		await OrganizationMethods.update.callAsync({
 			id: org._id,
 			data: {
@@ -68,11 +66,11 @@ const ChitInputs = observer(({ org, tabInfo, topOrg }: ChitInputsProps) => {
 				},
 			},
 		})
-	}
+	}, [org._id, countVotes, weightVotes])
 
 	useEffect(() => {
 		saveVotes()
-	}, [weightVotes, countVotes])
+	}, [saveVotes])
 
 	const rowSx = topOrg ? { sx: { backgroundColor: "table.highlight" } } : {}
 
@@ -107,6 +105,6 @@ const ChitInputs = observer(({ org, tabInfo, topOrg }: ChitInputsProps) => {
 
 		</TableRow>
 	)
-})
+}
 
 export default ChitTable

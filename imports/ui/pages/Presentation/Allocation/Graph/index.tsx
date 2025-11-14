@@ -1,6 +1,5 @@
 import styled from "@emotion/styled"
-import { observer } from "mobx-react-lite"
-import { useTheme, useSettings, useOrgs } from "/imports/api/providers"
+import { useTheme, useSettings, useOrgs } from "/imports/api/hooks"
 
 import Bar from "./Bar"
 import LeverageBar from "./LeverageBar"
@@ -11,7 +10,7 @@ interface GraphProps {
 	simulation?: boolean
 }
 
-const Graph = observer((props: GraphProps) => {
+const Graph = (props: GraphProps) => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
 	const { orgs, topOrgs } = useOrgs()
@@ -21,12 +20,12 @@ const Graph = observer((props: GraphProps) => {
 	const startingLeverage = () => {
 		let leverage = Number(theme.leverageTotal || 0)
 
-		topOrgs.map((org) => {
+		topOrgs.forEach((org) => {
 			leverage -= org.votedTotal || 0
 			leverage -= org.topOff || 0
 		})
 		if(theme.consolationActive && theme.organizations) {
-			leverage -= (theme.organizations.length - orgs.values.length) * (theme.consolationAmount || 0)
+			leverage -= (theme.organizations.length - orgs.length) * (theme.consolationAmount || 0)
 		}
 		return leverage
 	}
@@ -86,7 +85,7 @@ const Graph = observer((props: GraphProps) => {
 			</InfoContainer>
 		</GraphPageContainer>
 	)
-})
+}
 
 const GraphPageContainer = styled.div`
 	font-size: 18px;

@@ -6,10 +6,9 @@ import {
 	Typography,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 
-import { useTheme, useOrgs } from "/imports/api/providers"
+import { useTheme, useOrgs } from "/imports/api/hooks"
 import { ThemeMethods } from "/imports/api/methods"
 import LeverageObject from "/imports/lib/Leverage"
 
@@ -20,7 +19,7 @@ interface LeverageProps {
 	hideAdminFields?: boolean
 }
 
-const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
+const Leverage = ({ hideAdminFields }: LeverageProps) => {
 	const { theme } = useTheme()
 	const { topOrgs } = useOrgs()
 
@@ -104,7 +103,7 @@ const Leverage = observer(({ hideAdminFields }: LeverageProps) => {
 			)) }
 		</Container>
 	)
-})
+}
 
 const StageCard = styled(Paper)(() => ({
 	padding: 16,

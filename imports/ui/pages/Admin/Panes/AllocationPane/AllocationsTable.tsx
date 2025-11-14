@@ -8,28 +8,30 @@ import {
 	TableCell,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { observer } from "mobx-react-lite"
 import numeral from "numeral"
 
 import AllocationInputs from "./AllocationInputs"
-import { useSettings, useTheme, useOrgs } from "/imports/api/providers"
+import { useSettings, useTheme, useOrgs, type OrgDataWithComputed } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 
 interface AllocationsTableProps {
 	hideAdminFields?: boolean
 }
 
-const AllocationsTable = observer(({ hideAdminFields = false }: AllocationsTableProps) => {
+const AllocationsTable = ({ hideAdminFields = false }: AllocationsTableProps) => {
 	const { settings } = useSettings()
-	const { theme, isLoading: themeLoading } = useTheme()
-	const { topOrgs, isLoading: orgsLoading } = useOrgs()
+	const { theme, themeLoading } = useTheme()
+	const { topOrgs, orgsLoading } = useOrgs()
 
-	const _calculateCrowdFavorite = () => {
+	const _calculateCrowdFavorite = (orgs: OrgDataWithComputed[]) => {
+		if(orgs.length === 0) return 0
+
 		let favorite = 0
 
-		topOrgs.forEach((org, i) => {
-			const favoriteAmount = topOrgs[favorite].votedTotal
-			if(org.votedTotal > favoriteAmount) {
+		orgs.forEach((org, i) => {
+			const favoriteAmount = orgs[favorite].votedTotal
+			const currentAmount = org.votedTotal
+			if(currentAmount > favoriteAmount) {
 				favorite = i
 			}
 		})
@@ -38,11 +40,7 @@ const AllocationsTable = observer(({ hideAdminFields = false }: AllocationsTable
 
 	if(themeLoading || orgsLoading) return <Loading />
 
-	interface ThemeWithComputed {
-		fundsVotesCast?: number
-		totalMembers?: number
-	}
-	const themeWithComputed = theme as ThemeWithComputed | undefined
+	const favoriteIndex = _calculateCrowdFavorite(topOrgs)
 
 	return (
 		<TableContainer>
@@ -63,7 +61,7 @@ const AllocationsTable = observer(({ hideAdminFields = false }: AllocationsTable
 						<AllocationInputs
 							key={ org._id }
 							org={ org }
-							crowdFavorite={ (i === _calculateCrowdFavorite()) }
+							crowdFavorite={ (i === favoriteIndex) }
 							tabInfo={ { index: i + 1, length: topOrgs.length } }
 							hideAdminFields={ hideAdminFields }
 						/>
@@ -95,8 +93,8 @@ const AllocationsTable = observer(({ hideAdminFields = false }: AllocationsTable
 						}</TableCell>
 
 						{ !hideAdminFields && <TableCell>
-							{ settings?.useKioskFundsVoting && themeWithComputed && themeWithComputed.fundsVotesCast !== undefined && themeWithComputed.totalMembers !== undefined && <>
-								{ `(${themeWithComputed.fundsVotesCast}/${themeWithComputed.totalMembers})` } <span style={ { fontSize: "0.75em" } }>Members Voted</span>
+							{ settings?.useKioskFundsVoting && theme && theme.fundsVotesCast !== undefined && theme.totalMembers !== undefined && <>
+								{ `(${theme.fundsVotesCast}/${theme.totalMembers})` } <span style={ { fontSize: "0.75em" } }>Members Voted</span>
 							</> }
 						</TableCell> }
 
@@ -105,7 +103,7 @@ const AllocationsTable = observer(({ hideAdminFields = false }: AllocationsTable
 			</StyledTable>
 		</TableContainer>
 	)
-})
+}
 
 const fontSize = "1.1rem"
 const StyledTable = styled(Table)(({ theme }) => ({

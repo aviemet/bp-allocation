@@ -1,16 +1,15 @@
 import { Container, Typography } from "@mui/material"
 import { isEmpty } from "lodash"
-import { observer } from "mobx-react-lite"
-import { useMembers, useOrgs } from "/imports/api/providers"
+import { useMembers, useOrgs } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
 import { Form } from "/imports/ui/components/Form"
 
 import { Loading } from "/imports/ui/components"
 import PledgesForm from "./PledgesForm"
 
-const Pledges = observer(() => {
-	const { members, isLoading: membersLoading } = useMembers()
-	const { isLoading: orgsLoading } = useOrgs()
+const Pledges = () => {
+	const { members, membersLoading } = useMembers()
+	const { orgsLoading } = useOrgs()
 
 	const handleSubmit = async (data: Record<string, unknown>, { reset }: { reset: () => void }) => {
 		try {
@@ -48,6 +47,6 @@ const Pledges = observer(() => {
 			</Form>
 		</Container>
 	)
-})
+}
 
 export default Pledges

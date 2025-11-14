@@ -1,371 +1,146 @@
 import { Meteor } from "meteor/meteor"
-import { Mongo } from "meteor/mongo"
 
-import { registerObserver } from "../methods"
+import { registerObserver, type PublishSelf } from "../methods"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
+import { createDebouncedFunction } from "/imports/lib/utils"
 
-import { Themes, PresentationSettings, Organizations, MemberThemes, type ThemeData, type SettingsData } from "/imports/api/db"
-import { initializeThemeData } from "/imports/api/stores/ThemeStore"
-import { ThemeTransformer, OrgTransformer } from "/imports/server/transformers"
+import { Themes, PresentationSettings, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
+import { ThemeTransformer, OrgTransformer, aggregateVotesByOrganization } from "/imports/server/transformers"
 import { type ThemeTransformerParams } from "/imports/server/transformers/themeTransformer"
 
-const themeObserverFactory = registerObserver((doc: ThemeData, params: ThemeTransformerParams) => {
-	const transformed = ThemeTransformer(doc, params)
-	return { ...transformed }
+const themeObserver = registerObserver((doc: ThemeData, params: ThemeTransformerParams) => {
+	return ThemeTransformer(doc, params)
 })
 
-Meteor.publish("themes", function(themeId?: string) {
-	if(themeId) {
-		const observer = Themes.find({ _id: themeId }).observe({
-			added: (doc) => this.added("themes", doc._id, { ...doc }),
-			changed: (doc) => this.changed("themes", doc._id, { ...doc }),
-			removed: (doc) => this.removed("themes", doc._id),
-		})
-		this.onStop(() => observer.stop())
-		this.ready()
-	} else {
-		return Themes.find({}, { fields: { _id: 1, title: 1, createdAt: 1, slug: 1 } })
-	}
-})
-
-
-Meteor.publish("theme", function(themeId: string) {
-	if(!themeId) {
-		this.ready()
+const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => {
+	if(!theme) {
+		publisher.ready()
 		return
 	}
 
-	let themeLiveQuery: Meteor.LiveQueryHandle | null = null
-	let hasCalledReady = false
+	const settings = theme.presentationSettings ? await PresentationSettings.findOneAsync({ _id: theme.presentationSettings }) : null
 
-	const stopThemeObserver = () => {
-		if(themeLiveQuery) {
-			if(typeof themeLiveQuery.stop === "function") {
-				themeLiveQuery.stop()
-			}
-			themeLiveQuery = null
-		}
+	if(!settings) {
+		publisher.ready()
+		return
 	}
 
-	const publication = this
-	let isStopped = false
-	const themeCursor = Themes.find({ _id: themeId })
-	const memberThemesCursor = MemberThemes.find({ theme: themeId })
-	const orgsCursor = Organizations.find({ theme: themeId })
-	const watchers: Meteor.LiveQueryHandle[] = []
-	let settingsCursor: Mongo.Cursor<SettingsData, SettingsData> | null = null
-	let settingsWatcher: Meteor.LiveQueryHandle | null = null
-	let monitoredSettingsId: string | undefined
-	let refreshInProgress = false
-	let refreshQueued = false
+	let memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
+	const { fundsVotesByOrg, chitVotesByOrg } = aggregateVotesByOrganization(
+		memberThemes,
+		settings.useKioskFundsVoting || false,
+		settings.useKioskChitVoting || false
+	)
+	const orgs = await Organizations.find({ theme: theme._id }).fetchAsync()
+	const transformedOrgs = orgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg }))
+	const topOrgs = filterTopOrgs(transformedOrgs, theme)
 
-	const stopSettingsWatcher = () => {
-		if(settingsWatcher && typeof settingsWatcher.stop === "function") {
-			settingsWatcher.stop()
-		}
-		settingsWatcher = null
-	}
+	const themeObserverCallbacks = themeObserver("themes", publisher, { topOrgs, memberThemes, settings })
+	themeObserverCallbacks.added(theme)
 
-	function scheduleRefresh() {
-		if(isStopped) {
-			return
-		}
-		if(refreshInProgress) {
-			refreshQueued = true
-			return
-		}
-		refreshInProgress = true
-		void refreshTheme().finally(() => {
-			refreshInProgress = false
-			if(refreshQueued) {
-				refreshQueued = false
-				scheduleRefresh()
-			}
-		})
-	}
+	const themeObserverHandle = Themes.find({ _id: theme._id }).observe(themeObserverCallbacks)
 
-	const ensureSettingsWatcher = (settingsId?: string) => {
-		if(settingsId === monitoredSettingsId) {
-			return
-		}
-		stopSettingsWatcher()
-		monitoredSettingsId = settingsId
-		settingsCursor = settingsId ? PresentationSettings.find({ _id: settingsId }) : null
-		if(settingsCursor) {
-			settingsWatcher = settingsCursor.observeChanges({
-				added: scheduleRefresh,
-				changed: scheduleRefresh,
-				removed: scheduleRefresh,
-			})
-		}
-	}
-
-	const refreshTheme = async () => {
+	const refreshThemeFromMemberThemes = async () => {
 		try {
-			const themeDocs = await themeCursor.fetchAsync()
-			if(isStopped) {
-				return
-			}
-
-			const themeDoc = themeDocs[0]
-			if(!themeDoc) {
-				stopThemeObserver()
-				if(!hasCalledReady) {
-					publication.ready()
-					hasCalledReady = true
-				}
-				return
-			}
-
-			const hydratedTheme = initializeThemeData(themeDoc)
-
-			ensureSettingsWatcher(themeDoc.presentationSettings)
-
-			const settingsDocs = settingsCursor ? await settingsCursor.fetchAsync() : []
-			if(isStopped) {
-				return
-			}
-			const settings = settingsDocs[0]
-			if(!settings) {
-				stopThemeObserver()
-				if(!hasCalledReady) {
-					publication.ready()
-					hasCalledReady = true
-				}
-				return
-			}
-
-			const memberThemes = await memberThemesCursor.fetchAsync()
-			if(isStopped) {
-				return
-			}
-			const orgs = await orgsCursor.fetchAsync()
-			if(isStopped) {
-				return
-			}
-
-			const transformedOrgs = orgs.map(org => {
-				return OrgTransformer(org, { theme: hydratedTheme, settings, memberThemes })
-			})
-
-			const topOrgs = filterTopOrgs(transformedOrgs, hydratedTheme)
-
-			stopThemeObserver()
-
-			themeLiveQuery = Themes.find({ _id: themeDoc._id }).observe(themeObserverFactory("themes", publication, { topOrgs, memberThemes, settings }))
-
-			if(!hasCalledReady) {
-				publication.ready()
-				hasCalledReady = true
-			}
-		} catch (error) {
-			const castError = error instanceof Error ? error : new Error(String(error))
-			publication.error(castError)
+			memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
+			const { fundsVotesByOrg, chitVotesByOrg } = aggregateVotesByOrganization(
+				memberThemes,
+				settings.useKioskFundsVoting || false,
+				settings.useKioskChitVoting || false
+			)
+			const updatedOrgs = await Organizations.find({ theme: theme._id }).fetchAsync()
+			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg }))
+			const updatedTopOrgs = filterTopOrgs(updatedTransformedOrgs, theme)
+			const transformed = ThemeTransformer(theme, { topOrgs: updatedTopOrgs, memberThemes, settings })
+			publisher.changed("themes", theme._id, transformed)
+		} catch (_error) {
+			// Error refreshing theme from memberThemes
 		}
 	}
 
-	watchers.push(themeCursor.observeChanges({
-		added: scheduleRefresh,
-		changed: scheduleRefresh,
-		removed: scheduleRefresh,
-	}))
+	const debouncedRefresh = createDebouncedFunction(refreshThemeFromMemberThemes, 100)
 
-	watchers.push(memberThemesCursor.observeChanges({
-		added: scheduleRefresh,
-		changed: scheduleRefresh,
-		removed: scheduleRefresh,
-	}))
+	const memberThemesWatcher = MemberThemes.find({ theme: theme._id }).observeChanges({
+		added: () => {
+			debouncedRefresh()
+		},
+		changed: () => {
+			debouncedRefresh()
+		},
+		removed: () => {
+			debouncedRefresh()
+		},
+	})
 
-	watchers.push(orgsCursor.observeChanges({
-		added: scheduleRefresh,
-		changed: scheduleRefresh,
-		removed: scheduleRefresh,
-	}))
+	const organizationsWatcher = Organizations.find({ theme: theme._id }).observeChanges({
+		added: () => {
+			debouncedRefresh()
+		},
+		changed: () => {
+			debouncedRefresh()
+		},
+		removed: () => {
+			debouncedRefresh()
+		},
+	})
 
-	scheduleRefresh()
+	publisher.onStop(() => {
+		debouncedRefresh.cancel()
+		if(themeObserverHandle && typeof themeObserverHandle.stop === "function") {
+			themeObserverHandle.stop()
+		}
+		if(memberThemesWatcher && typeof memberThemesWatcher.stop === "function") {
+			memberThemesWatcher.stop()
+		}
+		if(organizationsWatcher && typeof organizationsWatcher.stop === "function") {
+			organizationsWatcher.stop()
+		}
+	})
+
+	publisher.ready()
+}
+
+Meteor.publish("themes", async function(themeId?: string) {
+	let themes
+
+	if(themeId) {
+		themes = await Themes.find({ _id: themeId }).fetchAsync()
+	} else {
+		themes = await Themes.find({}, { fields: { _id: 1, title: 1, createdAt: 1, slug: 1 } }).fetchAsync()
+	}
+
+	themes.forEach(theme => {
+		this.added("themes", theme._id, theme as unknown as Record<string, unknown>)
+	})
+
+	const query = themeId ? { _id: themeId } : {}
+	const fields = themeId ? undefined : { _id: 1, title: 1, createdAt: 1, slug: 1 }
+	const observer = Themes.find(query, fields ? { fields } : {}).observe({
+		added: (doc) => {
+			this.added("themes", doc._id, doc as unknown as Record<string, unknown>)
+		},
+		changed: (doc) => {
+			this.changed("themes", doc._id, doc as unknown as Record<string, unknown>)
+		},
+		removed: (doc) => {
+			this.removed("themes", doc._id)
+		},
+	})
 
 	this.onStop(() => {
-		isStopped = true
-		stopThemeObserver()
-		stopSettingsWatcher()
-		watchers.forEach(handle => {
-			if(handle && typeof handle.stop === "function") {
-				handle.stop()
-			}
-		})
+		if(observer && typeof observer.stop === "function") {
+			observer.stop()
+		}
 	})
+	this.ready()
+})
+
+Meteor.publish("theme", async function(themeId: string) {
+	const theme = await Themes.findOneAsync({ _id: themeId })
+	await publishTheme(theme || null, this)
 })
 
 Meteor.publish("themeBySlug", async function(slug: string) {
-	if(!slug) {
-		this.ready()
-		return
-	}
-
-	const themeDoc = await Themes.findOneAsync({ slug })
-	if(!themeDoc) {
-		this.ready()
-		return
-	}
-	const themeId = themeDoc._id
-
-	let themeLiveQuery: Meteor.LiveQueryHandle | null = null
-	let hasCalledReady = false
-
-	const stopThemeObserver = () => {
-		if(themeLiveQuery) {
-			if(typeof themeLiveQuery.stop === "function") {
-				themeLiveQuery.stop()
-			}
-			themeLiveQuery = null
-		}
-	}
-
-	const publication = this
-	let isStopped = false
-	const themeCursor = Themes.find({ _id: themeId })
-	const memberThemesCursor = MemberThemes.find({ theme: themeId })
-	const orgsCursor = Organizations.find({ theme: themeId })
-	const watchers: Meteor.LiveQueryHandle[] = []
-	let settingsCursor: Mongo.Cursor<SettingsData, SettingsData> | null = null
-	let settingsWatcher: Meteor.LiveQueryHandle | null = null
-	let monitoredSettingsId: string | undefined
-	let refreshInProgress = false
-	let refreshQueued = false
-
-	const stopSettingsWatcher = () => {
-		if(settingsWatcher && typeof settingsWatcher.stop === "function") {
-			settingsWatcher.stop()
-		}
-		settingsWatcher = null
-	}
-
-	function scheduleRefresh() {
-		if(isStopped) {
-			return
-		}
-		if(refreshInProgress) {
-			refreshQueued = true
-			return
-		}
-		refreshInProgress = true
-		void refreshTheme().finally(() => {
-			refreshInProgress = false
-			if(refreshQueued) {
-				refreshQueued = false
-				scheduleRefresh()
-			}
-		})
-	}
-
-	const ensureSettingsWatcher = (settingsId?: string) => {
-		if(settingsId === monitoredSettingsId) {
-			return
-		}
-		stopSettingsWatcher()
-		monitoredSettingsId = settingsId
-		settingsCursor = settingsId ? PresentationSettings.find({ _id: settingsId }) : null
-		if(settingsCursor) {
-			settingsWatcher = settingsCursor.observeChanges({
-				added: scheduleRefresh,
-				changed: scheduleRefresh,
-				removed: scheduleRefresh,
-			})
-		}
-	}
-
-	const refreshTheme = async () => {
-		try {
-			const themeDocs = await themeCursor.fetchAsync()
-			if(isStopped) {
-				return
-			}
-
-			const themeDocLatest = themeDocs[0]
-			if(!themeDocLatest) {
-				stopThemeObserver()
-				if(!hasCalledReady) {
-					publication.ready()
-					hasCalledReady = true
-				}
-				return
-			}
-
-			const hydratedTheme = initializeThemeData(themeDocLatest)
-
-			ensureSettingsWatcher(themeDocLatest.presentationSettings)
-
-			const settingsDocs = settingsCursor ? await settingsCursor.fetchAsync() : []
-			if(isStopped) {
-				return
-			}
-			const settings = settingsDocs[0]
-			if(!settings) {
-				stopThemeObserver()
-				if(!hasCalledReady) {
-					publication.ready()
-					hasCalledReady = true
-				}
-				return
-			}
-
-			const memberThemes = await memberThemesCursor.fetchAsync()
-			if(isStopped) {
-				return
-			}
-			const orgs = await orgsCursor.fetchAsync()
-			if(isStopped) {
-				return
-			}
-
-			const transformedOrgs = orgs.map(org => {
-				return OrgTransformer(org, { theme: hydratedTheme, settings, memberThemes })
-			})
-
-			const topOrgs = filterTopOrgs(transformedOrgs, hydratedTheme)
-
-			stopThemeObserver()
-
-			themeLiveQuery = Themes.find({ _id: themeId }).observe(themeObserverFactory("themes", publication, { topOrgs, memberThemes, settings }))
-
-			if(!hasCalledReady) {
-				publication.ready()
-				hasCalledReady = true
-			}
-		} catch (error) {
-			const castError = error instanceof Error ? error : new Error(String(error))
-			publication.error(castError)
-		}
-	}
-
-	watchers.push(themeCursor.observeChanges({
-		added: scheduleRefresh,
-		changed: scheduleRefresh,
-		removed: scheduleRefresh,
-	}))
-
-	watchers.push(memberThemesCursor.observeChanges({
-		added: scheduleRefresh,
-		changed: scheduleRefresh,
-		removed: scheduleRefresh,
-	}))
-
-	watchers.push(orgsCursor.observeChanges({
-		added: scheduleRefresh,
-		changed: scheduleRefresh,
-		removed: scheduleRefresh,
-	}))
-
-	scheduleRefresh()
-
-	this.onStop(() => {
-		isStopped = true
-		stopThemeObserver()
-		stopSettingsWatcher()
-		watchers.forEach(handle => {
-			if(handle && typeof handle.stop === "function") {
-				handle.stop()
-			}
-		})
-	})
+	const theme = await Themes.findOneAsync({ slug })
+	await publishTheme(theme || null, this)
 })

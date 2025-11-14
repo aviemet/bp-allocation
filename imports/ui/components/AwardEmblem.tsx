@@ -1,5 +1,4 @@
 import styled from "@emotion/styled"
-import { observer } from "mobx-react-lite"
 
 import { type AwardType } from "./Cards/AwardCard"
 
@@ -8,7 +7,7 @@ interface AwardEmblemProps {
 	amount?: number | string
 }
 
-const AwardEmblem = observer(({ type, amount }: AwardEmblemProps) => {
+const AwardEmblem = ({ type, amount }: AwardEmblemProps) => {
 
 	const awardImgSrc = {
 		awardee: "/img/circle_awardee.png",
@@ -22,7 +21,7 @@ const AwardEmblem = observer(({ type, amount }: AwardEmblemProps) => {
 			</AwardImage>
 		</Award>
 	)
-})
+}
 
 const Award = styled.div`
 	width: 100%;

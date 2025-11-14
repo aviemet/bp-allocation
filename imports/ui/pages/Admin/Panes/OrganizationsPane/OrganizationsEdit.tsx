@@ -8,7 +8,7 @@ import {
 } from "@mui/material"
 import { Link, useParams, useNavigate } from "@tanstack/react-router"
 import { useState, useEffect } from "react"
-import { useOrgs } from "/imports/api/providers"
+import { useOrgs } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
 import { OrganizationSchema } from "/imports/api/db"
 
@@ -23,7 +23,7 @@ const OrganizationsEdit = () => {
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
-	const orgStore = orgs?.values.find(org => org._id === orgId)
+	const orgStore = orgs?.find(org => org._id === orgId)
 	const org = {
 		theme: id,
 		title: orgStore?.title || "",

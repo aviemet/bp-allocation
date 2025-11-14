@@ -24,6 +24,7 @@ declare module "meteor/ostrio:files" {
 		constructor(config: FilesCollectionConfig)
 		collection: Mongo.Collection<FileData>
 		find: Mongo.Collection<FileData>["find"]
+		findOneAsync: Mongo.Collection<FileData>["findOneAsync"]
 		insert: Mongo.Collection<FileData>["insert"]
 		allowClient(): void
 		allow(options: {

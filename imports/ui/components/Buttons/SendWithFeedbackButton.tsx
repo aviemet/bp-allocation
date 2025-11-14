@@ -3,10 +3,9 @@ import EmailIcon from "@mui/icons-material/Email"
 import SmsIcon from "@mui/icons-material/Sms"
 import { Paper, ButtonProps } from "@mui/material"
 import { Meteor } from "meteor/meteor"
-import { observer } from "mobx-react-lite"
-import { useState, useEffect } from "react"
+import { useState, useMemo } from "react"
 
-import { useTheme } from "/imports/api/providers"
+import { useTheme } from "/imports/api/hooks"
 import { type MessageData } from "/imports/api/db"
 
 import CustomConfirm from "/imports/ui/components/Dialogs/CustomConfirm"
@@ -34,14 +33,29 @@ interface SendWithFeedbackButtonProps extends Omit<ButtonProps, "onClick"> {
 	members?: string[] | "all"
 }
 
-const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWithFeedbackButtonProps) => {
+const SendWithFeedbackButton = ({ message, members, ...rest }: SendWithFeedbackButtonProps) => {
 	const { theme } = useTheme()
 
-	const [buttonStatus, setButtonStatus] = useState<Status>(STATUS.READY)
-	const [buttonContent, setButtonContent] = useState("Send")
+	const [localButtonStatus, setLocalButtonStatus] = useState<Status | null>(null)
 	const [modalOpen, setModalOpen] = useState(false)
 
 	const messageStatus = theme?.messagesStatus?.find(status => status.messageId === message._id)
+
+	const buttonStatus = useMemo(() => {
+		if(messageStatus?.error) return STATUS.ERROR
+		if(localButtonStatus !== null) return localButtonStatus
+		return STATUS.READY
+	}, [localButtonStatus, messageStatus?.error])
+
+	const buttonContent = useMemo(() => {
+		if(messageStatus?.error) return "Error Sending Messages"
+		if(!messageStatus?.sending && messageStatus?.sent) return "Send Again"
+		return "Send"
+	}, [messageStatus?.error, messageStatus?.sending, messageStatus?.sent])
+
+	const handleSetButtonStatus = (status: Status) => {
+		setLocalButtonStatus(status)
+	}
 
 	let previewMessage = message.body
 	if(message.includeLink && theme?.slug) {
@@ -55,17 +69,9 @@ const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWith
 	const handleSendMessage = () => {
 		if(!theme) return
 		setModalOpen(false)
+		setLocalButtonStatus(null)
 		Meteor.call(buttonValues[message.type].method, { themeId: theme._id, message, members })
 	}
-
-	useEffect(() => {
-		if(messageStatus?.error) {
-			setButtonStatus(STATUS.ERROR)
-			setButtonContent("Error Sending Messages")
-		} else if(!messageStatus?.sending && messageStatus?.sent) {
-			setButtonContent("Send Again")
-		}
-	}, [messageStatus])
 
 	let memberCountMessage = "every member"
 	if(Array.isArray(members)) {
@@ -77,7 +83,7 @@ const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWith
 			<SubmitButton
 				onClick={ () => setModalOpen(true) }
 				status={ buttonStatus }
-				setStatus={ setButtonStatus }
+				setStatus={ handleSetButtonStatus }
 				icon={ buttonValues[message.type].icon }
 				{ ...rest }
 			>
@@ -105,7 +111,7 @@ const SendWithFeedbackButton = observer(({ message, members, ...rest }: SendWith
 			/>
 		</>
 	)
-})
+}
 
 const FormattedMessageBody = styled.div`
 	white-space: 'pre-wrap';
