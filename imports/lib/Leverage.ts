@@ -89,6 +89,8 @@ class Leverage {
 				orgs: [],
 			}
 
+			const leverageRemainingAtStart = this.leverageRemaining
+
 			const trackers: RoundTracker = {
 				newSumRemainingOrgs: 0,
 				givenThisRound: 0,
@@ -97,9 +99,6 @@ class Leverage {
 			const roundOrgs = this.orgs.map(org => {
 				const updatedOrg = this._orgRoundValues(org, nRounds)
 
-				// Decrease remaining leverage by amount awarded
-				trackers.givenThisRound = roundFloat(trackers.givenThisRound + (updatedOrg.roundFunds || 0))
-
 				// Only orgs not yet funded are counted in the percentage ratio for next round
 				if((updatedOrg.need || 0) > 0) {
 					trackers.newSumRemainingOrgs = roundFloat(trackers.newSumRemainingOrgs + (updatedOrg.allocatedFunds || 0))
@@ -107,6 +106,35 @@ class Leverage {
 
 				return updatedOrg
 			})
+
+			// Individual rounding of each org's allocation causes the sum to not equal the exact leverage remaining
+			// We correct this by adding the rounding difference to the last org that received funds
+			const totalDistributed = roundOrgs.reduce((sum, org) => {
+				return sum + (org.roundFunds || 0)
+			}, 0)
+
+			const roundingDifference = roundFloat(leverageRemainingAtStart - totalDistributed)
+
+			let lastOrgIndex = -1
+			for(let index = roundOrgs.length - 1; index >= 0; index--) {
+				if((roundOrgs[index].roundFunds || 0) > 0) {
+					lastOrgIndex = index
+					break
+				}
+			}
+
+			if(lastOrgIndex >= 0) {
+				const lastOrg = roundOrgs[lastOrgIndex]
+				const originalRoundFunds = lastOrg.roundFunds || 0
+				lastOrg.roundFunds = roundFloat(originalRoundFunds + roundingDifference)
+				lastOrg.leverageFunds = roundFloat((lastOrg.leverageFunds || 0) - originalRoundFunds + lastOrg.roundFunds)
+				lastOrg.need = roundFloat((lastOrg.ask || 0) - (lastOrg.allocatedFunds || 0) - (lastOrg.leverageFunds || 0))
+			}
+
+			// Recalculate the total after adjustment to ensure leverageRemaining ends at exactly 0
+			trackers.givenThisRound = roundOrgs.reduce((sum, org) => {
+				return sum + (org.roundFunds || 0)
+			}, 0)
 
 			this.sumRemainingOrgs = trackers.newSumRemainingOrgs
 			this.leverageRemaining = roundFloat(this.leverageRemaining - trackers.givenThisRound)
