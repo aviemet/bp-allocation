@@ -142,7 +142,11 @@ describe("Theme Methods", function() {
 				}
 			})
 
-			await ThemeMethods.saveLeverageSpread.callAsync(orgs)
+			await ThemeMethods.saveLeverageSpread.callAsync({
+				orgs,
+				themeId: theme._id,
+				distributionType: "final",
+			})
 
 			const orgRecords = await Organizations.find({ _id: { $in: orgIds } }).fetchAsync()
 			orgRecords.forEach(org => {

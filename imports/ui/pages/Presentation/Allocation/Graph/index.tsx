@@ -1,4 +1,5 @@
 import styled from "@emotion/styled"
+import { Fade } from "@mui/material"
 import { useTheme, useSettings, useOrgs } from "/imports/api/hooks"
 
 import Bar from "./Bar"
@@ -17,6 +18,8 @@ const Graph = (props: GraphProps) => {
 
 	if(!theme || !settings || !orgs) return <Loading />
 
+	const shouldBeVisible = settings.leverageVisible || props.simulation
+
 	const startingLeverage = () => {
 		let leverage = Number(theme.leverageTotal || 0)
 
@@ -30,7 +33,6 @@ const Graph = (props: GraphProps) => {
 		return leverage
 	}
 
-	const visibility = settings.leverageVisible || props.simulation ? "visible" : "hidden"
 	const orgLeverage = topOrgs.reduce((sum, org) => {
 		if(org.leverageFunds) return sum + org.leverageFunds
 		return sum
@@ -75,12 +77,14 @@ const Graph = (props: GraphProps) => {
 					)) }
 				</InfoGrid>
 
-				<LeverageContainer style={ { visibility: visibility } }>
-					<LeverageBar
-						value={ leverageAfterDistribution }
-						total={ startingLeverage() }
-					/>
-				</LeverageContainer>
+				<Fade in={ shouldBeVisible } timeout={ 500 }>
+					<LeverageContainer>
+						<LeverageBar
+							value={ leverageAfterDistribution }
+							total={ startingLeverage() }
+						/>
+					</LeverageContainer>
+				</Fade>
 
 			</InfoContainer>
 		</GraphPageContainer>

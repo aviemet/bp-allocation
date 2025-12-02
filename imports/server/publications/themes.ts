@@ -38,10 +38,11 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	const themeObserverCallbacks = themeObserver("themes", publisher, { topOrgs, memberThemes, settings })
 	themeObserverCallbacks.added(theme)
 
-	const themeObserverHandle = Themes.find({ _id: theme._id }).observe(themeObserverCallbacks)
-
 	const refreshThemeFromMemberThemes = async () => {
 		try {
+			const updatedTheme = await Themes.findOneAsync({ _id: theme._id })
+			if(!updatedTheme) return
+
 			memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
 			const { fundsVotesByOrg, chitVotesByOrg } = aggregateVotesByOrganization(
 				memberThemes,
@@ -49,9 +50,9 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 				settings.useKioskChitVoting || false
 			)
 			const updatedOrgs = await Organizations.find({ theme: theme._id }).fetchAsync()
-			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg }))
-			const updatedTopOrgs = filterTopOrgs(updatedTransformedOrgs, theme)
-			const transformed = ThemeTransformer(theme, { topOrgs: updatedTopOrgs, memberThemes, settings })
+			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme: updatedTheme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg }))
+			const updatedTopOrgs = filterTopOrgs(updatedTransformedOrgs, updatedTheme)
+			const transformed = ThemeTransformer(updatedTheme, { topOrgs: updatedTopOrgs, memberThemes, settings })
 			publisher.changed("themes", theme._id, transformed)
 		} catch (_error) {
 			// Error refreshing theme from memberThemes
@@ -59,6 +60,14 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	}
 
 	const debouncedRefresh = createDebouncedFunction(refreshThemeFromMemberThemes, 100)
+
+	const themeObserverHandle = Themes.find({ _id: theme._id }).observe({
+		added: themeObserverCallbacks.added,
+		changed: () => {
+			debouncedRefresh()
+		},
+		removed: themeObserverCallbacks.removed,
+	})
 
 	const memberThemesWatcher = MemberThemes.find({ theme: theme._id }).observeChanges({
 		added: () => {

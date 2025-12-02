@@ -24,7 +24,7 @@ const LeverageBar = ({ value = 0, total = 1 }: LeverageBarProps) => {
 					},
 				} }
 			/>
-			<LeverageCount>${ numeral(value).format("0.00a") }</LeverageCount>
+			<LeverageCount>${ numeral(value).format("0,0a") }</LeverageCount>
 		</LeverageBarContainer>
 	)
 }

@@ -1,5 +1,4 @@
 import {
-	Button,
 	Container,
 	Paper,
 	Stack,
@@ -9,11 +8,13 @@ import { styled } from "@mui/material/styles"
 import numeral from "numeral"
 
 import { useTheme, useOrgs } from "/imports/api/hooks"
-import { ThemeMethods } from "/imports/api/methods"
 import LeverageObject from "/imports/lib/Leverage"
 
+import DistributeLeverageButton from "./DistributeLeverageButton"
+import DistributeMinimumButton from "./DistributeMinimumButton"
 import ResultsTable from "./ResultsTable"
 import RoundTable from "./RoundTable"
+import { ShowLeverageToggle } from "/imports/ui/components/Toggles"
 
 interface LeverageProps {
 	hideAdminFields?: boolean
@@ -32,15 +33,6 @@ const Leverage = ({ hideAdminFields }: LeverageProps) => {
 
 	const rounds = leverage.getLeverageSpreadRounds()
 
-	const saveLeverageSpread = async (lastRound: { orgs: Array<{ _id: string, leverageFunds?: number }> }) => {
-		await ThemeMethods.saveLeverageSpread.callAsync(lastRound.orgs)
-	}
-
-	const resetLeverage = async () => {
-		await ThemeMethods.resetLeverage.callAsync(theme._id)
-	}
-
-	// const rounds = getLeverageSpreadRounds(theme.leverageRemaining)
 
 	if(rounds.length === 0) {
 		return (
@@ -54,30 +46,28 @@ const Leverage = ({ hideAdminFields }: LeverageProps) => {
 	const orgSpreadSum = topOrgs.reduce((sum, org) => { return sum + (org.leverageFunds || 0) }, 0)
 	const roundSpreadSum = rounds[rounds.length - 1].orgs.reduce((sum, org) => { return sum + (org.leverageFunds || 0) }, 0)
 
-	// console.log({ orgSpreadSum, roundSpreadSum })
-
 	const leverageDistributed = orgSpreadSum === roundSpreadSum && roundSpreadSum > 0
 
 	return (
 		<Container>
+			{ !hideAdminFields && <StageCard>
+				<Stack direction="row" justifyContent="space-between" alignItems="center">
+					<ShowLeverageToggle />
+					<Stack direction="row" gap={ 2 }>
+
+						{ theme.minLeverageAmountActive && <DistributeMinimumButton /> }
+						<DistributeLeverageButton
+							leverageDistributed={ leverageDistributed }
+							rounds={ rounds }
+						/>
+					</Stack>
+				</Stack>
+			</StageCard> }
+
 			<StageCard>
 				<Stack direction="row" justifyContent="space-between" alignItems="center">
 					<Typography component="h2" variant="h3">Final Distribution</Typography>
-
-					<div>Leverage Remaining: { numeral(leverage.finalRoundAllocation()).format("$0,0.00") }</div>
-					{ !hideAdminFields && <>
-						{ !leverageDistributed
-							? (
-								<Button onClick={ () => saveLeverageSpread(rounds[rounds.length - 1]) }>
-									Submit Final Values
-								</Button>
-							)
-							: (
-								<Button color="warning" onClick={ resetLeverage }>
-									Reset Leverage Distribution
-								</Button>
-							) }
-					</> }
+					<div>Leverage Remaining: { numeral(leverage.finalRoundAllocation()).format("$0,0") }</div>
 				</Stack>
 				<ResultsTable round={ rounds[rounds.length - 1] } />
 			</StageCard>

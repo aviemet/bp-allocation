@@ -182,7 +182,13 @@ const ThemeMethods = {
 
 		validate: null,
 
-		async run(orgs: Array<{ _id: string, leverageFunds?: number }>) {
+		async run(params: {
+			orgs: Array<{ _id: string, leverageFunds?: number }>
+			themeId: string
+			distributionType: "minimum" | "final"
+		}) {
+			const { orgs, themeId, distributionType = "final" } = params
+
 			await Promise.all(orgs.map(org => {
 				return Organizations.updateAsync({ _id: org._id }, {
 					$set: {
@@ -190,6 +196,17 @@ const ThemeMethods = {
 					},
 				})
 			}))
+
+			const updateFields: Partial<ThemeData> = {}
+			if(distributionType === "minimum") {
+				updateFields.minimumLeverageDistributed = true
+			} else if(distributionType === "final") {
+				updateFields.finalLeverageDistributed = true
+			}
+
+			if(Object.keys(updateFields).length > 0) {
+				await Themes.updateAsync({ _id: themeId }, { $set: updateFields })
+			}
 		},
 	}),
 
@@ -211,13 +228,20 @@ const ThemeMethods = {
 			const orgs = theme.organizations
 			if(!orgs) return []
 
-			return await Promise.all(orgs.map((org: string) => {
+			await Promise.all(orgs.map((org: string) => {
 				return Organizations.updateAsync({ _id: org }, {
 					$set: {
 						leverageFunds: 0,
 					},
 				})
 			}))
+
+			await Themes.updateAsync({ _id: themeId }, {
+				$set: {
+					minimumLeverageDistributed: false,
+					finalLeverageDistributed: false,
+				},
+			})
 		},
 	}),
 
