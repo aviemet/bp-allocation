@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
-import { Button, Grid, InputAdornment, Stack } from "@mui/material"
-import { useState, useEffect } from "react"
-import { useOrgs } from "/imports/api/hooks"
+import { Button, Grid, InputAdornment, Stack, Typography } from "@mui/material"
+import { useState, useEffect, useMemo } from "react"
+import { useOrgs, useTheme } from "/imports/api/hooks"
 import { TextInput, SubmitButton, STATUS, SwitchInput, type Status } from "/imports/ui/components/Form"
 import { useFormContext, useWatch } from "react-hook-form"
 
@@ -12,7 +12,13 @@ const Pledges = () => {
 	const { reset } = useFormContext()
 	const watch = useWatch()
 
-	const { topOrgs } = useOrgs()
+	const { orgs, topOrgs } = useOrgs()
+	const { theme } = useTheme()
+
+	const remainingOrgs = useMemo(() => {
+		const topOrgIds = new Set(topOrgs.map(org => org._id))
+		return orgs.filter(org => !topOrgIds.has(org._id))
+	}, [orgs, topOrgs])
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.DISABLED)
 
@@ -61,9 +67,26 @@ const Pledges = () => {
 			</Grid>
 
 			<Grid size={ { xs: 12 } }>
-				{ /* Selectable Cards for top orgs */ }
+				<Typography component="h2" variant="h4" sx={ { textAlign: "center" } }>
+					Finalists
+				</Typography>
+			</Grid>
+			<Grid size={ { xs: 12 } }>
 				<SelectableOrgCards orgs={ topOrgs } />
 			</Grid>
+
+			{ remainingOrgs.length > 0 && theme?.allowRunnersUpPledges && (
+				<>
+					<Grid size={ { xs: 12 } }>
+						<Typography component="h2" variant="h4" sx={ { textAlign: "center" } }>
+							Runners Up
+						</Typography>
+					</Grid>
+					<Grid size={ { xs: 12 } }>
+						<SelectableOrgCards orgs={ remainingOrgs } />
+					</Grid>
+				</>
+			) }
 
 			<Grid size={ { xs: 12 } }>
 				<FinalizeButton
@@ -72,7 +95,9 @@ const Pledges = () => {
 					status={ formStatus }
 					setStatus={ setFormStatus }
 					icon={ false }
-				>Submit Matched Pledge</FinalizeButton>
+				>
+					Submit Matched Pledge
+				</FinalizeButton>
 			</Grid>
 
 		</Grid>

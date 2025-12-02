@@ -44,6 +44,9 @@ export interface Theme {
 	leverageTotal?: number
 	minLeverageAmount?: number
 	minLeverageAmountActive?: boolean
+	allowRunnersUpPledges?: boolean
+	minimumLeverageDistributed?: boolean
+	finalLeverageDistributed?: boolean
 	saves?: OrgSave[]
 	presentationSettings?: string
 	slug?: string

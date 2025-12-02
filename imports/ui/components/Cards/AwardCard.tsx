@@ -12,14 +12,15 @@ interface AwardCardProps {
 	org: OrgDataWithComputed
 	award?: AwardType
 	amount?: number
+	small?: boolean
 }
 
-const AwardCard = ({ org, award, amount }: AwardCardProps) => {
+const AwardCard = ({ org, award, amount, small }: AwardCardProps) => {
 	const totalFunds = (org.allocatedFunds || 0) + (org.leverageFunds || 0)
 
 	return (
-		<OrgCard>
-			<CardImage>
+		<OrgCard className={ small ? "small" : "" }>
+			<CardImage className={ small ? "small" : "" }>
 				<AwardEmblem
 					type={ award }
 					amount={ amount ?
@@ -29,7 +30,7 @@ const AwardCard = ({ org, award, amount }: AwardCardProps) => {
 				/>
 			</CardImage>
 			<CardContent style={ { paddingTop: "4px" } }>
-				<OrgTitle>{ org.title }</OrgTitle>
+				<OrgTitle className={ small ? "small" : "" }>{ org.title }</OrgTitle>
 			</CardContent>
 		</OrgCard>
 	)
@@ -39,25 +40,39 @@ const OrgCard = styled(Paper)`
 	text-align: center;
 	background-color: ${COLORS.green};
 	border-radius: 0;
-	flex-basis: 290px;
-	width: 290px;
-	height: 295px;
+	flex-basis: 260px;
+	width: 260px;
+	height: 275px;
 	margin: 0.5em 0.5em;
+
+	&.small {
+		flex-basis: 200px;
+		width: 200px;
+		height: 205px;
+	}
 `
 
 const OrgTitle = styled("p")`
 	font-family: TradeGothic;
-	font-size: 1.75rem;
+	font-size: 1.7rem;
 	margin: 5px;
 	font-weight: 600;
+
+	&.small {
+		font-size: 1.25rem;
+	}
 `
 
 const CardImage = styled("div")`
 	width: 100%;
-	height: 205px;
+	height: 185px;
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center center;
+
+	&.small {
+		height: 140px;
+	}
 `
 
 const CardContent = styled("div")`

@@ -1,6 +1,7 @@
 import CheckIcon from "@mui/icons-material/Check"
 import {
 	Box,
+	Chip,
 	Grid,
 	Paper,
 	Stack,
@@ -60,7 +61,20 @@ interface PledgesProps {
 const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 	const { theme } = useTheme()
 	const { members, membersLoading } = useMembers()
-	const { topOrgs, pledges, orgsLoading } = useOrgs()
+	const { orgs, topOrgs, pledges, orgsLoading } = useOrgs()
+
+	const orgsForTotals = theme?.allowRunnersUpPledges ? orgs : topOrgs
+	const topOrgIds = new Set(topOrgs.map(org => org._id))
+	const isRunnerUp = (orgId: string) => !topOrgIds.has(orgId)
+
+	const sortedOrgsForTotals = theme?.allowRunnersUpPledges
+		? [...orgsForTotals].sort((a, b) => {
+			const aIsRunnerUp = isRunnerUp(a._id)
+			const bIsRunnerUp = isRunnerUp(b._id)
+			if(aIsRunnerUp === bIsRunnerUp) return 0
+			return aIsRunnerUp ? 1 : -1
+		})
+		: orgsForTotals
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const [ modalHeader, setModalHeader ] = useState("")
@@ -100,10 +114,23 @@ const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 						selectable={ !hideAdminFields }
 						render={ pledge => {
 							const member = pledge.member ? members.find(value => value._id === pledge.member) : undefined
+							const isPledgeRunnerUp = isRunnerUp(pledge.org._id)
 							return (
 								<>
 									{ /* Org Title */ }
-									<TableCell component="th" scope="row">{ pledge.org.title }</TableCell>
+									<TableCell component="th" scope="row">
+										<Stack direction="column" alignItems="flex-start" spacing={ 0.5 }>
+											<span>{ pledge.org.title }</span>
+											{ isPledgeRunnerUp && (
+												<Chip
+													label="Runner Up"
+													size="small"
+													color="secondary"
+													variant="outlined"
+												/>
+											) }
+										</Stack>
+									</TableCell>
 
 									{ /* Member */ }
 									<TableCell>
@@ -150,9 +177,16 @@ const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 									</TableRow>
 								</TableHead>
 								<TableBody>
-									{ topOrgs.map(org => (
-										<TableRow key={ org._id }>
-											<TableCell key={ org._id }>{ org.title }</TableCell>
+									{ sortedOrgsForTotals.map(org => (
+										<TableRow
+											key={ org._id }
+											sx={ {
+												backgroundColor: isRunnerUp(org._id) ? "action.hover" : "transparent",
+											} }
+										>
+											<TableCell key={ org._id }>
+												{ org.title }
+											</TableCell>
 											<TableCell align="right">
 												<Stack direction="row" justifyContent="space-between" alignItems="baseline">
 													<Box sx={ { mr: 1 } }>$</Box>

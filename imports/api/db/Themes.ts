@@ -98,6 +98,24 @@ export const ThemeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: true,
 	},
+	allowRunnersUpPledges: {
+		type: Boolean,
+		label: "Allow pledging to runners up organizations?",
+		required: false,
+		defaultValue: false,
+	},
+	minimumLeverageDistributed: {
+		type: Boolean,
+		label: "Has minimum leverage been distributed?",
+		required: false,
+		defaultValue: false,
+	},
+	finalLeverageDistributed: {
+		type: Boolean,
+		label: "Has final leverage been distributed?",
+		required: false,
+		defaultValue: false,
+	},
 	saves: {
 		type: Array,
 		defaultValue: [],
