@@ -126,7 +126,9 @@ class Leverage {
 			if(lastOrgIndex >= 0) {
 				const lastOrg = roundOrgs[lastOrgIndex]
 				const originalRoundFunds = lastOrg.roundFunds || 0
-				lastOrg.roundFunds = roundFloat(originalRoundFunds + roundingDifference)
+				const maxAdditionalFunds = Math.max(0, (lastOrg.need || 0) - originalRoundFunds)
+				const adjustedRoundFunds = roundFloat(originalRoundFunds + Math.min(roundingDifference, maxAdditionalFunds))
+				lastOrg.roundFunds = adjustedRoundFunds
 				lastOrg.leverageFunds = roundFloat((lastOrg.leverageFunds || 0) - originalRoundFunds + lastOrg.roundFunds)
 				lastOrg.need = roundFloat((lastOrg.ask || 0) - (lastOrg.allocatedFunds || 0) - (lastOrg.leverageFunds || 0))
 			}
@@ -169,9 +171,11 @@ class Leverage {
 			}
 
 			// Give funds for this round
+			const calculatedAmount = (org.percent || 0) * this.leverageRemaining
+			const currentNeed = org.need || 0
 			org.roundFunds = roundFloat(Math.min(
-				(org.percent || 0) * this.leverageRemaining,
-				org.need || 0
+				calculatedAmount,
+				currentNeed
 			))
 		}
 

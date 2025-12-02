@@ -45,6 +45,7 @@ export interface Theme {
 	minLeverageAmount?: number
 	minLeverageAmountActive?: boolean
 	allowRunnersUpPledges?: boolean
+	leverageRunnersUpPledges?: boolean
 	minimumLeverageDistributed?: boolean
 	finalLeverageDistributed?: boolean
 	saves?: OrgSave[]

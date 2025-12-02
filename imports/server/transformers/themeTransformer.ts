@@ -108,6 +108,7 @@ const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams): Theme
 
 	// Subtract the amounts allocated to each org
 	const orgsForLeverage = doc.allowRunnersUpPledges && params.allOrgs ? params.allOrgs : params.topOrgs
+	const topOrgIds = new Set(params.topOrgs.map(org => org._id))
 	orgsForLeverage.forEach((org) => {
 		// The topoff for the crowd favorite
 		if((org.topOff || 0) > 0) {
@@ -116,11 +117,16 @@ const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams): Theme
 
 		// Individual pledges from members
 		if(org.pledges && !isEmpty(org.pledges)) {
-			remainingLeverage -= org.pledges.reduce((sum, pledge) => {
-				const amount = pledge.amount || 0
+			const isRunnerUp = !topOrgIds.has(org._id)
+			const shouldApplyLeverage = !isRunnerUp || doc.leverageRunnersUpPledges
+
+			if(shouldApplyLeverage) {
 				const matchRatio = doc.matchRatio || 0
-				return sum + (((amount * matchRatio) - amount))
-			}, 0)
+				remainingLeverage -= org.pledges.reduce((sum, pledge) => {
+					const amount = pledge.amount || 0
+					return sum + (((amount * matchRatio) - amount))
+				}, 0)
+			}
 		}
 	})
 
