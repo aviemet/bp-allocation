@@ -12,6 +12,7 @@ import { type OrgWithComputed } from "./orgTransformer"
  */
 export interface ThemeTransformerParams {
 	topOrgs: OrgWithComputed[]
+	allOrgs?: OrgWithComputed[]
 	memberThemes: MemberTheme[]
 	settings: SettingsData
 }
@@ -42,8 +43,9 @@ export interface ThemeWithComputed extends ThemeData {
 }
 
 const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams): ThemeWithComputed => {
-	// Pledged total
-	const pledgedTotal = params.topOrgs.reduce((total, org) => {
+	const orgsForPledges = doc.allowRunnersUpPledges && params.allOrgs ? params.allOrgs : params.topOrgs
+
+	const pledgedTotal = orgsForPledges.reduce((total, org) => {
 		if(org.pledges) {
 			return total + org.pledges.reduce((sum, pledge) => { return sum + (pledge.amount || 0) }, 0)
 		}
@@ -105,7 +107,8 @@ const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams): Theme
 	let remainingLeverage = (doc.leverageTotal || 0) - consolationTotal - votedFunds
 
 	// Subtract the amounts allocated to each org
-	params.topOrgs.forEach((org) => {
+	const orgsForLeverage = doc.allowRunnersUpPledges && params.allOrgs ? params.allOrgs : params.topOrgs
+	orgsForLeverage.forEach((org) => {
 		// The topoff for the crowd favorite
 		if((org.topOff || 0) > 0) {
 			remainingLeverage -= (org.topOff || 0)
@@ -129,7 +132,7 @@ const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams): Theme
 
 	// Pledges with org information
 	let pledges: PledgeWithOrg[] = []
-	params.topOrgs.forEach(org => {
+	orgsForPledges.forEach(org => {
 		org.pledges?.forEach((pledge: MatchPledge) => {
 			if(org.title) {
 				pledges.push({

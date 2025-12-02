@@ -35,7 +35,7 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	const transformedOrgs = orgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg }))
 	const topOrgs = filterTopOrgs(transformedOrgs, theme)
 
-	const themeObserverCallbacks = themeObserver("themes", publisher, { topOrgs, memberThemes, settings })
+	const themeObserverCallbacks = themeObserver("themes", publisher, { topOrgs, allOrgs: transformedOrgs, memberThemes, settings })
 	themeObserverCallbacks.added(theme)
 
 	const refreshThemeFromMemberThemes = async () => {
@@ -52,7 +52,7 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 			const updatedOrgs = await Organizations.find({ theme: theme._id }).fetchAsync()
 			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme: updatedTheme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg }))
 			const updatedTopOrgs = filterTopOrgs(updatedTransformedOrgs, updatedTheme)
-			const transformed = ThemeTransformer(updatedTheme, { topOrgs: updatedTopOrgs, memberThemes, settings })
+			const transformed = ThemeTransformer(updatedTheme, { topOrgs: updatedTopOrgs, allOrgs: updatedTransformedOrgs, memberThemes, settings })
 			publisher.changed("themes", theme._id, transformed)
 		} catch (_error) {
 			// Error refreshing theme from memberThemes

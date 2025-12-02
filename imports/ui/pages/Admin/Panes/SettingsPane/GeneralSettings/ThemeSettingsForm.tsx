@@ -67,6 +67,7 @@ const SettingsPane = () => {
 				consolationActive: theme.consolationActive || false,
 				minLeverageAmount: theme.minLeverageAmount || "",
 				minLeverageAmountActive: theme.minLeverageAmountActive || false,
+				allowRunnersUpPledges: theme.allowRunnersUpPledges || false,
 			} }
 		>
 			<Grid container spacing={ 2 }>
@@ -161,6 +162,14 @@ const SettingsPane = () => {
 					<FormControlLabel
 						label="Use Minimum Leverage Amount"
 						control={ <Switch name="minLeverageAmountActive" /> }
+					/>
+				</Grid>
+
+				<Grid size={ { xs: 12, md: 6 } }>
+					{ /* Allow Runners Up Pledges */ }
+					<FormControlLabel
+						label="Allow Pledging to Runners Up"
+						control={ <Switch name="allowRunnersUpPledges" /> }
 					/>
 				</Grid>
 
