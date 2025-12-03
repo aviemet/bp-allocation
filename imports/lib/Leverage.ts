@@ -80,16 +80,28 @@ class Leverage {
 		this.orgs.forEach(org => {
 			org.percent = this.initialSumRemainingOrgs > 0 ? (org.allocatedFunds || 0) / this.initialSumRemainingOrgs : 0
 		})
+
+		// Normalize percentages to sum to 100% for orgs that still need funding
+		// This accounts for orgs that are already fully funded and removed from the pool
+		const remainingOrgs = this.orgs.filter(org => (org.need || 0) > 0)
+		const sumRemainingPercents = remainingOrgs.reduce((sum, org) => sum + (org.percent || 0), 0)
+
+		if(sumRemainingPercents > 0 && sumRemainingPercents < 1) {
+			remainingOrgs.forEach(org => {
+				org.percent = (org.percent || 0) / sumRemainingPercents
+			})
+		}
 	}
 
 	/**
 	 * Returns array of "rounds" representing the distribution of the remaining leverage
+	 * After minimum distribution (if applicable), performs a single round of proportional distribution
 	 */
 	getLeverageSpreadRounds() {
 		let nRounds = 1
 
-		while(this.leverageRemaining >= 1 && this._numFullyFundedOrgs() < this.orgs.length && nRounds <= 15) {
-
+		// First round: apply minimum if active, otherwise skip to proportional
+		if(this.themeLeverageSettings.minLeverageAmountActive) {
 			const round: LeverageRound = {
 				leverageRemaining: this.leverageRemaining,
 				sumRemainingOrgs: this.sumRemainingOrgs,
@@ -104,10 +116,8 @@ class Leverage {
 			const roundOrgs = this.orgs.map(org => {
 				const updatedOrg = this._orgRoundValues(org, nRounds)
 
-				// Decrease remaining leverage by amount awarded
 				trackers.givenThisRound = roundFloat(String(trackers.givenThisRound + (updatedOrg.roundFunds || 0)))
 
-				// Only orgs not yet funded are counted in the percentage ratio for next round
 				if((updatedOrg.need || 0) > 0) {
 					trackers.newSumRemainingOrgs = roundFloat(String(trackers.newSumRemainingOrgs + (updatedOrg.allocatedFunds || 0)))
 				}
@@ -121,6 +131,38 @@ class Leverage {
 			round.orgs = _.cloneDeep(roundOrgs)
 			this.rounds.push(round)
 			nRounds++
+		}
+
+		// Single round of proportional distribution using normalized percentages
+		if(this.leverageRemaining >= 1 && this._numFullyFundedOrgs() < this.orgs.length) {
+			const round: LeverageRound = {
+				leverageRemaining: this.leverageRemaining,
+				sumRemainingOrgs: this.sumRemainingOrgs,
+				orgs: [],
+			}
+
+			const trackers: RoundTracker = {
+				newSumRemainingOrgs: 0,
+				givenThisRound: 0,
+			}
+
+			const roundOrgs = this.orgs.map(org => {
+				const updatedOrg = this._orgRoundValues(org, nRounds)
+
+				trackers.givenThisRound = roundFloat(String(trackers.givenThisRound + (updatedOrg.roundFunds || 0)))
+
+				if((updatedOrg.need || 0) > 0) {
+					trackers.newSumRemainingOrgs = roundFloat(String(trackers.newSumRemainingOrgs + (updatedOrg.allocatedFunds || 0)))
+				}
+
+				return updatedOrg
+			})
+
+			this.sumRemainingOrgs = trackers.newSumRemainingOrgs
+			this.leverageRemaining = roundFloat(String(this.leverageRemaining - trackers.givenThisRound))
+
+			round.orgs = _.cloneDeep(roundOrgs)
+			this.rounds.push(round)
 		}
 
 		return this.rounds
