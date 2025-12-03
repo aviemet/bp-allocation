@@ -51,8 +51,15 @@ const AllocationsTable = ({ hideAdminFields = false }: AllocationsTableProps) =>
 			<StyledTable>
 				<TableHead>
 					<TableRow>
-						<TableCell width="30%">{ theme?.minLeverageAmountActive &&
-							<TopOffButton target={ theme?.minLeverageAmount } orgs={ orgsWithoutFavorite } />
+						<TableCell width="30%">{
+							theme?.minLeverageAmountActive
+								? (
+									<TopOffButton
+										target={ theme.minLeverageAmount }
+										orgs={ orgsWithoutFavorite }
+									/>
+								)
+								: null
 						}</TableCell>
 						<TableCell>Voted Amount</TableCell>
 						<TableCell>Funded</TableCell>

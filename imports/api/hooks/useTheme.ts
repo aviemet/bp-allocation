@@ -10,7 +10,7 @@ export const useTheme = () => {
 	const themeId = data?.themeId
 
 	return useTracker((): {
-		theme: (Pick<ThemeWithComputed, '_id'> & Partial<Omit<ThemeWithComputed, '_id'>>) | undefined
+		theme: ThemeWithComputed | undefined
 		themeLoading: boolean
 	} => {
 		if(!themeId) {
@@ -31,7 +31,7 @@ export const useTheme = () => {
 			}
 		}
 
-		function hasComputedProperties(theme: ThemeData): boolean {
+		function hasComputedProperties(theme: ThemeData): theme is ThemeWithComputed {
 			return "topOrgs" in theme
 		}
 
@@ -43,7 +43,7 @@ export const useTheme = () => {
 		}
 
 		return {
-			theme: themeRaw as unknown as Pick<ThemeWithComputed, '_id'> & Partial<Omit<ThemeWithComputed, '_id'>>,
+			theme: themeRaw,
 			themeLoading: false,
 		}
 	}, [themeId])
