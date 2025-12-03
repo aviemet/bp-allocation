@@ -1,5 +1,5 @@
 import Paper from "@mui/material/Paper"
-import { styled } from "@mui/material/styles"
+import { styled, keyframes } from "@mui/material/styles"
 import numeral from "numeral"
 
 import AwardEmblem from "../AwardEmblem"
@@ -13,13 +13,14 @@ interface AwardCardProps {
 	award?: AwardType
 	amount?: number
 	small?: boolean
+	shouldPulse?: boolean
 }
 
-const AwardCard = ({ org, award, amount, small }: AwardCardProps) => {
+const AwardCard = ({ org, award, amount, small, shouldPulse }: AwardCardProps) => {
 	const totalFunds = (org.allocatedFunds || 0) + (org.leverageFunds || 0)
 
 	return (
-		<OrgCard className={ small ? "small" : "" }>
+		<OrgCard className={ `${small ? "small" : ""} ${award === "awardee" ? "awardee" : ""} ${shouldPulse ? "pulse" : ""}`.trim() }>
 			<CardImage className={ small ? "small" : "" }>
 				<AwardEmblem
 					type={ award }
@@ -36,6 +37,15 @@ const AwardCard = ({ org, award, amount, small }: AwardCardProps) => {
 	)
 }
 
+const pulseAnimation = keyframes`
+	0%, 100% {
+		transform: scale(1.02);
+	}
+	50% {
+		transform: scale(1.075);
+	}
+`
+
 const OrgCard = styled(Paper)`
 	text-align: center;
 	background-color: ${COLORS.green};
@@ -49,6 +59,14 @@ const OrgCard = styled(Paper)`
 		flex-basis: 200px;
 		width: 200px;
 		height: 205px;
+	}
+
+	&.awardee {
+		transform: scale(1.05);
+	}
+
+	&.pulse {
+		animation: ${pulseAnimation} 10s ease-in-out infinite;
 	}
 `
 

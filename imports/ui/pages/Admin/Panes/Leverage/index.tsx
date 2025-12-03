@@ -11,7 +11,6 @@ import { useTheme, useOrgs } from "/imports/api/hooks"
 import LeverageObject from "/imports/lib/Leverage"
 
 import DistributeLeverageButton from "./DistributeLeverageButton"
-import DistributeMinimumButton from "./DistributeMinimumButton"
 import ResultsTable from "./ResultsTable"
 import RoundTable from "./RoundTable"
 import { ShowLeverageToggle } from "/imports/ui/components/Toggles"
@@ -26,10 +25,7 @@ const Leverage = ({ hideAdminFields }: LeverageProps) => {
 
 	if(!theme) return null
 
-	const leverage = new LeverageObject(topOrgs, Number(theme.leverageRemaining), {
-		minLeverageAmountActive: theme.minLeverageAmountActive || false,
-		minLeverageAmount: theme.minLeverageAmount || 0,
-	})
+	const leverage = new LeverageObject(topOrgs, Number(theme.leverageRemaining))
 
 	const rounds = leverage.getLeverageSpreadRounds()
 
@@ -54,8 +50,6 @@ const Leverage = ({ hideAdminFields }: LeverageProps) => {
 				<Stack direction="row" justifyContent="space-between" alignItems="center">
 					<ShowLeverageToggle />
 					<Stack direction="row" gap={ 2 }>
-
-						{ theme.minLeverageAmountActive && <DistributeMinimumButton /> }
 						<DistributeLeverageButton
 							leverageDistributed={ leverageDistributed }
 							rounds={ rounds }

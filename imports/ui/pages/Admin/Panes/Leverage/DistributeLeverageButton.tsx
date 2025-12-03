@@ -23,7 +23,6 @@ export const DistributeLeverageButton = ({ leverageDistributed, rounds }: Distri
 			await ThemeMethods.saveLeverageSpread.callAsync({
 				orgs: lastRound.orgs,
 				themeId: theme._id,
-				distributionType: "final",
 			})
 
 			// Hide the leverage bar after
@@ -60,9 +59,7 @@ export const DistributeLeverageButton = ({ leverageDistributed, rounds }: Distri
 		)
 	}
 
-	const canDistributeFinal = theme &&
-		!theme.finalLeverageDistributed &&
-		(!theme.minLeverageAmountActive || theme.minimumLeverageDistributed)
+	const canDistributeFinal = theme && !theme.finalLeverageDistributed
 
 	return (
 		<Button

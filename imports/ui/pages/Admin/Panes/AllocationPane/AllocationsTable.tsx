@@ -9,10 +9,12 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import numeral from "numeral"
+import { useMemo } from "react"
 
 import AllocationInputs from "./AllocationInputs"
-import { useSettings, useTheme, useOrgs, type OrgDataWithComputed } from "/imports/api/hooks"
+import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
+import TopOffButton from "/imports/ui/components/Buttons/TopOffButton"
 
 interface AllocationsTableProps {
 	hideAdminFields?: boolean
@@ -23,31 +25,35 @@ const AllocationsTable = ({ hideAdminFields = false }: AllocationsTableProps) =>
 	const { theme, themeLoading } = useTheme()
 	const { topOrgs, orgsLoading } = useOrgs()
 
-	const _calculateCrowdFavorite = (orgs: OrgDataWithComputed[]) => {
-		if(orgs.length === 0) return 0
+	const favoriteIndex = useMemo(() => {
+		if(topOrgs.length === 0) return 0
 
 		let favorite = 0
 
-		orgs.forEach((org, i) => {
-			const favoriteAmount = orgs[favorite].votedTotal
+		topOrgs.forEach((org, index) => {
+			const favoriteAmount = topOrgs[favorite].votedTotal
 			const currentAmount = org.votedTotal
 			if(currentAmount > favoriteAmount) {
-				favorite = i
+				favorite = index
 			}
 		})
 		return favorite
-	}
+	}, [topOrgs])
+
+	const orgsWithoutFavorite = useMemo(() => {
+		return topOrgs.filter((_org, index) => index !== favoriteIndex)
+	}, [topOrgs, favoriteIndex])
 
 	if(themeLoading || orgsLoading) return <Loading />
-
-	const favoriteIndex = _calculateCrowdFavorite(topOrgs)
 
 	return (
 		<TableContainer>
 			<StyledTable>
 				<TableHead>
 					<TableRow>
-						<TableCell width="30%"></TableCell>
+						<TableCell width="30%">{ theme?.minLeverageAmountActive &&
+							<TopOffButton target={ theme?.minLeverageAmount } orgs={ orgsWithoutFavorite } />
+						}</TableCell>
 						<TableCell>Voted Amount</TableCell>
 						<TableCell>Funded</TableCell>
 						<TableCell>Ask</TableCell>
