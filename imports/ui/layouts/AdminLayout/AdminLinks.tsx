@@ -93,6 +93,12 @@ const bottomLinks = [
 		route: (themeId: string) => `/pledges/${themeId}`,
 		newTab: true,
 	},
+	{
+		id: "pledges-overlay",
+		title: "Pledges Overlay",
+		route: (themeId: string) => `/pledges-overlay/${themeId}`,
+		newTab: true,
+	},
 ]
 
 interface LinksProps {

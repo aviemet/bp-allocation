@@ -43,6 +43,7 @@ const AnimationContainer = styled.div`
 		paint-order: stroke fill;
 		text-shadow: 2px 3px 1px #99F;
 		font-weight: 700;
+		text-align: center;
 
 		&.memberName {
 			font-size: 6.5rem;
@@ -61,6 +62,7 @@ const AnimationContainer = styled.div`
 const AnimationContent = styled.div`
 	opacity: 0;
 	animation: fade-in-scroll-up 10s;
+	text-align: center;
 `
 
 export default PledgeInfo

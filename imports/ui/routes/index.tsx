@@ -6,6 +6,7 @@ import FourOhFour from "./404"
 import { adminLayoutRoute, adminChildRoutes } from "./admin"
 import { kioskRoute } from "./kiosk"
 import { pledgesRoute } from "./pledges"
+import { pledgesOverlayRoute } from "./pledgesOverlay"
 import { presentationRoute, presentationPageRoute } from "./presentation"
 import { rootRoute } from "./rootRoute"
 import ShortRoute from "./ShortRoute"
@@ -70,6 +71,7 @@ const routeTree = rootRoute.addChildren([
 	kioskRoute,
 	simulationRoute,
 	pledgesRoute,
+	pledgesOverlayRoute,
 	notFoundRoute,
 ])
 

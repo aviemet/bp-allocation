@@ -72,16 +72,21 @@ const Form = <TValues extends FieldValues = FieldValues>({
 		if(!onUpdate) return
 
 		// eslint-disable-next-line react-hooks/incompatible-library
-		const subscription = formMethods.watch((_, { name }) => {
-			if(!name) return
-			const fieldName = name as FieldPath<TValues>
-			const singleValue: PathValue<TValues, typeof fieldName> = formMethods.getValues(fieldName)
-			const valueObject = ({ [fieldName]: singleValue } as unknown) as Partial<TValues>
-			const sanitizedData = sanitizePartial(valueObject)
-			if(formValidationContext) {
-				formValidationContext.validate(sanitizedData, { keys: [name] })
+		const subscription = formMethods.watch((values, { name }) => {
+			if(name) {
+				const fieldName = name as FieldPath<TValues>
+				const singleValue: PathValue<TValues, typeof fieldName> = formMethods.getValues(fieldName)
+				const valueObject = ({ [fieldName]: singleValue } as unknown) as Partial<TValues>
+				const sanitizedData = sanitizePartial(valueObject)
+				if(formValidationContext) {
+					formValidationContext.validate(sanitizedData, { keys: [name] })
+				}
+				onUpdate(sanitizedData)
+			} else {
+				const allValues = formMethods.getValues()
+				const sanitizedData = sanitizePartial(allValues as Partial<TValues>)
+				onUpdate(sanitizedData)
 			}
-			onUpdate(sanitizedData)
 		})
 		return () => subscription.unsubscribe()
 	}, [formMethods, onUpdate, sanitizePartial, formValidationContext])
