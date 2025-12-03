@@ -57,7 +57,9 @@ class Leverage {
 			orgClone.leverageFunds = 0
 
 			// Use the loop to calculate the funding total of all orgs (for percentage calculation)
-			sumRemainingOrgs = roundFloat(String(sumRemainingOrgs + (orgClone.allocatedFunds || 0)))
+			// Exclude topOff from the calculation
+			const fundingWithoutTopOff = (orgClone.allocatedFunds || 0) - (orgClone.topOff || 0)
+			sumRemainingOrgs = roundFloat(String(sumRemainingOrgs + fundingWithoutTopOff))
 
 			return orgClone
 		})
@@ -66,8 +68,10 @@ class Leverage {
 		this.sumRemainingOrgs = sumRemainingOrgs
 
 		// Calculate percentage once for each org based on initial funding
+		// Exclude topOff from the percentage calculation
 		this.orgs.forEach(org => {
-			org.percent = this.initialSumRemainingOrgs > 0 ? (org.allocatedFunds || 0) / this.initialSumRemainingOrgs : 0
+			const fundingWithoutTopOff = (org.allocatedFunds || 0) - (org.topOff || 0)
+			org.percent = this.initialSumRemainingOrgs > 0 ? fundingWithoutTopOff / this.initialSumRemainingOrgs : 0
 		})
 
 		// Normalize percentages to sum to 100% for orgs that still need funding

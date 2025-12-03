@@ -30,7 +30,7 @@ const Results = () => {
 	const topOrgIds = new Set(topOrgs.map(org => org._id))
 	const restOrgs = orgs.filter(org => !topOrgIds.has(org._id))
 
-	const saves = Array.isArray(theme?.saves) ? theme.saves.reduce((sum: number, save) => sum + (save?.amount || 0), 0) : 0
+	const saves = theme?.saves?.reduce((sum: number, save) => sum + (save?.amount || 0), 0) || 0
 	let total = (theme?.leverageTotal || 0) + saves + (settings?.resultsOffset || 0)
 
 	cloneDeep(orgs).forEach((org) => {
@@ -44,7 +44,7 @@ const Results = () => {
 
 	const getRunnerUpAmount = (org: OrgDataWithComputed): number => {
 		const baseAmount = (org.allocatedFunds || 0) + (org.leverageFunds || 0)
-		const consolation = theme.consolationActive ? (typeof theme.consolationAmount === "number" ? theme.consolationAmount : 0) : 0
+		const consolation = theme.consolationActive ? (theme.consolationAmount || 0) : 0
 		return baseAmount + consolation
 	}
 
