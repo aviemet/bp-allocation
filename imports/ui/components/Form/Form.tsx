@@ -1,4 +1,3 @@
-import { debounce } from "lodash"
 import { type ReactNode, useEffect, useCallback } from "react"
 import {
 	useForm,
@@ -53,14 +52,9 @@ const Form = <TValues extends FieldValues = FieldValues>({
 	const onSubmit = (data: TValues) => {
 		const sanitizedData = sanitizeSubmit(data)
 
-		if(!formValidationContext || formValidationContext.validate(sanitizedData)) {
+		if(!formValidationContext || formValidationContext.validate(sanitizedData, { keys: Object.keys(sanitizedData) })) {
 			if(onValidSubmit) {
-				const debouncedPledgeSubmit = debounce(() => {
-					onValidSubmit(sanitizedData, formMethods)
-				}, 1000, {
-					leading: true,
-				})
-				debouncedPledgeSubmit()
+				onValidSubmit(sanitizedData, formMethods)
 			}
 		} else {
 			formValidationContext.validationErrors().forEach((error: SchemaValidationError) => {

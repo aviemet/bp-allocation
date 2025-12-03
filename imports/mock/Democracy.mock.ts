@@ -1,6 +1,7 @@
 import { SettingsData, ThemeData } from "../api/db"
 import { uuid } from "../lib/utils"
-import orgTransformer from "/imports/server/transformers/orgTransformer"
+import orgTransformer, { calculateVotesFromRawOrg } from "/imports/server/transformers/orgTransformer"
+import { filterTopOrgs } from "/imports/lib/orgsMethods"
 
 const theme: ThemeData = {
 	_id: "ArtXBdjZYvYSWcW5N",
@@ -27,6 +28,8 @@ const theme: ThemeData = {
 	consolationAmount: 10000,
 	consolationActive: true,
 	leverageTotal: 1337842,
+	allowRunnersUpPledges: false,
+	leverageRunnersUpPledges: false,
 	saves: [],
 	createdAt: new Date("2019-10-28T17:28:59.960Z"),
 }
@@ -135,10 +138,19 @@ const orgs = [
 		leverageFunds: 0,
 		createdAt: "2019-10-28T20:27:08.429Z",
 	},
-].map(org => orgTransformer({
+]
+
+const orgsWithVotes = orgs.map(org => ({
+	...org,
+	votes: calculateVotesFromRawOrg(org, settings, theme),
+}))
+const preliminaryTopOrgs = filterTopOrgs(orgsWithVotes, theme)
+const topOrgIds = new Set(preliminaryTopOrgs.map(org => org._id))
+
+const transformedOrgs = orgs.map(org => orgTransformer({
 	...org,
 	createdAt: new Date(org.createdAt),
 	pledges: org.pledges?.map(p => ({ ...p, createdAt: new Date(p.createdAt) })),
-}, { theme, settings, memberThemes: [] }))
+}, { theme, settings, memberThemes: [], topOrgIds }))
 
-export default { orgs, theme, settings }
+export default { orgs: transformedOrgs, theme, settings }

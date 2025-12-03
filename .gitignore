@@ -5,6 +5,7 @@ privateSettings.json
 notes.txt
 .deploy
 yarn-error.log
+**/.DS_Store
 
 *~
 jsconfig.json

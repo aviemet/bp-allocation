@@ -257,3 +257,9 @@ The two data structures serve different purposes and should not be conflated:
 - MUI Autocomplete's `renderOption` passes props containing `key` 
 - Pattern: destructure `key` from props and pass it separately: `const { key, ...otherProps } = props; return <Component key={key} {...otherProps} />`
 - This applies to any render prop that receives React-generated props with keys
+
+### Question vs Action - CRITICAL RULE
+- **WHEN USER ASKS A QUESTION**: Answer the question only. Do NOT make code changes.
+- **WHEN USER ASKS FOR ACTION**: Then make the requested changes.
+- **NEVER**: Assume a question is a request to fix something - questions are requests for information, not action.
+- If a question points out a problem, answer where/how it's calculated/defined, don't fix it unless explicitly asked.

@@ -9,6 +9,7 @@ export interface OrgTransformerParams {
 	memberThemes: MemberTheme[]
 	fundsVotesByOrg?: Record<string, number>
 	chitVotesByOrg?: Record<string, number>
+	topOrgIds?: Set<string>
 }
 
 export function aggregateVotesByOrganization(memberThemes: MemberTheme[], useKioskFundsVoting: boolean, useKioskChitVoting: boolean): {
@@ -39,6 +40,25 @@ export function aggregateVotesByOrganization(memberThemes: MemberTheme[], useKio
 	return { fundsVotesByOrg, chitVotesByOrg }
 }
 
+export function calculateVotesFromRawOrg(
+	org: OrgData,
+	settings: SettingsData,
+	theme: ThemeData,
+	chitVotesByOrg?: Record<string, number>
+): number {
+	let votes = 0
+	if(settings.useKioskChitVoting && chitVotesByOrg) {
+		votes = chitVotesByOrg[org._id] || 0
+	} else if(theme && org.chitVotes) {
+		if(org.chitVotes.count) {
+			votes = org.chitVotes.count
+		} else if(org.chitVotes.weight && theme.chitWeight) {
+			votes = org.chitVotes.weight / theme.chitWeight
+		}
+	}
+	return roundFloat(String(votes), 1)
+}
+
 export interface OrgWithComputed extends OrgData {
 	save: number
 	pledgeTotal: number
@@ -64,9 +84,13 @@ const OrgTransformer = (doc: OrgData, params: OrgTransformerParams) => {
 	// Total of funds pledged for this org multiplied by the match ratio
 	let pledgeTotal = 0
 	if(params.theme && doc.pledges) {
+		const isRunnerUp = params.topOrgIds ? !params.topOrgIds.has(doc._id) : false
+		const shouldApplyLeverage = !isRunnerUp || params.theme.leverageRunnersUpPledges
+		const matchRatio = shouldApplyLeverage ? (params.theme.matchRatio || 0) : 0
+
 		pledgeTotal = doc.pledges.reduce(
 			(sum, pledge) => { return sum + (pledge.amount || 0) },
-			0) * (params.theme.matchRatio || 0)
+			0) * matchRatio
 	}
 
 	// Voted total

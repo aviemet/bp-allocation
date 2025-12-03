@@ -2,7 +2,6 @@ import styled from "@emotion/styled"
 import numeral from "numeral"
 import { COLORS } from "/imports/lib/global"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
-import { type ThemeData } from "/imports/api/db"
 
 interface AwardImgProps {
 	show: boolean
@@ -15,15 +14,14 @@ const AwardImg = ({ show }: AwardImgProps) => {
 
 interface BarProps {
 	org: OrgDataWithComputed
-	theme: ThemeData
 	savesVisible: boolean
 }
 
-const Bar = (props: BarProps) => {
-	let shownFunds = props.org.allocatedFunds + (props.org.leverageFunds || 0)
-	if(!props.savesVisible) shownFunds -= props.org.save
+const Bar = ({ org, savesVisible }: BarProps) => {
+	let shownFunds = org.allocatedFunds + (org.leverageFunds || 0)
+	if(!savesVisible) shownFunds -= org.save
 
-	let height = Math.min(Math.round((shownFunds / props.org.ask) * 100), 100)
+	let height = Math.min(Math.round((shownFunds / org.ask) * 100), 100)
 	let backgroundColor = height === 100 ? COLORS.green : COLORS.blue
 
 	if(height === 0) {

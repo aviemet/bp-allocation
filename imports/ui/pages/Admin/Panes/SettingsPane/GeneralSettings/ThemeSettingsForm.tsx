@@ -1,7 +1,10 @@
 import {
+	FormControl,
 	FormControlLabel,
+	FormLabel,
 	Grid,
 	InputAdornment,
+	Paper,
 } from "@mui/material"
 import { useState } from "react"
 import { ThemeMethods } from "/imports/api/methods"
@@ -31,17 +34,27 @@ const SettingsPane = () => {
 	}
 
 	const onSubmit = async (data: Record<string, unknown>) => {
-		if(!theme) return
+		if(!theme) {
+			setFormStatus(STATUS.ERROR)
+			return
+		}
+
+		const themeId = theme._id
+		if(!themeId) {
+			setFormStatus(STATUS.ERROR)
+			return
+		}
+
 		setFormStatus(STATUS.SUBMITTING)
 		try {
 			await ThemeMethods.update.callAsync({
-				id: theme._id,
+				id: themeId,
 				data: data,
 			})
 			setFormStatus(STATUS.SUCCESS)
 		} catch (err) {
 			console.error(err)
-			setFormStatus(STATUS.READY)
+			setFormStatus(STATUS.ERROR)
 		}
 	}
 
@@ -68,6 +81,7 @@ const SettingsPane = () => {
 				minLeverageAmount: theme.minLeverageAmount || "",
 				minLeverageAmountActive: theme.minLeverageAmountActive || false,
 				allowRunnersUpPledges: theme.allowRunnersUpPledges || false,
+				leverageRunnersUpPledges: theme.leverageRunnersUpPledges || false,
 			} }
 		>
 			<Grid container spacing={ 2 }>
@@ -165,12 +179,29 @@ const SettingsPane = () => {
 					/>
 				</Grid>
 
-				<Grid size={ { xs: 12, md: 6 } }>
-					{ /* Allow Runners Up Pledges */ }
-					<FormControlLabel
-						label="Allow Pledging to Runners Up"
-						control={ <Switch name="allowRunnersUpPledges" /> }
-					/>
+				<Grid size={ { xs: 12 } }>
+					<Paper sx={ { p: 2 } }>
+						<FormControl component="fieldset" variant="standard" fullWidth>
+							<FormLabel component="legend">Runners Up Pledges</FormLabel>
+							<Grid container spacing={ 2 } sx={ { mt: 1 } }>
+								<Grid size={ { xs: 12, md: 6 } }>
+									{ /* Allow Runners Up Pledges */ }
+									<FormControlLabel
+										label="Allow Pledging to Runners Up"
+										control={ <Switch name="allowRunnersUpPledges" /> }
+									/>
+								</Grid>
+
+								<Grid size={ { xs: 12, md: 6 } }>
+									{ /* Leverage Runners Up Pledges */ }
+									<FormControlLabel
+										label="Apply Leverage to Runners Up Pledges"
+										control={ <Switch name="leverageRunnersUpPledges" /> }
+									/>
+								</Grid>
+							</Grid>
+						</FormControl>
+					</Paper>
 				</Grid>
 
 				<Grid size={ { xs: 12 } } sx={ { textAlign: "right" } }>

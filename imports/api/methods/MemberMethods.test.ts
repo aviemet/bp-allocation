@@ -27,7 +27,13 @@ describe("Member Methods", function() {
 		orgIds = []
 
 		themeData = {
-			title: faker.company.buzzNoun(),
+			title: (() => {
+				let title = faker.company.buzzNoun()
+				while(title.length < 3) {
+					title = faker.company.buzzNoun()
+				}
+				return title
+			})(),
 			leverage: 1200000,
 		}
 

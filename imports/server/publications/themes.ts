@@ -5,7 +5,7 @@ import { filterTopOrgs } from "/imports/lib/orgsMethods"
 import { createDebouncedFunction } from "/imports/lib/utils"
 
 import { Themes, PresentationSettings, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
-import { ThemeTransformer, OrgTransformer, aggregateVotesByOrganization } from "/imports/server/transformers"
+import { ThemeTransformer, OrgTransformer, aggregateVotesByOrganization, calculateVotesFromRawOrg } from "/imports/server/transformers"
 import { type ThemeTransformerParams } from "/imports/server/transformers/themeTransformer"
 
 const themeObserver = registerObserver((doc: ThemeData, params: ThemeTransformerParams) => {
@@ -32,7 +32,15 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 		settings.useKioskChitVoting || false
 	)
 	const orgs = await Organizations.find({ theme: theme._id }).fetchAsync()
-	const transformedOrgs = orgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg }))
+
+	const orgsWithVotes = orgs.map(org => ({
+		...org,
+		votes: calculateVotesFromRawOrg(org, settings, theme, chitVotesByOrg),
+	}))
+	const preliminaryTopOrgs = filterTopOrgs(orgsWithVotes, theme)
+	const topOrgIds = new Set(preliminaryTopOrgs.map(org => org._id))
+
+	const transformedOrgs = orgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg, topOrgIds }))
 	const topOrgs = filterTopOrgs(transformedOrgs, theme)
 
 	const themeObserverCallbacks = themeObserver("themes", publisher, { topOrgs, allOrgs: transformedOrgs, memberThemes, settings })
@@ -50,7 +58,15 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 				settings.useKioskChitVoting || false
 			)
 			const updatedOrgs = await Organizations.find({ theme: theme._id }).fetchAsync()
-			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme: updatedTheme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg }))
+
+			const updatedOrgsWithVotes = updatedOrgs.map(org => ({
+				...org,
+				votes: calculateVotesFromRawOrg(org, settings, updatedTheme, chitVotesByOrg),
+			}))
+			const updatedPreliminaryTopOrgs = filterTopOrgs(updatedOrgsWithVotes, updatedTheme)
+			const updatedTopOrgIds = new Set(updatedPreliminaryTopOrgs.map(org => org._id))
+
+			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme: updatedTheme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg, topOrgIds: updatedTopOrgIds }))
 			const updatedTopOrgs = filterTopOrgs(updatedTransformedOrgs, updatedTheme)
 			const transformed = ThemeTransformer(updatedTheme, { topOrgs: updatedTopOrgs, allOrgs: updatedTransformedOrgs, memberThemes, settings })
 			publisher.changed("themes", theme._id, transformed)
