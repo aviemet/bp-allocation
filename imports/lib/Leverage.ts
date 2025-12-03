@@ -11,6 +11,7 @@ interface OrganizationWithFunding extends Organization {
 	leverageFunds?: number
 	roundFunds?: number
 	percent?: number
+	votedTotal?: number
 }
 
 interface RoundTracker {
@@ -43,6 +44,7 @@ class Leverage {
 		this.leverageRemaining = leverageRemaining
 
 		let sumRemainingOrgs = 0
+		let totalAmountFromVotes = 0
 		this.orgs = orgs.map(org => {
 			const orgClone = { ...org }
 
@@ -50,6 +52,7 @@ class Leverage {
 			orgClone.save = org.save
 			orgClone.pledgeTotal = org.pledgeTotal
 			orgClone.amountFromVotes = org.amountFromVotes
+			orgClone.votedTotal = org.votedTotal
 			orgClone.allocatedFunds = org.allocatedFunds
 			orgClone.need = org.need
 
@@ -59,7 +62,8 @@ class Leverage {
 			// Use the loop to calculate the funding total of all orgs (for percentage calculation)
 			// Exclude topOff from the calculation
 			const fundingWithoutTopOff = (orgClone.allocatedFunds || 0) - (orgClone.topOff || 0)
-			sumRemainingOrgs = roundFloat(String(sumRemainingOrgs + fundingWithoutTopOff))
+			sumRemainingOrgs = roundFloat(sumRemainingOrgs + fundingWithoutTopOff)
+			totalAmountFromVotes = roundFloat(totalAmountFromVotes + (org.votedTotal || 0))
 
 			return orgClone
 		})
@@ -67,11 +71,10 @@ class Leverage {
 		this.initialSumRemainingOrgs = sumRemainingOrgs
 		this.sumRemainingOrgs = sumRemainingOrgs
 
-		// Calculate percentage once for each org based on initial funding
-		// Exclude topOff from the percentage calculation
+		// Calculate percentage once for each org based on round 2 votes
+		// Percentage is each org's votedTotal divided by total of all votedTotals
 		this.orgs.forEach(org => {
-			const fundingWithoutTopOff = (org.allocatedFunds || 0) - (org.topOff || 0)
-			org.percent = this.initialSumRemainingOrgs > 0 ? fundingWithoutTopOff / this.initialSumRemainingOrgs : 0
+			org.percent = totalAmountFromVotes > 0 ? (org.votedTotal || 0) / totalAmountFromVotes : 0
 		})
 
 		// Normalize percentages to sum to 100% for orgs that still need funding
@@ -79,7 +82,7 @@ class Leverage {
 		const remainingOrgs = this.orgs.filter(org => (org.need || 0) > 0)
 		const sumRemainingPercents = remainingOrgs.reduce((sum, org) => sum + (org.percent || 0), 0)
 
-		if(sumRemainingPercents > 0 && sumRemainingPercents < 1) {
+		if(sumRemainingPercents > 0) {
 			remainingOrgs.forEach(org => {
 				org.percent = (org.percent || 0) / sumRemainingPercents
 			})

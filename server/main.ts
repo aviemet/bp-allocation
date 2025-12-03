@@ -9,6 +9,7 @@ import textVotingLinkToMembers from "/imports/server/sms"
 import emailVotingLinkToMembers from "/imports/server/email"
 
 import "/imports/api/methods"
+import "/imports/api/db"
 
 // Meteor publication definitions
 import "/imports/server/publications"
