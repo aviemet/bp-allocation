@@ -174,7 +174,7 @@ const SettingsPane = () => {
 				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Minimum Leverage Amount Active */ }
 					<FormControlLabel
-						label="Use Minimum Leverage Amount"
+						label="Use Minimum Topup Amount"
 						control={ <Switch name="minLeverageAmountActive" /> }
 					/>
 				</Grid>
@@ -195,7 +195,7 @@ const SettingsPane = () => {
 								<Grid size={ { xs: 12, md: 6 } }>
 									{ /* Leverage Runners Up Pledges */ }
 									<FormControlLabel
-										label="Apply Leverage to Runners Up Pledges"
+										label="Match Runners Up Pledges"
 										control={ <Switch name="leverageRunnersUpPledges" /> }
 									/>
 								</Grid>

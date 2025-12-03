@@ -2,6 +2,7 @@ import { Box, Container, Typography } from "@mui/material"
 import { styled } from "@mui/system"
 import { cloneDeep } from "lodash"
 import numeral from "numeral"
+import { useEffect, useState } from "react"
 import { useTheme, useSettings, useOrgs } from "/imports/api/hooks"
 
 import AwardCard from "/imports/ui/components/Cards/AwardCard"
@@ -12,13 +13,24 @@ const Results = () => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
 	const { orgs, topOrgs } = useOrgs()
+	const [shouldPulse, setShouldPulse] = useState(false)
+
+	useEffect(() => {
+		const pulseTimer = setTimeout(() => {
+			setShouldPulse(true)
+		}, 2000)
+
+		return () => {
+			clearTimeout(pulseTimer)
+		}
+	}, [])
 
 	if(!theme) return <Loading />
 
 	const topOrgIds = new Set(topOrgs.map(org => org._id))
 	const restOrgs = orgs.filter(org => !topOrgIds.has(org._id))
 
-	const saves = theme?.saves?.reduce((sum, save) => sum + (save?.amount || 0), 0) || 0
+	const saves = Array.isArray(theme?.saves) ? theme.saves.reduce((sum: number, save) => sum + (save?.amount || 0), 0) : 0
 	let total = (theme?.leverageTotal || 0) + saves + (settings?.resultsOffset || 0)
 
 	cloneDeep(orgs).forEach((org) => {
@@ -32,11 +44,9 @@ const Results = () => {
 
 	const getRunnerUpAmount = (org: OrgDataWithComputed): number => {
 		const baseAmount = (org.allocatedFunds || 0) + (org.leverageFunds || 0)
-		const consolation = theme.consolationActive ? (theme.consolationAmount || 0) : 0
+		const consolation = theme.consolationActive ? (typeof theme.consolationAmount === "number" ? theme.consolationAmount : 0) : 0
 		return baseAmount + consolation
 	}
-
-	// let awardeesColumns = awardees.length > 3 ? parseInt(awardees.length / 2) + awardees.length % 2 : false
 
 	return (
 		<ResultsPageContainer maxWidth="xl" sx={ { p: 2 } }>
@@ -50,12 +60,14 @@ const Results = () => {
 					<Typography component="h2" variant="h3" sx={ { marginBottom: 2 } }>Finalists</Typography>
 					<AwardsCards>
 						{ topOrgs.map((org) => {
+							const awardType = getAwardType(org)
 							return (
 								<AwardCard
 									key={ org._id }
 									org={ org }
-									award={ getAwardType(org) }
+									award={ awardType }
 									amount={ (org?.allocatedFunds || 0) + org.leverageFunds }
+									shouldPulse={ shouldPulse && awardType === "awardee" }
 								/>
 							)
 						}) }
@@ -67,13 +79,15 @@ const Results = () => {
 						<Typography component="h2" variant="h3" sx={ { marginBottom: 2 } }>Runners Up</Typography>
 						<AwardsCards>
 							{ restOrgs.map((org) => {
+								const awardType = getAwardType(org)
 								return (
 									<AwardCard
 										key={ org._id }
 										org={ org }
-										award={ getAwardType(org) }
+										award={ awardType }
 										amount={ getRunnerUpAmount(org) }
 										small={ true }
+										shouldPulse={ shouldPulse && awardType === "awardee" }
 									/>
 								)
 							}) }

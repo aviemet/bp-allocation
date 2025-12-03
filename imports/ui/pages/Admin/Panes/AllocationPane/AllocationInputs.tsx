@@ -1,6 +1,5 @@
 import FavoriteIcon from "@mui/icons-material/Favorite"
 import {
-	Button,
 	Stack,
 	TableRow,
 	TableCell,
@@ -11,6 +10,7 @@ import numeral from "numeral"
 import { FocusEvent, useState } from "react"
 import { useSettings, type OrganizationWithComputed } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
+import TopOffButton from "/imports/ui/components/Buttons/TopOffButton"
 
 interface TabInfo {
 	index: number
@@ -37,10 +37,6 @@ const AllocationInputs = ({ org, crowdFavorite, tabInfo, hideAdminFields }: Allo
 	}
 
 	const reachedGoal = org.need - org.leverageFunds <= 0
-	const handleTopoff = async () => {
-		const amount = org.topOff > 0 ? 0 : org.need - org.leverageFunds
-		await OrganizationMethods.update.callAsync({ id: org._id, data: { topOff: amount } })
-	}
 
 	return (
 		<TableRow className={ reachedGoal ? "make-me-stand-out" : "" }>
@@ -86,16 +82,7 @@ const AllocationInputs = ({ org, crowdFavorite, tabInfo, hideAdminFields }: Allo
 			{ /* Actions */ }
 			{ !hideAdminFields &&
 				<TableCell>
-					<Button
-						onClick={ handleTopoff }
-						color={ crowdFavorite ? "primary" : "inherit" }
-						sx={ {
-							width: "100%",
-							whiteSpace: "nowrap",
-						} }
-					>
-						{ org.topOff > 0 ? "Undo " : "" }Top Off
-					</Button>
+					{ crowdFavorite && <TopOffButton orgs={ org } /> }
 				</TableCell>
 			}
 		</TableRow>

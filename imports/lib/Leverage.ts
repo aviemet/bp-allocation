@@ -24,18 +24,12 @@ export interface LeverageRound {
 	orgs: OrganizationWithFunding[]
 }
 
-interface ThemeLeverageSettings {
-	minLeverageAmountActive: boolean
-	minLeverageAmount: number
-}
-
 class Leverage {
 	rounds: LeverageRound[] = []
 	leverageRemaining: number
 	orgs: OrganizationWithFunding[]
 	sumRemainingOrgs: number
 	initialSumRemainingOrgs: number
-	themeLeverageSettings: ThemeLeverageSettings
 
 	/**
 	 * Clone top orgs (so no reference issues)
@@ -44,14 +38,9 @@ class Leverage {
 	 */
 	constructor(
 		orgs: OrganizationWithFunding[],
-		leverageRemaining: number,
-		themeLeverageSettings: ThemeLeverageSettings = {
-			minLeverageAmountActive: false,
-			minLeverageAmount: 0,
-		}) {
+		leverageRemaining: number) {
 
 		this.leverageRemaining = leverageRemaining
-		this.themeLeverageSettings = themeLeverageSettings
 
 		let sumRemainingOrgs = 0
 		this.orgs = orgs.map(org => {
@@ -95,44 +84,9 @@ class Leverage {
 
 	/**
 	 * Returns array of "rounds" representing the distribution of the remaining leverage
-	 * After minimum distribution (if applicable), performs a single round of proportional distribution
+	 * Performs a single round of proportional distribution using normalized percentages
 	 */
 	getLeverageSpreadRounds() {
-		let nRounds = 1
-
-		// First round: apply minimum if active, otherwise skip to proportional
-		if(this.themeLeverageSettings.minLeverageAmountActive) {
-			const round: LeverageRound = {
-				leverageRemaining: this.leverageRemaining,
-				sumRemainingOrgs: this.sumRemainingOrgs,
-				orgs: [],
-			}
-
-			const trackers: RoundTracker = {
-				newSumRemainingOrgs: 0,
-				givenThisRound: 0,
-			}
-
-			const roundOrgs = this.orgs.map(org => {
-				const updatedOrg = this._orgRoundValues(org, nRounds)
-
-				trackers.givenThisRound = roundFloat(String(trackers.givenThisRound + (updatedOrg.roundFunds || 0)))
-
-				if((updatedOrg.need || 0) > 0) {
-					trackers.newSumRemainingOrgs = roundFloat(String(trackers.newSumRemainingOrgs + (updatedOrg.allocatedFunds || 0)))
-				}
-
-				return updatedOrg
-			})
-
-			this.sumRemainingOrgs = trackers.newSumRemainingOrgs
-			this.leverageRemaining = roundFloat(String(this.leverageRemaining - trackers.givenThisRound))
-
-			round.orgs = _.cloneDeep(roundOrgs)
-			this.rounds.push(round)
-			nRounds++
-		}
-
 		// Single round of proportional distribution using normalized percentages
 		if(this.leverageRemaining >= 1 && this._numFullyFundedOrgs() < this.orgs.length) {
 			const round: LeverageRound = {
@@ -147,7 +101,7 @@ class Leverage {
 			}
 
 			const roundOrgs = this.orgs.map(org => {
-				const updatedOrg = this._orgRoundValues(org, nRounds)
+				const updatedOrg = this._orgRoundValues(org)
 
 				trackers.givenThisRound = roundFloat(String(trackers.givenThisRound + (updatedOrg.roundFunds || 0)))
 
@@ -168,27 +122,16 @@ class Leverage {
 		return this.rounds
 	}
 
-	_orgRoundValues(org: OrganizationWithFunding, nRounds: number) {
+	_orgRoundValues(org: OrganizationWithFunding) {
 		/** DEFAULTS **/
 		org.roundFunds = 0 // Amount allocated to org this round
 
-		const shouldApplyMinimum = this.themeLeverageSettings.minLeverageAmountActive && nRounds === 1
-
-		if(shouldApplyMinimum) {
-			const minimumTarget = this.themeLeverageSettings.minLeverageAmount
-			const currentAllocated = org.allocatedFunds || 0
-			const need = org.need || 0
-			const remainingLeverage = this.leverageRemaining
-			const difference = Math.max(minimumTarget - currentAllocated, 0)
-			org.roundFunds = roundFloat(String(Math.min(difference, need, remainingLeverage)))
-		} else {
-			// Use the pre-calculated percentage (computed once in constructor)
-			// Give funds for this round using the fixed percentage
-			org.roundFunds = roundFloat(String(Math.min(
-				(org.percent || 0) * this.leverageRemaining,
-				org.need || 0
-			)))
-		}
+		// Use the pre-calculated normalized percentage (computed once in constructor)
+		// Give funds for this round using the fixed percentage
+		org.roundFunds = roundFloat(String(Math.min(
+			(org.percent || 0) * this.leverageRemaining,
+			org.need || 0
+		)))
 
 		// Accumulate the running total of all accrued funds during leverage rounds
 		org.leverageFunds = roundFloat(String((org.leverageFunds || 0) + (org.roundFunds || 0)))

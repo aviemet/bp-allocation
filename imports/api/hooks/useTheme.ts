@@ -10,7 +10,7 @@ export const useTheme = () => {
 	const themeId = data?.themeId
 
 	return useTracker((): {
-		theme: Partial<ThemeWithComputed> | undefined
+		theme: (Pick<ThemeWithComputed, '_id'> & Partial<Omit<ThemeWithComputed, '_id'>>) | undefined
 		themeLoading: boolean
 	} => {
 		if(!themeId) {
@@ -43,7 +43,7 @@ export const useTheme = () => {
 		}
 
 		return {
-			theme: themeRaw as Partial<ThemeWithComputed>,
+			theme: themeRaw as unknown as Pick<ThemeWithComputed, '_id'> & Partial<Omit<ThemeWithComputed, '_id'>>,
 			themeLoading: false,
 		}
 	}, [themeId])

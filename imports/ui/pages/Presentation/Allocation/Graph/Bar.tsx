@@ -51,8 +51,8 @@ const GraphBar = styled.div`
 	background-color: ${COLORS.blue};
 
 	animation: animate-bar 4s 1 ease-out;
-	transition: height 4s ease-out,
-	            background-color 5s ease-in;
+	transition: height 4s ease-out;
+	background-color: 5s ease-in;
 `
 
 const Pledged = styled.span`

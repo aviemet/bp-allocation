@@ -13,8 +13,9 @@ const ReplayPledgeAnimationButton = ({ pledge }: ReplayPledgeAnimationButtonProp
 
 	const handleClick = () => {
 		if(!theme) return
+
 		PledgeAnimationMethods.enqueuePledgeAnimation.callAsync({
-			themeId: theme._id,
+			themeId: theme._id!,
 			pledgeId: pledge._id,
 			orgId: pledge.org._id,
 			orgTitle: pledge.org.title,
