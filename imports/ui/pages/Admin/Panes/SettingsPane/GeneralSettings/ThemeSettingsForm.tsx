@@ -34,17 +34,27 @@ const SettingsPane = () => {
 	}
 
 	const onSubmit = async (data: Record<string, unknown>) => {
-		if(!theme) return
+		if(!theme) {
+			setFormStatus(STATUS.ERROR)
+			return
+		}
+
+		const themeId = theme._id
+		if(!themeId) {
+			setFormStatus(STATUS.ERROR)
+			return
+		}
+
 		setFormStatus(STATUS.SUBMITTING)
 		try {
 			await ThemeMethods.update.callAsync({
-				id: theme._id,
+				id: themeId,
 				data: data,
 			})
 			setFormStatus(STATUS.SUCCESS)
 		} catch (err) {
 			console.error(err)
-			setFormStatus(STATUS.READY)
+			setFormStatus(STATUS.ERROR)
 		}
 	}
 

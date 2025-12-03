@@ -34,6 +34,7 @@ const ResultsTable = ({ round }: ResultsTableProps) => {
 		totals.total += (org.allocatedFunds || 0) + (org.leverageFunds || 0)
 		totals.needed += org.need || 0
 	})
+	const highlightColor = "rgba(87, 160, 82, 0.25)"
 
 	return (
 		<Table>
@@ -42,7 +43,7 @@ const ResultsTable = ({ round }: ResultsTableProps) => {
 					<TableCell>Organization</TableCell>
 					<TableCell>Leverage Spread</TableCell>
 					<TableCell>Ask</TableCell>
-					<TableCell>Total Earned</TableCell>
+					<TableCell sx={ { backgroundColor: highlightColor } }>Total Earned</TableCell>
 					<TableCell>Still Needed</TableCell>
 				</TableRow>
 			</TableHead>
@@ -53,7 +54,7 @@ const ResultsTable = ({ round }: ResultsTableProps) => {
 						<TableCell>{ org.title }</TableCell>
 						<TableCell>{ (org.leverageFunds || 0) === 0 ? "-" : numeral(org.leverageFunds || 0).format("$0,0.00") }</TableCell>
 						<TableCell>{ numeral(org.ask).format("$0,0.00") }</TableCell>
-						<TableCell>{ numeral((org.allocatedFunds || 0) + (org.leverageFunds || 0)).format("$0,0.00") }</TableCell>
+						<TableCell sx={ { backgroundColor: highlightColor } }>{ numeral((org.allocatedFunds || 0) + (org.leverageFunds || 0)).format("$0,0.00") }</TableCell>
 						<TableCell>{ (org.need || 0) === 0 ? <CheckIcon color="success" /> : numeral(org.need || 0).format("$0,0.00") }</TableCell>
 					</TableRow>
 				)) }
@@ -64,7 +65,7 @@ const ResultsTable = ({ round }: ResultsTableProps) => {
 					<TableCell align="right">Totals:</TableCell>
 					<TableCell>{ numeral(totals.spread).format("$0,0.00") }</TableCell>
 					<TableCell></TableCell>
-					<TableCell>{ numeral(totals.total).format("$0,0.00") }</TableCell>
+					<TableCell sx={ { backgroundColor: highlightColor } }>{ numeral(totals.total).format("$0,0.00") }</TableCell>
 					<TableCell>{ numeral(totals.needed).format("$0,0.00") }</TableCell>
 				</TableRow>
 			</TableFooter>

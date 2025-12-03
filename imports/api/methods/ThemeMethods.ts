@@ -19,6 +19,7 @@ const ThemeMethods = {
 		async run(data: Partial<ThemeData>) {
 			if(!data) return null
 
+
 			if(!data.quarter) {
 				const today = new Date()
 				data.quarter = `${format(today, "y")}Q${format(today, "Q")}`

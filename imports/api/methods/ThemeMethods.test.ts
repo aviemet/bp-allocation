@@ -6,7 +6,13 @@ import { Themes, Organizations, ThemeData } from "/imports/api/db"
 import { resetDatabase } from "../../test-support/resetDatabase"
 
 const themeData: { title: string, leverage: number, _id?: string } = {
-	title: faker.company.buzzNoun(),
+	title: (() => {
+		let title = faker.company.buzzNoun()
+		while(title.length < 3) {
+			title = faker.company.buzzNoun()
+		}
+		return title
+	})(),
 	leverage: 1200000,
 }
 

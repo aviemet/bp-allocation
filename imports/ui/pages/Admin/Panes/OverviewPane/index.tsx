@@ -1,6 +1,5 @@
 import {
 	Box,
-	Chip,
 	Stack,
 	Table,
 	TableContainer,
@@ -11,8 +10,6 @@ import {
 	TableCell,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { findIndex } from "lodash"
-import numeral from "numeral"
 
 import { roundFloat } from "/imports/lib/utils"
 import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
@@ -24,9 +21,37 @@ import ExportChitVotes from "/imports/ui/components/Buttons/ExportChitVotes"
 const Overview = () => {
 	const { settings, settingsLoading } = useSettings()
 	const { theme, themeLoading } = useTheme()
-	const { topOrgs, orgsLoading } = useOrgs()
+	const { orgs, topOrgs, orgsLoading } = useOrgs()
 
 	if(themeLoading || orgsLoading || settingsLoading || !theme) return <Loading />
+
+	const topOrgIds = new Set(topOrgs.map(org => org._id))
+	const remainingOrgs = orgs.filter(org => !topOrgIds.has(org._id))
+
+	const sortedTopOrgs = [...topOrgs].sort((a, b) => b.votes - a.votes)
+	const sortedRemainingOrgs = [...remainingOrgs].sort((a, b) => b.votes - a.votes)
+
+	const renderOrgRow = (org: typeof orgs[0], isTopOrg: boolean) => {
+		const consolationValue = isTopOrg
+			? 0
+			: (theme.consolationActive ? (theme.consolationAmount || 0) : 0)
+
+		return (
+			<TableRow key={ org._id }>
+				<TableCell>
+					<Box>{ org.title }</Box>
+				</TableCell>
+				<TableCell align="center">{ roundFloat(String(org.votes), 1) }</TableCell>
+				<MoneyCell>{ org.votedTotal || 0 }</MoneyCell>
+				<MoneyCell>{ consolationValue }</MoneyCell>
+				<MoneyCell>{ org.topOff }</MoneyCell>
+				<MoneyCell>{ org.pledges?.reduce((sum, pledge) => sum + pledge.amount, 0) || 0 }</MoneyCell>
+				<MoneyCell>{ org.leverageFunds }</MoneyCell>
+				<MoneyCell>{ org.allocatedFunds + org.leverageFunds + consolationValue }</MoneyCell>
+			</TableRow>
+		)
+	}
+
 	return (
 		<>
 			<TableContainer style={ {
@@ -50,33 +75,28 @@ const Overview = () => {
 							<TableCell></TableCell>
 							<TableCell>R1 (chits)<br/>{ settings?.useKioskChitVoting && `[${theme.chitVotesCast}/${theme.totalMembers}]` }</TableCell>
 							<TableCell>R2 ($)<br/>{ settings?.useKioskFundsVoting && `[${theme.fundsVotesCast}/${theme.totalMembers}]` }</TableCell>
-							<TableCell>Saves</TableCell>
+							<TableCell>Consolation</TableCell>
 							<TableCell>Top Off</TableCell>
-							<TableCell>Pledges</TableCell>
+							<TableCell>Pledges (x{ theme.matchRatio })</TableCell>
 							<TableCell>Leverage</TableCell>
 							<TableCell>Total<br/>Allocated</TableCell>
 						</TableRow>
 					</TableHead>
 
 					<TableBody>
-						{ topOrgs.map((org, i) => {
-							const saveIndex = findIndex(theme.saves, ["org", org._id])
-							return (
-								<TableRow key={ i }>
-									<TableCell>
-										<Box>{ org.title }</Box>
-										<Box><Chip label={ `Ask: ${numeral(org.ask).format("$0,0")}` } /></Box>
-									</TableCell>
-									<TableCell align="center">{ roundFloat(String(org.votes), 1) }</TableCell>
-									<MoneyCell>{ org.votedTotal || 0 }</MoneyCell>
-									<MoneyCell>{ saveIndex >= 0 ? (theme.saves?.[saveIndex]?.amount || 0) : 0 }</MoneyCell>
-									<MoneyCell>{ org.topOff }</MoneyCell>
-									<MoneyCell>{ org.pledges?.reduce((sum, pledge) => sum + pledge.amount, 0) || 0 }</MoneyCell>
-									<MoneyCell>{ org.leverageFunds }</MoneyCell>
-									<MoneyCell>{ org.allocatedFunds + org.leverageFunds }</MoneyCell>
-								</TableRow>
-							)
-						}) }
+						{ sortedTopOrgs.map((org) => renderOrgRow(org, true)) }
+						{ sortedRemainingOrgs.length > 0 && (
+							<TableRow>
+								<TableCell colSpan={ 8 } sx={ {
+									backgroundColor: "rgba(0, 0, 0, 0.1)",
+									borderTop: "2px solid rgba(0, 0, 0, 0.2)",
+									borderBottom: "2px solid rgba(0, 0, 0, 0.2)",
+									height: "4px",
+									padding: 0,
+								} }></TableCell>
+							</TableRow>
+						) }
+						{ sortedRemainingOrgs.map((org) => renderOrgRow(org, false)) }
 					</TableBody>
 
 					<TableFooter>
@@ -86,28 +106,28 @@ const Overview = () => {
 
 							{ /* Chit Votes */ }
 							<TableCell>{
-								roundFloat(topOrgs.reduce((sum, org) => sum + org.votes, 0), 1)
+								roundFloat(orgs.reduce((sum, org) => sum + org.votes, 0), 1)
 							}</TableCell>
 
 							{ /* $ Votes */ }
 							<MoneyCell>{
-								topOrgs.reduce((sum, org) => sum + org.votedTotal, 0)
+								orgs.reduce((sum, org) => sum + org.votedTotal, 0)
 							// numeral(totals.get('votedTotal')).format('$0,0')
 							}</MoneyCell>
 
-							{ /* Saves */ }
+							{ /* Consolation */ }
 							<MoneyCell>{
-								theme.saves?.reduce((sum, save) => sum + (save.amount || 0), 0) || 0
+								theme.consolationActive ? (sortedRemainingOrgs.length * (theme.consolationAmount || 0)) : 0
 							}</MoneyCell>
 
 							{ /* Topoff */ }
 							<MoneyCell>{
-								topOrgs.reduce((sum, org) => sum + org.topOff, 0)
+								orgs.reduce((sum, org) => sum + org.topOff, 0)
 							}</MoneyCell>
 
 							{ /* Pledges */ }
 							<MoneyCell>{
-								topOrgs.reduce((finalSum, org) => {
+								orgs.reduce((finalSum, org) => {
 									return finalSum + (org.pledges?.reduce((sum, pledge) => sum + pledge.amount, 0) || 0)
 								}, 0)
 							}</MoneyCell>
@@ -117,7 +137,13 @@ const Overview = () => {
 
 							{ /* Total Allocated */ }
 							<MoneyCell>{
-								topOrgs.reduce((sum, org) => sum + org.allocatedFunds + org.leverageFunds, 0)
+								orgs.reduce((sum, org) => {
+									const isTopOrg = topOrgIds.has(org._id)
+									const consolationValue = isTopOrg
+										? 0
+										: (theme.consolationActive ? (theme.consolationAmount || 0) : 0)
+									return sum + org.allocatedFunds + org.leverageFunds + consolationValue
+								}, 0)
 							// numeral(totals.get('allocatedFunds')).format('$0,0')
 							}</MoneyCell>
 
@@ -126,7 +152,7 @@ const Overview = () => {
 							<TableCell colSpan={ 6 }></TableCell>
 							<TableCell align="right">Total Given:</TableCell>
 							<MoneyCell>{
-								topOrgs.reduce(
+								orgs.reduce(
 									(sum, org) => sum + (org.pledgeTotal / 2),
 									Number(
 										(theme.leverageTotal || 0) +

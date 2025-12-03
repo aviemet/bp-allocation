@@ -1,24 +1,22 @@
 import styled from "@emotion/styled"
+import { ThemeWithComputed, OrgDataWithComputed } from "/imports/api/hooks"
 import { Fade } from "@mui/material"
-import { useTheme, useSettings, useOrgs } from "/imports/api/hooks"
 
 import Bar from "./Bar"
 import LeverageBar from "./LeverageBar"
 import OrgInfo from "./OrgInfo"
-import { Loading } from "/imports/ui/components"
+import { PresentationSettings } from "/imports/types"
 
 interface GraphProps {
-	simulation?: boolean
+	isSimulation?: boolean
+	theme: Partial<ThemeWithComputed>
+	settings: PresentationSettings
+	orgs: OrgDataWithComputed[]
+	topOrgs: OrgDataWithComputed[]
 }
 
-const Graph = (props: GraphProps) => {
-	const { theme } = useTheme()
-	const { settings } = useSettings()
-	const { orgs, topOrgs } = useOrgs()
-
-	if(!theme || !settings || !orgs) return <Loading />
-
-	const shouldBeVisible = settings.leverageVisible || props.simulation
+const Graph = ({ isSimulation, theme, settings, orgs, topOrgs }: GraphProps) => {
+	const shouldBeVisible = settings.leverageVisible || isSimulation
 
 	const startingLeverage = () => {
 		let leverage = Number(theme.leverageTotal || 0)
@@ -58,7 +56,6 @@ const Graph = (props: GraphProps) => {
 						<Bar
 							key={ org._id }
 							org={ org }
-							theme={ theme }
 							savesVisible={ settings.savesVisible || false }
 						/>
 					)) }
