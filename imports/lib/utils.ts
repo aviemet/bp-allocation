@@ -1,5 +1,6 @@
 import { debounce, isEmpty, type DebouncedFunc } from "lodash"
 import { Meteor } from "meteor/meteor"
+import { type FileData } from "meteor/ostrio:files"
 
 export const roundFloat = (value: string | number, decimal = 2) => {
 	const numberValue = typeof value === "string" ? parseFloat(value) : value
@@ -111,6 +112,21 @@ export const emailVotingLink = (slug: string, code: string) => {
 
 export const textVotingLink = (slug: string, code: string) => {
 	return "\n" + `${Meteor.settings.HOST_URL}/v/${slug}/${code}`
+}
+
+export const getImageUrl = (fileObj: FileData | null | undefined): string => {
+	if(!fileObj || !fileObj.link) {
+		return ""
+	}
+	const relativeUrl = fileObj.link()
+	if(!relativeUrl) {
+		return ""
+	}
+	if(relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://")) {
+		return relativeUrl
+	}
+	const hostUrl = Meteor.settings?.HOST_URL || (typeof window !== "undefined" ? window.location.origin : "")
+	return hostUrl ? `${hostUrl}${relativeUrl}` : relativeUrl
 }
 
 export const createDebouncedFunction = <T extends (...args: unknown[]) => void>(fn: T, wait: number): DebouncedFunc<T> => {

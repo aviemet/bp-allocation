@@ -1,5 +1,6 @@
 import { Checkbox, FormControlLabel } from "@mui/material"
 import { type RichTextEditorRef } from "mui-tiptap"
+import { Activity } from "react"
 import { useState, forwardRef } from "react"
 
 import RawEditor from "./RawEditor"
@@ -25,24 +26,25 @@ const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(({ val
 					checked={ isRaw }
 					onChange={ e => setIsRaw(e.target.checked) } />
 			} />
-			{ isRaw
-				? (
-					<RawEditor
-						value={ value || "" }
-						onChange={ handleChange }
-						placeholder={ placeholder }
-					/>
-				)
-				: (
-					<TipTapEditor
-						ref={ ref }
-						value={ value || "" }
-						onChange={ handleChange }
-						placeholder={ placeholder }
-					/>
-				) }
+			<Activity mode={ isRaw ? "visible" : "hidden" }>
+				<RawEditor
+					value={ value || "" }
+					onChange={ handleChange }
+					placeholder={ placeholder }
+				/>
+			</Activity>
+			<Activity mode={ isRaw ? "hidden" : "visible" }>
+				<TipTapEditor
+					ref={ ref }
+					value={ value || "" }
+					onChange={ handleChange }
+					placeholder={ placeholder }
+				/>
+			</Activity>
 		</>
 	)
 })
+
+RichTextEditor.displayName = "RichTextEditor"
 
 export default RichTextEditor

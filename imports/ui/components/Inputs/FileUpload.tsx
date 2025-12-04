@@ -1,17 +1,8 @@
 import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import { Box, Button, LinearProgress, Input } from "@mui/material"
+import { type UploadInstance, type FileData } from "meteor/ostrio:files"
 import { useState, useRef, type ChangeEvent } from "react"
 import { Images } from "/imports/api/db"
-
-interface UploadInstance {
-	on(event: "start", callback: () => void): UploadInstance
-	on(event: "progress", callback: (progress: number, fileObj: unknown) => void): UploadInstance
-	on(event: "uploaded", callback: (error: unknown, fileObj: unknown) => void): UploadInstance
-	on(event: "end", callback: (error: unknown, fileObj: unknown) => void): UploadInstance
-	on(event: "error", callback: (error: unknown, fileObj: unknown) => void): UploadInstance
-	on(event: string, callback: (...args: unknown[]) => void): UploadInstance
-	start: () => void
-}
 
 interface FileUploadProps {
 	image?: unknown
@@ -43,27 +34,24 @@ const FileUpload = ({ width, fileLocator, onStart, onProgress, onUploaded, onEnd
 					meta: {
 						locator: fileLocator,
 					},
-					streams: "dynamic",
-					chunkSize: "dynamic",
-					allowWebWorkers: true,
-				}) as unknown as UploadInstance
+				})
 
 				setUploading(uploadInstance)
 				setInProgress(true)
 
 				uploadInstance.on("start", () => {
 					if(onStart) onStart()
-				}).on("progress", (progressValue: number, fileObj: unknown) => {
+				}).on("progress", (progressValue: number, fileObj: FileData) => {
 					if(onProgress) onProgress({ progress: progressValue, file: fileObj, uploading })
 					setProgress(progressValue)
-				}).on("uploaded", (error: unknown, fileObj: unknown) => {
+				}).on("uploaded", (error, fileObj: FileData) => {
 					if(onUploaded) onUploaded({ error: error, file: fileObj })
 					setUploading(null)
 					setInProgress(false)
 					setColor("success")
-				}).on("end", (error: unknown, fileObj: unknown) => {
+				}).on("end", (error, fileObj: FileData) => {
 					if(onEnd) onEnd({ error: error, file: fileObj })
-				}).on("error", (error: unknown, fileObj: unknown) => {
+				}).on("error", (error, fileObj: FileData) => {
 					setColor("error")
 					setInProgress(false)
 					if(onError) onError({ error: error, file: fileObj })

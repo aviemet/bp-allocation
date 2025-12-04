@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import FormatClearIcon from "@mui/icons-material/FormatClear"
-import { Select, MenuItem, IconButton } from "@mui/material"
+import { IconButton } from "@mui/material"
 import { Extension } from "@tiptap/core"
 import FontFamily from "@tiptap/extension-font-family"
 import Image from "@tiptap/extension-image"
@@ -19,6 +19,7 @@ import {
 	MenuButtonBlockquote,
 	MenuSelectHeading,
 	MenuSelectFontFamily,
+	MenuSelectFontSize,
 	MenuSelectTextAlign,
 	MenuButtonOrderedList,
 	MenuButtonBulletedList,
@@ -32,7 +33,9 @@ import {
 	type RichTextEditorRef,
 	type FontFamilySelectOption,
 } from "mui-tiptap"
-import { forwardRef, useEffect, useRef } from "react"
+import { forwardRef, useEffect, useRef, useCallback, type ChangeEvent } from "react"
+import { Images } from "/imports/api/db"
+import { getImageUrl } from "/imports/lib/utils"
 
 interface TipTapEditorProps {
 	value?: string
@@ -51,7 +54,12 @@ const FONT_WHITELIST: FontFamilySelectOption[] = [
 	{ label: "Times New Roman", value: "Times New Roman" },
 	{ label: "Verdana", value: "Verdana" },
 ]
-const SIZE_WHITELIST = ["10px", "14px", "18px", "32px"]
+const SIZE_WHITELIST = [
+	{ label: "10px", value: "10px" },
+	{ label: "14px", value: "14px" },
+	{ label: "18px", value: "18px" },
+	{ label: "32px", value: "32px" },
+]
 
 const FontSize = Extension.create({
 	name: "fontSize",
@@ -97,6 +105,7 @@ const FontSize = Extension.create({
 
 const Editor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ value, onChange, placeholder }, _ref) => {
 	const editorRef = useRef<RichTextEditorRef>(null)
+	const fileInputRef = useRef<HTMLInputElement>(null)
 
 	const extensions = [
 		StarterKit.configure({
@@ -148,6 +157,99 @@ const Editor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ value, onChan
 		onChange(html)
 	}
 
+	const handleImageUpload = useCallback(() => {
+		fileInputRef.current?.click()
+	}, [])
+
+	const handleFileSelect = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0]
+		if(!file || !editorRef.current?.editor) {
+			return
+		}
+
+		try {
+			const uploadInstance = Images.insert({
+				file: file,
+			})
+
+			const insertImage = (fileObj: unknown) => {
+				if(!fileObj) {
+					return
+				}
+				const fileData = fileObj as { _id?: string, link?: () => string, _downloadRoute?: string, [key: string]: unknown }
+
+				let imageUrl = ""
+
+				if(fileData.link && typeof fileData.link === "function") {
+					try {
+						const relativeUrl = fileData.link()
+						if(relativeUrl) {
+							if(relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://")) {
+								imageUrl = relativeUrl
+							} else {
+								const hostUrl = Meteor.settings?.HOST_URL || (typeof window !== "undefined" ? window.location.origin : "")
+								imageUrl = hostUrl ? `${hostUrl}${relativeUrl}` : relativeUrl
+							}
+						}
+					} catch (err) {
+						console.error("Error calling fileObj.link():", err)
+					}
+				}
+
+				if(!imageUrl && fileData._id) {
+					const fileFromCollection = Images.collection.findOne({ _id: fileData._id })
+					if(fileFromCollection &&
+						typeof fileFromCollection.name === "string" &&
+						typeof fileFromCollection.extension === "string" &&
+						typeof fileFromCollection.size === "number" &&
+						typeof fileFromCollection.type === "string" &&
+						fileFromCollection.link &&
+						typeof fileFromCollection.link === "function") {
+						imageUrl = getImageUrl(fileFromCollection)
+					}
+
+					if(!imageUrl && fileData._id) {
+						const downloadRoute = fileData._downloadRoute || "/uploads/"
+						const relativeUrl = `${downloadRoute}${fileData._id}`
+						const hostUrl = Meteor.settings?.HOST_URL || (typeof window !== "undefined" ? window.location.origin : "")
+						imageUrl = hostUrl ? `${hostUrl}${relativeUrl}` : relativeUrl
+					}
+				}
+
+				if(!imageUrl || !editorRef.current?.editor) {
+					return
+				}
+				const editor = editorRef.current.editor
+				editor.chain().focus().insertContent(`<img src="${imageUrl}" alt="" />`).run()
+			}
+
+			let uploadCompleted = false
+
+			uploadInstance.on("uploaded", (error, fileObj) => {
+				if(!error && fileObj) {
+					uploadCompleted = true
+					insertImage(fileObj)
+				}
+			}).on("error", (err) => {
+				if(!uploadCompleted && "reason" in err && typeof err.reason === "string" && err.reason !== "Can't start") {
+					console.error("Upload error:", err)
+				}
+			}).on("end", (error, fileObj) => {
+				if(!error && fileObj && !uploadCompleted) {
+					insertImage(fileObj)
+				}
+			})
+
+			uploadInstance.start()
+		} catch (err) {
+			console.error("Error creating upload instance:", err)
+		}
+
+		if(e.target) {
+			e.target.value = ""
+		}
+	}, [])
+
 	return (
 		<EditorWrapper>
 			<RichTextEditor
@@ -159,34 +261,13 @@ const Editor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ value, onChan
 					if(!editorRef.current?.editor) {
 						return null
 					}
-					const editor = editorRef.current.editor
-
-					const currentFontSize = editor.getAttributes("textStyle").fontSize || ""
 
 					return (
 						<MenuControlsContainer>
 							<MenuSelectHeading />
 							<MenuDivider />
 							<MenuSelectFontFamily options={ FONT_WHITELIST } />
-							<Select
-								value={ SIZE_WHITELIST.includes(currentFontSize) ? currentFontSize : "" }
-								onChange={ (e) => {
-									const size = e.target.value as string
-									if(size) {
-										editor.chain().focus().setFontSize(size).run()
-									} else {
-										editor.chain().focus().unsetFontSize().run()
-									}
-								} }
-								displayEmpty
-								size="small"
-								sx={ { minWidth: 80, height: 32 } }
-							>
-								<MenuItem value="">Size</MenuItem>
-								{ SIZE_WHITELIST.map(size => (
-									<MenuItem key={ size } value={ size }>{ size }</MenuItem>
-								)) }
-							</Select>
+							<MenuSelectFontSize options={ SIZE_WHITELIST } />
 							<MenuDivider />
 							<MenuButtonBold />
 							<MenuButtonItalic />
@@ -202,18 +283,20 @@ const Editor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ value, onChan
 							<MenuButtonIndent />
 							<MenuDivider />
 							<MenuButtonEditLink />
+							<input
+								type="file"
+								ref={ fileInputRef }
+								onChange={ handleFileSelect }
+								accept="image/png,image/jpeg,image/jpg,image/gif"
+								style={ { display: "none" } }
+							/>
 							<MenuButtonAddImage
-								onClick={ () => {
-									const url = window.prompt("Enter image URL:")
-									if(url && editor) {
-										editor.chain().focus().setImage({ src: url }).run()
-									}
-								} }
+								onClick={ handleImageUpload }
 							/>
 							<MenuDivider />
 							<IconButton
 								size="small"
-								onClick={ () => editor.chain().focus().clearNodes().unsetAllMarks().run() }
+								onClick={ () => editorRef.current?.editor?.chain().focus().clearNodes().unsetAllMarks().run() }
 								title="Clear formatting"
 							>
 								<FormatClearIcon />

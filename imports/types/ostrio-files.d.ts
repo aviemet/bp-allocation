@@ -7,6 +7,7 @@ declare module "meteor/ostrio:files" {
 		size: number
 		type: string
 		path?: string
+		link?: () => string
 		[key: string]: unknown
 	}
 
@@ -20,12 +21,27 @@ declare module "meteor/ostrio:files" {
 		[key: string]: unknown
 	}
 
+	export interface UploadInstance {
+		on(event: "start", callback: () => void): UploadInstance
+		on(event: "progress", callback: (progress: number, fileObj: FileData) => void): UploadInstance
+		on(event: "uploaded", callback: (error: Error | null, fileObj: FileData) => void): UploadInstance
+		on(event: "end", callback: (error: Error | null, fileObj: FileData) => void): UploadInstance
+		on(event: "error", callback: (error: Error, fileObj: FileData) => void): UploadInstance
+		on(event: string, callback: (...args: unknown[]) => void): UploadInstance
+		start: () => void
+	}
+
+	export interface InsertOptions {
+		file: File
+		meta?: Record<string, unknown>
+	}
+
 	export class FilesCollection {
 		constructor(config: FilesCollectionConfig)
 		collection: Mongo.Collection<FileData>
 		find: Mongo.Collection<FileData>["find"]
 		findOneAsync: Mongo.Collection<FileData>["findOneAsync"]
-		insert: Mongo.Collection<FileData>["insert"]
+		insert: (options: InsertOptions) => UploadInstance
 		allowClient(): void
 		allow(options: {
 			insert?: () => boolean
