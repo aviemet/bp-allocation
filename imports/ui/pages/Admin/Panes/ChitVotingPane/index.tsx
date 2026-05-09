@@ -10,16 +10,16 @@ import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 import { ThemeMethods } from "/imports/api/methods"
 import React from "react"
 
-import ManualInputTable from "./ManualInputTable"
-import RankedOrgsTable from "./RankedOrgsTable"
-import ChitVotingActiveToggle from "/imports/ui/components/Toggles/ChitVotingActiveToggle"
+import { ChitTable as ManualInputTable } from "./ManualInputTable"
+import { TopOrgsByChitVote as RankedOrgsTable } from "./RankedOrgsTable"
+import { ChitVotingActiveToggle } from "/imports/ui/components/Toggles/ChitVotingActiveToggle"
 import { Loading } from "/imports/ui/components"
 
 interface ChitVotingPaneProps {
 	hideAdminFields?: boolean
 }
 
-const ChitVotingPane = ({ hideAdminFields }: ChitVotingPaneProps) => {
+export const ChitVotingPane = ({ hideAdminFields }: ChitVotingPaneProps) => {
 	const { settings, settingsLoading } = useSettings()
 	const { orgsLoading } = useOrgs()
 	const { theme } = useTheme()
@@ -75,4 +75,3 @@ const ChitVotingPane = ({ hideAdminFields }: ChitVotingPaneProps) => {
 	)
 }
 
-export default ChitVotingPane

@@ -9,7 +9,7 @@ type CombinedLinkProps = MuiLinkProps & {
 	hash?: RouterLinkProps["hash"]
 }
 
-const Link = forwardRef<HTMLAnchorElement, CombinedLinkProps>((props, ref) => {
+export const Link = forwardRef<HTMLAnchorElement, CombinedLinkProps>((props, ref) => {
 	const { to, params, search, hash, href, ...rest } = props
 
 	if(to) {
@@ -34,5 +34,3 @@ const Link = forwardRef<HTMLAnchorElement, CombinedLinkProps>((props, ref) => {
 		/>
 	)
 })
-
-export default Link

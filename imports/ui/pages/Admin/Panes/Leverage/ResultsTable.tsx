@@ -22,7 +22,7 @@ interface ResultsTableProps {
 	}
 }
 
-const ResultsTable = ({ round }: ResultsTableProps) => {
+export const ResultsTable = ({ round }: ResultsTableProps) => {
 	let totals = {
 		spread: 0,
 		total: 0,
@@ -73,4 +73,3 @@ const ResultsTable = ({ round }: ResultsTableProps) => {
 	)
 }
 
-export default ResultsTable

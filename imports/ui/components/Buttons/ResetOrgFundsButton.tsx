@@ -6,9 +6,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ThemeMethods } from "/imports/api/methods"
 import { useTheme } from "/imports/api/hooks"
 import { STATUS, type Status } from "/imports/ui/components/Form"
-import CustomConfirm from "/imports/ui/components/Dialogs/CustomConfirm"
+import { ConfirmationModal } from "/imports/ui/components/Dialogs/CustomConfirm"
 
-const ResetOrgFundsButton = () => {
+export const ResetOrgFundsButton = () => {
 	const muiTheme = useMuiTheme()
 	const { theme } = useTheme()
 	const [status, setStatus] = useState<Status>(STATUS.READY)
@@ -142,7 +142,7 @@ const ResetOrgFundsButton = () => {
 			>
 				Reset Funds for All Orgs
 			</Button>
-			<CustomConfirm
+			<ConfirmationModal
 				header="Confirm reset"
 				content="Resetting funds will permanently clear allocations, pledges, leverage funds, and chit votes for every organization. This action cannot be undone. Do you want to continue?"
 				isModalOpen={ isConfirmOpen }
@@ -157,4 +157,3 @@ const ResetOrgFundsButton = () => {
 	)
 }
 
-export default ResetOrgFundsButton

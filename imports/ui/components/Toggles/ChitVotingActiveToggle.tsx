@@ -9,7 +9,7 @@ import { useSettings } from "/imports/api/hooks"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 
-const ChitVotingActiveToggle = () => {
+export const ChitVotingActiveToggle = () => {
 	const { settings } = useSettings()
 
 	if(!settings) return <></>
@@ -37,5 +37,3 @@ const ChitVotingActiveToggle = () => {
 		/>
 	)
 }
-
-export default ChitVotingActiveToggle

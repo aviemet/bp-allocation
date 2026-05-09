@@ -16,7 +16,7 @@ interface OrgCardContainerProps {
 	sx?: SxProps<Theme>
 }
 
-const OrgCardContainer = ({ children, cols = 2, sx }: OrgCardContainerProps) => {
+export const OrgCardContainer = ({ children, cols = 2, sx }: OrgCardContainerProps) => {
 	const { width } = useWindowSize()
 
 	const responsiveColumns = (cols: number): number => {
@@ -63,4 +63,3 @@ const StyledOrgCardContainer = styled(Box)<StyledOrgCardContainerProps>(({ cols,
 	},
 }))
 
-export default OrgCardContainer

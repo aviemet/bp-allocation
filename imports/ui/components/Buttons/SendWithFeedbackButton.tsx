@@ -8,7 +8,7 @@ import { useState, useMemo } from "react"
 import { useTheme } from "/imports/api/hooks"
 import { type MessageData } from "/imports/api/db"
 
-import CustomConfirm from "/imports/ui/components/Dialogs/CustomConfirm"
+import { ConfirmationModal } from "/imports/ui/components/Dialogs/CustomConfirm"
 import { emailVotingLink, textVotingLink } from "/imports/lib/utils"
 import { type Status, STATUS, SubmitButton } from "/imports/ui/components/Form"
 
@@ -33,7 +33,7 @@ interface SendWithFeedbackButtonProps extends Omit<ButtonProps, "onClick"> {
 	members?: string[] | "all"
 }
 
-const SendWithFeedbackButton = ({ message, members, ...rest }: SendWithFeedbackButtonProps) => {
+export const SendWithFeedbackButton = ({ message, members, ...rest }: SendWithFeedbackButtonProps) => {
 	const { theme } = useTheme()
 
 	const [localButtonStatus, setLocalButtonStatus] = useState<Status | null>(null)
@@ -90,7 +90,7 @@ const SendWithFeedbackButton = ({ message, members, ...rest }: SendWithFeedbackB
 				{ buttonContent }
 			</SubmitButton>
 
-			<CustomConfirm
+			<ConfirmationModal
 				header={ `Confirm sending ${message.type}` }
 				content={
 					<>
@@ -126,4 +126,3 @@ const FormattedMessageBody = styled.div`
 	} 
 `
 
-export default SendWithFeedbackButton

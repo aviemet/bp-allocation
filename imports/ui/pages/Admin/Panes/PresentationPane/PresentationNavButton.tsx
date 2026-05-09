@@ -11,7 +11,7 @@ interface PresentationNavButtonProps extends Omit<ButtonProps, "onClick"> {
 	onClick?: () => void
 }
 
-const PresentationNavButton = ({
+export const PresentationNavButton = ({
 	page,
 	active,
 	onClick,
@@ -69,4 +69,3 @@ const PresentationNavButton = ({
 	)
 }
 
-export default PresentationNavButton

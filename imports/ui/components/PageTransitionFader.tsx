@@ -15,7 +15,7 @@ interface PageTransitionFaderProps {
 	id?: string
 }
 
-const PageTransitionFader = ({ currentPage, children, id }: PageTransitionFaderProps) => {
+export const PageTransitionFader = ({ currentPage, children, id }: PageTransitionFaderProps) => {
 	const [displayedPage, setDisplayedPage] = useState<string | undefined>(() => currentPage)
 	const [show, setShow] = useState(true)
 	const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -80,6 +80,4 @@ const PageTransitionFader = ({ currentPage, children, id }: PageTransitionFaderP
 		</PageFader>
 	)
 }
-
-export default PageTransitionFader
 

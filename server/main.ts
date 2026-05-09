@@ -5,8 +5,8 @@ import { Meteor } from "meteor/meteor"
 import { ServiceConfiguration } from "meteor/service-configuration"
 import "meteor/accounts-google"
 
-import textVotingLinkToMembers from "/imports/server/sms"
-import emailVotingLinkToMembers from "/imports/server/email"
+import { textVotingLinkToMembers } from "/imports/server/sms"
+import { emailVotingLinkToMembers } from "/imports/server/email"
 
 import "/imports/api/methods"
 import "/imports/api/db"

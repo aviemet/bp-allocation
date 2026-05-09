@@ -6,7 +6,7 @@ interface SelectableOrgCardsProps {
 	orgs: OrgDataWithComputed[]
 }
 
-const SelectableOrgCards = ({ orgs }: SelectableOrgCardsProps) => {
+export const SelectableOrgCards = ({ orgs }: SelectableOrgCardsProps) => {
 	const { setValue } = useFormContext()
 	const watch = useWatch({ name: "id" })
 
@@ -31,4 +31,3 @@ const SelectableOrgCards = ({ orgs }: SelectableOrgCardsProps) => {
 	)
 }
 
-export default SelectableOrgCards

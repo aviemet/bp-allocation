@@ -14,11 +14,10 @@ import { styled } from "@mui/material/styles"
 import { roundFloat } from "/imports/lib/utils"
 import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 import { Loading, MoneyCell } from "/imports/ui/components"
-import ExportMemberVotes from "/imports/ui/components/Buttons/ExportMemberVotes"
-import ExportTopups from "/imports/ui/components/Buttons/ExportTopups"
-import ExportChitVotes from "/imports/ui/components/Buttons/ExportChitVotes"
-
-const Overview = () => {
+import { ExportMemberVotes } from "/imports/ui/components/Buttons/ExportMemberVotes"
+import { ExportTopups } from "/imports/ui/components/Buttons/ExportTopups"
+import { ExportChitVotes } from "/imports/ui/components/Buttons/ExportChitVotes"
+export const Overview = () => {
 	const { settings, settingsLoading } = useSettings()
 	const { theme, themeLoading } = useTheme()
 	const { orgs, topOrgs, orgsLoading } = useOrgs()
@@ -240,4 +239,3 @@ const StyledTable = styled(Table)(({ theme }) => ({
 	},
 }))
 
-export default Overview

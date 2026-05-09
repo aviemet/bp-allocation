@@ -18,7 +18,7 @@ interface MemberLoginRequiredProps {
 	member?: string
 }
 
-const MemberLoginRequired = (props: MemberLoginRequiredProps) => {
+export const MemberLoginRequired = (props: MemberLoginRequiredProps) => {
 	// Pull member data from Data Store
 	const { members, membersLoading } = useMembers()
 
@@ -155,4 +155,3 @@ const BackgroundImage = styled.div`
 	background-size: 1600px;
 `
 
-export default MemberLoginRequired

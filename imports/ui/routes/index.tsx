@@ -2,17 +2,17 @@ import { createRouter, createRoute, RouterProvider, Navigate, redirect } from "@
 import { Meteor } from "meteor/meteor"
 
 import { WelcomeLayout } from "/imports/ui/layouts"
-import FourOhFour from "./404"
+import { FourOhFour } from "./404"
 import { adminLayoutRoute, adminChildRoutes } from "./admin"
 import { kioskRoute } from "./kiosk"
 import { pledgesRoute } from "./pledges"
 import { pledgesOverlayRoute } from "./pledgesOverlay"
 import { presentationRoute, presentationPageRoute } from "./presentation"
 import { rootRoute } from "./rootRoute"
-import ShortRoute from "./ShortRoute"
-import SimulationRoute from "./SimulationRoute"
-import VotingRoute from "./VotingRoute"
-import Login from "../pages/Welcome/Login"
+import { ShortRoute } from "./ShortRoute"
+import { SimulationRoute } from "./SimulationRoute"
+import { VotingRoute } from "./VotingRoute"
+import { Login } from "../pages/Welcome/Login"
 
 const indexRoute = createRoute({
 	getParentRoute: () => rootRoute,
@@ -77,8 +77,6 @@ const routeTree = rootRoute.addChildren([
 
 const router = createRouter({ routeTree })
 
-const Routes = () => {
+export const Routes = () => {
 	return <RouterProvider router={ router } />
 }
-
-export default Routes

@@ -11,7 +11,7 @@ import { PresentationSettingsSchema } from "/imports/api/db"
 import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { Loading } from "/imports/ui/components"
 
-const PresentationSettingsForm = () => {
+export const PresentationSettingsForm = () => {
 	const { settings, settingsLoading } = useSettings()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
@@ -134,4 +134,3 @@ const PresentationSettingsForm = () => {
 	)
 }
 
-export default PresentationSettingsForm

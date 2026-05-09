@@ -5,9 +5,9 @@ import { Meteor } from "meteor/meteor"
 
 import { Themes, Organizations, MemberThemes, PresentationSettings, type ThemeData, DEFAULT_NUM_TOP_ORGS } from "/imports/api/db"
 import { PledgeAnimationQueue } from "/imports/api/db/PledgeAnimationQueue"
-import OrganizationMethods from "./OrganizationMethods"
+import { OrganizationMethods } from "./OrganizationMethods"
 
-const ThemeMethods = {
+export const ThemeMethods = {
 	/**
 	 * Create new Theme
 	 */
@@ -289,5 +289,3 @@ const ThemeMethods = {
 		},
 	}),
 }
-
-export default ThemeMethods

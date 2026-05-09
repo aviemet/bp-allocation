@@ -22,7 +22,7 @@ interface DataProviderProps {
 	children: React.ReactNode
 }
 
-const DataProvider = ({ children }: DataProviderProps) => {
+export const DataProvider = ({ children }: DataProviderProps) => {
 	const [themeId, setThemeId] = useState<string | null>(null)
 	const [menuHeading, setMenuHeading] = useState<string>("Battery Powered Allocation Night Themes")
 	const [votingRedirectTimeout, setVotingRedirectTimeout] = useState<number>(60)
@@ -53,5 +53,3 @@ const DataProvider = ({ children }: DataProviderProps) => {
 		</DataContextProvider>
 	)
 }
-
-export default DataProvider

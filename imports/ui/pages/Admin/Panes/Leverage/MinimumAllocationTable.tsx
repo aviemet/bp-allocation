@@ -20,7 +20,7 @@ interface MinimumAllocationTableProps {
 	}>
 }
 
-const MinimumAllocationTable = ({ orgs }: MinimumAllocationTableProps) => {
+export const MinimumAllocationTable = ({ orgs }: MinimumAllocationTableProps) => {
 	let totals = {
 		minimum: 0,
 		total: 0,
@@ -69,6 +69,4 @@ const MinimumAllocationTable = ({ orgs }: MinimumAllocationTableProps) => {
 		</Table>
 	)
 }
-
-export default MinimumAllocationTable
 

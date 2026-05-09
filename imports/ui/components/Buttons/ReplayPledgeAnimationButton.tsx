@@ -1,14 +1,14 @@
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import IconButton from "@mui/material/IconButton"
 import Tooltip from "@mui/material/Tooltip"
-import PledgeAnimationMethods from "/imports/api/methods/PledgeAnimationMethods"
+import { PledgeAnimationMethods } from "/imports/api/methods/PledgeAnimationMethods"
 import { type PledgeWithOrg, useTheme } from "/imports/api/hooks"
 
 interface ReplayPledgeAnimationButtonProps {
 	pledge: PledgeWithOrg
 }
 
-const ReplayPledgeAnimationButton = ({ pledge }: ReplayPledgeAnimationButtonProps) => {
+export const ReplayPledgeAnimationButton = ({ pledge }: ReplayPledgeAnimationButtonProps) => {
 	const { theme } = useTheme()
 
 	const handleClick = () => {
@@ -30,6 +30,4 @@ const ReplayPledgeAnimationButton = ({ pledge }: ReplayPledgeAnimationButtonProp
 		</Tooltip>
 	)
 }
-
-export default ReplayPledgeAnimationButton
 

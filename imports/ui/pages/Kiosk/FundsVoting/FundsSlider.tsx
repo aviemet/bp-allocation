@@ -9,7 +9,7 @@ interface FundsSliderProps {
 	onChange: (amount: number) => void
 }
 
-const FundsSlider = ({ value, onChange, maxAmount, isDisabled }: FundsSliderProps) => {
+export const FundsSlider = ({ value, onChange, maxAmount, isDisabled }: FundsSliderProps) => {
 	const handleSliderChange = (_event: Event, newValue: number | number[]) => {
 		const numericValue = Array.isArray(newValue) ? newValue[0] : newValue
 		onChange(numericValue)
@@ -71,6 +71,4 @@ const StyledSlider = styled(Slider)(() => ({
 		transform: "translate(0, -50%) scale(1)",
 	},
 }))
-
-export default FundsSlider
 

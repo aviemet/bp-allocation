@@ -14,9 +14,9 @@ import {
 import { Link } from "@tanstack/react-router"
 import { useState } from "react"
 
-import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
-import ActionMenu from "/imports/ui/components/Menus/ActionMenu"
-import SendWithFeedbackButton from "/imports/ui/components/Buttons/SendWithFeedbackButton"
+import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
+import { ActionMenu } from "/imports/ui/components/Menus/ActionMenu"
+import { SendWithFeedbackButton } from "/imports/ui/components/Buttons/SendWithFeedbackButton"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
 interface ContextMenuProps {
@@ -24,7 +24,7 @@ interface ContextMenuProps {
 	member: MemberWithTheme
 }
 
-const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
+export const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 	const { messages } = useMessages()
 
 	const [textSubmenuOpen, setTextSubmenuOpen] = useState(false)
@@ -160,4 +160,3 @@ const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 	)
 }
 
-export default ContextMenu

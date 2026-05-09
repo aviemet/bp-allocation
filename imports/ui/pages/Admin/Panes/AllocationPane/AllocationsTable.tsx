@@ -11,16 +11,15 @@ import { styled } from "@mui/material/styles"
 import numeral from "numeral"
 import { useMemo } from "react"
 
-import AllocationInputs from "./AllocationInputs"
+import { AllocationInputs } from "./AllocationInputs"
 import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
-import TopOffButton from "/imports/ui/components/Buttons/TopOffButton"
-
+import { TopOffButton } from "/imports/ui/components/Buttons/TopOffButton"
 interface AllocationsTableProps {
 	hideAdminFields?: boolean
 }
 
-const AllocationsTable = ({ hideAdminFields = false }: AllocationsTableProps) => {
+export const AllocationsTable = ({ hideAdminFields = false }: AllocationsTableProps) => {
 	const { settings } = useSettings()
 	const { theme, themeLoading } = useTheme()
 	const { topOrgs, orgsLoading } = useOrgs()
@@ -159,4 +158,3 @@ const StyledTable = styled(Table)(({ theme }) => ({
 	},
 }))
 
-export default AllocationsTable

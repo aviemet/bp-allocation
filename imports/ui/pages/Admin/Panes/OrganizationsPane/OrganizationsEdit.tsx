@@ -81,7 +81,7 @@ const FormContent = ({ formStatus, setFormStatus }: { formStatus: Status, setFor
 	)
 }
 
-const OrganizationsEdit = () => {
+export const OrganizationsEdit = () => {
 	const { orgs, orgsLoading } = useOrgs()
 	const { id, orgId } = useParams({ strict: false })
 	const navigate = useNavigate()
@@ -158,4 +158,3 @@ const OrganizationsEdit = () => {
 	)
 }
 
-export default OrganizationsEdit

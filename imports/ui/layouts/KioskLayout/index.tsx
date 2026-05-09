@@ -8,7 +8,7 @@ interface KioskLayoutProps {
 	children: ReactNode
 }
 
-const KioskLayout = ({ children }: KioskLayoutProps) => (
+export const KioskLayout = ({ children }: KioskLayoutProps) => (
 	<KioskContainer>
 		<ThemeProvider
 			theme={ (outerTheme) =>
@@ -47,5 +47,3 @@ const KioskContainer = styled.div`
 	color: white;
 	touch-action: manipulation;
 `
-
-export default KioskLayout

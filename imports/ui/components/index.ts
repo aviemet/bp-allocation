@@ -1,4 +1,4 @@
-export { default as Loading } from "./Loading"
-export { default as MoneyCell } from "./MoneyCell"
-export { default as Link } from "./Link"
-export { default as PageTransitionFader } from "./PageTransitionFader"
+export { Loading } from "./Loading"
+export { MoneyCell } from "./MoneyCell"
+export { Link } from "./Link"
+export { PageTransitionFader } from "./PageTransitionFader"

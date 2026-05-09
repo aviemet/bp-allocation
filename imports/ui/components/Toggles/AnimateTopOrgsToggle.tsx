@@ -8,7 +8,7 @@ import { useSettings } from "/imports/api/hooks"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 
-const AnimateTopOrgsToggle = () => {
+export const AnimateTopOrgsToggle = () => {
 	const { settings } = useSettings()
 
 	if(!settings) return <></>
@@ -32,5 +32,3 @@ const AnimateTopOrgsToggle = () => {
 		/>
 	)
 }
-
-export default AnimateTopOrgsToggle

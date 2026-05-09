@@ -5,7 +5,7 @@ import { useTracker } from "meteor/react-meteor-data"
 import { Themes, Members } from "/imports/api/db"
 import { Loading } from "/imports/ui/components"
 
-const ShortRouteComponent = () => {
+export const ShortRoute = () => {
 	const { themeSlug, memberCode } = useParams({ from: "/v/$themeSlug/$memberCode" })
 
 	const data = useTracker(() => {
@@ -48,6 +48,4 @@ const ShortRouteComponent = () => {
 
 	return <Navigate to={ `/voting/${data.theme._id}/${data.member._id}` } />
 }
-
-export default ShortRouteComponent
 

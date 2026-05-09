@@ -5,7 +5,7 @@ interface PresentationLayoutProps {
 	children: ReactNode
 }
 
-const PresentationLayout = ({ children }: PresentationLayoutProps) => {
+export const PresentationLayout = ({ children }: PresentationLayoutProps) => {
 	return (
 		<PresentationContainer id="presentationContainer">{ children }</PresentationContainer>
 	)
@@ -30,5 +30,3 @@ const PresentationContainer = styled.div`
 		font-family: 'TradeGothic';
 	}
 `
-
-export default PresentationLayout

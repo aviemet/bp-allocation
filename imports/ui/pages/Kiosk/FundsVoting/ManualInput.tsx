@@ -9,7 +9,7 @@ interface ManualInputProps {
 	onChange: (amount: number) => void
 }
 
-const ManualInput = ({ value, onChange }: ManualInputProps) => {
+export const ManualInput = ({ value, onChange }: ManualInputProps) => {
 	const [ isInputVisible, setIsInputVisible ] = useState(false)
 	const [ initialValue, setInitialValue ] = useState<number | null>(null)
 	const [ hasChanged, setHasChanged ] = useState(false)
@@ -181,6 +181,4 @@ const ManualInput = ({ value, onChange }: ManualInputProps) => {
 		</Box>
 	)
 }
-
-export default ManualInput
 

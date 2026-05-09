@@ -5,10 +5,10 @@ import { useOrgs, useTheme } from "/imports/api/hooks"
 import { TextInput, SubmitButton, STATUS, SwitchInput, type Status } from "/imports/ui/components/Form"
 import { useFormContext, useWatch } from "react-hook-form"
 
-import MemberSearchInput from "./MemberSearchInput"
-import SelectableOrgCards from "../Kiosk/Topups/SelectableOrgCards"
+import { MemberSearchInput } from "./MemberSearchInput"
+import { SelectableOrgCards } from "../Kiosk/Topups/SelectableOrgCards"
 
-const Pledges = () => {
+export const PledgesForm = () => {
 	const { reset } = useFormContext()
 	const watch = useWatch()
 
@@ -111,4 +111,3 @@ const FinalizeButton = styled(SubmitButton)`
 	text-transform: uppercase;
 `
 
-export default Pledges

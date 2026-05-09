@@ -2,15 +2,15 @@ import { useNavigate, useParams } from "@tanstack/react-router"
 import { useEffect } from "react"
 import { useTheme, useSettings } from "/imports/api/hooks"
 
-import Allocation from "./Allocation"
-import Intro from "./Intro"
-import Orgs from "./Orgs"
-import Results from "./Results"
-import Timer from "./Timer"
-import TopOrgs from "./TopOrgs"
+import { Allocation } from "./Allocation"
+import { Intro } from "./Intro"
+import { Orgs } from "./Orgs"
+import { Results } from "./Results"
+import { Timer } from "./Timer"
+import { TopOrgs } from "./TopOrgs"
 import { Loading, PageTransitionFader } from "/imports/ui/components"
 
-const Presentation = () => {
+export const Presentation = () => {
 	const { theme, themeLoading } = useTheme()
 	const { settings, settingsLoading } = useSettings()
 	const navigate = useNavigate()
@@ -61,4 +61,3 @@ const Presentation = () => {
 	)
 }
 
-export default Presentation

@@ -6,7 +6,7 @@ interface PledgeInfoProps {
 	pledge: PledgeWithOrg
 }
 
-const PledgeInfo = ({ pledge }: PledgeInfoProps) => {
+export const PledgeInfo = ({ pledge }: PledgeInfoProps) => {
 	const { members, membersLoading } = useMembers()
 
 	if(membersLoading || !members || !pledge || !pledge.org) {
@@ -65,4 +65,3 @@ const AnimationContent = styled.div`
 	text-align: center;
 `
 
-export default PledgeInfo

@@ -2,7 +2,7 @@ import { ValidatedMethod } from "meteor/mdg:validated-method"
 
 import { PresentationSettings, type SettingsData } from "/imports/api/db"
 
-const PresentationSettingsMethods = {
+export const PresentationSettingsMethods = {
 	/**
 	 * Create Settings
 	 */
@@ -30,5 +30,3 @@ const PresentationSettingsMethods = {
 	}),
 
 }
-
-export default PresentationSettingsMethods

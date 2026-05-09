@@ -5,9 +5,9 @@ import { useData } from "/imports/api/providers"
 import { useTheme, useOrgs, useSettings } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { PresentationLayout } from "/imports/ui/layouts"
-import Presentation from "../pages/Presentation"
+import { Presentation } from "../pages/Presentation"
 
-const PresentationRoute = () => {
+export const PresentationRoute = () => {
 	const params = useParams({ strict: false })
 	const id = params.id
 	const data = useData()
@@ -39,5 +39,3 @@ const PresentationRoute = () => {
 		</PresentationLayout>
 	)
 }
-
-export default PresentationRoute

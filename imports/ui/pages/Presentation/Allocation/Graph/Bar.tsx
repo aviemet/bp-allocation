@@ -17,7 +17,7 @@ interface BarProps {
 	savesVisible: boolean
 }
 
-const Bar = ({ org, savesVisible }: BarProps) => {
+export const Bar = ({ org, savesVisible }: BarProps) => {
 	let shownFunds = org.allocatedFunds + (org.leverageFunds || 0)
 	if(!savesVisible) shownFunds -= org.save
 
@@ -87,4 +87,3 @@ const Award = styled.img`
 	-webkit-animation-fill-mode: forwards;
 `
 
-export default Bar

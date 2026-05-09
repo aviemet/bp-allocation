@@ -1,6 +1,6 @@
 import { isEmpty } from "lodash"
 import { useOrgs, useMembers } from "/imports/api/hooks"
-import ExportCsvButton from "/imports/ui/components/Buttons/ExportCsvButton"
+import { ExportCsvButton } from "/imports/ui/components/Buttons/ExportCsvButton"
 import { Loading } from "/imports/ui/components"
 
 interface PledgeData {
@@ -12,7 +12,7 @@ interface PledgeData {
 	[key: string]: string | number | Date
 }
 
-const ExportTopups = () => {
+export const ExportTopups = () => {
 	const { topOrgs, orgsLoading } = useOrgs()
 	const { members, membersLoading } = useMembers()
 
@@ -45,4 +45,3 @@ const ExportTopups = () => {
 	)
 }
 
-export default ExportTopups

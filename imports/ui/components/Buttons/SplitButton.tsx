@@ -21,7 +21,7 @@ interface SplitButtonProps {
 	defaultSelected?: number
 }
 
-const SplitButton = ({ options, defaultSelected = 0 }: SplitButtonProps) => {
+export const SplitButton = ({ options, defaultSelected = 0 }: SplitButtonProps) => {
 	const [selectedIndex, setSelectedIndex] = useState(defaultSelected)
 	const [open, setOpen] = useState(false)
 	const [anchorElement, setAnchorElement] = useState<HTMLDivElement | null>(null)
@@ -107,4 +107,3 @@ const SplitButton = ({ options, defaultSelected = 0 }: SplitButtonProps) => {
 	)
 }
 
-export default SplitButton

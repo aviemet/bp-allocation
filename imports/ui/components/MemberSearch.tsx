@@ -21,7 +21,7 @@ interface MemberSearchProps extends Omit<AutocompleteProps<MemberData, false, fa
 	onResultSelect?: (value: MemberData | null) => void
 }
 
-const MemberSearch = ({ value, setValue, onResultSelect, ...props }: MemberSearchProps) => {
+export const MemberSearch = ({ value, setValue, onResultSelect, ...props }: MemberSearchProps) => {
 	const { members, membersLoading } = useMembers()
 
 	const filterOptions = createFilterOptions<MemberData>({
@@ -66,4 +66,3 @@ const MemberSearch = ({ value, setValue, onResultSelect, ...props }: MemberSearc
 	)
 }
 
-export default MemberSearch

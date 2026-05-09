@@ -10,7 +10,7 @@ interface TextInputProps extends Omit<TextFieldProps, "name" | "onChange"> {
 	pattern?: string
 }
 
-const TextInput = forwardRef<HTMLInputElement, TextInputProps>((
+export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((
 	{ name, onUpdate, onChange, rules, pattern, ...props },
 	ref
 ) => {
@@ -57,4 +57,3 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>((
 
 TextInput.displayName = "TextInput"
 
-export default TextInput

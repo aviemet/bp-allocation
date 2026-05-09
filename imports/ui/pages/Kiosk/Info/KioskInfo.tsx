@@ -8,7 +8,7 @@ import { Loading } from "/imports/ui/components"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
 import { useWindowSize, breakpoints } from "/imports/ui/MediaProvider"
 
-const KioskInfo = () => {
+export const KioskInfo = () => {
 	const { theme } = useTheme()
 	const { orgs, topOrgs, orgsLoading } = useOrgs()
 
@@ -61,4 +61,3 @@ const KioskInfo = () => {
 	)
 }
 
-export default KioskInfo

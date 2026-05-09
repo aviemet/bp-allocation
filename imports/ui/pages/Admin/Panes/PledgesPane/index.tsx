@@ -19,12 +19,11 @@ import numeral from "numeral"
 import { useState } from "react"
 import { useTheme, useMembers, useOrgs, type PledgeWithOrg, getFormattedName } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
-import SortableTable from "/imports/ui/components/SortableTable"
-import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
+import { SortableTable } from "/imports/ui/components/SortableTable"
+import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
 import { TopupsActiveToggle } from "/imports/ui/components/Toggles"
 import { Loading } from "/imports/ui/components"
-import ReplayPledgeAnimationButton from "/imports/ui/components/Buttons/ReplayPledgeAnimationButton"
-
+import { ReplayPledgeAnimationButton } from "/imports/ui/components/Buttons/ReplayPledgeAnimationButton"
 const headCells = [
 	{
 		id: "org.title",
@@ -58,7 +57,7 @@ interface PledgesProps {
 	hideAdminFields?: boolean
 }
 
-const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
+export const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 	const { theme } = useTheme()
 	const { members, membersLoading } = useMembers()
 	const { orgs, topOrgs, pledges, orgsLoading } = useOrgs()
@@ -224,4 +223,3 @@ const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 	)
 }
 
-export default Pledges

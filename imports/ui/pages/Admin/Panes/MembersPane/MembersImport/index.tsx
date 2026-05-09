@@ -11,8 +11,7 @@ import { useSnackbar } from "notistack"
 import { useState, useEffect, useRef, type ChangeEvent } from "react"
 import type SimpleSchema from "simpl-schema"
 
-import ImportMapping from "/imports/ui/components/ImportMapping"
-
+import { ImportMapping } from "/imports/ui/components/ImportMapping"
 type CsvRow = Record<string, unknown>
 
 interface HeadingMapping {
@@ -22,7 +21,7 @@ interface HeadingMapping {
 	type?: (value: unknown) => unknown
 }
 
-const ImportMembers = () => {
+export const ImportMembers = () => {
 	const { enqueueSnackbar } = useSnackbar()
 
 	const [pendingMembers, setPendingMembers] = useState<CsvRow[]>([])
@@ -167,4 +166,3 @@ const ImportMembers = () => {
 	)
 }
 
-export default ImportMembers

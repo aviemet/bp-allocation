@@ -1,7 +1,7 @@
 import { Button } from "@mui/material"
 import { useFormContext } from "react-hook-form"
 
-const ClearFormButton = () => {
+export const ClearFormButton = () => {
 	const { reset } = useFormContext()
 
 	return (
@@ -9,4 +9,3 @@ const ClearFormButton = () => {
 	)
 }
 
-export default ClearFormButton

@@ -10,7 +10,7 @@ interface MessageUpdateData {
 	data: Partial<Omit<Message, "_id" | "createdAt" | "updatedAt">>
 }
 
-const MessageMethods = {
+export const MessageMethods = {
 	/**
 	 * Create new Message
 	 */
@@ -59,5 +59,3 @@ const MessageMethods = {
 	}),
 
 }
-
-export default MessageMethods

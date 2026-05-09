@@ -15,7 +15,7 @@ interface SimpleAlertProps {
 	confirmAction?: () => void
 }
 
-const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction }: SimpleAlertProps) => {
+export const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction }: SimpleAlertProps) => {
 
 	return (
 		<Dialog
@@ -43,4 +43,3 @@ const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmA
 	)
 }
 
-export default ConfirmationModal

@@ -1,5 +1,1 @@
-import DataProvider, { useData } from "./DataProvider"
-
-export {
-	DataProvider, useData,
-}
+export { DataProvider, useData } from "./DataProvider"

@@ -7,11 +7,11 @@ import { useData } from "/imports/api/providers"
 import { useSettings, useOrgs } from "/imports/api/hooks"
 
 import { OrgCardContainer } from "/imports/ui/components/Cards"
-import Countdown from "../Countdown"
-import VotingComplete from "../VotingComplete"
+import { Countdown } from "../Countdown"
+import { VotingComplete } from "../VotingComplete"
 import { useVoting } from "../VotingContext"
 import { COLORS } from "/imports/lib/global"
-import ChitVoteOrgCard from "./ChitVoteOrgCard"
+import { ChitVoteOrgCard } from "./ChitVoteOrgCard"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
 import { shuffleWithSeed } from "/imports/lib/shuffleWithSeed"
@@ -21,7 +21,7 @@ interface ChitVotingKioskProps {
 	source: VotingSource
 }
 
-const ChitVotingKiosk = ({ user, source }: ChitVotingKioskProps) => {
+export const ChitVotingKiosk = ({ user, source }: ChitVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { orgs } = useOrgs()
@@ -127,4 +127,3 @@ const NumberFormat = styled.span`
 	display: inline-block;
 `
 
-export default ChitVotingKiosk

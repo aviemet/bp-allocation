@@ -5,9 +5,9 @@ import { useData } from "/imports/api/providers"
 import { useTheme, useOrgs, useSettings } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { KioskLayout } from "/imports/ui/layouts"
-import Kiosk from "../pages/Kiosk"
+import { Kiosk } from "../pages/Kiosk"
 
-const KioskRoute = () => {
+export const KioskRoute = () => {
 	const { id } = useParams({ from: "/kiosk/$id" })
 	const data = useData()
 	const { themeLoading } = useTheme()
@@ -32,5 +32,3 @@ const KioskRoute = () => {
 		</KioskLayout>
 	)
 }
-
-export default KioskRoute

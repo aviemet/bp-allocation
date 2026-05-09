@@ -103,7 +103,7 @@ const FontSize = Extension.create({
 	},
 })
 
-const Editor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ value, onChange, placeholder }, _ref) => {
+export const TipTapEditor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ value, onChange, placeholder }, _ref) => {
 	const editorRef = useRef<RichTextEditorRef>(null)
 	const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -314,7 +314,7 @@ const Editor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ value, onChan
 	)
 })
 
-Editor.displayName = "TipTapEditor"
+TipTapEditor.displayName = "TipTapEditor"
 
 const EditorWrapper = styled.div`
 	.tip-tap-editor {
@@ -327,4 +327,3 @@ const EditorWrapper = styled.div`
 	}
 `
 
-export default Editor

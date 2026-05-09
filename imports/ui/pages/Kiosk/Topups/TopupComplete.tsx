@@ -10,12 +10,12 @@ interface TopupCompleteData {
 	org: OrgDataWithComputed
 }
 
-interface VotingCompleteProps {
+interface TopupCompleteProps {
 	data: TopupCompleteData
 	resetData: () => void
 }
 
-const VotingComplete = ({ data, resetData }: VotingCompleteProps) => {
+export const TopupComplete = ({ data, resetData }: TopupCompleteProps) => {
 	const { theme, themeLoading } = useTheme()
 
 	if(themeLoading) return <Loading />
@@ -63,4 +63,3 @@ const AmendVoteButton = styled(Button)`
 	padding-bottom: 0;
 `
 
-export default VotingComplete

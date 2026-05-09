@@ -13,10 +13,10 @@ import {
 import { styled } from "@mui/material/styles"
 import { Link } from "@tanstack/react-router"
 import { useTheme, useMessages, useMembers } from "/imports/api/hooks"
-import SendWithFeedbackButton from "/imports/ui/components/Buttons/SendWithFeedbackButton"
+import { SendWithFeedbackButton } from "/imports/ui/components/Buttons/SendWithFeedbackButton"
 import { Loading } from "/imports/ui/components"
 
-const Messages = () => {
+export const Messages = () => {
 	const { theme } = useTheme()
 	const { messages, messagesLoading } = useMessages()
 	const { members, membersLoading } = useMembers()
@@ -107,4 +107,3 @@ const MessageTypeCard = styled(Paper)({
 	marginBottom: 16,
 })
 
-export default Messages

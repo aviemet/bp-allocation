@@ -6,11 +6,9 @@ import {
 import { useParams, useNavigate } from "@tanstack/react-router"
 
 
-import SplitButton from "/imports/ui/components/Buttons/SplitButton"
-import MembersTable from "./MembersTable"
-
-
-const MembersPane = () => {
+import { SplitButton } from "/imports/ui/components/Buttons/SplitButton"
+import { MembersTable } from "./MembersTable"
+export const MembersPane = () => {
 	const { id } = useParams({ strict: false })
 	const navigate = useNavigate()
 
@@ -46,4 +44,3 @@ const MembersPane = () => {
 	)
 }
 
-export default MembersPane

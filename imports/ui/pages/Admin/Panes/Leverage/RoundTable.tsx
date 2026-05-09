@@ -21,7 +21,7 @@ interface RoundTableProps {
 	}>
 }
 
-const RoundTable = ({ orgs }: RoundTableProps) => {
+export const RoundTable = ({ orgs }: RoundTableProps) => {
 	let totals = {
 		percent: 0,
 		funds: 0,
@@ -76,4 +76,3 @@ const RoundTable = ({ orgs }: RoundTableProps) => {
 	)
 }
 
-export default RoundTable

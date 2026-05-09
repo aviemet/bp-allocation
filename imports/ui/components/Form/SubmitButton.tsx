@@ -20,7 +20,7 @@ interface SubmitButtonProps extends Omit<ButtonProps, "children"> {
 	icon?: ComponentType | false
 }
 
-const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }: SubmitButtonProps) => {
+export const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }: SubmitButtonProps) => {
 	const theme = useTheme()
 	const statusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -78,4 +78,3 @@ const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...props }
 	)
 }
 
-export default SubmitButton

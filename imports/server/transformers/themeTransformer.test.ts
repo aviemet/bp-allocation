@@ -2,7 +2,7 @@ import { expect } from "chai"
 import { Random } from "meteor/random"
 
 import { type OrgWithComputed } from "./orgTransformer"
-import ThemeTransformer from "./themeTransformer"
+import { ThemeTransformer } from "./themeTransformer"
 import { type ThemeData, type SettingsData } from "/imports/api/db"
 import { type MemberTheme } from "/imports/types/schema"
 

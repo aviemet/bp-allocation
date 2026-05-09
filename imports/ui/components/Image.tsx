@@ -5,7 +5,7 @@ interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
 	src?: string
 }
 
-const Image = ({ src, ...props }: ImageProps) => {
+export const Image = ({ src, ...props }: ImageProps) => {
 	return (
 		<Img src={ src } { ...props } />
 	)
@@ -17,4 +17,3 @@ const Img = styled.img`
 	background-color: transparent;
 `
 
-export default Image

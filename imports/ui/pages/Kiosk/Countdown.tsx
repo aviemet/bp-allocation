@@ -1,14 +1,13 @@
 import { Typography } from "@mui/material"
 import { useState } from "react"
 
-import useInterval from "/imports/ui/components/useInterval"
-
+import { useInterval } from "/imports/ui/components/useInterval"
 interface CountdownProps {
 	seconds: number
 	isCounting: boolean
 }
 
-const Countdown = ({ seconds, isCounting }: CountdownProps) => {
+export const Countdown = ({ seconds, isCounting }: CountdownProps) => {
 	const [count, setCount] = useState(seconds)
 
 	useInterval(() => {
@@ -23,4 +22,3 @@ const Countdown = ({ seconds, isCounting }: CountdownProps) => {
 	)
 }
 
-export default Countdown

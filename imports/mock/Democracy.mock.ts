@@ -1,6 +1,6 @@
 import { SettingsData, ThemeData } from "../api/db"
 import { uuid } from "../lib/utils"
-import orgTransformer, { calculateVotesFromRawOrg } from "/imports/server/transformers/orgTransformer"
+import { OrgTransformer as orgTransformer, calculateVotesFromRawOrg } from "/imports/server/transformers/orgTransformer"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
 
 const theme: ThemeData = {
@@ -153,4 +153,4 @@ const transformedOrgs = orgs.map(org => orgTransformer({
 	pledges: org.pledges?.map(p => ({ ...p, createdAt: new Date(p.createdAt) })),
 }, { theme, settings, memberThemes: [], topOrgIds }))
 
-export default { orgs: transformedOrgs, theme, settings }
+export const Democracy = { orgs: transformedOrgs, theme, settings }

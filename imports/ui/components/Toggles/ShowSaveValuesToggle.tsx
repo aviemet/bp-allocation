@@ -8,7 +8,7 @@ import { useSettings } from "/imports/api/hooks"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 
-const ShowSaveValuesToggle = () => {
+export const ShowSaveValuesToggle = () => {
 
 	const { settings } = useSettings()
 
@@ -33,5 +33,3 @@ const ShowSaveValuesToggle = () => {
 		/>
 	)
 }
-
-export default ShowSaveValuesToggle

@@ -6,6 +6,9 @@
 
 ## Architecture Patterns
 
+### Module exports
+Shared application modules (`imports/`) use named exports rather than default exports so imports stay explicit and refactors are easier to trace. Ambient declarations for untyped NPM packages may still describe a default export for that package's runtime shape.
+
 ### Publications and Observers
 - Server publications commonly wrap Mongo observers using a `registerObserver` utility (`imports/server/methods.ts`) that returns `{ added, changed, removed }` handlers with a shared transformer.
 - Publications use `Tracker.autorun` to reactively derive IDs from one collection (e.g., `MemberThemes`) and observe another (`Members`), and tie observer/computation cleanup to the publication via `this.onStop`.
@@ -234,12 +237,13 @@ The two data structures serve different purposes and should not be conflated:
 
 ### Test Structure
 - Test files use `.test.ts` or `.spec.ts` naming convention so Meteor only loads them during `meteor test`
+- Heavy-load harness: `imports/server/load/publicationPipelineSimulation.ts` mirrors theme + organizations + members publication CPU work (synthetic data); `publicationPipelineSimulation.test.ts` exercises it and concurrent `MemberThemes` writes. Tune via env: `LOAD_TEST_SCALE`, `LOAD_TEST_CONCURRENT_MEMBERS`, `LOAD_TEST_CONCURRENT_ROUNDS`, optional `LOAD_TEST_TIME_CEILING_MS`.
 - Test files are co-located with the code they test (e.g., `Members.test.ts` next to `Members.ts`)
 - Mock/fixture files use `.mock.ts` suffix and live in `/imports/mock/` - they're only loaded via explicit imports
 - The `/tests/` directory is reserved for external test runners (Cypress) and files Meteor should completely ignore
 
 ### Test Database Reset Helper
-- Unit and integration tests reset their database state through `imports/tests/resetDatabase`, which calls `MongoInternals.defaultRemoteCollectionDriver().mongo.db.dropDatabase()`; this targets only the isolated database started for the current Meteor test process.
+- Unit and integration tests reset their database state through `imports/test-support/resetDatabase`, which calls `MongoInternals.defaultRemoteCollectionDriver().mongo.db.dropDatabase()`; this targets only the isolated database started for the current Meteor test process.
 
 ### Timer Management in React + Meteor
 - Use `useRef` to store timer IDs and prevent recreation on each render

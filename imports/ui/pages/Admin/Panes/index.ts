@@ -1,25 +1,24 @@
-export { default as OrganizationsPane } from "./OrganizationsPane"
-export { default as OrganizationsEdit } from "./OrganizationsPane/OrganizationsEdit"
-export { default as OrganizationsImport } from "./OrganizationsPane/OrganizationsImport"
+export { OrganizationsPane } from "./OrganizationsPane"
+export { OrganizationsEdit } from "./OrganizationsPane/OrganizationsEdit"
+export { ImportOrgs as OrganizationsImport } from "./OrganizationsPane/OrganizationsImport"
 
-export { default as MembersPane } from "./MembersPane"
-export { default as MembersEdit } from "./MembersPane/MembersEdit"
-export { default as MembersImport } from "./MembersPane/MembersImport"
+export { MembersPane } from "./MembersPane"
+export { MembersEdit } from "./MembersPane/MembersEdit"
+export { ImportMembers as MembersImport } from "./MembersPane/MembersImport"
 
-export { default as ChitVotingPane } from "./ChitVotingPane"
+export { ChitVotingPane } from "./ChitVotingPane"
 
-export { default as AllocationPane } from "./AllocationPane"
+export { AllocationPane } from "./AllocationPane"
 
-export { default as PledgesPane } from "./PledgesPane"
+export { Pledges as PledgesPane } from "./PledgesPane"
 
-export { default as LeveragePane } from "./Leverage"
+export { LeveragePane } from "./Leverage"
 
-export { default as PresentationPane } from "./PresentationPane"
+export { PresentationPane } from "./PresentationPane"
 
-export { default as SettingsPane } from "./SettingsPane"
+export { Settings as SettingsPane } from "./SettingsPane"
 
-export { default as OverviewPane } from "./OverviewPane"
+export { Overview as OverviewPane } from "./OverviewPane"
 
-export { default as MessagingPane } from "./MessagingPane"
-export { default as MessageEdit } from "./SettingsPane/MessageSettings/MessageEdit"
-
+export { Messages as MessagingPane } from "./MessagingPane"
+export { MessageEdit } from "./SettingsPane/MessageSettings/MessageEdit"

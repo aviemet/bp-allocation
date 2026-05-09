@@ -8,7 +8,7 @@ interface CheckboxInputProps {
 	onUpdate?: (value: unknown, name: string, setValue: UseFormSetValue<FieldValues>) => void
 }
 
-const CheckboxInput = ({ name, label, onUpdate }: CheckboxInputProps) => {
+export const CheckboxInput = ({ name, label, onUpdate }: CheckboxInputProps) => {
 	const { watch, setValue, control } = useFormContext<FieldValues>()
 
 	useEffect(() => {
@@ -42,4 +42,3 @@ const CheckboxInput = ({ name, label, onUpdate }: CheckboxInputProps) => {
 	)
 }
 
-export default CheckboxInput

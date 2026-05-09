@@ -10,7 +10,7 @@ interface MoneyCellProps {
 	format?: string
 }
 
-const MoneyCell = ({ children, format = "0,0.00" }: MoneyCellProps) => {
+export const MoneyCell = ({ children, format = "0,0.00" }: MoneyCellProps) => {
 	return (
 		<TableCell align="right">
 			<Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -20,5 +20,3 @@ const MoneyCell = ({ children, format = "0,0.00" }: MoneyCellProps) => {
 		</TableCell>
 	)
 }
-
-export default MoneyCell

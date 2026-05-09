@@ -19,7 +19,7 @@ interface TimerProps {
 	seconds?: number
 }
 
-const Timer = ({ seconds }: TimerProps) => {
+export const Timer = ({ seconds }: TimerProps) => {
 
 	return (
 		<TimerContainer>
@@ -62,4 +62,3 @@ const TimerWrapper = styled.div`
 	justify-content: center;
 `
 
-export default Timer

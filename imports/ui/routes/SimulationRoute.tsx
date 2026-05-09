@@ -5,9 +5,9 @@ import { useData } from "/imports/api/providers"
 import { useTheme, useOrgs, useSettings } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { PresentationLayout } from "/imports/ui/layouts"
-import Simulation from "../pages/Admin/Simulation"
+import { Simulation } from "../pages/Admin/Simulation"
 
-const SimulationRoute = () => {
+export const SimulationRoute = () => {
 	const { id } = useParams({ from: "/simulation/$id" })
 	const data = useData()
 	const { themeLoading } = useTheme()
@@ -32,5 +32,3 @@ const SimulationRoute = () => {
 		</PresentationLayout>
 	)
 }
-
-export default SimulationRoute

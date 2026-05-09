@@ -26,11 +26,11 @@ import {
 	ShowSaveValuesToggle,
 } from "/imports/ui/components/Toggles"
 
-import PresentationNavButton from "./PresentationNavButton"
+import { PresentationNavButton } from "./PresentationNavButton"
 import { Link, Loading } from "/imports/ui/components"
 import { useSettings, useTheme } from "/imports/api/hooks"
 
-const PresentationPane = () => {
+export const PresentationPane = () => {
 	const { theme, themeLoading } = useTheme()
 	const { settings, settingsLoading } = useSettings()
 
@@ -179,4 +179,3 @@ const PresentationPane = () => {
 	)
 }
 
-export default PresentationPane

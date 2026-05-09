@@ -10,8 +10,7 @@ import numeral from "numeral"
 import { FocusEvent, useState } from "react"
 import { useSettings, type OrganizationWithComputed } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
-import TopOffButton from "/imports/ui/components/Buttons/TopOffButton"
-
+import { TopOffButton } from "/imports/ui/components/Buttons/TopOffButton"
 interface TabInfo {
 	index: number
 	length: number
@@ -24,7 +23,7 @@ interface AllocationInputsProps {
 	hideAdminFields?: boolean
 }
 
-const AllocationInputs = ({ org, crowdFavorite, tabInfo, hideAdminFields }: AllocationInputsProps) => {
+export const AllocationInputs = ({ org, crowdFavorite, tabInfo, hideAdminFields }: AllocationInputsProps) => {
 	const { settings } = useSettings()
 
 	const [ votedAmount, setVotedAmount ] = useState<number | string>(org.votedTotal)
@@ -89,4 +88,3 @@ const AllocationInputs = ({ org, crowdFavorite, tabInfo, hideAdminFields }: Allo
 	)
 }
 
-export default AllocationInputs

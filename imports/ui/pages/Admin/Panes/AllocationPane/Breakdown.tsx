@@ -8,7 +8,7 @@ import {
 import numeral from "numeral"
 import { Loading } from "/imports/ui/components"
 
-const Breakdown = () => {
+export const Breakdown = () => {
 	const { theme, themeLoading } = useTheme()
 	const { topOrgs, orgsLoading } = useOrgs()
 
@@ -98,4 +98,3 @@ const Arithmetic = styled.span`
 `
 
 
-export default Breakdown

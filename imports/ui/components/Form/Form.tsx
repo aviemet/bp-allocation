@@ -26,7 +26,7 @@ interface SchemaValidationError {
 	type: string
 }
 
-const Form = <TValues extends FieldValues = FieldValues>({
+export const Form = <TValues extends FieldValues = FieldValues>({
 	children,
 	schema,
 	defaultValues,
@@ -109,4 +109,3 @@ const Form = <TValues extends FieldValues = FieldValues>({
 	)
 }
 
-export default Form

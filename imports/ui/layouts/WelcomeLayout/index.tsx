@@ -6,7 +6,7 @@ interface WelcomeLayoutProps {
 	children: ReactNode
 }
 
-const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
+export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
 	return (
 		<WelcomeContainer id="welcomeContainer">
 			<Centered id="centered">
@@ -36,5 +36,3 @@ const Centered = styled.div`
 	top: 50%;
 	transform: translateY(-50%);
 `
-
-export default WelcomeLayout

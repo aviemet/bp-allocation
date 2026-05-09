@@ -15,11 +15,9 @@ import { formatters } from "/imports/lib/utils"
 
 import { MemberMethods } from "/imports/api/methods"
 
-import SortableTable from "/imports/ui/components/SortableTable"
-
-import ContextMenu from "./ContextMenu"
-import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
-
+import { SortableTable } from "/imports/ui/components/SortableTable"
+import { ContextMenu } from "./ContextMenu"
+import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
 interface HeadCell {
 	id: string
 	label: string
@@ -51,7 +49,7 @@ const headCells: HeadCell[] = [
 // TODO: Also, the sorting and icon indicators for voting status
 // TODO: Would be cool to get the filter icon to allow filtering by keyword
 //       So, choosing 'not voted' would filter out all those who have voted
-const MembersTable = () => {
+export const MembersTable = () => {
 	const { filteredMembers, searchFilter, setSearchFilter, membersLoading } = useMembers()
 	const { settings } = useSettings()
 
@@ -173,4 +171,3 @@ const MembersTable = () => {
 	)
 }
 
-export default MembersTable

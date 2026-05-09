@@ -1,4 +1,2 @@
-import ResultsOffsetInput from "./ResultsOffsetInput"
-import TimerInput from "./TimerInput"
-
-export { TimerInput, ResultsOffsetInput }
+export { ResultsOffsetInput } from "./ResultsOffsetInput"
+export { TimerInput } from "./TimerInput"

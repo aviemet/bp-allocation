@@ -9,7 +9,7 @@ import { useSettings } from "/imports/api/hooks"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 
-const TopupsActiveToggle = () => {
+export const TopupsActiveToggle = () => {
 	const { settings } = useSettings()
 
 	if(!settings) return <></>
@@ -37,5 +37,3 @@ const TopupsActiveToggle = () => {
 		/>
 	)
 }
-
-export default TopupsActiveToggle

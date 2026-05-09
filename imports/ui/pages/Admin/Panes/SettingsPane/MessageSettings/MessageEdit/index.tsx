@@ -8,11 +8,10 @@ import { Form, STATUS, type Status } from "/imports/ui/components/Form"
 import { useState } from "react"
 
 import { Loading } from "/imports/ui/components"
-import EditMessageForm from "./EditMessageForm"
-
+import { EditMessageForm } from "./EditMessageForm"
 type MessageFormData = Omit<Message, "_id" | "createdAt" | "updatedAt">
 
-const MessageEdit = () => {
+export const MessageEdit = () => {
 	const { id: themeId, messageId, type } = useParams({ strict: false })
 	const { message: loadedMessage, messageLoading } = useMessage(messageId || "")
 
@@ -79,4 +78,3 @@ const MessageEdit = () => {
 	)
 }
 
-export default MessageEdit

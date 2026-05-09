@@ -20,7 +20,7 @@ interface CustomConfirmProps {
 	width?: "xs" | "sm" | "md" | "lg" | "xl"
 }
 
-const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction, cancelAction, okText, cancelText, width }: CustomConfirmProps) => {
+export const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmAction, cancelAction, okText, cancelText, width }: CustomConfirmProps) => {
 
 	return (
 		<Dialog
@@ -55,4 +55,3 @@ const ConfirmationModal = ({ header, content, isModalOpen, handleClose, confirmA
 	)
 }
 
-export default ConfirmationModal

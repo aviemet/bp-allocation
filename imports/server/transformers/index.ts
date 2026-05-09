@@ -1,6 +1,4 @@
-import MemberTransformer from "./memberTransformer"
-import OrgTransformer, { aggregateVotesByOrganization, calculateVotesFromRawOrg } from "./orgTransformer"
-import SettingsTransformer from "./settingsTransformer"
-import ThemeTransformer from "./themeTransformer"
-
-export { ThemeTransformer, SettingsTransformer, OrgTransformer, MemberTransformer, aggregateVotesByOrganization, calculateVotesFromRawOrg }
+export { ThemeTransformer } from "./themeTransformer"
+export { SettingsTransformer } from "./settingsTransformer"
+export { OrgTransformer, aggregateVotesByOrganization, calculateVotesFromRawOrg } from "./orgTransformer"
+export { MemberTransformer } from "./memberTransformer"

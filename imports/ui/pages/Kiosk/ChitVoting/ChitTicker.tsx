@@ -15,7 +15,7 @@ interface ChitTickerProps {
 /**
  * Full Component containing Ticker, Org Title and amount feedback
  */
-const ChitTicker = ({ org }: ChitTickerProps) => {
+export const ChitTicker = ({ org }: ChitTickerProps) => {
 	const { member, chits, updateChits } = useVoting()
 	const [ value, setValue ] = useState(chits[org._id] || 0)
 
@@ -84,4 +84,3 @@ const TransparentButton = styled(IconButton)`
 	font-size: 3rem;
 `
 
-export default ChitTicker

@@ -7,9 +7,9 @@ import {
 import { Link, useParams } from "@tanstack/react-router"
 
 
-import AdvancedSettings from "./AdvancedSettings"
-import GeneralSettings from "./GeneralSettings"
-import MessageSettings from "./MessageSettings"
+import { AdvancedSettings } from "./AdvancedSettings"
+import { GeneralSettings } from "./GeneralSettings"
+import { Messages as MessageSettings } from "./MessageSettings"
 
 const panes = [
 	{
@@ -29,7 +29,7 @@ const panes = [
 	},
 ]
 
-const Settings = () => {
+export const Settings = () => {
 	const params = useParams({ strict: false })
 	const themeId = params.id
 	const activeTab = params.activeTab ?? panes[0].slug
@@ -59,4 +59,3 @@ const Settings = () => {
 	)
 }
 
-export default Settings

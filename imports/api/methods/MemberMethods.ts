@@ -204,7 +204,7 @@ const _memberThemeInsert = async function(query: MemberThemeInsertQuery): Promis
  * BEGIN PUBLIC MEMBER METHODS DEFINITION *
  ******************************************/
 
-const MemberMethods = {
+export const MemberMethods = {
 	/*********************
 	 * Create new Member *
 	 *********************/
@@ -478,5 +478,3 @@ const MemberMethods = {
 	}),
 
 }
-
-export default MemberMethods

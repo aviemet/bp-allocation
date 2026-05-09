@@ -8,7 +8,7 @@ import { useSettings } from "/imports/api/hooks"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 
-const ShowLeverageToggle = () => {
+export const ShowLeverageToggle = () => {
 
 	const { settings, settingsLoading } = useSettings()
 
@@ -35,5 +35,3 @@ const ShowLeverageToggle = () => {
 		/>
 	)
 }
-
-export default ShowLeverageToggle

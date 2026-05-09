@@ -1,6 +1,4 @@
-import AdminLayout from "./AdminLayout"
-import KioskLayout from "./KioskLayout"
-import PresentationLayout from "./PresentationLayout"
-import WelcomeLayout from "./WelcomeLayout"
-
-export { WelcomeLayout, AdminLayout, PresentationLayout, KioskLayout }
+export { AdminLayout } from "./AdminLayout"
+export { KioskLayout } from "./KioskLayout"
+export { PresentationLayout } from "./PresentationLayout"
+export { WelcomeLayout } from "./WelcomeLayout"

@@ -2,9 +2,9 @@ import styled from "@emotion/styled"
 import { ThemeWithComputed, OrgDataWithComputed } from "/imports/api/hooks"
 import { Fade } from "@mui/material"
 
-import Bar from "./Bar"
-import LeverageBar from "./LeverageBar"
-import OrgInfo from "./OrgInfo"
+import { Bar } from "./Bar"
+import { LeverageBar } from "./LeverageBar"
+import { OrgInfo } from "./OrgInfo"
 import { PresentationSettings } from "/imports/types"
 
 interface GraphProps {
@@ -15,7 +15,7 @@ interface GraphProps {
 	topOrgs: OrgDataWithComputed[]
 }
 
-const Graph = ({ isSimulation, theme, settings, orgs, topOrgs }: GraphProps) => {
+export const Graph = ({ isSimulation, theme, settings, orgs, topOrgs }: GraphProps) => {
 	const shouldBeVisible = settings.leverageVisible || isSimulation
 
 	const startingLeverage = () => {
@@ -185,4 +185,3 @@ const LeverageContainer = styled.div`
 	padding: 0.5rem 0;
 `
 
-export default Graph

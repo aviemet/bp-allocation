@@ -25,7 +25,7 @@ export interface LeverageRound {
 	orgs: OrganizationWithFunding[]
 }
 
-class Leverage {
+export class Leverage {
 	rounds: LeverageRound[] = []
 	leverageRemaining: number
 	orgs: OrganizationWithFunding[]
@@ -168,5 +168,3 @@ class Leverage {
 	}
 
 }
-
-export default Leverage

@@ -1,12 +1,12 @@
-import { Controller, useFormContext, useWatch, type FieldValues } from "react-hook-form"
-import RichTextEditor from "/imports/ui/components/RichTextEditor"
+import { Controller, useFormContext, type FieldValues } from "react-hook-form"
+import { RichTextEditor } from "/imports/ui/components/RichTextEditor"
 
 interface RichTextInputProps {
 	name: string
 	label?: string
 }
 
-const TextInput = ({ name, label: _label }: RichTextInputProps) => {
+export const RichTextInput = ({ name, label: _label }: RichTextInputProps) => {
 	const { control } = useFormContext<FieldValues>()
 
 	return (
@@ -18,4 +18,3 @@ const TextInput = ({ name, label: _label }: RichTextInputProps) => {
 	)
 }
 
-export default TextInput

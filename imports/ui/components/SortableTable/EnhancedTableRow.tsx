@@ -24,7 +24,7 @@ interface EnhancedTableRowProps<T extends SortableRow> {
 	selectable?: boolean
 }
 
-export default function EnhancedTableRow<T extends SortableRow>({
+export function EnhancedTableRow<T extends SortableRow>({
 	row,
 	headCells,
 	isSelected,

@@ -19,7 +19,7 @@ import {
 	LeveragePane,
 	PresentationPane,
 } from "../../pages/Admin/Panes"
-import ThemesList from "../../pages/Admin/ThemesList"
+import { ThemesList } from "../../pages/Admin/ThemesList"
 import { rootRoute } from "../rootRoute"
 
 export const adminLayoutRoute = createRoute({

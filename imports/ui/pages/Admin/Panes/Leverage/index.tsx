@@ -8,18 +8,18 @@ import { styled } from "@mui/material/styles"
 import numeral from "numeral"
 
 import { useTheme, useOrgs } from "/imports/api/hooks"
-import LeverageObject from "/imports/lib/Leverage"
+import { Leverage as LeverageObject } from "/imports/lib/Leverage"
 
-import DistributeLeverageButton from "./DistributeLeverageButton"
-import ResultsTable from "./ResultsTable"
-import RoundTable from "./RoundTable"
+import { DistributeLeverageButton } from "./DistributeLeverageButton"
+import { ResultsTable } from "./ResultsTable"
+import { RoundTable } from "./RoundTable"
 import { ShowLeverageToggle } from "/imports/ui/components/Toggles"
 
 interface LeverageProps {
 	hideAdminFields?: boolean
 }
 
-const Leverage = ({ hideAdminFields }: LeverageProps) => {
+export const LeveragePane = ({ hideAdminFields }: LeverageProps) => {
 	const { theme } = useTheme()
 	const { topOrgs } = useOrgs()
 
@@ -94,4 +94,3 @@ const StageCard = styled(Paper)(() => ({
 	marginBottom: 16,
 }))
 
-export default Leverage

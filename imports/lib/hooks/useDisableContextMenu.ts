@@ -1,6 +1,6 @@
 import { useLayoutEffect } from "react"
 
-const useDisableContextMenu = () => {
+export const useDisableContextMenu = () => {
 	useLayoutEffect(() => {
 		document.oncontextmenu = () => false
 
@@ -9,5 +9,3 @@ const useDisableContextMenu = () => {
 		}
 	}, [])
 }
-
-export default useDisableContextMenu

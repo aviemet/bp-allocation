@@ -233,7 +233,7 @@ interface SmsParams {
 	members?: unknown
 }
 
-const textVotingLinkToMembers = async ({ themeId, message, members }: SmsParams) => {
+export const textVotingLinkToMembers = async ({ themeId, message, members }: SmsParams) => {
 	if(members === undefined) {
 		const allMembers = await Members.find({ "theme.theme": themeId }, { sort: { number: 1 } }).fetchAsync()
 		members = allMembers.map(m => m._id)
@@ -321,5 +321,3 @@ const textVotingLinkToMembers = async ({ themeId, message, members }: SmsParams)
 	await sendTextsWithRetry(memberPhoneNumbers)
 	await setMessageSentFlag(theme, message)
 }
-
-export default textVotingLinkToMembers

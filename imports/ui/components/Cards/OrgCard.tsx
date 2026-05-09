@@ -35,7 +35,7 @@ interface OrgCardProps extends Omit<BoxProps, "onClick" | "content"> {
 	disabled?: boolean
 }
 
-const OrgCard = ({
+export const OrgCard = ({
 	children,
 	org,
 	overlay,
@@ -171,4 +171,3 @@ const InfoLink = styled.div`
 	right: 0;
 `
 
-export default OrgCard

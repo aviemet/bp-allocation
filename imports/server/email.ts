@@ -96,7 +96,7 @@ interface EmailVotingParams {
 	members?: string | string[]
 }
 
-const emailVotingLinkToMembers = async ({ themeId, message, members }: EmailVotingParams) => {
+export const emailVotingLinkToMembers = async ({ themeId, message, members }: EmailVotingParams) => {
 	const theme = await Themes.findOneAsync({ _id: themeId })
 	const invalidEmailMembers: MemberEmailLookupResult[] = []
 
@@ -156,5 +156,3 @@ const emailVotingLinkToMembers = async ({ themeId, message, members }: EmailVoti
 	// Log invalid emails
 	if(invalidEmailMembers.length > 0) console.error({ invalidEmailMembers })
 }
-
-export default emailVotingLinkToMembers

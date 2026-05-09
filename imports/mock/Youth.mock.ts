@@ -134,4 +134,4 @@ const orgs: OrganizationWithFunding[] = [
 	},
 ]
 
-export default { orgs }
+export const Youth = { orgs }

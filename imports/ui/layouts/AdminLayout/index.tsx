@@ -18,13 +18,13 @@ import { useNavigate, useLocation, useParams, Link, Outlet } from "@tanstack/rea
 import { Meteor } from "meteor/meteor"
 import { useState, useEffect, useMemo, type MouseEvent } from "react"
 
-import AdminLinks from "./AdminLinks"
+import { AdminLinks } from "./AdminLinks"
 import { useData } from "/imports/api/providers"
 import { useTheme } from "/imports/api/hooks"
 
 const drawerWidth = 175
 
-const AdminLayout = () => {
+export const AdminLayout = () => {
 	const data = useData()
 	const [ anchorEl, setAnchorEl ] = useState<HTMLElement | null>(null)
 
@@ -198,5 +198,3 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 	...theme.mixins.toolbar,
 	justifyContent: "flex-end",
 }))
-
-export default AdminLayout

@@ -7,7 +7,7 @@ interface IncludeVotingLinkToggleProps {
 	message: MessageData
 }
 
-const includeVotingLinkToggle = ({ message }: IncludeVotingLinkToggleProps) => {
+export const IncludeVotingLinkToggle = ({ message }: IncludeVotingLinkToggleProps) => {
 	const saveValue = async (_event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
 		await MessageMethods.update.callAsync({
 			id: message._id,
@@ -25,4 +25,3 @@ const includeVotingLinkToggle = ({ message }: IncludeVotingLinkToggleProps) => {
 	)
 }
 
-export default includeVotingLinkToggle

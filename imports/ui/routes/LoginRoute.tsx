@@ -3,7 +3,7 @@ import { Meteor } from "meteor/meteor"
 
 import { WelcomeLayout } from "/imports/ui/layouts"
 import { rootRoute } from "./rootRoute"
-import Login from "../pages/Welcome/Login"
+import { Login } from "../pages/Welcome/Login"
 
 
 export const loginRoute = createRoute({

@@ -101,11 +101,11 @@ const bottomLinks = [
 	},
 ]
 
-interface LinksProps {
+interface AdminLinksProps {
 	activeMenuItem: string
 }
 
-const Links = ({ activeMenuItem }: LinksProps) => {
+export const AdminLinks = ({ activeMenuItem }: AdminLinksProps) => {
 	const data = useData()
 
 	const [pagesOpen, setPagesOpen] = useState(false)
@@ -198,5 +198,3 @@ const Links = ({ activeMenuItem }: LinksProps) => {
 		</>
 	)
 }
-
-export default Links

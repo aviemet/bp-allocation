@@ -2,11 +2,11 @@ import styled from "@emotion/styled"
 import { useOrgs, usePledgeAnimationQueue } from "/imports/api/hooks"
 import { useEffect, useState } from "react"
 
-import PledgesOverlayReadOnly from "./PledgesOverlayReadOnly"
+import { PledgesOverlayReadOnly } from "./PledgesOverlayReadOnly"
 import { type PledgeWithOrg } from "/imports/api/hooks"
 import { convertPledgeToPlainObject } from "/imports/ui/pages/Presentation/Allocation/PledgesOverlay/utils"
 
-const PledgesOverlayDisplay = () => {
+export const PledgesOverlayDisplay = () => {
 	const { pledges } = useOrgs()
 	const { queueItems } = usePledgeAnimationQueue()
 	const [ currentPledge, setCurrentPledge ] = useState<PledgeWithOrg | null>(null)
@@ -46,4 +46,3 @@ const PageContainer = styled.div`
 	padding: 0;
 `
 
-export default PledgesOverlayDisplay

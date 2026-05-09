@@ -1,7 +1,7 @@
 /**************************************
  *      Queue class for Pledges       *
  **************************************/
-export default class Queue<T> {
+export class Queue<T> {
 	private queue: T[]
 
 	constructor() {

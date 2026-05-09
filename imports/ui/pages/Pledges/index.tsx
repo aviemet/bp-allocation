@@ -5,9 +5,8 @@ import { OrganizationMethods } from "/imports/api/methods"
 import { Form } from "/imports/ui/components/Form"
 
 import { Loading } from "/imports/ui/components"
-import PledgesForm from "./PledgesForm"
-
-const Pledges = () => {
+import { PledgesForm } from "./PledgesForm"
+export const Pledges = () => {
 	const { members, membersLoading } = useMembers()
 	const { orgsLoading } = useOrgs()
 
@@ -49,4 +48,3 @@ const Pledges = () => {
 	)
 }
 
-export default Pledges

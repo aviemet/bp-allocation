@@ -89,8 +89,6 @@ interface MediaProviderProps {
 	children: ReactNode
 }
 
-const MediaProvider = ({ children }: MediaProviderProps) => {
+export const MediaProvider = ({ children }: MediaProviderProps) => {
 	return <>{ children }</>
 }
-
-export default MediaProvider

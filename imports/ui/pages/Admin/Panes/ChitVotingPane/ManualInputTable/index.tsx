@@ -13,7 +13,7 @@ import { useState, useEffect, useCallback } from "react"
 import { useOrgs, type OrgDataWithComputed } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 
-const ChitTable = () => {
+export const ChitTable = () => {
 	const { orgs, topOrgs } = useOrgs()
 
 	const topOrgIds = topOrgs.map(org => org._id)
@@ -107,4 +107,3 @@ const ChitInputs = ({ org, tabInfo, topOrg }: ChitInputsProps) => {
 	)
 }
 
-export default ChitTable

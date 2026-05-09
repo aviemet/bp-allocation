@@ -10,12 +10,11 @@ import { useMessages, useMembers } from "/imports/api/hooks"
 import { MessageMethods } from "/imports/api/methods"
 import { type MessageData } from "/imports/api/db"
 
-import SortableTable from "/imports/ui/components/SortableTable"
-import SendWithFeedbackButton from "/imports/ui/components/Buttons/SendWithFeedbackButton"
-
-import ActiveToggle from "./ActiveToggle"
-import IncludeVotingLinkToggle from "./IncludevotingLinkToggle"
-import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
+import { SortableTable } from "/imports/ui/components/SortableTable"
+import { SendWithFeedbackButton } from "/imports/ui/components/Buttons/SendWithFeedbackButton"
+import { ActiveToggle } from "./ActiveToggle"
+import { IncludeVotingLinkToggle } from "./IncludevotingLinkToggle"
+import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
 import { Loading } from "/imports/ui/components"
 
 interface MessageRow extends MessageData {
@@ -89,7 +88,7 @@ const emailHeaderCells = [
 	},
 ]
 
-const Messages = () => {
+export const Messages = () => {
 	const { themeId } = useData()
 	const { messages, messagesLoading } = useMessages()
 	const { members, membersLoading } = useMembers()
@@ -196,4 +195,3 @@ const Messages = () => {
 	)
 }
 
-export default Messages

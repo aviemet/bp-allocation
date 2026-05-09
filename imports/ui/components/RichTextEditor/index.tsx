@@ -3,8 +3,8 @@ import { type RichTextEditorRef } from "mui-tiptap"
 import { Activity } from "react"
 import { useState, forwardRef } from "react"
 
-import RawEditor from "./RawEditor"
-import TipTapEditor from "./TipTapEditor"
+import { RawEditor } from "./RawEditor"
+import { TipTapEditor } from "./TipTapEditor"
 
 interface RichTextEditorProps {
 	placeholder?: string
@@ -12,7 +12,7 @@ interface RichTextEditorProps {
 	onChange?: (value: string) => void
 }
 
-const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(({ value, onChange, placeholder }, ref) => {
+export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(({ value, onChange, placeholder }, ref) => {
 	const [isRaw, setIsRaw] = useState(false)
 
 	const handleChange = (newValue: string) => {
@@ -47,4 +47,3 @@ const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(({ val
 
 RichTextEditor.displayName = "RichTextEditor"
 
-export default RichTextEditor

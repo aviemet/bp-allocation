@@ -7,13 +7,12 @@ import { PresentationSettingsMethods } from "/imports/api/methods"
 import { PresentationSettingsSchema } from "/imports/api/db"
 import { useSettings } from "/imports/api/hooks"
 
-import ResetOrgFundsButton from "/imports/ui/components/Buttons/ResetOrgFundsButton"
-import ResetMessageStatusButton from "/imports/ui/components/Buttons/ResetMessageStatusButton"
-
+import { ResetOrgFundsButton } from "/imports/ui/components/Buttons/ResetOrgFundsButton"
+import { ResetMessageStatusButton } from "/imports/ui/components/Buttons/ResetMessageStatusButton"
 import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { Loading } from "/imports/ui/components"
 
-const SettingsPane = () => {
+export const AdvancedSettings = () => {
 	const { settings, settingsLoading } = useSettings()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
@@ -79,4 +78,3 @@ const SettingsPane = () => {
 	)
 }
 
-export default SettingsPane

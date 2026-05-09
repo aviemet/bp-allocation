@@ -73,7 +73,7 @@ export interface OrgWithComputed extends OrgData {
  * @param {Object} doc Object in iterating array of objects to altered
  * @param {Object} params { theme, settings, memberThemes }
  */
-const OrgTransformer = (doc: OrgData, params: OrgTransformerParams) => {
+export const OrgTransformer = (doc: OrgData, params: OrgTransformerParams) => {
 	// Get save amount if saved
 	let save = 0
 	if(params.theme?.saves && !isEmpty(params.theme.saves)) {
@@ -134,5 +134,3 @@ const OrgTransformer = (doc: OrgData, params: OrgTransformerParams) => {
 
 	return result
 }
-
-export default OrgTransformer

@@ -7,8 +7,7 @@ import numeral from "numeral"
 import React, { useRef, useState } from "react"
 import { roundFloat } from "/imports/lib/utils"
 
-import ContentModal from "/imports/ui/components/Dialogs/ContentModal"
-
+import { ContentModal } from "/imports/ui/components/Dialogs/ContentModal"
 import { ThemeMethods } from "/imports/api/methods"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
 
@@ -16,7 +15,7 @@ interface SaveButtonProps {
 	org: OrgDataWithComputed
 }
 
-const SaveButton = ({ org }: SaveButtonProps) => {
+export const SaveButton = ({ org }: SaveButtonProps) => {
 	const [amount, setAmount] = useState("")
 	const [modalOpen, setModalOpen] = useState(false)
 	const amountInputRef = useRef<HTMLInputElement>(null)
@@ -60,4 +59,3 @@ const SaveButton = ({ org }: SaveButtonProps) => {
 	)
 }
 
-export default SaveButton

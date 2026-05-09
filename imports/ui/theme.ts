@@ -15,7 +15,7 @@ export const screen = {
 	desktopL: 2560,
 }
 
-const theme = createTheme({
+export const theme = createTheme({
 	screen,
 	palette: {
 		success: {
@@ -126,5 +126,3 @@ const theme = createTheme({
 		fontFamily: "Roboto",
 	},
 })
-
-export default theme

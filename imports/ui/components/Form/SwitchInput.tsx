@@ -8,7 +8,7 @@ interface SwitchInputProps {
 	onUpdate?: (value: unknown, name: string, setValue: UseFormSetValue<FieldValues>) => void
 }
 
-const CheckboxInput = ({ name, label, onUpdate }: SwitchInputProps) => {
+export const SwitchInput = ({ name, label, onUpdate }: SwitchInputProps) => {
 	const { watch, setValue, control } = useFormContext<FieldValues>()
 
 	useEffect(() => {
@@ -42,4 +42,3 @@ const CheckboxInput = ({ name, label, onUpdate }: SwitchInputProps) => {
 	)
 }
 
-export default CheckboxInput

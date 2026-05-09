@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { Container } from "@mui/material"
 
-const FourOhFour = () => {
+export const FourOhFour = () => {
 	return (
 		<ErrorContainer>
 			<h1>Uh Oh!</h1>
@@ -13,7 +13,5 @@ const FourOhFour = () => {
 
 const ErrorContainer = styled(Container)`
   color: white;
-  text-align: center;
+	text-align: center;
 `
-
-export default FourOhFour

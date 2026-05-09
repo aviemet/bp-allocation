@@ -37,10 +37,8 @@ const markProcessed = new ValidatedMethod({
 	},
 })
 
-const PledgeAnimationMethods = {
+export const PledgeAnimationMethods = {
 	enqueuePledgeAnimation,
 	markProcessed,
 }
-
-export default PledgeAnimationMethods
 

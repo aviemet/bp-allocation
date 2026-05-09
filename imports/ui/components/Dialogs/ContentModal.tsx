@@ -24,7 +24,7 @@ interface ContentModalProps {
 	setOpen: (open: boolean) => void
 }
 
-const ContentModal = ({ children, title, open, setOpen }: ContentModalProps) => {
+export const ContentModal = ({ children, title, open, setOpen }: ContentModalProps) => {
 	return (
 		<Modal
 			open={ open }
@@ -44,4 +44,3 @@ const ContentModal = ({ children, title, open, setOpen }: ContentModalProps) => 
 	)
 }
 
-export default ContentModal

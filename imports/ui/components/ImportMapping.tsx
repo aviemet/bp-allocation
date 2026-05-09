@@ -42,7 +42,7 @@ interface ImportMappingProps {
 	onImport: (data: CsvRow[]) => void
 }
 
-const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImport }: ImportMappingProps) => {
+export const ImportMapping = ({ headings, values = [], mapping, schema, sanitize, onImport }: ImportMappingProps) => {
 	const [errors, setErrors] = useState<Array<ValidationErrorDetail[] | undefined>>([])
 
 	const alternateForm = (heading: string) => {
@@ -199,4 +199,3 @@ const EnhancedTableBody = styled(TableBody)(({ theme }) => {
 	})
 })
 
-export default ImportMapping

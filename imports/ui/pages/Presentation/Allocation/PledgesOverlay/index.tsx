@@ -2,12 +2,12 @@ import styled from "@emotion/styled"
 import { useOrgs, usePledgeAnimationQueue, useTheme } from "/imports/api/hooks"
 import { useEffect, useRef, useState } from "react"
 
-import PledgeDisplay from "./PledgeDisplay"
+import { PledgeDisplay } from "./PledgeDisplay"
 import { type PledgeWithOrg } from "/imports/api/hooks"
 import { convertPledgeToPlainObject } from "./utils"
-import PledgeAnimationMethods from "/imports/api/methods/PledgeAnimationMethods"
+import { PledgeAnimationMethods } from "/imports/api/methods/PledgeAnimationMethods"
 
-const PledgesOverlay = () => {
+export const PledgesOverlay = () => {
 	const { pledges } = useOrgs()
 	const { queueItems } = usePledgeAnimationQueue()
 	const { theme } = useTheme()
@@ -81,4 +81,3 @@ const OverlayContainer = styled.div`
 	pointer-events: none;
 `
 
-export default PledgesOverlay

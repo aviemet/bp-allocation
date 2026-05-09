@@ -2,7 +2,7 @@ import { format } from "date-fns"
 import { isEmpty } from "lodash"
 import { useOrgs, useMembers } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
-import ExportCsvButton from "/imports/ui/components/Buttons/ExportCsvButton"
+import { ExportCsvButton } from "/imports/ui/components/Buttons/ExportCsvButton"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
 interface ChitVoteData {
@@ -13,7 +13,7 @@ interface ChitVoteData {
 	[key: string]: string | number | undefined
 }
 
-const ExportChitVotes = () => {
+export const ExportChitVotes = () => {
 	const { orgs, orgsLoading } = useOrgs()
 	const { members, membersLoading } = useMembers()
 
@@ -48,4 +48,3 @@ const ExportChitVotes = () => {
 	)
 }
 
-export default ExportChitVotes

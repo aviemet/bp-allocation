@@ -1,6 +1,6 @@
 import SimpleSchema from "simpl-schema"
 
-import SchemaRegex from "/imports/lib/schema"
+import { SchemaRegex } from "/imports/lib/schema"
 import { CollectionPermissions } from "./index"
 
 export const DEFAULT_NUM_TOP_ORGS = 5

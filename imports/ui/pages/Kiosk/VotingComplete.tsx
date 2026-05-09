@@ -15,7 +15,7 @@ interface VotingCompleteProps {
 	setVotingComplete: (value: boolean) => void
 }
 
-const VotingComplete = ({ setVotingComplete }: VotingCompleteProps) => {
+export const VotingComplete = ({ setVotingComplete }: VotingCompleteProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 
@@ -111,4 +111,3 @@ const AmendVoteButton = styled(Button)`
 	margin-bottom: 10px;
 `
 
-export default VotingComplete

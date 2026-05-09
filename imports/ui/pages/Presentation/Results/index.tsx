@@ -5,11 +5,11 @@ import numeral from "numeral"
 import { useEffect, useState } from "react"
 import { useTheme, useSettings, useOrgs } from "/imports/api/hooks"
 
-import AwardCard from "/imports/ui/components/Cards/AwardCard"
+import { AwardCard } from "/imports/ui/components/Cards/AwardCard"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 
-const Results = () => {
+export const Results = () => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
 	const { orgs, topOrgs } = useOrgs()
@@ -165,4 +165,3 @@ const AwardsCards = styled("div")`
 	font-family: "BentonMod";
 `
 
-export default Results

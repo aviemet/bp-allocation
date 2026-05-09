@@ -71,4 +71,3 @@ export const DistributeLeverageButton = ({ leverageDistributed, rounds }: Distri
 	)
 }
 
-export default DistributeLeverageButton

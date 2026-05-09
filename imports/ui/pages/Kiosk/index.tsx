@@ -3,19 +3,19 @@ import { useParams } from "@tanstack/react-router"
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 
 import { useData } from "/imports/api/providers"
-import ChitVotingKiosk from "./ChitVoting"
-import FundsVotingKiosk from "./FundsVoting"
-import KioskInfo from "./Info/KioskInfo"
-import MemberLoginRequired from "./MemberLoginRequired"
-import RemoteVoting from "./RemoteVoting"
-import Topups from "./Topups"
-import Results from "../Presentation/Results"
+import { ChitVotingKiosk } from "./ChitVoting"
+import { FundsVotingKiosk } from "./FundsVoting"
+import { KioskInfo } from "./Info/KioskInfo"
+import { MemberLoginRequired } from "./MemberLoginRequired"
+import { RemoteVoting } from "./RemoteVoting"
+import { Pledges as Topups } from "./Topups"
+import { Results } from "../Presentation/Results"
 import { useSettings, useTheme } from "/imports/api/hooks"
 
 type KioskPage = "info" | "chit" | "funds" | "topups" | "results"
 type TimerRef = ReturnType<typeof setTimeout>
 
-const Kiosk = () => {
+export const Kiosk = () => {
 	const params = useParams({ strict: false })
 	const member = params?.member
 
@@ -147,4 +147,3 @@ const PageFader = styled.div<{ visible: boolean }>`
 	width: 100%;
 `
 
-export default Kiosk

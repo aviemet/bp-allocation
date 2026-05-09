@@ -11,8 +11,8 @@ import { ThemeMethods } from "/imports/api/methods"
 
 import { roundFloat } from "/imports/lib/utils"
 
-import SaveButton from "./SaveButton"
-import UnSaveButton from "./UnSaveButton"
+import { SaveButton } from "./SaveButton"
+import { UnSaveButton } from "./UnSaveButton"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
 
 interface TopOrgsRowProps {
@@ -23,7 +23,7 @@ interface TopOrgsRowProps {
 	isLocked: boolean
 }
 
-const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }: TopOrgsRowProps) => {
+export const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }: TopOrgsRowProps) => {
 	const { id: themeId } = useParams({ strict: false })
 
 	/**
@@ -70,4 +70,3 @@ const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked }: TopO
 	)
 }
 
-export default TopOrgsRow

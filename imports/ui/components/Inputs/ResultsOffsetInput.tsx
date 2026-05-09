@@ -7,7 +7,7 @@ interface ResultsOffsetInputProps {
 	settingsId: string
 }
 
-const ResultsOffsetInput = ({ resultsOffset: initialResultsOffset, settingsId }: ResultsOffsetInputProps) => {
+export const ResultsOffsetInput = ({ resultsOffset: initialResultsOffset, settingsId }: ResultsOffsetInputProps) => {
 	const [ resultsOffset, setResultsOffset ] = useState<number | undefined>(initialResultsOffset)
 
 	const saveResultsOffset = async () => {
@@ -38,4 +38,3 @@ const ResultsOffsetInput = ({ resultsOffset: initialResultsOffset, settingsId }:
 	)
 }
 
-export default ResultsOffsetInput

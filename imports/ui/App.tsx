@@ -4,15 +4,15 @@ import { ThemeProvider as MUIProvider } from "@mui/material/styles"
 import { SnackbarProvider } from "notistack"
 import { useEffect } from "react"
 
-import MediaProvider from "./MediaProvider"
-import Routes from "./routes"
+import { MediaProvider } from "./MediaProvider"
+import { Routes } from "./routes"
 
-import theme from "/imports/ui/theme"
+import { theme } from "/imports/ui/theme"
 import { isMobileDevice } from "/imports/lib/utils"
 
 import { DataProvider } from "/imports/api/providers"
 
-const App = () => {
+export const App = () => {
 	useEffect(() => {
 		if(isMobileDevice() && typeof globalThis !== "undefined" && globalThis.document) {
 			globalThis.document.body.addEventListener("touchmove", function(e) {
@@ -45,5 +45,3 @@ const GlobalContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 `
-
-export default App

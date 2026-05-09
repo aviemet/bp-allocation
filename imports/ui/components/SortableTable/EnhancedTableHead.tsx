@@ -25,7 +25,7 @@ interface EnhancedTableHeadProps {
 	selectable?: boolean
 }
 
-export default function EnhancedTableHead({
+export function EnhancedTableHead({
 	headCells,
 	spanForCollapse = false,
 	tableHeadTopRow,

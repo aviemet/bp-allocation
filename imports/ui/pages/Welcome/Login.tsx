@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { Meteor } from "meteor/meteor"
 import { useSnackbar } from "notistack"
 
-const Login = () => {
+export const Login = () => {
 	const { enqueueSnackbar } = useSnackbar()
 
 	const navigate = useNavigate()
@@ -45,5 +45,3 @@ const Login = () => {
 		</>
 	)
 }
-
-export default Login

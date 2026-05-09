@@ -15,7 +15,7 @@ interface FileUploadProps {
 	onError?: (data: { error?: unknown, file: unknown }) => void
 }
 
-const FileUpload = ({ width, fileLocator, onStart, onProgress, onUploaded, onEnd, onError }: FileUploadProps) => {
+export const FileUpload = ({ width, fileLocator, onStart, onProgress, onUploaded, onEnd, onError }: FileUploadProps) => {
 	const [ uploading, setUploading ] = useState<UploadInstance | null>(null)
 	const [ progress, setProgress ] = useState(0)
 	const [ inProgress, setInProgress ] = useState(false)
@@ -98,4 +98,3 @@ const FileUpload = ({ width, fileLocator, onStart, onProgress, onUploaded, onEnd
 	)
 }
 
-export default FileUpload

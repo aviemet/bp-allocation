@@ -2,7 +2,7 @@ import Paper from "@mui/material/Paper"
 import { styled, keyframes } from "@mui/material/styles"
 import numeral from "numeral"
 
-import AwardEmblem from "../AwardEmblem"
+import { AwardEmblem } from "../AwardEmblem"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
 import { COLORS } from "/imports/lib/global"
 
@@ -16,7 +16,7 @@ interface AwardCardProps {
 	shouldPulse?: boolean
 }
 
-const AwardCard = ({ org, award, amount, small, shouldPulse }: AwardCardProps) => {
+export const AwardCard = ({ org, award, amount, small, shouldPulse }: AwardCardProps) => {
 	const totalFunds = (org.allocatedFunds || 0) + (org.leverageFunds || 0)
 
 	return (
@@ -98,4 +98,3 @@ const CardContent = styled("div")`
 	text-align: center;
 `
 
-export default AwardCard

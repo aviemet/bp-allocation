@@ -7,7 +7,7 @@ interface OrgInfoProps {
 	showLeverage: boolean
 }
 
-const OrgInfo = ({ org, showLeverage }: OrgInfoProps) => {
+export const OrgInfo = ({ org, showLeverage }: OrgInfoProps) => {
 	const need = org.need - org.leverageFunds
 	return (
 		<InfoContainer className="orginfo">
@@ -50,4 +50,3 @@ const TotalNeed = styled.div`
 	color: #00853f;
 `
 
-export default OrgInfo

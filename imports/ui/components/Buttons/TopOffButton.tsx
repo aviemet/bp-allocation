@@ -15,7 +15,7 @@ interface TopOffButtonProps extends Omit<ButtonProps, "onClick"> {
 	target?: number
 }
 
-const TopOffButton = ({ orgs, target, ...rest }: TopOffButtonProps) => {
+export const TopOffButton = ({ orgs, target, ...rest }: TopOffButtonProps) => {
 	const orgsArray = useMemo(() => coerceArray(orgs), [orgs])
 
 	const buttonParams = useMemo((): ButtonParams => {
@@ -85,4 +85,3 @@ const TopOffButton = ({ orgs, target, ...rest }: TopOffButtonProps) => {
 	)
 }
 
-export default TopOffButton

@@ -10,8 +10,7 @@ import { OrganizationSchema } from "/imports/api/db"
 import { useState, useEffect, useRef, type ChangeEvent } from "react"
 import type SimpleSchema from "simpl-schema"
 
-import ImportMapping from "/imports/ui/components/ImportMapping"
-
+import { ImportMapping } from "/imports/ui/components/ImportMapping"
 type CsvRow = Record<string, unknown>
 
 interface HeadingMapping {
@@ -21,7 +20,7 @@ interface HeadingMapping {
 	type?: (value: unknown) => unknown
 }
 
-const ImportOrgs = () => {
+export const ImportOrgs = () => {
 	const { enqueueSnackbar } = useSnackbar()
 
 	const [pendingOrgs, setPendingOrgs] = useState<CsvRow[]>([])
@@ -112,4 +111,3 @@ const ImportOrgs = () => {
 	)
 }
 
-export default ImportOrgs

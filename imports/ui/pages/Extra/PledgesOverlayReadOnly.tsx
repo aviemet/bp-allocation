@@ -1,13 +1,12 @@
 import styled from "@emotion/styled"
 import { type PledgeWithOrg } from "/imports/api/hooks"
 
-import PledgeDisplay from "/imports/ui/pages/Presentation/Allocation/PledgesOverlay/PledgeDisplay"
-
+import { PledgeDisplay } from "/imports/ui/pages/Presentation/Allocation/PledgesOverlay/PledgeDisplay"
 interface PledgesOverlayReadOnlyProps {
 	pledge: PledgeWithOrg
 }
 
-const PledgesOverlayReadOnly = ({ pledge }: PledgesOverlayReadOnlyProps) => {
+export const PledgesOverlayReadOnly = ({ pledge }: PledgesOverlayReadOnlyProps) => {
 	return (
 		<OverlayContainer>
 			<PledgeDisplay pledge={ pledge } />
@@ -24,4 +23,3 @@ const OverlayContainer = styled.div`
 	pointer-events: none;
 `
 
-export default PledgesOverlayReadOnly

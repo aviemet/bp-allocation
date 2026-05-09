@@ -6,9 +6,8 @@ import {
 import { Link } from "@tanstack/react-router"
 import { Loading } from "/imports/ui/components"
 
-import AllocationsTable from "./AllocationsTable"
-import Breakdown from "./Breakdown"
-
+import { AllocationsTable } from "./AllocationsTable"
+import { Breakdown } from "./Breakdown"
 import { ShowLeverageToggle } from "/imports/ui/components/Toggles"
 import { useTheme, useOrgs } from "/imports/api/hooks"
 
@@ -16,7 +15,7 @@ interface AllocationPaneProps {
 	hideAdminFields?: boolean
 }
 
-const AllocationPane = ({ hideAdminFields = false }: AllocationPaneProps) => {
+export const AllocationPane = ({ hideAdminFields = false }: AllocationPaneProps) => {
 	const { theme, themeLoading } = useTheme()
 	const { topOrgs, orgsLoading } = useOrgs()
 
@@ -53,4 +52,3 @@ const AllocationPane = ({ hideAdminFields = false }: AllocationPaneProps) => {
 	)
 }
 
-export default AllocationPane

@@ -7,7 +7,7 @@ interface RawEditorProps extends Omit<TextFieldProps, "value" | "onChange" | "mu
 	onChange?: (value: string) => void
 }
 
-const Raw = forwardRef<HTMLInputElement, RawEditorProps>(({ value, onChange, ...rest }, ref) => {
+export const RawEditor = forwardRef<HTMLInputElement, RawEditorProps>(({ value, onChange, ...rest }, ref) => {
 	return (
 		<Box>
 			<TextField
@@ -30,6 +30,5 @@ const Raw = forwardRef<HTMLInputElement, RawEditorProps>(({ value, onChange, ...
 	)
 })
 
-Raw.displayName = "RawEditor"
+RawEditor.displayName = "RawEditor"
 
-export default Raw

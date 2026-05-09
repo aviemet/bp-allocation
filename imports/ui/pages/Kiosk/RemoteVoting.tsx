@@ -14,7 +14,7 @@ interface RemoteVotingProps {
 	unsetUser?: () => void
 }
 
-const RemoteVoting = ({
+export const RemoteVoting = ({
 	memberId,
 	component,
 	unsetUser = () => {},
@@ -40,4 +40,3 @@ const RemoteVoting = ({
 	)
 }
 
-export default RemoteVoting

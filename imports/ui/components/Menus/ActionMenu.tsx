@@ -58,7 +58,7 @@ interface ActionMenuProps {
 	render: (ActionMenuItem: ComponentType<ActionMenuItemProps>) => ReactNode
 }
 
-const ActionMenu = ({ render }: ActionMenuProps) => {
+export const ActionMenu = ({ render }: ActionMenuProps) => {
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 	const open = Boolean(anchorEl)
 
@@ -107,4 +107,3 @@ const ActionMenu = ({ render }: ActionMenuProps) => {
 	)
 }
 
-export default ActionMenu

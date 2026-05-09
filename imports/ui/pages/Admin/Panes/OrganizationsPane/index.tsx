@@ -22,9 +22,9 @@ import { type Organization } from "/imports/types/schema"
 
 import { OrganizationMethods } from "/imports/api/methods"
 
-import ConfirmationModal from "/imports/ui/components/Dialogs/ConfirmDelete"
-import SplitButton from "/imports/ui/components/Buttons/SplitButton"
-import DisplayHtml from "/imports/ui/components/DisplayHtml"
+import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
+import { SplitButton } from "/imports/ui/components/Buttons/SplitButton"
+import { DisplayHtml } from "/imports/ui/components/DisplayHtml"
 import { Loading } from "/imports/ui/components"
 
 interface OrgCardProps {
@@ -102,7 +102,7 @@ const OrgCard = ({ org, id, onDelete }: OrgCardProps) => {
 	)
 }
 
-const OrganizationsPane = () => {
+export const OrganizationsPane = () => {
 	const { orgs, orgsLoading } = useOrgs()
 
 	const [ modalOpen, setModalOpen ] = useState(false)
@@ -202,4 +202,3 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
 	},
 }))
 
-export default OrganizationsPane

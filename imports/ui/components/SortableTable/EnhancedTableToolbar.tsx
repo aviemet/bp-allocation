@@ -18,7 +18,7 @@ interface EnhancedTableToolbarProps {
 	onDelete?: () => void
 }
 
-export default function EnhancedTableToolbar({
+export function EnhancedTableToolbar({
 	title,
 	filterParams,
 	onFilterParamsChange,

@@ -1,7 +1,7 @@
 import { expect } from "chai"
 import { Random } from "meteor/random"
 
-import OrgTransformer, { calculateVotesFromRawOrg } from "./orgTransformer"
+import { OrgTransformer, calculateVotesFromRawOrg } from "./orgTransformer"
 import { type OrgData, type ThemeData, type SettingsData } from "/imports/api/db"
 
 describe("OrgTransformer", function() {

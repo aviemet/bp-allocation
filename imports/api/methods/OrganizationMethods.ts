@@ -4,7 +4,7 @@ import { Meteor } from "meteor/meteor"
 import { roundFloat } from "/imports/lib/utils"
 
 import { Themes, Organizations, type OrgData } from "/imports/api/db"
-import ImageMethods from "./ImageMethods"
+import { ImageMethods } from "./ImageMethods"
 import { type Organization, type MatchPledge } from "/imports/types/schema"
 
 interface OrganizationCreateData extends Omit<OrgData, "_id" | "createdAt"> {
@@ -42,7 +42,7 @@ interface ResetData {
 	id: string
 }
 
-const OrganizationMethods = {
+export const OrganizationMethods = {
 	/**
 	 * Create new Organization
 	 */
@@ -250,5 +250,3 @@ const OrganizationMethods = {
 	}),
 
 }
-
-export default OrganizationMethods

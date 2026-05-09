@@ -1,8 +1,8 @@
 import styled from "@emotion/styled"
 
-import Allocation from "/imports/ui/pages/Presentation/Allocation"
+import { Allocation } from "/imports/ui/pages/Presentation/Allocation"
 
-const Presentation = () => {
+export const Simulation = () => {
 	return (
 		<SimulationContainer>
 			<Allocation simulation={ true } />
@@ -19,5 +19,3 @@ const SimulationContainer = styled.div`
 		font-size: 1.1em;
 	}
 `
-
-export default Presentation

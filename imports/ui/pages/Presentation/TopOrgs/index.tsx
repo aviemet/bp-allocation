@@ -5,7 +5,7 @@ import {
 import { useOrgs, useSettings } from "/imports/api/hooks"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
 
-const TopOrgs = () => {
+export const TopOrgs = () => {
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
 
@@ -41,4 +41,3 @@ const TopOrgsContainer = styled(Container)`
 
 const PageTitle = styled.h2``
 
-export default TopOrgs

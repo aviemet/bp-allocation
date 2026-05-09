@@ -5,9 +5,9 @@ import { useData } from "/imports/api/providers"
 import { useTheme, useOrgs, useSettings } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { KioskLayout } from "/imports/ui/layouts"
-import Pledges from "../pages/Pledges"
+import { Pledges } from "../pages/Pledges"
 
-const PledgesRoute = () => {
+export const PledgesRoute = () => {
 	const { id } = useParams({ from: "/pledges/$id" })
 	const data = useData()
 	const { themeLoading } = useTheme()
@@ -32,5 +32,3 @@ const PledgesRoute = () => {
 		</KioskLayout>
 	)
 }
-
-export default PledgesRoute

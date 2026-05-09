@@ -2,7 +2,8 @@ import { expect } from "chai"
 import { Meteor } from "meteor/meteor"
 import { Random } from "meteor/random"
 
-import textVotingLinkToMembers, {
+import {
+	textVotingLinkToMembers,
 	getSmsClient,
 	resetMemberPhoneNumbersQuery,
 	setMemberPhoneNumbersQuery,

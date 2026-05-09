@@ -7,7 +7,7 @@ interface TimerInputProps {
 	settingsId: string
 }
 
-const TimerInput = ({ timerLength: initialTimerLength, settingsId }: TimerInputProps) => {
+export const TimerInput = ({ timerLength: initialTimerLength, settingsId }: TimerInputProps) => {
 	const [ timerLength, setTimerLength ] = useState(initialTimerLength || 0)
 
 	const saveTimerLength = async () => {
@@ -35,4 +35,3 @@ const TimerInput = ({ timerLength: initialTimerLength, settingsId }: TimerInputP
 	)
 }
 
-export default TimerInput

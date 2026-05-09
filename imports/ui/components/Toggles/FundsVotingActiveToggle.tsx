@@ -8,7 +8,7 @@ import { useSettings } from "/imports/api/hooks"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 
-const FundsVotingActiveToggle = () => {
+export const FundsVotingActiveToggle = () => {
 
 	const { settings } = useSettings()
 
@@ -37,5 +37,3 @@ const FundsVotingActiveToggle = () => {
 		/>
 	)
 }
-
-export default FundsVotingActiveToggle

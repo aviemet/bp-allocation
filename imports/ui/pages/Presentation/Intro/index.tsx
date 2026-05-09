@@ -1,13 +1,12 @@
 import styled from "@emotion/styled"
 
-import Image from "/imports/ui/components/Image"
-
+import { Image } from "/imports/ui/components/Image"
 interface IntroProps {
 	title?: string
 	question?: string
 }
 
-const Intro = (props: IntroProps) => {
+export const Intro = (props: IntroProps) => {
 
 	return (
 		<TitlePage>
@@ -60,4 +59,3 @@ const LogoContainer = styled.div`
 	display: block;
 `
 
-export default Intro

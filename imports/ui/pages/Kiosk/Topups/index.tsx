@@ -8,15 +8,15 @@ import { OrgCardColors } from "/imports/ui/components/Cards"
 import { useState } from "react"
 
 import { Loading } from "/imports/ui/components"
-import SelectableOrgCards from "./SelectableOrgCards"
-import TopupComplete from "./TopupComplete"
+import { SelectableOrgCards } from "./SelectableOrgCards"
+import { TopupComplete } from "./TopupComplete"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
 interface PledgesProps {
 	user: MemberWithTheme
 }
 
-const Pledges = ({ user }: PledgesProps) => {
+export const Pledges = ({ user }: PledgesProps) => {
 	const { topOrgs, orgsLoading } = useOrgs()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
@@ -126,4 +126,3 @@ const FinalizeButton = styled(SubmitButton)`
 	text-transform: uppercase;
 `
 
-export default Pledges

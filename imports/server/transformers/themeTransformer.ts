@@ -42,7 +42,7 @@ export interface ThemeWithComputed extends ThemeData {
 	[key: string]: unknown
 }
 
-const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams): ThemeWithComputed => {
+export const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams): ThemeWithComputed => {
 	const orgsForPledges = doc.allowRunnersUpPledges && params.allOrgs ? params.allOrgs : params.topOrgs
 
 	const pledgedTotal = orgsForPledges.reduce((total, org) => {
@@ -172,5 +172,3 @@ const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams): Theme
 
 	return result
 }
-
-export default ThemeTransformer

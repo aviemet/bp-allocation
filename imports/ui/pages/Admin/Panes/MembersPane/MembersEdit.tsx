@@ -22,7 +22,7 @@ function isMemberWithTheme(member: unknown): member is MemberWithTheme {
 	return "_id" in member && "theme" in member
 }
 
-const MembersEdit = () => {
+export const MembersEdit = () => {
 	const { members, membersLoading } = useMembers()
 
 	const { id, memberId } = useParams({ strict: false })
@@ -198,4 +198,3 @@ const MembersEdit = () => {
 	)
 }
 
-export default MembersEdit

@@ -7,7 +7,7 @@ interface AwardEmblemProps {
 	amount?: number | string
 }
 
-const AwardEmblem = ({ type, amount }: AwardEmblemProps) => {
+export const AwardEmblem = ({ type, amount }: AwardEmblemProps) => {
 
 	const awardImgSrc = {
 		awardee: "/img/circle_awardee.png",
@@ -48,4 +48,3 @@ const AwardAmount = styled.span`
 	font-weight: 700;
 `
 
-export default AwardEmblem

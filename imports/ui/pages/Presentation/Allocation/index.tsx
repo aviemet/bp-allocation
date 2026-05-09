@@ -1,12 +1,12 @@
-import Graph from "./Graph"
-import PledgesOverlay from "./PledgesOverlay"
+import { Graph } from "./Graph"
+import { PledgesOverlay } from "./PledgesOverlay"
 import { useOrgs, useSettings, useTheme } from "/imports/api/hooks"
 
 interface AllocationProps {
 	simulation?: boolean
 }
 
-const Allocation = ({ simulation }: AllocationProps) => {
+export const Allocation = ({ simulation }: AllocationProps) => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
 	const { orgs, topOrgs } = useOrgs()
@@ -27,4 +27,3 @@ const Allocation = ({ simulation }: AllocationProps) => {
 	)
 }
 
-export default Allocation

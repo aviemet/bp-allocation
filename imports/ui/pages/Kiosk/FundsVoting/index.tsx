@@ -6,12 +6,11 @@ import React, { useState, useEffect } from "react"
 
 import { useData } from "/imports/api/providers"
 import { useSettings, useOrgs } from "/imports/api/hooks"
-import VotingComplete from "../VotingComplete"
+import { VotingComplete } from "../VotingComplete"
 import { useVoting } from "../VotingContext"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
-import VotingCardContent from "./VotingCardContent"
-import Countdown from "../Countdown"
-
+import { VotingCardContent } from "./VotingCardContent"
+import { Countdown } from "../Countdown"
 import { COLORS } from "/imports/lib/global"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
@@ -33,7 +32,7 @@ interface FundsVotingKioskProps {
 	source: VotingSource
 }
 
-const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
+export const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
@@ -128,4 +127,3 @@ const NumberFormat = styled.span`
 	display: inline-block;
 `
 
-export default FundsVotingKiosk

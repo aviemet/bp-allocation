@@ -12,9 +12,9 @@ import {
 import { Set } from "immutable"
 import React, { useState } from "react"
 
-import EnhancedTableHead from "./EnhancedTableHead"
-import EnhancedTableRow from "./EnhancedTableRow"
-import EnhancedTableToolbar from "./EnhancedTableToolbar"
+import { EnhancedTableHead } from "./EnhancedTableHead"
+import { EnhancedTableRow } from "./EnhancedTableRow"
+import { EnhancedTableToolbar } from "./EnhancedTableToolbar"
 import { getComparator, stableSort } from "./sort"
 import { HeadCell, TableHeadTopRowCell, SortableRow } from "./types"
 
@@ -41,7 +41,7 @@ interface SortableTableProps<T extends SortableRow> extends Omit<TableProps, "ch
 	fixed?: boolean
 }
 
-export default function SortableTable<T extends SortableRow>({
+export function SortableTable<T extends SortableRow>({
 	title,
 	headCells,
 	tableHeadTopRow,

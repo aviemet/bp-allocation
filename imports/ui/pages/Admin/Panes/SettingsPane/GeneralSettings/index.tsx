@@ -4,10 +4,10 @@ import {
 	Typography,
 } from "@mui/material"
 
-import PresentationSettingsForm from "./PresentationSettingsForm"
-import ThemeSettingsForm from "./ThemeSettingsForm"
+import { PresentationSettingsForm } from "./PresentationSettingsForm"
+import { ThemeSettingsForm } from "./ThemeSettingsForm"
 
-const GeneralSettings = () => {
+export const GeneralSettings = () => {
 	return (
 		<>
 			<Grid container spacing={ 2 }>
@@ -28,4 +28,3 @@ const GeneralSettings = () => {
 	)
 }
 
-export default GeneralSettings

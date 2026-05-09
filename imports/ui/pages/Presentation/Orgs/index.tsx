@@ -9,7 +9,7 @@ const Overlay = ({ visible }: { visible: boolean }) => (
 	</DimOverlay>
 )
 
-const Orgs = () => {
+export const Orgs = () => {
 	const { settings } = useSettings()
 	const { orgs, topOrgs } = useOrgs()
 
@@ -75,4 +75,3 @@ const DimOverlay = styled.div<{ visible: boolean }>`
 
 `
 
-export default Orgs

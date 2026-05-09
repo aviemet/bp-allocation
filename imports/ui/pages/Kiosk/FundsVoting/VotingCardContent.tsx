@@ -3,15 +3,25 @@ import styled from "@emotion/styled"
 import _ from "lodash"
 import { useCallback, useLayoutEffect, useState } from "react"
 
-import FundsSlider from "./FundsSlider"
+import { FundsSlider } from "./FundsSlider"
 import { useVoting } from "../VotingContext"
-import ManualInput from "./ManualInput"
+import { ManualInput } from "./ManualInput"
 
 interface VotingCardContentProps {
 	org: OrgData
 }
 
-const VotingCardContent = ({ org }: VotingCardContentProps) => {
+const FundsInputContainer = styled.div`
+	width: 100%;
+	height: 100%;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	margin: 1rem 0 0.25rem 0;
+`
+
+export const VotingCardContent = ({ org }: VotingCardContentProps) => {
 	const { member, allocations, updateAllocations } = useVoting()
 	const [ value, setValue ] = useState(allocations[org._id] || 0)
 
@@ -66,15 +76,3 @@ const VotingCardContent = ({ org }: VotingCardContentProps) => {
 		</FundsInputContainer>
 	)
 }
-
-export default VotingCardContent
-
-const FundsInputContainer = styled.div`
-	width: 100%;
-	height: 100%;
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	margin: 1rem 0 0.25rem 0;
-`

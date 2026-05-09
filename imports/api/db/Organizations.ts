@@ -1,7 +1,7 @@
 import { Random } from "meteor/random"
 import SimpleSchema from "simpl-schema"
 
-import SchemaRegex from "/imports/lib/schema"
+import { SchemaRegex } from "/imports/lib/schema"
 import { CollectionPermissions } from "./index"
 
 /**

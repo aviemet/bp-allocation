@@ -31,7 +31,7 @@ interface EditMessageFormProps {
 	themeId: string
 }
 
-const EditMessageForm = ({ messageData, formStatus, setFormStatus, themeId }: EditMessageFormProps) => {
+export const EditMessageForm = ({ messageData, formStatus, setFormStatus, themeId }: EditMessageFormProps) => {
 	const { control } = useFormContext<MessageFormData>()
 	const bodyValue = useWatch({ control, name: "body" })
 	const preview = bodyValue || ""
@@ -126,4 +126,3 @@ const Preview = styled.div`
 	}
 `
 
-export default EditMessageForm

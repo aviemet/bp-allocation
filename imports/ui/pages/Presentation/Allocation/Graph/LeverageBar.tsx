@@ -9,7 +9,7 @@ interface LeverageBarProps {
 	total?: number
 }
 
-const LeverageBar = ({ value = 0, total = 1 }: LeverageBarProps) => {
+export const LeverageBar = ({ value = 0, total = 1 }: LeverageBarProps) => {
 	const percentage = total > 0 ? Math.floor((value / total) * 100) : 0
 
 	return (
@@ -46,4 +46,3 @@ const LeverageCount = styled.div`
 	padding-top: 6px;
 `
 
-export default LeverageBar

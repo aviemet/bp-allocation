@@ -5,9 +5,9 @@ import { useData } from "/imports/api/providers"
 import { useTheme, useOrgs, useSettings } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { KioskLayout } from "/imports/ui/layouts"
-import Kiosk from "../pages/Kiosk"
+import { Kiosk } from "../pages/Kiosk"
 
-const VotingRoute = () => {
+export const VotingRoute = () => {
 	const { id } = useParams({ from: "/voting/$id/$member" })
 	const data = useData()
 	const { themeLoading } = useTheme()
@@ -32,5 +32,3 @@ const VotingRoute = () => {
 		</KioskLayout>
 	)
 }
-
-export default VotingRoute

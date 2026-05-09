@@ -4,9 +4,9 @@ import { useEffect, useMemo } from "react"
 import { useData } from "/imports/api/providers"
 import { useTheme, useOrgs } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
-import PledgesOverlayDisplay from "../pages/Extra/PledgesOverlayDisplay"
+import { PledgesOverlayDisplay } from "../pages/Extra/PledgesOverlayDisplay"
 
-const PledgesOverlayRoute = () => {
+export const PledgesOverlayRoute = () => {
 	const params = useParams({ strict: false })
 	const id = params.id
 	const data = useData()
@@ -33,5 +33,3 @@ const PledgesOverlayRoute = () => {
 
 	return <PledgesOverlayDisplay />
 }
-
-export default PledgesOverlayRoute

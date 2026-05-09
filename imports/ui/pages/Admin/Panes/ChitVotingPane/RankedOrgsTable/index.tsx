@@ -13,14 +13,14 @@ import {
 import { findIndex } from "lodash"
 import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 
-import TopOrgsRow from "./TopOrgsRow"
+import { TopOrgsRow } from "./TopOrgsRow"
 import { sortTopOrgs } from "/imports/lib/orgsMethods"
 
 interface TopOrgsByChitVoteProps {
 	hideAdminFields?: boolean
 }
 
-const TopOrgsByChitVote = ({ hideAdminFields }: TopOrgsByChitVoteProps) => {
+export const TopOrgsByChitVote = ({ hideAdminFields }: TopOrgsByChitVoteProps) => {
 	const { settings } = useSettings()
 	const { theme } = useTheme()
 	const { orgs } = useOrgs()
@@ -99,4 +99,3 @@ const FlexHeading = styled.div`
 	}
 `
 
-export default TopOrgsByChitVote

@@ -8,14 +8,14 @@ import { useState } from "react"
 import { useTheme } from "/imports/api/hooks"
 import { ThemeMethods } from "/imports/api/methods"
 
-import ContentModal from "/imports/ui/components/Dialogs/ContentModal"
+import { ContentModal } from "/imports/ui/components/Dialogs/ContentModal"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
 
 interface UnSaveButtonProps {
 	org: OrgDataWithComputed
 }
 
-const UnSaveButton = ({ org }: UnSaveButtonProps) => {
+export const UnSaveButton = ({ org }: UnSaveButtonProps) => {
 	const [ modalOpen, setModalOpen ] = useState(false)
 
 	const { theme } = useTheme()
@@ -51,4 +51,3 @@ const UnSaveButton = ({ org }: UnSaveButtonProps) => {
 	)
 }
 
-export default UnSaveButton

@@ -19,7 +19,7 @@ import {
 	PresentationPane,
 } from "./Panes"
 
-const Admin = () => {
+export const Admin = () => {
 	const location = useLocation()
 
 	// Extract the path segments to determine which component to render
@@ -155,4 +155,3 @@ const Admin = () => {
 	)
 }
 
-export default Admin

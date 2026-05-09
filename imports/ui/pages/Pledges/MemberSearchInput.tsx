@@ -1,10 +1,10 @@
 import { useMemo } from "react"
-import MemberSearch from "/imports/ui/components/MemberSearch"
+import { MemberSearch } from "/imports/ui/components/MemberSearch"
 import { useFormContext, useWatch } from "react-hook-form"
 import { useMembers } from "/imports/api/hooks"
 import { type MemberData } from "/imports/api/db"
 
-const MemberSearchInput = () => {
+export const MemberSearchInput = () => {
 	const { setValue } = useFormContext()
 	const { member } = useWatch<{ member: string }>()
 	const { members, membersLoading } = useMembers()
@@ -27,7 +27,3 @@ const MemberSearchInput = () => {
 		/>
 	)
 }
-
-export default MemberSearchInput
-
-// onResultSelect={ handleResultSelect }

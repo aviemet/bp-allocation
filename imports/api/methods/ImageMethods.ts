@@ -2,7 +2,7 @@ import { ValidatedMethod } from "meteor/mdg:validated-method"
 
 import { Images } from "/imports/api/db"
 
-const ImageMethods = {
+export const ImageMethods = {
 	remove: new ValidatedMethod<{ id: string }, void>({
 		name: "images.remove",
 
@@ -33,5 +33,3 @@ const ImageMethods = {
 		},
 	}),
 }
-
-export default ImageMethods

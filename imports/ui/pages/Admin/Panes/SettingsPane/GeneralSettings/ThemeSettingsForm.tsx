@@ -15,7 +15,7 @@ import { formatters, roundFloat } from "/imports/lib/utils"
 import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { Loading } from "/imports/ui/components"
 
-const SettingsPane = () => {
+export const ThemeSettingsForm = () => {
 	const { theme } = useTheme()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
@@ -212,4 +212,3 @@ const SettingsPane = () => {
 	)
 }
 
-export default SettingsPane

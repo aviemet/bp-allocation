@@ -19,7 +19,7 @@ interface FormSwitchProps extends Omit<SwitchProps, "name"> {
 	onUpdate?: (value: unknown, name: string, setValue: UseFormSetValue<FieldValues>) => void
 }
 
-const FormSwitch = ({ name, label, onUpdate, ...props }: FormSwitchProps) => {
+export const FormSwitch = ({ name, label, onUpdate, ...props }: FormSwitchProps) => {
 	const { watch, setValue, control } = useFormContext<FieldValues>()
 
 	useEffect(() => {
@@ -54,4 +54,3 @@ const FormSwitch = ({ name, label, onUpdate, ...props }: FormSwitchProps) => {
 	return ControlledSwitch
 }
 
-export default FormSwitch

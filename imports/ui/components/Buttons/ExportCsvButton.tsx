@@ -7,7 +7,7 @@ interface ExportCsvButtonProps {
 	description: string
 }
 
-const ExportCsvButton = ({ options = {}, data, description }: ExportCsvButtonProps) => {
+export const ExportCsvButton = ({ options = {}, data, description }: ExportCsvButtonProps) => {
 
 	const exportData = () => {
 		if(data) {
@@ -39,4 +39,3 @@ const ExportCsvButton = ({ options = {}, data, description }: ExportCsvButtonPro
 	)
 }
 
-export default ExportCsvButton
