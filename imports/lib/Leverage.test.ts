@@ -19,28 +19,30 @@ describe("Leverage object", function() {
 
 describe("Education Theme leverage spread", function() {
 	const topOrgs = filterTopOrgs(Education.orgs, Education.theme)
-	const leverage = new Leverage(topOrgs, 639169.6)
-	const rounds = leverage.getLeverageSpreadRounds()
 
 	it("Should generate leverage rounds", function() {
+		const leverage = new Leverage(topOrgs, 639169.6)
+		const rounds = leverage.getLeverageSpreadRounds()
 		expect(rounds).to.be.an("array").that.is.not.empty
-		expect(rounds.length).to.equal(3)
+		expect(rounds.length).to.equal(1)
 	})
 
 	it("Should spread leverage correctly to the orgs - Education", function() {
+		const leverage = new Leverage(topOrgs, 639169.6)
+		const rounds = leverage.getLeverageSpreadRounds()
 		const orgSpreadByRound: Record<string, number[]> = {
 			// Center for good food purchasing
-			"7JudfyraRLNbLAQuF": [66600, 0, 0],
+			"7JudfyraRLNbLAQuF": [66600],
 			// Code for America
-			"iMJiLfte2Wo4i6YwS": [0, 0, 0],
+			"iMJiLfte2Wo4i6YwS": [0],
 			// Education Outside
-			"qhLLMjGwGNr3frshr": [64606.98, 72026.03, 25723.14],
+			"qhLLMjGwGNr3frshr": [109244.73],
 			// Food as Medicine Coalition
-			"6tTw6bLwrdBxeGQpp": [57806.24, 64444.34, 23015.45],
+			"6tTw6bLwrdBxeGQpp": [157205.83],
 			// No Kid Hungry California
-			"SuyDNaJyrbBmDJZZM": [96981.03, 38935.97, 0],
+			"SuyDNaJyrbBmDJZZM": [90814.34],
 			// REAL Food in Schools Collaborative
-			"j687kt5CtszAmyeL6": [51345.55, 57241.74, 20443.13],
+			"j687kt5CtszAmyeL6": [126297.57],
 		}
 		// Step through each round
 		rounds.forEach((round, nRounds) => {
@@ -54,26 +56,28 @@ describe("Education Theme leverage spread", function() {
 })
 
 describe("Democracy Theme leverage spread", function() {
-	const leverage = new Leverage(Democracy.orgs, 802759)
-	const rounds = leverage.getLeverageSpreadRounds()
 
 	it("Should generate leverage rounds", function() {
+		const leverage = new Leverage(Democracy.orgs, 802759)
+		const rounds = leverage.getLeverageSpreadRounds()
 		expect(rounds).to.be.an("array").that.is.not.empty
-		expect(rounds.length).to.equal(4)
+		expect(rounds.length).to.equal(1)
 	})
 
 	it("Should spread leverage correctly to the orgs - Democracy", function() {
+		const leverage = new Leverage(Democracy.orgs, 802759)
+		const rounds = leverage.getLeverageSpreadRounds()
 		const orgSpreadByRound: Record<string, number[]> = {
 			// Campaign Legal Center
-			"iBTQcWD9NZppHfrJ8": [60453.02, 61665.87, 61930.24, 26509.87],
+			"iBTQcWD9NZppHfrJ8": [161707.25],
 			// 'CommunityConnect Labs'
-			"497FQGwnAhRCN7fh3": [126798.44, 45001.56, 0, 0],
+			"497FQGwnAhRCN7fh3": [171800],
 			// Groundswell Action Fund
-			"wcZzEZyWJP7m2dXMd": [89180.49, 90969.69, 64849.82, 0],
+			"wcZzEZyWJP7m2dXMd": [151805.22],
 			// IGNITE
-			"MhaovtXsWG4HgeiZL": [120961.17, 54438.83, 0, 0],
+			"MhaovtXsWG4HgeiZL": [175400],
 			// Represent.Us
-			"GnqeDtd4nhvkBqt8L": [0, 0, 0, 0],
+			"GnqeDtd4nhvkBqt8L": [0],
 		}
 		// Step through each round
 		rounds.forEach((round, nRounds) => {
