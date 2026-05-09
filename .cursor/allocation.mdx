@@ -14,6 +14,7 @@ Shared application modules (`imports/`) use named exports rather than default ex
 - Publications use `Tracker.autorun` to reactively derive IDs from one collection (e.g., `MemberThemes`) and observe another (`Members`), and tie observer/computation cleanup to the publication via `this.onStop`.
 - Tracker server reactivity still relies on synchronous reads; use `find()` / `findOne()` / `fetch()` inside the autorun and avoid awaiting `fetchAsync` or `findOneAsync` in the reactive block, otherwise downstream subscribers stop receiving updates.
 - To keep Meteor 3 async fetches reactive, publications now pair lightweight `observeChanges` watchers with a single live query handle; watchers trigger a debounced async refresh that refetches the dependent data and restarts the shared observer without spawning duplicate handles.
+- `MemberThemes` updates for a theme are coordinated in `imports/server/publications/memberThemesRefreshCoordinator.ts`: one `observeChanges` + debounced fetch per `themeId`, shared by the `theme`, `organizations`, and `members` publications so concurrent subscribers do not multiply Mongo watchers or redundant full-table fetches.
 - Publications that derive membership through join tables must diff published IDs before recreating their observers (`imports/server/publications/members.ts`). The diff explicitly emits `removed` messages for IDs dropped from the join table and reuses the shared transformer so downstream UI collections immediately drop stale rows when the join changes.
 
 ### Data Provider Hierarchy
@@ -50,6 +51,7 @@ Server-side publications and methods must use async methods:
 - `AdminLayout` component wraps admin routes with `<Outlet />`
 - Route wrapper components handle data loading and theme ID initialization
 - Components used in multiple routes should use `useParams({ strict: false })` instead of specifying `from` route path
+- **Pinned to `@tanstack/react-router@1.156.0`**: Versions ≥1.157.0 split `isServer` and `scroll-restoration-script` into subpath exports of `@tanstack/router-core` using conditional `exports` (with non-standard `development`/`workerd` conditions). Meteor 3.3.2's bundler lacks full `package.json` exports resolution (tracked in meteor PR #13520, still open) and reports "Unable to resolve" for those subpaths. Do not bump router until Meteor merges exports support.
 
 ### Theme Loading Pattern
 - `AdminLayout` sets `data.themeId` from route params
@@ -261,6 +263,11 @@ The two data structures serve different purposes and should not be conflated:
 - MUI Autocomplete's `renderOption` passes props containing `key` 
 - Pattern: destructure `key` from props and pass it separately: `const { key, ...otherProps } = props; return <Component key={key} {...otherProps} />`
 - This applies to any render prop that receives React-generated props with keys
+
+### MUI v9 DOM prop forwarding
+- **Checkbox / SwitchBase:** `inputProps` is not supported; use `slotProps={{ input: { … } }}` for the hidden `<input>`. Using `inputProps` forwards unknown props to the root and triggers React warnings.
+- **Stack** (`@mui/system` `createStack`): Only `component`, `direction`, `spacing`, `divider`, `className`, `useFlexGap`, and `sx` are handled; other props are spread to the DOM root. Put flex alignment in `sx` (e.g. `alignItems`, `justifyContent`, `gap`) — do not pass them as top-level props.
+- **Grid** (`createGrid`): Container props are similarly narrowed; `justifyContent`, `alignItems`, etc. must go through `sx`, not as direct props on `<Grid>`.
 
 ### Question vs Action - CRITICAL RULE
 - **WHEN USER ASKS A QUESTION**: Answer the question only. Do NOT make code changes.

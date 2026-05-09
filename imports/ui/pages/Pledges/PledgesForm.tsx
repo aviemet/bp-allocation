@@ -38,7 +38,7 @@ export const PledgesForm = () => {
 		<Grid container spacing={ 2 }>
 
 			<Grid size={ { xs: 12 } }>
-				<Stack direction="row" justifyContent="space-between" alignItems="space-between">
+				<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 					<SwitchInput
 						label="Anonymous"
 						name="anonymous"

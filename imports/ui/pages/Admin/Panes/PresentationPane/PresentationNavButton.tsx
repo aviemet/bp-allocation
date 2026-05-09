@@ -58,7 +58,7 @@ export const PresentationNavButton = ({
 			onClick={ handleClick }
 			{ ...rest }
 		>
-			<Stack alignItems="center">
+			<Stack sx={ { alignItems: "center" } }>
 				<Icon sx={ {
 					fontSize: "3.5rem",
 					color: activePage ? muiTheme.palette.success.contrastText : muiTheme.palette.text.secondary,

@@ -7,6 +7,8 @@ import { createDebouncedFunction } from "/imports/lib/utils"
 import { Themes, PresentationSettings, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
 import { ThemeTransformer, OrgTransformer, aggregateVotesByOrganization, calculateVotesFromRawOrg } from "/imports/server/transformers"
 import { type ThemeTransformerParams } from "/imports/server/transformers/themeTransformer"
+import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"
+import { type MemberTheme } from "/imports/types/schema"
 
 const themeObserver = registerObserver((doc: ThemeData, params: ThemeTransformerParams) => {
 	return ThemeTransformer(doc, params)
@@ -46,12 +48,12 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	const themeObserverCallbacks = themeObserver("themes", publisher, { topOrgs, allOrgs: transformedOrgs, memberThemes, settings })
 	themeObserverCallbacks.added(theme)
 
-	const refreshThemeFromMemberThemes = async () => {
+	const refreshThemeFromMemberThemes = async (memberThemesOverride?: MemberTheme[]) => {
 		try {
 			const updatedTheme = await Themes.findOneAsync({ _id: theme._id })
 			if(!updatedTheme) return
 
-			memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
+			memberThemes = memberThemesOverride ?? await MemberThemes.find({ theme: theme._id }).fetchAsync()
 			const { fundsVotesByOrg, chitVotesByOrg } = aggregateVotesByOrganization(
 				memberThemes,
 				settings.useKioskFundsVoting || false,
@@ -75,7 +77,13 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 		}
 	}
 
-	const debouncedRefresh = createDebouncedFunction(refreshThemeFromMemberThemes, 100)
+	const debouncedRefresh = createDebouncedFunction(() => {
+		void refreshThemeFromMemberThemes()
+	}, 100)
+
+	const unsubscribeMemberThemesCoordinator = registerMemberThemesRefreshListener(theme._id, freshRows => {
+		void refreshThemeFromMemberThemes(freshRows)
+	})
 
 	const themeObserverHandle = Themes.find({ _id: theme._id }).observe({
 		added: themeObserverCallbacks.added,
@@ -83,18 +91,6 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 			debouncedRefresh()
 		},
 		removed: themeObserverCallbacks.removed,
-	})
-
-	const memberThemesWatcher = MemberThemes.find({ theme: theme._id }).observeChanges({
-		added: () => {
-			debouncedRefresh()
-		},
-		changed: () => {
-			debouncedRefresh()
-		},
-		removed: () => {
-			debouncedRefresh()
-		},
 	})
 
 	const organizationsWatcher = Organizations.find({ theme: theme._id }).observeChanges({
@@ -111,11 +107,9 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 
 	publisher.onStop(() => {
 		debouncedRefresh.cancel()
+		unsubscribeMemberThemesCoordinator()
 		if(themeObserverHandle && typeof themeObserverHandle.stop === "function") {
 			themeObserverHandle.stop()
-		}
-		if(memberThemesWatcher && typeof memberThemesWatcher.stop === "function") {
-			memberThemesWatcher.stop()
 		}
 		if(organizationsWatcher && typeof organizationsWatcher.stop === "function") {
 			organizationsWatcher.stop()

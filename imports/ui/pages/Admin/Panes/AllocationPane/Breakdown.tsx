@@ -27,7 +27,7 @@ export const Breakdown = () => {
 
 	return (
 		<Paper sx={ { p: 2 } }>
-			<Stack direction="row" justifyContent="space-between" alignItems="center">
+			<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 
 				{ /* Total amount to allocate */ }
 				<Segment>

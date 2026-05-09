@@ -59,7 +59,7 @@ export const NewThemeModal = () => {
 						</Grid>
 
 						<Grid size={ { xs: 12 } }>
-							<Stack direction="row" spacing={ 2 } justifyContent="end">
+							<Stack direction="row" spacing={ 2 } sx={ { justifyContent: "flex-end" } }>
 								<Button color="error" onClick={ () => setIsModalOpen(false) }>Cancel</Button>
 								<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Theme</SubmitButton>
 							</Stack>

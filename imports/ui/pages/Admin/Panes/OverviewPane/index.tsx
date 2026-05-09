@@ -63,7 +63,7 @@ export const Overview = () => {
 							<TableCell></TableCell>
 							<TableCell colSpan={ 2 }>Votes</TableCell>
 							<TableCell colSpan={ 5 } sx={ { backgroundColor: "transparent" } }>
-								<Stack direction="row" justifyContent="space-around" alignItems="center">
+								<Stack direction="row" sx={ { justifyContent: "space-around", alignItems: "center" } }>
 									<ExportMemberVotes />
 									<ExportTopups />
 									<ExportChitVotes />

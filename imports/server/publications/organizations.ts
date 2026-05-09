@@ -2,7 +2,7 @@ import { Meteor } from "meteor/meteor"
 
 import { registerObserver, type PublishSelf } from "../methods"
 import { OrgTransformer, aggregateVotesByOrganization } from "/imports/server/transformers"
-import { createDebouncedFunction } from "/imports/lib/utils"
+import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"
 
 import {
 	Organizations,
@@ -44,7 +44,14 @@ const publishOrganizations = async (themeId: string, publisher: PublishSelf) => 
 		settings?.useKioskFundsVoting || false,
 		settings?.useKioskChitVoting || false
 	)
-	const observerCallbacks = orgObserver("organizations", publisher, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg })
+	const orgObserverParams: OrgObserverParams = {
+		theme,
+		settings,
+		memberThemes,
+		fundsVotesByOrg,
+		chitVotesByOrg,
+	}
+	const observerCallbacks = orgObserver("organizations", publisher, orgObserverParams)
 
 	const orgs = await Organizations.find({ theme: themeId }).fetchAsync()
 	orgs.forEach(org => {
@@ -53,45 +60,35 @@ const publishOrganizations = async (themeId: string, publisher: PublishSelf) => 
 
 	const orgsCursor = Organizations.find({ theme: themeId }).observe(observerCallbacks)
 
-	const refreshOrgsFromMemberThemes = async () => {
+	const refreshOrgsFromMemberThemes = async (freshMemberThemes: MemberTheme[]) => {
 		try {
-			memberThemes = await MemberThemes.find({ theme: themeId }).fetchAsync()
-			const { fundsVotesByOrg, chitVotesByOrg } = aggregateVotesByOrganization(
-				memberThemes,
+			memberThemes = freshMemberThemes
+			orgObserverParams.memberThemes = freshMemberThemes
+			const aggregated = aggregateVotesByOrganization(
+				freshMemberThemes,
 				settings?.useKioskFundsVoting || false,
 				settings?.useKioskChitVoting || false
 			)
-			const orgs = await Organizations.find({ theme: themeId }).fetchAsync()
-			orgs.forEach(org => {
-				const transformed = OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg })
-				publisher.changed("organizations", org._id, transformed)
+			orgObserverParams.fundsVotesByOrg = aggregated.fundsVotesByOrg
+			orgObserverParams.chitVotesByOrg = aggregated.chitVotesByOrg
+			const organizationsList = await Organizations.find({ theme: themeId }).fetchAsync()
+			organizationsList.forEach(organization => {
+				const transformed = OrgTransformer(organization, orgObserverParams)
+				publisher.changed("organizations", organization._id, transformed)
 			})
 		} catch (_error) {
 			// Error refreshing organizations from memberThemes
 		}
 	}
 
-	const debouncedRefresh = createDebouncedFunction(refreshOrgsFromMemberThemes, 100)
-
-	const memberThemesWatcher = MemberThemes.find({ theme: themeId }).observeChanges({
-		added: () => {
-			debouncedRefresh()
-		},
-		changed: () => {
-			debouncedRefresh()
-		},
-		removed: () => {
-			debouncedRefresh()
-		},
+	const unsubscribeMemberThemes = registerMemberThemesRefreshListener(themeId, freshRows => {
+		void refreshOrgsFromMemberThemes(freshRows)
 	})
 
 	publisher.onStop(() => {
-		debouncedRefresh.cancel()
+		unsubscribeMemberThemes()
 		if(orgsCursor && typeof orgsCursor.stop === "function") {
 			orgsCursor.stop()
-		}
-		if(memberThemesWatcher && typeof memberThemesWatcher.stop === "function") {
-			memberThemesWatcher.stop()
 		}
 	})
 

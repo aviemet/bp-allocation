@@ -43,7 +43,7 @@ export const TopOrgsRow = ({ org, inTopOrgs, hideAdminFields, isSaved, isLocked 
 
 			{ /* Title */ }
 			<TableCell>
-				<Stack direction="row" justifyContent="space-between" alignItems="baseline">
+				<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "baseline" } }>
 					<div>{ org.title }</div>
 
 					{ /* Save and unsave buttons */ }

@@ -47,9 +47,9 @@ export const LeveragePane = ({ hideAdminFields }: LeverageProps) => {
 	return (
 		<Container>
 			{ !hideAdminFields && <StageCard>
-				<Stack direction="row" justifyContent="space-between" alignItems="center">
+				<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 					<ShowLeverageToggle />
-					<Stack direction="row" gap={ 2 }>
+					<Stack direction="row" sx={ { gap: 2 } }>
 						<DistributeLeverageButton
 							leverageDistributed={ leverageDistributed }
 							rounds={ rounds }
@@ -59,7 +59,7 @@ export const LeveragePane = ({ hideAdminFields }: LeverageProps) => {
 			</StageCard> }
 
 			<StageCard>
-				<Stack direction="row" justifyContent="space-between" alignItems="center">
+				<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 					<Typography component="h2" variant="h3">Final Distribution</Typography>
 					<div>Leverage Remaining: { numeral(leverage.finalRoundAllocation()).format("$0,0") }</div>
 				</Stack>
@@ -68,7 +68,7 @@ export const LeveragePane = ({ hideAdminFields }: LeverageProps) => {
 
 			{ rounds.map((round, i) => (
 				<StageCard key={ i }>
-					<Stack direction="row" justifyContent="space-between" alignItems="center">
+					<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 						<Typography component="h2" variant="h3">Round { i + 1 }</Typography>
 						<div>
 							<span>

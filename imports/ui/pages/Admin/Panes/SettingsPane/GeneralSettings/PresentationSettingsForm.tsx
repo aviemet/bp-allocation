@@ -58,7 +58,7 @@ export const PresentationSettingsForm = () => {
 				{ /* Use Chit Votes Kiosk Toggle */ }
 				<Grid size={ { xs: 12 } }>
 					<Paper sx={ { p: 1 } }>
-						<Stack direction="row" justifyContent="space-between" alignItems="center">
+						<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 							<div>
 								<label>Chit Votes Entered Via:</label>
 							</div>
@@ -74,7 +74,7 @@ export const PresentationSettingsForm = () => {
 				{ /* Use Kiosk Votes Kiosk Toggle */ }
 				<Grid size={ { xs: 12 } }>
 					<Paper sx={ { p: 1 } }>
-						<Stack direction="row" justifyContent="space-between" alignItems="center">
+						<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 							<div>
 								<label>Funds Voting Entered Via:</label>
 							</div>
@@ -90,7 +90,7 @@ export const PresentationSettingsForm = () => {
 				{ /* Presentation Type */ }
 				<Grid size={ { xs: 12 } }>
 					<Paper sx={ { p: 1 } }>
-						<Stack direction="row" justifyContent="space-between" alignItems="center">
+						<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 							<div>
 								<label>Change Presentation Type to Awards Style</label>
 							</div>
@@ -114,7 +114,7 @@ export const PresentationSettingsForm = () => {
 				{ /* OrgCard Show Ask */ }
 				<Grid size={ { xs: 12 } }>
 					<Paper sx={ { p: 1 } }>
-						<Stack direction="row" justifyContent="space-between" alignItems="center">
+						<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 							<div>
 								<label>Show &quot;Ask&quot; on Org Cards</label>
 							</div>

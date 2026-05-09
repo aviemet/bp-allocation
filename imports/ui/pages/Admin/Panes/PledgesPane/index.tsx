@@ -100,7 +100,7 @@ export const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 			<Grid container spacing={ 2 }>
 				<Grid size={ { xs: 12, md: 8 } }>
 					<SortableTable<PledgeWithOrg>
-						title={ <Stack direction="row" alignItems="center" justifyContent="space-between">
+						title={ <Stack direction="row" sx={ { alignItems: "center", justifyContent: "space-between" } }>
 							<Box>Pledges</Box>
 							<Box><TopupsActiveToggle /></Box>
 						</Stack> }
@@ -118,7 +118,7 @@ export const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 								<>
 									{ /* Org Title */ }
 									<TableCell component="th" scope="row">
-										<Stack direction="column" alignItems="flex-start" spacing={ 0.5 }>
+										<Stack direction="column" spacing={ 0.5 } sx={ { alignItems: "flex-start" } }>
 											<span>{ pledge.org.title }</span>
 											{ isPledgeRunnerUp && (
 												<Chip
@@ -138,7 +138,7 @@ export const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 
 									{ /* Amount */ }
 									<TableCell align="right">
-										<Stack direction="row" justifyContent="space-between" alignItems="baseline">
+										<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "baseline" } }>
 											<div>$</div>
 											<div>{ numeral(pledge.amount).format("0,0.00") }</div>
 										</Stack>
@@ -187,7 +187,7 @@ export const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 												{ org.title }
 											</TableCell>
 											<TableCell align="right">
-												<Stack direction="row" justifyContent="space-between" alignItems="baseline">
+												<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "baseline" } }>
 													<Box sx={ { mr: 1 } }>$</Box>
 													<Box>{ numeral(org.pledges?.reduce((sum, pledge) => sum + pledge.amount, 0) ?? 0).format("0,0.00") }</Box>
 												</Stack>
@@ -199,7 +199,7 @@ export const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 									<TableRow>
 										<TableCell align="right">Total:</TableCell>
 										<TableCell>
-											<Stack direction="row" justifyContent="space-between" alignItems="baseline">
+											<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "baseline" } }>
 												<Box sx={ { mr: 1 } }>$</Box>
 												<Box>{ numeral(theme?.pledgedTotal ?? 0).format("0,0.00") }</Box>
 											</Stack>

@@ -42,7 +42,7 @@ export const AllocationInputs = ({ org, crowdFavorite, tabInfo, hideAdminFields 
 
 			{ /* Org Title */ }
 			<TableCell>
-				<Stack direction="row" justifyContent="space-between" alignItems="center">
+				<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 					{ org.title }
 					{ crowdFavorite && <Tooltip title="Crowd Favorite"><FavoriteIcon color="success" /></Tooltip> }
 				</Stack>

@@ -119,7 +119,7 @@ export const Messages = () => {
 	return (
 		<>
 			<SortableTable<MessageRow>
-				title={ <Stack direction="row" alignItems="center" justifyContent="space-between">
+				title={ <Stack direction="row" sx={ { alignItems: "center", justifyContent: "space-between" } }>
 					<div>Text Messages</div>
 					<Button component={ Link } to={ `/admin/${themeId}/settings/messages/new/text` }>+ New Text Message</Button>
 				</Stack> }
@@ -153,7 +153,7 @@ export const Messages = () => {
 			/>
 
 			<SortableTable<MessageRow>
-				title={ <Stack direction="row" alignItems="center" justifyContent="space-between">
+				title={ <Stack direction="row" sx={ { alignItems: "center", justifyContent: "space-between" } }>
 					<div>Email Messages</div>
 					<Button component={ Link } to={ `/admin/${themeId}/settings/messages/new/email` }>+ New Email Message</Button>
 				</Stack> }

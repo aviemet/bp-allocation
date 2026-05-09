@@ -88,7 +88,7 @@ export const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 						{ messages?.map((message) => {
 							if(message.active && message.type === "text") return (
 								<MenuItem key={ `${message._id}-text` } disableRipple>
-									<Stack sx={ { width: "100%" } } direction="row" justifyContent="space-between" alignItems="center">
+									<Stack direction="row" sx={ { width: "100%", justifyContent: "space-between", alignItems: "center" } }>
 										<Box sx={ { mr: 1 } }>{ message.title }</Box>
 										<Box><SendWithFeedbackButton message={ message } members={ [member._id] } /></Box>
 									</Stack>
@@ -113,7 +113,7 @@ export const ContextMenu = ({ themeId, member }: ContextMenuProps) => {
 						{ messages?.map((message) => {
 							if(message.active && message.type === "email") return (
 								<MenuItem key={ `${message._id}-email` } disableRipple>
-									<Stack sx={ { width: "100%" } } direction="row" justifyContent="space-between" alignItems="center">
+									<Stack direction="row" sx={ { width: "100%", justifyContent: "space-between", alignItems: "center" } }>
 										<Box sx={ { mr: 1 } }>{ message.title }</Box>
 										<Box><SendWithFeedbackButton message={ message } members={ [member._id] } /></Box>
 									</Stack>

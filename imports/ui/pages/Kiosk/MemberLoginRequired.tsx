@@ -78,7 +78,7 @@ export const MemberLoginRequired = (props: MemberLoginRequiredProps) => {
 	return (
 		<>
 			<BackgroundImage />
-			<Stack flexDirection="column" justifyContent="center" alignItems="center" sx={ { minHeight: "100%" } }>
+			<Stack direction="column" sx={ { justifyContent: "center", alignItems: "center", minHeight: "100%" } }>
 				<Form
 					defaultValues={ { initials: "", number: "" } }
 					onValidSubmit={ chooseMember }

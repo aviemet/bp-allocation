@@ -13,7 +13,7 @@ interface MoneyCellProps {
 export const MoneyCell = ({ children, format = "0,0.00" }: MoneyCellProps) => {
 	return (
 		<TableCell align="right">
-			<Stack direction="row" justifyContent="space-between" alignItems="center">
+			<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 				<Box sx={ { mr: 1 } }>$</Box>
 				<Box>{ numeral(children).format(format) }</Box>
 			</Stack>

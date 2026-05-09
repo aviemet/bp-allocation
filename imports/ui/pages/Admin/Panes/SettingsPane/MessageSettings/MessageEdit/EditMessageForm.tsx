@@ -90,7 +90,7 @@ export const EditMessageForm = ({ messageData, formStatus, setFormStatus, themeI
 				) }
 
 				<Grid size={ { xs: 12 } } >
-					<Stack direction="row" spacing={ 2 } justifyContent="end">
+					<Stack direction="row" spacing={ 2 } sx={ { justifyContent: "flex-end" } }>
 						<Button
 							component={ Link }
 							color="error"

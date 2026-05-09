@@ -48,7 +48,7 @@ export const ChitVotingPane = ({ hideAdminFields }: ChitVotingPaneProps) => {
 
 				<Grid size={ { xs: 12, md: settings?.useKioskChitVoting ? 12 : 6 } }>
 					<Box sx={ { mb: 2 } }>
-						<Stack direction="row" justifyContent="space-between" alignItems="center">
+						<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 							<Typography component="h3" variant="h3">
 								Top { !hideAdminFields ?
 									<TextField

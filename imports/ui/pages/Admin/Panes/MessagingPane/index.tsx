@@ -30,7 +30,7 @@ export const Messages = () => {
 	return (
 		<Container>
 			<Box sx={ { mb: 2 } }>
-				<Stack direction="row" justifyContent="space-between" alignItems="center">
+				<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 					<Typography component="h1" variant="h4">Messages</Typography>
 					<div style={ { textAlign: "right" } }><Link to={ `/admin/${theme._id}/settings/messages` }>Message Settings</Link></div>
 				</Stack>

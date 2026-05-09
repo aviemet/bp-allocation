@@ -129,7 +129,7 @@ export const ImportMapping = ({ headings, values = [], mapping, schema, sanitize
 						<TableRow>
 							{ headings.map((heading, headingIndex) => (
 								<TableCell key={ headingIndex }>
-									<Stack direction="row" alignItems="baseline" spacing={ 2 } sx={ { whiteSpace: "nowrap", mb: 2 } }>
+									<Stack direction="row" spacing={ 2 } sx={ { alignItems: "baseline", whiteSpace: "nowrap", mb: 2 } }>
 										<div>Heading From CSV:</div>
 										<Chip label={ heading } />
 									</Stack>

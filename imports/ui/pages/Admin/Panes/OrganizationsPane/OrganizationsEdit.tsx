@@ -70,7 +70,7 @@ const FormContent = ({ formStatus, setFormStatus }: { formStatus: Status, setFor
 				</Grid>
 
 				<Grid size={ { xs: 12 } }>
-					<Stack direction="row" spacing={ 2 } justifyContent="end">
+					<Stack direction="row" spacing={ 2 } sx={ { justifyContent: "flex-end" } }>
 						<Link to={ `/admin/${id}/orgs` }><Button color="error">Cancel</Button></Link>
 						<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Organization</SubmitButton>
 					</Stack>

@@ -70,7 +70,7 @@ export const AdvancedSettings = () => {
 
 			<hr />
 
-			<Stack direction="row" justifyContent="space-between" alignItems="center">
+			<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
 				<ResetOrgFundsButton />
 				<ResetMessageStatusButton />
 			</Stack>

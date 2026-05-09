@@ -69,8 +69,10 @@ export function EnhancedTableHead({
 						indeterminate={ numSelected > 0 && numSelected < rowCount }
 						checked={ rowCount > 0 && numSelected === rowCount }
 						onChange={ onSelectAllClick }
-						inputProps={ {
-							"aria-label": "select all desserts",
+						slotProps={ {
+							input: {
+								"aria-label": "select all desserts",
+							},
 						} }
 					/>
 				</TableCell> }
