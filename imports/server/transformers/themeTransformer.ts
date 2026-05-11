@@ -103,8 +103,12 @@ export const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams)
 	// Amount given to orgs other than top orgs
 	const consolationTotal = doc.consolationActive ? ((doc.organizations ? doc.organizations.length : 0) - (doc.numTopOrgs || 0)) * (doc.consolationAmount || 0) : 0
 
+	const startingFundsTotal = doc.minStartingFundsActive
+		? (doc.numTopOrgs || 0) * (doc.minStartingFunds || 0)
+		: 0
+
 	// Amount of the total pot still unassigned
-	let remainingLeverage = (doc.leverageTotal || 0) - consolationTotal - votedFunds
+	let remainingLeverage = (doc.leverageTotal || 0) - consolationTotal - startingFundsTotal - votedFunds
 
 	// Subtract the amounts allocated to each org
 	const orgsForLeverage = doc.allowRunnersUpPledges && params.allOrgs ? params.allOrgs : params.topOrgs

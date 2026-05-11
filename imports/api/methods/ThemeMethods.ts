@@ -270,6 +270,12 @@ export const ThemeMethods = {
 				multi: true,
 			})
 
+			await Themes.updateAsync({ _id: themeId }, {
+				$set: {
+					finalLeverageDistributed: false,
+				},
+			})
+
 			await PledgeAnimationQueue.removeAsync({ themeId })
 
 			return {

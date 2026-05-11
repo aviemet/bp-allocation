@@ -101,8 +101,13 @@ export const OrgTransformer = (doc: OrgData, params: OrgTransformerParams) => {
 		votedTotal = doc.amountFromVotes || 0
 	}
 
+	const isFinalist = params.topOrgIds ? params.topOrgIds.has(doc._id) : true
+	const startingFunds = params.theme?.minStartingFundsActive && isFinalist
+		? (params.theme.minStartingFunds || 0)
+		: 0
+
 	// Total amount of money allocated to this org aside from leverage distribution
-	const allocatedFundsNum = votedTotal + pledgeTotal + save + (doc.topOff || 0)
+	const allocatedFundsNum = startingFunds + votedTotal + pledgeTotal + save + (doc.topOff || 0)
 	const allocatedFunds = roundFloat(String(allocatedFundsNum))
 
 	// Amount needed to reach goal

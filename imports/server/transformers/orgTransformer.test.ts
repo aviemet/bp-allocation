@@ -245,6 +245,87 @@ describe("OrgTransformer", function() {
 			expect(result.pledgeTotal).to.equal(2000)
 		})
 	})
+
+	describe("Minimum starting funds", function() {
+		it("Should add minStartingFunds to a finalist's allocatedFunds and reduce need when active", function() {
+			const topOrgId = Random.id()
+			const org: OrgData = {
+				...baseOrg,
+				_id: topOrgId,
+				amountFromVotes: 0,
+			}
+
+			const theme: ThemeData = {
+				...baseTheme,
+				minStartingFunds: 5000,
+				minStartingFundsActive: true,
+			}
+
+			const topOrgIds = new Set([topOrgId])
+			const result = OrgTransformer(org, {
+				theme,
+				settings: baseSettings,
+				memberThemes: [],
+				topOrgIds,
+			})
+
+			expect(result.allocatedFunds).to.equal(5000)
+			expect(result.need).to.equal((org.ask || 0) - 5000)
+		})
+
+		it("Should NOT add minStartingFunds to a runner-up's allocatedFunds", function() {
+			const topOrgId = Random.id()
+			const runnerUpOrgId = Random.id()
+			const org: OrgData = {
+				...baseOrg,
+				_id: runnerUpOrgId,
+				amountFromVotes: 0,
+			}
+
+			const theme: ThemeData = {
+				...baseTheme,
+				minStartingFunds: 5000,
+				minStartingFundsActive: true,
+			}
+
+			const topOrgIds = new Set([topOrgId])
+			const result = OrgTransformer(org, {
+				theme,
+				settings: baseSettings,
+				memberThemes: [],
+				topOrgIds,
+			})
+
+			expect(result.allocatedFunds).to.equal(0)
+			expect(result.need).to.equal(org.ask || 0)
+		})
+
+		it("Should ignore minStartingFunds when toggle is off", function() {
+			const topOrgId = Random.id()
+			const org: OrgData = {
+				...baseOrg,
+				_id: topOrgId,
+				amountFromVotes: 0,
+			}
+
+			const theme: ThemeData = {
+				...baseTheme,
+				minStartingFunds: 5000,
+				minStartingFundsActive: false,
+			}
+
+			const topOrgIds = new Set([topOrgId])
+			const result = OrgTransformer(org, {
+				theme,
+				settings: baseSettings,
+				memberThemes: [],
+				topOrgIds,
+			})
+
+			expect(result.allocatedFunds).to.equal(0)
+			expect(result.need).to.equal(org.ask || 0)
+		})
+	})
 })
 
 describe("calculateVotesFromRawOrg", function() {
