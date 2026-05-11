@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 
-import { type AwardType } from "./Cards/AwardCard"
+import { type AwardType } from "./AwardCard"
 
 interface AwardEmblemProps {
 	type?: AwardType

@@ -2,6 +2,8 @@ declare module "meteor/ostrio:files" {
 	import { Mongo } from "meteor/mongo"
 
 	export interface FileData {
+		_id?: string
+		_downloadRoute?: string
 		name: string
 		extension: string
 		size: number

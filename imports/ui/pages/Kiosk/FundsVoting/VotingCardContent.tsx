@@ -1,6 +1,6 @@
 import { type OrgData } from "/imports/api/db"
 import styled from "@emotion/styled"
-import _ from "lodash"
+import { isNaN, forEach } from "es-toolkit/compat"
 import { useCallback, useLayoutEffect, useState } from "react"
 
 import { FundsSlider } from "./FundsSlider"
@@ -42,7 +42,7 @@ export const VotingCardContent = ({ org }: VotingCardContentProps) => {
 			return
 		}
 
-		if(_.isNaN(newValue)) {
+		if(isNaN(newValue)) {
 			setValue(0)
 			updateAllocations(org._id, 0)
 			return
@@ -50,7 +50,7 @@ export const VotingCardContent = ({ org }: VotingCardContentProps) => {
 
 		const parsedValue = Number.parseInt(String(newValue), 10)
 		let total = 0
-		_.forEach(allocations, (allocationAmount, allocationOrgId) => {
+		forEach(allocations, (allocationAmount, allocationOrgId) => {
 			total += allocationOrgId === org._id ? parsedValue : allocationAmount
 		})
 

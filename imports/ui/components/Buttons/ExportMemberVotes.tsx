@@ -1,5 +1,5 @@
 import { format } from "date-fns"
-import { isEmpty } from "lodash"
+import { isEmpty } from "es-toolkit/compat"
 import { useOrgs, useMembers } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { ExportCsvButton } from "/imports/ui/components/Buttons/ExportCsvButton"

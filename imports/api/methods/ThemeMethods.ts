@@ -1,5 +1,5 @@
 import { format } from "date-fns"
-import { merge } from "lodash"
+import { merge } from "es-toolkit"
 import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
 

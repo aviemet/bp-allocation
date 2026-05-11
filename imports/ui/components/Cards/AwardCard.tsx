@@ -2,7 +2,7 @@ import Paper from "@mui/material/Paper"
 import { styled, keyframes } from "@mui/material/styles"
 import numeral from "numeral"
 
-import { AwardEmblem } from "../AwardEmblem"
+import { AwardEmblem } from "./AwardEmblem"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
 import { COLORS } from "/imports/lib/global"
 

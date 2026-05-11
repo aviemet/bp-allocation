@@ -1,6 +1,6 @@
 import { Box, Container, Typography } from "@mui/material"
 import { styled } from "@mui/system"
-import { cloneDeep } from "lodash"
+import { cloneDeep } from "es-toolkit"
 import numeral from "numeral"
 import { useEffect, useState } from "react"
 import { useTheme, useSettings, useOrgs } from "/imports/api/hooks"
@@ -74,7 +74,7 @@ export const Results = () => {
 					</AwardsCards>
 				</div>
 
-				<Box mt={ 6 }>
+				<Box sx={ { mt: 6 } }>
 					{ restOrgs.length > 0 && <>
 						<Typography component="h2" variant="h3" sx={ { marginBottom: 2 } }>Runners Up</Typography>
 						<AwardsCards>

@@ -1,4 +1,4 @@
-import { debounce, isEmpty, type DebouncedFunc } from "lodash"
+import { debounce, isEmpty, type DebouncedFunc } from "es-toolkit/compat"
 import { Meteor } from "meteor/meteor"
 import { type FileData } from "meteor/ostrio:files"
 

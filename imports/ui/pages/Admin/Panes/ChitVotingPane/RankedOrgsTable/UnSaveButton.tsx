@@ -2,7 +2,7 @@ import {
 	Button,
 	Chip,
 } from "@mui/material"
-import _ from "lodash"
+import { find } from "es-toolkit/compat"
 import numeral from "numeral"
 import { useState } from "react"
 import { useTheme } from "/imports/api/hooks"
@@ -30,7 +30,7 @@ export const UnSaveButton = ({ org }: UnSaveButtonProps) => {
 		setModalOpen(false)
 	}
 
-	const save = _.find(theme.saves ?? [], ["org", org._id])
+	const save = find(theme.saves ?? [], ["org", org._id])
 
 	if(!save) return null
 

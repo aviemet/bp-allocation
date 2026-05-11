@@ -1,5 +1,5 @@
 import "meteor/aldeed:collection2"
-import { has } from "lodash"
+import { has } from "es-toolkit/compat"
 import { Accounts } from "meteor/accounts-base"
 import { Meteor } from "meteor/meteor"
 import { ServiceConfiguration } from "meteor/service-configuration"

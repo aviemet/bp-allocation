@@ -1,4 +1,4 @@
-import { sortBy } from "lodash"
+import { sortBy } from "es-toolkit/compat"
 
 import { Organization, Theme } from "../types/schema"
 

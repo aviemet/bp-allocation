@@ -1,4 +1,4 @@
-import { forEach, find, isEqual } from "lodash"
+import { forEach, find, isEqual } from "es-toolkit/compat"
 import { useMemo, useState, useRef, useEffect, startTransition, type ReactNode } from "react"
 import { useTheme, useOrgs } from "/imports/api/hooks"
 import { MemberMethods } from "/imports/api/methods"

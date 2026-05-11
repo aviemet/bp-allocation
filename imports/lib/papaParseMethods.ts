@@ -1,4 +1,5 @@
-import { isUndefined, indexOf, isEmpty, forEach, has } from "lodash"
+import { isUndefined } from "es-toolkit"
+import { indexOf, isEmpty, forEach, has } from "es-toolkit/compat"
 import Papa, {} from "papaparse"
 
 /**************************************

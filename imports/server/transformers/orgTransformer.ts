@@ -1,4 +1,4 @@
-import { isEmpty } from "lodash"
+import { isEmpty } from "es-toolkit/compat"
 import { roundFloat } from "/imports/lib/utils"
 import { type MemberTheme } from "/imports/types/schema"
 import { type OrgData, type ThemeData, type SettingsData } from "/imports/api/db"

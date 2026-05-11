@@ -1,4 +1,4 @@
-import _ from "lodash"
+import { cloneDeep } from "es-toolkit"
 
 import { roundFloat } from "/imports/lib/utils"
 import { Organization } from "../types/schema"
@@ -122,7 +122,7 @@ export class Leverage {
 			this.sumRemainingOrgs = trackers.newSumRemainingOrgs
 			this.leverageRemaining = roundFloat(String(this.leverageRemaining - trackers.givenThisRound))
 
-			round.orgs = _.cloneDeep(roundOrgs)
+			round.orgs = cloneDeep(roundOrgs)
 			this.rounds.push(round)
 		}
 

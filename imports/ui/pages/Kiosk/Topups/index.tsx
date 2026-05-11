@@ -3,7 +3,7 @@ import { OrganizationMethods } from "/imports/api/methods"
 import { Form, TextInput, SubmitButton, STATUS, SwitchInput, type Status } from "/imports/ui/components/Form"
 import styled from "@emotion/styled"
 import { Box, Container, InputAdornment, Typography } from "@mui/material"
-import { isEmpty } from "lodash"
+import { isEmpty } from "es-toolkit/compat"
 import { OrgCardColors } from "/imports/ui/components/Cards"
 import { useState } from "react"
 
