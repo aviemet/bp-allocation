@@ -5,7 +5,7 @@ import { OrgTransformer, calculateVotesFromRawOrg } from "./orgTransformer"
 import { type OrgData, type ThemeData, type SettingsData } from "/imports/api/db"
 
 describe("OrgTransformer", function() {
-	const baseTheme: ThemeData = {
+	const baseTheme = {
 		_id: Random.id(),
 		title: "Test Theme",
 		presentationSettings: Random.id(),
@@ -13,14 +13,14 @@ describe("OrgTransformer", function() {
 		numTopOrgs: 3,
 		matchRatio: 2,
 		createdAt: new Date(),
-	}
+	} satisfies ThemeData
 
-	const baseSettings: SettingsData = {
+	const baseSettings = {
 		_id: Random.id(),
 		useKioskFundsVoting: false,
-	}
+	} satisfies SettingsData
 
-	const baseOrg: OrgData = {
+	const baseOrg = {
 		_id: Random.id(),
 		theme: baseTheme._id,
 		title: "Test Org",
@@ -30,7 +30,7 @@ describe("OrgTransformer", function() {
 		pledges: [],
 		leverageFunds: 0,
 		createdAt: new Date(),
-	}
+	} satisfies OrgData
 
 	describe("Pledge matching for finalists", function() {
 		it("Should apply matchRatio to finalist org pledges", function() {
@@ -249,17 +249,17 @@ describe("OrgTransformer", function() {
 	describe("Minimum starting funds", function() {
 		it("Should add minStartingFunds to a finalist's allocatedFunds and reduce need when active", function() {
 			const topOrgId = Random.id()
-			const org: OrgData = {
+			const org = {
 				...baseOrg,
 				_id: topOrgId,
 				amountFromVotes: 0,
-			}
+			} satisfies OrgData
 
-			const theme: ThemeData = {
+			const theme = {
 				...baseTheme,
 				minStartingFunds: 5000,
 				minStartingFundsActive: true,
-			}
+			} satisfies ThemeData
 
 			const topOrgIds = new Set([topOrgId])
 			const result = OrgTransformer(org, {
@@ -270,23 +270,23 @@ describe("OrgTransformer", function() {
 			})
 
 			expect(result.allocatedFunds).to.equal(5000)
-			expect(result.need).to.equal((org.ask || 0) - 5000)
+			expect(result.need).to.equal(org.ask - 5000)
 		})
 
 		it("Should NOT add minStartingFunds to a runner-up's allocatedFunds", function() {
 			const topOrgId = Random.id()
 			const runnerUpOrgId = Random.id()
-			const org: OrgData = {
+			const org = {
 				...baseOrg,
 				_id: runnerUpOrgId,
 				amountFromVotes: 0,
-			}
+			} satisfies OrgData
 
-			const theme: ThemeData = {
+			const theme = {
 				...baseTheme,
 				minStartingFunds: 5000,
 				minStartingFundsActive: true,
-			}
+			} satisfies ThemeData
 
 			const topOrgIds = new Set([topOrgId])
 			const result = OrgTransformer(org, {
@@ -297,22 +297,22 @@ describe("OrgTransformer", function() {
 			})
 
 			expect(result.allocatedFunds).to.equal(0)
-			expect(result.need).to.equal(org.ask || 0)
+			expect(result.need).to.equal(org.ask)
 		})
 
 		it("Should ignore minStartingFunds when toggle is off", function() {
 			const topOrgId = Random.id()
-			const org: OrgData = {
+			const org = {
 				...baseOrg,
 				_id: topOrgId,
 				amountFromVotes: 0,
-			}
+			} satisfies OrgData
 
-			const theme: ThemeData = {
+			const theme = {
 				...baseTheme,
 				minStartingFunds: 5000,
 				minStartingFundsActive: false,
-			}
+			} satisfies ThemeData
 
 			const topOrgIds = new Set([topOrgId])
 			const result = OrgTransformer(org, {
@@ -323,18 +323,18 @@ describe("OrgTransformer", function() {
 			})
 
 			expect(result.allocatedFunds).to.equal(0)
-			expect(result.need).to.equal(org.ask || 0)
+			expect(result.need).to.equal(org.ask)
 		})
 	})
 })
 
 describe("calculateVotesFromRawOrg", function() {
-	const baseSettings: SettingsData = {
+	const baseSettings = {
 		_id: Random.id(),
 		useKioskFundsVoting: false,
-	}
+	} satisfies SettingsData
 
-	const baseTheme: ThemeData = {
+	const baseTheme = {
 		_id: Random.id(),
 		title: "Test Theme",
 		presentationSettings: Random.id(),
@@ -342,7 +342,7 @@ describe("calculateVotesFromRawOrg", function() {
 		numTopOrgs: 3,
 		chitWeight: 3,
 		createdAt: new Date(),
-	}
+	} satisfies ThemeData
 
 	it("Should calculate votes from chitVotes.count", function() {
 		const org: OrgData = {
