@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import { Container, Button, Typography } from "@mui/material"
-import { forEach } from "lodash"
+import { forEach } from "es-toolkit/compat"
 import { useState, useEffect, useMemo, startTransition } from "react"
 
 import { useData } from "/imports/api/providers"

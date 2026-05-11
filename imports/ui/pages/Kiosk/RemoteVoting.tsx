@@ -1,11 +1,10 @@
-import { isEmpty } from "lodash"
+import { isEmpty } from "es-toolkit/compat"
 import { ComponentType } from "react"
 import { useMembers } from "/imports/api/hooks"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
 
 import { FundsVoteProvider } from "./VotingContext"
-
 import { Loading } from "/imports/ui/components"
 
 interface RemoteVotingProps {

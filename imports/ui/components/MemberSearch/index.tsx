@@ -11,7 +11,7 @@ import {
 	TextField,
 } from "@mui/material"
 import { createFilterOptions } from "@mui/material/Autocomplete"
-import { isEmpty } from "lodash"
+import { isEmpty } from "es-toolkit/compat"
 import { Loading } from "/imports/ui/components"
 import { type SyntheticEvent } from "react"
 

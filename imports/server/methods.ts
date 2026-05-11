@@ -1,4 +1,4 @@
-import { sortBy } from "lodash"
+import { sortBy } from "es-toolkit/compat"
 import { createThemeVotingConfig } from "/imports/lib/orgsMethods"
 import { type Theme } from "/imports/types/schema"
 

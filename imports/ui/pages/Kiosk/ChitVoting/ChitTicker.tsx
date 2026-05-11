@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
 import { IconButton } from "@mui/material"
-import { forEach } from "lodash"
+import { forEach } from "es-toolkit/compat"
 import { useEffect, useState, startTransition } from "react"
 
 import { useVoting } from "../VotingContext"

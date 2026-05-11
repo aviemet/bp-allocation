@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import { Grid, Stack, Typography } from "@mui/material"
-import { isEmpty } from "lodash"
+import { isEmpty } from "es-toolkit/compat"
 import { useMembers } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { ComponentType } from "react"

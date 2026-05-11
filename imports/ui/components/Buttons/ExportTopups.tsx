@@ -1,4 +1,4 @@
-import { isEmpty } from "lodash"
+import { isEmpty } from "es-toolkit/compat"
 import { useOrgs, useMembers } from "/imports/api/hooks"
 import { ExportCsvButton } from "/imports/ui/components/Buttons/ExportCsvButton"
 import { Loading } from "/imports/ui/components"

@@ -15,6 +15,7 @@ import { AllocationInputs } from "./AllocationInputs"
 import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { TopOffButton } from "/imports/ui/components/Buttons/TopOffButton"
+
 interface AllocationsTableProps {
 	hideAdminFields?: boolean
 }

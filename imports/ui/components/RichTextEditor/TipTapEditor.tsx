@@ -11,6 +11,7 @@ import TextAlign from "@tiptap/extension-text-align"
 import { TextStyle } from "@tiptap/extension-text-style"
 import Underline from "@tiptap/extension-underline"
 import StarterKit from "@tiptap/starter-kit"
+import { type FileData } from "meteor/ostrio:files"
 import {
 	MenuButtonBold,
 	MenuButtonItalic,
@@ -172,11 +173,8 @@ export const TipTapEditor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ 
 				file: file,
 			})
 
-			const insertImage = (fileObj: unknown) => {
-				if(!fileObj) {
-					return
-				}
-				const fileData = fileObj as { _id?: string, link?: () => string, _downloadRoute?: string, [key: string]: unknown }
+			const insertImage = (fileData: FileData | null | undefined) => {
+				if(!fileData) return
 
 				let imageUrl = ""
 
@@ -192,7 +190,7 @@ export const TipTapEditor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ 
 							}
 						}
 					} catch (err) {
-						console.error("Error calling fileObj.link():", err)
+						console.error("Failed to resolve uploaded image URL from file.link():", err)
 					}
 				}
 
@@ -326,4 +324,3 @@ const EditorWrapper = styled.div`
 		}
 	}
 `
-

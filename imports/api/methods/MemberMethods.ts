@@ -1,8 +1,8 @@
-import { isUndefined, isEmpty, find } from "lodash"
+import { isUndefined } from "es-toolkit"
+import { isEmpty, find } from "es-toolkit/compat"
 import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
 import { formatPhoneNumber, sanitizeString } from "/imports/lib/utils"
-
 import { Members, MemberThemes, Organizations } from "/imports/api/db"
 import { OrganizationMethods } from "/imports/api/methods"
 import { type Member, type MemberTheme } from "/imports/types/schema"

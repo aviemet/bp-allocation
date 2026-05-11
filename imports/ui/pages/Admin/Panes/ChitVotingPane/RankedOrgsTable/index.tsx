@@ -10,7 +10,7 @@ import {
 	TableRow,
 	TableCell,
 } from "@mui/material"
-import { findIndex } from "lodash"
+import { findIndex } from "es-toolkit/compat"
 import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 
 import { TopOrgsRow } from "./TopOrgsRow"

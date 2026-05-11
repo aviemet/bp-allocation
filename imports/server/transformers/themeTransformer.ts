@@ -1,4 +1,4 @@
-import { isEmpty, sortBy } from "lodash"
+import { isEmpty, sortBy } from "es-toolkit/compat"
 import { roundFloat } from "/imports/lib/utils"
 
 import { type ThemeData, type SettingsData } from "/imports/api/db"
