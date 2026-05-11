@@ -6,6 +6,7 @@ import { formatPhoneNumber } from "/imports/lib/utils"
 import { ThemeMethods, MemberMethods, OrganizationMethods } from "/imports/api/methods"
 import { Themes, Members, MemberThemes } from "/imports/api/db"
 import { Organizations } from "/imports/api/db"
+import { resetDatabase } from "../../test-support/resetDatabase"
 
 const NUM_TEST_RECORDS = 5
 
@@ -22,6 +23,7 @@ let memberIds: string[] = []
 describe("Member Methods", function() {
 
 	beforeEach(async function() {
+		await resetDatabase()
 		memberThemeIds = []
 		memberIds = []
 		orgIds = []
@@ -164,6 +166,144 @@ describe("Member Methods", function() {
 			const org = (await Organizations.find({ _id: orgDocuments[0]._id }).fetchAsync())[0]
 
 			expect(org.pledges?.length).to.equal(0)
+		})
+	})
+
+	describe("RemoveAllMembers", () => {
+		it("Should remove every memberTheme association for the theme", async function() {
+			if(!themeData._id) throw new Error("Theme ID not found")
+			await MemberMethods.removeAllMembers.callAsync(themeData._id)
+			const remaining = await MemberThemes.find({ theme: themeData._id }).countAsync()
+			expect(remaining).to.equal(0)
+		})
+
+		it("Should pull every matching pledge from orgs in the theme", async function() {
+			if(!themeData._id) throw new Error("Theme ID not found")
+			const targetOrg = (await Organizations.find({ _id: orgIds[0] }).fetchAsync())[0]
+			await OrganizationMethods.pledge.callAsync({ id: targetOrg._id, amount: 100, member: memberIds[0] })
+			await OrganizationMethods.pledge.callAsync({ id: targetOrg._id, amount: 200, member: memberIds[1] })
+
+			await MemberMethods.removeAllMembers.callAsync(themeData._id)
+
+			const orgAfter = await Organizations.findOneAsync({ _id: targetOrg._id })
+			expect(orgAfter?.pledges ?? []).to.have.length(0)
+		})
+	})
+
+	describe("UpdateTheme", () => {
+		it("Should set memberTheme fields like amount and chits", async function() {
+			const memberThemeId = memberThemeIds[0]
+			await MemberMethods.updateTheme.callAsync({ id: memberThemeId, data: { amount: 999, chits: 3 } })
+			const updated = await MemberThemes.findOneAsync({ _id: memberThemeId })
+			expect(updated?.amount).to.equal(999)
+			expect(updated?.chits).to.equal(3)
+		})
+	})
+
+	describe("FundVote", () => {
+		it("Should push a new allocation when none exists for the org", async function() {
+			if(!themeData._id) throw new Error("Theme ID not found")
+			await MemberMethods.fundVote.callAsync({
+				theme: themeData._id,
+				member: memberIds[0],
+				org: orgIds[0],
+				amount: 75,
+				voteSource: "mobile",
+			})
+
+			const memberTheme = await MemberThemes.findOneAsync({ theme: themeData._id, member: memberIds[0] })
+			expect(memberTheme?.allocations).to.have.length(1)
+			expect(memberTheme?.allocations?.[0]).to.include({ organization: orgIds[0], amount: 75, voteSource: "mobile" })
+		})
+
+		it("Should update an existing allocation rather than duplicating", async function() {
+			if(!themeData._id) throw new Error("Theme ID not found")
+			await MemberMethods.fundVote.callAsync({
+				theme: themeData._id, member: memberIds[0], org: orgIds[0], amount: 50,
+			})
+			await MemberMethods.fundVote.callAsync({
+				theme: themeData._id, member: memberIds[0], org: orgIds[0], amount: 125, voteSource: "kiosk",
+			})
+
+			const memberTheme = await MemberThemes.findOneAsync({ theme: themeData._id, member: memberIds[0] })
+			expect(memberTheme?.allocations).to.have.length(1)
+			expect(memberTheme?.allocations?.[0]).to.include({ organization: orgIds[0], amount: 125, voteSource: "kiosk" })
+		})
+
+		it("Should do nothing when there is no memberTheme to update", async function() {
+			await MemberMethods.fundVote.callAsync({
+				theme: faker.string.uuid(),
+				member: faker.string.uuid(),
+				org: orgIds[0],
+				amount: 10,
+			})
+			const fakeCount = await MemberThemes.find({ theme: faker.string.uuid() }).countAsync()
+			expect(fakeCount).to.equal(0)
+		})
+	})
+
+	describe("ChitVote", () => {
+		it("Should push a new chitVote when none exists for the org", async function() {
+			if(!themeData._id) throw new Error("Theme ID not found")
+			await MemberMethods.chitVote.callAsync({
+				theme: themeData._id,
+				member: memberIds[0],
+				org: orgIds[0],
+				votes: 3,
+				voteSource: "mobile",
+			})
+
+			const memberTheme = await MemberThemes.findOneAsync({ theme: themeData._id, member: memberIds[0] })
+			expect(memberTheme?.chitVotes).to.have.length(1)
+			expect(memberTheme?.chitVotes?.[0]).to.include({ organization: orgIds[0], votes: 3, voteSource: "mobile" })
+		})
+
+		it("Should update an existing chitVote rather than duplicating", async function() {
+			if(!themeData._id) throw new Error("Theme ID not found")
+			await MemberMethods.chitVote.callAsync({
+				theme: themeData._id, member: memberIds[0], org: orgIds[0], votes: 1,
+			})
+			await MemberMethods.chitVote.callAsync({
+				theme: themeData._id, member: memberIds[0], org: orgIds[0], votes: 4, voteSource: "kiosk",
+			})
+
+			const memberTheme = await MemberThemes.findOneAsync({ theme: themeData._id, member: memberIds[0] })
+			expect(memberTheme?.chitVotes).to.have.length(1)
+			expect(memberTheme?.chitVotes?.[0]).to.include({ organization: orgIds[0], votes: 4, voteSource: "kiosk" })
+		})
+	})
+
+	describe("ResetChitVotes", () => {
+		it("Should clear the chitVotes array on the memberTheme", async function() {
+			if(!themeData._id) throw new Error("Theme ID not found")
+			await MemberMethods.chitVote.callAsync({
+				theme: themeData._id, member: memberIds[0], org: orgIds[0], votes: 2,
+			})
+			await MemberMethods.chitVote.callAsync({
+				theme: themeData._id, member: memberIds[0], org: orgIds[1], votes: 1,
+			})
+
+			const memberThemeId = memberThemeIds[0]
+			await MemberMethods.resetChitVotes.callAsync(memberThemeId)
+			const reset = await MemberThemes.findOneAsync({ _id: memberThemeId })
+			expect(reset?.chitVotes ?? []).to.have.length(0)
+		})
+	})
+
+	describe("ResetFundsVotes", () => {
+		it("Should clear the allocations array on the memberTheme", async function() {
+			if(!themeData._id) throw new Error("Theme ID not found")
+			await MemberMethods.fundVote.callAsync({
+				theme: themeData._id, member: memberIds[0], org: orgIds[0], amount: 50,
+			})
+			await MemberMethods.fundVote.callAsync({
+				theme: themeData._id, member: memberIds[0], org: orgIds[1], amount: 25,
+			})
+
+			const memberThemeId = memberThemeIds[0]
+			await MemberMethods.resetFundsVotes.callAsync(memberThemeId)
+			const reset = await MemberThemes.findOneAsync({ _id: memberThemeId })
+			expect(reset?.allocations ?? []).to.have.length(0)
 		})
 	})
 

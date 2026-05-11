@@ -3,11 +3,30 @@
 
 declare module "meteor/mongo" {
 	namespace Mongo {
+		interface RawCollectionListing {
+			name: string
+		}
+
+		interface RawCollectionListingCursor {
+			toArray(): Promise<RawCollectionListing[]>
+		}
+
+		interface RawCollection {
+			deleteMany(filter: Record<string, unknown>): Promise<{ deletedCount?: number }>
+		}
+
+		interface RawDb {
+			dropDatabase(): Promise<void>
+			listCollections(
+				filter?: Record<string, unknown>,
+				options?: { nameOnly?: boolean },
+			): RawCollectionListingCursor
+			collection(name: string): RawCollection
+		}
+
 		interface RemoteCollectionDriver {
 			mongo: {
-				db: {
-					dropDatabase(): Promise<void>
-				}
+				db: RawDb
 			}
 		}
 

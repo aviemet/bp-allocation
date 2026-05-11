@@ -1,8 +1,10 @@
 import { faker } from "@faker-js/faker"
 import { expect } from "chai"
+import { Random } from "meteor/random"
 
-import { ThemeMethods, OrganizationMethods } from "/imports/api/methods"
-import { Themes, Organizations, ThemeData } from "/imports/api/db"
+import { ThemeMethods, OrganizationMethods, MemberMethods } from "/imports/api/methods"
+import { Themes, Organizations, MemberThemes, ThemeData } from "/imports/api/db"
+import { PledgeAnimationQueue } from "/imports/api/db/PledgeAnimationQueue"
 import { resetDatabase } from "../../test-support/resetDatabase"
 
 const themeData: { title: string, leverage: number, _id?: string } = {
@@ -193,7 +195,115 @@ describe("Theme Methods", function() {
 
 	})
 
-	describe("Remove", function() {
+	/**
+	 * ResetAllOrgFunds
+	 */
+	describe("ResetAllOrgFunds", function() {
+		it("Should zero out funding state across orgs, member themes, the theme, and the pledge animation queue", async function() {
+			const targetOrgId = orgIds[0]
 
+			await OrganizationMethods.update.callAsync({
+				id: targetOrgId,
+				data: { amountFromVotes: 500, topOff: 250, leverageFunds: 1000 },
+			})
+			await OrganizationMethods.pledge.callAsync({ id: targetOrgId, amount: 100, member: Random.id() })
+
+			const memberThemeId = await MemberMethods.upsert.callAsync({
+				firstName: faker.person.firstName(),
+				lastName: faker.person.lastName(),
+				number: faker.number.int({ min: 1, max: 999 }),
+				theme: theme._id,
+				amount: 200,
+				chits: 5,
+			})
+			const memberTheme = await MemberThemes.findOneAsync({ _id: memberThemeId })
+			if(!memberTheme?.member) throw new Error("MemberTheme with member id not found")
+			const memberId = memberTheme.member
+			await MemberMethods.fundVote.callAsync({
+				theme: theme._id,
+				member: memberId,
+				org: targetOrgId,
+				amount: 50,
+			})
+			await MemberMethods.chitVote.callAsync({
+				theme: theme._id,
+				member: memberId,
+				org: targetOrgId,
+				votes: 2,
+			})
+
+			await PledgeAnimationQueue.insertAsync({
+				themeId: theme._id,
+				pledgeId: Random.id(),
+				orgId: targetOrgId,
+				orgTitle: "Animated Org",
+				timestamp: new Date(),
+				processed: false,
+			})
+
+			await Themes.updateAsync({ _id: theme._id }, { $set: { finalLeverageDistributed: true } })
+
+			const result = await ThemeMethods.resetAllOrgFunds.callAsync(theme._id)
+
+			expect(result.organizationsUpdated).to.be.greaterThan(0)
+			expect(result.memberThemesUpdated).to.be.greaterThan(0)
+
+			const orgsAfter = await Organizations.find({ _id: { $in: orgIds } }).fetchAsync()
+			orgsAfter.forEach(org => {
+				expect(org.amountFromVotes).to.equal(0)
+				expect(org.topOff).to.equal(0)
+				expect(org.leverageFunds).to.equal(0)
+				expect(org.pledges ?? []).to.have.length(0)
+			})
+
+			const memberThemesAfter = await MemberThemes.find({ theme: theme._id }).fetchAsync()
+			memberThemesAfter.forEach(record => {
+				expect(record.allocations ?? []).to.have.length(0)
+				expect(record.chitVotes ?? []).to.have.length(0)
+			})
+
+			const themeAfter = await Themes.findOneAsync({ _id: theme._id })
+			expect(themeAfter?.finalLeverageDistributed).to.equal(false)
+
+			const queueRemaining = await PledgeAnimationQueue.find({ themeId: theme._id }).countAsync()
+			expect(queueRemaining).to.equal(0)
+		})
+
+		it("Should return zeroed counts when the theme does not exist", async function() {
+			const result = await ThemeMethods.resetAllOrgFunds.callAsync(Random.id())
+			expect(result).to.deep.equal({ organizationsUpdated: 0, memberThemesUpdated: 0 })
+		})
+	})
+
+	/**
+	 * ResetMessageStatus
+	 */
+	describe("ResetMessageStatus", function() {
+		it("Should clear the messagesStatus array on the theme", async function() {
+			await Themes.updateAsync({ _id: theme._id }, {
+				$set: { messagesStatus: [{ messageId: Random.id(), sending: false, sent: true, error: false }] },
+			})
+			const themeWithStatus = await Themes.findOneAsync({ _id: theme._id })
+			expect(themeWithStatus?.messagesStatus ?? []).to.have.length(1)
+
+			await ThemeMethods.resetMessageStatus.callAsync(theme._id)
+			const themeReset = await Themes.findOneAsync({ _id: theme._id })
+			expect(themeReset?.messagesStatus ?? []).to.have.length(0)
+		})
+	})
+
+	/**
+	 * Remove
+	 */
+	describe("Remove", function() {
+		it("Should remove the theme and cascade delete its organizations", async function() {
+			expect(await Themes.findOneAsync({ _id: theme._id })).to.exist
+
+			await ThemeMethods.remove.callAsync(theme._id)
+
+			expect(await Themes.findOneAsync({ _id: theme._id })).to.not.exist
+			const remainingOrgs = await Organizations.find({ _id: { $in: orgIds } }).countAsync()
+			expect(remainingOrgs).to.equal(0)
+		})
 	})
 })

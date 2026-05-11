@@ -50,6 +50,22 @@ describe("Image Methods", function() {
 			}
 		})
 	})
+
+	describe("rename", function() {
+		it("should be callable without throwing (currently a no-op pending implementation)", async function() {
+			const fileId = await Images.collection.insertAsync({
+				name: "before.jpg",
+				extension: "jpg",
+				size: 1024,
+				type: "image/jpeg",
+			})
+
+			await ImageMethods.rename.callAsync({ id: fileId, name: "after.jpg" })
+
+			const file = await Images.collection.findOneAsync({ _id: fileId })
+			expect(file?.name).to.equal("before.jpg")
+		})
+	})
 })
 
 describe("getImageUrl utility", function() {
