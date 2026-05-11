@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
-import { Container, Button, Typography } from "@mui/material"
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
+import { Container, Button, Typography, FormControlLabel, Checkbox, Tooltip } from "@mui/material"
 import { forEach } from "es-toolkit/compat"
 import numeral from "numeral"
 import React, { useState, useEffect } from "react"
@@ -43,6 +44,7 @@ export const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
 	const [ votingComplete, setVotingComplete ] = useState(voted)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
 	const [ isCounting, setIsCounting ] = useState(false)
+	const [ allowPartial, setAllowPartial ] = useState(false)
 
 	useEffect(() => {
 		// Display countdown if user is on voting screen when voting becomes disabled
@@ -59,7 +61,7 @@ export const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
 	let allocationsSum = 0
 	forEach(allocations, value => allocationsSum += value)
 	const remaining = (member.theme?.amount || 0) - allocationsSum
-	const buttonDisabled = remaining !== 0
+	const buttonDisabled = remaining < 0 || (remaining > 0 && !allowPartial)
 
 	if(votingComplete) {
 		return <VotingComplete setVotingComplete={ setVotingComplete } />
@@ -87,12 +89,38 @@ export const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
 
 			<>
 				<AmountRemaining value={ remaining } />
+				<PartialVoteRow>
+					<PartialVoteToggle
+						control={
+							<PartialVoteCheckbox
+								size="small"
+								checked={ allowPartial }
+								onChange={ e => setAllowPartial(e.target.checked) }
+							/>
+						}
+						label="Submit without allocating all funds"
+					/>
+					<Tooltip
+						title="Voting partial funds will leave some in the communal balance to be spread among the remaining organizations"
+						placement="top"
+						arrow
+						slotProps={ {
+							tooltip: { sx: { backgroundColor: "#616161", color: "#fff", fontSize: "1.25rem", maxWidth: 320, padding: "8px 12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.5)" } },
+							arrow: { sx: { color: "#616161" } },
+						} }
+					>
+						<PartialVoteInfoIcon />
+					</Tooltip>
+				</PartialVoteRow>
 				<FinalizeButton
 					disabled={ buttonDisabled }
 					onClick={ () => {
 						saveAllocations(source)
 						setVotingComplete(true)
-					} }>Finalize Vote</FinalizeButton>
+					} }
+				>
+					Finalize Vote
+				</FinalizeButton>
 			</>
 		</OrgsContainer>
 	)
@@ -125,5 +153,38 @@ const FinalizeButton = styled(Button)`
 const NumberFormat = styled.span`
 	width: 12rem;
 	display: inline-block;
+`
+
+const PartialVoteRow = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	margin-top: -12px;
+	margin-bottom: 24px;
+`
+
+const PartialVoteToggle = styled(FormControlLabel)`
+	margin: 0;
+	color: rgba(255, 255, 255, 0.7);
+
+	.MuiFormControlLabel-label {
+		font-size: 0.85rem;
+	}
+`
+
+const PartialVoteCheckbox = styled(Checkbox)`
+	&& .MuiSvgIcon-root {
+		color: rgba(255, 255, 255, 0.55);
+	}
+
+	&&.Mui-checked .MuiSvgIcon-root {
+		color: rgba(255, 255, 255, 0.85);
+	}
+`
+
+const PartialVoteInfoIcon = styled(InfoOutlinedIcon)`
+	cursor: help;
+	color: rgba(255, 255, 255, 0.55);
 `
 
