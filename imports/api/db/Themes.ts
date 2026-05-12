@@ -69,6 +69,18 @@ export const ThemeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: 2,
 	},
+	inPersonMatchRatio: {
+		type: SimpleSchema.Integer,
+		label: "Total multiplier for in-person pledges",
+		required: false,
+		defaultValue: 3,
+	},
+	inPersonPledgeActive: {
+		type: Boolean,
+		label: "Enable in-person pledge variant for this theme",
+		required: false,
+		defaultValue: false,
+	},
 	consolationAmount: {
 		type: Number,
 		label: "Amount to allocate for not top 5",

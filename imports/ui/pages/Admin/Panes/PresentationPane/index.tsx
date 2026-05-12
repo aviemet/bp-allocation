@@ -19,7 +19,7 @@ import {
 import {
 	ChitVotingActiveToggle,
 	FundsVotingActiveToggle,
-	TopupsActiveToggle,
+	PledgesActiveToggle,
 	ColorizeTopOrgsToggle,
 	AnimateTopOrgsToggle,
 	ShowLeverageToggle,
@@ -149,7 +149,7 @@ export const PresentationPane = () => {
 						<ShowSaveValuesToggle />
 						<br/>
 						<hr />
-						<TopupsActiveToggle />
+						<PledgesActiveToggle />
 
 					</Grid>
 					<Grid size={ { xs: 12, md: 4 } }>

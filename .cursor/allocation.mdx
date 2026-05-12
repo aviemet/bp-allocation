@@ -106,6 +106,40 @@ Server-side publications and methods must use async methods:
 - `onUpdate(partialData)` is driven by `watch()` per-field updates; sanitization can run before validation of the specific key.
 - `onChange(methods)` is a generic change subscription when full form-level reactions are needed.
 
+### Pledge Matching Pipeline (Leverage Pool Walk)
+- All matched-pledge math lives in `imports/lib/pledgeMatching.ts`. **Never** open-code `pledge.amount * matchRatio` anywhere else - it ignores the leverage pool, mixed `pledgeType` ratios, and partial-match truncation.
+- There is one shared leverage pool per theme. All eligible orgs' pledges are merged into a single chronological queue (`createdAt`, then `_id` for tie-break) and consume that one pool in order. A pledge that lands late may receive a partial match — or none at all — if earlier pledges to *any* org have already drained the pool.
+- `calculatePledgeMatches` returns `{ matchedAmounts: Map<pledgeId, number>, remainingLeverage }` and **persists nothing**. Derived values (`leverageBonus`, org `pledgeTotal`, `theme.leverageRemaining`) are recomputed on every publication tick. This keeps state safe when an earlier pledge is removed/edited - the whole walk re-runs and downstream pledges are promoted/demoted automatically.
+- `MatchPledge.pledgeType` is the discriminator (`"standard"` | `"inPerson"`). Standard uses `Theme.matchRatio`; in-person uses `Theme.inPersonMatchRatio`. Both ratios are **total multipliers**: ratio 2 = 1:1 leverage match (pledge $1, leverage adds $1), ratio 3 = 2:1 leverage match.
+- `OrgTransformer` accepts `params.matchedAmounts`. When omitted (standalone use, isolated unit tests), it falls back to "fully matched" so legacy callers still get `amount * matchRatio` semantics. The actual per-org contribution math lives in `pledgeTotalForOrg` inside `pledgeMatching.ts` — the transformer just delegates so the runner-up eligibility rule and matched-amount fallback have one definition.
+- Runner-up eligibility (a finalist always counts; a runner-up only when `theme.leverageRunnersUpPledges` is true) is a single helper, `isOrgEligibleForLeverage`, used by both `calculatePledgeMatches` (when building the chronological queue) and `pledgeTotalForOrg` (when summing an org's contribution). Don't duplicate it.
+- `ThemeTransformer` exposes two related-but-distinct totals: `theme.pledgedTotal` is the **raw** sum of pledge amounts (used by the Pledges admin pane's footer to match the per-org rows above it); `theme.pledgeMatchTotal` is the total **leverage bonus consumed** by pledges (used in `AllocationPane/Breakdown` so the displayed `Starting Leverage − X = Remaining` equation balances under non-2 ratios and partial matches). They only coincide when every pledge is standard with `matchRatio === 2` and the pool was never exhausted.
+- Publications must thread `matchedAmounts` through every transformer call. The `themes` publication computes it once via `computePledgeMatchingForPublication(...)` and passes it into both `OrgTransformer` (per-org `pledgeTotal`) and `ThemeTransformer` (`leverageRemaining`). The `organizations` publication does the same and **wraps the org `observe()` callbacks with a debounced full re-publish** because a single org change shifts the chronological walk for every other org.
+- All in-person pledge configuration (`inPersonMatchRatio`, `inPersonPledgeActive`) lives on the **Theme** schema, not `PresentationSettings`. The match ratio and the feature flag that enables the variant are one logical group and travel together.
+- The in-person pledge route is `/pledges/inperson/:themeId` (`InPersonPledgeRoute`). It uses the theme's Mongo `_id` rather than `slug` so the URL is unguessable enough to discourage casual sharing for the ~30-minute in-person pledge window. This is **obscurity, not security** — the `_id` is not a rotatable secret. The QR code is **printable-only**: it lives in `PresentationSettingsForm` as a convenience block, gated on `theme.inPersonPledgeActive` (i.e. shown only when the admin has enabled the in-person variant for this theme). It must never render on the presentation view itself.
+- `useFindMemberByCode` in `imports/api/hooks` is the shared initials+number lookup used by both the kiosk login flow and the in-person pledge login. Use it instead of duplicating the `code = initials.toUpperCase() + number` calculation.
+
+### Feature Flags vs Runtime Activation
+Two distinct concerns; both can stack on top of each other without conflict:
+- **Feature flags** live in `ThemeSettingsForm` (Theme schema) and `PresentationSettingsForm` (PresentationSettings configuration fields like `useKioskChitVoting`). They answer "Is this feature available on this theme/presentation?" and are set ahead of time during admin configuration. Examples: `Theme.consolationActive`, `Theme.minLeverageAmountActive`, `Theme.inPersonPledgeActive`, `PresentationSettings.useKioskChitVoting`.
+- **Runtime activations** live in `PresentationPane` (the live show control panel) and write to `PresentationSettings` fields that the running presentation observes. They answer "Is this feature being driven right now?" Examples: `topupsActive` (Pledges Active toggle), `chitVotingActive`, `fundsVotingActive`, `currentPage`.
+- The same `PresentationSettings` collection holds both feature-flag fields and runtime fields - they're distinguished by which admin UI surfaces them, not by which schema they live in.
+- For in-person pledges specifically: `theme.inPersonPledgeActive` is the feature flag (admin enables the variant for this theme), `settings.topupsActive` is the runtime activation (pledges are being accepted right now). The `/pledges/inperson/:themeId` URL is functional only when BOTH are true, and surfaces distinct messaging for each false case.
+- Server-side gate for in-person pledges in `OrganizationMethods.pledge` enforces the **feature flag** only (`theme.inPersonPledgeActive`), not the runtime activation - mirroring the standard pledge flow, which also relies on client-side gating for `topupsActive`. This must stay server-only (`Meteor.isServer` guard) to skip method simulation on the client.
+
+### Terminology: pledge / crowdFavorite / leverage
+- The legacy codebase used "topup" and "topoff" interchangeably for several distinct concepts. The current vocabulary is:
+  - **pledge** - a member's matched donation toward an org during the pledge round.
+  - **crowdFavorite** - the one org admins choose to fully fund; the dollar amount needed to bring it to its `ask` is persisted in `Organization.topOff` (legacy field name) and applied via `OrganizationMethods.crowdFavorite`.
+  - **leverage** - the matching pool. `Theme.leverageTotal` seeds it; pledges and the crowd-favorite full-funding consume it.
+- **Persisted field names kept for backwards compatibility**: `Organization.topOff`, `PresentationSettings.topupsActive`, `PresentationSettings.topupEmailConfirm`. Each has a `// NOTE` comment on its schema definition. Renaming requires a one-time Mongo migration.
+- `MinimumLeverageButton` and `CrowdFavoriteButton` were split out of the old overloaded `TopOffButton`: the array-form was for the minimum-leverage feature, the single-org form was for the crowd favorite.
+
+### File Naming Convention
+- Files in `imports/` start with a **lowercase** letter (e.g. `pledgeMatching.ts`, `utils.ts`, `orgsMethods.ts`).
+- Exceptions: files whose primary export is a React component (`Bar.tsx`, `OrgCard.tsx`) or a class definition (`Leverage.ts`, `TrackableStore.ts`).
+- Schemas in `imports/api/db/` follow the React/class exception because they export a `*Schema` SimpleSchema instance treated as a class-like constructor (`Themes.ts`, `Organizations.ts`).
+
 ### Pledge Animation Queue Pattern
 - Animation queue is a server-side Meteor collection (`PledgeAnimationQueue`) - single source of truth
 - Queue items have `processed` boolean flag to track animation status
@@ -243,7 +277,7 @@ The two data structures serve different purposes and should not be conflated:
 
 ### Test Structure
 - Test files use `.test.ts` or `.spec.ts` naming convention so Meteor only loads them during `meteor test`
-- Heavy-load harness: `imports/server/load/publicationPipelineSimulation.ts` mirrors theme + organizations + members publication CPU work (synthetic data); `publicationPipelineSimulation.test.ts` exercises it and concurrent `MemberThemes` writes. Tune via env: `LOAD_TEST_SCALE`, `LOAD_TEST_CONCURRENT_MEMBERS`, `LOAD_TEST_CONCURRENT_ROUNDS`, optional `LOAD_TEST_TIME_CEILING_MS`.
+- Heavy-load harness: `imports/test-support/publicationPipelineSimulation.ts` mirrors theme + organizations + members publication CPU work (synthetic data); `publicationPipelineSimulation.test.ts` exercises it and concurrent `MemberThemes` writes. Tune via env: `LOAD_TEST_SCALE`, `LOAD_TEST_CONCURRENT_MEMBERS`, `LOAD_TEST_CONCURRENT_ROUNDS`, optional `LOAD_TEST_TIME_CEILING_MS`.
 - Test files are co-located with the code they test (e.g., `Members.test.ts` next to `Members.ts`)
 - Mock/fixture files use `.mock.ts` suffix and live in `/imports/mock/` - they're only loaded via explicit imports
 - The `/tests/` directory is reserved for external test runners (Cypress) and files Meteor should completely ignore

@@ -14,7 +14,7 @@ import { useMemo } from "react"
 import { AllocationInputs } from "./AllocationInputs"
 import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
-import { TopOffButton } from "/imports/ui/components/Buttons/TopOffButton"
+import { MinimumLeverageButton } from "/imports/ui/components/Buttons/MinimumLeverageButton"
 
 interface AllocationsTableProps {
 	hideAdminFields?: boolean
@@ -54,7 +54,7 @@ export const AllocationsTable = ({ hideAdminFields = false }: AllocationsTablePr
 						<TableCell width="30%">{
 							theme?.minLeverageAmountActive
 								? (
-									<TopOffButton
+									<MinimumLeverageButton
 										target={ theme.minLeverageAmount }
 										orgs={ orgsWithoutFavorite }
 									/>

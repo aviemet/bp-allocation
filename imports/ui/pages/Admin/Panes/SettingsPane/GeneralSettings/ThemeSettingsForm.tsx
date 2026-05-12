@@ -27,6 +27,7 @@ export const ThemeSettingsForm = () => {
 		if(sanitizedData.minLeverageAmount) sanitizedData.minLeverageAmount = roundFloat(String(sanitizedData.minLeverageAmount))
 		if(sanitizedData.minStartingFunds) sanitizedData.minStartingFunds = roundFloat(String(sanitizedData.minStartingFunds))
 		if(sanitizedData.matchRatio) sanitizedData.matchRatio = parseInt(String(sanitizedData.matchRatio))
+		if(sanitizedData.inPersonMatchRatio) sanitizedData.inPersonMatchRatio = parseInt(String(sanitizedData.inPersonMatchRatio))
 		if(sanitizedData.chitWeight) sanitizedData.chitWeight = parseInt(String(sanitizedData.chitWeight))
 		if(!sanitizedData.numTopOrgs && theme) {
 			sanitizedData.numTopOrgs = theme.numTopOrgs || DEFAULT_NUM_TOP_ORGS
@@ -77,6 +78,8 @@ export const ThemeSettingsForm = () => {
 				leverageTotal: theme.leverageTotal || "",
 				chitWeight: theme.chitWeight || "",
 				matchRatio: theme.matchRatio || "",
+				inPersonMatchRatio: theme.inPersonMatchRatio || "",
+				inPersonPledgeActive: theme.inPersonPledgeActive || false,
 				consolationAmount: theme.consolationAmount || "",
 				consolationActive: theme.consolationActive || false,
 				minLeverageAmount: theme.minLeverageAmount || "",
@@ -140,6 +143,32 @@ export const ThemeSettingsForm = () => {
 					/>
 				</Grid>
 
+				<Grid size={ { xs: 12 } }>
+					<Paper sx={ { p: 2 } }>
+						<FormControl component="fieldset" variant="standard" fullWidth>
+							<FormLabel component="legend">In-Person Pledges</FormLabel>
+							<Grid container spacing={ 2 } sx={ { mt: 1 } }>
+								<Grid size={ { xs: 12, md: 6 } }>
+									{ /* In-Person Match Ratio */ }
+									<TextInput
+										name="inPersonMatchRatio"
+										type="number"
+										label="Multiplier for in-person matched funds"
+									/>
+								</Grid>
+
+								<Grid size={ { xs: 12, md: 6 } }>
+									{ /* In-Person Pledge feature flag */ }
+									<FormControlLabel
+										label="Use different in-person match ratio"
+										control={ <Switch name="inPersonPledgeActive" /> }
+									/>
+								</Grid>
+							</Grid>
+						</FormControl>
+					</Paper>
+				</Grid>
+
 				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Consolation Amount */ }
 					<TextInput
@@ -177,7 +206,7 @@ export const ThemeSettingsForm = () => {
 				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Minimum Leverage Amount Active */ }
 					<FormControlLabel
-						label="Use Minimum Topup Amount"
+						label="Use Minimum Leverage Amount"
 						control={ <Switch name="minLeverageAmountActive" /> }
 					/>
 				</Grid>

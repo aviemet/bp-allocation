@@ -9,7 +9,7 @@ import { useSettings } from "/imports/api/hooks"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
 
-export const TopupsActiveToggle = () => {
+export const PledgesActiveToggle = () => {
 	const { settings } = useSettings()
 
 	if(!settings) return <></>
@@ -33,7 +33,7 @@ export const TopupsActiveToggle = () => {
 				onChange={ saveValue }
 				checked={ settings.topupsActive || false }
 			/> }
-			label="Topups Active"
+			label="Pledges Active"
 		/>
 	)
 }

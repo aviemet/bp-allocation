@@ -6,27 +6,27 @@ import { COLORS } from "/imports/lib/global"
 import { useTheme, type OrgDataWithComputed } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 
-interface TopupCompleteData {
+interface PledgeCompleteData {
 	amount: number
 	org: OrgDataWithComputed
 }
 
-interface TopupCompleteProps {
-	data: TopupCompleteData
+interface PledgeCompleteProps {
+	data: PledgeCompleteData
 	resetData: () => void
 }
 
-export const TopupComplete = ({ data, resetData }: TopupCompleteProps) => {
+export const PledgeComplete = ({ data, resetData }: PledgeCompleteProps) => {
 	const { theme, themeLoading } = useTheme()
 
 	if(themeLoading) return <Loading />
 	const formatted = {
 		amount: numeral(data.amount).format("$0,0[.]00"),
-		total: numeral(data.amount * (theme?.matchRatio ?? 0)).format("$0,0[.]00"),
+		total: numeral(data.amount * (theme?.matchRatio ?? 1)).format("$0,0[.]00"),
 	}
 
 	return (
-		<TopupCompleteContainer>
+		<PledgeCompleteContainer>
 			<Typography component="h1" variant="h4" align="center">Thank You For Your Pledge!</Typography>
 			<p>Your generous donation to <b><u>{ data.org.title }</u></b> of <b>{ formatted.amount }</b> was matched by the remaining leverage bringing them <b>{ formatted.total }</b> closer to being fully funded.</p>
 
@@ -34,11 +34,11 @@ export const TopupComplete = ({ data, resetData }: TopupCompleteProps) => {
 				disabled={ false }
 				onClick={ resetData }
 			>Pledge Again</AmendVoteButton>
-		</TopupCompleteContainer>
+		</PledgeCompleteContainer>
 	)
 }
 
-const TopupCompleteContainer = styled(Container)`
+const PledgeCompleteContainer = styled(Container)`
 	height: 100%;
 	display: flex;
 	flex-direction: column;

@@ -59,6 +59,8 @@ export interface Theme {
 	numTopOrgs: number
 	chitWeight?: number
 	matchRatio?: number
+	inPersonMatchRatio?: number
+	inPersonPledgeActive?: boolean
 	consolationAmount?: number
 	consolationActive?: boolean
 	leverageTotal?: number
@@ -87,6 +89,7 @@ export interface MatchPledge {
 	member?: string
 	anonymous?: boolean
 	notes?: string
+	pledgeType?: "standard" | "inPerson"
 	createdAt?: Date
 }
 

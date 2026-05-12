@@ -55,6 +55,12 @@ export const MatchPledgeSchema = new SimpleSchema({
 		type: String,
 		required: false,
 	},
+	pledgeType: {
+		type: String,
+		allowedValues: ["standard", "inPerson"],
+		defaultValue: "standard",
+		required: false,
+	},
 	createdAt: {
 		type: Date,
 		required: false,
@@ -102,11 +108,15 @@ export const OrganizationSchema = new SimpleSchema({
 		defaultValue: 0,
 		label: "Dollar amount allocated in second voting round",
 	},
+	// NOTE: persisted as `topOff` for backwards compatibility with existing data;
+	// conceptually this is the dollar amount needed to fully fund the crowd-favorite
+	// (or to top each org up to the minimum-leverage target). TODO: migrate to a
+	// clearer field name (e.g. `crowdFavoriteAmount`) and remove this note.
 	topOff: {
 		type: Number,
 		required: false,
 		defaultValue: 0,
-		label: "Topoff value for crowd favorite",
+		label: "Crowd-favorite fully-funded amount",
 	},
 	pledges: {
 		type: Array,

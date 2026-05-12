@@ -10,7 +10,7 @@ import numeral from "numeral"
 import { FocusEvent, useState } from "react"
 import { useSettings, type OrganizationWithComputed } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
-import { TopOffButton } from "/imports/ui/components/Buttons/TopOffButton"
+import { CrowdFavoriteButton } from "/imports/ui/components/Buttons/CrowdFavoriteButton"
 interface TabInfo {
 	index: number
 	length: number
@@ -81,7 +81,7 @@ export const AllocationInputs = ({ org, crowdFavorite, tabInfo, hideAdminFields 
 			{ /* Actions */ }
 			{ !hideAdminFields &&
 				<TableCell>
-					{ crowdFavorite && <TopOffButton orgs={ org } /> }
+					{ crowdFavorite && <CrowdFavoriteButton org={ org } /> }
 				</TableCell>
 			}
 		</TableRow>

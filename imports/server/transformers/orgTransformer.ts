@@ -1,5 +1,6 @@
 import { isEmpty } from "es-toolkit/compat"
 import { roundFloat } from "/imports/lib/utils"
+import { pledgeTotalForOrg } from "/imports/lib/pledgeMatching"
 import { type MemberTheme } from "/imports/types/schema"
 import { type OrgData, type ThemeData, type SettingsData } from "/imports/api/db"
 
@@ -10,6 +11,7 @@ export interface OrgTransformerParams {
 	fundsVotesByOrg?: Record<string, number>
 	chitVotesByOrg?: Record<string, number>
 	topOrgIds?: Set<string>
+	matchedAmounts?: Map<string, number>
 }
 
 export function aggregateVotesByOrganization(memberThemes: MemberTheme[], useKioskFundsVoting: boolean, useKioskChitVoting: boolean): {
@@ -81,17 +83,9 @@ export const OrgTransformer = (doc: OrgData, params: OrgTransformerParams) => {
 		save = saveObj ? (saveObj.amount || 0) : 0
 	}
 
-	// Total of funds pledged for this org multiplied by the match ratio
-	let pledgeTotal = 0
-	if(params.theme && doc.pledges) {
-		const isRunnerUp = params.topOrgIds ? !params.topOrgIds.has(doc._id) : false
-		const shouldApplyLeverage = !isRunnerUp || params.theme.leverageRunnersUpPledges
-		const matchRatio = shouldApplyLeverage ? (params.theme.matchRatio || 0) : 0
-
-		pledgeTotal = doc.pledges.reduce(
-			(sum, pledge) => { return sum + (pledge.amount || 0) },
-			0) * matchRatio
-	}
+	const pledgeTotal = params.theme
+		? pledgeTotalForOrg(doc, params.theme, params.matchedAmounts, params.topOrgIds)
+		: 0
 
 	// Voted total
 	let votedTotal = 0

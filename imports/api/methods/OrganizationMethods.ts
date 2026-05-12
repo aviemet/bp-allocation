@@ -22,6 +22,7 @@ interface PledgeData {
 	amount: number
 	member: string
 	anonymous?: boolean
+	pledgeType?: "standard" | "inPerson"
 }
 
 interface RemovePledgeData {
@@ -34,7 +35,7 @@ interface RemovePledgeByIdData {
 	pledgeIds: string | string[]
 }
 
-interface TopOffData {
+interface CrowdFavoriteData {
 	id: string
 	negate?: boolean
 }
@@ -148,10 +149,27 @@ export const OrganizationMethods = {
 
 		validate: null,
 
-		async run({ id, amount, member, anonymous }: PledgeData) {
+		async run({ id, amount, member, anonymous, pledgeType = "standard" }: PledgeData) {
 			amount = roundFloat(String(amount))
 
-			const saveData: MatchPledge = { _id: "", amount, member, anonymous }
+			if(Meteor.isServer) {
+				const org = await Organizations.findOneAsync({ _id: id })
+				if(!org || !org.theme) {
+					throw new Meteor.Error("organizations.pledge.notFound", "Organization not found")
+				}
+
+				if(pledgeType === "inPerson") {
+					const theme = await Themes.findOneAsync({ _id: org.theme })
+					if(!theme?.inPersonPledgeActive) {
+						throw new Meteor.Error(
+							"organizations.pledge.inPersonNotEnabled",
+							"In-person pledges are not enabled for this theme",
+						)
+					}
+				}
+			}
+
+			const saveData: MatchPledge = { _id: "", amount, member, anonymous, pledgeType }
 
 			return await Organizations.updateAsync({ _id: id }, {
 				$push: {
@@ -209,30 +227,32 @@ export const OrganizationMethods = {
 	}),
 
 	/**
-	 * Top-off organization
+	 * Fully-fund the crowd favorite organization to its ask amount.
+	 * NOTE: writes to the legacy persisted `topOff` field on Organization for
+	 * backwards compatibility with existing data.
 	 */
-	topOff: new ValidatedMethod({
-		name: "organizations.topOff",
+	crowdFavorite: new ValidatedMethod({
+		name: "organizations.crowdFavorite",
 
 		validate: null,
 
-		async run({ id, negate }: TopOffData) {
+		async run({ id, negate }: CrowdFavoriteData) {
 			negate = negate || false
 
 			const orgs = await Organizations.find({ _id: id }).fetchAsync()
 			const org = orgs[0]
 			if(!org) return 0
 
-			let topOffAmount = 0
+			let crowdFavoriteAmount = 0
 
 			if(!negate)	{
 				const ask = org.ask || 0
 				const amountFromVotes = org.amountFromVotes || 0
 				const pledgesTotal = org.pledges?.reduce((sum, pledge) => sum + (pledge.amount || 0), 0) || 0
-				topOffAmount = ask - amountFromVotes - pledgesTotal
+				crowdFavoriteAmount = ask - amountFromVotes - pledgesTotal
 			}
 
-			return await Organizations.updateAsync({ _id: id }, { $set: { topOff: topOffAmount } })
+			return await Organizations.updateAsync({ _id: id }, { $set: { topOff: crowdFavoriteAmount } })
 		},
 	}),
 

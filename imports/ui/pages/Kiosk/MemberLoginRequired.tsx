@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { Grid, Stack, Typography } from "@mui/material"
 import { isEmpty } from "es-toolkit/compat"
-import { useMembers } from "/imports/api/hooks"
+import { useMembers, useFindMemberByCode } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { ComponentType } from "react"
 import { useState } from "react"
@@ -21,6 +21,7 @@ interface MemberLoginRequiredProps {
 export const MemberLoginRequired = (props: MemberLoginRequiredProps) => {
 	// Pull member data from Data Store
 	const { members, membersLoading } = useMembers()
+	const { findMemberByCode } = useFindMemberByCode()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.DISABLED)
 
@@ -43,9 +44,7 @@ export const MemberLoginRequired = (props: MemberLoginRequiredProps) => {
 
 	const chooseMember = (data: Record<string, unknown>) => {
 		setSearchError(false)
-		const code = `${String(data.initials || "").trim().toUpperCase()}${data.number}`
-
-		const member = members.find(mem => mem.code === code)
+		const member = findMemberByCode(data.initials, data.number)
 
 		if(member) {
 			setUser(member)

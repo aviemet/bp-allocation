@@ -6,7 +6,7 @@ import { TextInput, SubmitButton, STATUS, SwitchInput, type Status } from "/impo
 import { useFormContext, useWatch } from "react-hook-form"
 
 import { MemberSearchInput } from "./MemberSearchInput"
-import { SelectableOrgCards } from "../Kiosk/Topups/SelectableOrgCards"
+import { SelectableOrgCards } from "../Kiosk/Pledges/SelectableOrgCards"
 
 export const PledgesForm = () => {
 	const { reset } = useFormContext()

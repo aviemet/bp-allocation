@@ -9,6 +9,7 @@ import {
 } from "/imports/server/transformers/orgTransformer"
 import { ThemeTransformer } from "/imports/server/transformers/themeTransformer"
 import { MemberTransformer } from "/imports/server/transformers/memberTransformer"
+import { computePledgeMatchingForPublication } from "/imports/lib/pledgeMatching"
 import { type MemberTheme } from "/imports/types/schema"
 
 export function resolveLoadTestScale(): number {
@@ -147,6 +148,13 @@ export function runThemePublicationPipeline(
 	}))
 	const preliminaryTopOrganizations = filterTopOrgs(orgsWithVotes, theme)
 	const topOrganizationIds = new Set(preliminaryTopOrganizations.map(organization => organization._id))
+	const pledgeMatching = computePledgeMatchingForPublication(
+		organizations,
+		topOrganizationIds,
+		theme,
+		useKioskFundsVoting,
+		memberThemes,
+	)
 	const transformedOrganizations = organizations.map(organization =>
 		OrgTransformer(organization, {
 			theme,
@@ -155,6 +163,7 @@ export function runThemePublicationPipeline(
 			fundsVotesByOrg,
 			chitVotesByOrg,
 			topOrgIds: topOrganizationIds,
+			matchedAmounts: pledgeMatching.matchedAmounts,
 		}),
 	)
 	const topTransformedOrganizations = filterTopOrgs(transformedOrganizations, theme)
@@ -163,6 +172,7 @@ export function runThemePublicationPipeline(
 		allOrgs: transformedOrganizations,
 		memberThemes,
 		settings,
+		pledgeMatching,
 	})
 }
 
@@ -179,6 +189,19 @@ export function runOrganizationsPublicationPipeline(
 		useKioskFundsVoting,
 		useKioskChitVoting,
 	)
+	const orgsWithVotes = organizations.map(organization => ({
+		...organization,
+		votes: calculateVotesFromRawOrg(organization, settings, theme, chitVotesByOrg),
+	}))
+	const preliminaryTopOrganizations = filterTopOrgs(orgsWithVotes, theme)
+	const topOrganizationIds = new Set(preliminaryTopOrganizations.map(organization => organization._id))
+	const pledgeMatching = computePledgeMatchingForPublication(
+		organizations,
+		topOrganizationIds,
+		theme,
+		useKioskFundsVoting,
+		memberThemes,
+	)
 	return organizations.map(organization =>
 		OrgTransformer(organization, {
 			theme,
@@ -186,6 +209,8 @@ export function runOrganizationsPublicationPipeline(
 			memberThemes,
 			fundsVotesByOrg,
 			chitVotesByOrg,
+			topOrgIds: topOrganizationIds,
+			matchedAmounts: pledgeMatching.matchedAmounts,
 		}),
 	)
 }

@@ -21,9 +21,10 @@ import { useTheme, useMembers, useOrgs, type PledgeWithOrg, getFormattedName } f
 import { OrganizationMethods } from "/imports/api/methods"
 import { SortableTable } from "/imports/ui/components/SortableTable"
 import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
-import { TopupsActiveToggle } from "/imports/ui/components/Toggles"
+import { PledgesActiveToggle } from "/imports/ui/components/Toggles"
 import { Loading } from "/imports/ui/components"
 import { ReplayPledgeAnimationButton } from "/imports/ui/components/Buttons/ReplayPledgeAnimationButton"
+
 const headCells = [
 	{
 		id: "org.title",
@@ -102,7 +103,7 @@ export const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 					<SortableTable<PledgeWithOrg>
 						title={ <Stack direction="row" sx={ { alignItems: "center", justifyContent: "space-between" } }>
 							<Box>Pledges</Box>
-							<Box><TopupsActiveToggle /></Box>
+							<Box><PledgesActiveToggle /></Box>
 						</Stack> }
 						onBulkDelete={ bulkDelete }
 						headCells={ headCells }

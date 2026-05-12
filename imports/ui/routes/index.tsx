@@ -4,6 +4,7 @@ import { Meteor } from "meteor/meteor"
 import { WelcomeLayout } from "/imports/ui/layouts"
 import { FourOhFour } from "./404"
 import { adminLayoutRoute, adminChildRoutes } from "./admin"
+import { inPersonPledgeRoute } from "./inPersonPledge"
 import { kioskRoute } from "./kiosk"
 import { pledgesRoute } from "./pledges"
 import { pledgesOverlayRoute } from "./pledgesOverlay"
@@ -72,6 +73,7 @@ const routeTree = rootRoute.addChildren([
 	simulationRoute,
 	pledgesRoute,
 	pledgesOverlayRoute,
+	inPersonPledgeRoute,
 	notFoundRoute,
 ])
 

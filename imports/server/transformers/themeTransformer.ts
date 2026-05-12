@@ -1,5 +1,6 @@
-import { isEmpty, sortBy } from "es-toolkit/compat"
+import { sortBy } from "es-toolkit/compat"
 import { roundFloat } from "/imports/lib/utils"
+import { calculatePledgeMatches, leverageBonusForPledge, type PledgeMatchingResult } from "/imports/lib/pledgeMatching"
 
 import { type ThemeData, type SettingsData } from "/imports/api/db"
 import { type MemberTheme, type MatchPledge } from "/imports/types/schema"
@@ -15,6 +16,7 @@ export interface ThemeTransformerParams {
 	allOrgs?: OrgWithComputed[]
 	memberThemes: MemberTheme[]
 	settings: SettingsData
+	pledgeMatching?: PledgeMatchingResult
 }
 
 export interface PledgeWithOrg extends MatchPledge {
@@ -27,6 +29,7 @@ export interface PledgeWithOrg extends MatchPledge {
 
 export interface ThemeWithComputed extends ThemeData {
 	pledgedTotal: number
+	pledgeMatchTotal: number
 	votedFunds: number
 	fundsVotesCast?: number
 	chitVotesCast?: number
@@ -90,14 +93,14 @@ export const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams)
 	// Total amount of members voting in this theme
 	const totalMembers = params.memberThemes.length
 
-	// Whether voting has begun - True if at least one person has cast a vote
-	const fundsVotingStarted = params.memberThemes.some(member => {
-		return (member.allocations || []).some(vote => (vote.amount || 0) > 0)
-	})
-
-	// Whether voting has begun - True if at least one person has cast a vote
+	// Whether chit voting has begun - True if at least one person has cast a vote
 	const chitVotingStarted = params.memberThemes.some(member => {
 		return (member.chitVotes || []).some(vote => (vote.votes || 0) > 0)
+	})
+
+	// Whether funds voting has begun - True if at least one person has cast a vote
+	const fundsVotingStarted = params.memberThemes.some(member => {
+		return (member.allocations || []).some(vote => (vote.amount || 0) > 0)
 	})
 
 	// Amount given to orgs other than top orgs
@@ -107,34 +110,29 @@ export const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams)
 		? (doc.numTopOrgs || 0) * (doc.minStartingFunds || 0)
 		: 0
 
-	// Amount of the total pot still unassigned
-	let remainingLeverage = (doc.leverageTotal || 0) - consolationTotal - startingFundsTotal - votedFunds
+	const orgsForLeverage = doc.allowRunnersUpPledges && params.allOrgs
+		? params.allOrgs
+		: params.topOrgs
 
-	// Subtract the amounts allocated to each org
-	const orgsForLeverage = doc.allowRunnersUpPledges && params.allOrgs ? params.allOrgs : params.topOrgs
 	const topOrgIds = new Set(params.topOrgs.map(org => org._id))
-	orgsForLeverage.forEach((org) => {
-		// The topoff for the crowd favorite
-		if((org.topOff || 0) > 0) {
-			remainingLeverage -= (org.topOff || 0)
-		}
 
-		// Individual pledges from members
-		if(org.pledges && !isEmpty(org.pledges)) {
-			const isRunnerUp = !topOrgIds.has(org._id)
-			const shouldApplyLeverage = !isRunnerUp || doc.leverageRunnersUpPledges
+	const pledgeMatching = params.pledgeMatching ?? calculatePledgeMatches(
+		orgsForLeverage,
+		doc,
+		{ consolationTotal, startingFundsTotal, votedFunds, topOrgIds }
+	)
 
-			if(shouldApplyLeverage) {
-				const matchRatio = doc.matchRatio || 0
-				remainingLeverage -= org.pledges.reduce((sum, pledge) => {
-					const amount = pledge.amount || 0
-					return sum + (((amount * matchRatio) - amount))
-				}, 0)
-			}
-		}
-	})
+	const leverageRemaining = roundFloat(String(pledgeMatching.remainingLeverage))
 
-	const leverageRemaining = remainingLeverage <= 0 ? 0 : roundFloat(String(remainingLeverage))
+	// Total leverage consumed by all pledges (sum of bonuses applied from the pool).
+	// Distinct from pledgedTotal, which is the raw sum of pledge amounts.
+	const pledgeMatchTotal = orgsForLeverage.reduce((sum, org) => {
+		if(!org.pledges) return sum
+		return sum + org.pledges.reduce((orgSum, pledge) => {
+			const matched = pledgeMatching.matchedAmounts.get(pledge._id) ?? 0
+			return orgSum + leverageBonusForPledge(pledge, matched, doc)
+		}, 0)
+	}, 0)
 
 	const memberFunds = params.memberThemes.reduce((sum, member) => { return sum + (member.amount || 0) }, 0)
 
@@ -160,6 +158,7 @@ export const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams)
 	const result: ThemeWithComputed = {
 		...doc,
 		pledgedTotal,
+		pledgeMatchTotal,
 		votedFunds,
 		fundsVotesCast,
 		chitVotesCast,
