@@ -28,18 +28,21 @@ export const OrgInfo = ({ org, showLeverage }: OrgInfoProps) => {
 }
 
 const InfoContainer = styled.div`
+	container-type: inline-size;
 	&& {
 		margin: 0 1rem;
 		text-align: center;
-		font-size: clamp(1.4rem, 0.4265rem + 1.2715vw, 2rem);
-		line-height: clamp(1.4rem, 0.4265rem + 1.2715vw, 2rem);
+		font-size: clamp(0.8rem, 10cqw, 2rem);
+		line-height: clamp(0.8rem, 10cqw, 2rem);
 	}
 `
 
 const Title = styled.div`
 	min-height: 60px;
-	font-size: clamp(1.5rem, -0.9338rem + 3.1788vw, 3rem);
-	line-height: clamp(1.5rem, -0.9338rem + 3.1788vw, 3rem);
+	font-size: clamp(0.9rem, 15cqw, 3rem);
+	line-height: clamp(0.9rem, 15cqw, 3rem);
+	overflow-wrap: anywhere;
+	hyphens: auto;
 `
 
 const MatchNeed = styled.div`
