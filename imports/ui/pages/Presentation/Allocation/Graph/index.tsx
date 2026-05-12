@@ -101,9 +101,9 @@ const GraphPageContainer = styled.div`
 `
 
 const GraphContainer = styled.div`
-	width: calc(100% - 12rem);
+	width: calc(100% - clamp(3rem, 8vw, 12rem));
 	position: relative;
-	margin: 4rem auto 0 7rem;
+	margin: 4rem auto 0 clamp(1.75rem, 4.5vw, 7rem);
 	flex: 1;
 `
 
@@ -120,7 +120,7 @@ const XAxis = styled.div`
 		left: 0;
 		text-align: right;
 		margin-left: -2.5em;
-		font-size: 2em;
+		font-size: clamp(1rem, 1.6vw, 2em);
 		display: block;
 	}
 `
@@ -152,7 +152,7 @@ const Goal = styled.div`
 
 const BarsContainer = styled.div<{ cols: number }>(({ cols }) => ({
 	display: "grid",
-	gridTemplateColumns: `repeat(${cols}, 1fr)`,
+	gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
 	width: "100%",
 	height: "100%",
 
@@ -164,8 +164,8 @@ const BarsContainer = styled.div<{ cols: number }>(({ cols }) => ({
 const InfoContainer = styled.div`
 	flex: 0.5;
 	text-align: left;
-	margin: 2vh auto 2vh 7rem;
-	width: calc(100% - 12rem);
+	margin: 2vh auto 2vh clamp(1.75rem, 4.5vw, 7rem);
+	width: calc(100% - clamp(3rem, 8vw, 12rem));
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -173,7 +173,7 @@ const InfoContainer = styled.div`
 
 const InfoGrid = styled.div<{ cols: number }>(({ cols }) => ({
 	display: "grid",
-	gridTemplateColumns: `repeat(${cols}, 1fr)`,
+	gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
 	"&&": {
 		marginLeft: 0,
 	},

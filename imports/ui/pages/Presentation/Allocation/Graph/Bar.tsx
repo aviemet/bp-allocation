@@ -40,7 +40,7 @@ export const Bar = ({ org, savesVisible }: BarProps) => {
 
 const BarContainer = styled.div`
 	height: 100%;
-	padding: 0 2vw;
+	padding: 0 clamp(0.15rem, 0.6vw, 1.5vw);
 	text-align: center;
 	display: flex;
 	flex-direction: column-reverse;
@@ -49,6 +49,7 @@ const BarContainer = styled.div`
 
 const GraphBar = styled.div`
 	background-color: ${COLORS.blue};
+	container-type: inline-size;
 
 	animation: animate-bar 4s 1 ease-out;
 	transition: height 4s ease-out;
@@ -65,7 +66,8 @@ const Pledged = styled.span`
 	line-height: 1;
 	text-shadow: none;
 	opacity: 0;
-	font-size: 3em;
+	font-size: max(0.9rem, 25cqw);
+	white-space: nowrap;
 
 	animation: reveal-amount .8s ease 4s;
 	-webkit-animation: reveal-amount .5s ease 4s;
