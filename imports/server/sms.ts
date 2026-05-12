@@ -1,4 +1,3 @@
-import { format } from "date-fns"
 import { Meteor } from "meteor/meteor"
 import twilio from "twilio"
 
@@ -6,6 +5,7 @@ import { Themes, Members, MemberThemes, PresentationSettings } from "/imports/ap
 import "/imports/api/methods"
 import "/imports/server/publications"
 import { setMessageSendingFlag, setMessageSentFlag } from "./messageMethods"
+import { smsLog } from "/imports/lib/loggers"
 import { textVotingLink, formatPhoneNumber } from "/imports/lib/utils"
 import { type Message, type Rounds } from "/imports/types/schema"
 import { coerceArray } from "../lib/collections"
@@ -14,6 +14,8 @@ export interface MemberPhoneLookupResult {
 	_id: string
 	phone: string
 	code?: string
+	fullName?: string
+	number?: number
 }
 
 interface MemberWithRetry extends MemberPhoneLookupResult {
@@ -54,20 +56,6 @@ export const setSmsClient = (customClient: SmsClient) => {
 export const getSmsClient = (): SmsClient => client
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null
-
-const extractResponseField = (response: unknown, field: "status" | "to") => {
-	if(!isRecord(response)) {
-		return null
-	}
-	const value = response[field]
-	if(typeof value === "string") {
-		return value
-	}
-	if(value === null) {
-		return null
-	}
-	return null
-}
 
 const isMemberWithRetry = (value: unknown): value is MemberWithRetry => {
 	if(!isRecord(value)) {
@@ -148,17 +136,27 @@ const defaultMemberPhoneNumbersQuery: MemberPhoneNumbersQuery = async (themeId, 
 				_id: 1,
 				phone: "$member.phone",
 				code: "$member.code",
+				fullName: "$member.fullName",
+				number: "$member.number",
 			},
 		},
 	]).toArray()
 
 	const results: MemberPhoneLookupResult[] = []
 	for(const doc of raw as Array<Record<string, unknown>>) {
-		const idValue = (doc as Record<string, unknown>)["_id"]
-		const phoneValue = (doc as Record<string, unknown>)["phone"]
-		const codeValue = (doc as Record<string, unknown>)["code"]
+		const idValue = doc["_id"]
+		const phoneValue = doc["phone"]
+		const codeValue = doc["code"]
+		const fullNameValue = doc["fullName"]
+		const numberValue = doc["number"]
 		if(typeof idValue === "string" && typeof phoneValue === "string") {
-			results.push({ _id: idValue, phone: phoneValue, code: typeof codeValue === "string" ? codeValue : undefined })
+			results.push({
+				_id: idValue,
+				phone: phoneValue,
+				code: typeof codeValue === "string" ? codeValue : undefined,
+				fullName: typeof fullNameValue === "string" ? fullNameValue : undefined,
+				number: typeof numberValue === "number" ? numberValue : undefined,
+			})
 		}
 	}
 
@@ -195,32 +193,20 @@ const messageBuilder = (member: { code?: string }, message: Message, slug?: stri
 // tuple back with the failure case. The catch method returns { error, member } to be used in retries
 const smsToMember = (member: MemberWithRetry, message: Message, slug?: string) => {
 	const messageBody = messageBuilder(member, message, slug)
-	const logContext = {
-		at: format(new Date(), "y-MM-dd HH:mm:ss:SS"),
-		messageType: "text",
-		to: formatPhoneNumber(member.phone),
-		body: messageBody,
-		messageId: message._id,
-	}
+	const to = formatPhoneNumber(member.phone)
 
 	return new Promise<SmsMessageResponse>((resolve, reject) => {
 		try {
-			console.log({ ...logContext, status: "pending" })
 			client.messages.create({
 				body: messageBody,
-				to: logContext.to,
+				to,
 				messagingServiceSid: Meteor.settings.twilio.copilotSid,
 			}).then(response => {
-				const responseStatus = extractResponseField(response, "status")
-				const responseTo = extractResponseField(response, "to")
-				console.log({ ...logContext, status: responseStatus, responseTo, response })
 				resolve(response)
 			}).catch(error => {
-				console.log({ ...logContext, status: "failed", error })
 				reject({ error, member })
 			})
 		} catch (error) {
-			console.log({ ...logContext, status: "failed", error })
 			reject({ error, member })
 		}
 	})
@@ -249,15 +235,9 @@ export const textVotingLinkToMembers = async ({ themeId, message, members }: Sms
 	const rateLimitMs = (settings?.twilioRateLimit) || 100
 	const retryLimit = 2
 
-	console.log({
-		at: format(new Date(), "y-MM-dd HH:mm:ss:SS"),
-		action: "textVotingLinkToMembers:start",
-		themeId,
-		messageId: message._id,
-		memberCount: memberPhoneNumbers.length,
-		rateLimitMs,
-		retryLimit,
-	})
+	smsLog.info("batch.start", "Sending SMS batch", { themeId, meta: { messageId: message._id, memberCount: memberPhoneNumbers.length, rateLimitMs, retryLimit } })
+
+	const sentPhones: string[] = []
 
 	const sendTextsWithRetry = async (numbers: MemberWithRetry[]): Promise<void> => {
 		if(numbers.length === 0) {
@@ -274,17 +254,21 @@ export const textVotingLinkToMembers = async ({ themeId, message, members }: Sms
 
 			try {
 				await smsToMember(currentMember, message, theme?.slug)
+				sentPhones.push(formatPhoneNumber(currentMember.phone))
 			} catch (failure) {
 				const failureDetails = isSmsFailureObject(failure) ? failure : undefined
 				const failureError = failureDetails ? failureDetails.error : failure
 				const failureMember = failureDetails?.member ?? currentMember
 
-				console.log({
-					at: format(new Date(), "y-MM-dd HH:mm:ss:SS"),
-					action: "textVotingLinkToMembers:failure",
-					error: failureError,
-					member: failureMember,
-					messageId: message._id,
+				smsLog.error("send.failure", "SMS send failed for member", failureError, {
+					themeId,
+					meta: {
+						messageId: message._id,
+						memberId: failureMember._id,
+						phone: failureMember.phone,
+						memberFullName: failureMember.fullName,
+						memberNumber: failureMember.number,
+					},
 				})
 
 				const memberHasRetry = Object.prototype.hasOwnProperty.call(failureMember, "retry")
@@ -296,28 +280,24 @@ export const textVotingLinkToMembers = async ({ themeId, message, members }: Sms
 		}
 
 		if(failedTexts.length > 0) {
-			console.log({
-				at: format(new Date(), "y-MM-dd HH:mm:ss:SS"),
-				action: "textVotingLinkToMembers:retry",
-				count: failedTexts.length,
-				messageId: message._id,
-			})
+			smsLog.info("batch.retry", "Retrying failed SMS sends", { themeId, meta: { messageId: message._id, count: failedTexts.length } })
 			await delay(rateLimitMs)
 			await sendTextsWithRetry(failedTexts)
 		}
 	}
 
 	if(memberPhoneNumbers.length === 0) {
-		console.log({
-			at: format(new Date(), "y-MM-dd HH:mm:ss:SS"),
-			action: "textVotingLinkToMembers:no-recipients",
-			themeId,
-			messageId: message._id,
-		})
+		smsLog.info("batch.no-recipients", "No SMS recipients found", { themeId, meta: { messageId: message._id } })
 		await setMessageSentFlag(theme, message)
 		return
 	}
 
 	await sendTextsWithRetry(memberPhoneNumbers)
+
+	smsLog.info("batch.success", "SMS batch completed", {
+		themeId,
+		meta: { messageId: message._id, sent: sentPhones },
+	})
+
 	await setMessageSentFlag(theme, message)
 }

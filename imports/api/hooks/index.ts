@@ -4,6 +4,7 @@ export { useSettings } from "./useSettings"
 export { useMembers, useMember } from "./useMembers"
 export { useOrgs, type PledgeWithOrg, type OrganizationWithComputed, type OrgDataWithComputed } from "./useOrgs"
 export { useMessages, useMessage } from "./useMessages"
+export { useLogs } from "./useLogs"
 export { usePledgeAnimationQueue } from "./usePledgeAnimationQueue"
 export { getFormattedName } from "./memberUtils"
 

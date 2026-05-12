@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+---
+# Always Verify Changes With Tests
+
+For every file you modify in a coding task:
+
+1. **Locate existing tests.** Look for a co-located `*.test.ts` / `*.test.tsx` / `*.spec.ts` next to the file (this project keeps tests beside the code they cover — see `allocation.mdx` → "Test Structure").
+2. **If tests exist**, run them via `npm test` (or a more targeted Meteor test invocation) and confirm they pass before considering the task done.
+3. **If no tests exist**, write new ones covering the behavior you changed, then run them to verify the change. Treat untested-but-modified code as incomplete work.
+4. **Never declare work complete based on type checks or linting alone.** A green `tsc` is not a substitute for executing the affected code.
+5. If tests cannot reasonably be added (e.g. pure UI styling, generated files), say so explicitly in your response rather than silently skipping.

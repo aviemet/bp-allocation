@@ -3,14 +3,16 @@ import "meteor/aldeed:collection2/static"
 import { SchemaMap } from "schema-to-types"
 
 import { Images } from "./Images"
+import { LogSchema, logsPermissions } from "./Logs"
 import { MemberSchema, membersPermissions } from "./Members"
 import { MemberThemeSchema, memberThemesPermissions } from "./MemberThemes"
 import { MessageSchema, messagesPermissions } from "./Messages"
 import { OrganizationSchema, organizationsPermissions } from "./Organizations"
 import { PresentationSettingsSchema, presentationSettingsPermissions } from "./PresentationSettings"
-import { type Member, type MemberTheme, type Message, type Organization, type PresentationSettings, type Theme } from "/imports/types/schema"
+import { type Log, type Member, type MemberTheme, type Message, type Organization, type PresentationSettings, type Theme } from "/imports/types/schema"
 import { ThemeSchema, themesPermissions, DEFAULT_NUM_TOP_ORGS } from "./Themes"
 
+export type LogData = Log
 export type MemberData = Member
 export type MessageData = Message
 export type OrgData = Organization
@@ -25,6 +27,7 @@ export interface CollectionPermissions {
 }
 
 // Define Collections
+const Logs = new Mongo.Collection<LogData>("logs")
 const Members = new Mongo.Collection<MemberData>("members")
 const MemberThemes = new Mongo.Collection<MemberTheme>("memberThemes")
 const Messages = new Mongo.Collection<MessageData>("messages")
@@ -34,6 +37,7 @@ const Themes = new Mongo.Collection<ThemeData>("themes")
 
 // Collect all schemas for schema-to-types generation
 export const schemas: SchemaMap = {
+	Log: LogSchema,
 	Member: MemberSchema,
 	MemberTheme: MemberThemeSchema,
 	Message: MessageSchema,
@@ -43,6 +47,9 @@ export const schemas: SchemaMap = {
 }
 
 // Attach schemas to collections
+Logs.attachSchema(LogSchema)
+Logs.allow(logsPermissions)
+
 Members.attachSchema(MemberSchema)
 Members.allow(membersPermissions)
 
@@ -66,6 +73,7 @@ export {
 	PresentationSettingsCollection as PresentationSettings, PresentationSettingsSchema,
 	Organizations, OrganizationSchema,
 	Images,
+	Logs, LogSchema,
 	Members, MemberSchema,
 	MemberThemes, MemberThemeSchema,
 	Messages, MessageSchema,

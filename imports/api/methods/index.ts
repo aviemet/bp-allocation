@@ -1,4 +1,5 @@
 export { ImageMethods } from "./ImageMethods"
+export { LogMethods } from "./LogMethods"
 export { MemberMethods } from "./MemberMethods"
 export { MessageMethods } from "./MessageMethods"
 export { OrganizationMethods } from "./OrganizationMethods"

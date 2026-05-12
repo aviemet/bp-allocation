@@ -5,6 +5,8 @@ import { Meteor } from "meteor/meteor"
 import { formatPhoneNumber, sanitizeString } from "/imports/lib/utils"
 import { Members, MemberThemes, Organizations } from "/imports/api/db"
 import { OrganizationMethods } from "/imports/api/methods"
+import { LogModels } from "/imports/api/db/Logs"
+import { memberMethodLog as log } from "/imports/lib/loggers"
 import { type Member, type MemberTheme } from "/imports/types/schema"
 
 interface MemberInputData extends Partial<Member> {
@@ -62,7 +64,8 @@ interface UpdateMemberThemeData {
 	data: MemberThemeUpdateData
 }
 
-interface MemberThemeInsertQuery extends Pick<MemberTheme, "member" | "amount" | "chits" | "theme"> {
+interface MemberThemeInsertQuery extends Pick<MemberTheme, "member" | "amount" | "chits"> {
+	theme: string
 	phone?: string
 	email?: string
 }
@@ -153,7 +156,7 @@ const _memberInsert = async function(data: MemberInputData): Promise<string> {
 		try {
 			return await Members.insertAsync(newMember)
 		} catch (e) {
-			console.error({ newMember, e })
+			console.error("members.insert.failure: Failed to insert new member", { newMember, error: e })
 			throw e
 		}
 	} else {
@@ -185,7 +188,11 @@ const _memberThemeInsert = async function(query: MemberThemeInsertQuery): Promis
 		try {
 			return await MemberThemes.insertAsync(query)
 		} catch (e) {
-			console.error(e)
+			log.error("memberThemes.insert.failure", "Failed to create member/theme association", e, {
+				themeId: query.theme,
+				model: [LogModels.MemberTheme],
+				meta: { memberId: query.member },
+			})
 			throw e
 		}
 	// Existing member/theme association
@@ -194,7 +201,11 @@ const _memberThemeInsert = async function(query: MemberThemeInsertQuery): Promis
 			await MemberThemes.updateAsync({ _id: memberTheme._id }, { $set: { amount: query.amount } })
 			return memberTheme._id
 		} catch (e) {
-			console.error(e)
+			log.error("memberThemes.update.failure", "Failed to update member/theme association", e, {
+				themeId: query.theme,
+				model: [LogModels.MemberTheme],
+				meta: { memberThemeId: memberTheme._id, memberId: query.member },
+			})
 			throw e
 		}
 	}
@@ -223,7 +234,7 @@ export const MemberMethods = {
 				// Create/edit theme association
 				return await _memberThemeInsert(memberThemeQuery)
 			} catch (memberError) {
-				console.error({ memberError })
+				log.error("members.upsert.failure", "Failed to upsert member", memberError, { themeId: theme, meta: { data } })
 				throw memberError
 			}
 		},
@@ -276,7 +287,11 @@ export const MemberMethods = {
 			try {
 				await MemberThemes.removeAsync({ _id: { $in: ids } })
 			} catch (e) {
-				console.error(e)
+				log.error("members.removeAll.memberThemes.failure", "Failed to batch-remove memberThemes", e, {
+					themeId,
+					model: [LogModels.MemberTheme],
+					meta: { ids },
+				})
 			}
 
 			// Then delete all matched pledges from every member
@@ -288,7 +303,11 @@ export const MemberMethods = {
 							try {
 								await OrganizationMethods.removePledge.callAsync({ orgId: org._id, pledgeId: pledge._id })
 							} catch (e) {
-								console.error(e)
+								log.error("members.removeAll.removePledge.failure", "Failed to remove pledge while removing all members", e, {
+									themeId,
+									model: [LogModels.Organization],
+									meta: { orgId: org._id, pledgeId: pledge._id },
+								})
 							}
 						}
 					}
@@ -463,14 +482,14 @@ export const MemberMethods = {
 			try {
 				await MemberThemes.removeAsync({ member: member._id })
 			} catch (err) {
-				console.error(err)
+				console.error("members.remove.memberThemes.failure: Failed to remove memberThemes for member", { memberId: member._id, error: err })
 			}
 
 			// Remove member
 			try {
 				return await Members.removeAsync(id)
 			} catch (err) {
-				console.error(err)
+				console.error("members.remove.failure: Failed to remove member", { memberId: id, error: err })
 				throw err
 			}
 

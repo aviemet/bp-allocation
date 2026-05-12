@@ -9,6 +9,7 @@ import { Link, useParams } from "@tanstack/react-router"
 
 import { AdvancedSettings } from "./AdvancedSettings"
 import { GeneralSettings } from "./GeneralSettings"
+import { LogsSettings } from "./LogsSettings"
 import { Messages as MessageSettings } from "./MessageSettings"
 
 const panes = [
@@ -26,6 +27,11 @@ const panes = [
 		label: "Advanced",
 		slug: "advanced",
 		render: <AdvancedSettings />,
+	},
+	{
+		label: "Logs",
+		slug: "logs",
+		render: <LogsSettings />,
 	},
 ]
 
