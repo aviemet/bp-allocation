@@ -4,15 +4,14 @@ import { Random } from "meteor/random"
 import { type OrgWithComputed } from "./orgTransformer"
 import { ThemeTransformer } from "./themeTransformer"
 import { type ThemeData, type SettingsData } from "/imports/api/db"
-import { type MemberTheme } from "/imports/types/schema"
 
 describe("ThemeTransformer", function() {
-	const baseSettings: SettingsData = {
+	const baseSettings = {
 		_id: Random.id(),
 		useKioskFundsVoting: false,
-	}
+	} satisfies SettingsData
 
-	const baseTheme: ThemeData = {
+	const baseTheme = {
 		_id: Random.id(),
 		title: "Test Theme",
 		presentationSettings: Random.id(),
@@ -22,7 +21,7 @@ describe("ThemeTransformer", function() {
 		leverageTotal: 100000,
 		consolationActive: false,
 		createdAt: new Date(),
-	}
+	} satisfies ThemeData
 
 	const createOrg = (id: string, isTopOrg: boolean, pledgeAmount: number = 0): OrgWithComputed => ({
 		_id: id,
@@ -135,6 +134,53 @@ describe("ThemeTransformer", function() {
 
 			const topOrgMatchedAmount = 1000 * 2 - 1000
 			expect(result.leverageRemaining).to.equal(baseTheme.leverageTotal - topOrgMatchedAmount)
+		})
+	})
+
+	describe("Minimum starting funds", function() {
+		it("Should subtract minStartingFunds * numTopOrgs from leverageRemaining when active", function() {
+			const topOrgs: OrgWithComputed[] = [
+				createOrg(Random.id(), true),
+				createOrg(Random.id(), true),
+			]
+
+			const theme: ThemeData = {
+				...baseTheme,
+				numTopOrgs: 5,
+				minStartingFunds: 2000,
+				minStartingFundsActive: true,
+			}
+
+			const result = ThemeTransformer(theme, {
+				topOrgs,
+				allOrgs: topOrgs,
+				memberThemes: [],
+				settings: baseSettings,
+			})
+
+			expect(result.leverageRemaining).to.equal(baseTheme.leverageTotal - (2000 * 5))
+		})
+
+		it("Should NOT subtract minStartingFunds from leverageRemaining when toggle is off", function() {
+			const topOrgs: OrgWithComputed[] = [
+				createOrg(Random.id(), true),
+			]
+
+			const theme: ThemeData = {
+				...baseTheme,
+				numTopOrgs: 5,
+				minStartingFunds: 2000,
+				minStartingFundsActive: false,
+			}
+
+			const result = ThemeTransformer(theme, {
+				topOrgs,
+				allOrgs: topOrgs,
+				memberThemes: [],
+				settings: baseSettings,
+			})
+
+			expect(result.leverageRemaining).to.equal(baseTheme.leverageTotal)
 		})
 	})
 

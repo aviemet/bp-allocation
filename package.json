@@ -15,7 +15,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "type-check": "tsc --noEmit",
-    "generate-types": "GENERATE_TYPES=1 ts-node --project scripts/tsconfig.json scripts/generate-types-real.ts"
+    "generate-types": "GENERATE_TYPES=1 ts-node --project scripts/tsconfig.json scripts/generateTypes.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

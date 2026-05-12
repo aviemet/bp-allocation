@@ -53,7 +53,7 @@ export const ThemeMethods = {
 				const theme = await Themes.insertAsync(themeData)
 				return theme
 			} catch (e) {
-				console.error(e)
+				console.error("themes.create.failure: Failed to create theme", { data, error: e })
 				return null
 			}
 
@@ -268,6 +268,12 @@ export const ThemeMethods = {
 				},
 			}, {
 				multi: true,
+			})
+
+			await Themes.updateAsync({ _id: themeId }, {
+				$set: {
+					finalLeverageDistributed: false,
+				},
 			})
 
 			await PledgeAnimationQueue.removeAsync({ themeId })

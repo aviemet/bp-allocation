@@ -5,6 +5,7 @@ import { roundFloat } from "/imports/lib/utils"
 
 import { Themes, Organizations, type OrgData } from "/imports/api/db"
 import { ImageMethods } from "./ImageMethods"
+import { organizationMethodLog as log } from "/imports/lib/loggers"
 import { type Organization, type MatchPledge } from "/imports/types/schema"
 
 interface OrganizationCreateData extends Omit<OrgData, "_id" | "createdAt"> {
@@ -59,7 +60,10 @@ export const OrganizationMethods = {
 				})
 				return { error: undefined, response }
 			} catch (error) {
-				console.error(error)
+				log.error("organizations.create.failure", "Failed to create organization", error, {
+					themeId: data.theme,
+					meta: { data },
+				})
 				return { error, response: undefined }
 			}
 		},
@@ -99,7 +103,10 @@ export const OrganizationMethods = {
 					await Organizations.removeAsync(id)
 					await Themes.updateAsync({ _id: org.theme }, { $pull: { organizations: id } })
 				} catch (err) {
-					console.error(err)
+					log.error("organizations.remove.failure", "Failed to remove organization", err, {
+						themeId: org.theme!,
+						meta: { organizationId: id },
+					})
 					throw err
 				}
 				return 1

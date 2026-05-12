@@ -5,11 +5,10 @@ import { PresentationSettingsMethods, ThemeMethods } from "/imports/api/methods"
 import { type LeverageRound } from "/imports/lib/Leverage"
 
 interface DistributeLeverageButtonProps {
-	leverageDistributed: boolean
 	rounds: LeverageRound[]
 }
 
-export const DistributeLeverageButton = ({ leverageDistributed, rounds }: DistributeLeverageButtonProps) => {
+export const DistributeLeverageButton = ({ rounds }: DistributeLeverageButtonProps) => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
 	const [isLoading, setIsLoading] = useState(false)
@@ -51,7 +50,7 @@ export const DistributeLeverageButton = ({ leverageDistributed, rounds }: Distri
 		}
 	}
 
-	if(leverageDistributed) {
+	if(theme?.finalLeverageDistributed) {
 		return (
 			<Button color="warning" onClick={ resetLeverage } disabled={ isLoading }>
 				Reset Leverage Distribution
@@ -59,12 +58,10 @@ export const DistributeLeverageButton = ({ leverageDistributed, rounds }: Distri
 		)
 	}
 
-	const canDistributeFinal = theme && !theme.finalLeverageDistributed
-
 	return (
 		<Button
 			onClick={ saveLeverageSpread }
-			disabled={ !canDistributeFinal || isLoading }
+			disabled={ isLoading }
 		>
 			Submit Final Values
 		</Button>

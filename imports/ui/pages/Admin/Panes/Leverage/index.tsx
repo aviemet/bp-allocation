@@ -39,11 +39,6 @@ export const LeveragePane = ({ hideAdminFields }: LeverageProps) => {
 		)
 	}
 
-	const orgSpreadSum = topOrgs.reduce((sum, org) => { return sum + (org.leverageFunds || 0) }, 0)
-	const roundSpreadSum = rounds[rounds.length - 1].orgs.reduce((sum, org) => { return sum + (org.leverageFunds || 0) }, 0)
-
-	const leverageDistributed = orgSpreadSum === roundSpreadSum && roundSpreadSum > 0
-
 	return (
 		<Container>
 			{ !hideAdminFields && <StageCard>
@@ -51,7 +46,6 @@ export const LeveragePane = ({ hideAdminFields }: LeverageProps) => {
 					<ShowLeverageToggle />
 					<Stack direction="row" sx={ { gap: 2 } }>
 						<DistributeLeverageButton
-							leverageDistributed={ leverageDistributed }
 							rounds={ rounds }
 						/>
 					</Stack>

@@ -98,6 +98,17 @@ export const ThemeSchema = new SimpleSchema({
 		required: false,
 		defaultValue: true,
 	},
+	minStartingFunds: {
+		type: Number,
+		label: "Minimum starting amount per finalist before funds voting",
+		required: false,
+	},
+	minStartingFundsActive: {
+		type: Boolean,
+		label: "Pre-allocate a minimum amount to each finalist?",
+		required: false,
+		defaultValue: false,
+	},
 	allowRunnersUpPledges: {
 		type: Boolean,
 		label: "Allow pledging to runners up organizations?",

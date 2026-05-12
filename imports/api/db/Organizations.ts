@@ -30,9 +30,11 @@ export const MatchPledgeSchema = new SimpleSchema({
 		autoValue: function() {
 			if(this.operator === "$push") {
 				return Random.id()
-			} else {
-				this.unset() // Prevent user from supplying their own value
 			}
+			// Returning undefined leaves the field untouched. Crucially this means
+			// $pull filters like { pledges: { _id: someId } } still match by _id;
+			// previously a this.unset() branch here stripped _id from the filter
+			// and caused $pull to remove every pledge in the array.
 		},
 	},
 	amount: {

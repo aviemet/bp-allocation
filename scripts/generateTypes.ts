@@ -1,8 +1,5 @@
 /* eslint-disable no-console */
 
-// Real solution: Parse actual schema files and generate types
-// No temporary files, no stale data - either works with real schemas or fails
-
 import * as fs from "fs"
 import * as path from "path"
 
@@ -177,6 +174,42 @@ function generateInterfaceFromSchema(schemaName: string, schemaContent: string, 
 			arrayElementTypes[arrayFieldName] = "string"
 		}
 
+		// Look for bare scalar array element type definitions (e.g. "tags.$": String)
+		const arrayElementScalarMatch = line.match(/^"(\w+)\.\$":\s*(String|Number|Boolean|Date)\s*[,}]?/)
+		if(arrayElementScalarMatch) {
+			const arrayFieldName = arrayElementScalarMatch[1]
+			const scalarTypeName = arrayElementScalarMatch[2]
+			arrayElementTypes[arrayFieldName] = mapScalarTypeName(scalarTypeName)
+		}
+
+		// Look for object-form array element type definitions, e.g. "model.$": { type: String, allowedValues: [...] }
+		const arrayElementObjMatch = line.match(/^"(\w+)\.\$":\s*\{/)
+		if(arrayElementObjMatch) {
+			const arrayFieldName = arrayElementObjMatch[1]
+			let braceCount = 0
+			let detectedScalar: string | null = null
+			let scanIndex = i
+			for(; scanIndex < lines.length; scanIndex++) {
+				const scanLine = lines[scanIndex]
+				for(const char of scanLine) {
+					if(char === "{") braceCount++
+					if(char === "}") braceCount--
+				}
+				if(detectedScalar === null) {
+					if(scanLine.includes("type: String")) detectedScalar = "string"
+					else if(scanLine.includes("type: Number")) detectedScalar = "number"
+					else if(scanLine.includes("type: Boolean")) detectedScalar = "boolean"
+					else if(scanLine.includes("type: Date")) detectedScalar = "Date"
+				}
+				if(scanIndex > i && braceCount === 0) break
+			}
+			if(detectedScalar) {
+				arrayElementTypes[arrayFieldName] = detectedScalar
+			}
+			// Advance the outer loop past the closing brace so the nested keys don't leak into the parent interface.
+			i = scanIndex
+		}
+
 		i++
 	}
 
@@ -207,6 +240,16 @@ function generateInterfaceFromSchema(schemaName: string, schemaContent: string, 
 	const allFields = (hasExplicitId || !isCollectionSchema) ? fields : [`\t_id: string`, ...fields]
 
 	return `export interface ${schemaName.replace("Schema", "")} {\n${allFields.join("\n")}\n}`
+}
+
+function mapScalarTypeName(name: string): string {
+	switch(name) {
+		case "String": return "string"
+		case "Number": return "number"
+		case "Boolean": return "boolean"
+		case "Date": return "Date"
+		default: return "string"
+	}
 }
 
 // Parse a complex field definition object
@@ -247,12 +290,20 @@ function parseFieldDefinition(lines: string[]): { type: string, isOptional: bool
 			isOptional = false
 		}
 
-		// Handle enum values
+		// Handle enum values. Only emit a literal union when allowedValues is a bare array of string literals,
+		// e.g. ["text", "email"]. Spreads (e.g. [...LogLevels]) and function calls (e.g. Object.values(...))
+		// fall back to whatever scalar type was already detected (typically `string`).
 		if(trimmed.includes("allowedValues:")) {
-			const enumMatch = trimmed.match(/\[(.*?)\]/)
+			const enumMatch = trimmed.match(/allowedValues:\s*\[(.*?)\]/)
 			if(enumMatch) {
-				const values = enumMatch[1].split(",").map(v => v.trim().replace(/['"]/g, ""))
-				type = values.map(v => `"${v}"`).join(" | ")
+				const inner = enumMatch[1].trim()
+				const isAllStringLiterals = inner.length > 0
+					&& !inner.includes("...")
+					&& /^['"][^'"]*['"](\s*,\s*['"][^'"]*['"])*$/.test(inner)
+				if(isAllStringLiterals) {
+					const values = inner.split(",").map(v => v.trim().replace(/['"]/g, ""))
+					type = values.map(v => `"${v}"`).join(" | ")
+				}
 			}
 		}
 	}
@@ -264,6 +315,7 @@ function parseFieldDefinition(lines: string[]): { type: string, isOptional: bool
 export function generateTypes(): void {
 	try {
 		const schemaFiles = [
+			"Logs.ts",
 			"Members.ts",
 			"Themes.ts",
 			"Organizations.ts",
@@ -319,12 +371,12 @@ export function generateTypes(): void {
 		fs.writeFileSync(outputPath, content)
 
 
-		console.log("✅ Type generation completed successfully!")
-		console.log(`📁 Generated types written to: ${outputPath}`)
+		console.log("Type generation completed successfully!")
+		console.log(`Generated types written to: ${outputPath}`)
 
 	} catch (error) {
-		console.error("❌ Type generation failed:", (error as Error).message)
-		console.log("\n💡 This means the script could not parse your actual schema files")
+		console.error("Type generation failed:", (error as Error).message)
+		console.log("\nThis means the script could not parse your actual schema files")
 		console.log("   Check that your schema files exist and have the correct format")
 		process.exit(1)
 	}

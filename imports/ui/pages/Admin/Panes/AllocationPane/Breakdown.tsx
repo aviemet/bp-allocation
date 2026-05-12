@@ -21,8 +21,11 @@ export const Breakdown = () => {
 	const totalPot = (theme.leverageTotal || 0) + saves
 	const votedFunds = Number(theme.votedFunds || 0)
 	const consolationTotal = Number(theme.consolationTotal || 0)
+	const startingFundsTotal = theme.minStartingFundsActive
+		? (theme.numTopOrgs || 0) * (theme.minStartingFunds || 0)
+		: 0
 	const fundsAllocated = votedFunds + saves + topOff
-	const leverage = (theme.leverageTotal || 0) - consolationTotal - votedFunds - topOff
+	const leverage = (theme.leverageTotal || 0) - consolationTotal - startingFundsTotal - votedFunds - topOff
 
 
 	return (

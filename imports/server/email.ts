@@ -5,6 +5,7 @@ import "/imports/api/methods"
 import "/imports/server/publications"
 
 import { setMessageSendingFlag, setMessageSentFlag, setMessageErrorFlag } from "./messageMethods"
+import { emailLog as log } from "/imports/lib/loggers"
 import { emailVotingLink } from "/imports/lib/utils"
 import { coerceArray } from "../lib/collections"
 import { type Message, type Rounds } from "/imports/types/schema"
@@ -115,44 +116,39 @@ export const emailVotingLinkToMembers = async ({ themeId, message, members }: Em
 			subject: message.subject || "",
 			html: messageBuilder(member.code, message.body, theme?.slug, message.includeLink),
 		}
-		console.log({
-			action: "email-message-prepared",
-			messageId: message._id,
-			memberThemeId: member._id,
-			to: mail.to,
-			from: mail.from,
-			subject: mail.subject,
-			includeLink: message.includeLink === true,
-			hasBody: !!message.body,
-			bodyLength: message.body ? message.body.length : 0,
-			themeId,
-		})
 		return [mail]
 	})
 
 	const sentMail = sgMail.send(messages)
 
-	sentMail.then(([clientResponse, responseBody]) => {
+	sentMail.then(([clientResponse, _responseBody]) => {
 		setMessageSentFlag(theme, message)
-		console.log({
-			action: "email-batch-sent",
-			messageId: message._id,
+		log.info("batch.sent", "Email batch sent", {
 			themeId,
-			sent: messages.map(m => m.to),
-			totalSent: messages.length,
-			statusCode: clientResponse?.statusCode,
-			headers: clientResponse?.headers,
-			responseBody,
+			meta: {
+				messageId: message._id,
+				sent: messages.map(m => m.to),
+				totalSent: messages.length,
+				statusCode: clientResponse?.statusCode,
+			},
 		})
 	}, error => {
-		console.error(error)
+		log.error("send.failure", "Email send failed", error, { themeId, meta: { messageId: message._id } })
 
 		if(error.response) {
 			setMessageErrorFlag(theme, message)
-			console.error(error.response.body)
+			log.error("send.failure", "SendGrid response body for failed email", undefined, {
+				themeId,
+				meta: { messageId: message._id, responseBody: error.response.body },
+			})
 		}
 	})
 
 	// Log invalid emails
-	if(invalidEmailMembers.length > 0) console.error({ invalidEmailMembers })
+	if(invalidEmailMembers.length > 0) {
+		log.warn("invalid-recipients", "Some members had invalid emails", {
+			themeId,
+			meta: { messageId: message._id, invalidEmailMembers },
+		})
+	}
 }

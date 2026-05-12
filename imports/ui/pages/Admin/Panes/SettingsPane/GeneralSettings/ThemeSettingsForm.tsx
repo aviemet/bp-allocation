@@ -25,6 +25,7 @@ export const ThemeSettingsForm = () => {
 		if(sanitizedData.leverageTotal) sanitizedData.leverageTotal = roundFloat(String(sanitizedData.leverageTotal))
 		if(sanitizedData.consolationAmount) sanitizedData.consolationAmount = roundFloat(String(sanitizedData.consolationAmount))
 		if(sanitizedData.minLeverageAmount) sanitizedData.minLeverageAmount = roundFloat(String(sanitizedData.minLeverageAmount))
+		if(sanitizedData.minStartingFunds) sanitizedData.minStartingFunds = roundFloat(String(sanitizedData.minStartingFunds))
 		if(sanitizedData.matchRatio) sanitizedData.matchRatio = parseInt(String(sanitizedData.matchRatio))
 		if(sanitizedData.chitWeight) sanitizedData.chitWeight = parseInt(String(sanitizedData.chitWeight))
 		if(!sanitizedData.numTopOrgs && theme) {
@@ -80,6 +81,8 @@ export const ThemeSettingsForm = () => {
 				consolationActive: theme.consolationActive || false,
 				minLeverageAmount: theme.minLeverageAmount || "",
 				minLeverageAmountActive: theme.minLeverageAmountActive || false,
+				minStartingFunds: theme.minStartingFunds || "",
+				minStartingFundsActive: theme.minStartingFundsActive || false,
 				allowRunnersUpPledges: theme.allowRunnersUpPledges || false,
 				leverageRunnersUpPledges: theme.leverageRunnersUpPledges || false,
 			} }
@@ -176,6 +179,27 @@ export const ThemeSettingsForm = () => {
 					<FormControlLabel
 						label="Use Minimum Topup Amount"
 						control={ <Switch name="minLeverageAmountActive" /> }
+					/>
+				</Grid>
+
+				<Grid size={ { xs: 12, md: 6 } }>
+					{ /* Minimum Starting Funds */ }
+					<TextInput
+						name="minStartingFunds"
+						label="Minimum Starting Funds"
+						slotProps={ {
+							input: {
+								startAdornment: <InputAdornment position="start">$</InputAdornment>,
+							},
+						} }
+					/>
+				</Grid>
+
+				<Grid size={ { xs: 12, md: 6 } }>
+					{ /* Minimum Starting Funds Active */ }
+					<FormControlLabel
+						label="Pre-allocate Starting Funds"
+						control={ <Switch name="minStartingFundsActive" /> }
 					/>
 				</Grid>
 

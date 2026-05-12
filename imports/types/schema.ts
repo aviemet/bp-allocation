@@ -3,6 +3,26 @@
 
 // Generated types based on SimpleSchema definitions
 
+export interface LogError {
+	name?: string
+	message?: string
+	code?: string
+	stack?: string
+}
+
+export interface Log {
+	_id: string
+	createdAt?: Date
+	level: string
+	category: string
+	model?: string[]
+	action?: string
+	message: string
+	themeId: string
+	error?: LogError
+	meta?: unknown
+}
+
 export interface Member {
 	_id: string
 	firstName: string
@@ -44,6 +64,8 @@ export interface Theme {
 	leverageTotal?: number
 	minLeverageAmount?: number
 	minLeverageAmountActive?: boolean
+	minStartingFunds?: number
+	minStartingFundsActive?: boolean
 	allowRunnersUpPledges?: boolean
 	leverageRunnersUpPledges?: boolean
 	finalLeverageDistributed?: boolean
