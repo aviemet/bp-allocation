@@ -242,6 +242,93 @@ describe("ThemeTransformer", function() {
 		})
 	})
 
+	describe("Pledge match total calculation", function() {
+		it("Should sum the leverage bonus consumed by each pledge, not the raw pledged amount", function() {
+			const topOrgId = Random.id()
+			const topOrgs: OrgWithComputed[] = [
+				createOrg(topOrgId, true, 1000),
+			]
+			const theme: ThemeData = {
+				...baseTheme,
+				matchRatio: 3,
+			}
+
+			const result = ThemeTransformer(theme, {
+				topOrgs,
+				memberThemes: [],
+				settings: baseSettings,
+			})
+
+			expect(result.pledgedTotal).to.equal(1000)
+			expect(result.pledgeMatchTotal).to.equal(2000)
+		})
+
+		it("Should apply the in-person ratio to in-person pledges and standard ratio to standard pledges", function() {
+			const topOrgId = Random.id()
+			const standardOrg = createOrg(topOrgId, true, 0)
+
+			const standardPledge = 1000
+			const inPersonPledge = 500
+
+			standardOrg.pledges = [
+				{ _id: Random.id(), amount: standardPledge, createdAt: new Date(), pledgeType: "standard" },
+				{ _id: Random.id(), amount: inPersonPledge, createdAt: new Date(Date.now() + 1), pledgeType: "inPerson" },
+			]
+			const theme = {
+				...baseTheme,
+				matchRatio: 2,
+				inPersonMatchRatio: 3,
+			} satisfies ThemeData
+
+			const result = ThemeTransformer(theme, {
+				topOrgs: [standardOrg],
+				memberThemes: [],
+				settings: baseSettings,
+			})
+
+			expect(result.pledgedTotal).to.equal(standardPledge + inPersonPledge)
+			expect(result.pledgeMatchTotal).to.equal((standardPledge * (theme.matchRatio - 1)) + (inPersonPledge * (theme.inPersonMatchRatio - 1)))
+		})
+
+		it("Should be zero when no pledges have been made", function() {
+			const topOrgId = Random.id()
+			const topOrgs: OrgWithComputed[] = [createOrg(topOrgId, true, 0)]
+
+			const result = ThemeTransformer(baseTheme, {
+				topOrgs,
+				memberThemes: [],
+				settings: baseSettings,
+			})
+
+			expect(result.pledgeMatchTotal).to.equal(0)
+		})
+
+		it("Should truncate the leverage bonus on the last pledge when the pool would be exceeded", function() {
+			const topOrgId = Random.id()
+			const org = createOrg(topOrgId, true, 0)
+			org.pledges = [
+				{ _id: Random.id(), amount: 40000, createdAt: new Date(1000), pledgeType: "standard" },
+				{ _id: Random.id(), amount: 80000, createdAt: new Date(2000), pledgeType: "standard" },
+			]
+			const theme: ThemeData = {
+				...baseTheme,
+				matchRatio: 2,
+				leverageTotal: 100000,
+			}
+
+			const result = ThemeTransformer(theme, {
+				topOrgs: [org],
+				memberThemes: [],
+				settings: baseSettings,
+			})
+
+			// First pledge consumes 40k of leverage; only 60k remains for the second pledge's
+			// 80k requested bonus, so the second pledge is partially matched.
+			expect(result.pledgeMatchTotal).to.equal(100000)
+			expect(result.leverageRemaining).to.equal(0)
+		})
+	})
+
 	describe("Pledges list", function() {
 		it("Should include runner-up pledges in pledges list when allowRunnersUpPledges is true", function() {
 			const topOrgId = Random.id()
@@ -300,6 +387,40 @@ describe("ThemeTransformer", function() {
 
 			expect(result.pledges.length).to.equal(1)
 			expect(result.pledges[0].org._id).to.equal(topOrgId)
+		})
+	})
+
+	describe("Partial matching when leverage pool is exhausted", function() {
+		it("Caps leverageRemaining at 0 when in-person pledges exceed pool capacity", function() {
+			const topOrgId = Random.id()
+			const inPersonPledgeId = Random.id()
+
+			const topOrgs: OrgWithComputed[] = [{
+				...createOrg(topOrgId, true, 0),
+				pledges: [
+					{
+						_id: inPersonPledgeId,
+						amount: 1000,
+						pledgeType: "inPerson",
+						createdAt: new Date(),
+					},
+				],
+			}]
+
+			const theme: ThemeData = {
+				...baseTheme,
+				leverageTotal: 500,
+				inPersonMatchRatio: 3,
+			}
+
+			const result = ThemeTransformer(theme, {
+				topOrgs,
+				allOrgs: topOrgs,
+				memberThemes: [],
+				settings: baseSettings,
+			})
+
+			expect(result.leverageRemaining).to.equal(0)
 		})
 	})
 

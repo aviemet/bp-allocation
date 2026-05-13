@@ -5,7 +5,7 @@ import {
 } from "@mui/material"
 import { useEffect } from "react"
 
-import { useVoting } from "./VotingContext"
+import { useKioskVoting } from "./KioskVotingContext"
 
 import { COLORS } from "/imports/lib/global"
 import { useData } from "/imports/api/providers"
@@ -19,7 +19,7 @@ export const VotingComplete = ({ setVotingComplete }: VotingCompleteProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 
-	const { unsetUser } = useVoting()
+	const { unsetUser } = useKioskVoting()
 
 	useEffect(() => {
 		data.setVotingRedirectTimeout(0)

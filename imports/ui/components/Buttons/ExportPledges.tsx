@@ -12,7 +12,7 @@ interface PledgeData {
 	[key: string]: string | number | Date
 }
 
-export const ExportTopups = () => {
+export const ExportPledges = () => {
 	const { topOrgs, orgsLoading } = useOrgs()
 	const { members, membersLoading } = useMembers()
 
@@ -40,7 +40,7 @@ export const ExportTopups = () => {
 	return (
 		<ExportCsvButton
 			data={ pledges }
-			description="Topup Pledges"
+			description="Pledges"
 		/>
 	)
 }

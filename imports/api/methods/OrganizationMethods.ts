@@ -3,7 +3,7 @@ import { Meteor } from "meteor/meteor"
 
 import { roundFloat } from "/imports/lib/utils"
 
-import { Themes, Organizations, type OrgData } from "/imports/api/db"
+import { Themes, Organizations, PresentationSettings, MemberThemes, type OrgData } from "/imports/api/db"
 import { ImageMethods } from "./ImageMethods"
 import { organizationMethodLog as log } from "/imports/lib/loggers"
 import { type Organization, type MatchPledge } from "/imports/types/schema"
@@ -22,6 +22,7 @@ interface PledgeData {
 	amount: number
 	member: string
 	anonymous?: boolean
+	pledgeType?: "standard" | "inPerson"
 }
 
 interface RemovePledgeData {
@@ -34,7 +35,7 @@ interface RemovePledgeByIdData {
 	pledgeIds: string | string[]
 }
 
-interface TopOffData {
+interface CrowdFavoriteData {
 	id: string
 	negate?: boolean
 }
@@ -148,10 +149,27 @@ export const OrganizationMethods = {
 
 		validate: null,
 
-		async run({ id, amount, member, anonymous }: PledgeData) {
+		async run({ id, amount, member, anonymous, pledgeType = "standard" }: PledgeData) {
 			amount = roundFloat(String(amount))
 
-			const saveData: MatchPledge = { _id: "", amount, member, anonymous }
+			if(Meteor.isServer) {
+				const org = await Organizations.findOneAsync({ _id: id })
+				if(!org || !org.theme) {
+					throw new Meteor.Error("organizations.pledge.notFound", "Organization not found")
+				}
+
+				if(pledgeType === "inPerson") {
+					const theme = await Themes.findOneAsync({ _id: org.theme })
+					if(!theme?.inPersonPledgeActive) {
+						throw new Meteor.Error(
+							"organizations.pledge.inPersonNotEnabled",
+							"In-person pledges are not enabled for this theme",
+						)
+					}
+				}
+			}
+
+			const saveData: MatchPledge = { _id: "", amount, member, anonymous, pledgeType }
 
 			return await Organizations.updateAsync({ _id: id }, {
 				$push: {
@@ -209,30 +227,52 @@ export const OrganizationMethods = {
 	}),
 
 	/**
-	 * Top-off organization
+	 * Fully-fund the crowd favorite organization to its ask amount.
+	 *
+	 * Designed to be called once, after funds voting closes and before the
+	 * pledges round opens. In that state there are no pledges and no distributed
+	 * leverage to net out, so the gap to `ask` is `ask − votes − saves − startingFunds`.
+	 * When `negate` is true, clears the crowd-favorite amount.
+	 *
+	 * NOTE: writes to the legacy persisted `topOff` field on Organization for
+	 * backwards compatibility with existing data.
 	 */
-	topOff: new ValidatedMethod({
-		name: "organizations.topOff",
+	crowdFavorite: new ValidatedMethod({
+		name: "organizations.crowdFavorite",
 
 		validate: null,
 
-		async run({ id, negate }: TopOffData) {
-			negate = negate || false
-
-			const orgs = await Organizations.find({ _id: id }).fetchAsync()
-			const org = orgs[0]
-			if(!org) return 0
-
-			let topOffAmount = 0
-
-			if(!negate)	{
-				const ask = org.ask || 0
-				const amountFromVotes = org.amountFromVotes || 0
-				const pledgesTotal = org.pledges?.reduce((sum, pledge) => sum + (pledge.amount || 0), 0) || 0
-				topOffAmount = ask - amountFromVotes - pledgesTotal
+		async run({ id, negate }: CrowdFavoriteData) {
+			if(negate) {
+				return await Organizations.updateAsync({ _id: id }, { $set: { topOff: 0 } })
 			}
 
-			return await Organizations.updateAsync({ _id: id }, { $set: { topOff: topOffAmount } })
+			const org = await Organizations.findOneAsync({ _id: id })
+			if(!org?.theme) return 0
+			const theme = await Themes.findOneAsync({ _id: org.theme })
+			if(!theme) return 0
+
+			const settings = theme.presentationSettings
+				? await PresentationSettings.findOneAsync({ _id: theme.presentationSettings })
+				: null
+
+			let votedTotal = 0
+			if(settings?.useKioskFundsVoting) {
+				const memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
+				votedTotal = memberThemes.reduce((sum, memberTheme) => {
+					return sum + (memberTheme.allocations || []).reduce((mtSum, allocation) => {
+						return mtSum + (allocation.organization === id ? (allocation.amount || 0) : 0)
+					}, 0)
+				}, 0)
+			} else {
+				votedTotal = org.amountFromVotes || 0
+			}
+
+			const saveAmount = theme.saves?.find(save => save.org === id)?.amount || 0
+			const startingFunds = theme.minStartingFundsActive ? (theme.minStartingFunds || 0) : 0
+
+			const amount = Math.max(0, (org.ask || 0) - votedTotal - saveAmount - startingFunds)
+			return await Organizations.updateAsync({ _id: id }, { $set: { topOff: amount } })
 		},
 	}),
 

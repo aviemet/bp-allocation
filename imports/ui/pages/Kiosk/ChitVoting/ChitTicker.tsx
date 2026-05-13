@@ -5,7 +5,7 @@ import { IconButton } from "@mui/material"
 import { forEach } from "es-toolkit/compat"
 import { useEffect, useState, startTransition } from "react"
 
-import { useVoting } from "../VotingContext"
+import { useKioskVoting } from "../KioskVotingContext"
 import { type OrgData } from "/imports/api/db"
 
 interface ChitTickerProps {
@@ -16,7 +16,7 @@ interface ChitTickerProps {
  * Full Component containing Ticker, Org Title and amount feedback
  */
 export const ChitTicker = ({ org }: ChitTickerProps) => {
-	const { member, chits, updateChits } = useVoting()
+	const { member, chits, updateChits } = useKioskVoting()
 	const [ value, setValue ] = useState(chits[org._id] || 0)
 
 	const MAX = member.theme?.chits || 0

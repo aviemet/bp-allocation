@@ -60,9 +60,9 @@ export class Leverage {
 			orgClone.leverageFunds = 0
 
 			// Use the loop to calculate the funding total of all orgs (for percentage calculation)
-			// Exclude topOff from the calculation
-			const fundingWithoutTopOff = (orgClone.allocatedFunds || 0) - (orgClone.topOff || 0)
-			sumRemainingOrgs = roundFloat(sumRemainingOrgs + fundingWithoutTopOff)
+			// Exclude the crowd-favorite full-funding amount (persisted as `topOff`) from the calculation
+			const fundingWithoutCrowdFavorite = (orgClone.allocatedFunds || 0) - (orgClone.topOff || 0)
+			sumRemainingOrgs = roundFloat(sumRemainingOrgs + fundingWithoutCrowdFavorite)
 			totalAmountFromVotes = roundFloat(totalAmountFromVotes + (org.votedTotal || 0))
 
 			return orgClone

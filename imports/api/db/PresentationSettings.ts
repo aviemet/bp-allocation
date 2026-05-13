@@ -52,9 +52,12 @@ export const PresentationSettingsSchema = new SimpleSchema({
 		required: false,
 		defaultValue: false,
 	},
+	// NOTE: persisted as `topupsActive` for backwards compatibility with existing
+	// data; conceptually this gates the standard kiosk pledge round. TODO: migrate
+	// to `pledgesActive` and remove this note.
 	topupsActive: {
 		type: Boolean,
-		label: "Activate topups pledge round",
+		label: "Activate pledge round",
 		required: false,
 		defaultValue: false,
 	},
@@ -94,9 +97,11 @@ export const PresentationSettingsSchema = new SimpleSchema({
 		required: false,
 		defaultValue: 0,
 	},
+	// NOTE: persisted as `topupEmailConfirm` for backwards compatibility; gates
+	// the pledge confirmation email. TODO: migrate to `pledgeEmailConfirm`.
 	topupEmailConfirm: {
 		type: Boolean,
-		label: "Whether to send a confirmation email for topups",
+		label: "Whether to send a confirmation email for pledges",
 		required: false,
 		defaultValue: false,
 	},

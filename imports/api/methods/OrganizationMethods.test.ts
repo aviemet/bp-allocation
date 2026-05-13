@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker"
 import { expect } from "chai"
 import { Random } from "meteor/random"
 
-import { OrganizationMethods, ThemeMethods } from "/imports/api/methods"
+import { OrganizationMethods, PresentationSettingsMethods, ThemeMethods } from "/imports/api/methods"
 import { Organizations, Themes } from "/imports/api/db"
 import { resetDatabase } from "/imports/test-support/resetDatabase"
 
@@ -132,6 +132,86 @@ describe("Organization Methods", function() {
 			const org = await Organizations.findOneAsync({ _id: orgId })
 			expect(org?.pledges?.[0].amount).to.equal(100.12)
 		})
+
+		it("Should default pledgeType to 'standard' when not provided", async function() {
+			const { response: orgId } = await OrganizationMethods.create.callAsync(OrgTestData(themeId))
+			if(!orgId) throw new Error("Failed to create org")
+
+			await OrganizationMethods.pledge.callAsync({
+				id: orgId,
+				amount: 100,
+				member: Random.id(),
+			})
+
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.pledges?.[0].pledgeType).to.equal("standard")
+		})
+
+		it("Should reject any pledge against a non-existent org", async function() {
+			let threw = false
+			let errorReason: string | undefined
+			try {
+				await OrganizationMethods.pledge.callAsync({
+					id: Random.id(),
+					amount: 100,
+					member: Random.id(),
+				})
+			} catch (e) {
+				threw = true
+				if(e instanceof Error) errorReason = e.message
+			}
+			expect(threw, "Expected method to throw").to.be.true
+			expect(errorReason).to.match(/not found/i)
+		})
+
+		it("Should reject inPerson pledges when inPersonPledgeActive is false", async function() {
+			const { response: orgId } = await OrganizationMethods.create.callAsync(OrgTestData(themeId))
+			if(!orgId) throw new Error("Failed to create org")
+
+			let threw = false
+			let errorReason: string | undefined
+			try {
+				await OrganizationMethods.pledge.callAsync({
+					id: orgId,
+					amount: 100,
+					member: Random.id(),
+					pledgeType: "inPerson",
+				})
+			} catch (e) {
+				threw = true
+				if(e instanceof Error) errorReason = e.message
+			}
+			expect(threw, "Expected method to throw").to.be.true
+			expect(errorReason).to.match(/in.person/i)
+
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.pledges ?? []).to.have.length(0)
+		})
+
+		it("Should accept inPerson pledges when inPersonPledgeActive is true", async function() {
+			await ThemeMethods.update.callAsync({
+				id: themeId,
+				data: { inPersonPledgeActive: true },
+			})
+
+			const theme = await Themes.findOneAsync({ _id: themeId })
+			expect(theme?.inPersonPledgeActive, "Expected inPersonPledgeActive to be true").to.equal(true)
+
+			const { response: orgId } = await OrganizationMethods.create.callAsync(OrgTestData(themeId))
+			if(!orgId) throw new Error("Failed to create org")
+
+			await OrganizationMethods.pledge.callAsync({
+				id: orgId,
+				amount: 200,
+				member: Random.id(),
+				pledgeType: "inPerson",
+			})
+
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.pledges).to.have.length(1)
+			expect(org?.pledges?.[0].pledgeType).to.equal("inPerson")
+			expect(org?.pledges?.[0].amount).to.equal(200)
+		})
 	})
 
 	describe("RemovePledge", function() {
@@ -206,8 +286,15 @@ describe("Organization Methods", function() {
 		})
 	})
 
-	describe("TopOff", function() {
-		it("Should compute topOff as ask minus amountFromVotes minus pledges", async function() {
+	describe("CrowdFavorite", function() {
+		it("Should set topOff so projected total funding equals the ask (post-vote, pre-pledge state)", async function() {
+			const theme = await Themes.findOneAsync({ _id: themeId })
+			if(!theme?.presentationSettings) throw new Error("Theme has no presentationSettings")
+			await PresentationSettingsMethods.update.callAsync({
+				id: theme.presentationSettings,
+				data: { useKioskFundsVoting: false },
+			})
+
 			const { response: orgId } = await OrganizationMethods.create.callAsync({
 				...OrgTestData(themeId),
 				ask: 10000,
@@ -215,14 +302,61 @@ describe("Organization Methods", function() {
 			})
 			if(!orgId) throw new Error("Failed to create org")
 
-			await OrganizationMethods.pledge.callAsync({ id: orgId, amount: 2000, member: Random.id() })
-
-			await OrganizationMethods.topOff.callAsync({ id: orgId })
+			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
 			const org = await Organizations.findOneAsync({ _id: orgId })
-			expect(org?.topOff).to.equal(10000 - 3000 - 2000)
+			expect(org?.topOff).to.equal(10000 - 3000)
 		})
 
-		it("Should set topOff to 0 when negate is true", async function() {
+		it("Should subtract a save amount when one exists for the org", async function() {
+			const theme = await Themes.findOneAsync({ _id: themeId })
+			if(!theme?.presentationSettings) throw new Error("Theme has no presentationSettings")
+			await PresentationSettingsMethods.update.callAsync({
+				id: theme.presentationSettings,
+				data: { useKioskFundsVoting: false },
+			})
+
+			const { response: orgId } = await OrganizationMethods.create.callAsync({
+				...OrgTestData(themeId),
+				ask: 10000,
+				amountFromVotes: 1000,
+			})
+			if(!orgId) throw new Error("Failed to create org")
+
+			await ThemeMethods.update.callAsync({
+				id: themeId,
+				data: { saves: [{ org: orgId, amount: 2500 }] },
+			})
+
+			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.topOff).to.equal(10000 - 1000 - 2500)
+		})
+
+		it("Should subtract minimum starting funds when active for the theme", async function() {
+			const theme = await Themes.findOneAsync({ _id: themeId })
+			if(!theme?.presentationSettings) throw new Error("Theme has no presentationSettings")
+			await PresentationSettingsMethods.update.callAsync({
+				id: theme.presentationSettings,
+				data: { useKioskFundsVoting: false },
+			})
+			await ThemeMethods.update.callAsync({
+				id: themeId,
+				data: { minStartingFundsActive: true, minStartingFunds: 1500 },
+			})
+
+			const { response: orgId } = await OrganizationMethods.create.callAsync({
+				...OrgTestData(themeId),
+				ask: 10000,
+				amountFromVotes: 2000,
+			})
+			if(!orgId) throw new Error("Failed to create org")
+
+			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.topOff).to.equal(10000 - 2000 - 1500)
+		})
+
+		it("Should set the crowd-favorite amount to 0 when negate is true", async function() {
 			const { response: orgId } = await OrganizationMethods.create.callAsync({
 				...OrgTestData(themeId),
 				ask: 10000,
@@ -230,21 +364,21 @@ describe("Organization Methods", function() {
 			})
 			if(!orgId) throw new Error("Failed to create org")
 
-			await OrganizationMethods.topOff.callAsync({ id: orgId })
-			await OrganizationMethods.topOff.callAsync({ id: orgId, negate: true })
+			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
+			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId, negate: true })
 
 			const org = await Organizations.findOneAsync({ _id: orgId })
 			expect(org?.topOff).to.equal(0)
 		})
 
 		it("Should return 0 when the org does not exist", async function() {
-			const result = await OrganizationMethods.topOff.callAsync({ id: Random.id() })
+			const result = await OrganizationMethods.crowdFavorite.callAsync({ id: Random.id() })
 			expect(result).to.equal(0)
 		})
 	})
 
 	describe("Reset", function() {
-		it("Should clear pledges, amountFromVotes, and topOff", async function() {
+		it("Should clear pledges, amountFromVotes, and the crowd-favorite amount", async function() {
 			const { response: orgId } = await OrganizationMethods.create.callAsync({
 				...OrgTestData(themeId),
 				ask: 10000,

@@ -8,8 +8,8 @@ import { useSettings, useOrgs } from "/imports/api/hooks"
 
 import { OrgCardContainer } from "/imports/ui/components/Cards"
 import { Countdown } from "../Countdown"
+import { useKioskVoting } from "../KioskVotingContext"
 import { VotingComplete } from "../VotingComplete"
-import { useVoting } from "../VotingContext"
 import { COLORS } from "/imports/lib/global"
 import { ChitVoteOrgCard } from "./ChitVoteOrgCard"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
@@ -25,7 +25,7 @@ export const ChitVotingKiosk = ({ user, source }: ChitVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { orgs } = useOrgs()
-	const { chits, saveChits, member } = useVoting()
+	const { chits, saveChits, member } = useKioskVoting()
 
 	const [ votingComplete, setVotingComplete ] = useState(false)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)

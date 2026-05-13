@@ -4,7 +4,7 @@ import { isNaN, forEach } from "es-toolkit/compat"
 import { useCallback, useLayoutEffect, useState } from "react"
 
 import { FundsSlider } from "./FundsSlider"
-import { useVoting } from "../VotingContext"
+import { useKioskVoting } from "../KioskVotingContext"
 import { ManualInput } from "./ManualInput"
 
 interface VotingCardContentProps {
@@ -22,7 +22,7 @@ const FundsInputContainer = styled.div`
 `
 
 export const VotingCardContent = ({ org }: VotingCardContentProps) => {
-	const { member, allocations, updateAllocations } = useVoting()
+	const { member, allocations, updateAllocations } = useKioskVoting()
 	const [ value, setValue ] = useState(allocations[org._id] || 0)
 
 	useLayoutEffect(() => {

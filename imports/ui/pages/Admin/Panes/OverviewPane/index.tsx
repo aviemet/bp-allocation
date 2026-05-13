@@ -15,8 +15,9 @@ import { roundFloat } from "/imports/lib/utils"
 import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 import { Loading, MoneyCell } from "/imports/ui/components"
 import { ExportMemberVotes } from "/imports/ui/components/Buttons/ExportMemberVotes"
-import { ExportTopups } from "/imports/ui/components/Buttons/ExportTopups"
+import { ExportPledges } from "/imports/ui/components/Buttons/ExportPledges"
 import { ExportChitVotes } from "/imports/ui/components/Buttons/ExportChitVotes"
+
 export const Overview = () => {
 	const { settings, settingsLoading } = useSettings()
 	const { theme, themeLoading } = useTheme()
@@ -65,7 +66,7 @@ export const Overview = () => {
 							<TableCell colSpan={ 5 } sx={ { backgroundColor: "transparent" } }>
 								<Stack direction="row" sx={ { justifyContent: "space-around", alignItems: "center" } }>
 									<ExportMemberVotes />
-									<ExportTopups />
+									<ExportPledges />
 									<ExportChitVotes />
 								</Stack>
 							</TableCell>
@@ -75,7 +76,7 @@ export const Overview = () => {
 							<TableCell>R1 (chits)<br/>{ settings?.useKioskChitVoting && `[${theme.chitVotesCast}/${theme.totalMembers}]` }</TableCell>
 							<TableCell>R2 ($)<br/>{ settings?.useKioskFundsVoting && `[${theme.fundsVotesCast}/${theme.totalMembers}]` }</TableCell>
 							<TableCell>Consolation</TableCell>
-							<TableCell>Top Off</TableCell>
+							<TableCell>Crowd Fav</TableCell>
 							<TableCell>Pledges (x{ theme.matchRatio })</TableCell>
 							<TableCell>Leverage</TableCell>
 							<TableCell>Total<br/>Allocated</TableCell>
@@ -119,7 +120,7 @@ export const Overview = () => {
 								theme.consolationActive ? (sortedRemainingOrgs.length * (theme.consolationAmount || 0)) : 0
 							}</MoneyCell>
 
-							{ /* Topoff */ }
+							{ /* Crowd favorite full-funding */ }
 							<MoneyCell>{
 								orgs.reduce((sum, org) => sum + org.topOff, 0)
 							}</MoneyCell>

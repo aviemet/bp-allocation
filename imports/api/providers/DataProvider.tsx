@@ -11,7 +11,7 @@ interface AppData {
 	setVotingRedirectTimeout: (timeout: number) => void
 	resetVotingRedirectTimeout: () => void
 	defaultMenuHeading: string
-	KIOSK_PAGES: { info: "info", chit: "chit", funds: "funds", topups: "topups", results: "results" }
+	KIOSK_PAGES: { info: "info", chit: "chit", funds: "funds", pledges: "pledges", results: "results" }
 	defaultVotingRedirectTimeout: number
 }
 
@@ -43,7 +43,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
 		setVotingRedirectTimeout,
 		resetVotingRedirectTimeout,
 		defaultMenuHeading,
-		KIOSK_PAGES: { info: "info", chit: "chit", funds: "funds", topups: "topups", results: "results" },
+		KIOSK_PAGES: { info: "info", chit: "chit", funds: "funds", pledges: "pledges", results: "results" },
 		defaultVotingRedirectTimeout,
 	}
 

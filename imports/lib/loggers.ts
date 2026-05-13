@@ -2,6 +2,10 @@ import { LogCategories, LogModels } from "/imports/api/db/Logs"
 
 import { createLogger } from "./logger"
 
+export const publicationLog = createLogger({
+	category: LogCategories.Publication,
+})
+
 export const smsLog = createLogger({
 	category: LogCategories.Sms,
 	model: [LogModels.Member, LogModels.Message],

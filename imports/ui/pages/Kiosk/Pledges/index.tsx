@@ -8,8 +8,8 @@ import { OrgCardColors } from "/imports/ui/components/Cards"
 import { useState } from "react"
 
 import { Loading } from "/imports/ui/components"
+import { PledgeComplete } from "./PledgeComplete"
 import { SelectableOrgCards } from "./SelectableOrgCards"
-import { TopupComplete } from "./TopupComplete"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
 interface PledgesProps {
@@ -44,7 +44,7 @@ export const Pledges = ({ user }: PledgesProps) => {
 	if(!isEmpty(pledgeFeedbackData)) {
 		const org = topOrgs.find(org => org._id === pledgeFeedbackData.id)
 		if(!org) return <Loading />
-		return <TopupComplete data={ { amount: Number(pledgeFeedbackData.amount || 0), org } } resetData={ () => setPledgeFeedbackData({}) } />
+		return <PledgeComplete data={ { amount: Number(pledgeFeedbackData.amount || 0), org } } resetData={ () => setPledgeFeedbackData({}) } />
 	}
 	return (
 		<PledgesContainer>

@@ -15,7 +15,7 @@ export const Breakdown = () => {
 	if(themeLoading || orgsLoading || !theme) return <Loading />
 
 	const saves = theme.saves?.reduce((sum, save) => {return sum + (save.amount || 0)}, 0) || 0
-	const topOff = topOrgs.reduce((sum, org) => { return sum + org.topOff }, 0)
+	const crowdFavoriteTotal = topOrgs.reduce((sum, org) => { return sum + org.topOff }, 0)
 
 	// Values in order of appearance
 	const totalPot = (theme.leverageTotal || 0) + saves
@@ -24,8 +24,8 @@ export const Breakdown = () => {
 	const startingFundsTotal = theme.minStartingFundsActive
 		? (theme.numTopOrgs || 0) * (theme.minStartingFunds || 0)
 		: 0
-	const fundsAllocated = votedFunds + saves + topOff
-	const leverage = (theme.leverageTotal || 0) - consolationTotal - startingFundsTotal - votedFunds - topOff
+	const fundsAllocated = votedFunds + saves + crowdFavoriteTotal + startingFundsTotal
+	const leverage = (theme.leverageTotal || 0) - consolationTotal - startingFundsTotal - votedFunds - crowdFavoriteTotal
 
 
 	return (
@@ -48,10 +48,10 @@ export const Breakdown = () => {
 
 				<Arithmetic>-</Arithmetic>
 
-				{ /* Subtract funds from votes and topOff */ }
+				{ /* Subtract votes, crowd-favorite full-funding, saves, and minimum starting funds */ }
 				<Segment>
 					<Value>{ numeral(fundsAllocated).format("$0,0") }</Value>
-					<Label>Votes + Topoff + Saves</Label>
+					<Label>Votes + Crowd Fav + Saves + Min Starts</Label>
 				</Segment>
 
 				<Arithmetic>=</Arithmetic>
@@ -66,7 +66,7 @@ export const Breakdown = () => {
 
 				{ /* Subtract funds from pledge round */ }
 				<Segment>
-					<Value>{ numeral(theme.pledgedTotal).format("$0,0") }</Value>
+					<Value>{ numeral(theme.pledgeMatchTotal).format("$0,0") }</Value>
 					<Label>Pledge Matches</Label>
 				</Segment>
 

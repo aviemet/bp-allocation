@@ -2,6 +2,8 @@ import { Meteor } from "meteor/meteor"
 import { Mongo } from "meteor/mongo"
 
 import { Members, MemberThemes, type MemberData } from "/imports/api/db"
+import { LogModels } from "/imports/api/db/Logs"
+import { publicationLog } from "/imports/lib/loggers"
 import { MemberTransformer } from "/imports/server/transformers"
 import { registerObserver, type PublishSelf } from "../methods"
 import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"
@@ -67,8 +69,13 @@ const publishMembers = async (themeId: string, limit: number | false, publisher:
 				const transformed = MemberTransformer(member, membersParams.memberThemeByMemberId.get(member._id))
 				publisher.changed("members", member._id, transformed)
 			})
-		} catch (_error) {
-			// Error refreshing members from memberThemes
+		} catch (error) {
+			publicationLog.error(
+				"members.refresh",
+				"Failed to refresh members publication after memberThemes coordinator update",
+				error,
+				{ themeId, model: LogModels.Member, mirrorToConsole: true },
+			)
 		}
 	}
 
@@ -96,9 +103,13 @@ Meteor.publish("members", async function({ themeId, limit }: { themeId: string, 
 })
 
 Meteor.publish("member", async function({ memberId, themeId }: { memberId: string, themeId: string }) {
-	const memberThemes = await MemberThemes.find({ member: memberId, theme: themeId }).fetchAsync()
-	const memberThemeByMemberId = buildMemberThemeLookupMap(memberThemes, themeId)
-	const membersTransformerCallbacks = membersTransformer("members", this, { memberThemeByMemberId })
+	const membersParams: MembersTransformerParams = {
+		memberThemeByMemberId: buildMemberThemeLookupMap(
+			await MemberThemes.find({ member: memberId, theme: themeId }).fetchAsync(),
+			themeId,
+		),
+	}
+	const membersTransformerCallbacks = membersTransformer("members", this, membersParams)
 
 	const member = await Members.findOneAsync({ _id: memberId })
 	if(member) {
@@ -107,7 +118,33 @@ Meteor.publish("member", async function({ memberId, themeId }: { memberId: strin
 
 	const memberObserver = Members.find({ _id: memberId }).observe(membersTransformerCallbacks)
 
-	this.onStop(() => memberObserver.stop())
+	const refreshMemberFromMemberThemes = async (freshMemberThemes: MemberTheme[]) => {
+		try {
+			membersParams.memberThemeByMemberId = buildMemberThemeLookupMap(freshMemberThemes, themeId)
+			const memberDoc = await Members.findOneAsync({ _id: memberId })
+			if(!memberDoc) return
+			const transformed = MemberTransformer(memberDoc, membersParams.memberThemeByMemberId.get(memberDoc._id))
+			this.changed("members", memberDoc._id, transformed)
+		} catch (error) {
+			publicationLog.error(
+				"member.refresh",
+				"Failed to refresh single-member publication after memberThemes coordinator update",
+				error,
+				{ themeId, model: LogModels.Member, mirrorToConsole: true, meta: { memberId } },
+			)
+		}
+	}
+
+	const unsubscribeMemberThemes = registerMemberThemesRefreshListener(themeId, freshRows => {
+		void refreshMemberFromMemberThemes(freshRows)
+	})
+
+	this.onStop(() => {
+		unsubscribeMemberThemes()
+		if(memberObserver && typeof memberObserver.stop === "function") {
+			memberObserver.stop()
+		}
+	})
 
 	this.ready()
 })

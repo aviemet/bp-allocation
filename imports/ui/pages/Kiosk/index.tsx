@@ -7,12 +7,12 @@ import { ChitVotingKiosk } from "./ChitVoting"
 import { FundsVotingKiosk } from "./FundsVoting"
 import { KioskInfo } from "./Info/KioskInfo"
 import { MemberLoginRequired } from "./MemberLoginRequired"
+import { Pledges } from "./Pledges"
 import { RemoteVoting } from "./RemoteVoting"
-import { Pledges as Topups } from "./Topups"
 import { Results } from "../Presentation/Results"
 import { useSettings, useTheme } from "/imports/api/hooks"
 
-type KioskPage = "info" | "chit" | "funds" | "topups" | "results"
+type KioskPage = "info" | "chit" | "funds" | "pledges" | "results"
 type TimerRef = ReturnType<typeof setTimeout>
 
 export const Kiosk = () => {
@@ -33,7 +33,7 @@ export const Kiosk = () => {
 		}
 
 		if(member && settings?.topupsActive) {
-			return data.KIOSK_PAGES.topups
+			return data.KIOSK_PAGES.pledges
 		}
 
 		if(theme?.fundsVotingStarted && settings?.resultsVisited) {
@@ -46,7 +46,7 @@ export const Kiosk = () => {
 		data.KIOSK_PAGES.funds,
 		data.KIOSK_PAGES.info,
 		data.KIOSK_PAGES.results,
-		data.KIOSK_PAGES.topups,
+		data.KIOSK_PAGES.pledges,
 		member,
 		settings?.chitVotingActive,
 		settings?.fundsVotingActive,
@@ -56,48 +56,41 @@ export const Kiosk = () => {
 	])
 
 	const [ displayPage, setDisplayPage ] = useState<KioskPage>(activePage)
-	const [ show, setShow ] = useState(false)
+	const [ transitioning, setTransitioning ] = useState<boolean>(false)
+
+	const ready = !themeLoading && !settingsLoading
+	const show = ready && !transitioning
 
 	const timeoutRef = useRef<TimerRef | undefined>(undefined)
 
 	const doNavigation = useCallback((page: KioskPage) => {
 		clearTimeout(timeoutRef.current)
 		if(displayPage !== page) {
-			setShow(false)
+			setTransitioning(true)
 
 			setTimeout(() => {
 				setDisplayPage(page)
-				setShow(true)
+				setTransitioning(false)
 			}, FADE_DURATION)
 		}
 	}, [displayPage])
 
 	useEffect(() => {
-		if(!themeLoading && !settingsLoading) {
-			setShow(true)
-		}
-	}, [themeLoading, settingsLoading])
+		if(displayPage === activePage) return
 
-	useEffect(() => {
 		const shouldDelayFunds = displayPage === data.KIOSK_PAGES.funds && settings?.fundsVotingActive === false
 		const shouldDelayChit = displayPage === data.KIOSK_PAGES.chit && settings?.chitVotingActive === false
 
 		// Wait 1 minute before navigating a user away from a voting screen
-		if(
-			shouldDelayFunds ||
-			shouldDelayChit
-		) {
-			const timeout = setTimeout(() => doNavigation(activePage), data.votingRedirectTimeout * 1000)
-			timeoutRef.current = timeout
+		const delay = (shouldDelayFunds || shouldDelayChit) ? data.votingRedirectTimeout * 1000 : 0
 
-			return () => {
-				clearTimeout(timeout)
-				timeoutRef.current = undefined
-			}
+		const timeout = setTimeout(() => doNavigation(activePage), delay)
+		timeoutRef.current = timeout
+
+		return () => {
+			clearTimeout(timeout)
+			timeoutRef.current = undefined
 		}
-
-		timeoutRef.current = undefined
-		doNavigation(activePage)
 	}, [
 		activePage,
 		data.KIOSK_PAGES.chit,
@@ -117,8 +110,8 @@ export const Kiosk = () => {
 				return member ?
 					<RemoteVoting memberId={ member } component={ ChitVotingKiosk } /> :
 					<MemberLoginRequired component={ ChitVotingKiosk } />
-			case data.KIOSK_PAGES.topups:
-				return <RemoteVoting memberId={ member } component={ Topups } />
+			case data.KIOSK_PAGES.pledges:
+				return <RemoteVoting memberId={ member } component={ Pledges } />
 			case data.KIOSK_PAGES.funds:
 				return member ?
 					<RemoteVoting memberId={ member } component={ FundsVotingKiosk } /> :

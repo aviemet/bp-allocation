@@ -71,7 +71,7 @@ export function EnhancedTableHead({
 						onChange={ onSelectAllClick }
 						slotProps={ {
 							input: {
-								"aria-label": "select all desserts",
+								"aria-label": "Select all rows",
 							},
 						} }
 					/>

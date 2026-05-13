@@ -3,8 +3,11 @@ import { Meteor } from "meteor/meteor"
 import { registerObserver, type PublishSelf } from "../methods"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
 import { createDebouncedFunction } from "/imports/lib/utils"
+import { computePledgeMatchingForPublication } from "/imports/lib/pledgeMatching"
 
 import { Themes, PresentationSettings, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
+import { LogModels } from "/imports/api/db/Logs"
+import { publicationLog } from "/imports/lib/loggers"
 import { ThemeTransformer, OrgTransformer, aggregateVotesByOrganization, calculateVotesFromRawOrg } from "/imports/server/transformers"
 import { type ThemeTransformerParams } from "/imports/server/transformers/themeTransformer"
 import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"
@@ -42,10 +45,18 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	const preliminaryTopOrgs = filterTopOrgs(orgsWithVotes, theme)
 	const topOrgIds = new Set(preliminaryTopOrgs.map(org => org._id))
 
-	const transformedOrgs = orgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg, topOrgIds }))
+	const pledgeMatching = computePledgeMatchingForPublication(
+		orgs,
+		topOrgIds,
+		theme,
+		settings.useKioskFundsVoting || false,
+		memberThemes,
+	)
+
+	const transformedOrgs = orgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg, topOrgIds, matchedAmounts: pledgeMatching.matchedAmounts }))
 	const topOrgs = filterTopOrgs(transformedOrgs, theme)
 
-	const themeObserverCallbacks = themeObserver("themes", publisher, { topOrgs, allOrgs: transformedOrgs, memberThemes, settings })
+	const themeObserverCallbacks = themeObserver("themes", publisher, { topOrgs, allOrgs: transformedOrgs, memberThemes, settings, pledgeMatching })
 	themeObserverCallbacks.added(theme)
 
 	const refreshThemeFromMemberThemes = async (memberThemesOverride?: MemberTheme[]) => {
@@ -68,12 +79,25 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 			const updatedPreliminaryTopOrgs = filterTopOrgs(updatedOrgsWithVotes, updatedTheme)
 			const updatedTopOrgIds = new Set(updatedPreliminaryTopOrgs.map(org => org._id))
 
-			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme: updatedTheme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg, topOrgIds: updatedTopOrgIds }))
+			const updatedPledgeMatching = computePledgeMatchingForPublication(
+				updatedOrgs,
+				updatedTopOrgIds,
+				updatedTheme,
+				settings.useKioskFundsVoting || false,
+				memberThemes,
+			)
+
+			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme: updatedTheme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg, topOrgIds: updatedTopOrgIds, matchedAmounts: updatedPledgeMatching.matchedAmounts }))
 			const updatedTopOrgs = filterTopOrgs(updatedTransformedOrgs, updatedTheme)
-			const transformed = ThemeTransformer(updatedTheme, { topOrgs: updatedTopOrgs, allOrgs: updatedTransformedOrgs, memberThemes, settings })
+			const transformed = ThemeTransformer(updatedTheme, { topOrgs: updatedTopOrgs, allOrgs: updatedTransformedOrgs, memberThemes, settings, pledgeMatching: updatedPledgeMatching })
 			publisher.changed("themes", theme._id, transformed)
-		} catch (_error) {
-			// Error refreshing theme from memberThemes
+		} catch (error) {
+			publicationLog.error(
+				"themes.refresh",
+				"Failed to refresh theme publication after memberThemes or organizations change",
+				error,
+				{ themeId: theme._id, model: LogModels.Theme, mirrorToConsole: true },
+			)
 		}
 	}
 

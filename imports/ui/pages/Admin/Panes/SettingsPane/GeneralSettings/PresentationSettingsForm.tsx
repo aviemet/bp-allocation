@@ -5,16 +5,20 @@ import {
 } from "@mui/material"
 import { useState } from "react"
 import { PresentationSettingsMethods } from "/imports/api/methods"
-import { useSettings } from "/imports/api/hooks"
+import { useSettings, useTheme } from "/imports/api/hooks"
 import { PresentationSettingsSchema } from "/imports/api/db"
 
 import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
 import { Loading } from "/imports/ui/components"
+import { InPersonPledgeQrCode } from "/imports/ui/components/InPersonPledgeQrCode"
 
 export const PresentationSettingsForm = () => {
 	const { settings, settingsLoading } = useSettings()
+	const { theme } = useTheme()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
+
+	const showInPersonQr = !!theme?.inPersonPledgeActive
 
 	const sanitizeData = (data: Record<string, unknown>) => {
 		const sanitizedData = data
@@ -124,6 +128,14 @@ export const PresentationSettingsForm = () => {
 						</Stack>
 					</Paper>
 				</Grid>
+
+				{ showInPersonQr && (
+					<Grid size={ { xs: 12 } }>
+						<Paper sx={ { p: 2 } }>
+							<InPersonPledgeQrCode />
+						</Paper>
+					</Grid>
+				) }
 
 				<Grid size={ { xs: 12 } } sx={ { textAlign: "right" } }>
 					<SubmitButton type="submit" status={ formStatus } setStatus={ setFormStatus }>Save Changes</SubmitButton>

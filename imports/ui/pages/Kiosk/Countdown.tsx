@@ -1,7 +1,8 @@
 import { Typography } from "@mui/material"
 import { useState } from "react"
 
-import { useInterval } from "/imports/ui/components/useInterval"
+import { useInterval } from "/imports/lib/hooks/useInterval"
+
 interface CountdownProps {
 	seconds: number
 	isCounting: boolean

@@ -8,8 +8,8 @@ import React, { useState, useEffect } from "react"
 import { useData } from "/imports/api/providers"
 import { useSettings, useOrgs } from "/imports/api/hooks"
 import { Countdown } from "../Countdown"
+import { useKioskVoting } from "../KioskVotingContext"
 import { VotingComplete } from "../VotingComplete"
-import { useVoting } from "../VotingContext"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
 import { VotingCardContent } from "./VotingCardContent"
 import { COLORS } from "/imports/lib/global"
@@ -37,7 +37,7 @@ export const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
 	const { topOrgs } = useOrgs()
-	const { allocations, saveAllocations, member } = useVoting()
+	const { allocations, saveAllocations, member } = useKioskVoting()
 
 	const voted = user.theme?.allocations?.some(org => (org.amount || 0) > 0) || false
 
