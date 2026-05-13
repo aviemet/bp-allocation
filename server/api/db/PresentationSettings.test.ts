@@ -1,4 +1,5 @@
 import { expect } from "chai"
+
 import { PresentationSettings } from "/imports/api/db"
 
 const settingsDefaults = {
@@ -28,7 +29,7 @@ describe("PresentationSettings model", function() {
 	describe("Creating a record", function() {
 
 
-		it("Should return an _id when succesful", function() {
+		it("Should return an _id when successful", function() {
 			expect(presentationSettingsId).to.not.be.null
 		})
 

@@ -6,7 +6,7 @@ import { formatPhoneNumber } from "/imports/lib/utils"
 import { ThemeMethods, MemberMethods, OrganizationMethods } from "/imports/api/methods"
 import { Themes, Members, MemberThemes } from "/imports/api/db"
 import { Organizations } from "/imports/api/db"
-import { resetDatabase } from "../../test-support/resetDatabase"
+import { resetDatabase } from "/imports/test-support/resetDatabase"
 
 const NUM_TEST_RECORDS = 5
 
@@ -72,9 +72,6 @@ describe("Member Methods", function() {
 		}
 	})
 
-	/**
-	 * Create
-	 */
 	describe("Create", function() {
 
 		it(`Should have ${NUM_TEST_RECORDS} member records`, async function() {

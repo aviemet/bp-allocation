@@ -5,7 +5,7 @@ import { Random } from "meteor/random"
 import { ThemeMethods, OrganizationMethods, MemberMethods } from "/imports/api/methods"
 import { Themes, Organizations, MemberThemes, ThemeData } from "/imports/api/db"
 import { PledgeAnimationQueue } from "/imports/api/db/PledgeAnimationQueue"
-import { resetDatabase } from "../../test-support/resetDatabase"
+import { resetDatabase } from "/imports/test-support/resetDatabase"
 
 const themeData: { title: string, leverage: number, _id?: string } = {
 	title: (() => {
@@ -49,9 +49,6 @@ describe("Theme Methods", function() {
 		}
 	})
 
-	/**
-	 * Create
-	 */
 	describe("Create", function() {
 
 		it("Should create a Theme", function() {
@@ -64,9 +61,6 @@ describe("Theme Methods", function() {
 
 	})
 
-	/**
-	 * Top Org Toggle
-	 */
 	describe("TopOrgToggle", function() {
 		it("Should add an org id to the set of topOrgsManual", async function() {
 			orgId = orgIds[ 0 ]
@@ -84,9 +78,6 @@ describe("Theme Methods", function() {
 
 	})
 
-	/**
-	 * Save Org
-	 */
 	describe("SaveOrg", function() {
 
 		it("Should add a save record to the theme", async function() {
@@ -111,9 +102,6 @@ describe("Theme Methods", function() {
 
 	})
 
-	/**
-	 * Un Save Org
-	 */
 	describe("UnSaveOrg", function() {
 
 		it("Should remove a save record from the theme", async function() {
@@ -136,9 +124,6 @@ describe("Theme Methods", function() {
 
 	})
 
-	/**
-	 * Save Leverage Spread
-	 */
 	describe("SaveLeverageSpread", function() {
 
 		it("Should distribute the leverage amounts", async function() {
@@ -164,9 +149,6 @@ describe("Theme Methods", function() {
 
 	})
 
-	/**
-	 * Reset Leverage Spread
-	 */
 	describe("ResetLeverage", function() {
 		it("Should set leverageFunds back to 0 for all orgs in theme", async function() {
 			await ThemeMethods.resetLeverage.callAsync(theme._id)
@@ -179,9 +161,6 @@ describe("Theme Methods", function() {
 		})
 	})
 
-	/**
-	 * Update
-	 */
 	describe("Update", function() {
 
 		it("Should update specified fields on the object", async function() {
@@ -195,9 +174,6 @@ describe("Theme Methods", function() {
 
 	})
 
-	/**
-	 * ResetAllOrgFunds
-	 */
 	describe("ResetAllOrgFunds", function() {
 		it("Should zero out funding state across orgs, member themes, the theme, and the pledge animation queue", async function() {
 			const targetOrgId = orgIds[0]
@@ -275,9 +251,6 @@ describe("Theme Methods", function() {
 		})
 	})
 
-	/**
-	 * ResetMessageStatus
-	 */
 	describe("ResetMessageStatus", function() {
 		it("Should clear the messagesStatus array on the theme", async function() {
 			await Themes.updateAsync({ _id: theme._id }, {
@@ -292,9 +265,6 @@ describe("Theme Methods", function() {
 		})
 	})
 
-	/**
-	 * Remove
-	 */
 	describe("Remove", function() {
 		it("Should remove the theme and cascade delete its organizations", async function() {
 			expect(await Themes.findOneAsync({ _id: theme._id })).to.exist

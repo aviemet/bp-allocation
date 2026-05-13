@@ -13,8 +13,8 @@ import { useMemo } from "react"
 
 import { AllocationInputs } from "./AllocationInputs"
 import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
+import { MinimumLeverageButton } from "/imports/ui/components/Buttons"
 import { Loading } from "/imports/ui/components"
-import { MinimumLeverageButton } from "/imports/ui/components/Buttons/MinimumLeverageButton"
 
 interface AllocationsTableProps {
 	hideAdminFields?: boolean

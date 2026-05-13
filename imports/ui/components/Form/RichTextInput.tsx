@@ -1,5 +1,5 @@
 import { Controller, useFormContext, type FieldValues } from "react-hook-form"
-import { RichTextEditor } from "/imports/ui/components/RichTextEditor"
+import { RichTextEditor } from "/imports/ui/components"
 
 interface RichTextInputProps {
 	name: string

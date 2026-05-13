@@ -2,7 +2,7 @@ import { forEach, find, isEqual } from "es-toolkit/compat"
 import { useMemo, useState, useRef, useEffect, startTransition, type ReactNode } from "react"
 import { useTheme, useOrgs } from "/imports/api/hooks"
 import { MemberMethods } from "/imports/api/methods"
-import { MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { type MemberWithTheme } from "/imports/api/db"
 import { createContext } from "/imports/lib/hooks/createContext"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
 

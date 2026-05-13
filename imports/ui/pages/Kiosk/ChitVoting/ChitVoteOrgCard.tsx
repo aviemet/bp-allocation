@@ -1,4 +1,4 @@
-import { OrgCard } from "/imports/ui/components/Cards"
+import { OrgCard } from "/imports/ui/components"
 import { ChitTicker } from "./ChitTicker"
 import { type OrgData } from "/imports/api/db"
 

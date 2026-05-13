@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react"
 
 import { useFindMemberByCode } from "/imports/api/hooks"
 import { Loading, MemberCodeLoginForm } from "/imports/ui/components"
-import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { type MemberWithTheme } from "/imports/api/db"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
 
 import { KioskVotingProvider } from "./KioskVotingContext"

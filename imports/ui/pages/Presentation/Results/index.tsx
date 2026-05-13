@@ -5,9 +5,8 @@ import numeral from "numeral"
 import { useEffect, useState } from "react"
 import { useTheme, useSettings, useOrgs } from "/imports/api/hooks"
 
-import { AwardCard } from "/imports/ui/components/Cards/AwardCard"
+import { AwardCard, Loading } from "/imports/ui/components"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
-import { Loading } from "/imports/ui/components"
 
 export const Results = () => {
 	const { theme } = useTheme()

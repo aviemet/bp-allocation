@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 import { Button, Grid, InputAdornment, Stack, Typography } from "@mui/material"
 import { useState, useEffect, useMemo } from "react"
 import { useOrgs, useTheme } from "/imports/api/hooks"
-import { TextInput, SubmitButton, STATUS, SwitchInput, type Status } from "/imports/ui/components/Form"
+import { STATUS, SubmitButton, SwitchInput, TextInput, type Status } from "/imports/ui/components"
 import { useFormContext, useWatch } from "react-hook-form"
 
 import { MemberSearchInput } from "./MemberSearchInput"

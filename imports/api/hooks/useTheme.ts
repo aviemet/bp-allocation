@@ -1,7 +1,7 @@
 import { Meteor } from "meteor/meteor"
 import { useTracker } from "meteor/react-meteor-data"
 
-import { type ThemeWithComputed } from "/imports/server/transformers/themeTransformer"
+import { type ThemeWithComputed } from "/imports/types/themeWithComputed"
 import { Themes, type ThemeData } from "../db"
 import { useData } from "../providers/DataProvider"
 

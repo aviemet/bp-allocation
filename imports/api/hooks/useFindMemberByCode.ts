@@ -1,7 +1,7 @@
 import { useCallback } from "react"
 
 import { useMembers } from "./useMembers"
-import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { type MemberWithTheme } from "/imports/api/db"
 
 export const buildMemberCode = (initials: string, number: string | number): string => {
 	return `${initials.trim().toUpperCase()}${number}`

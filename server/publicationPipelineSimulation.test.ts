@@ -20,7 +20,7 @@ import {
 	runOrganizationsPublicationPipeline,
 	runThemePublicationPipeline,
 	simulateTriplePublicationRefresh,
-} from "./publicationPipelineSimulation"
+} from "/imports/server/test-support/publicationPipelineSimulation"
 
 describe("Publication pipeline load simulation", function() {
 

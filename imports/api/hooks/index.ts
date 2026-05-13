@@ -1,5 +1,5 @@
 export { useTheme } from "./useTheme"
-export { type ThemeWithComputed } from "/imports/server/transformers/themeTransformer"
+export { type ThemeWithComputed } from "/imports/types/themeWithComputed"
 export { useSettings } from "./useSettings"
 export { useMembers, useMember } from "./useMembers"
 export { useFindMemberByCode, buildMemberCode } from "./useFindMemberByCode"

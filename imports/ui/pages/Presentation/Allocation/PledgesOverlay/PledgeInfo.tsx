@@ -28,15 +28,19 @@ export const PledgeInfo = ({ pledge }: PledgeInfoProps) => {
 
 const AnimationContainer = styled.div`
 	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
+	inset: 0;
+	z-index: 1;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	overflow: hidden;
+	box-sizing: border-box;
+	padding: max(0.5rem, env(safe-area-inset-top, 0px)) max(0.75rem, env(safe-area-inset-right, 0px))
+		max(0.5rem, env(safe-area-inset-bottom, 0px)) max(0.75rem, env(safe-area-inset-left, 0px));
 
 	h1 {
+		margin: 0;
+		line-height: 1.08;
 		font-family: Roboto;
 		-webkit-text-stroke: 3px #000;
 		-webkit-text-fill-color: white;
@@ -44,17 +48,18 @@ const AnimationContainer = styled.div`
 		text-shadow: 2px 3px 1px #99F;
 		font-weight: 700;
 		text-align: center;
+		overflow-wrap: anywhere;
 
 		&.memberName {
-			font-size: 6.5rem;
+			font-size: clamp(1.25rem, 6.5vmin, 6.5rem);
 		}
 
 		&.orgTitle {
-			font-size: 6.5rem;
+			font-size: clamp(1.25rem, 6.5vmin, 6.5rem);
 		}
 
 		&.amount {
-			font-size: 8rem;
+			font-size: clamp(1.5rem, 8vmin, 8rem);
 		}
 	}
 `
@@ -63,5 +68,7 @@ const AnimationContent = styled.div`
 	opacity: 0;
 	animation: fade-in-scroll-up 10s;
 	text-align: center;
+	max-width: 100%;
+	box-sizing: border-box;
 `
 

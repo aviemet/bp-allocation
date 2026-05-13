@@ -5,8 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { ThemeMethods } from "/imports/api/methods"
 import { useTheme } from "/imports/api/hooks"
-import { STATUS, type Status } from "/imports/ui/components/Form"
-import { ConfirmationModal } from "/imports/ui/components/Dialogs/CustomConfirm"
+import { CustomConfirmationModal, STATUS, type Status } from "/imports/ui/components"
 
 export const ResetMessageStatusButton = () => {
 	const muiTheme = useMuiTheme()
@@ -131,7 +130,7 @@ export const ResetMessageStatusButton = () => {
 			>
 				Reset Sent Status for All Messages
 			</Button>
-			<ConfirmationModal
+			<CustomConfirmationModal
 				header="Confirm reset"
 				content="Resetting message status will permanently clear the sent state for all messages. This action cannot be undone. Do you want to continue?"
 				isModalOpen={ isConfirmOpen }

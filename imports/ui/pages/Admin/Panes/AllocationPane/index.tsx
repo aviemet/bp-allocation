@@ -4,12 +4,12 @@ import {
 	Typography,
 } from "@mui/material"
 import { Link } from "@tanstack/react-router"
+import { ShowLeverageToggle } from "/imports/ui/components/Toggles"
 import { Loading } from "/imports/ui/components"
+import { useTheme, useOrgs } from "/imports/api/hooks"
 
 import { AllocationsTable } from "./AllocationsTable"
 import { Breakdown } from "./Breakdown"
-import { ShowLeverageToggle } from "/imports/ui/components/Toggles"
-import { useTheme, useOrgs } from "/imports/api/hooks"
 
 interface AllocationPaneProps {
 	hideAdminFields?: boolean

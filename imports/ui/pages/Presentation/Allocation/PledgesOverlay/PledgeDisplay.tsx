@@ -1,3 +1,4 @@
+import styled from "@emotion/styled"
 import Fireworks from "matter-fireworks"
 import { useLayoutEffect, useRef } from "react"
 
@@ -23,9 +24,20 @@ export const PledgeDisplay = ({ pledge }: PledgeDisplayProps) => {
 
 	return (
 		<>
+			<FireworksCanvasLayer>
+				<canvas ref={ canvasRef } />
+			</FireworksCanvasLayer>
 			<PledgeInfo pledge={ pledge } />
-			<canvas ref={ canvasRef } />
 		</>
 	)
 }
+
+const FireworksCanvasLayer = styled.div`
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	pointer-events: none;
+	box-sizing: border-box;
+`
 

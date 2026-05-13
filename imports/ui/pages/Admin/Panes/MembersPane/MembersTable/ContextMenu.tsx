@@ -14,10 +14,9 @@ import {
 import { Link } from "@tanstack/react-router"
 import { useState } from "react"
 
-import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
-import { ActionMenu } from "/imports/ui/components/Menus/ActionMenu"
-import { SendWithFeedbackButton } from "/imports/ui/components/Buttons/SendWithFeedbackButton"
-import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { SendWithFeedbackButton } from "/imports/ui/components/Buttons"
+import { ActionMenu, ConfirmationModal } from "/imports/ui/components"
+import { type MemberWithTheme } from "/imports/api/db"
 
 interface ContextMenuProps {
 	themeId: string

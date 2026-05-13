@@ -4,11 +4,11 @@ import { useMessage } from "/imports/api/hooks"
 import { MessageMethods } from "/imports/api/methods"
 import { MessageSchema } from "/imports/api/db"
 import { type Message } from "/imports/types/schema"
-import { Form, STATUS, type Status } from "/imports/ui/components/Form"
 import { useState } from "react"
 
-import { Loading } from "/imports/ui/components"
+import { Form, Loading, STATUS, type Status } from "/imports/ui/components"
 import { EditMessageForm } from "./EditMessageForm"
+
 type MessageFormData = Omit<Message, "_id" | "createdAt" | "updatedAt">
 
 export const MessageEdit = () => {

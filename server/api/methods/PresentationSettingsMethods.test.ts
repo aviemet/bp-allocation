@@ -2,7 +2,7 @@ import { expect } from "chai"
 
 import { PresentationSettings, SettingsData } from "/imports/api/db"
 import { PresentationSettingsMethods } from "/imports/api/methods"
-import { resetDatabase } from "../../test-support/resetDatabase"
+import { resetDatabase } from "/imports/test-support/resetDatabase"
 
 let settings: SettingsData
 
@@ -15,9 +15,6 @@ describe("Presentation Settings Methods", function() {
 		settings = (await PresentationSettings.find({ _id: settingsId }).fetchAsync())[0]
 	})
 
-	/**
-	 * Create
-	 */
 	describe("Create", function() {
 
 		it("Should create a record", function() {
@@ -26,9 +23,6 @@ describe("Presentation Settings Methods", function() {
 
 	})
 
-	/**
-	 * Update
-	 */
 	describe("Update", function() {
 
 		it("Should update specified fields on the object", async function() {

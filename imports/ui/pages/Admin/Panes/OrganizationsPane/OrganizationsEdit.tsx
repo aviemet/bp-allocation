@@ -13,7 +13,7 @@ import { useOrgs } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
 import { OrganizationSchema } from "/imports/api/db"
 
-import { Form, TextInput, RichTextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
+import { Form, RichTextInput, STATUS, SubmitButton, TextInput, type Status } from "/imports/ui/components"
 import { Loading } from "/imports/ui/components"
 
 const FormReset = () => {

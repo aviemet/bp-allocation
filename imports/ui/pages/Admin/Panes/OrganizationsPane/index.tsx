@@ -22,10 +22,8 @@ import { type Organization } from "/imports/types/schema"
 
 import { OrganizationMethods } from "/imports/api/methods"
 
-import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
-import { SplitButton } from "/imports/ui/components/Buttons/SplitButton"
-import { DisplayHtml } from "/imports/ui/components/DisplayHtml"
-import { Loading } from "/imports/ui/components"
+import { SplitButton } from "/imports/ui/components/Buttons"
+import { ConfirmationModal, DisplayHtml, Loading } from "/imports/ui/components"
 
 interface OrgCardProps {
 	org: Organization

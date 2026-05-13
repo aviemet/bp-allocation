@@ -5,8 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { ThemeMethods } from "/imports/api/methods"
 import { useTheme } from "/imports/api/hooks"
-import { STATUS, type Status } from "/imports/ui/components/Form"
-import { ConfirmationModal } from "/imports/ui/components/Dialogs/CustomConfirm"
+import { CustomConfirmationModal, STATUS, type Status } from "/imports/ui/components"
 
 export const ResetOrgFundsButton = () => {
 	const muiTheme = useMuiTheme()
@@ -142,7 +141,7 @@ export const ResetOrgFundsButton = () => {
 			>
 				Reset Funds for All Orgs
 			</Button>
-			<ConfirmationModal
+			<CustomConfirmationModal
 				header="Confirm reset"
 				content="Resetting funds will permanently clear allocations, pledges, leverage funds, and chit votes for every organization. This action cannot be undone. Do you want to continue?"
 				isModalOpen={ isConfirmOpen }

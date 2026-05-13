@@ -1,6 +1,6 @@
 import { ComponentType } from "react"
 import { useMember } from "/imports/api/hooks"
-import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { type MemberWithTheme } from "/imports/api/db"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
 
 import { KioskVotingProvider } from "./KioskVotingContext"

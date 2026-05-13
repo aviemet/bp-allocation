@@ -2,7 +2,7 @@ import { Typography } from "@mui/material"
 
 import { useFindMemberByCode, useTheme } from "/imports/api/hooks"
 import { Loading, MemberCodeLoginForm } from "/imports/ui/components"
-import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { type MemberWithTheme } from "/imports/api/db"
 
 interface InPersonPledgeLoginProps {
 	onMemberFound: (member: MemberWithTheme) => void

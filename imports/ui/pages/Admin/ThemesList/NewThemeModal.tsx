@@ -6,8 +6,7 @@ import {
 import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 
-import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
-import { ContentModal } from "/imports/ui/components/Dialogs/ContentModal"
+import { ContentModal, Form, STATUS, SubmitButton, TextInput, type Status } from "/imports/ui/components"
 import { ThemeMethods } from "/imports/api/methods"
 import { ThemeSchema } from "/imports/api/db"
 

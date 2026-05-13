@@ -3,7 +3,7 @@ import { useState } from "react"
 
 import { useSettings, useTheme } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
-import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { type MemberWithTheme } from "/imports/api/db"
 
 import { InPersonPledgeForm } from "./InPersonPledgeForm"
 import { InPersonPledgeLogin } from "./InPersonPledgeLogin"

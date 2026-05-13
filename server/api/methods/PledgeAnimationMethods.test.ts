@@ -3,7 +3,7 @@ import { Random } from "meteor/random"
 
 import { PledgeAnimationMethods } from "/imports/api/methods"
 import { PledgeAnimationQueue } from "/imports/api/db/PledgeAnimationQueue"
-import { resetDatabase } from "../../test-support/resetDatabase"
+import { resetDatabase } from "/imports/test-support/resetDatabase"
 
 describe("PledgeAnimation Methods", function() {
 	beforeEach(async function() {

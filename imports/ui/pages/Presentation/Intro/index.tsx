@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 
-import { Image } from "/imports/ui/components/Image"
+import { Image } from "/imports/ui/components"
+
 interface IntroProps {
 	title?: string
 	question?: string

@@ -10,12 +10,10 @@ import { useMessages, useMembers } from "/imports/api/hooks"
 import { MessageMethods } from "/imports/api/methods"
 import { type MessageData } from "/imports/api/db"
 
-import { SortableTable } from "/imports/ui/components/SortableTable"
-import { SendWithFeedbackButton } from "/imports/ui/components/Buttons/SendWithFeedbackButton"
 import { ActiveToggle } from "./ActiveToggle"
-import { IncludeVotingLinkToggle } from "./IncludevotingLinkToggle"
-import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
-import { Loading } from "/imports/ui/components"
+import { IncludeVotingLinkToggle } from "./IncludeVotingLinkToggle"
+import { SendWithFeedbackButton } from "/imports/ui/components/Buttons"
+import { ConfirmationModal, Loading, SortableTable } from "/imports/ui/components"
 
 interface MessageRow extends MessageData {
 	[key: string]: unknown

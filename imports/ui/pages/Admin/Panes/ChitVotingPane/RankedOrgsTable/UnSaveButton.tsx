@@ -8,7 +8,7 @@ import { useState } from "react"
 import { useTheme } from "/imports/api/hooks"
 import { ThemeMethods } from "/imports/api/methods"
 
-import { ContentModal } from "/imports/ui/components/Dialogs/ContentModal"
+import { ContentModal } from "/imports/ui/components"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
 
 interface UnSaveButtonProps {

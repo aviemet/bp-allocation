@@ -13,13 +13,13 @@ import {
 import { Link } from "@tanstack/react-router"
 import { type Message } from "/imports/types/schema"
 import {
-	TextInput,
-	Switch,
-	SubmitButton,
-	RichTextInput,
 	CheckboxInput,
+	RichTextInput,
+	SubmitButton,
+	Switch,
+	TextInput,
 	type Status,
-} from "/imports/ui/components/Form"
+} from "/imports/ui/components"
 import { useWatch, useFormContext } from "react-hook-form"
 
 type MessageFormData = Omit<Message, "_id" | "createdAt" | "updatedAt">

@@ -8,9 +8,16 @@ import { PresentationSettingsMethods } from "/imports/api/methods"
 import { useSettings, useTheme } from "/imports/api/hooks"
 import { PresentationSettingsSchema } from "/imports/api/db"
 
-import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
-import { Loading } from "/imports/ui/components"
-import { InPersonPledgeQrCode } from "/imports/ui/components/InPersonPledgeQrCode"
+import {
+	Form,
+	InPersonPledgeQrCode,
+	Loading,
+	STATUS,
+	SubmitButton,
+	Switch,
+	TextInput,
+	type Status,
+} from "/imports/ui/components"
 
 export const PresentationSettingsForm = () => {
 	const { settings, settingsLoading } = useSettings()

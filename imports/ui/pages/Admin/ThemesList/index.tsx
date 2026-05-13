@@ -11,7 +11,13 @@ import { useState } from "react"
 import { Themes, type ThemeData } from "/imports/api/db"
 import { ThemeMethods } from "/imports/api/methods"
 
-import { SortableTable, type HeadCell } from "/imports/ui/components/SortableTable"
+import {
+	ActionMenu,
+	ConfirmationModal,
+	SortableTable,
+	type HeadCell,
+} from "/imports/ui/components"
+import { NewThemeModal } from "./NewThemeModal"
 
 interface ThemeRow extends ThemeData {
 	[key: string]: unknown
@@ -21,10 +27,6 @@ const createThemeRow = (theme: ThemeData): ThemeRow => {
 	const row: ThemeRow = { ...theme }
 	return row
 }
-
-import { ActionMenu } from "/imports/ui/components/Menus/ActionMenu"
-import { NewThemeModal } from "./NewThemeModal"
-import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
 
 export const ThemesList = () => {
 	const [ modalOpen, setModalOpen ] = useState(false)

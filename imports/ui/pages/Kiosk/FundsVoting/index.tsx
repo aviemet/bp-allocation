@@ -10,10 +10,10 @@ import { useSettings, useOrgs } from "/imports/api/hooks"
 import { Countdown } from "../Countdown"
 import { useKioskVoting } from "../KioskVotingContext"
 import { VotingComplete } from "../VotingComplete"
-import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
+import { OrgCard, OrgCardContainer } from "/imports/ui/components"
 import { VotingCardContent } from "./VotingCardContent"
 import { COLORS } from "/imports/lib/global"
-import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { type MemberWithTheme } from "/imports/api/db"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
 
 interface AmountRemainingProps {

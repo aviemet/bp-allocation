@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { MemberSearch } from "/imports/ui/components/MemberSearch"
+import { MemberSearch } from "/imports/ui/components"
 import { useFormContext, useWatch } from "react-hook-form"
 import { useMembers } from "/imports/api/hooks"
 import { type MemberData } from "/imports/api/db"

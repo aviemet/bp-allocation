@@ -5,10 +5,17 @@ import { useState } from "react"
 
 import { useOrgs, useTheme } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
-import { Loading } from "/imports/ui/components"
-import { OrgCardColors } from "/imports/ui/components/Cards"
-import { Form, TextInput, SubmitButton, STATUS, SwitchInput, type Status } from "/imports/ui/components/Form"
-import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import {
+	Form,
+	Loading,
+	OrgCardColors,
+	STATUS,
+	SubmitButton,
+	SwitchInput,
+	TextInput,
+	type Status,
+} from "/imports/ui/components"
+import { type MemberWithTheme } from "/imports/api/db"
 
 import { SelectableOrgCards } from "/imports/ui/pages/Kiosk/Pledges/SelectableOrgCards"
 import { InPersonPledgeComplete, type CompletedPledge } from "./InPersonPledgeComplete"

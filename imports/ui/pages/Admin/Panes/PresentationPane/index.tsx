@@ -1,7 +1,6 @@
 // import { useTheme, useSettings } from "/imports/api/hooks"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 
-import { TimerInput, ResultsOffsetInput } from "/imports/ui/components/Inputs"
 import BarChartIcon from "@mui/icons-material/BarChart"
 import CheckIcon from "@mui/icons-material/Check"
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
@@ -16,17 +15,17 @@ import {
 	Paper,
 } from "@mui/material"
 
+import { PresentationNavButton } from "./PresentationNavButton"
 import {
+	AnimateTopOrgsToggle,
 	ChitVotingActiveToggle,
+	ColorizeTopOrgsToggle,
 	FundsVotingActiveToggle,
 	PledgesActiveToggle,
-	ColorizeTopOrgsToggle,
-	AnimateTopOrgsToggle,
 	ShowLeverageToggle,
 	ShowSaveValuesToggle,
 } from "/imports/ui/components/Toggles"
-
-import { PresentationNavButton } from "./PresentationNavButton"
+import { ResultsOffsetInput, TimerInput } from "/imports/ui/components/Inputs"
 import { Link, Loading } from "/imports/ui/components"
 import { useSettings, useTheme } from "/imports/api/hooks"
 

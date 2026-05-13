@@ -3,7 +3,8 @@ import { roundFloat } from "/imports/lib/utils"
 import { calculatePledgeMatches, leverageBonusForPledge, type PledgeMatchingResult } from "/imports/lib/pledgeMatching"
 
 import { type ThemeData, type SettingsData } from "/imports/api/db"
-import { type MemberTheme, type MatchPledge } from "/imports/types/schema"
+import { type MatchPledge, type MemberTheme } from "/imports/types/schema"
+import { type PledgeWithOrg, type ThemeWithComputed } from "/imports/types/themeWithComputed"
 import { type OrgWithComputed } from "./orgTransformer"
 
 /**
@@ -17,32 +18,6 @@ export interface ThemeTransformerParams {
 	memberThemes: MemberTheme[]
 	settings: SettingsData
 	pledgeMatching?: PledgeMatchingResult
-}
-
-export interface PledgeWithOrg extends MatchPledge {
-	org: {
-		_id: string
-		title: string
-	}
-	[key: string]: unknown
-}
-
-export interface ThemeWithComputed extends ThemeData {
-	pledgedTotal: number
-	pledgeMatchTotal: number
-	votedFunds: number
-	fundsVotesCast?: number
-	chitVotesCast?: number
-	totalChitVotes?: number
-	totalMembers: number
-	fundsVotingStarted: boolean
-	chitVotingStarted: boolean
-	leverageRemaining: number
-	memberFunds: number
-	consolationTotal: number
-	topOrgs: string[]
-	pledges: PledgeWithOrg[]
-	[key: string]: unknown
 }
 
 export const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams): ThemeWithComputed => {

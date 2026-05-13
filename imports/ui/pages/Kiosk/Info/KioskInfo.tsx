@@ -4,8 +4,7 @@ import {
 import { useMemo } from "react"
 import { useTheme, useOrgs } from "/imports/api/hooks"
 
-import { Loading } from "/imports/ui/components"
-import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
+import { Loading, OrgCard, OrgCardContainer } from "/imports/ui/components"
 import { useWindowSize, breakpoints } from "/imports/ui/MediaProvider"
 
 export const KioskInfo = () => {

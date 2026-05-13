@@ -12,8 +12,7 @@ import { useTheme } from "/imports/api/hooks"
 import { ThemeSchema, DEFAULT_NUM_TOP_ORGS } from "/imports/api/db"
 import { formatters, roundFloat } from "/imports/lib/utils"
 
-import { Form, TextInput, Switch, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
-import { Loading } from "/imports/ui/components"
+import { Form, Loading, STATUS, SubmitButton, Switch, TextInput, type Status } from "/imports/ui/components"
 
 export const ThemeSettingsForm = () => {
 	const { theme } = useTheme()

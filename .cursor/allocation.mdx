@@ -43,22 +43,25 @@ Architecture notes for this codebase: **why** non-obvious choices exist, not tut
 
 ## UI / tooling gotchas
 
+- **`/imports/ui/components` barrel**: re-exports shared UI, forms, dialogs, cards, etc. It does **not** re-export **`Buttons/*`**, **`Toggles/*`**, or **`Inputs/*`** — import those from **`/imports/ui/components/Buttons/...`**, **`/imports/ui/components/Toggles`**, and **`/imports/ui/components/Inputs`**. The barrel exposes **`ConfirmationModal`** (`ConfirmDelete`) and **`CustomConfirmationModal`** (`CustomConfirm`, rich `content`) as distinct names.
 - **TanStack Router pinned to `1.156.0`**: newer releases rely on `package.json` `exports` paths Meteor’s bundler does not resolve ([meteor#13520](https://github.com/meteor/meteor/pull/13520)); bumping the router without fixing that breaks the build.
 - **Nested `$pull` on pledge arrays**: `_id` `autoValue` on embedded pledge schema must **not** `unset()` for non-`$push` operators or **`$pull` by `_id` becomes `$pull: { pledges: {} }`** and wipes the array.
 - **MUI v9**: Checkbox/Switch use **`slotProps.input`**; Stack/Grid flex props belong in **`sx`**, not loose DOM props (MUI forwards only a small allowlist to the root).
 - **React 19**: do not spread props that include **`key`**; pull `key` out and pass explicitly where MUI render props inject it.
+- **`/pledges-overlay/$id`**: fullscreen stacks use **`position: fixed; inset: 0`** instead of **`100vw` / `100vh`** so width does not include the vertical scrollbar gutter (which forces horizontal scroll). **`PledgesOverlayDisplay`** sets **`overflow: hidden`** on **`document.documentElement`** and **`document.body`** while mounted. Pledge copy uses **`clamp(..., vmin, ...)`** and **`overflow-wrap: anywhere`** so scaled animation text stays inside the viewport.
 
 ## Meteor / tests / scripts
 
 - **ValidatedMethod**: calling **`.callAsync()` from inside another server method** can hang — prefer direct collection access in that case.
 - **Root `scripts/`**: files with top-level side effects can run on Meteor startup; keep heavy scripts under `imports/` or gate on env.
-- **Tests**: co-located `*.test.ts` / `*.spec.ts`; **`resetDatabase`** uses per-collection **`removeAsync({})`** instead of **`dropDatabase()`** to avoid Accounts races and slow index rebuilds.
-- **Publication load harness**: env-tunable scale in `publicationPipelineSimulation` / `.test.ts` if you change publication cost.
+- **Tests**: **`resetDatabase`** uses per-collection **`removeAsync({})`** instead of **`dropDatabase()`** to avoid Accounts races and slow index rebuilds. **`npm test`** runs **server** Mocha by default (no headless browser) unless you set **`TEST_BROWSER_DRIVER`** for client **`*.test.*`** files (see [meteor-mocha README](https://github.com/meteortesting/meteor-mocha/blob/master/README.md#run-app-tests)). Suites that need **full Mongo / methods / Collection2** (e.g. **`resetDatabase`**, **`ValidatedMethod.callAsync`**, schema **`autoValue`**) live under **`server/api/**`** (mirrors **`imports/api/methods`** and **`imports/api/db`**) so they never load in the client harness. Isomorphic **`imports/**/*.test.ts`** remain for logic that is safe on both sides (e.g. **`imports/lib/**`**). Tests that import **`imports/server/**`** (e.g. mocks that pull **`OrgTransformer`**) must live under **`server/`** or **`imports/server/`**, not **`imports/lib/`**, or the **client** test bundle will fail to load.
+- **Publication load harness**: env-tunable scale in **`imports/server/test-support/publicationPipelineSimulation.ts`**; tests live in **`server/publicationPipelineSimulation.test.ts`** (server-only directory so the harness is not pulled into the **client** test bundle).
 
 ## Types and collections
 
+- **`meteor/aldeed:collection2`** / **`meteor/aldeed:collection2/static`**: Meteor package ids, not npm; TypeScript does not ship typings for them. **`imports/types/collection2.d.ts`** declares those modules (side-effect imports) and augments **`Mongo.Collection`** with **`attachSchema`**. Same pattern as other **`imports/types/*.d.ts`** shims for Meteor or non-typed packages.
 - **Generated types**: `npm run generate-types` → `imports/types/schema.ts`; collection vs embedded schemas differ (e.g. **`_id`** on collection-attached schemas only). **Embedded** `OrgChitVoteSummary` ≠ **`ChitVote`** on member themes — different purposes; name collisions across files are a footgun.
-- **`Members` minimongo type is `MemberWithTheme`** (`MemberData` + optional **`theme`** from `members` / `member` publications) so client reads match published shape. **`MemberData`** remains the generated **Member** schema type from SimpleSchema.
+- **`Members` minimongo type is `MemberWithTheme`** (`MemberData` + optional **`theme`** from `members` / `member` publications) so client reads match published shape. **`MemberData`** remains the generated **Member** schema type from SimpleSchema. Import **`MemberWithTheme` from `/imports/api/db`** in UI and hooks — not from `imports/server/transformers/memberTransformer` (that path is server-architecture-only in Meteor and breaks the client test bundle).
 
 ## Kiosk / member login
 

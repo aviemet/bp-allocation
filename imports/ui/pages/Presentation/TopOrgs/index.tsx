@@ -3,7 +3,7 @@ import {
 	Container,
 } from "@mui/material"
 import { useOrgs, useSettings } from "/imports/api/hooks"
-import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
+import { OrgCard, OrgCardContainer } from "/imports/ui/components"
 
 export const TopOrgs = () => {
 	const { settings } = useSettings()

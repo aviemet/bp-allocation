@@ -16,7 +16,7 @@ const memberThemeDefaults = {
 describe("MemberThemes model", function() {
 	describe("Creating a record", function() {
 
-		it("Should return an _id when succesful", async function() {
+		it("Should return an _id when successful", async function() {
 			const memberThemeId = await MemberThemes.insertAsync({ ...memberThemeData })
 			expect(memberThemeId).to.not.be.null
 		})

@@ -24,8 +24,7 @@ import {
 	type LogLevel,
 	type LogsFilter,
 } from "/imports/api/db/Logs"
-import { Loading } from "/imports/ui/components"
-import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
+import { ConfirmationModal, Loading } from "/imports/ui/components"
 
 import { LogRow } from "./LogRow"
 

@@ -3,8 +3,8 @@ import { Grid, Stack, Typography } from "@mui/material"
 import { useState, type ReactNode } from "react"
 
 import { COLORS } from "/imports/lib/global"
-import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
-import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
+import { Form, STATUS, SubmitButton, TextInput, type Status } from "/imports/ui/components"
+import { type MemberWithTheme } from "/imports/api/db"
 
 export type MemberCodeLoginFindMember = (initials: string | undefined, number: string | number | undefined) => MemberWithTheme | undefined
 

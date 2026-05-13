@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import { useOrgs, usePledgeAnimationQueue } from "/imports/api/hooks"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo } from "react"
 
 import { PledgesOverlayReadOnly } from "./PledgesOverlayReadOnly"
 import { type PledgeWithOrg } from "/imports/api/hooks"
@@ -9,23 +9,28 @@ import { convertPledgeToPlainObject } from "/imports/ui/pages/Presentation/Alloc
 export const PledgesOverlayDisplay = () => {
 	const { pledges } = useOrgs()
 	const { queueItems } = usePledgeAnimationQueue()
-	const [ currentPledge, setCurrentPledge ] = useState<PledgeWithOrg | null>(null)
-
-	useEffect(() => {
+	const currentPledge = useMemo((): PledgeWithOrg | null => {
 		if(queueItems.length === 0) {
-			setCurrentPledge(null)
-			return
+			return null
 		}
-
 		const queueItem = queueItems[0]
 		const pledge = pledges?.find(p => p._id === queueItem.pledgeId)
 		if(!pledge) {
-			setCurrentPledge(null)
-			return
+			return null
 		}
-
-		setCurrentPledge(convertPledgeToPlainObject(pledge))
+		return convertPledgeToPlainObject(pledge)
 	}, [queueItems, pledges])
+
+	useEffect(() => {
+		const previousHtmlOverflow = document.documentElement.style.overflow
+		const previousBodyOverflow = document.body.style.overflow
+		document.documentElement.style.overflow = "hidden"
+		document.body.style.overflow = "hidden"
+		return () => {
+			document.documentElement.style.overflow = previousHtmlOverflow
+			document.body.style.overflow = previousBodyOverflow
+		}
+	}, [])
 
 	return (
 		<PageContainer>
@@ -36,13 +41,10 @@ export const PledgesOverlayDisplay = () => {
 
 const PageContainer = styled.div`
 	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
+	inset: 0;
 	background-color: #000;
 	overflow: hidden;
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
 `
-

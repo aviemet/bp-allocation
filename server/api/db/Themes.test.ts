@@ -16,7 +16,7 @@ const themeData: Partial<Theme> = {
 describe("Themes model", function() {
 	describe("Creating a record", function() {
 
-		it("Should return an _id when succesful", async function() {
+		it("Should return an _id when successful", async function() {
 			const themeId = await Themes.insertAsync({ ...themeData, numTopOrgs: DEFAULT_NUM_TOP_ORGS })
 			assert.notEqual(themeId, null)
 		})

@@ -7,10 +7,9 @@ import { useState, useMemo } from "react"
 
 import { useTheme } from "/imports/api/hooks"
 import { type MessageData } from "/imports/api/db"
-
-import { ConfirmationModal } from "/imports/ui/components/Dialogs/CustomConfirm"
 import { emailVotingLink, textVotingLink } from "/imports/lib/utils"
-import { type Status, STATUS, SubmitButton } from "/imports/ui/components/Form"
+
+import { CustomConfirmationModal, STATUS, SubmitButton, type Status } from "/imports/ui/components"
 
 interface ButtonValue {
 	method: string
@@ -90,7 +89,7 @@ export const SendWithFeedbackButton = ({ message, members, ...rest }: SendWithFe
 				{ buttonContent }
 			</SubmitButton>
 
-			<ConfirmationModal
+			<CustomConfirmationModal
 				header={ `Confirm sending ${message.type}` }
 				content={
 					<>

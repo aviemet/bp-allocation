@@ -4,15 +4,10 @@ import { useTracker } from "meteor/react-meteor-data"
 import { useTheme } from "./useTheme"
 import { Organizations, type OrgData } from "../db"
 import { useData } from "../providers/DataProvider"
-import { type MatchPledge, type Organization } from "/imports/types/schema"
+import { type PledgeWithOrg } from "/imports/types/themeWithComputed"
+import { type Organization } from "/imports/types/schema"
 
-export interface PledgeWithOrg extends MatchPledge {
-	org: {
-		_id: string
-		title: string
-	}
-	[key: string]: unknown
-}
+export type { PledgeWithOrg }
 
 export interface OrganizationWithComputed extends Organization {
 	votedTotal: number

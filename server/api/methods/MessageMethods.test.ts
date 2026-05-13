@@ -3,7 +3,7 @@ import { Random } from "meteor/random"
 
 import { MessageMethods } from "/imports/api/methods"
 import { Messages } from "/imports/api/db"
-import { resetDatabase } from "../../test-support/resetDatabase"
+import { resetDatabase } from "/imports/test-support/resetDatabase"
 
 describe("Message Methods", function() {
 	beforeEach(async function() {

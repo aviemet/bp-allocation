@@ -4,12 +4,6 @@ import { Random } from "meteor/random"
 
 import { Organizations } from "/imports/api/db"
 
-/** Things to test:
- * - Required fields are required
- * - Validation
- * - Permissions
- */
-
 const orgData = {
 	title: faker.company.name(),
 	ask: faker.number.int({ min: 100000, max: 400000 }),
@@ -30,7 +24,7 @@ const orgDefaults = {
 describe("Organizations model", function() {
 	describe("Creating a record", function() {
 
-		it("Should return an _id when succesful", async function() {
+		it("Should return an _id when successful", async function() {
 			const orgId = await Organizations.insertAsync({ ...orgData })
 			expect(orgId).to.not.be.null
 		})

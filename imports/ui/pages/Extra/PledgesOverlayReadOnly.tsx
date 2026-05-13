@@ -2,6 +2,7 @@ import styled from "@emotion/styled"
 import { type PledgeWithOrg } from "/imports/api/hooks"
 
 import { PledgeDisplay } from "/imports/ui/pages/Presentation/Allocation/PledgesOverlay/PledgeDisplay"
+
 interface PledgesOverlayReadOnlyProps {
 	pledge: PledgeWithOrg
 }
@@ -16,10 +17,9 @@ export const PledgesOverlayReadOnly = ({ pledge }: PledgesOverlayReadOnlyProps) 
 
 const OverlayContainer = styled.div`
 	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
+	inset: 0;
+	overflow: hidden;
 	pointer-events: none;
+	box-sizing: border-box;
 `
 

@@ -12,7 +12,7 @@ import React from "react"
 
 import { ChitTable as ManualInputTable } from "./ManualInputTable"
 import { TopOrgsByChitVote as RankedOrgsTable } from "./RankedOrgsTable"
-import { ChitVotingActiveToggle } from "/imports/ui/components/Toggles/ChitVotingActiveToggle"
+import { ChitVotingActiveToggle } from "/imports/ui/components/Toggles"
 import { Loading } from "/imports/ui/components"
 
 interface ChitVotingPaneProps {

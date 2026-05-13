@@ -9,13 +9,10 @@ import { useParams, useNavigate } from "@tanstack/react-router"
 import { useState, useEffect } from "react"
 import { useMembers } from "/imports/api/hooks"
 import { MemberMethods } from "/imports/api/methods"
-import { MemberSchema, MemberThemeSchema } from "/imports/api/db"
+import { MemberSchema, MemberThemeSchema, type MemberWithTheme } from "/imports/api/db"
 import { roundFloat } from "/imports/lib/utils"
-import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
-import { Form, TextInput, SubmitButton, STATUS, type Status } from "/imports/ui/components/Form"
-
-import { Loading } from "/imports/ui/components"
+import { Form, Loading, STATUS, SubmitButton, TextInput, type Status } from "/imports/ui/components"
 
 function isMemberWithTheme(member: unknown): member is MemberWithTheme {
 	if(!member || typeof member !== "object") return false

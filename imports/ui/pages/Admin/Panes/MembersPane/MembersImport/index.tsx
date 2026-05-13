@@ -11,7 +11,8 @@ import { useSnackbar } from "notistack"
 import { useState, useEffect, useRef, type ChangeEvent } from "react"
 import type SimpleSchema from "simpl-schema"
 
-import { ImportMapping } from "/imports/ui/components/ImportMapping"
+import { ImportMapping } from "/imports/ui/components"
+
 type CsvRow = Record<string, unknown>
 
 interface HeadingMapping {

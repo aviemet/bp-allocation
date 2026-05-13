@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { Container } from "@mui/material"
 import { useOrgs, useSettings } from "/imports/api/hooks"
-import { OrgCard, OrgCardContainer } from "/imports/ui/components/Cards"
+import { OrgCard, OrgCardContainer } from "/imports/ui/components"
 
 const Overlay = ({ visible }: { visible: boolean }) => (
 	<DimOverlay visible={ visible }>

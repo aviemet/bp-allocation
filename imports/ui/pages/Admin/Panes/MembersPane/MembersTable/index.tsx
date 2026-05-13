@@ -15,9 +15,10 @@ import { formatters } from "/imports/lib/utils"
 
 import { MemberMethods } from "/imports/api/methods"
 
-import { SortableTable } from "/imports/ui/components/SortableTable"
+import { ConfirmationModal, SortableTable } from "/imports/ui/components"
+
 import { ContextMenu } from "./ContextMenu"
-import { ConfirmationModal } from "/imports/ui/components/Dialogs/ConfirmDelete"
+
 interface HeadCell {
 	id: string
 	label: string
