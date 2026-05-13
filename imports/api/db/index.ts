@@ -14,6 +14,9 @@ import { ThemeSchema, themesPermissions, DEFAULT_NUM_TOP_ORGS } from "./Themes"
 
 export type LogData = Log
 export type MemberData = Member
+export interface MemberWithTheme extends MemberData {
+	theme?: MemberTheme
+}
 export type MessageData = Message
 export type OrgData = Organization
 export type SettingsData = PresentationSettings
@@ -28,7 +31,7 @@ export interface CollectionPermissions {
 
 // Define Collections
 const Logs = new Mongo.Collection<LogData>("logs")
-const Members = new Mongo.Collection<MemberData>("members")
+const Members = new Mongo.Collection<MemberWithTheme>("members")
 const MemberThemes = new Mongo.Collection<MemberTheme>("memberThemes")
 const Messages = new Mongo.Collection<MessageData>("messages")
 const Organizations = new Mongo.Collection<OrgData>("organizations")

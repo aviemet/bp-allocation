@@ -1,10 +1,9 @@
-import { isEmpty } from "es-toolkit/compat"
 import { ComponentType } from "react"
-import { useMembers } from "/imports/api/hooks"
+import { useMember } from "/imports/api/hooks"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
 
-import { FundsVoteProvider } from "./VotingContext"
+import { KioskVotingProvider } from "./KioskVotingContext"
 import { Loading } from "/imports/ui/components"
 
 interface RemoteVotingProps {
@@ -18,24 +17,19 @@ export const RemoteVoting = ({
 	component,
 	unsetUser = () => {},
 }: RemoteVotingProps) => {
-	const { members, membersLoading } = useMembers()
+	const { member, memberLoading } = useMember(memberId)
 
-	if(membersLoading || isEmpty(members)) return <Loading />
+	if(memberLoading) return <Loading />
 
-	// TODO: This should be a subscription to a single member
-	const member = members.find(member => member._id === memberId)
-	// console.log({ member })
-
-	// if(membersLoading) return <Loader active />
 	if(!member) return (
 		<h1>Member Not Found</h1>
 	)
 
 	const Component = component
 	return (
-		<FundsVoteProvider member={ member } unsetUser={ unsetUser }>
+		<KioskVotingProvider member={ member } unsetUser={ unsetUser }>
 			<Component user={ member } source="mobile" />
-		</FundsVoteProvider>
+		</KioskVotingProvider>
 	)
 }
 

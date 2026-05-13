@@ -29,7 +29,7 @@ export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps)
 	if(themeLoading || orgsLoading || !theme) return <Loading />
 
 	const remainingLeverage = Number(theme.leverageRemaining || 0)
-	const ratio = theme.inPersonMatchRatio ?? 0
+	const ratio = theme.inPersonMatchRatio ?? 1
 	const matchPerDollar = Math.max(0, ratio - 1)
 
 	const handleSubmit = async (data: Record<string, unknown>, { reset }: { reset: () => void }) => {

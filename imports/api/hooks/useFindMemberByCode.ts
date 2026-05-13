@@ -10,10 +10,22 @@ export const buildMemberCode = (initials: string, number: string | number): stri
 export const useFindMemberByCode = () => {
 	const { members, membersLoading } = useMembers()
 
-	const findMemberByCode = useCallback((initials: unknown, number: unknown): MemberWithTheme | undefined => {
-		const code = buildMemberCode(String(initials || ""), String(number || ""))
-		return members.find(member => member.code === code)
+	const findMemberByCode = useCallback((
+		initials: string | undefined,
+		number: string | number | undefined
+	): MemberWithTheme | undefined => {
+		if(!initials || !number) return undefined
+
+		return members.find(member => (
+			member.code === buildMemberCode(initials ?? "", number ?? "")
+		))
 	}, [members])
 
-	return { findMemberByCode, membersLoading }
+	const findMemberById = useCallback((memberId: string | undefined): MemberWithTheme | undefined => {
+		if(!memberId) return undefined
+
+		return members.find(m => m._id === memberId)
+	}, [members])
+
+	return { findMemberByCode, findMemberById, members, membersLoading }
 }

@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker"
 import { expect } from "chai"
 import { Random } from "meteor/random"
 
-import { OrganizationMethods, ThemeMethods } from "/imports/api/methods"
+import { OrganizationMethods, PresentationSettingsMethods, ThemeMethods } from "/imports/api/methods"
 import { Organizations, Themes } from "/imports/api/db"
 import { resetDatabase } from "/imports/test-support/resetDatabase"
 
@@ -287,7 +287,14 @@ describe("Organization Methods", function() {
 	})
 
 	describe("CrowdFavorite", function() {
-		it("Should compute the crowd-favorite amount as ask minus amountFromVotes minus pledges", async function() {
+		it("Should set topOff so projected total funding equals the ask (post-vote, pre-pledge state)", async function() {
+			const theme = await Themes.findOneAsync({ _id: themeId })
+			if(!theme?.presentationSettings) throw new Error("Theme has no presentationSettings")
+			await PresentationSettingsMethods.update.callAsync({
+				id: theme.presentationSettings,
+				data: { useKioskFundsVoting: false },
+			})
+
 			const { response: orgId } = await OrganizationMethods.create.callAsync({
 				...OrgTestData(themeId),
 				ask: 10000,
@@ -295,11 +302,58 @@ describe("Organization Methods", function() {
 			})
 			if(!orgId) throw new Error("Failed to create org")
 
-			await OrganizationMethods.pledge.callAsync({ id: orgId, amount: 2000, member: Random.id() })
+			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.topOff).to.equal(10000 - 3000)
+		})
+
+		it("Should subtract a save amount when one exists for the org", async function() {
+			const theme = await Themes.findOneAsync({ _id: themeId })
+			if(!theme?.presentationSettings) throw new Error("Theme has no presentationSettings")
+			await PresentationSettingsMethods.update.callAsync({
+				id: theme.presentationSettings,
+				data: { useKioskFundsVoting: false },
+			})
+
+			const { response: orgId } = await OrganizationMethods.create.callAsync({
+				...OrgTestData(themeId),
+				ask: 10000,
+				amountFromVotes: 1000,
+			})
+			if(!orgId) throw new Error("Failed to create org")
+
+			await ThemeMethods.update.callAsync({
+				id: themeId,
+				data: { saves: [{ org: orgId, amount: 2500 }] },
+			})
 
 			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
 			const org = await Organizations.findOneAsync({ _id: orgId })
-			expect(org?.topOff).to.equal(10000 - 3000 - 2000)
+			expect(org?.topOff).to.equal(10000 - 1000 - 2500)
+		})
+
+		it("Should subtract minimum starting funds when active for the theme", async function() {
+			const theme = await Themes.findOneAsync({ _id: themeId })
+			if(!theme?.presentationSettings) throw new Error("Theme has no presentationSettings")
+			await PresentationSettingsMethods.update.callAsync({
+				id: theme.presentationSettings,
+				data: { useKioskFundsVoting: false },
+			})
+			await ThemeMethods.update.callAsync({
+				id: themeId,
+				data: { minStartingFundsActive: true, minStartingFunds: 1500 },
+			})
+
+			const { response: orgId } = await OrganizationMethods.create.callAsync({
+				...OrgTestData(themeId),
+				ask: 10000,
+				amountFromVotes: 2000,
+			})
+			if(!orgId) throw new Error("Failed to create org")
+
+			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.topOff).to.equal(10000 - 2000 - 1500)
 		})
 
 		it("Should set the crowd-favorite amount to 0 when negate is true", async function() {

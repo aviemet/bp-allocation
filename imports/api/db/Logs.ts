@@ -6,6 +6,7 @@ export const LogCategories = {
 	Sms: "sms",
 	Email: "email",
 	Method: "method",
+	Publication: "publication",
 } as const
 export type LogCategory = typeof LogCategories[keyof typeof LogCategories]
 

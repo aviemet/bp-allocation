@@ -6,6 +6,8 @@ import { createDebouncedFunction } from "/imports/lib/utils"
 import { computePledgeMatchingForPublication } from "/imports/lib/pledgeMatching"
 
 import { Themes, PresentationSettings, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
+import { LogModels } from "/imports/api/db/Logs"
+import { publicationLog } from "/imports/lib/loggers"
 import { ThemeTransformer, OrgTransformer, aggregateVotesByOrganization, calculateVotesFromRawOrg } from "/imports/server/transformers"
 import { type ThemeTransformerParams } from "/imports/server/transformers/themeTransformer"
 import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"
@@ -89,8 +91,13 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 			const updatedTopOrgs = filterTopOrgs(updatedTransformedOrgs, updatedTheme)
 			const transformed = ThemeTransformer(updatedTheme, { topOrgs: updatedTopOrgs, allOrgs: updatedTransformedOrgs, memberThemes, settings, pledgeMatching: updatedPledgeMatching })
 			publisher.changed("themes", theme._id, transformed)
-		} catch (_error) {
-			// Error refreshing theme from memberThemes
+		} catch (error) {
+			publicationLog.error(
+				"themes.refresh",
+				"Failed to refresh theme publication after memberThemes or organizations change",
+				error,
+				{ themeId: theme._id, model: LogModels.Theme, mirrorToConsole: true },
+			)
 		}
 	}
 

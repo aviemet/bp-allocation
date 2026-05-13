@@ -1,330 +1,71 @@
 # Allocation Project Documentation
 
 ## Project Overview
+Architecture notes for this codebase: **why** non-obvious choices exist, not tutorials for things the code already shows.
 
-### Model Organization
+## Publications and derived data
 
-## Architecture Patterns
+- **`memberThemesRefreshCoordinator`**: One debounced `MemberThemes` refresh per `themeId` is shared by `theme`, `organizations`, `members`, and **`member`** publications so concurrent subscribers do not multiply watchers or redundant full-table fetches. Kiosk `RemoteVoting` uses `useMember` + the `member` subscription instead of the full `members` list for the same reason.
+- **`members` publication**: Membership is driven by a join through `MemberThemes`. When that join changes, the publication diffs IDs before touching the `Members` observer so dropped members emit **`removed`** immediately; the same transformer is reused so the client does not keep stale rows.
+- **`organizations` publication**: A single org change can reorder or rescale the **global** chronological pledge walk for every org. Org `observe()` callbacks are wrapped in a **debounced full re-publish** so `matchedAmounts` and downstream org summaries stay coherent without re-implementing the walk per callback.
+- **Refresh failures**: `catch` blocks in `themes.ts`, `organizations.ts`, and `members.ts` log through `publicationLog` (`LogCategories.Publication`, `mirrorToConsole: true`, `LogModels.*`) so broken refreshes show in server logs and in `Logs` when persist succeeds. Extra context that is not part of `LogContext` (e.g. a member id) goes under **`meta`**, not top-level fields.
 
-### Module exports
-Shared application modules (`imports/`) use named exports rather than default exports so imports stay explicit and refactors are easier to trace. Ambient declarations for untyped NPM packages may still describe a default export for that package's runtime shape.
+## Pledge matching and leverage
 
-### Publications and Observers
-- Server publications commonly wrap Mongo observers using a `registerObserver` utility (`imports/server/methods.ts`) that returns `{ added, changed, removed }` handlers with a shared transformer.
-- Publications use `Tracker.autorun` to reactively derive IDs from one collection (e.g., `MemberThemes`) and observe another (`Members`), and tie observer/computation cleanup to the publication via `this.onStop`.
-- Tracker server reactivity still relies on synchronous reads; use `find()` / `findOne()` / `fetch()` inside the autorun and avoid awaiting `fetchAsync` or `findOneAsync` in the reactive block, otherwise downstream subscribers stop receiving updates.
-- To keep Meteor 3 async fetches reactive, publications now pair lightweight `observeChanges` watchers with a single live query handle; watchers trigger a debounced async refresh that refetches the dependent data and restarts the shared observer without spawning duplicate handles.
-- `MemberThemes` updates for a theme are coordinated in `imports/server/publications/memberThemesRefreshCoordinator.ts`: one `observeChanges` + debounced fetch per `themeId`, shared by the `theme`, `organizations`, and `members` publications so concurrent subscribers do not multiply Mongo watchers or redundant full-table fetches.
-- Publications that derive membership through join tables must diff published IDs before recreating their observers (`imports/server/publications/members.ts`). The diff explicitly emits `removed` messages for IDs dropped from the join table and reuses the shared transformer so downstream UI collections immediately drop stale rows when the join changes.
+- All matched-pledge math lives in **`imports/lib/pledgeMatching.ts`**. Do not re-implement `pledge.amount * matchRatio` elsewhere: it ignores the shared leverage pool, mixed `pledgeType` ratios, and partial-match truncation.
+- **One pool per theme**: Eligible pledges across orgs share a single chronological queue (`createdAt`, then `_id`). Pool exhaustion can zero or partially match a later pledge regardless of org.
+- **`calculatePledgeMatches` persists nothing**; it returns `matchedAmounts` + `remainingLeverage`. Publications recompute and pass **`matchedAmounts`** into transformers on each tick so edits/removals re-walk the queue without storing derived match state in Mongo.
+- **Ratios**: `MatchPledge.pledgeType` selects `Theme.matchRatio` vs `Theme.inPersonMatchRatio`. Both are **total multipliers** (e.g. 2 ⇒ pledge + leverage bonus totals 2× pledge dollars from the pool perspective for matching logic as implemented).
+- **Runner-up rule** is centralized in **`isOrgEligibleForLeverage`** for both queue construction and `pledgeTotalForOrg` — keep it in sync; do not duplicate.
+- **`pledgedTotal` vs `pledgeMatchTotal`** in `ThemeTransformer`: raw pledged dollars vs total **leverage bonus consumed**; they differ whenever ratios ≠ 2, in-person pledges exist, or the pool truncated matches. **Why**: different surfaces need a footer that matches per-org rows vs a leverage equation that still closes.
 
-### Data Provider Hierarchy
-The application uses a nested provider pattern established in `imports/ui/App.tsx`:
+## Feature flags vs runtime (presentation)
 
-```
-DataProvider
-  └── ThemeProvider
-      └── SettingsProvider
-          └── OrgsProvider
-              └── MembersProvider
-                  └── MessagesProvider
-                      └── Routes
-```
+- **Flags** (Theme / PresentationSettings forms): “Is this capability allowed for this theme or presentation?” e.g. `Theme.inPersonPledgeActive`, `PresentationSettings.useKioskChitVoting`.
+- **Runtime** (`PresentationPane`): “Is the live show doing this now?” e.g. `topupsActive`, `chitVotingActive`, `fundsVotingActive`, `currentPage`.
+- **In-person pledges**: `/pledges/inperson/:themeId` is intended to work only when **both** `theme.inPersonPledgeActive` and `settings.topupsActive` are true; each false case gets its own messaging. **Server** `OrganizationMethods.pledge` enforces only the **theme flag** (same idea as standard pledges and runtime gating on the client) — keep that split deliberate.
+- **In-person URL uses Mongo `_id`**: obscurity for a short window, not a secret; QR is **admin/settings only**, not on the presentation surface.
 
-This hierarchy provides global state management through MobX stores and Meteor subscriptions. Components should use the existing provider hooks (`useData()`, `useTheme()`, `useSettings()`, etc.) rather than duplicating providers.
+## Terminology (legacy cleanup)
 
-### Meteor 3.0+ Compatibility
-Server-side publications and methods must use async methods:
-- `findOne()` → `findOneAsync()`
-- `find().fetch()` → `find().fetchAsync()`
-- `insert()` → `insertAsync()`
-- `update()` → `updateAsync()`
-- `remove()` → `removeAsync()`
-- Client-side ValidatedMethod calls must use async variants:
-  - `Method.call()` → `Method.callAsync()`
-  - `Method.apply()` → `Method.applyAsync()`
-- **IMPORTANT**: When calling ValidatedMethod from within another server method, `.callAsync()` may hang - directly access collections instead of calling another method
+- **pledge**, **crowdFavorite** (amount in `Organization.topOff`; `OrganizationMethods.crowdFavorite` runs once post–funds-vote, pre-pledges), **leverage** — see schema `// NOTE` on legacy names (`topOff`, `topupsActive`, etc.). **`CrowdFavoriteButton`** calls the method; do not hand-update `topOff`.
 
-### TanStack Router Migration
-- Uses programmatic routing with `createRouter` and `createRoute`
-- Nested routes under `adminLayoutRoute` for admin section
-- Authentication handled in `beforeLoad` hooks
-- `AdminLayout` component wraps admin routes with `<Outlet />`
-- Route wrapper components handle data loading and theme ID initialization
-- Components used in multiple routes should use `useParams({ strict: false })` instead of specifying `from` route path
-- **Pinned to `@tanstack/react-router@1.156.0`**: Versions ≥1.157.0 split `isServer` and `scroll-restoration-script` into subpath exports of `@tanstack/router-core` using conditional `exports` (with non-standard `development`/`workerd` conditions). Meteor 3.3.2's bundler lacks full `package.json` exports resolution (tracked in meteor PR #13520, still open) and reports "Unable to resolve" for those subpaths. Do not bump router until Meteor merges exports support.
+## Chit voting: two storage shapes
 
-### Theme Loading Pattern
-- `AdminLayout` sets `data.themeId` from route params
-- `ThemeProvider` subscribes to theme data based on `themeId`
-- Components should handle loading states when `theme` is undefined
-- Loading states prevent crashes when accessing `theme._id` before data loads
+- **Manual** (`useKioskChitVoting` false): aggregate **`OrgChitVoteSummary`** on `Organization.chitVotes`; count beats weight; weight uses `Theme.chitWeight`.
+- **Kiosk** (true): per-member **`ChitVote`** rows on `MemberTheme.chitVotes`; **`OrgTransformer`** aggregates. Do not conflate the two models.
 
-### TypeScript + SimpleSchema Pattern
-- TypeScript interfaces auto-generated in `imports/api/db/generated-types.ts`
-- Collections defined in `imports/api/db/index.ts` with schemas attached via `attachSchema`
-- Individual schema files only contain SimpleSchema definitions
- 
-### Collection2 Loading in Meteor 3
-- Use the static entry to ensure `attachSchema` is available at runtime: `import "meteor/aldeed:collection2/static"` before attaching schemas.
-- Optional fields in SimpleSchema (`required: false`) become optional in TypeScript (`field?: type`)
-- Use `npm run generate-types` to regenerate types from schemas
-- All types exported from `imports/api/db/index.ts`
-- Custom type generator in `scripts/generateTypes.ts` parses actual schema files
-- Generator reads your real SimpleSchema definitions and generates accurate TypeScript interfaces
-- Types are saved to `imports/types/schema.ts` (replaces old manual types in `imports/types.ts`)
-- Utility types are in `imports/types/utils.ts` (separate from generated schema types)
-- Main types index at `imports/types/index.ts` exports both schema and utility types
-- No temporary files or stale data - either works with real schemas or fails cleanly
-- All imports now use the generated schema types from `/imports/types`
-- Generator handles both simple type definitions (`field: Number`) and complex object definitions (`field: { type: String, required: false }`)
-- Script properly parses array element types using SimpleSchema's `"fieldName.$": SchemaName` pattern
-- Also handles `"fieldName.$": SchemaRegex.Id` patterns for string arrays
-- Finds both exported and non-exported schema definitions to ensure all referenced types are generated
-- Array fields are correctly typed as `ElementType[]` instead of `any[]` - no `any`, `unknown`, or `unknown[]` types are ever generated
-- Handles all SimpleSchema types: `String`, `Number`, `Boolean`, `Date`, `Array`, `SimpleSchema.Integer`, `SchemaRegex.Id`, and `type: SchemaName` patterns
-- Script filters out nested properties from function definitions and autoValue callbacks to avoid generating invalid interface properties
-- **CRITICAL**: Collections must be declared with proper generic types: `new Mongo.Collection<DataType>("collectionName")`
-- Data types combine schema types with TrackableData: `type MemberData = Member & TrackableData`
-- This ensures `find()` methods return properly typed cursors with no type casting needed
-- Store types extend schema types with additional reactive properties for MobX integration
-- All data types exported from `/imports/api/db` for consistent usage across providers
+## Logging (`imports/lib/logger.ts`)
 
-### TrackableStore/TrackableCollection Pattern
-- Base reactive data management system for Meteor collections
-- `extendObservable` automatically makes all data fields reactive without manual declarations
-- Provides consistent `_id`-based CRUD operations across all store types
-- Generic pattern allows type-safe extension for specific domain stores
-- Integrates with Meteor's reactive data flow through `refreshData` method
-- Collection constructors handle store instantiation with proper type assertions using `as new (data: TrackableData) => StoreType`
-- Store constructors accept specific data types (MemberData, OrgData, etc.) for full type safety
-- When computed getters return transformed data that needs generic component compatibility (e.g., SortableTable's index signature requirement), export the transformed type from the store/collection file rather than defining it at consumer level - this ensures type consistency and prevents duplication
+- Methods under `imports/api/methods/` ship to the client; logger utilities must stay **outside `imports/server/`** so the bundle can load them.
+- **Scope**: presentation / theme-scoped events only — **`themeId` is required** on `LogContext`. Cross-theme or non-presentation work uses **`console`** (or another path), not forced `themeId`.
+- **Named loggers** in `loggers.ts` carry **`model`** as part of their contract; there is no generic “methods” logger. **`mirrorToConsole`** is per-call. **`Logs`** is server-insert only; clients use **`logs.purge`** / **`logs.recent`** with server-side validation.
 
-### Form + Validation Pattern
-- `imports/ui/Components/Form/Form.tsx` is the shared form wrapper.
-- Uses React Hook Form for state and integrates SimpleSchema validation via `schema.newContext()`.
-- `onValidSubmit(data, methods)` is debounced (leading edge) to prevent double submits.
-- `onUpdate(partialData)` is driven by `watch()` per-field updates; sanitization can run before validation of the specific key.
-- `onChange(methods)` is a generic change subscription when full form-level reactions are needed.
+## UI / tooling gotchas
 
-### Pledge Matching Pipeline (Leverage Pool Walk)
-- All matched-pledge math lives in `imports/lib/pledgeMatching.ts`. **Never** open-code `pledge.amount * matchRatio` anywhere else - it ignores the leverage pool, mixed `pledgeType` ratios, and partial-match truncation.
-- There is one shared leverage pool per theme. All eligible orgs' pledges are merged into a single chronological queue (`createdAt`, then `_id` for tie-break) and consume that one pool in order. A pledge that lands late may receive a partial match — or none at all — if earlier pledges to *any* org have already drained the pool.
-- `calculatePledgeMatches` returns `{ matchedAmounts: Map<pledgeId, number>, remainingLeverage }` and **persists nothing**. Derived values (`leverageBonus`, org `pledgeTotal`, `theme.leverageRemaining`) are recomputed on every publication tick. This keeps state safe when an earlier pledge is removed/edited - the whole walk re-runs and downstream pledges are promoted/demoted automatically.
-- `MatchPledge.pledgeType` is the discriminator (`"standard"` | `"inPerson"`). Standard uses `Theme.matchRatio`; in-person uses `Theme.inPersonMatchRatio`. Both ratios are **total multipliers**: ratio 2 = 1:1 leverage match (pledge $1, leverage adds $1), ratio 3 = 2:1 leverage match.
-- `OrgTransformer` accepts `params.matchedAmounts`. When omitted (standalone use, isolated unit tests), it falls back to "fully matched" so legacy callers still get `amount * matchRatio` semantics. The actual per-org contribution math lives in `pledgeTotalForOrg` inside `pledgeMatching.ts` — the transformer just delegates so the runner-up eligibility rule and matched-amount fallback have one definition.
-- Runner-up eligibility (a finalist always counts; a runner-up only when `theme.leverageRunnersUpPledges` is true) is a single helper, `isOrgEligibleForLeverage`, used by both `calculatePledgeMatches` (when building the chronological queue) and `pledgeTotalForOrg` (when summing an org's contribution). Don't duplicate it.
-- `ThemeTransformer` exposes two related-but-distinct totals: `theme.pledgedTotal` is the **raw** sum of pledge amounts (used by the Pledges admin pane's footer to match the per-org rows above it); `theme.pledgeMatchTotal` is the total **leverage bonus consumed** by pledges (used in `AllocationPane/Breakdown` so the displayed `Starting Leverage − X = Remaining` equation balances under non-2 ratios and partial matches). They only coincide when every pledge is standard with `matchRatio === 2` and the pool was never exhausted.
-- Publications must thread `matchedAmounts` through every transformer call. The `themes` publication computes it once via `computePledgeMatchingForPublication(...)` and passes it into both `OrgTransformer` (per-org `pledgeTotal`) and `ThemeTransformer` (`leverageRemaining`). The `organizations` publication does the same and **wraps the org `observe()` callbacks with a debounced full re-publish** because a single org change shifts the chronological walk for every other org.
-- All in-person pledge configuration (`inPersonMatchRatio`, `inPersonPledgeActive`) lives on the **Theme** schema, not `PresentationSettings`. The match ratio and the feature flag that enables the variant are one logical group and travel together.
-- The in-person pledge route is `/pledges/inperson/:themeId` (`InPersonPledgeRoute`). It uses the theme's Mongo `_id` rather than `slug` so the URL is unguessable enough to discourage casual sharing for the ~30-minute in-person pledge window. This is **obscurity, not security** — the `_id` is not a rotatable secret. The QR code is **printable-only**: it lives in `PresentationSettingsForm` as a convenience block, gated on `theme.inPersonPledgeActive` (i.e. shown only when the admin has enabled the in-person variant for this theme). It must never render on the presentation view itself.
-- `useFindMemberByCode` in `imports/api/hooks` is the shared initials+number lookup used by both the kiosk login flow and the in-person pledge login. Use it instead of duplicating the `code = initials.toUpperCase() + number` calculation.
+- **TanStack Router pinned to `1.156.0`**: newer releases rely on `package.json` `exports` paths Meteor’s bundler does not resolve ([meteor#13520](https://github.com/meteor/meteor/pull/13520)); bumping the router without fixing that breaks the build.
+- **Nested `$pull` on pledge arrays**: `_id` `autoValue` on embedded pledge schema must **not** `unset()` for non-`$push` operators or **`$pull` by `_id` becomes `$pull: { pledges: {} }`** and wipes the array.
+- **MUI v9**: Checkbox/Switch use **`slotProps.input`**; Stack/Grid flex props belong in **`sx`**, not loose DOM props (MUI forwards only a small allowlist to the root).
+- **React 19**: do not spread props that include **`key`**; pull `key` out and pass explicitly where MUI render props inject it.
 
-### Feature Flags vs Runtime Activation
-Two distinct concerns; both can stack on top of each other without conflict:
-- **Feature flags** live in `ThemeSettingsForm` (Theme schema) and `PresentationSettingsForm` (PresentationSettings configuration fields like `useKioskChitVoting`). They answer "Is this feature available on this theme/presentation?" and are set ahead of time during admin configuration. Examples: `Theme.consolationActive`, `Theme.minLeverageAmountActive`, `Theme.inPersonPledgeActive`, `PresentationSettings.useKioskChitVoting`.
-- **Runtime activations** live in `PresentationPane` (the live show control panel) and write to `PresentationSettings` fields that the running presentation observes. They answer "Is this feature being driven right now?" Examples: `topupsActive` (Pledges Active toggle), `chitVotingActive`, `fundsVotingActive`, `currentPage`.
-- The same `PresentationSettings` collection holds both feature-flag fields and runtime fields - they're distinguished by which admin UI surfaces them, not by which schema they live in.
-- For in-person pledges specifically: `theme.inPersonPledgeActive` is the feature flag (admin enables the variant for this theme), `settings.topupsActive` is the runtime activation (pledges are being accepted right now). The `/pledges/inperson/:themeId` URL is functional only when BOTH are true, and surfaces distinct messaging for each false case.
-- Server-side gate for in-person pledges in `OrganizationMethods.pledge` enforces the **feature flag** only (`theme.inPersonPledgeActive`), not the runtime activation - mirroring the standard pledge flow, which also relies on client-side gating for `topupsActive`. This must stay server-only (`Meteor.isServer` guard) to skip method simulation on the client.
+## Meteor / tests / scripts
 
-### Terminology: pledge / crowdFavorite / leverage
-- The legacy codebase used "topup" and "topoff" interchangeably for several distinct concepts. The current vocabulary is:
-  - **pledge** - a member's matched donation toward an org during the pledge round.
-  - **crowdFavorite** - the one org admins choose to fully fund; the dollar amount needed to bring it to its `ask` is persisted in `Organization.topOff` (legacy field name) and applied via `OrganizationMethods.crowdFavorite`.
-  - **leverage** - the matching pool. `Theme.leverageTotal` seeds it; pledges and the crowd-favorite full-funding consume it.
-- **Persisted field names kept for backwards compatibility**: `Organization.topOff`, `PresentationSettings.topupsActive`, `PresentationSettings.topupEmailConfirm`. Each has a `// NOTE` comment on its schema definition. Renaming requires a one-time Mongo migration.
-- `MinimumLeverageButton` and `CrowdFavoriteButton` were split out of the old overloaded `TopOffButton`: the array-form was for the minimum-leverage feature, the single-org form was for the crowd favorite.
+- **ValidatedMethod**: calling **`.callAsync()` from inside another server method** can hang — prefer direct collection access in that case.
+- **Root `scripts/`**: files with top-level side effects can run on Meteor startup; keep heavy scripts under `imports/` or gate on env.
+- **Tests**: co-located `*.test.ts` / `*.spec.ts`; **`resetDatabase`** uses per-collection **`removeAsync({})`** instead of **`dropDatabase()`** to avoid Accounts races and slow index rebuilds.
+- **Publication load harness**: env-tunable scale in `publicationPipelineSimulation` / `.test.ts` if you change publication cost.
 
-### File Naming Convention
-- Files in `imports/` start with a **lowercase** letter (e.g. `pledgeMatching.ts`, `utils.ts`, `orgsMethods.ts`).
-- Exceptions: files whose primary export is a React component (`Bar.tsx`, `OrgCard.tsx`) or a class definition (`Leverage.ts`, `TrackableStore.ts`).
-- Schemas in `imports/api/db/` follow the React/class exception because they export a `*Schema` SimpleSchema instance treated as a class-like constructor (`Themes.ts`, `Organizations.ts`).
+## Types and collections
 
-### Pledge Animation Queue Pattern
-- Animation queue is a server-side Meteor collection (`PledgeAnimationQueue`) - single source of truth
-- Queue items have `processed` boolean flag to track animation status
-- Two ways items enter the queue:
-  1. New pledge from database → inserted via Method on first page load
-  2. Replay button clicked → inserted via Method
-- `PledgesOverlay` subscribes to unprocessed queue items, animates in timestamp order
-- After animation completes, item is marked `processed: true` and removed from subscription
-- Cross-tab sync happens automatically via Meteor's DDP - no client-side state needed
-- Clean architecture: server owns the queue, clients just consume and mark as processed
+- **Generated types**: `npm run generate-types` → `imports/types/schema.ts`; collection vs embedded schemas differ (e.g. **`_id`** on collection-attached schemas only). **Embedded** `OrgChitVoteSummary` ≠ **`ChitVote`** on member themes — different purposes; name collisions across files are a footgun.
+- **`Members` minimongo type is `MemberWithTheme`** (`MemberData` + optional **`theme`** from `members` / `member` publications) so client reads match published shape. **`MemberData`** remains the generated **Member** schema type from SimpleSchema.
 
-### Documentation Rules
-- ONLY document architectural decisions and WHY choices were made
-- NEVER document implementation details, HOW things work, or specific code patterns
-- If it would become outdated quickly or is obvious from reading the code, don't document it
-- Focus on non-obvious reasoning behind architectural choices
+## Kiosk / member login
 
-### TypeScript Type Strategy
-- Rely on TypeScript's type inference for derived types instead of explicit annotations
-- Only add explicit types when TypeScript cannot infer them (e.g., generic constructors, complex union types, Promise return types)
-- Avoid redundant type annotations that duplicate what the type system already knows
-- Trust the compiler to derive types from initial values and context
-- Remove explicit return types for simple functions where TypeScript can infer the type from the implementation
+- **`KioskVotingProvider` / `useKioskVoting`**: one session object for **both** funds allocations and chit tallies + saves + `member` + `unsetUser` (not funds-only). **`MemberLoginRequired`** vs **`RemoteVoting`**: URL without `member` uses the shared login form for chit/funds; pledges with a `member` query use **`RemoteVoting`** only.
+- **`useFindMemberByCode`**: exposes **`findMemberByCode`**, **`findMemberById`**, and **`members` / `membersLoading`** from one **`members`** subscription so callers do not stack **`useMembers`** and duplicate the sub. **`MemberCodeLoginForm`**: folder + barrel under **`/imports/ui/components`**; shared kiosk + in-person login (**`notFoundStyle`** differs).
+- **Non-UI hooks** (e.g. **`useInterval`**) live under **`imports/lib/hooks/`**.
 
-### Meteor Package Type Declarations
-- Custom type declarations for Meteor packages without built-in TypeScript support
-- Type declarations stored in `imports/types/` directory (e.g., `meteor-mdg-validated-method.d.ts`, `mongo.d.ts`)
-- Include custom declarations in `tsconfig.json` under the `include` array
-- ValidatedMethod type declarations provide proper typing for method options, call signatures, and execution methods
-- Fix method calls to use `.call()` syntax for ValidatedMethod instances instead of direct function calls
-- MongoDB type extensions in `mongo.d.ts` provide enhanced `$pull` support for complex queries on object arrays
-- The default Meteor MongoDB types are too restrictive for complex `$pull` operations like `{ _id: { $in: [...] } }`
-- Module augmentation extends `Mongo.Modifier` to accept any valid MongoDB operation without requiring type casts
+## File storage
 
-### Method Parameter Typing Pattern
-- Leverage existing schema types using TypeScript utility types (`Partial<T>`, `Pick<T, K>`)
-- Extend schema types for method-specific requirements rather than duplicating field definitions
-- Use `Partial<Member>` for optional member fields, `Pick<Member, "field1" | "field2">` for required fields
-- Create minimal interfaces that extend schema types only when additional fields are needed
-- Define return types explicitly for all methods to ensure type safety
-- Use proper error handling with typed callbacks and Promise rejection patterns
-
-### NEVER USE `any` - CRITICAL RULE
-- **ABSOLUTELY FORBIDDEN**: Never use `any` as a type definition
-- **NEVER EVER**: No exceptions, no shortcuts, no "just this once"
-- **ALWAYS**: Use proper type assertions, union types, or generic constraints instead
-- **IF STUCK**: Use `unknown` and narrow the type, or create proper interfaces
-- **TYPE ASSERTIONS**: Use `as unknown as SpecificType` when necessary, never `as any`
-- **GENERIC CONSTRAINTS**: Use proper generic bounds instead of `any`
-- **INTERSECTION TYPES**: Use `TypeA & TypeB` for combining types
-- **MAPPED TYPES**: Use utility types like `Partial<T>`, `Pick<T, K>`, `Omit<T, K>`
-- **UNION TYPES**: Use `string | number` instead of `any`
-- **RECORD TYPES**: Use `Record<string, unknown>` instead of `any`
-
-### NO TYPE CASTING - CRITICAL RULE
-- **ABSOLUTELY FORBIDDEN**: Type casting is NOT an acceptable way to handle TypeScript errors
-- **NEVER CAST**: Do not use `as` to force types - this defeats the purpose of TypeScript
-- **FIX THE ROOT CAUSE**: If you need to cast, the types are wrong - fix the actual type definitions
-- **PROPER SOLUTIONS**: 
-  - Fix the source type definitions to be correct
-  - Use proper generic constraints
-  - Create proper interfaces that match the actual data structure
-  - Use type guards with `unknown` and narrowing
-  - Use intersection types to combine existing types
-- **WHEN STUCK**: If you think you need to cast, step back and fix the underlying type system
-- **TYPE ASSERTIONS ONLY**: The only acceptable use of `as` is for type assertions with `unknown` when you've properly narrowed the type
-- **NO SHORTCUTS**: Type casting is a shortcut that breaks type safety - never use it
-
-### Provider Data Loading Pattern
-- Providers should start with data loading enabled by default to avoid race conditions
-- `MembersProvider` starts with `subLimit: false` to immediately load members when `themeId` is available
-- Remove `useEffect` calls that trigger data loading in provider hooks - let the provider handle loading automatically
-- Server publications handle the actual data filtering (e.g., theme-based member filtering)
-- Client-side queries should be simple since the server publication does the heavy lifting
-
-### Data Loading Race Condition Prevention
-- **Critical Fix**: Publications now fetch and publish initial data synchronously BEFORE setting up observers and calling `this.ready()`. This ensures `subscription.ready()` means data is actually synced to the client.
-- **Publication Pattern**: 
-  1. Fetch initial data with `fetchAsync()`
-  2. Publish it synchronously using observer callbacks (e.g., `observerCallbacks.added(doc)`)
-  3. Then set up the observer for future changes
-  4. Only then call `this.ready()`
-- This eliminates the race condition where `ready()` fired before observer callbacks completed
-- Collections must be initialized synchronously when subscriptions become ready, not only in `onReady` callbacks
-- Server publications in `Tracker.autorun` must call `this.ready()` in ALL code paths, including early returns when data doesn't exist
-- Publications that return early without data must explicitly call `this.ready()` to prevent endless loading states
-
-### Meteor File Loading Behavior
-- Meteor eagerly loads and executes any `.js/.ts` files at the project root (outside of `imports/`, `client/`, and `server/`).
-- Utility scripts placed in `scripts/` at the root will be executed on server startup if they have top-level code.
-- To avoid accidental execution:
-  - Place scripts under `imports/` (and only import when needed), or `private/` if treated as assets; and/or
-  - Ensure scripts have no top-level side effects and gate execution behind an environment variable check.
-
-### Component Props Typing
-- Replace PropTypes with TypeScript interfaces for all React component props
-- Use existing data types from `/imports/api/db` for prop types (e.g., `MessageData`, `MemberData`)
-- For MUI components, extend built-in prop types using `Omit` to exclude conflicting props (e.g., `Omit<ButtonProps, "onClick">`)
-- Use index signatures for dynamic object properties when structure varies (e.g., `[key: string]: string | number | undefined`)
-- Remove all PropTypes declarations when adding TypeScript interfaces
-
-### Nested Array Element `_id` autoValue
-- For SimpleSchema sub-schemas embedded in array fields (e.g. `MatchPledgeSchema._id`), the `_id` `autoValue` must **only** act on `$push` to assign a fresh `Random.id()`; it must not call `this.unset()` on any other operator.
-- `autoValue` runs against the value object inside `$pull` filters too. A `this.unset()` else-branch strips `_id` from the filter, turning `$pull: { pledges: { _id: x } }` into `$pull: { pledges: {} }`, which removes every element. This is silent in single-element arrays but catastrophic for any array with more than one entry.
-
-### Schema Type Generation
-- Type generation script (`scripts/generateTypes.ts`) distinguishes between collection-level and embedded schemas
-- Collection-level schemas (used with `.attachSchema()` in `index.ts`) automatically get `_id: string` added to their generated types
-- Embedded schemas (like `RoundsSchema`, `OrgChitVoteSummary`) do NOT get `_id` added - they're embedded documents without their own identity
-- The script parses `imports/api/db/index.ts` to identify which schemas are attached to Mongo collections
-- `OrgChitVoteSummary` is an embedded document type (used in Organization.chitVotes), distinct from `ChitVote` (used in MemberTheme.chitVotes)
-- When schemas with the same base name exist in different files, ensure they serve different purposes and have unique type names
-
-### Chit Voting System Architecture
-The application supports two modes of chit voting controlled by `PresentationSettings.useKioskChitVoting`r:
-
-**Manual Mode (useKioskChitVoting = false)**:
-- Historical mode for physical wooden chits placed in boxes
-- Admins weigh/count chits and manually enter data in `ManualInputTable`
-- Data stored in `Organization.chitVotes` as `OrgChitVoteSummary { weight?: number, count?: number }`
-- `count` takes precedence over `weight` when both present
-- `weight` divided by `Theme.chitWeight` to calculate vote count
-- One summary record per organization
-
-**Kiosk Mode (useKioskChitVoting = true)**:
-- Digital voting through the application interface
-- Members distribute chits across organizations using `ChitTicker` component
-- Data stored in `MemberTheme.chitVotes[]` as array of `ChitVote { organization, votes, voteSource, createdAt }`
-- One `ChitVote` record per organization per member
-- `OrgTransformer` aggregates votes from all member records
-
-The two data structures serve different purposes and should not be conflated:
-- `OrgChitVoteSummary`: Aggregate summary for manual entry (no _id needed)
-- `ChitVote`: Individual vote records for kiosk mode (needs _id for array updates)
-
-### Test Structure
-- Test files use `.test.ts` or `.spec.ts` naming convention so Meteor only loads them during `meteor test`
-- Heavy-load harness: `imports/test-support/publicationPipelineSimulation.ts` mirrors theme + organizations + members publication CPU work (synthetic data); `publicationPipelineSimulation.test.ts` exercises it and concurrent `MemberThemes` writes. Tune via env: `LOAD_TEST_SCALE`, `LOAD_TEST_CONCURRENT_MEMBERS`, `LOAD_TEST_CONCURRENT_ROUNDS`, optional `LOAD_TEST_TIME_CEILING_MS`.
-- Test files are co-located with the code they test (e.g., `Members.test.ts` next to `Members.ts`)
-- Mock/fixture files use `.mock.ts` suffix and live in `/imports/mock/` - they're only loaded via explicit imports
-- The `/tests/` directory is reserved for external test runners (Cypress) and files Meteor should completely ignore
-
-### Test Database Reset Helper
-- Unit and integration tests reset their database state through `imports/test-support/resetDatabase`, which clears each app collection with `removeAsync({})`. It deliberately does **not** call `dropDatabase()`: dropping the whole DB races with Meteor's Accounts package re-creating `meteor.users` and its indexes, producing `MongoServerError: DatabaseDropPending` between rapid tests. Targeted `removeAsync` calls also keep indexes intact, which makes the test suite an order of magnitude faster.
-
-### Timer Management in React + Meteor
-- Use `useRef` to store timer IDs and prevent recreation on each render
-- Use `useCallback` for timer callback functions to stabilize references
-- Always cleanup timers in `useEffect` cleanup functions to prevent memory leaks
-- This pattern prevents "Can't set timers inside simulations" errors when using timers in MobX observer components
-
-### External Library Type Declarations
-- Custom type declaration files for untyped NPM packages go in `/imports/types/`
-- Use `declare module "package-name"` syntax with minimal type definitions
-- Files are auto-discovered by TypeScript via `tsconfig.json` include patterns
-
-### React 19 Key Prop Handling
-- React 19 prohibits spreading props that contain a `key` property
-- MUI Autocomplete's `renderOption` passes props containing `key` 
-- Pattern: destructure `key` from props and pass it separately: `const { key, ...otherProps } = props; return <Component key={key} {...otherProps} />`
-- This applies to any render prop that receives React-generated props with keys
-
-### MUI v9 DOM prop forwarding
-- **Checkbox / SwitchBase:** `inputProps` is not supported; use `slotProps={{ input: { … } }}` for the hidden `<input>`. Using `inputProps` forwards unknown props to the root and triggers React warnings.
-- **Stack** (`@mui/system` `createStack`): Only `component`, `direction`, `spacing`, `divider`, `className`, `useFlexGap`, and `sx` are handled; other props are spread to the DOM root. Put flex alignment in `sx` (e.g. `alignItems`, `justifyContent`, `gap`) — do not pass them as top-level props.
-- **Grid** (`createGrid`): Container props are similarly narrowed; `justifyContent`, `alignItems`, etc. must go through `sx`, not as direct props on `<Grid>`.
-
-### Question vs Action - CRITICAL RULE
-- **WHEN USER ASKS A QUESTION**: Answer the question only. Do NOT make code changes.
-- **WHEN USER ASKS FOR ACTION**: Then make the requested changes.
-- **NEVER**: Assume a question is a request to fix something - questions are requests for information, not action.
-- If a question points out a problem, answer where/how it's calculated/defined, don't fix it unless explicitly asked.
-
-### Logging Architecture
-- Structured logger lives in `imports/lib/logger.ts`. Methods under `imports/api/methods/` ship to the client for optimistic UI, so any utility they depend on must live outside `imports/server/` — Meteor enforces a client-cannot-import-server boundary at bundle time.
-- The logger is **exclusively for events that happen during a presentation** — i.e. scoped to a `themeId`. `LogContext` makes `themeId` required on every `log.info/warn/error/debug` call, and `LogSchema.themeId` is also `required: true`. App-level events (server startup, scheduled jobs, cross-theme admin operations like member deletion or `logs.purge`) go to `console.*` directly. If you have no `themeId` for what you're observing, this isn't the right tool.
-- Pre-configured loggers are exported by name from `imports/lib/loggers.ts` (`smsLog`, `emailLog`, `memberMethodLog`, `organizationMethodLog`). Consumers import the one they need; one-off loggers can be built via `createLogger` from `imports/lib/logger.ts`. There is intentionally no generic "method" logger — `model` is part of each named logger's identity, so each `*Methods.ts` file gets its own.
-- `createLogger` takes a single `LoggerSettings` object (`{ category, model?, meta? }`). Console mirroring is per-call, opt-in via `mirrorToConsole: true` on the `LogContext` passed to `log.info/warn/error/debug` — useful for selectively echoing a specific event during debugging. Persist failures still go to `console.error` unconditionally because that's the logger reporting it can't do its job. DB writes are guarded by `Meteor.isServer`; client-side optimistic method runs are silent (and never attempt a privileged insert).
-- `Logs` collection denies all client writes via `logsPermissions`. Inserts happen only through the server-side logger, and pruning is gated by the `logs.purge` method (`{ themeId }` — wipes all logs for the given theme; surfaced in the Settings → Logs UI as a confirmation-gated button).
-- The `logs.recent` publication requires `themeId` in its filter and returns nothing without it. `parseFilter` re-validates client input on the server and clamps the requested limit, so the client can pass an arbitrary filter object without risking injection.
-
-### File Storage Architecture
-- Uses `ostrio:files` package for file uploads and storage
-- Images stored in `public/.uploads` directory (accessible via `/uploads/` route)
-- Storage path uses `process.env.PWD` which works for both dev and mup production deployments
-- Directory is automatically created on server startup if it doesn't exist
-- Uploaded images generate absolute URLs using `HOST_URL` setting for email compatibility
-- Rich text editor integrates file upload directly into TipTap image insertion workflow
+- **`ostrio:files`**, uploads under **`public/.uploads`**, URLs use **`HOST_URL`** where absolute links matter (e.g. email).

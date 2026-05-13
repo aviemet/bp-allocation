@@ -22,7 +22,7 @@ export const InPersonPledgeComplete = ({ data, resetData, onSignOut }: InPersonP
 
 	if(themeLoading) return <Loading />
 
-	const ratio = theme?.inPersonMatchRatio ?? 0
+	const ratio = theme?.inPersonMatchRatio ?? 1
 	const formattedAmount = numeral(data.amount).format("$0,0[.]00")
 	const formattedTotal = numeral(data.amount * ratio).format("$0,0[.]00")
 	const remaining = Number(theme?.leverageRemaining || 0)

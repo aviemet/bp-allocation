@@ -8,8 +8,8 @@ import { OrgCardColors } from "/imports/ui/components/Cards"
 import { useState } from "react"
 
 import { Loading } from "/imports/ui/components"
-import { SelectableOrgCards } from "./SelectableOrgCards"
 import { PledgeComplete } from "./PledgeComplete"
+import { SelectableOrgCards } from "./SelectableOrgCards"
 import { type MemberWithTheme } from "/imports/server/transformers/memberTransformer"
 
 interface PledgesProps {

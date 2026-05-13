@@ -17,6 +17,8 @@ import {
 	type ThemeData,
 	type SettingsData,
 } from "/imports/api/db"
+import { LogModels } from "/imports/api/db/Logs"
+import { publicationLog } from "/imports/lib/loggers"
 import { type MemberTheme } from "/imports/types/schema"
 
 interface OrgObserverParams {
@@ -113,8 +115,13 @@ const publishOrganizations = async (themeId: string, publisher: PublishSelf) => 
 			allOrgs.forEach(org => {
 				publisher.changed("organizations", org._id, OrgTransformer(org, orgObserverParams))
 			})
-		} catch (_error) {
-			// Error refreshing organizations
+		} catch (error) {
+			publicationLog.error(
+				"organizations.refresh",
+				"Failed to refresh organization publication payloads after org or pledge change",
+				error,
+				{ themeId, model: LogModels.Organization, mirrorToConsole: true },
+			)
 		}
 	}
 	const debouncedRefresh = createDebouncedFunction(() => { void refreshAllOrgs() }, 100)
@@ -137,8 +144,13 @@ const publishOrganizations = async (themeId: string, publisher: PublishSelf) => 
 			memberThemes = freshMemberThemes
 			orgObserverParams.memberThemes = freshMemberThemes
 			await refreshAllOrgs()
-		} catch (_error) {
-			// Error refreshing organizations from memberThemes
+		} catch (error) {
+			publicationLog.error(
+				"organizations.refreshFromMemberThemes",
+				"Failed to refresh organization publication after memberThemes coordinator update",
+				error,
+				{ themeId, model: LogModels.MemberTheme, mirrorToConsole: true },
+			)
 		}
 	}
 

@@ -7,7 +7,7 @@ import { createContext } from "/imports/lib/hooks/createContext"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
 
 
-interface VotingContextValue {
+interface KioskVotingContextValue {
 	allocations: Record<string, number>
 	updateAllocations: (org: string, amount: number) => void
 	saveAllocations: (source?: VotingSource) => void
@@ -18,15 +18,15 @@ interface VotingContextValue {
 	unsetUser: () => void
 }
 
-interface VotingContextProviderProps {
+interface KioskVotingProviderProps {
 	children: ReactNode
 	member: MemberWithTheme
 	unsetUser: () => void
 }
 
-const [useVoting, FundsVoteContextProvider] = createContext<VotingContextValue>()
+const [useKioskVoting, KioskVotingContextProvider] = createContext<KioskVotingContextValue>()
 
-const FundsVoteProvider = ({ children, member, unsetUser }: VotingContextProviderProps) => {
+const KioskVotingProvider = ({ children, member, unsetUser }: KioskVotingProviderProps) => {
 	const { theme } = useTheme()
 	const { orgs, topOrgs } = useOrgs()
 
@@ -155,7 +155,7 @@ const FundsVoteProvider = ({ children, member, unsetUser }: VotingContextProvide
 	}
 
 	return (
-		<FundsVoteContextProvider value={ {
+		<KioskVotingContextProvider value={ {
 			allocations,
 			updateAllocations,
 			saveAllocations,
@@ -166,8 +166,8 @@ const FundsVoteProvider = ({ children, member, unsetUser }: VotingContextProvide
 			unsetUser,
 		} }>
 			{ children }
-		</FundsVoteContextProvider>
+		</KioskVotingContextProvider>
 	)
 }
 
-export { useVoting, FundsVoteProvider }
+export { useKioskVoting, KioskVotingProvider }
