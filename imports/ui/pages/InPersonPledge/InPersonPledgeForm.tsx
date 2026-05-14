@@ -3,22 +3,24 @@ import { Box, Button, Container, InputAdornment, Stack, Typography } from "@mui/
 import numeral from "numeral"
 import { useState } from "react"
 
-import { useOrgs, useTheme } from "/imports/api/hooks"
+import { useTheme } from "/imports/api/hooks"
+import { useStaticOrgs } from "/imports/api/hooks/static"
 import { OrganizationMethods } from "/imports/api/methods"
 import {
 	Form,
 	Loading,
 	OrgCardColors,
+	PledgeComplete,
 	STATUS,
 	SubmitButton,
 	SwitchInput,
 	TextInput,
+	type PledgeCompleteData,
 	type Status,
 } from "/imports/ui/components"
 import { type MemberWithTheme } from "/imports/api/db"
 
 import { SelectableOrgCards } from "/imports/ui/pages/Kiosk/Pledges/SelectableOrgCards"
-import { InPersonPledgeComplete, type CompletedPledge } from "./InPersonPledgeComplete"
 
 interface InPersonPledgeFormProps {
 	user: MemberWithTheme
@@ -27,10 +29,10 @@ interface InPersonPledgeFormProps {
 
 export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps) => {
 	const { theme, themeLoading } = useTheme()
-	const { topOrgs, orgsLoading } = useOrgs()
+	const { topOrgs, orgsLoading } = useStaticOrgs()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
-	const [completed, setCompleted] = useState<CompletedPledge | null>(null)
+	const [completed, setCompleted] = useState<PledgeCompleteData | null>(null)
 	const [submitError, setSubmitError] = useState<string | null>(null)
 
 	if(themeLoading || orgsLoading || !theme) return <Loading />
@@ -68,11 +70,13 @@ export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps)
 
 	if(completed) {
 		return (
-			<InPersonPledgeComplete
-				data={ completed }
-				resetData={ () => setCompleted(null) }
-				onSignOut={ onSignOut }
-			/>
+			<InPersonPledgeCompleteViewport>
+				<PledgeComplete
+					data={ completed }
+					resetData={ () => setCompleted(null) }
+					matchKind="inPerson"
+				/>
+			</InPersonPledgeCompleteViewport>
 		)
 	}
 
@@ -155,6 +159,14 @@ export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps)
 		</PledgesContainer>
 	)
 }
+
+const InPersonPledgeCompleteViewport = styled.div`
+	max-width: 100vw;
+	min-height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+`
 
 const PledgesContainer = styled(Container)`
 	color: white;

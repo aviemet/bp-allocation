@@ -9,22 +9,24 @@ const reactHooks = require("eslint-plugin-react-hooks")
 const jsoncParser = require("jsonc-eslint-parser")
 const globals = require("globals")
 
-const ignores = [
-	"public/**/*",
-	".vscode/**/*",
-	".yarn/**/*",
-	".meteor/**/*",
-	"node_modules/**/*",
+const globalIgnores = [
+	".meteor/**",
+	"public/**",
+	".vscode/**",
+	".yarn/**",
+	"node_modules/**",
+	".coverage/**",
+	"coverage/**",
 	"client/main.html",
 	"client/main.less",
 	"client/react-input-range.less",
 ]
 
 module.exports = [
+	{ ignores: globalIgnores },
 	js.configs.recommended,
 	{
 		files: ["**/*.{js,jsx,ts,tsx}"],
-		ignores,
 		languageOptions: {
 			ecmaVersion: "latest",
 			sourceType: "module",
@@ -207,7 +209,6 @@ module.exports = [
 	// Typescript declaration files
 	{
 		files: ["**/*.d.ts"],
-		ignores,
 		rules: {
 			"no-unused-vars": "off",
 			"@typescript-eslint/member-delimiter-style": "off",
@@ -217,8 +218,7 @@ module.exports = [
 	// JSON files
 	{
 		files: ["**/*.json", "**/*.jsonc", "**/*.json5"],
-		language: "json/json",
-		ignores,
+		language: "jsonc/x",
 		plugins: {
 			jsonc: jsoncPlugin,
 		},
@@ -226,8 +226,7 @@ module.exports = [
 			parser: jsoncParser,
 		},
 		rules: {
-			"json/no-duplicate-keys": "error",
-			"jsonc/indent": ["error", 2, { ignoredNodes: ["Property"] }],
+			"jsonc/no-dupe-keys": "error",
 			"@stylistic/no-multi-spaces": "off",
 		},
 	},

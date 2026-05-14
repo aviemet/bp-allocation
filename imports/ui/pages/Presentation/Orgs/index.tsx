@@ -1,7 +1,8 @@
 import styled from "@emotion/styled"
 import { Container } from "@mui/material"
-import { useOrgs, useSettings } from "/imports/api/hooks"
-import { OrgCard, OrgCardContainer } from "/imports/ui/components"
+import { useSettings } from "/imports/api/hooks"
+import { useStaticOrgs } from "/imports/api/hooks/static"
+import { OrgCard, OrgCardContainer, Loading } from "/imports/ui/components"
 
 const Overlay = ({ visible }: { visible: boolean }) => (
 	<DimOverlay visible={ visible }>
@@ -11,7 +12,11 @@ const Overlay = ({ visible }: { visible: boolean }) => (
 
 export const Orgs = () => {
 	const { settings } = useSettings()
-	const { orgs, topOrgs } = useOrgs()
+	const { orgs, topOrgs, orgsLoading } = useStaticOrgs()
+
+	if(orgsLoading) {
+		return <Loading />
+	}
 
 	const colorOrgs: Record<string, boolean> = {}
 	topOrgs.forEach((org) => {
@@ -74,4 +79,3 @@ const DimOverlay = styled.div<{ visible: boolean }>`
 	}
 
 `
-

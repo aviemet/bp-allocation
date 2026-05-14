@@ -1,30 +1,30 @@
-import { useOrgs } from "/imports/api/hooks"
-import { OrganizationMethods } from "/imports/api/methods"
 import styled from "@emotion/styled"
 import { Box, Container, InputAdornment, Typography } from "@mui/material"
 import { isEmpty } from "es-toolkit/compat"
 import { useState } from "react"
 
+import { type MemberWithTheme } from "/imports/api/db"
+import { OrganizationMethods } from "/imports/api/methods"
 import {
 	Form,
 	Loading,
 	OrgCardColors,
+	PledgeComplete,
 	STATUS,
 	SubmitButton,
 	SwitchInput,
 	TextInput,
 	type Status,
 } from "/imports/ui/components"
-import { PledgeComplete } from "./PledgeComplete"
+import { useKioskVoting } from "../KioskVotingContext"
 import { SelectableOrgCards } from "./SelectableOrgCards"
-import { type MemberWithTheme } from "/imports/api/db"
 
 interface PledgesProps {
 	user: MemberWithTheme
 }
 
 export const Pledges = ({ user }: PledgesProps) => {
-	const { topOrgs, orgsLoading } = useOrgs()
+	const { topOrgs, orgsLoading } = useKioskVoting()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 
@@ -51,7 +51,7 @@ export const Pledges = ({ user }: PledgesProps) => {
 	if(!isEmpty(pledgeFeedbackData)) {
 		const org = topOrgs.find(org => org._id === pledgeFeedbackData.id)
 		if(!org) return <Loading />
-		return <PledgeComplete data={ { amount: Number(pledgeFeedbackData.amount || 0), org } } resetData={ () => setPledgeFeedbackData({}) } />
+		return <PledgeComplete data={ { amount: Number(pledgeFeedbackData.amount || 0), org } } resetData={ () => setPledgeFeedbackData({}) } matchKind="standard" />
 	}
 	return (
 		<PledgesContainer>

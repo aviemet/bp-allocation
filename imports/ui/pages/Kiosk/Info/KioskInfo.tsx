@@ -2,14 +2,15 @@ import {
 	Typography,
 } from "@mui/material"
 import { useMemo } from "react"
-import { useTheme, useOrgs } from "/imports/api/hooks"
+import { useTheme } from "/imports/api/hooks"
+import { useStaticOrgs } from "/imports/api/hooks/static"
 
 import { Loading, OrgCard, OrgCardContainer } from "/imports/ui/components"
 import { useWindowSize, breakpoints } from "/imports/ui/MediaProvider"
 
 export const KioskInfo = () => {
 	const { theme } = useTheme()
-	const { orgs, topOrgs, orgsLoading } = useOrgs()
+	const { orgs, topOrgs, orgsLoading } = useStaticOrgs()
 
 	const { width } = useWindowSize()
 

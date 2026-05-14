@@ -3,7 +3,8 @@ import { styled } from "@mui/system"
 import { cloneDeep } from "es-toolkit"
 import numeral from "numeral"
 import { useEffect, useState } from "react"
-import { useTheme, useSettings, useOrgs } from "/imports/api/hooks"
+import { useTheme, useSettings } from "/imports/api/hooks"
+import { useStaticOrgs } from "/imports/api/hooks/static"
 
 import { AwardCard, Loading } from "/imports/ui/components"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
@@ -11,7 +12,7 @@ import { type OrgDataWithComputed } from "/imports/api/hooks"
 export const Results = () => {
 	const { theme } = useTheme()
 	const { settings } = useSettings()
-	const { orgs, topOrgs } = useOrgs()
+	const { orgs, topOrgs, orgsLoading } = useStaticOrgs()
 	const [shouldPulse, setShouldPulse] = useState(false)
 
 	useEffect(() => {
@@ -24,7 +25,7 @@ export const Results = () => {
 		}
 	}, [])
 
-	if(!theme) return <Loading />
+	if(!theme || orgsLoading) return <Loading />
 
 	const topOrgIds = new Set(topOrgs.map(org => org._id))
 	const restOrgs = orgs.filter(org => !topOrgIds.has(org._id))
@@ -101,9 +102,11 @@ export const Results = () => {
 const ResultsPageContainer = styled(Container)( ({ theme }) => ({
 	color: "#FFF",
 	display: "grid",
-	gridTemplateRows: "auto 1fr",
-	minHeight: "100vh",
-	height: "100%",
+	gridTemplateRows: "auto minmax(0, 1fr)",
+	minHeight: 0,
+	height: "100dvh",
+	maxHeight: "100dvh",
+	overflow: "hidden",
 	gap: "2rem",
 
 	h1: {
@@ -138,7 +141,9 @@ const HeaderSection = styled("div")`
 const AwardsSection = styled("div")`
 	display: flex;
 	flex-direction: column;
+	min-height: 0;
 	height: 100%;
+	overflow: hidden;
 	justify-content: space-around;
 	padding-bottom: clamp(0px, 6vh, 160px);
 `

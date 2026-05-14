@@ -1,6 +1,7 @@
 import { Container, Typography } from "@mui/material"
 import { isEmpty } from "es-toolkit/compat"
-import { useMembers, useOrgs } from "/imports/api/hooks"
+import { useMembers } from "/imports/api/hooks"
+import { useStaticOrgs } from "/imports/api/hooks/static"
 import { OrganizationMethods } from "/imports/api/methods"
 import { Form } from "/imports/ui/components"
 
@@ -9,7 +10,7 @@ import { PledgesForm } from "./PledgesForm"
 
 export const Pledges = () => {
 	const { members, membersLoading } = useMembers()
-	const { orgsLoading } = useOrgs()
+	const { orgsLoading } = useStaticOrgs()
 
 	const handleSubmit = async (data: Record<string, unknown>, { reset }: { reset: () => void }) => {
 		try {

@@ -1,9 +1,13 @@
 import { faker } from "@faker-js/faker"
 import { expect } from "chai"
+import { Meteor } from "meteor/meteor"
 import { Random } from "meteor/random"
+
+import "./staticSnapshotMethods"
 
 import { OrganizationMethods, PresentationSettingsMethods, ThemeMethods } from "/imports/api/methods"
 import { Organizations, Themes } from "/imports/api/db"
+import { fetchOrgsSnapshot } from "/imports/server/snapshots/organizations"
 import { resetDatabase } from "/imports/test-support/resetDatabase"
 
 const OrgTestData = (themeId?: string) => {
@@ -395,6 +399,17 @@ describe("Organization Methods", function() {
 			expect(org?.pledges).to.be.empty
 			expect(org?.amountFromVotes).to.equal(0)
 			expect(org?.topOff).to.equal(0)
+		})
+	})
+
+	describe("list", function() {
+		it("returns the same payload as fetchOrgsSnapshot", async function() {
+			await OrganizationMethods.create.callAsync(OrgTestData(themeId))
+
+			const fromMethod = await Meteor.callAsync("organizations.list", { themeId })
+			const fromSnapshot = await fetchOrgsSnapshot(themeId)
+
+			expect(fromMethod).to.deep.equal(fromSnapshot)
 		})
 	})
 })

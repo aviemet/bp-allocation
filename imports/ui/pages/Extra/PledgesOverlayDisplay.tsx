@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import { useOrgs, usePledgeAnimationQueue } from "/imports/api/hooks"
-import { useEffect, useMemo } from "react"
+import { useMemo } from "react"
 
 import { PledgesOverlayReadOnly } from "./PledgesOverlayReadOnly"
 import { type PledgeWithOrg } from "/imports/api/hooks"
@@ -21,17 +21,6 @@ export const PledgesOverlayDisplay = () => {
 		return convertPledgeToPlainObject(pledge)
 	}, [queueItems, pledges])
 
-	useEffect(() => {
-		const previousHtmlOverflow = document.documentElement.style.overflow
-		const previousBodyOverflow = document.body.style.overflow
-		document.documentElement.style.overflow = "hidden"
-		document.body.style.overflow = "hidden"
-		return () => {
-			document.documentElement.style.overflow = previousHtmlOverflow
-			document.body.style.overflow = previousBodyOverflow
-		}
-	}, [])
-
 	return (
 		<PageContainer>
 			{ currentPledge && <PledgesOverlayReadOnly pledge={ currentPledge } /> }
@@ -43,7 +32,7 @@ const PageContainer = styled.div`
 	position: fixed;
 	inset: 0;
 	background-color: #000;
-	overflow: hidden;
+	overflow: visible;
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;

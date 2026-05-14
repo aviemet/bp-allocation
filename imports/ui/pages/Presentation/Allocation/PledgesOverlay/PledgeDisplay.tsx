@@ -9,6 +9,8 @@ interface PledgeDisplayProps {
 	pledge: PledgeWithOrg
 }
 
+const FIREWORKS_SPREAD_MS_PER_UNIT = 820
+
 export const PledgeDisplay = ({ pledge }: PledgeDisplayProps) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 	let numFireworks = 4
@@ -19,7 +21,7 @@ export const PledgeDisplay = ({ pledge }: PledgeDisplayProps) => {
 	useLayoutEffect(() => {
 		if(!canvasRef.current) return
 		const fireworks = new Fireworks(canvasRef.current)
-		fireworks.fire(numFireworks, numFireworks * 750)
+		fireworks.fire(numFireworks, numFireworks * FIREWORKS_SPREAD_MS_PER_UNIT)
 	}, [numFireworks])
 
 	return (

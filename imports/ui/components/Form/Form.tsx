@@ -72,7 +72,7 @@ export const Form = <TValues extends FieldValues = FieldValues>({
 		if(!onUpdate) return
 
 		// eslint-disable-next-line react-hooks/incompatible-library
-		const subscription = formMethods.watch((values, { name }) => {
+		const subscription = formMethods.watch((_values, { name }) => {
 			if(name) {
 				const fieldName = name as FieldPath<TValues>
 				const singleValue: PathValue<TValues, typeof fieldName> = formMethods.getValues(fieldName)

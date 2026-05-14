@@ -7,20 +7,11 @@ import { publicationLog } from "/imports/lib/loggers"
 import { MemberTransformer } from "/imports/server/transformers"
 import { registerObserver, type PublishSelf } from "../methods"
 import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"
+import { buildMemberThemeLookupMap } from "/imports/server/themeDataLoaders/memberThemeLookup"
 import { type MemberTheme } from "/imports/types/schema"
 
 interface MembersTransformerParams {
 	memberThemeByMemberId: Map<string, MemberTheme>
-}
-
-function buildMemberThemeLookupMap(rows: MemberTheme[], themeId: string): Map<string, MemberTheme> {
-	const lookup = new Map<string, MemberTheme>()
-	for(const row of rows) {
-		if(row.theme === themeId && row.member) {
-			lookup.set(row.member, row)
-		}
-	}
-	return lookup
 }
 
 const membersTransformer = registerObserver((doc: MemberData, params: MembersTransformerParams) => {

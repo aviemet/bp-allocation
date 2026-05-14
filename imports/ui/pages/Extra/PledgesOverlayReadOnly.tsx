@@ -18,7 +18,7 @@ export const PledgesOverlayReadOnly = ({ pledge }: PledgesOverlayReadOnlyProps) 
 const OverlayContainer = styled.div`
 	position: fixed;
 	inset: 0;
-	overflow: hidden;
+	overflow: visible;
 	pointer-events: none;
 	box-sizing: border-box;
 `

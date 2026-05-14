@@ -129,7 +129,7 @@ export const AdminLayout = () => {
 			</Drawer>
 
 			<Main open={ drawerOpen }>
-				<Grid container direction="column">
+				<Grid container sx={ { flexDirection: "column" } }>
 					<Outlet />
 				</Grid>
 			</Main>

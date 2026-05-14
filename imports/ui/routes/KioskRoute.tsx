@@ -2,7 +2,7 @@ import { useParams } from "@tanstack/react-router"
 import { useEffect, useMemo } from "react"
 
 import { useData } from "/imports/api/providers"
-import { useTheme, useOrgs, useSettings } from "/imports/api/hooks"
+import { useTheme, useSettings } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { KioskLayout } from "/imports/ui/layouts"
 import { Kiosk } from "../pages/Kiosk"
@@ -11,12 +11,11 @@ export const KioskRoute = () => {
 	const { id } = useParams({ from: "/kiosk/$id" })
 	const data = useData()
 	const { themeLoading } = useTheme()
-	const { orgsLoading } = useOrgs()
 	const { settingsLoading } = useSettings()
 
 	const isLoading = useMemo(() => (
-		themeLoading || orgsLoading || settingsLoading
-	), [themeLoading, orgsLoading, settingsLoading])
+		themeLoading || settingsLoading
+	), [themeLoading, settingsLoading])
 
 	useEffect(() => {
 		data.setThemeId(id)

@@ -1,11 +1,12 @@
 import { forEach, find, isEqual } from "es-toolkit/compat"
 import { useMemo, useState, useRef, useEffect, startTransition, type ReactNode } from "react"
-import { useTheme, useOrgs } from "/imports/api/hooks"
+import { useTheme } from "/imports/api/hooks"
+import { useStaticOrgs } from "/imports/api/hooks/static"
 import { MemberMethods } from "/imports/api/methods"
 import { type MemberWithTheme } from "/imports/api/db"
 import { createContext } from "/imports/lib/hooks/createContext"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
-
+import { type OrgDataWithComputed } from "/imports/api/hooks/useOrgs"
 
 interface KioskVotingContextValue {
 	allocations: Record<string, number>
@@ -16,6 +17,9 @@ interface KioskVotingContextValue {
 	saveChits: (source?: VotingSource) => void
 	member: MemberWithTheme
 	unsetUser: () => void
+	orgs: OrgDataWithComputed[]
+	topOrgs: OrgDataWithComputed[]
+	orgsLoading: boolean
 }
 
 interface KioskVotingProviderProps {
@@ -28,7 +32,7 @@ const [useKioskVoting, KioskVotingContextProvider] = createContext<KioskVotingCo
 
 const KioskVotingProvider = ({ children, member, unsetUser }: KioskVotingProviderProps) => {
 	const { theme } = useTheme()
-	const { orgs, topOrgs } = useOrgs()
+	const { orgs, topOrgs, orgsLoading } = useStaticOrgs()
 
 	const orgValues = useMemo(() => {
 		if(!orgs) return []
@@ -164,6 +168,9 @@ const KioskVotingProvider = ({ children, member, unsetUser }: KioskVotingProvide
 			saveChits,
 			member,
 			unsetUser,
+			orgs,
+			topOrgs,
+			orgsLoading,
 		} }>
 			{ children }
 		</KioskVotingContextProvider>

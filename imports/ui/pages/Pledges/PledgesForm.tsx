@@ -1,7 +1,8 @@
 import styled from "@emotion/styled"
 import { Button, Grid, InputAdornment, Stack, Typography } from "@mui/material"
 import { useState, useEffect, useMemo } from "react"
-import { useOrgs, useTheme } from "/imports/api/hooks"
+import { useTheme } from "/imports/api/hooks"
+import { useStaticOrgs } from "/imports/api/hooks/static"
 import { STATUS, SubmitButton, SwitchInput, TextInput, type Status } from "/imports/ui/components"
 import { useFormContext, useWatch } from "react-hook-form"
 
@@ -12,7 +13,7 @@ export const PledgesForm = () => {
 	const { reset } = useFormContext()
 	const watch = useWatch()
 
-	const { orgs, topOrgs } = useOrgs()
+	const { orgs, topOrgs } = useStaticOrgs()
 	const { theme } = useTheme()
 
 	const remainingOrgs = useMemo(() => {

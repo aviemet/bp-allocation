@@ -38,7 +38,7 @@ const FormReset = () => {
 }
 
 const FormContent = ({ formStatus, setFormStatus }: { formStatus: Status, setFormStatus: (status: Status) => void }) => {
-	const { id, orgId } = useParams({ strict: false })
+	const { id } = useParams({ strict: false })
 
 	return (
 		<>

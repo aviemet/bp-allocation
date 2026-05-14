@@ -27,6 +27,7 @@ export { MemberCodeLoginForm, type MemberCodeLoginFormProps, type MemberCodeLogi
 export { MemberSearch } from "./MemberSearch"
 export { MoneyCell } from "./MoneyCell"
 export { PageTransitionFader } from "./PageTransitionFader"
+export { PledgeComplete, type PledgeCompleteData, type PledgeCompleteMatchKind } from "./PledgeComplete"
 export { RichTextEditor } from "./RichTextEditor"
 export { SortableTable } from "./SortableTable"
 export type { HeadCell, TableHeadTopRowCell, SortableRow } from "./SortableTable"

@@ -54,7 +54,7 @@ const orgs = [
 		topOff: 0,
 		pledges: [],
 		leverageFunds: 0,
-		createdAt: "2019-10-28T20:27:08.432Z",
+		createdAt: new Date("2019-10-28T20:27:08.432Z"),
 	},
 	{
 		_id: "497FQGwnAhRCN7fh3",
@@ -72,11 +72,11 @@ const orgs = [
 			{
 				amount: 10000,
 				_id: "8trsaSQ5wsABCqEbr",
-				createdAt: "2019-10-22T23:16:27.135Z",
+				createdAt: new Date("2019-10-22T23:16:27.135Z"),
 			},
 		],
 		leverageFunds: 0,
-		createdAt: "2019-10-28T20:27:08.428Z",
+		createdAt: new Date("2019-10-28T20:27:08.428Z"),
 	},
 	{
 		_id: "wcZzEZyWJP7m2dXMd",
@@ -94,11 +94,11 @@ const orgs = [
 			{
 				amount: 10000,
 				_id: "P8NJ9SeswpzNnP5WN",
-				createdAt: "2019-10-22T23:16:36.034Z",
+				createdAt: new Date("2019-10-22T23:16:36.034Z"),
 			},
 		],
 		leverageFunds: 0,
-		createdAt: "2019-10-28T20:27:08.433Z",
+		createdAt: new Date("2019-10-28T20:27:08.433Z"),
 	},
 	{
 		_id: "MhaovtXsWG4HgeiZL",
@@ -116,11 +116,11 @@ const orgs = [
 			{
 				amount: 10000,
 				_id: "krtRDpQPWap7TC7vM",
-				createdAt: "2019-10-22T23:16:30.830Z",
+				createdAt: new Date("2019-10-22T23:16:30.830Z"),
 			},
 		],
 		leverageFunds: 0,
-		createdAt: "2019-10-28T20:27:08.431Z",
+		createdAt: new Date("2019-10-28T20:27:08.431Z"),
 	},
 	{
 		_id: "GnqeDtd4nhvkBqt8L",
@@ -136,7 +136,7 @@ const orgs = [
 		topOff: 144800,
 		pledges: [],
 		leverageFunds: 0,
-		createdAt: "2019-10-28T20:27:08.429Z",
+		createdAt: new Date("2019-10-28T20:27:08.429Z"),
 	},
 ]
 

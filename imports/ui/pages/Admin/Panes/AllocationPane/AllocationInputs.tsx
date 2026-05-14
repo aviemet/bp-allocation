@@ -11,6 +11,7 @@ import { FocusEvent, useState } from "react"
 import { useSettings, type OrganizationWithComputed } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
 import { CrowdFavoriteButton } from "/imports/ui/components/Buttons/CrowdFavoriteButton"
+
 interface TabInfo {
 	index: number
 	length: number

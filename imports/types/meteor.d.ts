@@ -1,6 +1,5 @@
 import "meteor/meteor"
 import "meteor/accounts-base"
-import "meteor/accounts-google"
 
 declare module "meteor/meteor" {
 	namespace Meteor {
