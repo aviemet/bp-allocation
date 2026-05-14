@@ -16,6 +16,7 @@ export const PledgesOverlay = () => {
 	const [ isAnimating, setIsAnimating ] = useState(false)
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 	const initializedPledgeIds = useRef<Set<string>>(new Set())
+	const committedHeadIdRef = useRef<string | undefined>(undefined)
 
 	useEffect(() => {
 		if(!pledges || !theme) return
@@ -39,23 +40,35 @@ export const PledgesOverlay = () => {
 	}, [pledges, theme])
 
 	useEffect(() => {
-		if(isAnimating || queueItems.length === 0) return
+		const item = queueItems[0]
+		const headId = item?._id
+		const pledge = item?.pledgeId ? pledges?.find(p => p._id === item.pledgeId) : undefined
 
-		const queueItem = queueItems[0]
-		const pledge = pledges?.find(p => p._id === queueItem.pledgeId)
-		if(!pledge) return
+		if(committedHeadIdRef.current !== undefined && headId !== committedHeadIdRef.current) {
+			if(timerRef.current) {
+				clearTimeout(timerRef.current)
+				timerRef.current = null
+			}
+			committedHeadIdRef.current = undefined
+			setCurrentPledge(null)
+			setIsAnimating(false)
+		}
 
-		setTimeout(() => {
-			setIsAnimating(true)
-			setCurrentPledge(convertPledgeToPlainObject(pledge))
+		if(!item || !pledge) return
+		if(isAnimating) return
+		if(committedHeadIdRef.current === headId) return
 
-			timerRef.current = setTimeout(async () => {
-				await PledgeAnimationMethods.markProcessed.callAsync({ queueItemId: queueItem._id })
-				setCurrentPledge(null)
-				setIsAnimating(false)
-			}, 10000)
-		}, 0)
-	}, [queueItems.length, isAnimating, pledges, queueItems])
+		committedHeadIdRef.current = headId
+
+		setIsAnimating(true)
+		setCurrentPledge(convertPledgeToPlainObject(pledge))
+
+		timerRef.current = setTimeout(async () => {
+			await PledgeAnimationMethods.markProcessed.callAsync({ queueItemId: item._id })
+			setCurrentPledge(null)
+			setIsAnimating(false)
+		}, 10000)
+	}, [queueItems, pledges, isAnimating])
 
 	useEffect(() => {
 		return () => {
@@ -80,4 +93,3 @@ const OverlayContainer = styled.div`
 	height: 100vh;
 	pointer-events: none;
 `
-

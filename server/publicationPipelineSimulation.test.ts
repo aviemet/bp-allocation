@@ -8,7 +8,6 @@ import { resetDatabase } from "/imports/test-support/resetDatabase"
 import {
 	baseSettingsForSimulation,
 	baseThemeForSimulation,
-	buildMemberThemeLookupMap,
 	buildSyntheticMemberDocuments,
 	buildSyntheticMemberThemes,
 	buildSyntheticOrgDocuments,
@@ -21,6 +20,7 @@ import {
 	runThemePublicationPipeline,
 	simulateTriplePublicationRefresh,
 } from "/imports/server/test-support/publicationPipelineSimulation"
+import { buildMemberThemeLookupMap } from "/imports/server/themeDataLoaders/memberThemeLookup"
 
 describe("Publication pipeline load simulation", function() {
 

@@ -14,9 +14,10 @@ export const PresentationLayout = ({ children }: PresentationLayoutProps) => {
 const PresentationContainer = styled.div`
 	background: #000;
 	width: 100%;
-	flex: 1;
+	height: 100dvh;
+	max-height: 100dvh;
 	display: flex;
-	min-height: 100%;
+	overflow: hidden;
 	color: #FFF;
 	text-align: center;
 	font-size: 16px;

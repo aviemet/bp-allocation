@@ -10,6 +10,7 @@ import { emailVotingLinkToMembers } from "/imports/server/email"
 
 import "/imports/api/methods"
 import "/imports/api/db"
+import "./api/methods/staticSnapshotMethods"
 
 // Meteor publication definitions
 import "/imports/server/publications"

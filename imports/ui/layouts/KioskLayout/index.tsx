@@ -1,8 +1,26 @@
 import styled from "@emotion/styled"
 import { Container } from "@mui/material"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { createTheme, ThemeProvider, type ThemeOptions } from "@mui/material/styles"
 import { deepmerge } from "@mui/utils"
 import { type ReactNode } from "react"
+
+const kioskSurfaceThemeOptions: ThemeOptions = {
+	typography: {
+		fontFamily: "TradeGothic",
+		fontSize: 18,
+	},
+	palette: {
+		primary: { main: "#0D8744" },
+		secondary: { main: "#002B43" },
+	},
+	components: {
+		MuiInputBase: {
+			styleOverrides: {
+				root: { fontFamily: "Roboto" },
+			},
+		},
+	},
+}
 
 interface KioskLayoutProps {
 	children: ReactNode
@@ -13,23 +31,7 @@ export const KioskLayout = ({ children }: KioskLayoutProps) => (
 		<ThemeProvider
 			theme={ (outerTheme) =>
 				createTheme(
-					deepmerge(outerTheme, {
-						typography: {
-							fontFamily: "TradeGothic",
-							fontSize: 18,
-						},
-						palette: {
-							primary: { main: "#0D8744" },
-							secondary: { main: "#002B43" },
-						},
-						components: {
-							MuiInputBase: {
-								styleOverrides: {
-									root: { fontFamily: "Roboto" },
-								},
-							},
-						},
-					})
+					deepmerge(outerTheme, kioskSurfaceThemeOptions)
 				)
 			}
 		>

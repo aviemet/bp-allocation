@@ -16,6 +16,7 @@ export type LogData = Log
 export type MemberData = Member
 export interface MemberWithTheme extends MemberData {
 	theme?: MemberTheme
+	[key: string]: unknown
 }
 export type MessageData = Message
 export type OrgData = Organization

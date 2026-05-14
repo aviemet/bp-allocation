@@ -239,16 +239,6 @@ export function runMembersPublicationPipelineWithMemberThemeMap(
 	)
 }
 
-export function buildMemberThemeLookupMap(memberThemes: MemberTheme[], themeId: string): Map<string, MemberTheme> {
-	const lookup = new Map<string, MemberTheme>()
-	for(const row of memberThemes) {
-		if(row.theme === themeId && row.member) {
-			lookup.set(row.member, row)
-		}
-	}
-	return lookup
-}
-
 export function simulateTriplePublicationRefresh(
 	theme: ThemeData,
 	settings: SettingsData,

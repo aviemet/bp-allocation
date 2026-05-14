@@ -1,11 +1,15 @@
 import { faker } from "@faker-js/faker"
 import { expect } from "chai"
+import { Meteor } from "meteor/meteor"
+
+import "./staticSnapshotMethods"
 
 import { formatPhoneNumber } from "/imports/lib/utils"
 
 import { ThemeMethods, MemberMethods, OrganizationMethods } from "/imports/api/methods"
 import { Themes, Members, MemberThemes } from "/imports/api/db"
 import { Organizations } from "/imports/api/db"
+import { fetchMemberSnapshot, fetchMembersSnapshot } from "/imports/server/snapshots/members"
 import { resetDatabase } from "/imports/test-support/resetDatabase"
 
 const NUM_TEST_RECORDS = 5
@@ -301,6 +305,23 @@ describe("Member Methods", function() {
 			await MemberMethods.resetFundsVotes.callAsync(memberThemeId)
 			const reset = await MemberThemes.findOneAsync({ _id: memberThemeId })
 			expect(reset?.allocations ?? []).to.have.length(0)
+		})
+	})
+
+	describe("members.list and members.get", function() {
+		it("list matches fetchMembersSnapshot", async function() {
+			if(!themeData._id) throw new Error("Theme ID not found")
+			const fromMethod = await Meteor.callAsync("members.list", { themeId: themeData._id, limit: false })
+			const fromSnapshot = await fetchMembersSnapshot(themeData._id, false)
+			expect(fromMethod).to.deep.equal(fromSnapshot)
+		})
+
+		it("get matches fetchMemberSnapshot", async function() {
+			if(!themeData._id) throw new Error("Theme ID not found")
+			const memberId = memberIds[0]
+			const fromMethod = await Meteor.callAsync("members.get", { memberId, themeId: themeData._id })
+			const fromSnapshot = await fetchMemberSnapshot(memberId, themeData._id)
+			expect(fromMethod).to.deep.equal(fromSnapshot)
 		})
 	})
 

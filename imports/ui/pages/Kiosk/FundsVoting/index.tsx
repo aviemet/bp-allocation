@@ -3,10 +3,10 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
 import { Container, Button, Typography, FormControlLabel, Checkbox, Tooltip } from "@mui/material"
 import { forEach } from "es-toolkit/compat"
 import numeral from "numeral"
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, startTransition } from "react"
 
 import { useData } from "/imports/api/providers"
-import { useSettings, useOrgs } from "/imports/api/hooks"
+import { useSettings } from "/imports/api/hooks"
 import { Countdown } from "../Countdown"
 import { useKioskVoting } from "../KioskVotingContext"
 import { VotingComplete } from "../VotingComplete"
@@ -36,8 +36,7 @@ interface FundsVotingKioskProps {
 export const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
-	const { topOrgs } = useOrgs()
-	const { allocations, saveAllocations, member } = useKioskVoting()
+	const { topOrgs, allocations, saveAllocations, member } = useKioskVoting()
 
 	const voted = user.theme?.allocations?.some(org => (org.amount || 0) > 0) || false
 
@@ -49,11 +48,16 @@ export const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
 	useEffect(() => {
 		// Display countdown if user is on voting screen when voting becomes disabled
 		if(settings && !settings.fundsVotingActive) {
-			setTimeout(() => {
+			const timeoutId = setTimeout(() => {
 				setCountdownVisible(true)
 				setIsCounting(true)
 			}, 0)
+			return () => clearTimeout(timeoutId)
 		}
+		startTransition(() => {
+			setCountdownVisible(false)
+			setIsCounting(false)
+		})
 	}, [settings])
 
 	const memberName = user.firstName ? user.firstName : user.fullName
@@ -66,13 +70,16 @@ export const FundsVotingKiosk = ({ user, source }: FundsVotingKioskProps) => {
 	if(votingComplete) {
 		return <VotingComplete setVotingComplete={ setVotingComplete } />
 	}
+
 	return (
 		<OrgsContainer>
-			<Typography variant="h4" component="h1" align="center">{ user.firstName && "Voting for" } { memberName }</Typography>
+			<Typography variant="h3" component="h1" align="center" sx={ { mb: 3 } }>
+				{ user.firstName && "Voting for" } { memberName }
+			</Typography>
 
 			{ countdownVisible && <Countdown seconds={ data.votingRedirectTimeout } isCounting={ isCounting } /> }
 
-			<OrgCardContainer cols={ 2 }>
+			<OrgCardContainer cols={ 2 } sx={ { mt: 2 } }>
 				{ topOrgs.map(org => {
 					return (
 						<OrgCard

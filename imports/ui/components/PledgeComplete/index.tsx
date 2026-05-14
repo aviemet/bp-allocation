@@ -1,54 +1,65 @@
 import styled from "@emotion/styled"
-import { Button, Container, Stack, Typography } from "@mui/material"
+import { Button, Container, Typography } from "@mui/material"
 import numeral from "numeral"
 
 import { COLORS } from "/imports/lib/global"
 import { useTheme, type OrgDataWithComputed } from "/imports/api/hooks"
-import { Loading } from "/imports/ui/components"
+import { Loading } from "../Loading"
 
-export interface CompletedPledge {
+export interface PledgeCompleteData {
 	amount: number
 	org: OrgDataWithComputed
 }
 
-interface InPersonPledgeCompleteProps {
-	data: CompletedPledge
+export type PledgeCompleteMatchKind = "standard" | "inPerson"
+
+interface PledgeCompleteProps {
+	data: PledgeCompleteData
 	resetData: () => void
-	onSignOut: () => void
+	matchKind?: PledgeCompleteMatchKind
 }
 
-export const InPersonPledgeComplete = ({ data, resetData, onSignOut }: InPersonPledgeCompleteProps) => {
+export const PledgeComplete = ({ data, resetData, matchKind = "standard" }: PledgeCompleteProps) => {
 	const { theme, themeLoading } = useTheme()
 
-	if(themeLoading) return <Loading />
+	if(themeLoading) {
+		return <Loading />
+	}
 
-	const ratio = theme?.inPersonMatchRatio ?? 1
+	const ratio = matchKind === "inPerson"
+		? (theme?.inPersonMatchRatio ?? 1)
+		: (theme?.matchRatio ?? 1)
 	const formattedAmount = numeral(data.amount).format("$0,0[.]00")
 	const formattedTotal = numeral(data.amount * ratio).format("$0,0[.]00")
 	const remaining = Number(theme?.leverageRemaining || 0)
-	const partialMatchLikely = remaining < data.amount * Math.max(0, ratio - 1)
+	const partialMatchLikely = ratio > 1 && remaining < data.amount * Math.max(0, ratio - 1)
+	const matchRatioLabel = Math.max(0, ratio - 1)
 
 	return (
 		<PledgeCompleteContainer>
 			<Typography component="h1" variant="h4" align="center">Thank You For Your Pledge!</Typography>
 			<p>
 				Your generous donation to <b><u>{ data.org.title }</u></b> of <b>{ formattedAmount }</b>
-				{ ratio > 1 && ` is matched at ${Math.max(0, ratio - 1)}:1 from the leverage pot, bringing them up to ${formattedTotal} closer to being fully funded.` }
+				{ ratio > 1
+					? ` is matched at ${matchRatioLabel}:1 from the leverage pot, bringing them up to ${formattedTotal} closer to being fully funded.`
+					: "." }
 			</p>
 			{ partialMatchLikely && (
 				<PartialNote>
 					The leverage pool is nearly exhausted, so part of this pledge may receive a reduced match. Your pledge amount still goes to the org in full.
 				</PartialNote>
 			) }
-			<Stack direction="row" spacing={ 2 }>
-				<AmendVoteButton onClick={ resetData }>Pledge Again</AmendVoteButton>
-				<SignOutButton onClick={ onSignOut }>Sign Out</SignOutButton>
-			</Stack>
+			<AmendVoteButton
+				disabled={ false }
+				onClick={ resetData }
+			>Pledge Again</AmendVoteButton>
 		</PledgeCompleteContainer>
 	)
 }
 
 const PledgeCompleteContainer = styled(Container)`
+	flex: 1;
+	min-height: 0;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
@@ -64,7 +75,7 @@ const PledgeCompleteContainer = styled(Container)`
 `
 
 const PartialNote = styled.p`
-	color: #FFC107 !important;
+	color: #ffc107 !important;
 	text-align: center;
 	font-style: italic;
 `
@@ -78,13 +89,4 @@ const AmendVoteButton = styled(Button)`
 	text-transform: uppercase;
 	margin-bottom: 10px;
 	padding-bottom: 0;
-`
-
-const SignOutButton = styled(Button)`
-	text-align: center;
-	color: white;
-	border: 2px solid #fff;
-	font-size: 1.5rem;
-	text-transform: uppercase;
-	margin-bottom: 10px;
 `

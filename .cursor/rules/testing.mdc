@@ -6,7 +6,9 @@ alwaysApply: true
 For every file you modify in a coding task:
 
 1. **Locate existing tests.** Prefer **`server/api/**`** (mirrors **`imports/api/methods`** and **`imports/api/db`**) for method and collection integration tests; otherwise co-located **`*.test.ts`** / **`*.test.tsx`** / **`*.spec.ts`** next to the code under **`imports/`** (see `allocation.mdx` → Meteor / tests).
-2. **If tests exist**, run them via `npm test` (or a more targeted Meteor test invocation) and confirm they pass before considering the task done.
+2. **If tests exist**, run them via `npm test` (or a more targeted Meteor test invocation) and confirm they pass before considering the task done. Prefer **`npm run verify`** when you need one command: it runs **`npm run lint`**, **`npm run type-check`**, then **`npm test`** in sequence.
 3. **If no tests exist**, write new ones covering the behavior you changed, then run them to verify the change. Treat untested-but-modified code as incomplete work.
-4. **Never declare work complete based on type checks or linting alone.** A green `tsc` is not a substitute for executing the affected code.
-5. If tests cannot reasonably be added (e.g. pure UI styling, generated files), say so explicitly in your response rather than silently skipping.
+4. **TypeScript:** run **`npm run type-check`** (`tsc --noEmit`) in addition to **`npm test`** before considering the task done. A green `tsc` is still not a substitute for executing tests, but do not leave TS errors in touched code.
+5. **ESLint:** run **`npm run lint`** on the same cadence as type-check and tests before considering the task done. Do not leave new lint violations (including React Compiler / hooks rules) in touched files. Fix all eslint errors, but not necessarily all warnings.
+6. **Never declare work complete based on type checks or linting alone** (without tests when tests apply).
+7. If tests cannot reasonably be added (e.g. pure UI styling, generated files), say so explicitly in your response rather than silently skipping.

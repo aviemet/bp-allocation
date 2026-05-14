@@ -2,7 +2,7 @@ import { Navigate, useParams } from "@tanstack/react-router"
 import { useEffect, useMemo } from "react"
 
 import { useData } from "/imports/api/providers"
-import { useTheme, useOrgs } from "/imports/api/hooks"
+import { useTheme } from "/imports/api/hooks"
 import { Loading } from "/imports/ui/components"
 import { PledgesOverlayDisplay } from "../pages/Extra/PledgesOverlayDisplay"
 
@@ -11,11 +11,10 @@ export const PledgesOverlayRoute = () => {
 	const id = params.id
 	const data = useData()
 	const { theme, themeLoading } = useTheme()
-	const { orgsLoading } = useOrgs()
 
 	const isLoading = useMemo(() => (
-		themeLoading || orgsLoading
-	), [themeLoading, orgsLoading])
+		themeLoading
+	), [themeLoading])
 
 	useEffect(() => {
 		if(id) {

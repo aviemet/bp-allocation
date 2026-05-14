@@ -2,12 +2,17 @@ import styled from "@emotion/styled"
 import {
 	Container,
 } from "@mui/material"
-import { useOrgs, useSettings } from "/imports/api/hooks"
-import { OrgCard, OrgCardContainer } from "/imports/ui/components"
+import { useSettings } from "/imports/api/hooks"
+import { useStaticOrgs } from "/imports/api/hooks/static"
+import { OrgCard, OrgCardContainer, Loading } from "/imports/ui/components"
 
 export const TopOrgs = () => {
 	const { settings } = useSettings()
-	const { topOrgs } = useOrgs()
+	const { topOrgs, orgsLoading } = useStaticOrgs()
+
+	if(orgsLoading) {
+		return <Loading />
+	}
 
 	return (
 		<TopOrgsContainer maxWidth="xl">

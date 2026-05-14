@@ -4,7 +4,7 @@ import { forEach } from "es-toolkit/compat"
 import { useState, useEffect, useMemo, startTransition } from "react"
 
 import { useData } from "/imports/api/providers"
-import { useSettings, useOrgs } from "/imports/api/hooks"
+import { useSettings } from "/imports/api/hooks"
 
 import { OrgCardContainer } from "/imports/ui/components"
 import { Countdown } from "../Countdown"
@@ -24,8 +24,7 @@ interface ChitVotingKioskProps {
 export const ChitVotingKiosk = ({ user, source }: ChitVotingKioskProps) => {
 	const data = useData()
 	const { settings } = useSettings()
-	const { orgs } = useOrgs()
-	const { chits, saveChits, member } = useKioskVoting()
+	const { orgs, chits, saveChits, member } = useKioskVoting()
 
 	const [ votingComplete, setVotingComplete ] = useState(false)
 	const [ countdownVisible, setCountdownVisible ] = useState(false)
@@ -36,6 +35,11 @@ export const ChitVotingKiosk = ({ user, source }: ChitVotingKioskProps) => {
 			startTransition(() => {
 				setCountdownVisible(true)
 				setIsCounting(true)
+			})
+		} else {
+			startTransition(() => {
+				setCountdownVisible(false)
+				setIsCounting(false)
 			})
 		}
 	}, [settings?.chitVotingActive])
@@ -66,7 +70,7 @@ export const ChitVotingKiosk = ({ user, source }: ChitVotingKioskProps) => {
 	return (
 		<OrgsContainer>
 
-			<Typography variant="h4" component="h1" align="center">
+			<Typography variant="h3" component="h1" align="center" sx={ { mb: 3 } }>
 				{ user.firstName && "Voting for" } { memberName }
 			</Typography>
 
@@ -75,7 +79,10 @@ export const ChitVotingKiosk = ({ user, source }: ChitVotingKioskProps) => {
 			<Container maxWidth="xl" sx={ { height: "100%" } }>
 				<OrgCardContainer
 					cols={ 2 }
-					sx={ { paddingBottom: "clamp(0rem, -58.1818rem + 90.9091vh, 10rem)" } }
+					sx={ {
+						mt: 2,
+						paddingBottom: "clamp(0rem, -58.1818rem + 90.9091vh, 10rem)",
+					} }
 				>
 					{ shuffledOrgs }
 				</OrgCardContainer>
@@ -126,4 +133,3 @@ const FinalizeButton = styled(Button)`
 const NumberFormat = styled.span`
 	display: inline-block;
 `
-

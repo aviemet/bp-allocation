@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 
-import { useMembers } from "./useMembers"
+import { useStaticMembers } from "/imports/api/hooks/static"
 import { type MemberWithTheme } from "/imports/api/db"
 
 export const buildMemberCode = (initials: string, number: string | number): string => {
@@ -8,7 +8,7 @@ export const buildMemberCode = (initials: string, number: string | number): stri
 }
 
 export const useFindMemberByCode = () => {
-	const { members, membersLoading } = useMembers()
+	const { members, membersLoading } = useStaticMembers()
 
 	const findMemberByCode = useCallback((
 		initials: string | undefined,

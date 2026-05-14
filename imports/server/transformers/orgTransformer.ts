@@ -1,6 +1,7 @@
 import { isEmpty } from "es-toolkit/compat"
 import { roundFloat } from "/imports/lib/utils"
 import { pledgeTotalForOrg } from "/imports/lib/pledgeMatching"
+import { type OrgDataWithComputed } from "/imports/api/hooks/useOrgs"
 import { type MemberTheme } from "/imports/types/schema"
 import { type OrgData, type ThemeData, type SettingsData } from "/imports/api/db"
 
@@ -61,21 +62,13 @@ export function calculateVotesFromRawOrg(
 	return roundFloat(String(votes), 1)
 }
 
-export interface OrgWithComputed extends OrgData {
-	save: number
-	pledgeTotal: number
-	votedTotal: number
-	allocatedFunds: number
-	need: number
-	votes: number
-	[key: string]: unknown
-}
+export type OrgWithComputed = OrgDataWithComputed & Record<string, unknown>
 /**
  * Document transformer for records in the Organization table
  * @param {Object} doc Object in iterating array of objects to altered
  * @param {Object} params { theme, settings, memberThemes }
  */
-export const OrgTransformer = (doc: OrgData, params: OrgTransformerParams) => {
+export const OrgTransformer = (doc: OrgData, params: OrgTransformerParams): OrgWithComputed => {
 	// Get save amount if saved
 	let save = 0
 	if(params.theme?.saves && !isEmpty(params.theme.saves)) {
@@ -121,7 +114,7 @@ export const OrgTransformer = (doc: OrgData, params: OrgTransformerParams) => {
 	}
 	const votesRounded = roundFloat(String(votes), 1)
 
-	const result: OrgWithComputed = {
+	return {
 		...doc,
 		save,
 		pledgeTotal,
@@ -129,7 +122,9 @@ export const OrgTransformer = (doc: OrgData, params: OrgTransformerParams) => {
 		allocatedFunds,
 		need,
 		votes: votesRounded,
+		leverageFunds: doc.leverageFunds ?? 0,
+		topOff: doc.topOff ?? 0,
+		amountFromVotes: doc.amountFromVotes ?? 0,
+		ask: doc.ask ?? 0,
 	}
-
-	return result
 }

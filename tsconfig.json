@@ -27,6 +27,7 @@
     "noEmit": true,
     "sourceMap": true,
     "jsx": "react-jsx",
+    "ignoreDeprecations": "6.0",
     
     "baseUrl": ".",
     "paths": {
@@ -40,6 +41,7 @@
     "types": ["meteor", "node", "mocha"]
   },
   "include": [
+    "meteor-side-effect-modules.d.ts",
     "imports/**/*",
     "client/**/*",
     "server/**/*",

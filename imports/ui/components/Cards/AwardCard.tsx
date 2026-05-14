@@ -1,6 +1,7 @@
 import Paper from "@mui/material/Paper"
 import { styled, keyframes } from "@mui/material/styles"
 import numeral from "numeral"
+import { useLayoutEffect, useRef } from "react"
 
 import { AwardEmblem } from "./AwardEmblem"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
@@ -18,6 +19,52 @@ interface AwardCardProps {
 
 export const AwardCard = ({ org, award, amount, small, shouldPulse }: AwardCardProps) => {
 	const totalFunds = (org.allocatedFunds || 0) + (org.leverageFunds || 0)
+	const titleWrapRef = useRef<HTMLDivElement>(null)
+	const titleRef = useRef<HTMLParagraphElement>(null)
+
+	useLayoutEffect(() => {
+		const wrap = titleWrapRef.current
+		const titleElement = titleRef.current
+		if(!wrap || !titleElement) {
+			return
+		}
+		if(!org.title) {
+			titleElement.style.fontSize = small ? "1.25rem" : "1.7rem"
+			return
+		}
+
+		const fitTitleFontSize = () => {
+			const maxHeight = wrap.clientHeight
+			if(maxHeight <= 0) {
+				return
+			}
+			const maxFontRem = small ? 1.25 : 1.7
+			const minFontRem = 0.55
+			titleElement.style.fontSize = `${maxFontRem}rem`
+			if(titleElement.scrollHeight <= maxHeight) {
+				return
+			}
+			let low = minFontRem
+			let high = maxFontRem
+			while(high - low > 0.04) {
+				const mid = (low + high) / 2
+				titleElement.style.fontSize = `${mid}rem`
+				if(titleElement.scrollHeight <= maxHeight) {
+					low = mid
+				} else {
+					high = mid
+				}
+			}
+			titleElement.style.fontSize = `${low}rem`
+		}
+
+		fitTitleFontSize()
+		const resizeObserver = new ResizeObserver(fitTitleFontSize)
+		resizeObserver.observe(wrap)
+		return () => {
+			resizeObserver.disconnect()
+		}
+	}, [org.title, small])
 
 	return (
 		<OrgCard className={ `${small ? "small" : ""} ${award === "awardee" ? "awardee" : ""} ${shouldPulse ? "pulse" : ""}`.trim() }>
@@ -30,9 +77,9 @@ export const AwardCard = ({ org, award, amount, small, shouldPulse }: AwardCardP
 					}
 				/>
 			</CardImage>
-			<CardContent style={ { paddingTop: "4px" } }>
-				<OrgTitle className={ small ? "small" : "" }>{ org.title }</OrgTitle>
-			</CardContent>
+			<TitleBox ref={ titleWrapRef }>
+				<OrgTitle ref={ titleRef }>{ org.title }</OrgTitle>
+			</TitleBox>
 		</OrgCard>
 	)
 }
@@ -54,6 +101,8 @@ const OrgCard = styled(Paper)`
 	width: 260px;
 	height: 275px;
 	margin: 0.5em 0.5em;
+	display: flex;
+	flex-direction: column;
 
 	&.small {
 		flex-basis: 200px;
@@ -72,17 +121,18 @@ const OrgCard = styled(Paper)`
 
 const OrgTitle = styled("p")`
 	font-family: TradeGothic;
-	font-size: 1.7rem;
-	margin: 5px;
+	margin: 0;
 	font-weight: 600;
-
-	&.small {
-		font-size: 1.25rem;
-	}
+	text-align: center;
+	color: #fff;
+	line-height: 1.12;
+	overflow-wrap: anywhere;
+	hyphens: auto;
 `
 
 const CardImage = styled("div")`
 	width: 100%;
+	flex-shrink: 0;
 	height: 185px;
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -93,8 +143,12 @@ const CardImage = styled("div")`
 	}
 `
 
-const CardContent = styled("div")`
-	color: #FFF;
-	text-align: center;
+const TitleBox = styled("div")`
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	padding: 4px 6px 6px;
 `
-
