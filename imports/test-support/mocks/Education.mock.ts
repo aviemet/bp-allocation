@@ -1,5 +1,5 @@
-import { SettingsData, ThemeData } from "../api/db"
-import { uuid } from "../lib/utils"
+import { type SettingsData, type ThemeData } from "/imports/api/db"
+import { uuid } from "/imports/lib/utils"
 import { OrgTransformer as orgTransformer, calculateVotesFromRawOrg } from "/imports/server/transformers/orgTransformer"
 import { filterTopOrgs } from "/imports/lib/orgsMethods"
 

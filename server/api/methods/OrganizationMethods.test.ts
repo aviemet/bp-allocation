@@ -5,18 +5,17 @@ import { Random } from "meteor/random"
 
 import "./staticSnapshotMethods"
 
-import { OrganizationMethods, PresentationSettingsMethods, ThemeMethods } from "/imports/api/methods"
+import { OrganizationMethods, ThemeMethods } from "/imports/api/methods"
 import { Organizations, Themes } from "/imports/api/db"
 import { fetchOrgsSnapshot } from "/imports/server/snapshots/organizations"
-import { resetDatabase } from "/imports/test-support/resetDatabase"
+import {
+	applyTestThemePreset,
+	buildOrgCreateData,
+	insertTestOrg,
+	resetDatabase,
+} from "/imports/test-support"
 
-const OrgTestData = (themeId?: string) => {
-	return {
-		title: faker.company.name(),
-		ask: faker.number.int({ min: 1000, max: 1000000 }),
-		theme: themeId ?? Random.id(),
-	}
-}
+const OrgTestData = (themeId?: string) => buildOrgCreateData(themeId ?? Random.id())
 
 describe("Organization Methods", function() {
 
@@ -291,20 +290,12 @@ describe("Organization Methods", function() {
 	})
 
 	describe("CrowdFavorite", function() {
-		it("Should set topOff so projected total funding equals the ask (post-vote, pre-pledge state)", async function() {
-			const theme = await Themes.findOneAsync({ _id: themeId })
-			if(!theme?.presentationSettings) throw new Error("Theme has no presentationSettings")
-			await PresentationSettingsMethods.update.callAsync({
-				id: theme.presentationSettings,
-				data: { useKioskFundsVoting: false },
-			})
+		beforeEach(async function() {
+			await applyTestThemePreset(themeId, "crowdFavorite")
+		})
 
-			const { response: orgId } = await OrganizationMethods.create.callAsync({
-				...OrgTestData(themeId),
-				ask: 10000,
-				amountFromVotes: 3000,
-			})
-			if(!orgId) throw new Error("Failed to create org")
+		it("Should set topOff so projected total funding equals the ask (post-vote, pre-pledge state)", async function() {
+			const orgId = await insertTestOrg(themeId, { ask: 10000, amountFromVotes: 3000 })
 
 			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
 			const org = await Organizations.findOneAsync({ _id: orgId })
@@ -312,19 +303,7 @@ describe("Organization Methods", function() {
 		})
 
 		it("Should subtract a save amount when one exists for the org", async function() {
-			const theme = await Themes.findOneAsync({ _id: themeId })
-			if(!theme?.presentationSettings) throw new Error("Theme has no presentationSettings")
-			await PresentationSettingsMethods.update.callAsync({
-				id: theme.presentationSettings,
-				data: { useKioskFundsVoting: false },
-			})
-
-			const { response: orgId } = await OrganizationMethods.create.callAsync({
-				...OrgTestData(themeId),
-				ask: 10000,
-				amountFromVotes: 1000,
-			})
-			if(!orgId) throw new Error("Failed to create org")
+			const orgId = await insertTestOrg(themeId, { ask: 10000, amountFromVotes: 1000 })
 
 			await ThemeMethods.update.callAsync({
 				id: themeId,
@@ -337,23 +316,12 @@ describe("Organization Methods", function() {
 		})
 
 		it("Should subtract minimum starting funds when active for the theme", async function() {
-			const theme = await Themes.findOneAsync({ _id: themeId })
-			if(!theme?.presentationSettings) throw new Error("Theme has no presentationSettings")
-			await PresentationSettingsMethods.update.callAsync({
-				id: theme.presentationSettings,
-				data: { useKioskFundsVoting: false },
-			})
 			await ThemeMethods.update.callAsync({
 				id: themeId,
 				data: { minStartingFundsActive: true, minStartingFunds: 1500 },
 			})
 
-			const { response: orgId } = await OrganizationMethods.create.callAsync({
-				...OrgTestData(themeId),
-				ask: 10000,
-				amountFromVotes: 2000,
-			})
-			if(!orgId) throw new Error("Failed to create org")
+			const orgId = await insertTestOrg(themeId, { ask: 10000, amountFromVotes: 2000 })
 
 			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
 			const org = await Organizations.findOneAsync({ _id: orgId })
@@ -361,12 +329,7 @@ describe("Organization Methods", function() {
 		})
 
 		it("Should set the crowd-favorite amount to 0 when negate is true", async function() {
-			const { response: orgId } = await OrganizationMethods.create.callAsync({
-				...OrgTestData(themeId),
-				ask: 10000,
-				amountFromVotes: 3000,
-			})
-			if(!orgId) throw new Error("Failed to create org")
+			const orgId = await insertTestOrg(themeId, { ask: 10000, amountFromVotes: 3000 })
 
 			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
 			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId, negate: true })
@@ -378,6 +341,57 @@ describe("Organization Methods", function() {
 		it("Should return 0 when the org does not exist", async function() {
 			const result = await OrganizationMethods.crowdFavorite.callAsync({ id: Random.id() })
 			expect(result).to.equal(0)
+		})
+
+		it("Should subtract matched pledge totals from the topOff gap", async function() {
+			await applyTestThemePreset(themeId, "crowdFavoriteWithPledges")
+
+			const orgId = await insertTestOrg(themeId, { ask: 10000, amountFromVotes: 2000 })
+
+			await OrganizationMethods.pledge.callAsync({
+				id: orgId,
+				amount: 1000,
+				member: Random.id(),
+			})
+
+			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.topOff).to.equal(10000 - 2000 - 1000 - 1000)
+		})
+
+		it("Should not add topOff when votes and pledges already meet or exceed the ask", async function() {
+			await applyTestThemePreset(themeId, "crowdFavoriteWithPledges")
+
+			const orgId = await insertTestOrg(themeId, { ask: 10000, amountFromVotes: 8500 })
+
+			await OrganizationMethods.pledge.callAsync({
+				id: orgId,
+				amount: 1000,
+				member: Random.id(),
+			})
+
+			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.topOff).to.equal(0)
+		})
+
+		it("Should not set topOff so allocated funds exceed the ask", async function() {
+			const orgId = await insertTestOrg(themeId, { ask: 10000, amountFromVotes: 3000 })
+
+			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			const allocated = (org?.amountFromVotes || 0) + (org?.topOff || 0)
+			expect(allocated).to.equal(10000)
+		})
+
+		it("Should cap topOff at remaining leverage when the gap exceeds the pool", async function() {
+			await applyTestThemePreset(themeId, "crowdFavoriteTightPool")
+
+			const orgId = await insertTestOrg(themeId, { ask: 10000, amountFromVotes: 2000 })
+
+			await OrganizationMethods.crowdFavorite.callAsync({ id: orgId })
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.topOff).to.equal(3000)
 		})
 	})
 

@@ -1,12 +1,25 @@
 import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
 
+import { calculatePledgeMatches, pledgeTotalForOrg } from "/imports/lib/pledgeMatching"
 import { roundFloat } from "/imports/lib/utils"
 
 import { Themes, Organizations, PresentationSettings, MemberThemes, type OrgData } from "/imports/api/db"
 import { ImageMethods } from "./ImageMethods"
 import { organizationMethodLog as log } from "/imports/lib/loggers"
-import { type Organization, type MatchPledge } from "/imports/types/schema"
+import { type MemberTheme, type Organization, type MatchPledge } from "/imports/types/schema"
+
+const sumMemberThemeAllocations = (
+	memberThemes: MemberTheme[],
+	organizationId?: string,
+): number => memberThemes.reduce((sum, memberTheme) => {
+	return sum + (memberTheme.allocations || []).reduce((allocationSum, allocation) => {
+		if(organizationId && allocation.organization !== organizationId) {
+			return allocationSum
+		}
+		return allocationSum + (allocation.amount || 0)
+	}, 0)
+}, 0)
 
 interface OrganizationCreateData extends Omit<OrgData, "_id" | "createdAt"> {
 	theme: string
@@ -230,8 +243,9 @@ export const OrganizationMethods = {
 	 * Fully-fund the crowd favorite organization to its ask amount.
 	 *
 	 * Designed to be called once, after funds voting closes and before the
-	 * pledges round opens. In that state there are no pledges and no distributed
-	 * leverage to net out, so the gap to `ask` is `ask − votes − saves − startingFunds`.
+	 * pledges round opens. The gap to `ask` is votes, saves, starting funds, and
+	 * matched pledge totals (raw pledge + leverage bonus from the shared pool walk),
+	 * capped by remaining leverage in the pool.
 	 * When `negate` is true, clears the crowd-favorite amount.
 	 *
 	 * NOTE: writes to the legacy persisted `topOff` field on Organization for
@@ -256,22 +270,44 @@ export const OrganizationMethods = {
 				? await PresentationSettings.findOneAsync({ _id: theme.presentationSettings })
 				: null
 
-			let votedTotal = 0
-			if(settings?.useKioskFundsVoting) {
-				const memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
-				votedTotal = memberThemes.reduce((sum, memberTheme) => {
-					return sum + (memberTheme.allocations || []).reduce((mtSum, allocation) => {
-						return mtSum + (allocation.organization === id ? (allocation.amount || 0) : 0)
-					}, 0)
-				}, 0)
-			} else {
-				votedTotal = org.amountFromVotes || 0
-			}
+			const useKioskFundsVoting = settings?.useKioskFundsVoting ?? false
+			const memberThemes = useKioskFundsVoting
+				? await MemberThemes.find({ theme: theme._id }).fetchAsync()
+				: []
+
+			const rawOrgs = await Organizations.find({ theme: theme._id }).fetchAsync()
+
+			const votedFunds = useKioskFundsVoting
+				? sumMemberThemeAllocations(memberThemes)
+				: rawOrgs.reduce((sum, rawOrg) => sum + (rawOrg.amountFromVotes || 0), 0)
+			const votedTotal = useKioskFundsVoting
+				? sumMemberThemeAllocations(memberThemes, id)
+				: (org.amountFromVotes || 0)
 
 			const saveAmount = theme.saves?.find(save => save.org === id)?.amount || 0
 			const startingFunds = theme.minStartingFundsActive ? (theme.minStartingFunds || 0) : 0
 
-			const amount = Math.max(0, (org.ask || 0) - votedTotal - saveAmount - startingFunds)
+			const consolationTotal = theme.consolationActive
+				? ((theme.organizations?.length || 0) - (theme.numTopOrgs || 0)) * (theme.consolationAmount || 0)
+				: 0
+			const startingFundsTotal = theme.minStartingFundsActive
+				? (theme.numTopOrgs || 0) * (theme.minStartingFunds || 0)
+				: 0
+			const orgsForPool = rawOrgs.map(rawOrg => (
+				rawOrg._id === id ? { ...rawOrg, topOff: 0 } : rawOrg
+			))
+			const { matchedAmounts, remainingLeverage } = calculatePledgeMatches(orgsForPool, theme, {
+				consolationTotal,
+				startingFundsTotal,
+				votedFunds,
+			})
+			const pledgeTotal = pledgeTotalForOrg(org, theme, matchedAmounts)
+
+			const gap = Math.max(0, (org.ask || 0) - votedTotal - saveAmount - startingFunds - pledgeTotal)
+			const amount = roundFloat(String(Math.min(
+				gap,
+				remainingLeverage > 0 ? remainingLeverage : 0,
+			)))
 			return await Organizations.updateAsync({ _id: id }, { $set: { topOff: amount } })
 		},
 	}),
