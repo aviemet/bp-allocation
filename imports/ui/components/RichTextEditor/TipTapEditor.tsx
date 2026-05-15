@@ -312,8 +312,6 @@ export const TipTapEditor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ 
 	)
 })
 
-TipTapEditor.displayName = "TipTapEditor"
-
 const EditorWrapper = styled.div`
 	.tip-tap-editor {
 		max-width: 600px;

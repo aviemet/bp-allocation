@@ -12,7 +12,7 @@ import { useTheme } from "/imports/api/hooks"
 import { ThemeSchema, DEFAULT_NUM_TOP_ORGS } from "/imports/api/db"
 import { formatters, roundFloat } from "/imports/lib/utils"
 
-import { Form, Loading, STATUS, SubmitButton, Switch, TextInput, type Status } from "/imports/ui/components"
+import { Form, Loading, NumberInput, STATUS, SubmitButton, Switch, TextInput, type Status } from "/imports/ui/components"
 
 export const ThemeSettingsForm = () => {
 	const { theme } = useTheme()
@@ -21,13 +21,15 @@ export const ThemeSettingsForm = () => {
 
 	const sanitizeData = (data: Record<string, unknown>) => {
 		const sanitizedData = data
-		if(sanitizedData.leverageTotal) sanitizedData.leverageTotal = roundFloat(String(sanitizedData.leverageTotal))
-		if(sanitizedData.consolationAmount) sanitizedData.consolationAmount = roundFloat(String(sanitizedData.consolationAmount))
-		if(sanitizedData.minLeverageAmount) sanitizedData.minLeverageAmount = roundFloat(String(sanitizedData.minLeverageAmount))
-		if(sanitizedData.minStartingFunds) sanitizedData.minStartingFunds = roundFloat(String(sanitizedData.minStartingFunds))
-		if(sanitizedData.matchRatio) sanitizedData.matchRatio = parseInt(String(sanitizedData.matchRatio))
-		if(sanitizedData.inPersonMatchRatio) sanitizedData.inPersonMatchRatio = parseInt(String(sanitizedData.inPersonMatchRatio))
-		if(sanitizedData.chitWeight) sanitizedData.chitWeight = parseInt(String(sanitizedData.chitWeight))
+		const coerced = (value: unknown) => (value === "" || value === null || value === undefined ? 0 : value)
+		sanitizedData.leverageTotal = roundFloat(String(coerced(sanitizedData.leverageTotal)))
+		sanitizedData.consolationAmount = roundFloat(String(coerced(sanitizedData.consolationAmount)))
+		sanitizedData.minLeverageAmount = roundFloat(String(coerced(sanitizedData.minLeverageAmount)))
+		sanitizedData.minStartingFunds = roundFloat(String(coerced(sanitizedData.minStartingFunds)))
+		sanitizedData.matchRatio = parseInt(String(coerced(sanitizedData.matchRatio)), 10)
+		sanitizedData.inPersonMatchRatio = parseInt(String(coerced(sanitizedData.inPersonMatchRatio)), 10)
+		sanitizedData.chitWeight = parseInt(String(coerced(sanitizedData.chitWeight)), 10)
+
 		if(!sanitizedData.numTopOrgs && theme) {
 			sanitizedData.numTopOrgs = theme.numTopOrgs || DEFAULT_NUM_TOP_ORGS
 		}
@@ -108,7 +110,7 @@ export const ThemeSettingsForm = () => {
 
 				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Total Leverage Amount */ }
-					<TextInput
+					<NumberInput
 						name="leverageTotal"
 						label="Total Pot"
 						slotProps={ {
@@ -126,18 +128,18 @@ export const ThemeSettingsForm = () => {
 
 				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Chit Weight */ }
-					<TextInput
+					<NumberInput
 						name="chitWeight"
-						type="number"
+						integer
 						label="Chit weight in ounces"
 					/>
 				</Grid>
 
 				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Match Ratio */ }
-					<TextInput
+					<NumberInput
 						name="matchRatio"
-						type="number"
+						integer
 						label="Multiplier for matched funds"
 					/>
 				</Grid>
@@ -149,9 +151,9 @@ export const ThemeSettingsForm = () => {
 							<Grid container spacing={ 2 } sx={ { mt: 1 } }>
 								<Grid size={ { xs: 12, md: 6 } }>
 									{ /* In-Person Match Ratio */ }
-									<TextInput
+									<NumberInput
 										name="inPersonMatchRatio"
-										type="number"
+										integer
 										label="Multiplier for in-person matched funds"
 									/>
 								</Grid>
@@ -170,7 +172,7 @@ export const ThemeSettingsForm = () => {
 
 				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Consolation Amount */ }
-					<TextInput
+					<NumberInput
 						name="consolationAmount"
 						label="Amount for bottom orgs"
 						slotProps={ {
@@ -191,7 +193,7 @@ export const ThemeSettingsForm = () => {
 
 				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Minimum Leverage Amount */ }
-					<TextInput
+					<NumberInput
 						name="minLeverageAmount"
 						label="Minimum Leverage Amount"
 						slotProps={ {
@@ -212,7 +214,7 @@ export const ThemeSettingsForm = () => {
 
 				<Grid size={ { xs: 12, md: 6 } }>
 					{ /* Minimum Starting Funds */ }
-					<TextInput
+					<NumberInput
 						name="minStartingFunds"
 						label="Minimum Starting Funds"
 						slotProps={ {

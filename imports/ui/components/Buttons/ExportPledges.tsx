@@ -1,7 +1,5 @@
-import { isEmpty } from "es-toolkit/compat"
 import { useOrgs, useMembers } from "/imports/api/hooks"
 import { ExportCsvButton } from "/imports/ui/components/Buttons/ExportCsvButton"
-import { Loading } from "/imports/ui/components"
 
 interface PledgeData {
 	Organization: string
@@ -16,7 +14,7 @@ export const ExportPledges = () => {
 	const { topOrgs, orgsLoading } = useOrgs()
 	const { members, membersLoading } = useMembers()
 
-	if(orgsLoading || membersLoading || isEmpty(members)) return <Loading />
+	const exportDisabled = orgsLoading || membersLoading
 
 	const pledges: PledgeData[] = []
 	topOrgs.forEach(org => {
@@ -39,6 +37,7 @@ export const ExportPledges = () => {
 	})
 	return (
 		<ExportCsvButton
+			disabled={ exportDisabled }
 			data={ pledges }
 			description="Pledges"
 		/>

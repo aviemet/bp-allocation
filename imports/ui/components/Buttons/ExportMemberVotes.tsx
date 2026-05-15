@@ -1,8 +1,6 @@
 import { format } from "date-fns"
-import { isEmpty } from "es-toolkit/compat"
 import { useOrgs, useMembers } from "/imports/api/hooks"
 import { ExportCsvButton } from "/imports/ui/components/Buttons"
-import { Loading } from "/imports/ui/components"
 import { type MemberWithTheme } from "/imports/api/db"
 
 interface MemberVoteData {
@@ -17,9 +15,11 @@ export const ExportMemberVotes = () => {
 	const { topOrgs, orgsLoading } = useOrgs()
 	const { members, membersLoading } = useMembers()
 
-	if(orgsLoading || membersLoading || isEmpty(members)) return <Loading />
+	const exportDisabled = orgsLoading || membersLoading
+
 	return (
 		<ExportCsvButton
+			disabled={ exportDisabled }
 			data={ members.map(member => {
 				const memberWithTheme = member as MemberWithTheme
 				const memberTheme = memberWithTheme.theme

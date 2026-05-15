@@ -1,20 +1,28 @@
 import { TextField, type TextFieldProps } from "@mui/material"
-import React, { useEffect, forwardRef } from "react"
-import { Controller, useFormContext, useWatch, type FieldPath, type UseFormReturn, type FieldValues, type RegisterOptions } from "react-hook-form"
+import React, { useEffect } from "react"
+import {
+	Controller,
+	useFormContext,
+	useWatch,
+	type FieldPath,
+	type FieldValues,
+	type RegisterOptions,
+} from "react-hook-form"
 
-interface TextInputProps extends Omit<TextFieldProps, "name" | "onChange"> {
-	name: string
-	onUpdate?: (value: unknown, name: string, form: UseFormReturn<FieldValues>) => void
+export interface TextInputProps<TFieldValues extends FieldValues = FieldValues>
+	extends Omit<TextFieldProps, "name" | "onChange" | "ref"> {
+	ref?: React.Ref<HTMLInputElement>
+	name: FieldPath<TFieldValues>
+	onUpdate?: (value: unknown, name: string, form: unknown) => void
 	onChange?: (value: string) => string
-	rules?: RegisterOptions<FieldValues, FieldPath<FieldValues>>
+	rules?: RegisterOptions<TFieldValues, FieldPath<TFieldValues>>
 	pattern?: string
 }
 
-export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((
-	{ name, onUpdate, onChange, rules, pattern, ...props },
-	ref
-) => {
-	const form = useFormContext<FieldValues>()
+export function TextInput<TFieldValues extends FieldValues = FieldValues>(
+	{ ref, name, onUpdate, onChange, rules, ...props }: TextInputProps<TFieldValues>,
+) {
+	const form = useFormContext<TFieldValues>()
 	const { control, formState: { errors } } = form
 	const value = useWatch({ name })
 
@@ -24,7 +32,10 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((
 		onUpdate(value, name, form)
 	}, [value, name, form, onUpdate])
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: { onChange: (value: string) => void }) => {
+	const handleChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+		field: { onChange: (value: string) => void },
+	) => {
 		if(e.target.value === undefined) return field.onChange("")
 
 		if(!onChange) return field.onChange(e.target.value)
@@ -37,7 +48,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((
 
 	return (
 		<Controller
-			name={ name as FieldPath<FieldValues> }
+			name={ name }
 			control={ control }
 			rules={ rules }
 			render={ ({ field }) => (
@@ -53,7 +64,4 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((
 			) }
 		/>
 	)
-})
-
-TextInput.displayName = "TextInput"
-
+}

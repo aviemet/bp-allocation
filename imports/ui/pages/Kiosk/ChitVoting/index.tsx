@@ -89,7 +89,7 @@ export const ChitVotingKiosk = ({ user, source }: ChitVotingKioskProps) => {
 			</Container>
 
 			<>
-				<h2>ROUND 1 VOTES LEFT: <NumberFormat>{ remaining }</NumberFormat></h2>
+				<h2>VOTES LEFT: <NumberFormat>{ remaining }</NumberFormat></h2>
 
 				<FinalizeButton
 					disabled={ buttonDisabled }

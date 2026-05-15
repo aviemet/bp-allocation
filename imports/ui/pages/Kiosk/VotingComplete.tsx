@@ -36,20 +36,20 @@ export const VotingComplete = ({ setVotingComplete }: VotingCompleteProps) => {
 		setVotingComplete(false)
 	}
 
-	const getRoundNumberFeedback = () => {
-		const roundStr = " in Round"
+	const thankYouMessage = () => {
 		if(settings && settings.chitVotingActive) {
-			return `${roundStr} 1`
+			"Thank you for voting for the finalists"
 		} else if(settings && settings.fundsVotingActive) {
-			return `${roundStr} 2`
+			"Thank you for allocating your donations"
 		}
+
 		return false
 	}
 
 	return (
 		<VotingCompleteContainer id="votingCompleteContainer">
 			<Box sx={ { mt: 6 } }>
-				<h1>Thank You For Voting{ getRoundNumberFeedback() }!</h1>
+				<h1>Thank You For Voting{ thankYouMessage() }!</h1>
 			</Box>
 			<Box><p>Results will be available shortly</p></Box>
 			<Box>

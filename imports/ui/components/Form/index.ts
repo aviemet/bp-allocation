@@ -1,5 +1,6 @@
 export { Form } from "./Form"
 export { TextInput } from "./TextInput"
+export { NumberInput } from "./NumberInput"
 export { RichTextInput } from "./RichTextInput"
 export { FormSwitch as Switch } from "./Switch"
 export { CheckboxInput } from "./CheckboxInput"

@@ -9,6 +9,7 @@ export { ConfirmationModal as SimpleAlertModal } from "./Dialogs/SimpleAlert"
 export { DisplayHtml } from "./DisplayHtml"
 export {
 	Form,
+	NumberInput,
 	TextInput,
 	RichTextInput,
 	Switch,

@@ -29,9 +29,10 @@ export const MembersEdit = () => {
 
 	const sanitizeData = (data: Record<string, unknown>) => {
 		const sanitizedData = data
-		if(sanitizedData.amount) sanitizedData.amount = roundFloat(String(sanitizedData.amount))
-		if(sanitizedData.number) sanitizedData.number = parseInt(String(sanitizedData.number))
-		if(sanitizedData.chits) sanitizedData.chits = parseInt(String(sanitizedData.chits))
+		const coerced = (value: unknown) => (value === "" || value === null || value === undefined ? 0 : value)
+		sanitizedData.amount = roundFloat(String(coerced(sanitizedData.amount)))
+		sanitizedData.number = parseInt(String(coerced(sanitizedData.number)), 10)
+		sanitizedData.chits = parseInt(String(coerced(sanitizedData.chits)), 10)
 		return sanitizedData
 	}
 
@@ -103,14 +104,16 @@ export const MembersEdit = () => {
 		console.error({ errors, data })
 	}
 
-	const handleInitials = (value: unknown, name: string, form: { setValue: (field: string, val: string) => void }) => {
+	const handleInitials = (value: unknown, name: string, form: unknown) => {
 		if(!["firstName", "lastName"].includes(name)) return
 		if(typeof value !== "object" || value === null) return
 		if(!("firstName" in value) || !("lastName" in value)) return
 		if(typeof value.firstName !== "string" || typeof value.lastName !== "string") return
 		if(!value.firstName || !value.lastName) return
+		if(typeof form !== "object" || form === null || !("setValue" in form)) return
+		const { setValue } = form as { setValue: (field: string, val: string) => void }
 
-		form.setValue("initials", (value.firstName.charAt(0) + value.lastName.charAt(0)).toUpperCase())
+		setValue("initials", (value.firstName.charAt(0) + value.lastName.charAt(0)).toUpperCase())
 	}
 
 	const schema = MemberSchema.omit("fullName", "code")

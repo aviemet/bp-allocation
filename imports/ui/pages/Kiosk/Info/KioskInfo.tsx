@@ -32,9 +32,9 @@ export const KioskInfo = () => {
 
 	let subHeading = ""
 	if(!theme.chitVotingStarted && !theme.fundsVotingStarted) {
-		subHeading = "Round 1 Voting To Begin Shortly"
+		subHeading = "Finalist Voting To Begin Shortly"
 	} else if(theme.chitVotingStarted && !theme.fundsVotingStarted) {
-		subHeading = "Round 2 Voting To Begin Shortly"
+		subHeading = "Funds Allocation Voting To Begin Shortly"
 	} else {
 		subHeading = "Votes Are In, Results Coming Soon"
 	}

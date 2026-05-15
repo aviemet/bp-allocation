@@ -29,6 +29,3 @@ export const RawEditor = forwardRef<HTMLInputElement, RawEditorProps>(({ value, 
 		</Box>
 	)
 })
-
-RawEditor.displayName = "RawEditor"
-

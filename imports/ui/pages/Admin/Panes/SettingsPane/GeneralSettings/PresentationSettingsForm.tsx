@@ -7,15 +7,15 @@ import { useState } from "react"
 import { PresentationSettingsMethods } from "/imports/api/methods"
 import { useSettings, useTheme } from "/imports/api/hooks"
 import { PresentationSettingsSchema } from "/imports/api/db"
-
+import { roundFloat } from "/imports/lib/utils"
 import {
 	Form,
 	InPersonPledgeQrCode,
 	Loading,
+	NumberInput,
 	STATUS,
 	SubmitButton,
 	Switch,
-	TextInput,
 	type Status,
 } from "/imports/ui/components"
 
@@ -29,6 +29,8 @@ export const PresentationSettingsForm = () => {
 
 	const sanitizeData = (data: Record<string, unknown>) => {
 		const sanitizedData = data
+		const coerced = (value: unknown) => (value === "" || value === null || value === undefined ? 0 : value)
+		sanitizedData.awardAmount = roundFloat(String(coerced(sanitizedData.awardAmount)))
 		return sanitizedData
 	}
 
@@ -115,9 +117,8 @@ export const PresentationSettingsForm = () => {
 				</Grid>
 
 				<Grid size={ { xs: 12, md: 6 } }>
-					{ settings.awardsPresentation && <TextInput
+					{ settings.awardsPresentation && <NumberInput
 						name="awardAmount"
-						type="number"
 						label="Amount being awarded"
 					/> }
 				</Grid>
