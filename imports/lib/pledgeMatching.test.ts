@@ -3,8 +3,10 @@ import { Random } from "meteor/random"
 
 import {
 	calculatePledgeMatches,
+	formatMatchRatioFromMultiplier,
 	isOrgEligibleForLeverage,
 	leverageBonusForPledge,
+	matchMultiplierForPledge,
 	pledgeTotalForOrg,
 	type PledgeMatchingTheme,
 	type PledgeMatchingOrg,
@@ -401,5 +403,38 @@ describe("pledgeTotalForOrg", function() {
 		const matchedAmounts = new Map<string, number>([[standardId, 100], [inPersonId, 100]])
 
 		expect(pledgeTotalForOrg(org, theme, matchedAmounts)).to.equal(100 + 100 + 100 + 200)
+	})
+})
+
+describe("matchMultiplierForPledge", function() {
+	it("Uses matchRatio for standard pledges", function() {
+		const pledge = makePledge({ amount: 1, pledgeType: "standard" })
+		const theme: PledgeMatchingTheme = { matchRatio: 2, inPersonMatchRatio: 5 }
+		expect(matchMultiplierForPledge(pledge, theme)).to.equal(2)
+	})
+
+	it("Uses inPersonMatchRatio for in-person pledges", function() {
+		const pledge = makePledge({ amount: 1, pledgeType: "inPerson" })
+		const theme: PledgeMatchingTheme = { matchRatio: 2, inPersonMatchRatio: 5 }
+		expect(matchMultiplierForPledge(pledge, theme)).to.equal(5)
+	})
+
+	it("Treats missing ratios as 0", function() {
+		const standard = makePledge({ amount: 1, pledgeType: "standard" })
+		const inPerson = makePledge({ amount: 1, pledgeType: "inPerson" })
+		expect(matchMultiplierForPledge(standard, {})).to.equal(0)
+		expect(matchMultiplierForPledge(inPerson, {})).to.equal(0)
+	})
+})
+
+describe("formatMatchRatioFromMultiplier", function() {
+	it("Maps total multiplier to colon label (2 → 1:1, 3 → 2:1)", function() {
+		expect(formatMatchRatioFromMultiplier(2)).to.equal("1:1")
+		expect(formatMatchRatioFromMultiplier(3)).to.equal("2:1")
+	})
+
+	it("Uses Math.max(0, m - 1) for edge multipliers", function() {
+		expect(formatMatchRatioFromMultiplier(1)).to.equal("0:1")
+		expect(formatMatchRatioFromMultiplier(0)).to.equal("0:1")
 	})
 })

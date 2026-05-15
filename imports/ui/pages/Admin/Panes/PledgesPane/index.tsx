@@ -18,12 +18,13 @@ import { format } from "date-fns"
 import numeral from "numeral"
 import { useState } from "react"
 import { useTheme, useMembers, useOrgs, type PledgeWithOrg, getFormattedName } from "/imports/api/hooks"
+import { formatMatchRatioFromMultiplier, matchMultiplierForPledge } from "/imports/lib/pledgeMatching"
 import { OrganizationMethods } from "/imports/api/methods"
 import { PledgesActiveToggle } from "/imports/ui/components/Toggles"
 import { ReplayPledgeAnimationButton } from "/imports/ui/components/Buttons/ReplayPledgeAnimationButton"
-import { ConfirmationModal, Loading, SortableTable } from "/imports/ui/components"
+import { ConfirmationModal, Loading, SortableTable, type HeadCell } from "/imports/ui/components"
 
-const headCells = [
+const headCells: HeadCell[] = [
 	{
 		id: "org.title",
 		label: "Organization",
@@ -37,8 +38,14 @@ const headCells = [
 		label: "Amount",
 	},
 	{
+		id: "ratio",
+		label: "Match Ratio",
+		align: "center",
+	},
+	{
 		id: "anonymous",
-		label: "Anonymous",
+		label: "Anon",
+		align: "center",
 	},
 	{
 		id: "createdAt",
@@ -49,6 +56,7 @@ const headCells = [
 		id: "actions",
 		label: "Replay Animation",
 		sort: false,
+		align: "center",
 	},
 ]
 
@@ -98,69 +106,82 @@ export const Pledges = ({ hideAdminFields = false }: PledgesProps) => {
 		<>
 			<Grid container spacing={ 2 }>
 				<Grid size={ { xs: 12, md: 8 } }>
-					<SortableTable<PledgeWithOrg>
-						title={ <Stack direction="row" sx={ { alignItems: "center", justifyContent: "space-between" } }>
-							<Box>Pledges</Box>
-							<Box><PledgesActiveToggle /></Box>
-						</Stack> }
-						onBulkDelete={ bulkDelete }
-						headCells={ headCells }
-						rows={ pledges }
-						defaultOrderBy="createdAt"
-						paginate={ false }
-						striped={ true }
-						selectable={ !hideAdminFields }
-						render={ pledge => {
-							const member = pledge.member ? members.find(value => value._id === pledge.member) : undefined
-							const isPledgeRunnerUp = isRunnerUp(pledge.org._id)
-							return (
-								<>
-									{ /* Org Title */ }
-									<TableCell component="th" scope="row">
-										<Stack direction="column" spacing={ 0.5 } sx={ { alignItems: "flex-start" } }>
-											<span>{ pledge.org.title }</span>
-											{ isPledgeRunnerUp && (
-												<Chip
-													label="Runner Up"
-													size="small"
-													color="secondary"
-													variant="outlined"
-												/>
-											) }
-										</Stack>
-									</TableCell>
+					<Box sx={ {
+						"& td.MuiTableCell-root, & th.MuiTableCell-root": {
+							py: 1.25,
+							px: 1.75,
+						},
+					} }>
+						<SortableTable<PledgeWithOrg>
+							title={ <Stack direction="row" sx={ { alignItems: "center", justifyContent: "space-between" } }>
+								<Box>Pledges</Box>
+								<Box><PledgesActiveToggle /></Box>
+							</Stack> }
+							onBulkDelete={ bulkDelete }
+							headCells={ headCells }
+							rows={ pledges }
+							defaultOrderBy="createdAt"
+							paginate={ false }
+							striped={ true }
+							selectable={ !hideAdminFields }
+							render={ pledge => {
+								const member = pledge.member ? members.find(value => value._id === pledge.member) : undefined
+								const isPledgeRunnerUp = isRunnerUp(pledge.org._id)
+								return (
+									<>
+										{ /* Org Title */ }
+										<TableCell component="th" scope="row">
+											<Stack direction="column" spacing={ 0.5 } sx={ { alignItems: "flex-start" } }>
+												<span>{ pledge.org.title }</span>
+												{ isPledgeRunnerUp && (
+													<Chip
+														label="Runner Up"
+														size="small"
+														color="secondary"
+														variant="outlined"
+													/>
+												) }
+											</Stack>
+										</TableCell>
 
-									{ /* Member */ }
-									<TableCell>
-										{ member ? getFormattedName(member) : "" }
-									</TableCell>
+										{ /* Member */ }
+										<TableCell>
+											{ member ? getFormattedName(member) : "" }
+										</TableCell>
 
-									{ /* Amount */ }
-									<TableCell align="right">
-										<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "baseline" } }>
-											<div>$</div>
-											<div>{ numeral(pledge.amount).format("0,0.00") }</div>
-										</Stack>
-									</TableCell>
+										{ /* Amount */ }
+										<TableCell align="right">
+											<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "baseline" } }>
+												<div>$</div>
+												<div>{ numeral(pledge.amount).format("0,0.00") }</div>
+											</Stack>
+										</TableCell>
 
-									{ /* Anonymous */ }
-									<TableCell>
-										{ pledge.anonymous && <CheckIcon /> }
-									</TableCell>
+										<TableCell align="center">
+											{ theme
+												? formatMatchRatioFromMultiplier(matchMultiplierForPledge(pledge, theme))
+												: "" }
+										</TableCell>
 
-									{ /* Pledge Timestamp */ }
-									<TableCell>
-										{ pledge.createdAt && format(pledge.createdAt, "hh:mm a") }
-									</TableCell>
+										{ /* Anonymous */ }
+										<TableCell align="center">
+											{ pledge.anonymous && <CheckIcon /> }
+										</TableCell>
 
-									{ /* Replay Animation */ }
-									<TableCell>
-										<ReplayPledgeAnimationButton pledge={ pledge } />
-									</TableCell>
-								</>
-							)
-						} }
-					/>
+										{ /* Pledge Timestamp */ }
+										<TableCell sx={ { whiteSpace: "nowrap" } }>
+											{ pledge.createdAt && format(pledge.createdAt, "hh:mm a") }
+										</TableCell>
+
+										{ /* Replay Animation */ }
+										<TableCell align="center">
+											<ReplayPledgeAnimationButton pledge={ pledge } />
+										</TableCell>
+									</>
+								)
+							} }
+						/>
+					</Box>
 				</Grid>
 
 				<Grid size={ { xs: 12, md: 4 } }>

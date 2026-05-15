@@ -57,7 +57,7 @@ export const Results = () => {
 
 			<AwardsSection>
 				<div>
-					<Typography component="h2" variant="h3" sx={ { marginBottom: 2 } }>Finalists</Typography>
+					{ restOrgs.length > 0 && <Typography component="h2" variant="h3" sx={ { marginBottom: 2 } }>Finalists</Typography> }
 					<AwardsCards>
 						{ topOrgs.map((org) => {
 							const awardType = getAwardType(org)

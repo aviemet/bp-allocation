@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import { useOrgs, usePledgeAnimationQueue, useTheme } from "/imports/api/hooks"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 
 import { PledgeDisplay } from "./PledgeDisplay"
 import { type PledgeWithOrg } from "/imports/api/hooks"
@@ -17,6 +17,20 @@ export const PledgesOverlay = () => {
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 	const initializedPledgeIds = useRef<Set<string>>(new Set())
 	const committedHeadIdRef = useRef<string | undefined>(undefined)
+	const queueItemsRef = useRef(queueItems)
+	const pledgesRef = useRef(pledges)
+
+	useLayoutEffect(() => {
+		queueItemsRef.current = queueItems
+		pledgesRef.current = pledges
+	}, [queueItems, pledges])
+
+	const queueHead = queueItems[0]
+	const headId = queueHead?._id
+	const headPledgeId = queueHead?.pledgeId
+	const pledgeReadyForHead = Boolean(
+		headPledgeId && pledges?.some(pledge => pledge._id === headPledgeId),
+	)
 
 	useEffect(() => {
 		if(!pledges || !theme) return
@@ -40,11 +54,14 @@ export const PledgesOverlay = () => {
 	}, [pledges, theme])
 
 	useEffect(() => {
-		const item = queueItems[0]
-		const headId = item?._id
-		const pledge = item?.pledgeId ? pledges?.find(p => p._id === item.pledgeId) : undefined
+		const item = queueItemsRef.current[0]
+		const effectHeadId = item?._id
+		const pledge =
+			item?.pledgeId && pledgesRef.current
+				? pledgesRef.current.find(p => p._id === item.pledgeId)
+				: undefined
 
-		if(committedHeadIdRef.current !== undefined && headId !== committedHeadIdRef.current) {
+		if(committedHeadIdRef.current !== undefined && effectHeadId !== committedHeadIdRef.current) {
 			if(timerRef.current) {
 				clearTimeout(timerRef.current)
 				timerRef.current = null
@@ -56,9 +73,9 @@ export const PledgesOverlay = () => {
 
 		if(!item || !pledge) return
 		if(isAnimating) return
-		if(committedHeadIdRef.current === headId) return
+		if(committedHeadIdRef.current === effectHeadId) return
 
-		committedHeadIdRef.current = headId
+		committedHeadIdRef.current = item._id
 
 		setIsAnimating(true)
 		setCurrentPledge(convertPledgeToPlainObject(pledge))
@@ -68,7 +85,7 @@ export const PledgesOverlay = () => {
 			setCurrentPledge(null)
 			setIsAnimating(false)
 		}, 10000)
-	}, [queueItems, pledges, isAnimating])
+	}, [headId, pledgeReadyForHead, isAnimating])
 
 	useEffect(() => {
 		return () => {

@@ -34,12 +34,15 @@ export interface PledgeMatchingContext {
 	topOrgIds?: Set<string>
 }
 
-const ratioForPledge = (pledge: MatchPledge, theme: PledgeMatchingTheme): number => {
+export const matchMultiplierForPledge = (pledge: MatchPledge, theme: PledgeMatchingTheme): number => {
 	if(pledge.pledgeType === "inPerson") {
 		return theme.inPersonMatchRatio || 0
 	}
 	return theme.matchRatio || 0
 }
+
+export const formatMatchRatioFromMultiplier = (totalMultiplier: number): string =>
+	`${Math.max(0, totalMultiplier - 1)}:1`
 
 /**
  * Whether an org's pledges are eligible to draw from the leverage pool. Finalists
@@ -94,7 +97,7 @@ export const calculatePledgeMatches = (
 			continue
 		}
 
-		const ratio = ratioForPledge(pledge, theme)
+		const ratio = matchMultiplierForPledge(pledge, theme)
 
 		if(ratio <= 1) {
 			matchedAmounts.set(pledge._id, amount)
@@ -125,7 +128,7 @@ export const leverageBonusForPledge = (
 	matchedAmount: number,
 	theme: PledgeMatchingTheme,
 ): number => {
-	const ratio = ratioForPledge(pledge, theme)
+	const ratio = matchMultiplierForPledge(pledge, theme)
 	if(ratio <= 1) return 0
 	return matchedAmount * (ratio - 1)
 }

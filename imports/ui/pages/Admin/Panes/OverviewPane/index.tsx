@@ -11,10 +11,53 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { isOrgEligibleForLeverage } from "/imports/lib/pledgeMatching"
 import { roundFloat } from "/imports/lib/utils"
-import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
+import { useSettings, useTheme, useOrgs, type OrgDataWithComputed } from "/imports/api/hooks"
 import { ExportChitVotes, ExportMemberVotes, ExportPledges } from "/imports/ui/components/Buttons"
 import { Loading, MoneyCell } from "/imports/ui/components"
+import { type ThemeWithComputed } from "/imports/types/themeWithComputed"
+
+const rawPledgeSum = (org: OrgDataWithComputed) =>
+	org.pledges?.reduce((sum, pledge) => sum + pledge.amount, 0) ?? 0
+
+const pledgePoolMatchForOrg = (
+	org: OrgDataWithComputed,
+	theme: ThemeWithComputed,
+	topOrgIds: Set<string>,
+) =>
+	isOrgEligibleForLeverage(org._id, theme, topOrgIds)
+		? Math.max(0, org.pledgeTotal - rawPledgeSum(org))
+		: 0
+
+type OverviewOrgTableRowProps = {
+	org: OrgDataWithComputed
+	isTopOrg: boolean
+	theme: ThemeWithComputed
+	topOrgIds: Set<string>
+}
+
+const OverviewOrgTableRow = ({ org, isTopOrg, theme, topOrgIds }: OverviewOrgTableRowProps) => {
+	const consolationValue = isTopOrg
+		? 0
+		: (theme.consolationActive ? (theme.consolationAmount || 0) : 0)
+
+	return (
+		<TableRow>
+			<TableCell>
+				<Box>{ org.title }</Box>
+			</TableCell>
+			<TableCell align="center">{ roundFloat(String(org.votes), 1) }</TableCell>
+			<MoneyCell>{ org.votedTotal || 0 }</MoneyCell>
+			<MoneyCell>{ consolationValue }</MoneyCell>
+			<MoneyCell>{ org.topOff }</MoneyCell>
+			<MoneyCell>{ rawPledgeSum(org) || 0 }</MoneyCell>
+			<MoneyCell>{ pledgePoolMatchForOrg(org, theme, topOrgIds) }</MoneyCell>
+			<MoneyCell>{ org.leverageFunds }</MoneyCell>
+			<MoneyCell>{ org.allocatedFunds + org.leverageFunds + consolationValue }</MoneyCell>
+		</TableRow>
+	)
+}
 
 export const Overview = () => {
 	const { settings, settingsLoading } = useSettings()
@@ -29,27 +72,6 @@ export const Overview = () => {
 	const sortedTopOrgs = [...topOrgs].sort((a, b) => b.votes - a.votes)
 	const sortedRemainingOrgs = [...remainingOrgs].sort((a, b) => b.votes - a.votes)
 
-	const renderOrgRow = (org: typeof orgs[0], isTopOrg: boolean) => {
-		const consolationValue = isTopOrg
-			? 0
-			: (theme.consolationActive ? (theme.consolationAmount || 0) : 0)
-
-		return (
-			<TableRow key={ org._id }>
-				<TableCell>
-					<Box>{ org.title }</Box>
-				</TableCell>
-				<TableCell align="center">{ roundFloat(String(org.votes), 1) }</TableCell>
-				<MoneyCell>{ org.votedTotal || 0 }</MoneyCell>
-				<MoneyCell>{ consolationValue }</MoneyCell>
-				<MoneyCell>{ org.topOff }</MoneyCell>
-				<MoneyCell>{ org.pledges?.reduce((sum, pledge) => sum + pledge.amount, 0) || 0 }</MoneyCell>
-				<MoneyCell>{ org.leverageFunds }</MoneyCell>
-				<MoneyCell>{ org.allocatedFunds + org.leverageFunds + consolationValue }</MoneyCell>
-			</TableRow>
-		)
-	}
-
 	return (
 		<>
 			<TableContainer style={ {
@@ -61,7 +83,7 @@ export const Overview = () => {
 						<TableRow>
 							<TableCell></TableCell>
 							<TableCell colSpan={ 2 }>Votes</TableCell>
-							<TableCell colSpan={ 5 } sx={ { backgroundColor: "transparent" } }>
+							<TableCell colSpan={ 6 } sx={ { backgroundColor: "transparent" } }>
 								<Stack direction="row" sx={ { justifyContent: "space-around", alignItems: "center" } }>
 									<ExportMemberVotes />
 									<ExportPledges />
@@ -75,17 +97,26 @@ export const Overview = () => {
 							<TableCell>R2 ($)<br/>{ settings?.useKioskFundsVoting && `[${theme.fundsVotesCast}/${theme.totalMembers}]` }</TableCell>
 							<TableCell>Consolation</TableCell>
 							<TableCell>Crowd Fav</TableCell>
-							<TableCell>Pledges (x{ theme.matchRatio })</TableCell>
-							<TableCell>Leverage</TableCell>
+							<TableCell>Pledges</TableCell>
+							<TableCell>Pledge<br/>Matches</TableCell>
+							<TableCell>Leverage<br/>Spread</TableCell>
 							<TableCell>Total<br/>Allocated</TableCell>
 						</TableRow>
 					</TableHead>
 
 					<TableBody>
-						{ sortedTopOrgs.map((org) => renderOrgRow(org, true)) }
+						{ sortedTopOrgs.map(org => (
+							<OverviewOrgTableRow
+								key={ org._id }
+								org={ org }
+								isTopOrg
+								theme={ theme }
+								topOrgIds={ topOrgIds }
+							/>
+						)) }
 						{ sortedRemainingOrgs.length > 0 && (
 							<TableRow>
-								<TableCell colSpan={ 8 } sx={ {
+								<TableCell colSpan={ 9 } sx={ {
 									backgroundColor: "rgba(0, 0, 0, 0.1)",
 									borderTop: "2px solid rgba(0, 0, 0, 0.2)",
 									borderBottom: "2px solid rgba(0, 0, 0, 0.2)",
@@ -94,7 +125,15 @@ export const Overview = () => {
 								} }></TableCell>
 							</TableRow>
 						) }
-						{ sortedRemainingOrgs.map((org) => renderOrgRow(org, false)) }
+						{ sortedRemainingOrgs.map(org => (
+							<OverviewOrgTableRow
+								key={ org._id }
+								org={ org }
+								isTopOrg={ false }
+								theme={ theme }
+								topOrgIds={ topOrgIds }
+							/>
+						)) }
 					</TableBody>
 
 					<TableFooter>
@@ -130,6 +169,8 @@ export const Overview = () => {
 								}, 0)
 							}</MoneyCell>
 
+							<MoneyCell>{ theme.pledgeMatchTotal }</MoneyCell>
+
 							{ /* Leverage */ }
 							<MoneyCell>{ Number(theme.leverageRemaining || 0) }</MoneyCell>
 
@@ -147,7 +188,7 @@ export const Overview = () => {
 
 						</TableRow>
 						<TableRow>
-							<TableCell colSpan={ 6 }></TableCell>
+							<TableCell colSpan={ 7 }></TableCell>
 							<TableCell align="right">Total Given:</TableCell>
 							<MoneyCell>{
 								orgs.reduce(
