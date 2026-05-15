@@ -7,9 +7,11 @@ import {
 } from "@mui/material"
 import { useParams, useNavigate } from "@tanstack/react-router"
 import { useState, useEffect } from "react"
+
 import { useMembers } from "/imports/api/hooks"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberSchema, MemberThemeSchema, type MemberWithTheme } from "/imports/api/db"
+import { consoleLog } from "/imports/lib/logging"
 import { roundFloat } from "/imports/lib/utils"
 
 import { Form, Loading, STATUS, SubmitButton, TextInput, type Status } from "/imports/ui/components"
@@ -63,7 +65,7 @@ export const MembersEdit = () => {
 			setFormStatus(STATUS.SUCCESS)
 		} catch (err) {
 			setFormStatus(STATUS.ERROR)
-			console.error({ err })
+			consoleLog.error({ err })
 		}
 	}
 
@@ -90,7 +92,7 @@ export const MembersEdit = () => {
 			setFormStatus(STATUS.SUCCESS)
 		} catch (err) {
 			setFormStatus(STATUS.ERROR)
-			console.error({ err })
+			consoleLog.error({ err })
 		}
 	}
 
@@ -101,7 +103,7 @@ export const MembersEdit = () => {
 	}, [formStatus, navigate, id])
 
 	const onError = (errors: unknown, data: unknown) => {
-		console.error({ errors, data })
+		consoleLog.error({ errors, data })
 	}
 
 	const handleInitials = (value: unknown, name: string, form: unknown) => {

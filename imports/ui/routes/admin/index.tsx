@@ -1,7 +1,4 @@
 import { createRoute, redirect } from "@tanstack/react-router"
-import { Meteor } from "meteor/meteor"
-
-import { AdminLayout } from "/imports/ui/layouts"
 import {
 	OrganizationsPane,
 	OrganizationsEdit,
@@ -18,8 +15,11 @@ import {
 	PledgesPane,
 	LeveragePane,
 	PresentationPane,
-} from "../../pages/Admin/Panes"
-import { ThemesList } from "../../pages/Admin/ThemesList"
+} from "imports/ui/pages/Admin/Panes"
+import { Meteor } from "meteor/meteor"
+import { ThemesList } from "/imports/ui/pages/Admin/ThemesList"
+
+import { AdminLayout } from "/imports/ui/layouts"
 import { rootRoute } from "../rootRoute"
 
 export const adminLayoutRoute = createRoute({

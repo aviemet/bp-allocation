@@ -21,6 +21,7 @@ import { useOrgs } from "/imports/api/hooks"
 import { type Organization } from "/imports/types/schema"
 
 import { OrganizationMethods } from "/imports/api/methods"
+import { consoleLog } from "/imports/lib/logging"
 
 import { SplitButton } from "/imports/ui/components/Buttons"
 import { ConfirmationModal, DisplayHtml, Loading } from "/imports/ui/components"
@@ -118,7 +119,7 @@ export const OrganizationsPane = () => {
 			try {
 				await OrganizationMethods.remove.callAsync(org._id)
 			} catch (err) {
-				console.error(err)
+				consoleLog.error(err)
 			}
 		})
 		setModalOpen(true)

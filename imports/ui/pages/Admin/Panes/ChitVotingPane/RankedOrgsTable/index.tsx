@@ -14,7 +14,7 @@ import { findIndex } from "es-toolkit/compat"
 import { useSettings, useTheme, useOrgs } from "/imports/api/hooks"
 
 import { TopOrgsRow } from "./TopOrgsRow"
-import { sortTopOrgs } from "/imports/lib/orgsMethods"
+import { sortTopOrgs } from "/imports/lib/allocation/orgsMethods"
 
 interface TopOrgsByChitVoteProps {
 	hideAdminFields?: boolean

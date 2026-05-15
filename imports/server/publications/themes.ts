@@ -1,13 +1,13 @@
 import { Meteor } from "meteor/meteor"
 
+import { publicationLog } from "/imports/lib/logging"
 import { registerObserver, type PublishSelf } from "../methods"
-import { filterTopOrgs } from "/imports/lib/orgsMethods"
+import { filterTopOrgs } from "/imports/lib/allocation/orgsMethods"
 import { createDebouncedFunction } from "/imports/lib/utils"
-import { computePledgeMatchingForPublication } from "/imports/lib/pledgeMatching"
+import { computePledgeMatchingForPublication } from "/imports/lib/allocation/pledgeMatching"
 
 import { Themes, PresentationSettings, Organizations, MemberThemes, type ThemeData } from "/imports/api/db"
 import { LogModels } from "/imports/api/db/Logs"
-import { publicationLog } from "/imports/lib/loggers"
 import { ThemeTransformer, OrgTransformer, aggregateVotesByOrganization, calculateVotesFromRawOrg } from "/imports/server/transformers"
 import { type ThemeTransformerParams } from "/imports/server/transformers/themeTransformer"
 import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"

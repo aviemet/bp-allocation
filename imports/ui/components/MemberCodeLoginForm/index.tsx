@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 import { Grid, Stack, Typography } from "@mui/material"
 import { useState, type ReactNode } from "react"
 
-import { COLORS } from "/imports/lib/global"
+import { COLORS } from "/imports/lib/presentation/global"
 import { Form, STATUS, SubmitButton, TextInput, type Status } from "/imports/ui/components"
 import { type MemberWithTheme } from "/imports/api/db"
 

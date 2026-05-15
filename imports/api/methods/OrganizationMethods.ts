@@ -1,12 +1,12 @@
 import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
 
-import { calculatePledgeMatches, pledgeTotalForOrg } from "/imports/lib/pledgeMatching"
+import { calculatePledgeMatches, pledgeTotalForOrg } from "/imports/lib/allocation/pledgeMatching"
 import { roundFloat } from "/imports/lib/utils"
 
 import { Themes, Organizations, PresentationSettings, MemberThemes, type OrgData } from "/imports/api/db"
 import { ImageMethods } from "./ImageMethods"
-import { organizationMethodLog as log } from "/imports/lib/loggers"
+import { organizationMethodLog as log } from "/imports/lib/logging"
 import { type MemberTheme, type Organization, type MatchPledge } from "/imports/types/schema"
 
 const sumMemberThemeAllocations = (

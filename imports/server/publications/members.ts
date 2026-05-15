@@ -3,7 +3,7 @@ import { Mongo } from "meteor/mongo"
 
 import { Members, MemberThemes, type MemberData } from "/imports/api/db"
 import { LogModels } from "/imports/api/db/Logs"
-import { publicationLog } from "/imports/lib/loggers"
+import { publicationLog } from "/imports/lib/logging"
 import { MemberTransformer } from "/imports/server/transformers"
 import { registerObserver, type PublishSelf } from "../methods"
 import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"

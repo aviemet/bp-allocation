@@ -1,5 +1,6 @@
 import { Meteor } from "meteor/meteor"
 
+import { publicationLog } from "/imports/lib/logging"
 import { registerObserver, type PublishSelf } from "../methods"
 import { OrgTransformer, type OrgTransformerParams } from "/imports/server/transformers/orgTransformer"
 import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"
@@ -14,7 +15,6 @@ import {
 	type OrgData,
 } from "/imports/api/db"
 import { LogModels } from "/imports/api/db/Logs"
-import { publicationLog } from "/imports/lib/loggers"
 import { type MemberTheme } from "/imports/types/schema"
 
 const orgObserver = registerObserver((doc: OrgData, params: OrgTransformerParams) => {

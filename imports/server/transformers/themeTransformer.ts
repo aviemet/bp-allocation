@@ -1,6 +1,6 @@
 import { sortBy } from "es-toolkit/compat"
 import { roundFloat } from "/imports/lib/utils"
-import { calculatePledgeMatches, leverageBonusForPledge, type PledgeMatchingResult } from "/imports/lib/pledgeMatching"
+import { calculatePledgeMatches, leverageBonusForPledge, type PledgeMatchingResult } from "/imports/lib/allocation/pledgeMatching"
 
 import { type ThemeData, type SettingsData } from "/imports/api/db"
 import { type MatchPledge, type MemberTheme } from "/imports/types/schema"

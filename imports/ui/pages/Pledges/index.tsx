@@ -1,12 +1,14 @@
 import { Container, Typography } from "@mui/material"
 import { isEmpty } from "es-toolkit/compat"
+
 import { useMembers } from "/imports/api/hooks"
 import { useStaticOrgs } from "/imports/api/hooks/static"
 import { OrganizationMethods } from "/imports/api/methods"
+import { PledgesForm } from "./PledgesForm"
+import { consoleLog } from "/imports/lib/logging"
 import { Form } from "/imports/ui/components"
 
 import { Loading } from "/imports/ui/components"
-import { PledgesForm } from "./PledgesForm"
 
 export const Pledges = () => {
 	const { members, membersLoading } = useMembers()
@@ -24,7 +26,7 @@ export const Pledges = () => {
 				reset()
 			}
 		} catch (err) {
-			console.error(err)
+			consoleLog.error(err)
 		}
 	}
 

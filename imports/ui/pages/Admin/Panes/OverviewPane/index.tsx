@@ -11,7 +11,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { isOrgEligibleForLeverage } from "/imports/lib/pledgeMatching"
+import { isOrgEligibleForLeverage } from "/imports/lib/allocation/pledgeMatching"
 import { roundFloat } from "/imports/lib/utils"
 import { useSettings, useTheme, useOrgs, type OrgDataWithComputed } from "/imports/api/hooks"
 import { ExportChitVotes, ExportMemberVotes, ExportPledges } from "/imports/ui/components/Buttons"

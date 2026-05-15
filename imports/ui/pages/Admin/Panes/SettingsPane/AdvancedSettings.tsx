@@ -3,9 +3,11 @@ import {
 	Stack,
 } from "@mui/material"
 import { useState } from "react"
+
 import { PresentationSettingsMethods } from "/imports/api/methods"
 import { PresentationSettingsSchema } from "/imports/api/db"
 import { useSettings } from "/imports/api/hooks"
+import { consoleLog } from "/imports/lib/logging"
 
 import { ResetMessageStatusButton, ResetOrgFundsButton } from "/imports/ui/components/Buttons"
 import {
@@ -33,7 +35,7 @@ export const AdvancedSettings = () => {
 	}
 
 	const onError = (errors: unknown, data: unknown) => {
-		console.log({ errors, data })
+		consoleLog.log({ errors, data })
 	}
 
 	const onSubmit = async (data: Record<string, unknown>) => {
@@ -45,7 +47,7 @@ export const AdvancedSettings = () => {
 				data: data,
 			})
 			setFormStatus(STATUS.SUCCESS)
-		} catch (err) {
+		} catch (_err) {
 			setFormStatus(STATUS.ERROR)
 		}
 	}

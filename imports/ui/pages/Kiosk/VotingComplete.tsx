@@ -7,7 +7,7 @@ import { useEffect } from "react"
 
 import { useKioskVoting } from "./KioskVotingContext"
 
-import { COLORS } from "/imports/lib/global"
+import { COLORS } from "/imports/lib/presentation/global"
 import { useData } from "/imports/api/providers"
 import { useSettings } from "/imports/api/hooks"
 

@@ -1,6 +1,6 @@
 import { expect } from "chai"
 
-import { sanitizeNames, formatPhoneNumber } from "/imports/lib/utils"
+import { formatPhoneNumber, sanitizeNames } from "/imports/lib/utils"
 
 describe("Name sanitizer", () => {
 	it("Should rearrange names in the form 'Last, First'", () => {

@@ -1,7 +1,7 @@
-/* eslint-disable no-console */
-
 import * as fs from "fs"
 import * as path from "path"
+
+import { consoleLog } from "../imports/lib/logging"
 
 // Parse SimpleSchema from file content
 function parseSchemaFromFile(filePath: string): Record<string, string> {
@@ -17,7 +17,7 @@ function parseSchemaFromFile(filePath: string): Record<string, string> {
 
 	for(const match of schemaMatches) {
 		const schemaName = match[1]
-		console.log(`Found schema: ${schemaName} in ${path.basename(filePath)}`)
+		consoleLog.log(`Found schema: ${schemaName} in ${path.basename(filePath)}`)
 
 		// Extract the schema definition by finding the matching closing parenthesis
 		const startIndex = content.indexOf(match[0])
@@ -337,7 +337,7 @@ export function generateTypes(): void {
 			throw new Error("No schemas found in any of the schema files")
 		}
 
-		console.log(`Parsed ${Object.keys(allSchemas).length} schemas from ${schemaFiles.length} files`)
+		consoleLog.log(`Parsed ${Object.keys(allSchemas).length} schemas from ${schemaFiles.length} files`)
 
 		// Parse index.ts to find which schemas are used for Mongo collections
 		const indexPath = path.join(process.cwd(), "imports/api/db/index.ts")
@@ -348,7 +348,7 @@ export function generateTypes(): void {
 		const collectionMatches = [...indexContent.matchAll(/\.attachSchema\((\w+)\)/g)]
 		for(const match of collectionMatches) {
 			collectionSchemas.add(match[1])
-			console.log(`Found collection schema: ${match[1]}`)
+			consoleLog.log(`Found collection schema: ${match[1]}`)
 		}
 
 		// Generate TypeScript interfaces
@@ -371,19 +371,19 @@ export function generateTypes(): void {
 		fs.writeFileSync(outputPath, content)
 
 
-		console.log("Type generation completed successfully!")
-		console.log(`Generated types written to: ${outputPath}`)
+		consoleLog.log("Type generation completed successfully!")
+		consoleLog.log(`Generated types written to: ${outputPath}`)
 
 	} catch (error) {
-		console.error("Type generation failed:", (error as Error).message)
-		console.log("\nThis means the script could not parse your actual schema files")
-		console.log("   Check that your schema files exist and have the correct format")
+		consoleLog.error("Type generation failed:", (error as Error).message)
+		consoleLog.log("\nThis means the script could not parse your actual schema files")
+		consoleLog.log("   Check that your schema files exist and have the correct format")
 		process.exit(1)
 	}
 }
 
 // Only run when explicitly requested (prevents accidental execution during Meteor startup)
 if(process.env.GENERATE_TYPES === "1") {
-	console.log("Generating TypeScript types from actual SimpleSchema definitions...")
+	consoleLog.log("Generating TypeScript types from actual SimpleSchema definitions...")
 	generateTypes()
 }

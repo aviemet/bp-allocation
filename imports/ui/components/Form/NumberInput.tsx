@@ -5,7 +5,7 @@ import {
 	filterNumericInput,
 	shouldBlockBeforeInput,
 	toDisplayString,
-} from "/imports/lib/numericFieldUtils"
+} from "/imports/lib/forms/numericFieldUtils"
 import {
 	Controller,
 	useFormContext,

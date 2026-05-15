@@ -2,6 +2,7 @@ import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
 
 import { Logs } from "/imports/api/db"
+import { consoleLog } from "/imports/lib/logging"
 
 interface PurgeData {
 	themeId: string
@@ -24,7 +25,7 @@ export const LogMethods = {
 			}
 
 			const removed = await Logs.removeAsync({ themeId })
-			console.log("logs.purge: Purged logs for theme", { themeId, removed })
+			consoleLog.log("logs.purge: Purged logs for theme", { themeId, removed })
 			return { removed }
 		},
 	}),

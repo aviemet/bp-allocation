@@ -12,7 +12,7 @@ import { useKioskVoting } from "../KioskVotingContext"
 import { VotingComplete } from "../VotingComplete"
 import { OrgCard, OrgCardContainer } from "/imports/ui/components"
 import { VotingCardContent } from "./VotingCardContent"
-import { COLORS } from "/imports/lib/global"
+import { COLORS } from "/imports/lib/presentation/global"
 import { type MemberWithTheme } from "/imports/api/db"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
 

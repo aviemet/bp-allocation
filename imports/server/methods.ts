@@ -1,5 +1,5 @@
 import { sortBy } from "es-toolkit/compat"
-import { createThemeVotingConfig } from "/imports/lib/orgsMethods"
+import { createThemeVotingConfig } from "/imports/lib/allocation/orgsMethods"
 import { type Theme } from "/imports/types/schema"
 
 type ThemeVotingFields = Pick<Theme, "numTopOrgs" | "topOrgsManual">

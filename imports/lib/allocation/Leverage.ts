@@ -1,7 +1,7 @@
 import { cloneDeep } from "es-toolkit"
 
 import { roundFloat } from "/imports/lib/utils"
-import { Organization } from "../types/schema"
+import { Organization } from "/imports/types/schema"
 
 interface OrganizationWithFunding extends Organization {
 	save?: number

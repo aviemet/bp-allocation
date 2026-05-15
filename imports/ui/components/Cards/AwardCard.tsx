@@ -5,7 +5,7 @@ import { useLayoutEffect, useRef } from "react"
 
 import { AwardEmblem } from "./AwardEmblem"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
-import { COLORS } from "/imports/lib/global"
+import { COLORS } from "/imports/lib/presentation/global"
 
 export type AwardType = "awardee" | "other"
 

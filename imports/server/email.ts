@@ -5,9 +5,9 @@ import "/imports/api/methods"
 import "/imports/server/publications"
 
 import { setMessageSendingFlag, setMessageSentFlag, setMessageErrorFlag } from "./messageMethods"
-import { emailLog as log } from "/imports/lib/loggers"
+import { emailLog as log } from "/imports/lib/logging"
 import { emailVotingLink } from "/imports/lib/utils"
-import { coerceArray } from "../lib/collections"
+import { coerceArray } from "/imports/lib/utils"
 import { type Message, type Rounds } from "/imports/types/schema"
 
 

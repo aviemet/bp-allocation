@@ -4,9 +4,11 @@ import {
 	Stack,
 } from "@mui/material"
 import { useState } from "react"
+
 import { PresentationSettingsMethods } from "/imports/api/methods"
 import { useSettings, useTheme } from "/imports/api/hooks"
 import { PresentationSettingsSchema } from "/imports/api/db"
+import { consoleLog } from "/imports/lib/logging"
 import { roundFloat } from "/imports/lib/utils"
 import {
 	Form,
@@ -43,13 +45,13 @@ export const PresentationSettingsForm = () => {
 				data: data,
 			})
 			setFormStatus(STATUS.SUCCESS)
-		} catch (err) {
+		} catch (_err) {
 			setFormStatus(STATUS.READY)
 		}
 	}
 
 	const onError = (errors: unknown, data: unknown) => {
-		console.error({ errors, data })
+		consoleLog.error({ errors, data })
 	}
 
 	if(!settings || settingsLoading) return <Loading />

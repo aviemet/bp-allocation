@@ -35,6 +35,8 @@ import {
 	type FontFamilySelectOption,
 } from "mui-tiptap"
 import { forwardRef, useEffect, useRef, useCallback, type ChangeEvent } from "react"
+
+import { consoleLog } from "/imports/lib/logging"
 import { Images } from "/imports/api/db"
 import { getImageUrl } from "/imports/lib/utils"
 
@@ -190,7 +192,7 @@ export const TipTapEditor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ 
 							}
 						}
 					} catch (err) {
-						console.error("Failed to resolve uploaded image URL from file.link():", err)
+						consoleLog.error("Failed to resolve uploaded image URL from file.link():", err)
 					}
 				}
 
@@ -230,7 +232,7 @@ export const TipTapEditor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ 
 				}
 			}).on("error", (err) => {
 				if(!uploadCompleted && "reason" in err && typeof err.reason === "string" && err.reason !== "Can't start") {
-					console.error("Upload error:", err)
+					consoleLog.error("Upload error:", err)
 				}
 			}).on("end", (error, fileObj) => {
 				if(!error && fileObj && !uploadCompleted) {
@@ -240,7 +242,7 @@ export const TipTapEditor = forwardRef<RichTextEditorRef, TipTapEditorProps>(({ 
 
 			uploadInstance.start()
 		} catch (err) {
-			console.error("Error creating upload instance:", err)
+			consoleLog.error("Error creating upload instance:", err)
 		}
 
 		if(e.target) {

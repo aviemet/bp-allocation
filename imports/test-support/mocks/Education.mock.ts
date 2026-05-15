@@ -1,7 +1,7 @@
 import { type SettingsData, type ThemeData } from "/imports/api/db"
 import { uuid } from "/imports/lib/utils"
 import { OrgTransformer as orgTransformer, calculateVotesFromRawOrg } from "/imports/server/transformers/orgTransformer"
-import { filterTopOrgs } from "/imports/lib/orgsMethods"
+import { filterTopOrgs } from "/imports/lib/allocation/orgsMethods"
 
 const theme: ThemeData = {
 	_id: "fEYxEXpMcHuhjoNzD",

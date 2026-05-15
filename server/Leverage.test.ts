@@ -1,9 +1,9 @@
 import { expect } from "chai"
-import { Leverage } from "/imports/lib/Leverage"
+import { Leverage } from "/imports/lib/allocation/Leverage"
 import { Education } from "/imports/test-support/mocks/Education.mock"
 import { Democracy } from "/imports/test-support/mocks/Democracy.mock"
 import { Youth } from "/imports/test-support/mocks/Youth.mock"
-import { filterTopOrgs } from "/imports/lib/orgsMethods"
+import { filterTopOrgs } from "/imports/lib/allocation/orgsMethods"
 
 describe("Leverage object", function() {
 

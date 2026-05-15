@@ -15,7 +15,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "type-check": "tsc --noEmit",
-    "verify": "npm run lint && npm run type-check && npm test",
+    "verify": "npm run lint:fix && npm run type-check && npm test",
     "generate-types": "GENERATE_TYPES=1 ts-node --project scripts/tsconfig.json scripts/generateTypes.ts",
     "mongosh": "mongosh mongodb://127.0.0.1:3001/meteor"
   },

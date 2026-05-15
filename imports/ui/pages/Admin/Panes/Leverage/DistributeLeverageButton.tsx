@@ -2,7 +2,7 @@ import { Button } from "@mui/material"
 import { useState } from "react"
 import { useTheme, useSettings } from "/imports/api/hooks"
 import { PresentationSettingsMethods, ThemeMethods } from "/imports/api/methods"
-import { type LeverageRound } from "/imports/lib/Leverage"
+import { type LeverageRound } from "/imports/lib/allocation/Leverage"
 
 interface DistributeLeverageButtonProps {
 	rounds: LeverageRound[]

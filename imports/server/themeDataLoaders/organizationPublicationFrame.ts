@@ -3,8 +3,8 @@ import {
 	calculateVotesFromRawOrg,
 	type OrgTransformerParams,
 } from "/imports/server/transformers/orgTransformer"
-import { computePledgeMatchingForPublication } from "/imports/lib/pledgeMatching"
-import { filterTopOrgs } from "/imports/lib/orgsMethods"
+import { computePledgeMatchingForPublication } from "/imports/lib/allocation/pledgeMatching"
+import { filterTopOrgs } from "/imports/lib/allocation/orgsMethods"
 import {
 	Organizations,
 	Themes,

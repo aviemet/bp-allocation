@@ -1,6 +1,6 @@
 import { sortBy } from "es-toolkit/compat"
 
-import { Organization, Theme } from "../types/schema"
+import { Organization, Theme } from "/imports/types/schema"
 
 type ThemeVotingFields = Pick<Theme, "numTopOrgs" | "topOrgsManual">
 

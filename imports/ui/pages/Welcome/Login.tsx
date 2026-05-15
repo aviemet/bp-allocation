@@ -4,6 +4,8 @@ import { useNavigate } from "@tanstack/react-router"
 import { Meteor } from "meteor/meteor"
 import { useSnackbar } from "notistack"
 
+import { consoleLog } from "/imports/lib/logging"
+
 export const Login = () => {
 	const { enqueueSnackbar } = useSnackbar()
 
@@ -24,7 +26,7 @@ export const Login = () => {
 						</ul>
 					</>
 					, { variant: "error" })
-				console.error({ err })
+				consoleLog.error({ err })
 			} else {
 				navigate({ to: "/admin" })
 			}

@@ -5,10 +5,10 @@ import { Themes, Members, MemberThemes, PresentationSettings } from "/imports/ap
 import "/imports/api/methods"
 import "/imports/server/publications"
 import { setMessageSendingFlag, setMessageSentFlag } from "./messageMethods"
-import { smsLog } from "/imports/lib/loggers"
+import { smsLog } from "/imports/lib/logging"
 import { textVotingLink, formatPhoneNumber } from "/imports/lib/utils"
 import { type Message, type Rounds } from "/imports/types/schema"
-import { coerceArray } from "../lib/collections"
+import { coerceArray } from "/imports/lib/utils"
 
 export interface MemberPhoneLookupResult {
 	_id: string

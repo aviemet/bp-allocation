@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import numeral from "numeral"
-import { COLORS } from "/imports/lib/global"
+import { COLORS } from "/imports/lib/presentation/global"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
 
 interface AwardImgProps {
