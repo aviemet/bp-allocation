@@ -1,5 +1,6 @@
 import { cloneDeep } from "es-toolkit"
 
+import { needDuringSpread } from "/imports/lib/allocation/needSpread"
 import { roundFloat } from "/imports/lib/utils"
 import { Organization } from "/imports/types/schema"
 
@@ -56,7 +57,7 @@ export class Leverage {
 			orgClone.allocatedFunds = org.allocatedFunds
 			orgClone.need = org.need
 
-			// Accumulator for funds recieved from leverage spread
+			// Accumulator for funds received from leverage spread
 			orgClone.leverageFunds = 0
 
 			// Use the loop to calculate the funding total of all orgs (for percentage calculation)
@@ -71,10 +72,12 @@ export class Leverage {
 		this.initialSumRemainingOrgs = sumRemainingOrgs
 		this.sumRemainingOrgs = sumRemainingOrgs
 
-		// Calculate percentage once for each org based on round 2 votes
-		// Percentage is each org's votedTotal divided by total of all votedTotals
+		// When orgs have fund votes, weight proportionally by votes (preserving real-world behavior).
+		// When no org has votes, fall back to allocatedFunds so zero-vote orgs still participate.
 		this.orgs.forEach(org => {
-			org.percent = totalAmountFromVotes > 0 ? (org.votedTotal || 0) / totalAmountFromVotes : 0
+			org.percent = totalAmountFromVotes > 0
+				? (org.votedTotal || 0) / totalAmountFromVotes
+				: Math.max(org.allocatedFunds || 0, 1)
 		})
 
 		// Normalize percentages to sum to 100% for orgs that still need funding
@@ -144,7 +147,7 @@ export class Leverage {
 		org.leverageFunds = roundFloat(String((org.leverageFunds || 0) + (org.roundFunds || 0)))
 
 		// Amount needed to be fully funded
-		org.need = roundFloat(String((org.ask || 0) - (org.allocatedFunds || 0) - (org.leverageFunds || 0)))
+		org.need = needDuringSpread(org.ask || 0, org.allocatedFunds || 0, org.leverageFunds || 0)
 
 		return org
 	}

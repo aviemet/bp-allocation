@@ -6,6 +6,7 @@ export {
 	leverageBonusForPledge,
 	matchMultiplierForPledge,
 	pledgeTotalForOrg,
+	votedFundsForPool,
 	type PledgeMatchingContext,
 	type PledgeMatchingOrg,
 	type PledgeMatchingResult,

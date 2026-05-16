@@ -11,24 +11,13 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { isOrgEligibleForLeverage } from "/imports/lib/allocation/pledgeMatching"
+import { fundedTotal } from "/imports/lib/allocation/displayTotals"
+import { poolMatch, rawPledgeTotal } from "/imports/lib/allocation/orgPledges"
 import { roundFloat } from "/imports/lib/utils"
 import { useSettings, useTheme, useOrgs, type OrgDataWithComputed } from "/imports/api/hooks"
 import { ExportChitVotes, ExportMemberVotes, ExportPledges } from "/imports/ui/components/Buttons"
 import { Loading, MoneyCell } from "/imports/ui/components"
 import { type ThemeWithComputed } from "/imports/types/themeWithComputed"
-
-const rawPledgeSum = (org: OrgDataWithComputed) =>
-	org.pledges?.reduce((sum, pledge) => sum + pledge.amount, 0) ?? 0
-
-const pledgePoolMatchForOrg = (
-	org: OrgDataWithComputed,
-	theme: ThemeWithComputed,
-	topOrgIds: Set<string>,
-) =>
-	isOrgEligibleForLeverage(org._id, theme, topOrgIds)
-		? Math.max(0, org.pledgeTotal - rawPledgeSum(org))
-		: 0
 
 type OverviewOrgTableRowProps = {
 	org: OrgDataWithComputed
@@ -51,10 +40,10 @@ const OverviewOrgTableRow = ({ org, isTopOrg, theme, topOrgIds }: OverviewOrgTab
 			<MoneyCell>{ org.votedTotal || 0 }</MoneyCell>
 			<MoneyCell>{ consolationValue }</MoneyCell>
 			<MoneyCell>{ org.topOff }</MoneyCell>
-			<MoneyCell>{ rawPledgeSum(org) || 0 }</MoneyCell>
-			<MoneyCell>{ pledgePoolMatchForOrg(org, theme, topOrgIds) }</MoneyCell>
+			<MoneyCell>{ rawPledgeTotal(org) || 0 }</MoneyCell>
+			<MoneyCell>{ poolMatch(org, theme, topOrgIds) }</MoneyCell>
 			<MoneyCell>{ org.leverageFunds }</MoneyCell>
-			<MoneyCell>{ org.allocatedFunds + org.leverageFunds + consolationValue }</MoneyCell>
+			<MoneyCell>{ fundedTotal(org.allocatedFunds, org.leverageFunds) + consolationValue }</MoneyCell>
 		</TableRow>
 	)
 }
@@ -181,7 +170,7 @@ export const Overview = () => {
 									const consolationValue = isTopOrg
 										? 0
 										: (theme.consolationActive ? (theme.consolationAmount || 0) : 0)
-									return sum + org.allocatedFunds + org.leverageFunds + consolationValue
+									return sum + fundedTotal(org.allocatedFunds, org.leverageFunds) + consolationValue
 								}, 0)
 							// numeral(totals.get('allocatedFunds')).format('$0,0')
 							}</MoneyCell>

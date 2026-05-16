@@ -1,6 +1,8 @@
 import { sortBy } from "es-toolkit/compat"
 import { roundFloat } from "/imports/lib/utils"
 import { calculatePledgeMatches, leverageBonusForPledge, type PledgeMatchingResult } from "/imports/lib/allocation/pledgeMatching"
+import { allocationSum } from "/imports/lib/allocation/memberVotes"
+import { consolationTotal as themeConsolationTotal, startingFundsTotal as themeStartingFundsTotal } from "/imports/lib/allocation/themeTotals"
 
 import { type ThemeData, type SettingsData } from "/imports/api/db"
 import { type MatchPledge, type MemberTheme } from "/imports/types/schema"
@@ -34,9 +36,7 @@ export const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams)
 	let votedFunds = 0
 	if(params.settings.useKioskFundsVoting) {
 		// Calculate based on individual votes if using kiosk method
-		votedFunds = params.memberThemes.reduce((voteAllocated, member) => {
-			return voteAllocated + (member.allocations || []).reduce((sum, allocation) => { return (allocation.amount || 0) + sum }, 0)
-		}, 0)
+		votedFunds = allocationSum(params.memberThemes)
 	} else {
 		// Calculate total count if not using kiosk method
 		votedFunds = params.topOrgs.reduce((sum, org) => {
@@ -78,12 +78,9 @@ export const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams)
 		return (member.allocations || []).some(vote => (vote.amount || 0) > 0)
 	})
 
-	// Amount given to orgs other than top orgs
-	const consolationTotal = doc.consolationActive ? ((doc.organizations ? doc.organizations.length : 0) - (doc.numTopOrgs || 0)) * (doc.consolationAmount || 0) : 0
+	const consolationTotal = themeConsolationTotal(doc)
 
-	const startingFundsTotal = doc.minStartingFundsActive
-		? (doc.numTopOrgs || 0) * (doc.minStartingFunds || 0)
-		: 0
+	const startingFundsTotal = themeStartingFundsTotal(doc)
 
 	const orgsForLeverage = doc.allowRunnersUpPledges && params.allOrgs
 		? params.allOrgs

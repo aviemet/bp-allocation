@@ -15,7 +15,7 @@ import {
 	PledgesPane,
 	LeveragePane,
 	PresentationPane,
-} from "imports/ui/pages/Admin/Panes"
+} from "/imports/ui/pages/Admin/Panes"
 import { Meteor } from "meteor/meteor"
 import { ThemesList } from "/imports/ui/pages/Admin/ThemesList"
 

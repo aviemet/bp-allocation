@@ -1,6 +1,15 @@
-import { isEmpty } from "es-toolkit/compat"
 import { roundFloat } from "/imports/lib/utils"
 import { pledgeTotalForOrg } from "/imports/lib/allocation/pledgeMatching"
+import {
+	allocatedFundsRounded,
+	allocatedSumBeforeSpread,
+	finalistStarts,
+	needBeforeLeverageSpread,
+	orgFundsVotes,
+	saveAmount as saveForOrg,
+} from "/imports/lib/allocation/orgFunding"
+
+export { aggregateVotesByOrganization } from "/imports/lib/allocation/memberVotes"
 import { type OrgDataWithComputed } from "/imports/api/hooks/useOrgs"
 import { type MemberTheme } from "/imports/types/schema"
 import { type OrgData, type ThemeData, type SettingsData } from "/imports/api/db"
@@ -13,34 +22,6 @@ export interface OrgTransformerParams {
 	chitVotesByOrg?: Record<string, number>
 	topOrgIds?: Set<string>
 	matchedAmounts?: Map<string, number>
-}
-
-export function aggregateVotesByOrganization(memberThemes: MemberTheme[], useKioskFundsVoting: boolean, useKioskChitVoting: boolean): {
-	fundsVotesByOrg: Record<string, number>
-	chitVotesByOrg: Record<string, number>
-} {
-	const fundsVotesByOrg: Record<string, number> = {}
-	const chitVotesByOrg: Record<string, number> = {}
-
-	for(const memberTheme of memberThemes) {
-		if(useKioskFundsVoting && memberTheme.allocations) {
-			for(const allocation of memberTheme.allocations) {
-				if(allocation.organization && allocation.amount) {
-					fundsVotesByOrg[allocation.organization] = (fundsVotesByOrg[allocation.organization] || 0) + allocation.amount
-				}
-			}
-		}
-
-		if(useKioskChitVoting && memberTheme.chitVotes && !isEmpty(memberTheme.chitVotes)) {
-			for(const chitVote of memberTheme.chitVotes) {
-				if(chitVote.organization && chitVote.votes) {
-					chitVotesByOrg[chitVote.organization] = (chitVotesByOrg[chitVote.organization] || 0) + chitVote.votes
-				}
-			}
-		}
-	}
-
-	return { fundsVotesByOrg, chitVotesByOrg }
 }
 
 export function calculateVotesFromRawOrg(
@@ -69,37 +50,26 @@ export type OrgWithComputed = OrgDataWithComputed & Record<string, unknown>
  * @param {Object} params { theme, settings, memberThemes }
  */
 export const OrgTransformer = (doc: OrgData, params: OrgTransformerParams): OrgWithComputed => {
-	// Get save amount if saved
-	let save = 0
-	if(params.theme?.saves && !isEmpty(params.theme.saves)) {
-		const saveObj = params.theme.saves.find(save => save.org === doc._id)
-		save = saveObj ? (saveObj.amount || 0) : 0
-	}
+	const save = saveForOrg(params.theme, doc._id)
 
 	const pledgeTotal = params.theme
 		? pledgeTotalForOrg(doc, params.theme, params.matchedAmounts, params.topOrgIds)
 		: 0
 
-	// Voted total
-	let votedTotal = 0
-	if(params.settings && params.settings.useKioskFundsVoting && params.fundsVotesByOrg) {
-		votedTotal = params.fundsVotesByOrg[doc._id] || 0
-	} else {
-		votedTotal = doc.amountFromVotes || 0
-	}
+	const fundsVotes = orgFundsVotes(doc, params.settings, params.fundsVotesByOrg)
 
-	const isFinalist = params.topOrgIds ? params.topOrgIds.has(doc._id) : true
-	const startingFunds = params.theme?.minStartingFundsActive && isFinalist
-		? (params.theme.minStartingFunds || 0)
-		: 0
+	const minStart = finalistStarts(params.theme, params.topOrgIds, doc._id)
 
-	// Total amount of money allocated to this org aside from leverage distribution
-	const allocatedFundsNum = startingFunds + votedTotal + pledgeTotal + save + (doc.topOff || 0)
-	const allocatedFunds = roundFloat(String(allocatedFundsNum))
+	const preLeverageSum = allocatedSumBeforeSpread({
+		minStart,
+		fundsVotes,
+		pledgeTotal,
+		save,
+		topOff: doc.topOff || 0,
+	})
+	const allocatedFunds = allocatedFundsRounded(preLeverageSum)
 
-	// Amount needed to reach goal
-	const needNum = (doc.ask || 0) - allocatedFundsNum
-	const need = roundFloat(String(needNum > 0 ? needNum : 0))
+	const need = needBeforeLeverageSpread(preLeverageSum, doc.ask || 0)
 
 	// Votes
 	let votes = 0
@@ -118,7 +88,7 @@ export const OrgTransformer = (doc: OrgData, params: OrgTransformerParams): OrgW
 		...doc,
 		save,
 		pledgeTotal,
-		votedTotal,
+		votedTotal: fundsVotes,
 		allocatedFunds,
 		need,
 		votes: votesRounded,

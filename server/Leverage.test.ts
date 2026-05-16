@@ -46,6 +46,22 @@ describe("Education Theme leverage spread", function() {
 	})
 })
 
+describe("Zero fund votes leverage spread", function() {
+	it("spreads leverage equally when all orgs have zero fund votes", function() {
+		const orgs = [
+			{ _id: "org1", ask: 90000, need: 90000, allocatedFunds: 0, topOff: 0, amountFromVotes: 0, votedTotal: 0, leverageFunds: 0 },
+			{ _id: "org2", ask: 90000, need: 90000, allocatedFunds: 0, topOff: 0, amountFromVotes: 0, votedTotal: 0, leverageFunds: 0 },
+			{ _id: "org3", ask: 90000, need: 90000, allocatedFunds: 0, topOff: 0, amountFromVotes: 0, votedTotal: 0, leverageFunds: 0 },
+		]
+		const leverage = new Leverage(orgs, 30000)
+		const rounds = leverage.getLeverageSpreadRounds()
+		expect(rounds.length).to.equal(1)
+		rounds[0].orgs.forEach(org => {
+			expect(org.roundFunds).to.equal(10000)
+		})
+	})
+})
+
 describe("Democracy Theme leverage spread", function() {
 
 	it("Should generate leverage rounds", function() {
