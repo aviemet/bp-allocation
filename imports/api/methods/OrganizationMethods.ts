@@ -265,13 +265,13 @@ export const OrganizationMethods = {
 
 			const rawOrgs = await Organizations.find({ theme: theme._id }).fetchAsync()
 
-			const amount = roundFloat(String(crowdFavoriteTopOff({
+			const amount = roundFloat(crowdFavoriteTopOff({
 				org,
 				rawOrgs,
 				theme,
 				useKioskFundsVoting,
 				memberThemes,
-			})))
+			}))
 			return await Organizations.updateAsync({ _id: id }, { $set: { topOff: amount } })
 		},
 	}),

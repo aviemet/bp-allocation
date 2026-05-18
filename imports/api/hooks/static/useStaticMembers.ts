@@ -3,23 +3,15 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { callMembersGet, callMembersList } from "/imports/api/methods/staticReadCalls"
 import { useData } from "/imports/api/providers"
 import { filterCollection } from "/imports/lib/utils"
-import { type MemberWithTheme } from "/imports/api/db"
+import { type MemberWithTheme, type MemberWithVoteSummary } from "/imports/api/db"
 import { MEMBER_SEARCHABLE_FIELDS } from "/imports/api/hooks/useMembers"
+import { memberVoteSummary } from "/imports/lib/allocation/memberVotes"
 
-const attachMemberComputed = (members: MemberWithTheme[]) => {
-	return members.map(member => {
-		const allocations = member.theme?.allocations || []
-		const chitVotes = member.theme?.chitVotes || []
-		const votedTotal = allocations.reduce((sum: number, allocation: { amount?: number }) => sum + (allocation.amount || 0), 0)
-		const votedChits = chitVotes.length > 0
-		return {
-			...member,
-			_computed: {
-				votedTotal,
-				votedChits,
-			},
-		}
-	})
+const attachMemberVoteSummary = (members: MemberWithTheme[]): MemberWithVoteSummary[] => {
+	return members.map(member => ({
+		...member,
+		...memberVoteSummary(member.theme),
+	}))
 }
 
 export const useStaticMembers = () => {
@@ -28,7 +20,7 @@ export const useStaticMembers = () => {
 	const [searchFilter, setSearchFilter] = useState<string | null>(null)
 
 	const [state, setState] = useState<{
-		members: ReturnType<typeof attachMemberComputed>
+		members: MemberWithVoteSummary[]
 		membersLoading: boolean
 		error: Error | null
 	}>({
@@ -45,7 +37,7 @@ export const useStaticMembers = () => {
 		setState(previous => ({ ...previous, membersLoading: true, error: null }))
 		try {
 			const raw = await callMembersList(themeId, false)
-			const members = attachMemberComputed(raw)
+			const members = attachMemberVoteSummary(raw)
 			setState({ members, membersLoading: false, error: null })
 		} catch (caught) {
 			const error = caught instanceof Error ? caught : new Error(String(caught))

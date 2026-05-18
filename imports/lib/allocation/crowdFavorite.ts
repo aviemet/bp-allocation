@@ -11,7 +11,6 @@ import { consolationTotal, startingFundsTotal } from "./themeTotals"
 import { type OrgData, type ThemeData } from "/imports/api/db"
 import { type MemberTheme } from "/imports/types/schema"
 
-/** What you pass into `crowdFavoriteTopOff`: the org, everyone in the theme, theme + settings shape, whether kiosk funds voting, and member themes if kiosk. */
 export interface CrowdFavoriteInput {
 	org: OrgData & PledgeMatchingOrg
 	rawOrgs: Array<OrgData & PledgeMatchingOrg>
@@ -21,9 +20,8 @@ export interface CrowdFavoriteInput {
 }
 
 /**
- * Crowd favorite `topOff` before you round and save: how much fills the gap to `ask` after votes, save, starting funds, and pledges, capped by what's left in the pledge pool.
- *
- * Uses the same crowd-favorite rules as before: no `topOrgIds` on the pool walk, non-kiosk pool input adds every org's fund votes, this org's existing `topOff` is treated as 0 for that pass.
+ * Crowd favorite `topOff` before you round and save: how much fills the gap to `ask` after votes, save,
+ * starting funds, and pledges, capped by what's left in the pledge pool.
  */
 export const crowdFavoriteTopOff = ({
 	org,
@@ -35,12 +33,15 @@ export const crowdFavoriteTopOff = ({
 	const votedFunds = useKioskFundsVoting
 		? allocationSum(memberThemes)
 		: rawOrgs.reduce((sum, rawOrgRow) => sum + (rawOrgRow.amountFromVotes || 0), 0)
+
 	const votedTotal = useKioskFundsVoting
 		? allocationSum(memberThemes, org._id)
 		: (org.amountFromVotes || 0)
 
 	const save = saveForOrg(theme, org._id)
-	const startingFunds = theme.minStartingFundsActive ? (theme.minStartingFunds ?? 0) : 0
+	const startingFunds = theme.minStartingFundsActive
+		? (theme.minStartingFunds ?? 0)
+		: 0
 
 	const orgRowsForPool = rawOrgs.map(rawOrgRow =>
 		rawOrgRow._id === org._id ? { ...rawOrgRow, topOff: 0 } : rawOrgRow,

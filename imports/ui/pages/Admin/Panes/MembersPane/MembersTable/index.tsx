@@ -18,6 +18,7 @@ import { MemberMethods } from "/imports/api/methods"
 import { ConfirmationModal, SortableTable } from "/imports/ui/components"
 
 import { ContextMenu } from "./ContextMenu"
+import { VotedFundsIcon } from "./VotedFundsIcon"
 
 interface HeadCell {
 	id: string
@@ -104,9 +105,7 @@ export const MembersTable = () => {
 				filterParams={ filterParams || null }
 				onFilterParamsChange={ handleSearch }
 				striped={ true }
-				render={ (member: any) => {
-					const votedTotal = member._computed?.votedTotal ?? 0
-					const votedChits = member._computed?.votedChits ?? false
+				render={ (member) => {
 					const fullName = member.fullName ? member.fullName : `${member.firstName || ""} ${member.lastName || ""}`
 
 					return (
@@ -117,15 +116,14 @@ export const MembersTable = () => {
 							{ /* Funds */ }
 							<TableCell>
 								{ formatters.currency.format(member.theme?.amount || 0) }
-								{ settings?.useKioskFundsVoting && (votedTotal === member.theme?.amount)
-									? <CheckIcon color="success" />
-									: null }
+
+								{ settings?.useKioskFundsVoting && <VotedFundsIcon fundsVoteStatus={ member.fundsVoteStatus } /> }
 							</TableCell>
 
 							{ /* Chits */ }
 							<TableCell>
 								{ member.theme?.chits || 0 }
-								{ settings?.useKioskChitVoting && votedChits
+								{ settings?.useKioskChitVoting && member.votedChits
 									? <CheckIcon color="success" />
 									: null }
 							</TableCell>

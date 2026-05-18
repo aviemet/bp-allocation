@@ -9,6 +9,7 @@ import { MemberThemeSchema, memberThemesPermissions } from "./MemberThemes"
 import { MessageSchema, messagesPermissions } from "./Messages"
 import { OrganizationSchema, organizationsPermissions } from "./Organizations"
 import { PresentationSettingsSchema, presentationSettingsPermissions } from "./PresentationSettings"
+import { type MemberVoteSummary } from "/imports/lib/allocation/memberVotes"
 import { type Log, type Member, type MemberTheme, type Message, type Organization, type PresentationSettings, type Theme } from "/imports/types/schema"
 import { ThemeSchema, themesPermissions, DEFAULT_NUM_TOP_ORGS } from "./Themes"
 
@@ -18,6 +19,10 @@ export interface MemberWithTheme extends MemberData {
 	theme?: MemberTheme
 	[key: string]: unknown
 }
+
+export type { MemberVoteSummary }
+
+export type MemberWithVoteSummary = MemberWithTheme & MemberVoteSummary
 export type MessageData = Message
 export type OrgData = Organization
 export type SettingsData = PresentationSettings

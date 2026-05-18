@@ -57,3 +57,39 @@ export const allocationSum = (
 		}
 		return allocationSum + (allocation.amount || 0)
 	}, 0), 0)
+
+export type MemberFundsVoteStatus = "none" | "partial" | "full"
+
+export interface MemberVoteSummary {
+	votedTotal: number
+	votedChits: boolean
+	fundsVoteStatus: MemberFundsVoteStatus
+}
+
+export function memberVoteSummary(
+	theme: Pick<MemberTheme, "amount" | "allocations" | "chitVotes"> | undefined,
+): MemberVoteSummary {
+	const allocations = theme?.allocations || []
+	const chitVotes = theme?.chitVotes || []
+	const votedTotal = allocations.reduce((sum, allocation) => sum + (allocation.amount || 0), 0)
+
+	return {
+		votedTotal,
+		votedChits: chitVotes.length > 0,
+		fundsVoteStatus: memberFundsVoteStatus(theme?.amount ?? 0, allocations),
+	}
+}
+
+export function memberFundsVoteStatus(
+	fundsAmount: number,
+	allocations: Array<{ amount?: number }>,
+): MemberFundsVoteStatus {
+	const votedTotal = allocations.reduce((sum, allocation) => sum + (allocation.amount || 0), 0)
+	if(votedTotal === fundsAmount) {
+		return "full"
+	}
+	if(votedTotal > 0 || allocations.length > 0) {
+		return "partial"
+	}
+	return "none"
+}
