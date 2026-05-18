@@ -6,6 +6,7 @@ import { Meteor } from "meteor/meteor"
 import { Themes, Organizations, MemberThemes, PresentationSettings, type ThemeData, DEFAULT_NUM_TOP_ORGS } from "/imports/api/db"
 import { PledgeAnimationQueue } from "/imports/api/db/PledgeAnimationQueue"
 import { OrganizationMethods } from "./OrganizationMethods"
+import { consoleLog } from "/imports/lib/logging"
 
 export const ThemeMethods = {
 	/**
@@ -53,7 +54,7 @@ export const ThemeMethods = {
 				const theme = await Themes.insertAsync(themeData)
 				return theme
 			} catch (e) {
-				console.error("themes.create.failure: Failed to create theme", { data, error: e })
+				consoleLog.error("themes.create.failure: Failed to create theme", { data, error: e })
 				return null
 			}
 

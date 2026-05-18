@@ -2,11 +2,12 @@ import { isUndefined } from "es-toolkit"
 import { isEmpty, find } from "es-toolkit/compat"
 import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
+
 import { formatPhoneNumber, sanitizeString } from "/imports/lib/utils"
 import { Members, MemberThemes, Organizations } from "/imports/api/db"
 import { OrganizationMethods } from "/imports/api/methods"
 import { LogModels } from "/imports/api/db/Logs"
-import { memberMethodLog as log } from "/imports/lib/loggers"
+import { consoleLog, memberMethodLog as log } from "/imports/lib/logging"
 import { type Member, type MemberTheme } from "/imports/types/schema"
 
 interface MemberInputData extends Partial<Member> {
@@ -156,7 +157,7 @@ const _memberInsert = async function(data: MemberInputData): Promise<string> {
 		try {
 			return await Members.insertAsync(newMember)
 		} catch (e) {
-			console.error("members.insert.failure: Failed to insert new member", { newMember, error: e })
+			consoleLog.error("members.insert.failure: Failed to insert new member", { newMember, error: e })
 			throw e
 		}
 	} else {
@@ -482,14 +483,14 @@ export const MemberMethods = {
 			try {
 				await MemberThemes.removeAsync({ member: member._id })
 			} catch (err) {
-				console.error("members.remove.memberThemes.failure: Failed to remove memberThemes for member", { memberId: member._id, error: err })
+				consoleLog.error("members.remove.memberThemes.failure: Failed to remove memberThemes for member", { memberId: member._id, error: err })
 			}
 
 			// Remove member
 			try {
 				return await Members.removeAsync(id)
 			} catch (err) {
-				console.error("members.remove.failure: Failed to remove member", { memberId: id, error: err })
+				consoleLog.error("members.remove.failure: Failed to remove member", { memberId: id, error: err })
 				throw err
 			}
 

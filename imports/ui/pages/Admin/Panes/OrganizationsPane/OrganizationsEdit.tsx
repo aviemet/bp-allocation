@@ -9,9 +9,11 @@ import {
 import { Link, useParams, useNavigate } from "@tanstack/react-router"
 import { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
+
 import { useOrgs } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
 import { OrganizationSchema } from "/imports/api/db"
+import { consoleLog } from "/imports/lib/logging"
 
 import { Form, RichTextInput, STATUS, SubmitButton, TextInput, type Status } from "/imports/ui/components"
 import { Loading } from "/imports/ui/components"
@@ -132,11 +134,11 @@ export const OrganizationsEdit = () => {
 				setFormStatus(STATUS.SUCCESS)
 			} else {
 				setFormStatus(STATUS.ERROR)
-				console.error({ response })
+				consoleLog.error({ response })
 			}
 		} catch (error) {
 			setFormStatus(STATUS.ERROR)
-			console.error({ error })
+			consoleLog.error({ error })
 		}
 	}
 

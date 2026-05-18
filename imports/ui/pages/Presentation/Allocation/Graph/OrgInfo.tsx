@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import numeral from "numeral"
+import { residualNeed } from "/imports/lib/allocation/displayTotals"
 import { type OrgDataWithComputed } from "/imports/api/hooks"
 
 interface OrgInfoProps {
@@ -8,7 +9,7 @@ interface OrgInfoProps {
 }
 
 export const OrgInfo = ({ org, showLeverage }: OrgInfoProps) => {
-	const need = org.need - org.leverageFunds
+	const need = residualNeed(org.need, org.leverageFunds)
 	return (
 		<InfoContainer className="orginfo">
 			<Title>{ org.title }</Title>

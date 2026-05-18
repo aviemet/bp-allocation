@@ -175,6 +175,14 @@ module.exports = [
 			}],
 			"eqeqeq": "error",
 			"no-console": "warn",
+			"no-restricted-imports": ["error", {
+				patterns: [
+					{
+						group: ["imports/**"],
+						message: "Meteor resolves app modules as absolute paths starting with \"/imports/\", not npm-style \"imports/\".",
+					},
+				],
+			}],
 			"eol-last": ["error", "always"],
 			"import/order": ["error", {
 				"groups": [

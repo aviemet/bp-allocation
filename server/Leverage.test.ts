@@ -1,9 +1,9 @@
 import { expect } from "chai"
-import { Leverage } from "/imports/lib/Leverage"
-import { Education } from "/imports/mock/Education.mock"
-import { Democracy } from "/imports/mock/Democracy.mock"
-import { Youth } from "/imports/mock/Youth.mock"
-import { filterTopOrgs } from "/imports/lib/orgsMethods"
+import { Leverage } from "/imports/lib/allocation/Leverage"
+import { Education } from "/imports/test-support/mocks/Education.mock"
+import { Democracy } from "/imports/test-support/mocks/Democracy.mock"
+import { Youth } from "/imports/test-support/mocks/Youth.mock"
+import { filterTopOrgs } from "/imports/lib/allocation/orgsMethods"
 
 describe("Leverage object", function() {
 
@@ -42,6 +42,22 @@ describe("Education Theme leverage spread", function() {
 			round.orgs.forEach(org => {
 				expect(org.roundFunds).to.equal(orgSpreadByRound[org._id]?.[nRounds])
 			})
+		})
+	})
+})
+
+describe("Zero fund votes leverage spread", function() {
+	it("spreads leverage equally when all orgs have zero fund votes", function() {
+		const orgs = [
+			{ _id: "org1", ask: 90000, need: 90000, allocatedFunds: 0, topOff: 0, amountFromVotes: 0, votedTotal: 0, leverageFunds: 0 },
+			{ _id: "org2", ask: 90000, need: 90000, allocatedFunds: 0, topOff: 0, amountFromVotes: 0, votedTotal: 0, leverageFunds: 0 },
+			{ _id: "org3", ask: 90000, need: 90000, allocatedFunds: 0, topOff: 0, amountFromVotes: 0, votedTotal: 0, leverageFunds: 0 },
+		]
+		const leverage = new Leverage(orgs, 30000)
+		const rounds = leverage.getLeverageSpreadRounds()
+		expect(rounds.length).to.equal(1)
+		rounds[0].orgs.forEach(org => {
+			expect(org.roundFunds).to.equal(10000)
 		})
 	})
 })

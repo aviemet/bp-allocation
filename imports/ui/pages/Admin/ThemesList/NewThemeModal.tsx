@@ -9,6 +9,7 @@ import { useState } from "react"
 import { ContentModal, Form, STATUS, SubmitButton, TextInput, type Status } from "/imports/ui/components"
 import { ThemeMethods } from "/imports/api/methods"
 import { ThemeSchema } from "/imports/api/db"
+import { consoleLog } from "/imports/lib/logging"
 
 export const NewThemeModal = () => {
 	const navigate = useNavigate()
@@ -28,7 +29,7 @@ export const NewThemeModal = () => {
 			navigate({ to: `/admin/${res}` })
 		} catch (err) {
 			setFormStatus(STATUS.ERROR)
-			console.error(err)
+			consoleLog.error(err)
 		}
 	}
 

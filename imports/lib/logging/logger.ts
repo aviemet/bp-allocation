@@ -1,9 +1,9 @@
-/* eslint-disable no-console */
 import { Meteor } from "meteor/meteor"
 
 import { Logs } from "/imports/api/db"
 import { LogCategories, LogModels, type LogCategory, type LogLevel, type LogModel } from "/imports/api/db/Logs"
 import { type Log, type LogError } from "/imports/types/schema"
+import { consoleLog } from "."
 
 export { LogCategories, LogModels }
 export type { LogCategory, LogLevel, LogModel }
@@ -91,14 +91,14 @@ export const createLogger = (settings: LoggerSettings): ScopedLogger => {
 
 		if(context.mirrorToConsole) {
 			const mirrored = { at: new Date().toISOString(), ...doc }
-			if(level === "error") console.error(mirrored)
-			else if(level === "warn") console.warn(mirrored)
-			else console.log(mirrored)
+			if(level === "error") consoleLog.error(mirrored)
+			else if(level === "warn") consoleLog.warn(mirrored)
+			else consoleLog.log(mirrored)
 		}
 
 		if(Meteor.isServer) {
 			Logs.insertAsync(doc).catch(persistError => {
-				console.error("Logger persist failed:", persistError, "doc:", doc)
+				consoleLog.error("Logger persist failed:", persistError, "doc:", doc)
 			})
 		}
 	}

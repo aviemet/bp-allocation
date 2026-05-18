@@ -1,6 +1,8 @@
 import { roundFloat } from "/imports/lib/utils"
 import { type MatchPledge, type MemberTheme } from "/imports/types/schema"
 
+import { consolationTotal as themeConsolationTotal, startingFundsTotal as themeStartingFundsTotal } from "./themeTotals"
+
 export interface PledgeMatchingResult {
 	matchedAmounts: Map<string, number>
 	remainingLeverage: number
@@ -159,10 +161,27 @@ export const pledgeTotalForOrg = (
 }
 
 /**
- * Computes the consolation, startingFunds, and votedFunds context required by
- * calculatePledgeMatches from raw publication inputs (before OrgTransformer runs).
- * The publication uses this to derive matchedAmounts once and thread it into both
- * OrgTransformer (per-org pledgeTotal) and ThemeTransformer (leverageRemaining).
+ * Dollar total from funds voting used when slicing the pledge pool: kiosk adds everyone's allocations; manual adds fund votes only for orgs in `topOrgIds`.
+ */
+export const votedFundsForPool = (
+	useKioskFundsVoting: boolean,
+	memberThemes: MemberTheme[],
+	rawOrgs: ReadonlyArray<PledgeMatchingOrg>,
+	topOrgIds: Set<string>,
+): number =>
+	useKioskFundsVoting
+		? memberThemes.reduce((sum, memberTheme) =>
+			sum + (memberTheme.allocations || []).reduce((inner, allocation) => inner + (allocation.amount || 0), 0), 0)
+		: rawOrgs.reduce(
+			(sum, orgRow) =>
+				topOrgIds.has(orgRow._id)
+					? sum + (orgRow.amountFromVotes || 0)
+					: sum,
+			0,
+		)
+
+/**
+ * Builds consolation, starting funds, and fund-vote totals, then runs `calculatePledgeMatches` once (what subscriptions use).
  */
 export const computePledgeMatchingForPublication = (
 	rawOrgs: PledgeMatchingOrg[],
@@ -171,25 +190,20 @@ export const computePledgeMatchingForPublication = (
 	useKioskFundsVoting: boolean,
 	memberThemes: MemberTheme[],
 ): PledgeMatchingResult => {
-	const consolationTotal = theme.consolationActive
-		? ((theme.organizations?.length || 0) - (theme.numTopOrgs || 0)) * (theme.consolationAmount || 0)
-		: 0
-
-	const startingFundsTotal = theme.minStartingFundsActive
-		? (theme.numTopOrgs || 0) * (theme.minStartingFunds || 0)
-		: 0
-
-	const votedFunds = useKioskFundsVoting
-		? memberThemes.reduce((sum, mt) => sum + (mt.allocations || []).reduce((s, a) => s + (a.amount || 0), 0), 0)
-		: rawOrgs.reduce((sum, org) => topOrgIds.has(org._id) ? sum + (org.amountFromVotes || 0) : sum, 0)
+	const votedFunds = votedFundsForPool(
+		useKioskFundsVoting,
+		memberThemes,
+		rawOrgs,
+		topOrgIds,
+	)
 
 	const orgsForLeverage = theme.allowRunnersUpPledges
 		? rawOrgs
 		: rawOrgs.filter(org => topOrgIds.has(org._id))
 
 	return calculatePledgeMatches(orgsForLeverage, theme, {
-		consolationTotal,
-		startingFundsTotal,
+		consolationTotal: themeConsolationTotal(theme),
+		startingFundsTotal: themeStartingFundsTotal(theme),
 		votedFunds,
 		topOrgIds,
 	})

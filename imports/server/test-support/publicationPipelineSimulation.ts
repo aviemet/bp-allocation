@@ -1,6 +1,6 @@
 import { Random } from "meteor/random"
 
-import { filterTopOrgs } from "/imports/lib/orgsMethods"
+import { filterTopOrgs } from "/imports/lib/allocation/orgsMethods"
 import { type ThemeData, type SettingsData, type OrgData, type MemberData } from "/imports/api/db"
 import {
 	OrgTransformer,
@@ -9,7 +9,7 @@ import {
 } from "/imports/server/transformers/orgTransformer"
 import { ThemeTransformer } from "/imports/server/transformers/themeTransformer"
 import { MemberTransformer } from "/imports/server/transformers/memberTransformer"
-import { computePledgeMatchingForPublication } from "/imports/lib/pledgeMatching"
+import { computePledgeMatchingForPublication } from "/imports/lib/allocation/pledgeMatching"
 import { type MemberTheme } from "/imports/types/schema"
 
 export function resolveLoadTestScale(): number {

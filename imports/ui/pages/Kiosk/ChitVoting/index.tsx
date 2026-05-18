@@ -10,11 +10,11 @@ import { OrgCardContainer } from "/imports/ui/components"
 import { Countdown } from "../Countdown"
 import { useKioskVoting } from "../KioskVotingContext"
 import { VotingComplete } from "../VotingComplete"
-import { COLORS } from "/imports/lib/global"
+import { COLORS } from "/imports/lib/presentation/global"
 import { ChitVoteOrgCard } from "./ChitVoteOrgCard"
 import { type MemberWithTheme } from "/imports/api/db"
 import { VotingSource } from "/imports/api/methods/MemberMethods"
-import { shuffleWithSeed } from "/imports/lib/shuffleWithSeed"
+import { shuffleWithSeed } from "/imports/lib/presentation/shuffleWithSeed"
 
 interface ChitVotingKioskProps {
 	user: MemberWithTheme

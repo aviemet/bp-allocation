@@ -4,11 +4,13 @@ import {
 } from "@mui/material"
 import { useNavigate, useParams } from "@tanstack/react-router"
 import { useSnackbar } from "notistack"
-import { readCsv } from "/imports/lib/papaParseMethods"
+import { readCsv } from "/imports/lib/csv/papaParseMethods"
 import { OrganizationMethods } from "/imports/api/methods"
 import { OrganizationSchema } from "/imports/api/db"
 import { useState, useEffect, useRef, type ChangeEvent } from "react"
 import type SimpleSchema from "simpl-schema"
+
+import { consoleLog } from "/imports/lib/logging"
 
 import { ImportMapping } from "/imports/ui/components"
 
@@ -53,7 +55,7 @@ export const ImportOrgs = () => {
 			OrganizationMethods.create.callAsync({ theme: themeId, ...datum })
 				.catch(error => {
 					enqueueSnackbar("Error importing organizations", { variant: "error" })
-					console.error(error)
+					consoleLog.error(error)
 				})
 		)
 		await Promise.all(promises)

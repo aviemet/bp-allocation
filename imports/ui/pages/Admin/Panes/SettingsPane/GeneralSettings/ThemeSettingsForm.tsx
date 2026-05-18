@@ -7,9 +7,11 @@ import {
 	Paper,
 } from "@mui/material"
 import { useState } from "react"
+
 import { ThemeMethods } from "/imports/api/methods"
 import { useTheme } from "/imports/api/hooks"
 import { ThemeSchema, DEFAULT_NUM_TOP_ORGS } from "/imports/api/db"
+import { consoleLog } from "/imports/lib/logging"
 import { formatters, roundFloat } from "/imports/lib/utils"
 
 import { Form, Loading, NumberInput, STATUS, SubmitButton, Switch, TextInput, type Status } from "/imports/ui/components"
@@ -56,14 +58,14 @@ export const ThemeSettingsForm = () => {
 			})
 			setFormStatus(STATUS.SUCCESS)
 		} catch (err) {
-			console.error(err)
+			consoleLog.error(err)
 			setFormStatus(STATUS.ERROR)
 		}
 	}
 
 	const onError = (errors: unknown, data: unknown) => {
-		console.error("Validation errors:", JSON.stringify(errors, null, 2))
-		console.error("Data:", JSON.stringify(data, null, 2))
+		consoleLog.error("Validation errors:", JSON.stringify(errors, null, 2))
+		consoleLog.error("Data:", JSON.stringify(data, null, 2))
 	}
 
 	if(!theme) return <Loading />

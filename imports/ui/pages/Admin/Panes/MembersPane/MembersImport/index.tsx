@@ -3,13 +3,15 @@ import {
 	Input,
 } from "@mui/material"
 import { useNavigate, useParams } from "@tanstack/react-router"
-import { readCsv } from "/imports/lib/papaParseMethods"
+import { readCsv } from "/imports/lib/csv/papaParseMethods"
 import { sanitizeNames } from "/imports/lib/utils"
 import { MemberMethods } from "/imports/api/methods"
 import { MemberSchema, MemberThemeSchema } from "/imports/api/db"
 import { useSnackbar } from "notistack"
 import { useState, useEffect, useRef, type ChangeEvent } from "react"
 import type SimpleSchema from "simpl-schema"
+
+import { consoleLog } from "/imports/lib/logging"
 
 import { ImportMapping } from "/imports/ui/components"
 
@@ -68,7 +70,7 @@ export const ImportMembers = () => {
 			MemberMethods.upsert.callAsync(datum as unknown as Parameters<typeof MemberMethods.upsert.callAsync>[0])
 				.catch(error => {
 					enqueueSnackbar("Error importing members", { variant: "error" })
-					console.error(error)
+					consoleLog.error(error)
 				})
 		)
 		await Promise.all(promises)

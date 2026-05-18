@@ -24,9 +24,10 @@ import {
 	type LogLevel,
 	type LogsFilter,
 } from "/imports/api/db/Logs"
+import { LogRow } from "./LogRow"
+import { consoleLog } from "/imports/lib/logging"
 import { ConfirmationModal, Loading } from "/imports/ui/components"
 
-import { LogRow } from "./LogRow"
 
 const LIMIT = 200
 const NONE_MODEL = "(none)"
@@ -59,7 +60,7 @@ export const LogsSettings = () => {
 		try {
 			await LogMethods.purge.callAsync({ themeId })
 		} catch (error) {
-			console.error("Failed to purge logs", error)
+			consoleLog.error("Failed to purge logs", error)
 		}
 	}
 

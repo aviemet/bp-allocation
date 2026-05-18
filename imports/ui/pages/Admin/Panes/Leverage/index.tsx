@@ -8,7 +8,7 @@ import { styled } from "@mui/material/styles"
 import numeral from "numeral"
 
 import { useTheme, useOrgs } from "/imports/api/hooks"
-import { Leverage as LeverageObject } from "/imports/lib/Leverage"
+import { Leverage as LeverageObject } from "/imports/lib/allocation/Leverage"
 
 import { DistributeLeverageButton } from "./DistributeLeverageButton"
 import { ResultsTable } from "./ResultsTable"

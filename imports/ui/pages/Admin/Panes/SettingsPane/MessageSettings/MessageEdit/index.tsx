@@ -8,6 +8,7 @@ import { useState } from "react"
 
 import { Form, Loading, STATUS, type Status } from "/imports/ui/components"
 import { EditMessageForm } from "./EditMessageForm"
+import { consoleLog } from "/imports/lib/logging"
 
 type MessageFormData = Omit<Message, "_id" | "createdAt" | "updatedAt">
 
@@ -46,12 +47,12 @@ export const MessageEdit = () => {
 			navigate({ to: `/admin/${themeId}/settings/messages` })
 		} catch (err) {
 			setFormStatus(STATUS.ERROR)
-			console.error(err)
+			consoleLog.error(err)
 		}
 	}
 
 	const onError = (error: unknown, data: unknown) => {
-		console.error(error, data)
+		consoleLog.error(error, data)
 	}
 
 	if(messageId && (messageLoading || !message)) return <Loading />

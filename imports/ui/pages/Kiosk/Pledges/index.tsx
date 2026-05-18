@@ -5,6 +5,7 @@ import { useState } from "react"
 
 import { type MemberWithTheme } from "/imports/api/db"
 import { OrganizationMethods } from "/imports/api/methods"
+import { consoleLog } from "/imports/lib/logging"
 import {
 	Form,
 	Loading,
@@ -43,7 +44,7 @@ export const Pledges = ({ user }: PledgesProps) => {
 				setPledgeFeedbackData(data)
 			}
 		} catch (err) {
-			console.error(err)
+			consoleLog.error(err)
 		}
 	}
 

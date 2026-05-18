@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 import { LinearProgress } from "@mui/material"
 import numeral from "numeral"
 
-import { COLORS } from "/imports/lib/global"
+import { COLORS } from "/imports/lib/presentation/global"
 
 interface LeverageBarProps {
 	value?: number

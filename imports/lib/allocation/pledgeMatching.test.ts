@@ -8,11 +8,12 @@ import {
 	leverageBonusForPledge,
 	matchMultiplierForPledge,
 	pledgeTotalForOrg,
+	votedFundsForPool,
 	type PledgeMatchingTheme,
 	type PledgeMatchingOrg,
 	type PledgeMatchingContext,
 } from "./pledgeMatching"
-import { type MatchPledge } from "/imports/types/schema"
+import { type MatchPledge, type MemberTheme } from "/imports/types/schema"
 
 const makePledge = (
 	overrides: Partial<MatchPledge> & { amount: number },
@@ -403,6 +404,27 @@ describe("pledgeTotalForOrg", function() {
 		const matchedAmounts = new Map<string, number>([[standardId, 100], [inPersonId, 100]])
 
 		expect(pledgeTotalForOrg(org, theme, matchedAmounts)).to.equal(100 + 100 + 100 + 200)
+	})
+})
+
+describe("votedFundsForPool", function() {
+	it("sums all member allocations when kiosk funds voting is on", function() {
+		const topId = Random.id()
+		const memberThemes: MemberTheme[] = [
+			{ _id: Random.id(), allocations: [{ organization: topId, amount: 120 }, { organization: Random.id(), amount: 30 }] },
+			{ _id: Random.id(), allocations: [{ organization: topId, amount: 50 }] },
+		]
+		expect(votedFundsForPool(true, memberThemes, [], new Set())).to.equal(200)
+	})
+
+	it("sums amountFromVotes only for chit-finalist org ids when kiosk is off", function() {
+		const topId = Random.id()
+		const otherId = Random.id()
+		const rawOrgs: PledgeMatchingOrg[] = [
+			{ _id: topId, amountFromVotes: 1000 },
+			{ _id: otherId, amountFromVotes: 9999 },
+		]
+		expect(votedFundsForPool(false, [], rawOrgs, new Set([topId]))).to.equal(1000)
 	})
 })
 

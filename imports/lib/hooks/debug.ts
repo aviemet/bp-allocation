@@ -1,11 +1,13 @@
 import { useRef, useEffect } from "react"
 
+import { consoleLog } from "../logging"
+
 /*****************
  * DEBUG METHODS *
  *****************/
 
 /**
-* Hook to console.log prop changes in a useEffect block
+* Hook to consoleLog.log prop changes in a useEffect block
 * @param props Props object to trace
 */
 export const useTraceUpdate = <T extends Record<string, unknown>>(props: T): void => {
@@ -18,8 +20,7 @@ export const useTraceUpdate = <T extends Record<string, unknown>>(props: T): voi
 			return ps
 		}, {})
 		if(Object.keys(changedProps).length > 0) {
-			// eslint-disable-next-line no-console
-			console.log("Changed props:", changedProps)
+			consoleLog.log("Changed props:", changedProps)
 		}
 		prev.current = props
 	})

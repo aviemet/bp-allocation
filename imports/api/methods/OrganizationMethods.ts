@@ -1,11 +1,12 @@
 import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
 
+import { crowdFavoriteTopOff } from "/imports/lib/allocation/crowdFavorite"
 import { roundFloat } from "/imports/lib/utils"
 
 import { Themes, Organizations, PresentationSettings, MemberThemes, type OrgData } from "/imports/api/db"
 import { ImageMethods } from "./ImageMethods"
-import { organizationMethodLog as log } from "/imports/lib/loggers"
+import { organizationMethodLog as log } from "/imports/lib/logging"
 import { type Organization, type MatchPledge } from "/imports/types/schema"
 
 interface OrganizationCreateData extends Omit<OrgData, "_id" | "createdAt"> {
@@ -230,8 +231,9 @@ export const OrganizationMethods = {
 	 * Fully-fund the crowd favorite organization to its ask amount.
 	 *
 	 * Designed to be called once, after funds voting closes and before the
-	 * pledges round opens. In that state there are no pledges and no distributed
-	 * leverage to net out, so the gap to `ask` is `ask − votes − saves − startingFunds`.
+	 * pledges round opens. The gap to `ask` is votes, saves, starting funds, and
+	 * matched pledge totals (raw pledge + leverage bonus from the shared pool walk),
+	 * capped by remaining leverage in the pool.
 	 * When `negate` is true, clears the crowd-favorite amount.
 	 *
 	 * NOTE: writes to the legacy persisted `topOff` field on Organization for
@@ -256,22 +258,20 @@ export const OrganizationMethods = {
 				? await PresentationSettings.findOneAsync({ _id: theme.presentationSettings })
 				: null
 
-			let votedTotal = 0
-			if(settings?.useKioskFundsVoting) {
-				const memberThemes = await MemberThemes.find({ theme: theme._id }).fetchAsync()
-				votedTotal = memberThemes.reduce((sum, memberTheme) => {
-					return sum + (memberTheme.allocations || []).reduce((mtSum, allocation) => {
-						return mtSum + (allocation.organization === id ? (allocation.amount || 0) : 0)
-					}, 0)
-				}, 0)
-			} else {
-				votedTotal = org.amountFromVotes || 0
-			}
+			const useKioskFundsVoting = settings?.useKioskFundsVoting ?? false
+			const memberThemes = useKioskFundsVoting
+				? await MemberThemes.find({ theme: theme._id }).fetchAsync()
+				: []
 
-			const saveAmount = theme.saves?.find(save => save.org === id)?.amount || 0
-			const startingFunds = theme.minStartingFundsActive ? (theme.minStartingFunds || 0) : 0
+			const rawOrgs = await Organizations.find({ theme: theme._id }).fetchAsync()
 
-			const amount = Math.max(0, (org.ask || 0) - votedTotal - saveAmount - startingFunds)
+			const amount = roundFloat(String(crowdFavoriteTopOff({
+				org,
+				rawOrgs,
+				theme,
+				useKioskFundsVoting,
+				memberThemes,
+			})))
 			return await Organizations.updateAsync({ _id: id }, { $set: { topOff: amount } })
 		},
 	}),
