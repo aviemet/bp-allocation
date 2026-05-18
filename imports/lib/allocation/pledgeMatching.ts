@@ -208,3 +208,34 @@ export const computePledgeMatchingForPublication = (
 		topOrgIds,
 	})
 }
+
+export const maxPledgeFromNeed = (
+	need: number,
+	matchMultiplier: number,
+	remainingLeverage: number,
+	matchEligible: boolean,
+): number => {
+	if(need <= 0) return 0
+	if(!matchEligible || matchMultiplier <= 1) return need
+
+	const capAtFullMatch = roundFloat(String(need / matchMultiplier))
+	if(remainingLeverage <= 0) return need
+
+	const capFromPool = roundFloat(String(remainingLeverage / (matchMultiplier - 1)))
+	return Math.min(need, capAtFullMatch, capFromPool)
+}
+
+export const adjustPledgeEntry = (
+	entered: number,
+	maxPledge: number,
+): { amount: number, exceededMaxPledge: boolean } => {
+	if(entered <= 0) {
+		return { amount: Math.max(0, entered), exceededMaxPledge: false }
+	}
+
+	if(entered > maxPledge) {
+		return { amount: roundFloat(String(maxPledge)), exceededMaxPledge: true }
+	}
+
+	return { amount: roundFloat(String(entered)), exceededMaxPledge: false }
+}

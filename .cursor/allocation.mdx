@@ -20,6 +20,7 @@ Architecture notes for this codebase: **why** non-obvious choices exist, not tut
 - **Runner-up rule** is centralized in **`isOrgEligibleForLeverage`** for both queue construction and `pledgeTotalForOrg` — keep it in sync; do not duplicate.
 - **`pledgedTotal` vs `pledgeMatchTotal`** in `ThemeTransformer`: raw pledged dollars vs total **leverage bonus consumed**; they differ whenever ratios ≠ 2, in-person pledges exist, or the pool truncated matches. **Why**: different surfaces need a footer that matches per-org rows vs a leverage equation that still closes.
 - **`imports/lib/allocation/` helpers** (besides **`pledgeMatching`**): **`themeTotals`** (`consolationTotal`, `startingFundsTotal`), **`memberVotes`** (`aggregateVotesByOrganization`, `allocationSum`), **`orgFunding`** (per-org save / funds-votes / allocated sum / need before spread rounds), **`crowdFavoriteTopOff`**, **`orgPledges`** (`rawPledgeTotal`, `poolMatch`), **`displayTotals`** (`fundedTotal`, `residualNeed`), **`needDuringSpread`**. **`themeTotals`** does not import **`pledgeMatching`** (avoids circular imports); both accept the same theme-shaped fields at call sites.
+- **Pledge form max (client)**: **`maxPledgeFromNeed`** / **`adjustPledgeEntry`** in **`pledgeMatching.ts`**; kiosk/in-person/admin pledge forms use **`PledgeFormFields`** with org **`need`** / **`ask`** from **`useStaticOrgs`** (or kiosk context) and **`theme.leverageRemaining`** + match ratios from **`useTheme`** — no separate publication or precomputed max on org docs.
 
 ## Feature flags vs runtime (presentation)
 
