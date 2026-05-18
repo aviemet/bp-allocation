@@ -6,7 +6,7 @@ import {
 	finalistStarts,
 	needBeforeLeverageSpread,
 	orgFundsVotes,
-	saveAmount as saveForOrg,
+	saveAmount,
 } from "/imports/lib/allocation/orgFunding"
 
 export { aggregateVotesByOrganization } from "/imports/lib/allocation/memberVotes"
@@ -50,7 +50,7 @@ export type OrgWithComputed = OrgDataWithComputed & Record<string, unknown>
  * @param {Object} params { theme, settings, memberThemes }
  */
 export const OrgTransformer = (doc: OrgData, params: OrgTransformerParams): OrgWithComputed => {
-	const save = saveForOrg(params.theme, doc._id)
+	const save = saveAmount(params.theme, doc._id)
 
 	const pledgeTotal = params.theme
 		? pledgeTotalForOrg(doc, params.theme, params.matchedAmounts, params.topOrgIds)

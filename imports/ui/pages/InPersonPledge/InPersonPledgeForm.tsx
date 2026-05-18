@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
-import { Box, Button, Container, InputAdornment, Stack, Typography } from "@mui/material"
+import { Box, Button, Container, Stack, Typography } from "@mui/material"
 import numeral from "numeral"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import { useTheme } from "/imports/api/hooks"
 import { useStaticOrgs } from "/imports/api/hooks/static"
@@ -13,14 +13,12 @@ import {
 	PledgeComplete,
 	STATUS,
 	SubmitButton,
-	SwitchInput,
-	TextInput,
 	type PledgeCompleteData,
 	type Status,
 } from "/imports/ui/components"
 import { type MemberWithTheme } from "/imports/api/db"
 
-import { SelectableOrgCards } from "/imports/ui/pages/Kiosk/Pledges/SelectableOrgCards"
+import { PledgeFormFields } from "/imports/ui/pages/Kiosk/Pledges/PledgeFormFields"
 
 interface InPersonPledgeFormProps {
 	user: MemberWithTheme
@@ -34,6 +32,8 @@ export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps)
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 	const [completed, setCompleted] = useState<PledgeCompleteData | null>(null)
 	const [submitError, setSubmitError] = useState<string | null>(null)
+
+	const topOrgIds = useMemo(() => new Set(topOrgs.map(org => org._id)), [topOrgs])
 
 	if(themeLoading || orgsLoading || !theme) return <Loading />
 
@@ -109,51 +109,29 @@ export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps)
 				onValidSubmit={ handleSubmit }
 			>
 				<Container>
-					<Box sx={ { textAlign: "right", marginBottom: "0.5rem" } }>
-						<SwitchInput
-							label="Anonymous"
-							name="anonymous"
-						/>
-					</Box>
-					<TextInput
-						name="amount"
-						placeholder="Pledge Amount"
-						required
-						sx={ { mb: 2 } }
-						slotProps={ {
-							input: {
-								startAdornment: (
-									<InputAdornment position="start" sx={ { margin: 0 } }>
-										<Typography sx={ { fontFamily: "Roboto", margin: "0 !important" } }>$</Typography>
-									</InputAdornment>
-								),
-							},
-							htmlInput: {
-								sx: {
-									padding: "0.5rem",
-									textAlign: "center",
-								},
-								inputMode: "numeric",
-								pattern: "[0-9.]*",
-							},
-						} }
+					<PledgeFormFields
+						pledgeType="inPerson"
+						topOrgs={ topOrgs }
+						remainingOrgs={ [] }
+						theme={ theme }
+						topOrgIds={ topOrgIds }
 					/>
-
-					<Box sx={ { mb: 2 } }>
-						<SelectableOrgCards orgs={ topOrgs } />
-					</Box>
 
 					{ submitError && (
 						<Typography sx={ { color: WARNING_COLOR, textAlign: "center", mb: 2 } }>{ submitError }</Typography>
 					) }
 
-					<FinalizeButton
-						type="submit"
-						status={ formStatus }
-						setStatus={ setFormStatus }
-					>
-						Submit Matched Pledge
-					</FinalizeButton>
+					<SubmitRow>
+						<SubmitColumn>
+							<FinalizeButton
+								type="submit"
+								status={ formStatus }
+								setStatus={ setFormStatus }
+							>
+								Submit Matched Pledge
+							</FinalizeButton>
+						</SubmitColumn>
+					</SubmitRow>
 				</Container>
 			</Form>
 		</PledgesContainer>
@@ -197,6 +175,17 @@ const PoolWarning = styled.div`
 	color: ${WARNING_COLOR};
 	margin-top: 0.5rem;
 	font-style: italic;
+`
+
+const SubmitRow = styled(Box)`
+	display: flex;
+	justify-content: center;
+	margin-top: 1rem;
+`
+
+const SubmitColumn = styled(Box)`
+	width: 100%;
+	max-width: 28rem;
 `
 
 const FinalizeButton = styled(SubmitButton)`

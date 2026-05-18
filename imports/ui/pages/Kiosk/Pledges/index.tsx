@@ -1,9 +1,10 @@
 import styled from "@emotion/styled"
-import { Box, Container, InputAdornment, Typography } from "@mui/material"
+import { Box, Container } from "@mui/material"
 import { isEmpty } from "es-toolkit/compat"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import { type MemberWithTheme } from "/imports/api/db"
+import { useTheme } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
 import { consoleLog } from "/imports/lib/logging"
 import {
@@ -13,12 +14,10 @@ import {
 	PledgeComplete,
 	STATUS,
 	SubmitButton,
-	SwitchInput,
-	TextInput,
 	type Status,
 } from "/imports/ui/components"
 import { useKioskVoting } from "../KioskVotingContext"
-import { SelectableOrgCards } from "./SelectableOrgCards"
+import { PledgeFormFields } from "./PledgeFormFields"
 
 interface PledgesProps {
 	user: MemberWithTheme
@@ -26,10 +25,12 @@ interface PledgesProps {
 
 export const Pledges = ({ user }: PledgesProps) => {
 	const { topOrgs, orgsLoading } = useKioskVoting()
+	const { theme, themeLoading } = useTheme()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
-
 	const [ pledgeFeedbackData, setPledgeFeedbackData ] = useState<Record<string, unknown>>({})
+
+	const topOrgIds = useMemo(() => new Set(topOrgs.map(org => org._id)), [topOrgs])
 
 	const handleSubmit = async (data: Record<string, unknown>, { reset }: { reset: () => void }) => {
 		try {
@@ -48,7 +49,7 @@ export const Pledges = ({ user }: PledgesProps) => {
 		}
 	}
 
-	if(orgsLoading) return <Loading />
+	if(orgsLoading || themeLoading || !theme) return <Loading />
 	if(!isEmpty(pledgeFeedbackData)) {
 		const org = topOrgs.find(org => org._id === pledgeFeedbackData.id)
 		if(!org) return <Loading />
@@ -68,47 +69,25 @@ export const Pledges = ({ user }: PledgesProps) => {
 				onValidSubmit={ handleSubmit }
 			>
 				<Container>
-					<Box sx={ { textAlign: "right", marginBottom: "0.5rem" } }>
-						<SwitchInput
-							label="Anonymous"
-							name="anonymous"
-						/>
-					</Box>
-					<TextInput
-						name="amount"
-						placeholder="Pledge Amount"
-						required
-						sx={ { mb: 2 } }
-						slotProps={ {
-							input: {
-								startAdornment: (
-									<InputAdornment position="start" sx={ { margin: 0 } }>
-										<Typography sx={ { fontFamily: "Roboto", margin: "0 !important" } }>$</Typography>
-									</InputAdornment>
-								),
-							},
-							htmlInput: {
-								sx: {
-									padding: "0.5rem",
-									textAlign: "center",
-								},
-								inputMode: "numeric",
-								pattern: "[0-9.]*",
-							},
-						} }
+					<PledgeFormFields
+						pledgeType="standard"
+						topOrgs={ topOrgs }
+						remainingOrgs={ [] }
+						theme={ theme }
+						topOrgIds={ topOrgIds }
 					/>
 
-					<Box sx={ { mb: 2 } }>
-						<SelectableOrgCards orgs={ topOrgs } />
-					</Box>
-
-					<FinalizeButton
-						type="submit"
-						status={ formStatus }
-						setStatus={ setFormStatus }
-					>
-						Submit Matched Pledge
-					</FinalizeButton>
+					<SubmitRow>
+						<SubmitColumn>
+							<FinalizeButton
+								type="submit"
+								status={ formStatus }
+								setStatus={ setFormStatus }
+							>
+								Submit Matched Pledge
+							</FinalizeButton>
+						</SubmitColumn>
+					</SubmitRow>
 				</Container>
 			</Form>
 
@@ -124,6 +103,17 @@ const PledgesContainer = styled(Container)`
 	}
 `
 
+const SubmitRow = styled(Box)`
+	display: flex;
+	justify-content: center;
+	margin-top: 1rem;
+`
+
+const SubmitColumn = styled(Box)`
+	width: 100%;
+	max-width: 28rem;
+`
+
 const FinalizeButton = styled(SubmitButton)`
 	width: 100%;
 	text-align: center;
@@ -133,4 +123,3 @@ const FinalizeButton = styled(SubmitButton)`
 	font-size: clamp(1.75rem, -3rem + 3vw + 4.5vh, 3rem);
 	text-transform: uppercase;
 `
-

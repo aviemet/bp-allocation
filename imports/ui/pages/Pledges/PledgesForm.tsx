@@ -1,13 +1,13 @@
 import styled from "@emotion/styled"
-import { Button, Grid, InputAdornment, Stack, Typography } from "@mui/material"
-import { useState, useEffect, useMemo } from "react"
+import { Box, Grid } from "@mui/material"
+import { useMemo, useState, useEffect } from "react"
 import { useTheme } from "/imports/api/hooks"
 import { useStaticOrgs } from "/imports/api/hooks/static"
-import { STATUS, SubmitButton, SwitchInput, TextInput, type Status } from "/imports/ui/components"
+import { STATUS, SubmitButton, type Status } from "/imports/ui/components"
 import { useFormContext, useWatch } from "react-hook-form"
 
 import { MemberSearchInput } from "./MemberSearchInput"
-import { SelectableOrgCards } from "../Kiosk/Pledges/SelectableOrgCards"
+import { PledgeFormFields } from "../Kiosk/Pledges/PledgeFormFields"
 
 export const PledgesForm = () => {
 	const { reset } = useFormContext()
@@ -20,6 +20,8 @@ export const PledgesForm = () => {
 		const topOrgIds = new Set(topOrgs.map(org => org._id))
 		return orgs.filter(org => !topOrgIds.has(org._id))
 	}, [orgs, topOrgs])
+
+	const topOrgIds = useMemo(() => new Set(topOrgs.map(org => org._id)), [topOrgs])
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.DISABLED)
 
@@ -35,75 +37,43 @@ export const PledgesForm = () => {
 		}
 	}, [watch, formStatus])
 
+	if(!theme) return null
+
 	return (
 		<Grid container spacing={ 2 }>
-
 			<Grid size={ { xs: 12 } }>
-				<Stack direction="row" sx={ { justifyContent: "space-between", alignItems: "center" } }>
-					<SwitchInput
-						label="Anonymous"
-						name="anonymous"
-					/>
-					<Button onClick={ () => reset() }>Clear</Button>
-				</Stack>
-			</Grid>
-
-			<Grid size={ { xs: 12, md: 8 } }>
-				<MemberSearchInput />
-			</Grid>
-
-			<Grid size={ { xs: 12, md: 4 } }>
-				<TextInput
-					name="amount"
-					placeholder="Pledge Amount"
-					required
-					pattern="[0-9]*"
-					onChange={ value => value.replace(/[^0-9]*/, "") }
-					slotProps={ {
-						input: {
-							startAdornment: <InputAdornment position="start">$</InputAdornment>,
-						},
-					} }
+				<PledgeFormFields
+					pledgeType="standard"
+					topOrgs={ topOrgs }
+					remainingOrgs={ remainingOrgs }
+					theme={ theme }
+					topOrgIds={ topOrgIds }
+					memberSearch={ <MemberSearchInput /> }
+					onClear={ () => reset() }
 				/>
 			</Grid>
 
-			<Grid size={ { xs: 12 } }>
-				<Typography component="h2" variant="h4" sx={ { textAlign: "center" } }>
-					Finalists
-				</Typography>
+			<Grid size={ { xs: 12 } } sx={ { display: "flex", justifyContent: "center" } }>
+				<SubmitColumn>
+					<FinalizeButton
+						fullWidth
+						type="submit"
+						status={ formStatus }
+						setStatus={ setFormStatus }
+						icon={ false }
+					>
+						Submit Matched Pledge
+					</FinalizeButton>
+				</SubmitColumn>
 			</Grid>
-			<Grid size={ { xs: 12 } }>
-				<SelectableOrgCards orgs={ topOrgs } />
-			</Grid>
-
-			{ remainingOrgs.length > 0 && theme?.allowRunnersUpPledges && (
-				<>
-					<Grid size={ { xs: 12 } }>
-						<Typography component="h2" variant="h4" sx={ { textAlign: "center" } }>
-							Runners Up
-						</Typography>
-					</Grid>
-					<Grid size={ { xs: 12 } }>
-						<SelectableOrgCards orgs={ remainingOrgs } />
-					</Grid>
-				</>
-			) }
-
-			<Grid size={ { xs: 12 } }>
-				<FinalizeButton
-					fullWidth
-					type="submit"
-					status={ formStatus }
-					setStatus={ setFormStatus }
-					icon={ false }
-				>
-					Submit Matched Pledge
-				</FinalizeButton>
-			</Grid>
-
 		</Grid>
 	)
 }
+
+const SubmitColumn = styled(Box)`
+	width: 100%;
+	max-width: 28rem;
+`
 
 const FinalizeButton = styled(SubmitButton)`
 	text-align: center;
@@ -111,4 +81,3 @@ const FinalizeButton = styled(SubmitButton)`
 	font-size: 2rem;
 	text-transform: uppercase;
 `
-

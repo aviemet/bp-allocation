@@ -2,11 +2,13 @@ import { expect } from "chai"
 import { Random } from "meteor/random"
 
 import {
+	adjustPledgeEntry,
 	calculatePledgeMatches,
 	formatMatchRatioFromMultiplier,
 	isOrgEligibleForLeverage,
 	leverageBonusForPledge,
 	matchMultiplierForPledge,
+	maxPledgeFromNeed,
 	pledgeTotalForOrg,
 	votedFundsForPool,
 	type PledgeMatchingTheme,
@@ -458,5 +460,38 @@ describe("formatMatchRatioFromMultiplier", function() {
 	it("Uses Math.max(0, m - 1) for edge multipliers", function() {
 		expect(formatMatchRatioFromMultiplier(1)).to.equal("0:1")
 		expect(formatMatchRatioFromMultiplier(0)).to.equal("0:1")
+	})
+})
+
+describe("maxPledgeFromNeed", function() {
+	it("returns need when matching does not apply", function() {
+		expect(maxPledgeFromNeed(1000, 2, 5000, false)).to.equal(1000)
+		expect(maxPledgeFromNeed(1000, 1, 5000, true)).to.equal(1000)
+	})
+
+	it("caps at need divided by multiplier for full match", function() {
+		expect(maxPledgeFromNeed(1000, 2, 5000, true)).to.equal(500)
+	})
+
+	it("returns need when pool is empty", function() {
+		expect(maxPledgeFromNeed(1000, 2, 0, true)).to.equal(1000)
+	})
+
+	it("caps by remaining leverage", function() {
+		expect(maxPledgeFromNeed(1000, 2, 200, true)).to.equal(200)
+	})
+})
+
+describe("adjustPledgeEntry", function() {
+	it("clamps to maxPledge when entered exceeds it", function() {
+		const result = adjustPledgeEntry(800, 250)
+		expect(result.amount).to.equal(250)
+		expect(result.exceededMaxPledge).to.equal(true)
+	})
+
+	it("leaves amount unchanged when at or below maxPledge", function() {
+		const result = adjustPledgeEntry(200, 250)
+		expect(result.amount).to.equal(200)
+		expect(result.exceededMaxPledge).to.equal(false)
 	})
 })
