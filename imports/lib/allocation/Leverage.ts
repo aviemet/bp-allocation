@@ -64,7 +64,11 @@ export class Leverage {
 			// Exclude the crowd-favorite full-funding amount (persisted as `topOff`) from the calculation
 			const fundingWithoutCrowdFavorite = (orgClone.allocatedFunds || 0) - (orgClone.topOff || 0)
 			sumRemainingOrgs = roundFloat(sumRemainingOrgs + fundingWithoutCrowdFavorite)
-			totalAmountFromVotes = roundFloat(totalAmountFromVotes + (org.votedTotal || 0))
+
+			// Weight = votes + minStartingFunds (= allocatedFunds minus pledges, saves, and topOff).
+			// For themes without minStartingFunds this equals votedTotal, preserving prior behavior.
+			const baseWeight = (orgClone.allocatedFunds || 0) - (orgClone.pledgeTotal || 0) - (orgClone.save || 0) - (orgClone.topOff || 0)
+			totalAmountFromVotes = roundFloat(totalAmountFromVotes + baseWeight)
 
 			return orgClone
 		})
@@ -72,11 +76,12 @@ export class Leverage {
 		this.initialSumRemainingOrgs = sumRemainingOrgs
 		this.sumRemainingOrgs = sumRemainingOrgs
 
-		// When orgs have fund votes, weight proportionally by votes (preserving real-world behavior).
-		// When no org has votes, fall back to allocatedFunds so zero-vote orgs still participate.
+		// Weight proportionally by votes + minStartingFunds. Fall back to allocatedFunds
+		// when total is zero so orgs with no votes still receive a share.
 		this.orgs.forEach(org => {
+			const baseWeight = (org.allocatedFunds || 0) - (org.pledgeTotal || 0) - (org.save || 0) - (org.topOff || 0)
 			org.percent = totalAmountFromVotes > 0
-				? (org.votedTotal || 0) / totalAmountFromVotes
+				? baseWeight / totalAmountFromVotes
 				: Math.max(org.allocatedFunds || 0, 1)
 		})
 
