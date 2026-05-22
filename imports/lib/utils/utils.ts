@@ -1,4 +1,5 @@
 import { debounce, isEmpty, type DebouncedFunc } from "es-toolkit/compat"
+import { parsePhoneNumberFromString, type CountryCode } from "libphonenumber-js"
 import { Meteor } from "meteor/meteor"
 import { type FileData } from "meteor/ostrio:files"
 
@@ -45,16 +46,100 @@ export const sanitizeNames = (name: string) => {
 	return newName.join(" ")
 }
 
-// Format phone numbers as international numbers
-// Assume any number lacking a '+' at beginning is a US number (add +1 to start)
-export const formatPhoneNumber = (number: string) => {
-	let newPhone = number.replace(/[^0-9+]/g, "") // Reduce number down to numbers and the + symbol
+type PhoneFormatKind =
+	| "empty"
+	| "international_00"
+	| "explicit_plus"
+	| "uk_trunk"
+	| "uk_country_code"
+	| "unprefixed"
 
-	if(!isEmpty(newPhone) && !/^\+/.test(newPhone)) { // Doesn't start with +
-		newPhone = "+1" + newPhone.replace(/^1/, "") // US area codes don't start with 0 or 1
+function phoneFormatKind(cleaned: string): PhoneFormatKind {
+	if(isEmpty(cleaned)) {
+		return "empty"
+	}
+	if(cleaned.startsWith("00")) {
+		return "international_00"
+	}
+	if(cleaned.startsWith("+")) {
+		return "explicit_plus"
+	}
+	if(cleaned.startsWith("0")) {
+		return "uk_trunk"
+	}
+	if(cleaned.startsWith("44") && cleaned.length >= 12) {
+		return "uk_country_code"
+	}
+	return "unprefixed"
+}
+
+function e164IfValid(candidate: string, defaultCountry?: CountryCode): string | undefined {
+	const parsed = defaultCountry !== undefined
+		? parsePhoneNumberFromString(candidate, defaultCountry)
+		: parsePhoneNumberFromString(candidate)
+	if(!parsed?.isValid()) {
+		return undefined
+	}
+	return parsed.format("E.164")
+}
+
+function formatUnprefixedPhone(cleaned: string): string {
+	const unitedStates = e164IfValid(cleaned, "US")
+	if(unitedStates) {
+		return unitedStates
 	}
 
-	return newPhone
+	const digitsOnly = cleaned.replace(/\D/g, "")
+	if(digitsOnly.length === 10 || (digitsOnly.length === 11 && digitsOnly.startsWith("1"))) {
+		return "+1" + digitsOnly.replace(/^1/, "")
+	}
+
+	const international = e164IfValid("+" + cleaned)
+	if(international) {
+		return international
+	}
+
+	return "+" + cleaned
+}
+
+export const formatPhoneNumber = (number: string) => {
+	const cleaned = number.replace(/[^0-9+]/g, "")
+	const kind = phoneFormatKind(cleaned)
+
+	switch(kind) {
+		case "empty":
+			return ""
+		case "international_00": {
+			const formatted = e164IfValid("+" + cleaned.slice(2))
+			if(formatted) {
+				return formatted
+			}
+			break
+		}
+		case "explicit_plus": {
+			const formatted = e164IfValid(cleaned)
+			return formatted ?? cleaned
+		}
+		case "uk_trunk": {
+			const formatted = e164IfValid(cleaned, "GB")
+			if(formatted) {
+				return formatted
+			}
+			break
+		}
+		case "uk_country_code": {
+			const formatted = e164IfValid("+" + cleaned)
+			if(formatted) {
+				return formatted
+			}
+			break
+		}
+		case "unprefixed":
+		default:
+			break
+	}
+
+	return formatUnprefixedPhone(cleaned)
 }
 
 export const sanitizeString = (str: string | number) => `${str}`.trim()

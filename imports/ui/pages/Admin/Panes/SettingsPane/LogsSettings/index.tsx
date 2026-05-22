@@ -131,7 +131,7 @@ export const LogsSettings = () => {
 			<Stack direction="row" spacing={ 2 } sx={ { mb: 2, alignItems: "center", flexWrap: "wrap" } }>
 				<TextField
 					size="small"
-					label="Search message/action"
+					label="Search logs"
 					value={ search }
 					onChange={ event => setSearch(event.target.value) }
 					sx={ { minWidth: 280 } }

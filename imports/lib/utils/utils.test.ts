@@ -42,6 +42,23 @@ describe("Phone formatter", () => {
 		expect(formatPhoneNumber(phone2)).to.equal(phone2)
 	})
 
+	it("Should parse UK numbers with a leading 0 trunk prefix", () => {
+		expect(formatPhoneNumber("07971506000")).to.equal("+447971506000")
+	})
+
+	it("Should parse UK numbers with an explicit 44 country code", () => {
+		expect(formatPhoneNumber("447971506000")).to.equal("+447971506000")
+	})
+
+	it("Should not prepend +1 to non-US numbers that are too long for NANP", () => {
+		expect(formatPhoneNumber("85294904645")).to.equal("+85294904645")
+		expect(formatPhoneNumber("971506000000")).to.equal("+971506000000")
+	})
+
+	it("Should parse numbers with a 00 international prefix", () => {
+		expect(formatPhoneNumber("00447971506000")).to.equal("+447971506000")
+	})
+
 	it("Shouldn't format empty strings", () => {
 		const empty = ""
 		expect(formatPhoneNumber(empty)).to.equal("")
