@@ -7,6 +7,10 @@ import { publicationLog } from "/imports/lib/logging"
 import { MemberTransformer } from "/imports/server/transformers"
 import { registerObserver, type PublishSelf } from "../methods"
 import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"
+import {
+	applyMembersPublicationRefreshPlan,
+	planMembersPublicationRefresh,
+} from "/imports/server/publications/membersPublicationSync"
 import { buildMemberThemeLookupMap } from "/imports/server/themeDataLoaders/memberThemeLookup"
 import { type MemberTheme } from "/imports/types/schema"
 
@@ -40,9 +44,11 @@ const publishMembers = async (themeId: string, limit: number | false, publisher:
 		memberThemeByMemberId: buildMemberThemeLookupMap(memberThemes, themeId),
 	}
 	const membersTransformerCallbacks = membersTransformer("members", publisher, membersParams)
+	const publishedMemberIds = new Set<string>()
 	const members = await Members.find({ _id: { $in: memberIds } }, subOptions).fetchAsync()
 	members.forEach(member => {
 		membersTransformerCallbacks.added(member)
+		publishedMemberIds.add(member._id)
 	})
 
 	const membersObserver = Members.find({ _id: { $in: memberIds } }, subOptions).observe(membersTransformerCallbacks)
@@ -56,10 +62,29 @@ const publishMembers = async (themeId: string, limit: number | false, publisher:
 				.filter((memberId): memberId is string => typeof memberId === "string")
 
 			const membersList = await Members.find({ _id: { $in: updatedMemberIds } }, subOptions).fetchAsync()
-			membersList.forEach(member => {
+			const refreshPlan = planMembersPublicationRefresh(
+				publishedMemberIds,
+				membersList.map(member => member._id),
+			)
+
+			for(const memberId of refreshPlan.removed) {
+				publisher.removed("members", memberId)
+			}
+			applyMembersPublicationRefreshPlan(publishedMemberIds, refreshPlan)
+
+			const membersById = new Map(membersList.map(member => [member._id, member]))
+			for(const memberId of refreshPlan.changed) {
+				const member = membersById.get(memberId)
+				if(!member) continue
 				const transformed = MemberTransformer(member, membersParams.memberThemeByMemberId.get(member._id))
 				publisher.changed("members", member._id, transformed)
-			})
+			}
+			for(const memberId of refreshPlan.added) {
+				const member = membersById.get(memberId)
+				if(!member) continue
+				const transformed = MemberTransformer(member, membersParams.memberThemeByMemberId.get(member._id))
+				publisher.added("members", member._id, transformed)
+			}
 		} catch (error) {
 			publicationLog.error(
 				"members.refresh",
