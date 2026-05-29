@@ -20,7 +20,7 @@ export const saveAmount = (theme: ThemeData | undefined, organizationId: string)
  */
 export const orgFundsVotes = (
 	doc: OrgData,
-	settings: SettingsData | undefined,
+	settings: Pick<SettingsData, "useKioskFundsVoting"> | undefined,
 	fundsVotesByOrg: Record<string, number> | undefined,
 ): number => {
 	if(settings?.useKioskFundsVoting && fundsVotesByOrg) {
@@ -74,3 +74,26 @@ export const needBeforeLeverageSpread = (
 	const needNumber = ask - preLeverageAllocatedSum
 	return roundFloat(String(needNumber > 0 ? needNumber : 0))
 }
+
+export const normalizeOrgAsk = (ask: number | undefined): number => ask ?? 0
+
+export const remainingGapToAskDuringPledgeWalk = (
+	ask: number | undefined,
+	allocatedBeforePledges: number,
+	priorPledgeContributionInWalk: number,
+): number => {
+	const gap = normalizeOrgAsk(ask) - allocatedBeforePledges - priorPledgeContributionInWalk
+	return gap > 0 ? gap : 0
+}
+
+export const prePledgeAllocatedBeforePledges = (
+	doc: OrgData,
+	theme: ThemeData | undefined,
+	topOrganizationIds: Set<string> | undefined,
+	settings: Pick<SettingsData, "useKioskFundsVoting"> | undefined,
+	fundsVotesByOrg: Record<string, number> | undefined,
+): number =>
+	finalistStarts(theme, topOrganizationIds, doc._id)
+	+ orgFundsVotes(doc, settings, fundsVotesByOrg)
+	+ saveAmount(theme, doc._id)
+	+ (doc.topOff || 0)

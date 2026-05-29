@@ -88,10 +88,15 @@ export const ThemeTransformer = (doc: ThemeData, params: ThemeTransformerParams)
 
 	const topOrgIds = new Set(params.topOrgs.map(org => org._id))
 
+	const fundsVotesByOrg: Record<string, number> = {}
+	orgsForLeverage.forEach(org => {
+		fundsVotesByOrg[org._id] = Number(org.votedTotal ?? org.amountFromVotes ?? 0)
+	})
+
 	const pledgeMatching = params.pledgeMatching ?? calculatePledgeMatches(
 		orgsForLeverage,
 		doc,
-		{ consolationTotal, startingFundsTotal, votedFunds, topOrgIds }
+		{ consolationTotal, startingFundsTotal, votedFunds, topOrgIds, fundsVotesByOrg, settings: params.settings },
 	)
 
 	const leverageRemaining = roundFloat(String(pledgeMatching.remainingLeverage))

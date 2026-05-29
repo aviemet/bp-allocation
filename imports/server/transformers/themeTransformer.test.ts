@@ -306,6 +306,7 @@ describe("ThemeTransformer", function() {
 		it("Should truncate the leverage bonus on the last pledge when the pool would be exceeded", function() {
 			const topOrgId = Random.id()
 			const org = createOrg(topOrgId, true, 0)
+			org.ask = 10_000_000
 			org.pledges = [
 				{ _id: Random.id(), amount: 40000, createdAt: new Date(1000), pledgeType: "standard" },
 				{ _id: Random.id(), amount: 80000, createdAt: new Date(2000), pledgeType: "standard" },

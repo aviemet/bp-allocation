@@ -8,6 +8,7 @@ import { MemberSchema, membersPermissions } from "./Members"
 import { MemberThemeSchema, memberThemesPermissions } from "./MemberThemes"
 import { MessageSchema, messagesPermissions } from "./Messages"
 import { OrganizationSchema, organizationsPermissions } from "./Organizations"
+import { OrgPledgeFunding } from "./OrgPledgeFunding"
 import { PresentationSettingsSchema, presentationSettingsPermissions } from "./PresentationSettings"
 import { type MemberVoteSummary } from "/imports/lib/allocation/memberVotes"
 import { type Log, type Member, type MemberTheme, type Message, type Organization, type PresentationSettings, type Theme } from "/imports/types/schema"
@@ -81,6 +82,7 @@ export {
 	Themes, ThemeSchema, DEFAULT_NUM_TOP_ORGS,
 	PresentationSettingsCollection as PresentationSettings, PresentationSettingsSchema,
 	Organizations, OrganizationSchema,
+	OrgPledgeFunding,
 	Images,
 	Logs, LogSchema,
 	Members, MemberSchema,

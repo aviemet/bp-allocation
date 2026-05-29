@@ -4,7 +4,7 @@ import { isEmpty } from "es-toolkit/compat"
 import { useMemo, useState } from "react"
 
 import { type MemberWithTheme } from "/imports/api/db"
-import { useTheme } from "/imports/api/hooks"
+import { usePledgeFormOrgs, useTheme } from "/imports/api/hooks"
 import { OrganizationMethods } from "/imports/api/methods"
 import { consoleLog } from "/imports/lib/logging"
 import {
@@ -16,6 +16,8 @@ import {
 	SubmitButton,
 	type Status,
 } from "/imports/ui/components"
+import { isOrgEligibleForLeverage } from "/imports/lib/allocation/pledgeMatching"
+
 import { useKioskVoting } from "../KioskVotingContext"
 import { PledgeFormFields } from "./PledgeFormFields"
 
@@ -24,11 +26,12 @@ interface PledgesProps {
 }
 
 export const Pledges = ({ user }: PledgesProps) => {
-	const { topOrgs, orgsLoading } = useKioskVoting()
+	const { topOrgs: staticTopOrgs, orgsLoading } = useKioskVoting()
+	const { topOrgs } = usePledgeFormOrgs(staticTopOrgs)
 	const { theme, themeLoading } = useTheme()
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
-	const [ pledgeFeedbackData, setPledgeFeedbackData ] = useState<Record<string, unknown>>({})
+	const [pledgeFeedbackData, setPledgeFeedbackData] = useState<Record<string, unknown>>({})
 
 	const topOrgIds = useMemo(() => new Set(topOrgs.map(org => org._id)), [topOrgs])
 
@@ -50,11 +53,26 @@ export const Pledges = ({ user }: PledgesProps) => {
 	}
 
 	if(orgsLoading || themeLoading || !theme) return <Loading />
+
 	if(!isEmpty(pledgeFeedbackData)) {
-		const org = topOrgs.find(org => org._id === pledgeFeedbackData.id)
+		const orgId = String(pledgeFeedbackData.id || "")
+		const org = topOrgs.find(row => row._id === orgId)
+
 		if(!org) return <Loading />
-		return <PledgeComplete data={ { amount: Number(pledgeFeedbackData.amount || 0), org } } resetData={ () => setPledgeFeedbackData({}) } matchKind="standard" />
+
+		return (
+			<PledgeComplete
+				data={ {
+					amount: Number(pledgeFeedbackData.amount || 0),
+					org,
+					matchEligible: isOrgEligibleForLeverage(org._id, theme, topOrgIds),
+				} }
+				resetData={ () => setPledgeFeedbackData({}) }
+				matchKind="standard"
+			/>
+		)
 	}
+
 	return (
 		<PledgesContainer>
 			<h1>If you feel like giving more</h1>
@@ -84,7 +102,7 @@ export const Pledges = ({ user }: PledgesProps) => {
 								status={ formStatus }
 								setStatus={ setFormStatus }
 							>
-								Submit Matched Pledge
+								Submit Pledge
 							</FinalizeButton>
 						</SubmitColumn>
 					</SubmitRow>

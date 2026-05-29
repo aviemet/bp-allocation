@@ -4,11 +4,16 @@ import numeral from "numeral"
 
 import { COLORS } from "/imports/lib/presentation/global"
 import { useTheme, type OrgDataWithComputed } from "/imports/api/hooks"
+import {
+	formatMatchRatioFromMultiplier,
+	previewMatchedPrincipal,
+} from "/imports/lib/allocation/pledgeMatching"
 import { Loading } from "../Loading"
 
 export interface PledgeCompleteData {
 	amount: number
 	org: OrgDataWithComputed
+	matchEligible?: boolean
 }
 
 export type PledgeCompleteMatchKind = "standard" | "inPerson"
@@ -26,27 +31,47 @@ export const PledgeComplete = ({ data, resetData, matchKind = "standard" }: Pled
 		return <Loading />
 	}
 
-	const ratio = matchKind === "inPerson"
+	const matchMultiplier = matchKind === "inPerson"
 		? (theme?.inPersonMatchRatio ?? 1)
 		: (theme?.matchRatio ?? 1)
 	const formattedAmount = numeral(data.amount).format("$0,0[.]00")
-	const formattedTotal = numeral(data.amount * ratio).format("$0,0[.]00")
-	const remaining = Number(theme?.leverageRemaining || 0)
-	const partialMatchLikely = ratio > 1 && remaining < data.amount * Math.max(0, ratio - 1)
-	const matchRatioLabel = Math.max(0, ratio - 1)
+	const matchEligible = data.matchEligible ?? true
+	const preview = previewMatchedPrincipal({
+		pledgeAmount: data.amount,
+		orgNeed: data.org.need,
+		matchMultiplier,
+		remainingLeverage: Number(theme?.leverageRemaining || 0),
+		matchEligible,
+	})
+	const formattedMatch = numeral(preview.leverageBonus).format("$0,0[.]00")
+	const formattedNeed = numeral(data.org.need).format("$0,0[.]00")
+	const matchRatioLabel = formatMatchRatioFromMultiplier(matchMultiplier)
 
 	return (
 		<PledgeCompleteContainer>
 			<Typography component="h1" variant="h4" align="center">Thank You For Your Pledge!</Typography>
 			<p>
 				Your generous donation to <b><u>{ data.org.title }</u></b> of <b>{ formattedAmount }</b>
-				{ ratio > 1
-					? ` is matched at ${matchRatioLabel}:1 from the leverage pot, bringing them up to ${formattedTotal} closer to being fully funded.`
-					: "." }
+				{ preview.overNeedNoMatch && (
+					<> will go to the organization in full. They still need { formattedNeed } to be fully funded, and your pledge covers that gap, so it will not receive leverage matching.</>
+				) }
+				{ preview.orgFullyFunded && (
+					<> will go to the organization in full. { data.org.title } is already fully funded, so it will not receive leverage matching.</>
+				) }
+				{ preview.poolExhausted && (
+					<> will go to the organization in full. The leverage pool is exhausted, so it will not receive a match.</>
+				) }
+				{ !preview.overNeedNoMatch && !preview.orgFullyFunded && !preview.poolExhausted && matchMultiplier > 1 && preview.leverageBonus > 0 && (
+					<>
+						{ " " }
+						will receive { formattedMatch } matched at { matchRatioLabel } from the leverage pot.
+					</>
+				) }
+				{ !preview.overNeedNoMatch && !preview.orgFullyFunded && !preview.poolExhausted && (matchMultiplier <= 1 || preview.leverageBonus <= 0) && "." }
 			</p>
-			{ partialMatchLikely && (
+			{ (preview.askLimited || preview.poolLimited) && !preview.overNeedNoMatch && (
 				<PartialNote>
-					The leverage pool is nearly exhausted, so part of this pledge may receive a reduced match. Your pledge amount still goes to the org in full.
+					Your pledge amount still goes to the org in full; only part of it receives leverage matching.
 				</PartialNote>
 			) }
 			<AmendVoteButton

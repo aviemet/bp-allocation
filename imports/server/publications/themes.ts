@@ -51,6 +51,7 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 		theme,
 		settings.useKioskFundsVoting || false,
 		memberThemes,
+		settings,
 	)
 
 	const transformedOrgs = orgs.map(org => OrgTransformer(org, { theme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg, topOrgIds, matchedAmounts: pledgeMatching.matchedAmounts }))
@@ -85,6 +86,7 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 				updatedTheme,
 				settings.useKioskFundsVoting || false,
 				memberThemes,
+				settings,
 			)
 
 			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme: updatedTheme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg, topOrgIds: updatedTopOrgIds, matchedAmounts: updatedPledgeMatching.matchedAmounts }))

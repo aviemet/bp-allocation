@@ -1,21 +1,24 @@
 import { expect } from "chai"
 import { Random } from "meteor/random"
 
+import { aggregateVotesByOrganization } from "./memberVotes"
 import {
-	adjustPledgeEntry,
 	calculatePledgeMatches,
 	formatMatchRatioFromMultiplier,
 	isOrgEligibleForLeverage,
+	leverageBonusCappedByAsk,
 	leverageBonusForPledge,
 	matchMultiplierForPledge,
-	maxPledgeFromNeed,
+	matchedPrincipalWithPoolCap,
 	pledgeTotalForOrg,
+	previewMatchedPrincipal,
 	votedFundsForPool,
 	type PledgeMatchingTheme,
 	type PledgeMatchingOrg,
 	type PledgeMatchingContext,
 } from "./pledgeMatching"
 import { type MatchPledge, type MemberTheme } from "/imports/types/schema"
+import { type SettingsData } from "/imports/api/db"
 
 const makePledge = (
 	overrides: Partial<MatchPledge> & { amount: number },
@@ -32,6 +35,16 @@ const baseContext: PledgeMatchingContext = {
 	votedFunds: 0,
 }
 
+const askLargeEnoughForPoolOnlyTests = 10_000_000
+
+const makeOrgForPoolMatching = (
+	overrides: Partial<PledgeMatchingOrg> & { pledges?: PledgeMatchingOrg["pledges"] } = {},
+): PledgeMatchingOrg => ({
+	_id: Random.id(),
+	ask: askLargeEnoughForPoolOnlyTests,
+	...overrides,
+})
+
 describe("calculatePledgeMatches", function() {
 	describe("Empty inputs", function() {
 		it("Returns an empty map and full pool when there are no pledges", function() {
@@ -42,7 +55,7 @@ describe("calculatePledgeMatches", function() {
 		})
 
 		it("Returns 0 matched for an org with empty pledges array", function() {
-			const orgs: PledgeMatchingOrg[] = [{ _id: Random.id(), pledges: [] }]
+			const orgs: PledgeMatchingOrg[] = [makeOrgForPoolMatching({ pledges: [] })]
 			const theme: PledgeMatchingTheme = { matchRatio: 2, leverageTotal: 1000 }
 			const result = calculatePledgeMatches(orgs, theme, baseContext)
 			expect(result.matchedAmounts.size).to.equal(0)
@@ -53,7 +66,7 @@ describe("calculatePledgeMatches", function() {
 	describe("Full match scenarios", function() {
 		it("Fully matches a pledge that fits within the pool (matchRatio 2)", function() {
 			const pledge = makePledge({ amount: 500 })
-			const orgs: PledgeMatchingOrg[] = [{ _id: Random.id(), pledges: [pledge] }]
+			const orgs: PledgeMatchingOrg[] = [makeOrgForPoolMatching({ pledges: [pledge] })]
 			const theme: PledgeMatchingTheme = { matchRatio: 2, leverageTotal: 5000 }
 
 			const result = calculatePledgeMatches(orgs, theme, baseContext)
@@ -64,7 +77,7 @@ describe("calculatePledgeMatches", function() {
 
 		it("Fully matches an in-person pledge using inPersonMatchRatio (3)", function() {
 			const pledge = makePledge({ amount: 100, pledgeType: "inPerson" })
-			const orgs: PledgeMatchingOrg[] = [{ _id: Random.id(), pledges: [pledge] }]
+			const orgs: PledgeMatchingOrg[] = [makeOrgForPoolMatching({ pledges: [pledge] })]
 			const theme: PledgeMatchingTheme = { matchRatio: 2, inPersonMatchRatio: 3, leverageTotal: 5000 }
 
 			const result = calculatePledgeMatches(orgs, theme, baseContext)
@@ -75,11 +88,10 @@ describe("calculatePledgeMatches", function() {
 
 		it("Subtracts crowd-favorite full-funding and other context terms from the starting pool", function() {
 			const pledge = makePledge({ amount: 100 })
-			const orgs: PledgeMatchingOrg[] = [{
-				_id: Random.id(),
+			const orgs: PledgeMatchingOrg[] = [makeOrgForPoolMatching({
 				pledges: [pledge],
 				topOff: 500,
-			}]
+			})]
 			const theme: PledgeMatchingTheme = { matchRatio: 2, leverageTotal: 5000 }
 			const context: PledgeMatchingContext = {
 				consolationTotal: 1000,
@@ -97,7 +109,7 @@ describe("calculatePledgeMatches", function() {
 	describe("Partial match scenarios", function() {
 		it("Truncates matched amount when pool can't cover full pledge", function() {
 			const pledge = makePledge({ amount: 1000, pledgeType: "inPerson" })
-			const orgs: PledgeMatchingOrg[] = [{ _id: Random.id(), pledges: [pledge] }]
+			const orgs: PledgeMatchingOrg[] = [makeOrgForPoolMatching({ pledges: [pledge] })]
 			const theme: PledgeMatchingTheme = {
 				matchRatio: 2,
 				inPersonMatchRatio: 3,
@@ -113,10 +125,9 @@ describe("calculatePledgeMatches", function() {
 		it("Marks all subsequent pledges as 0 matched once pool is exhausted", function() {
 			const earlyPledge = makePledge({ amount: 1000, createdAt: new Date(2000, 0, 1) })
 			const latePledge = makePledge({ amount: 500, createdAt: new Date(2025, 0, 1) })
-			const orgs: PledgeMatchingOrg[] = [{
-				_id: Random.id(),
+			const orgs: PledgeMatchingOrg[] = [makeOrgForPoolMatching({
 				pledges: [earlyPledge, latePledge],
-			}]
+			})]
 			const theme: PledgeMatchingTheme = { matchRatio: 2, leverageTotal: 1000 }
 
 			const result = calculatePledgeMatches(orgs, theme, baseContext)
@@ -133,8 +144,8 @@ describe("calculatePledgeMatches", function() {
 			const second = makePledge({ amount: 600, createdAt: new Date(2000, 0, 2) })
 
 			const orgs: PledgeMatchingOrg[] = [
-				{ _id: orgA, pledges: [second] },
-				{ _id: orgB, pledges: [first] },
+				makeOrgForPoolMatching({ _id: orgA, pledges: [second] }),
+				makeOrgForPoolMatching({ _id: orgB, pledges: [first] }),
 			]
 			const theme: PledgeMatchingTheme = { matchRatio: 2, leverageTotal: 1000 }
 
@@ -159,7 +170,7 @@ describe("calculatePledgeMatches", function() {
 				createdAt: new Date(2000, 0, 2),
 			})
 			const orgs: PledgeMatchingOrg[] = [
-				{ _id: Random.id(), pledges: [standardPledge, inPersonPledge] },
+				makeOrgForPoolMatching({ pledges: [standardPledge, inPersonPledge] }),
 			]
 			const theme: PledgeMatchingTheme = {
 				matchRatio: 2,
@@ -178,7 +189,7 @@ describe("calculatePledgeMatches", function() {
 	describe("Edge cases", function() {
 		it("Treats matchRatio <= 1 as no leverage cost (pledge fully matched, pool unchanged)", function() {
 			const pledge = makePledge({ amount: 500 })
-			const orgs: PledgeMatchingOrg[] = [{ _id: Random.id(), pledges: [pledge] }]
+			const orgs: PledgeMatchingOrg[] = [makeOrgForPoolMatching({ pledges: [pledge] })]
 			const theme: PledgeMatchingTheme = { matchRatio: 1, leverageTotal: 100 }
 
 			const result = calculatePledgeMatches(orgs, theme, baseContext)
@@ -194,8 +205,8 @@ describe("calculatePledgeMatches", function() {
 			const runnerUpPledge = makePledge({ amount: 200 })
 
 			const orgs: PledgeMatchingOrg[] = [
-				{ _id: topOrgId, pledges: [topPledge] },
-				{ _id: runnerUpId, pledges: [runnerUpPledge] },
+				makeOrgForPoolMatching({ _id: topOrgId, pledges: [topPledge] }),
+				makeOrgForPoolMatching({ _id: runnerUpId, pledges: [runnerUpPledge] }),
 			]
 			const theme: PledgeMatchingTheme = {
 				matchRatio: 2,
@@ -219,7 +230,7 @@ describe("calculatePledgeMatches", function() {
 			const a = makePledge({ _id: "aaa", amount: 600, createdAt: sameTime })
 			const b = makePledge({ _id: "bbb", amount: 600, createdAt: sameTime })
 
-			const orgs: PledgeMatchingOrg[] = [{ _id: Random.id(), pledges: [b, a] }]
+			const orgs: PledgeMatchingOrg[] = [makeOrgForPoolMatching({ pledges: [b, a] })]
 			const theme: PledgeMatchingTheme = { matchRatio: 2, leverageTotal: 1000 }
 
 			const result = calculatePledgeMatches(orgs, theme, baseContext)
@@ -236,25 +247,25 @@ describe("calculatePledgeMatches", function() {
 			const orgId = Random.id()
 			const theme: PledgeMatchingTheme = { matchRatio: 2, leverageTotal: 1000 }
 
-			const orgsBefore: PledgeMatchingOrg[] = [{
+			const orgsBefore: PledgeMatchingOrg[] = [makeOrgForPoolMatching({
 				_id: orgId,
 				pledges: [
 					{ _id: earlyId, amount: 700, pledgeType: "standard", createdAt: new Date(2000, 0, 1) },
 					{ _id: lateId, amount: 500, pledgeType: "standard", createdAt: new Date(2000, 0, 2) },
 				],
-			}]
+			})]
 
 			const before = calculatePledgeMatches(orgsBefore, theme, baseContext)
 			expect(before.matchedAmounts.get(earlyId)).to.equal(700)
 			expect(before.matchedAmounts.get(lateId)).to.equal(300)
 			expect(before.remainingLeverage).to.equal(0)
 
-			const orgsAfter: PledgeMatchingOrg[] = [{
+			const orgsAfter: PledgeMatchingOrg[] = [makeOrgForPoolMatching({
 				_id: orgId,
 				pledges: [
 					{ _id: lateId, amount: 500, pledgeType: "standard", createdAt: new Date(2000, 0, 2) },
 				],
-			}]
+			})]
 
 			const after = calculatePledgeMatches(orgsAfter, theme, baseContext)
 			expect(after.matchedAmounts.has(earlyId), "Old pledge match must not be reported").to.be.false
@@ -463,35 +474,135 @@ describe("formatMatchRatioFromMultiplier", function() {
 	})
 })
 
-describe("maxPledgeFromNeed", function() {
-	it("returns need when matching does not apply", function() {
-		expect(maxPledgeFromNeed(1000, 2, 5000, false)).to.equal(1000)
-		expect(maxPledgeFromNeed(1000, 1, 5000, true)).to.equal(1000)
+describe("leverageBonusCappedByAsk", function() {
+	it("returns 0 when pledge meets or exceeds org need", function() {
+		expect(leverageBonusCappedByAsk(600, 500, 2)).to.equal(0)
+		expect(leverageBonusCappedByAsk(500, 500, 2)).to.equal(0)
 	})
 
-	it("caps at need divided by multiplier for full match", function() {
-		expect(maxPledgeFromNeed(1000, 2, 5000, true)).to.equal(500)
+	it("returns full match bonus when pledge and match fit within need", function() {
+		expect(leverageBonusCappedByAsk(200, 500, 2)).to.equal(200)
 	})
 
-	it("returns need when pool is empty", function() {
-		expect(maxPledgeFromNeed(1000, 2, 0, true)).to.equal(1000)
-	})
-
-	it("caps by remaining leverage", function() {
-		expect(maxPledgeFromNeed(1000, 2, 200, true)).to.equal(200)
+	it("caps bonus at remaining gap when full match would exceed need", function() {
+		expect(leverageBonusCappedByAsk(400, 500, 2)).to.equal(100)
 	})
 })
 
-describe("adjustPledgeEntry", function() {
-	it("clamps to maxPledge when entered exceeds it", function() {
-		const result = adjustPledgeEntry(800, 250)
-		expect(result.amount).to.equal(250)
-		expect(result.exceededMaxPledge).to.equal(true)
+describe("matchedPrincipalWithPoolCap", function() {
+	it("applies pool truncation after ask cap", function() {
+		const result = matchedPrincipalWithPoolCap(500, 5000, 2, 100)
+		expect(result.leverageBonus).to.equal(100)
+		expect(result.matchedPrincipal).to.equal(100)
+		expect(result.poolConsumed).to.equal(100)
+	})
+})
+
+describe("previewMatchedPrincipal", function() {
+	it("flags over-need pledges with no match", function() {
+		const preview = previewMatchedPrincipal({
+			pledgeAmount: 600,
+			orgNeed: 500,
+			matchMultiplier: 2,
+			remainingLeverage: 5000,
+			matchEligible: true,
+		})
+		expect(preview.overNeedNoMatch).to.equal(true)
+		expect(preview.leverageBonus).to.equal(0)
 	})
 
-	it("leaves amount unchanged when at or below maxPledge", function() {
-		const result = adjustPledgeEntry(200, 250)
-		expect(result.amount).to.equal(200)
-		expect(result.exceededMaxPledge).to.equal(false)
+	it("reports partial ask-limited match", function() {
+		const preview = previewMatchedPrincipal({
+			pledgeAmount: 400,
+			orgNeed: 500,
+			matchMultiplier: 2,
+			remainingLeverage: 5000,
+			matchEligible: true,
+		})
+		expect(preview.leverageBonus).to.equal(100)
+		expect(preview.askLimited).to.equal(true)
+		expect(preview.fullMatch).to.equal(false)
+	})
+
+	it("flags org fully funded with no match", function() {
+		const preview = previewMatchedPrincipal({
+			pledgeAmount: 100,
+			orgNeed: 0,
+			matchMultiplier: 2,
+			remainingLeverage: 5000,
+			matchEligible: true,
+		})
+		expect(preview.orgFullyFunded).to.equal(true)
+		expect(preview.leverageBonus).to.equal(0)
+	})
+
+	it("flags exhausted leverage pool with no match", function() {
+		const preview = previewMatchedPrincipal({
+			pledgeAmount: 100,
+			orgNeed: 500,
+			matchMultiplier: 2,
+			remainingLeverage: 0,
+			matchEligible: true,
+		})
+		expect(preview.poolExhausted).to.equal(true)
+		expect(preview.leverageBonus).to.equal(0)
+	})
+})
+
+describe("calculatePledgeMatches ask cap", function() {
+	it("gives no match when a single pledge exceeds remaining gap to ask", function() {
+		const pledge = makePledge({ amount: 600 })
+		const orgs: PledgeMatchingOrg[] = [{
+			_id: Random.id(),
+			ask: 500,
+			pledges: [pledge],
+		}]
+		const theme: PledgeMatchingTheme = { matchRatio: 2, leverageTotal: 5000 }
+
+		const result = calculatePledgeMatches(orgs, theme, baseContext)
+
+		expect(result.matchedAmounts.get(pledge._id)).to.equal(0)
+		expect(result.remainingLeverage).to.equal(5000)
+	})
+
+	it("ask-limits match when pledge is below need but full ratio would overshoot", function() {
+		const pledge = makePledge({ amount: 400 })
+		const orgs: PledgeMatchingOrg[] = [{
+			_id: Random.id(),
+			ask: 500,
+			pledges: [pledge],
+		}]
+		const theme: PledgeMatchingTheme = { matchRatio: 2, leverageTotal: 5000 }
+
+		const result = calculatePledgeMatches(orgs, theme, baseContext)
+
+		expect(result.matchedAmounts.get(pledge._id)).to.equal(100)
+		expect(result.remainingLeverage).to.equal(4900)
+	})
+
+	it("ask-limits match using kiosk fund votes in pre-pledge allocated (not amountFromVotes)", function() {
+		const orgId = Random.id()
+		const pledge = makePledge({ amount: 1000 })
+		const orgs: PledgeMatchingOrg[] = [{
+			_id: orgId,
+			ask: 5000,
+			amountFromVotes: 0,
+			pledges: [pledge],
+		}]
+		const memberThemes: MemberTheme[] = [{
+			_id: Random.id(),
+			allocations: [{ organization: orgId, amount: 3500 }],
+		}]
+		const theme: PledgeMatchingTheme = { matchRatio: 2, leverageTotal: 10000 }
+		const settings = { useKioskFundsVoting: true } as SettingsData
+		const { fundsVotesByOrg } = aggregateVotesByOrganization(memberThemes, true, false)
+
+		const result = calculatePledgeMatches(orgs, theme, {
+			...baseContext,
+			fundsVotesByOrg,
+			settings,
+		})
+
+		expect(result.matchedAmounts.get(pledge._id)).to.equal(500)
 	})
 })
