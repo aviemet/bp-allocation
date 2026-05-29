@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 
-import { callOrganizationsList } from "/imports/api/methods/staticReadCalls"
+import { callOrganizationsList, type OrgsListSnapshot } from "/imports/api/methods/staticReadCalls"
 import { useData } from "/imports/api/providers"
 import { type OrgDataWithComputed, type PledgeWithOrg } from "/imports/api/hooks/useOrgs"
 
@@ -22,7 +22,7 @@ export const useStaticOrgs = () => {
 		error: null,
 	})
 
-	const refresh = useCallback(async () => {
+	const refresh = useCallback(async (): Promise<OrgsListSnapshot | null> => {
 		if(!themeId) {
 			setState({
 				orgs: [],
@@ -31,7 +31,7 @@ export const useStaticOrgs = () => {
 				orgsLoading: true,
 				error: null,
 			})
-			return
+			return null
 		}
 		setState(previous => ({ ...previous, orgsLoading: true, error: null }))
 		try {
@@ -44,7 +44,7 @@ export const useStaticOrgs = () => {
 					orgsLoading: false,
 					error: null,
 				})
-				return
+				return null
 			}
 			setState({
 				orgs: result.orgs,
@@ -53,9 +53,11 @@ export const useStaticOrgs = () => {
 				orgsLoading: false,
 				error: null,
 			})
+			return result
 		} catch (caught) {
 			const error = caught instanceof Error ? caught : new Error(String(caught))
 			setState(previous => ({ ...previous, orgsLoading: false, error }))
+			return null
 		}
 	}, [themeId])
 

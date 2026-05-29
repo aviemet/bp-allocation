@@ -154,6 +154,7 @@ export function runThemePublicationPipeline(
 		theme,
 		useKioskFundsVoting,
 		memberThemes,
+		settings,
 	)
 	const transformedOrganizations = organizations.map(organization =>
 		OrgTransformer(organization, {
@@ -201,6 +202,7 @@ export function runOrganizationsPublicationPipeline(
 		theme,
 		useKioskFundsVoting,
 		memberThemes,
+		settings,
 	)
 	return organizations.map(organization =>
 		OrgTransformer(organization, {

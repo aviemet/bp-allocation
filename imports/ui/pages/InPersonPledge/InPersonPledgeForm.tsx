@@ -3,7 +3,7 @@ import { Box, Button, Container, Stack, Typography } from "@mui/material"
 import numeral from "numeral"
 import { useMemo, useState } from "react"
 
-import { useTheme } from "/imports/api/hooks"
+import { usePledgeFormOrgs, useTheme } from "/imports/api/hooks"
 import { useStaticOrgs } from "/imports/api/hooks/static"
 import { OrganizationMethods } from "/imports/api/methods"
 import {
@@ -17,6 +17,7 @@ import {
 	type Status,
 } from "/imports/ui/components"
 import { type MemberWithTheme } from "/imports/api/db"
+import { isOrgEligibleForLeverage } from "/imports/lib/allocation/pledgeMatching"
 
 import { PledgeFormFields } from "/imports/ui/pages/Kiosk/Pledges/PledgeFormFields"
 
@@ -27,7 +28,8 @@ interface InPersonPledgeFormProps {
 
 export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps) => {
 	const { theme, themeLoading } = useTheme()
-	const { topOrgs, orgsLoading } = useStaticOrgs()
+	const { topOrgs: staticTopOrgs, orgsLoading } = useStaticOrgs()
+	const { topOrgs } = usePledgeFormOrgs(staticTopOrgs)
 
 	const [formStatus, setFormStatus] = useState<Status>(STATUS.READY)
 	const [completed, setCompleted] = useState<PledgeCompleteData | null>(null)
@@ -46,7 +48,7 @@ export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps)
 		try {
 			const orgId = String(data.id || "")
 			const amount = Number(data.amount || 0)
-			const org = topOrgs.find(o => o._id === orgId)
+			const org = topOrgs.find(row => row._id === orgId)
 			if(!org) {
 				setSubmitError("Please select an organization.")
 				return
@@ -60,7 +62,11 @@ export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps)
 			})
 			if(res) {
 				reset()
-				setCompleted({ amount, org })
+				setCompleted({
+					amount,
+					org,
+					matchEligible: isOrgEligibleForLeverage(orgId, theme, topOrgIds),
+				})
 			}
 		} catch (err) {
 			const message = err instanceof Error ? err.message : "Could not submit pledge"

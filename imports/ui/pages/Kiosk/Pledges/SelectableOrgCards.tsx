@@ -18,16 +18,21 @@ export const SelectableOrgCards = ({ orgs }: SelectableOrgCardsProps) => {
 
 	return (
 		<OrgCardContainer cols={ 2 }>
-			{ orgs.filter(org => org.need > 0).map(org => (
-				<OrgCard
-					key={ org._id }
-					org={ org }
-					showAsk={ false }
-					onClick={ handleSetValue(org._id) }
-					color={ watch === org._id ? "green" : "blue" }
-				/>
-			) ) }
+			{ orgs.map(org => {
+				const fullyFunded = org.need <= 0
+				const selected = watch === org._id
+
+				return (
+					<OrgCard
+						key={ org._id }
+						org={ org }
+						showAsk={ false }
+						onClick={ handleSetValue(org._id) }
+						fullyFunded={ fullyFunded }
+						color={ selected ? "green" : fullyFunded ? "dark" : "blue" }
+					/>
+				)
+			}) }
 		</OrgCardContainer>
 	)
 }
-

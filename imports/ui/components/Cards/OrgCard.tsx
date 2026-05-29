@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import InfoIcon from "@mui/icons-material/InfoOutlined"
+import StarIcon from "@mui/icons-material/Star"
 import {
 	Box,
 	Dialog,
@@ -17,8 +18,9 @@ import { type OrgData } from "/imports/api/db"
 
 const GREEN = "#0D8744"
 const BLUE = "#002B43"
+const DARK = "#01220A"
 
-export const OrgCardColors = { GREEN, BLUE }
+export const OrgCardColors = { GREEN, BLUE, DARK }
 
 interface OrgCardProps extends Omit<BoxProps, "onClick" | "content"> {
 	children?: ReactNode
@@ -30,9 +32,10 @@ interface OrgCardProps extends Omit<BoxProps, "onClick" | "content"> {
 	showAsk?: boolean
 	animateClass?: boolean
 	info?: boolean
-	color?: "green" | "blue"
+	color?: "green" | "blue" | "dark"
 	onClick?: () => void
 	disabled?: boolean
+	fullyFunded?: boolean
 }
 
 export const OrgCard = ({
@@ -48,6 +51,7 @@ export const OrgCard = ({
 	color = "green",
 	onClick,
 	disabled,
+	fullyFunded,
 	...props
 }: OrgCardProps) => {
 	const [infoOpen, setInfoOpen] = useState(false)
@@ -65,6 +69,12 @@ export const OrgCard = ({
 			{ ...props }
 		>
 			{ overlay && overlay }
+
+			{ fullyFunded && (
+				<FullyFundedBadge aria-hidden>
+					<StarIcon />
+				</FullyFundedBadge>
+			) }
 
 			{ info && <InfoLink>
 				<IconButton sx={ { color: "white" } } aria-label="info" onClick={ () => setInfoOpen(true) }>
@@ -115,6 +125,9 @@ const StyledCard = styled(Box)<{ theme?: { palette?: { grey?: Record<number, str
 	},
 	"&.blue": {
 		backgroundColor: theme?.palette?.batteryBlue?.main || BLUE,
+	},
+	"&.dark": {
+		backgroundColor: DARK,
 	},
 	p: {
 		margin: 16,
@@ -169,5 +182,18 @@ const InfoLink = styled.div`
 	position: absolute;
 	top: 0;
 	right: 0;
+`
+
+const FullyFundedBadge = styled.div`
+	position: absolute;
+	top: 0.2rem;
+	right: 0.2rem;
+	line-height: 0;
+	color: #fff;
+	filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+
+	svg {
+		font-size: 1.75rem;
+	}
 `
 

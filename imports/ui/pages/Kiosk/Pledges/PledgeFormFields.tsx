@@ -1,18 +1,17 @@
 import styled from "@emotion/styled"
 import { Box, Button, Grid, InputAdornment, Typography } from "@mui/material"
-import numeral from "numeral"
-import React, { useEffect, useMemo, useState } from "react"
-import { useFormContext, useFormState, useWatch } from "react-hook-form"
+import React, { useMemo } from "react"
+import { useFormContext, useWatch } from "react-hook-form"
 
 import { type OrgDataWithComputed } from "/imports/api/hooks/useOrgs"
 import {
-	adjustPledgeEntry,
 	isOrgEligibleForLeverage,
-	maxPledgeFromNeed,
+	previewMatchedPrincipal,
 	type PledgeMatchingTheme,
 } from "/imports/lib/allocation/pledgeMatching"
 import { NumberInput, SwitchInput } from "/imports/ui/components"
 
+import { PledgeMatchHintMessage } from "./PledgeMatchHintMessage"
 import { SelectableOrgCards } from "./SelectableOrgCards"
 
 interface PledgeFormFieldsProps {
@@ -35,10 +34,8 @@ export const PledgeFormFields = ({
 	onClear,
 }: PledgeFormFieldsProps) => {
 	const { setValue } = useFormContext()
-	const { isSubmitSuccessful } = useFormState()
 	const selectedOrgId = useWatch({ name: "id" })
 	const amountValue = useWatch({ name: "amount" })
-	const [showAmountHint, setShowAmountHint] = useState(false)
 
 	const selectedOrg = useMemo(() => {
 		if(!selectedOrgId) return undefined
@@ -52,46 +49,27 @@ export const PledgeFormFields = ({
 
 	const matchEligible = !!selectedOrg && isOrgEligibleForLeverage(selectedOrg._id, theme, topOrgIds)
 	const remainingLeverage = theme.leverageRemaining ?? 0
-	const maxPledge = selectedOrg
-		? maxPledgeFromNeed(selectedOrg.need, matchMultiplier, remainingLeverage, matchEligible)
-		: 0
 
-	const evaluation = useMemo(() => {
+	const matchPreview = useMemo(() => {
 		if(!selectedOrg || amountValue === "" || amountValue === undefined) return null
 
 		const parsed = Number(amountValue)
 		if(Number.isNaN(parsed) || parsed <= 0) return null
 
-		return adjustPledgeEntry(parsed, maxPledge)
-	}, [selectedOrg, amountValue, maxPledge])
+		return previewMatchedPrincipal({
+			pledgeAmount: parsed,
+			orgNeed: selectedOrg.need,
+			matchMultiplier,
+			remainingLeverage,
+			matchEligible,
+		})
+	}, [selectedOrg, amountValue, matchMultiplier, remainingLeverage, matchEligible])
 
 	const handleClear = () => {
 		setValue("id", "")
 		setValue("amount", "")
 		onClear?.()
 	}
-
-	useEffect(() => {
-		if(!evaluation || !selectedOrg) return
-
-		// Do nothing if we haven't exceeded a max value
-		const current = Number(amountValue)
-		if(Number.isNaN(current) || current === evaluation.amount) return
-
-		// Adjust amount and show adjustment explanation
-		setTimeout(() => setShowAmountHint(true), 10)
-		setValue("amount", String(evaluation.amount), { shouldValidate: true })
-	}, [evaluation, amountValue, selectedOrg, setValue])
-
-	useEffect(() => {
-		if(!isSubmitSuccessful) return
-
-		setTimeout(() => setShowAmountHint(false), 1)
-	}, [isSubmitSuccessful])
-
-	useEffect(() => {
-		setTimeout(() => setShowAmountHint(false), 1)
-	}, [selectedOrg])
 
 	return (
 		<Grid container spacing={ 2 }>
@@ -157,14 +135,6 @@ export const PledgeFormFields = ({
 				} }
 			>
 				<AmountColumn>
-					{ showAmountHint && selectedOrg && (
-						<NeedHint>
-							{ selectedOrg.title } needs { numeral(selectedOrg.need).format("$0,0") } more to reach their ask of { numeral(selectedOrg.ask).format("$0,0") }.
-							{ maxPledge < selectedOrg.need && matchMultiplier > 1 && (
-								<> You can pledge up to { numeral(maxPledge).format("$0,0") } with full matching.</>
-							) }
-						</NeedHint>
-					) }
 					<NumberInput
 						name="amount"
 						placeholder="Pledge Amount"
@@ -185,6 +155,15 @@ export const PledgeFormFields = ({
 							},
 						} }
 					/>
+					{ matchPreview && selectedOrg && amountValue !== "" && amountValue !== undefined && (
+						<PledgeMatchHintMessage
+							orgTitle={ selectedOrg.title ?? "" }
+							pledgeAmount={ Number(amountValue) }
+							orgNeed={ selectedOrg.need }
+							preview={ matchPreview }
+						/>
+					) }
+
 				</AmountColumn>
 			</Grid>
 		</Grid>
@@ -195,10 +174,3 @@ const AmountColumn = styled(Box)`
 	width: 100%;
 	max-width: 28rem;
 `
-
-const NeedHint = styled.p`
-	text-align: center;
-	font-size: 1rem;
-	margin: 0 0 0.5rem 0;
-`
-

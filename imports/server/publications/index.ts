@@ -1,6 +1,7 @@
 import "./themes"
 import "./presentationSettings"
 import "./organizations"
+import "./organizationsPledgeFunding"
 import "./members"
 import "./messages"
 import "./pledgeAnimationQueue"

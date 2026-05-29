@@ -2,24 +2,23 @@ import styled from "@emotion/styled"
 import { Box, Grid } from "@mui/material"
 import { useMemo, useState, useEffect } from "react"
 import { useTheme } from "/imports/api/hooks"
-import { useStaticOrgs } from "/imports/api/hooks/static"
+import { type OrgDataWithComputed } from "/imports/api/hooks/useOrgs"
 import { STATUS, SubmitButton, type Status } from "/imports/ui/components"
 import { useFormContext, useWatch } from "react-hook-form"
 
 import { MemberSearchInput } from "./MemberSearchInput"
 import { PledgeFormFields } from "../Kiosk/Pledges/PledgeFormFields"
 
-export const PledgesForm = () => {
+interface PledgesFormProps {
+	topOrgs: OrgDataWithComputed[]
+	remainingOrgs: OrgDataWithComputed[]
+}
+
+export const PledgesForm = ({ topOrgs, remainingOrgs }: PledgesFormProps) => {
 	const { reset } = useFormContext()
 	const watch = useWatch()
 
-	const { orgs, topOrgs } = useStaticOrgs()
 	const { theme } = useTheme()
-
-	const remainingOrgs = useMemo(() => {
-		const topOrgIds = new Set(topOrgs.map(org => org._id))
-		return orgs.filter(org => !topOrgIds.has(org._id))
-	}, [orgs, topOrgs])
 
 	const topOrgIds = useMemo(() => new Set(topOrgs.map(org => org._id)), [topOrgs])
 

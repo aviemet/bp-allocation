@@ -36,6 +36,7 @@ const computeMatching = (
 		theme,
 		settings?.useKioskFundsVoting || false,
 		memberThemes,
+		settings,
 	)
 
 	return { topOrgIds, matchedAmounts: matching.matchedAmounts }

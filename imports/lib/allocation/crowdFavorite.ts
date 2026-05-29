@@ -1,4 +1,4 @@
-import { allocationSum } from "./memberVotes"
+import { allocationSum, aggregateVotesByOrganization } from "./memberVotes"
 import { saveAmount as saveForOrg } from "./orgFunding"
 import {
 	calculatePledgeMatches,
@@ -51,6 +51,10 @@ export const crowdFavoriteTopOff = ({
 		consolationTotal: consolationTotal(theme),
 		startingFundsTotal: startingFundsTotal(theme),
 		votedFunds,
+		fundsVotesByOrg: useKioskFundsVoting
+			? aggregateVotesByOrganization(memberThemes, true, false).fundsVotesByOrg
+			: undefined,
+		settings: useKioskFundsVoting ? { useKioskFundsVoting: true } : undefined,
 	})
 	const pledgeContribution = pledgeTotalForOrg(org, theme, matchedAmounts)
 

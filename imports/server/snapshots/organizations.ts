@@ -25,6 +25,7 @@ export async function fetchOrgsSnapshot(themeId: string): Promise<OrgsListSnapsh
 			theme,
 			settings.useKioskFundsVoting || false,
 			orgObserverParams.memberThemes,
+			settings,
 		)
 		const themeComputed = ThemeTransformer(theme, {
 			topOrgs,

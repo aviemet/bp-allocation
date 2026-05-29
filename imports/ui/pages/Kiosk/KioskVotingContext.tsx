@@ -3,9 +3,9 @@ import { useMemo, useState, useRef, useEffect, startTransition, type ReactNode }
 import { useTheme } from "/imports/api/hooks"
 import { useStaticOrgs } from "/imports/api/hooks/static"
 import { MemberMethods } from "/imports/api/methods"
+import { VotingSource } from "/imports/api/methods/MemberMethods"
 import { type MemberWithTheme } from "/imports/api/db"
 import { createContext } from "/imports/lib/hooks/createContext"
-import { VotingSource } from "/imports/api/methods/MemberMethods"
 import { type OrgDataWithComputed } from "/imports/api/hooks/useOrgs"
 
 interface KioskVotingContextValue {
