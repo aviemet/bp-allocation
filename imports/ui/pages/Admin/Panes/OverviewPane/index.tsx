@@ -11,8 +11,15 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { fundedTotal } from "/imports/lib/allocation/displayTotals"
-import { poolMatch, rawPledgeTotal } from "/imports/lib/allocation/orgPledges"
+import {
+	overviewAllocatedTotal,
+	overviewConsolationAmount,
+	sumOverviewAllocatedTotal,
+	sumOverviewChitVotes,
+	sumOverviewConsolationTotal,
+	sumOverviewVotedTotal,
+} from "/imports/lib/allocation/displayTotals"
+import { poolMatch, rawPledgeTotal, sumRawPledgeTotal, sumTopOff } from "/imports/lib/allocation/orgPledges"
 import { roundFloat } from "/imports/lib/utils"
 import { useSettings, useTheme, useOrgs, type OrgDataWithComputed } from "/imports/api/hooks"
 import { ExportChitVotes, ExportMemberVotes, ExportPledges } from "/imports/ui/components/Buttons"
@@ -27,10 +34,6 @@ type OverviewOrgTableRowProps = {
 }
 
 const OverviewOrgTableRow = ({ org, isTopOrg, theme, topOrgIds }: OverviewOrgTableRowProps) => {
-	const consolationValue = isTopOrg
-		? 0
-		: (theme.consolationActive ? (theme.consolationAmount || 0) : 0)
-
 	return (
 		<TableRow>
 			<TableCell>
@@ -38,12 +41,12 @@ const OverviewOrgTableRow = ({ org, isTopOrg, theme, topOrgIds }: OverviewOrgTab
 			</TableCell>
 			<TableCell align="center">{ roundFloat(String(org.votes), 1) }</TableCell>
 			<MoneyCell>{ org.votedTotal || 0 }</MoneyCell>
-			<MoneyCell>{ consolationValue }</MoneyCell>
+			<MoneyCell>{ overviewConsolationAmount(isTopOrg, theme) }</MoneyCell>
 			<MoneyCell>{ org.topOff }</MoneyCell>
 			<MoneyCell>{ rawPledgeTotal(org) || 0 }</MoneyCell>
 			<MoneyCell>{ poolMatch(org, theme, topOrgIds) }</MoneyCell>
 			<MoneyCell>{ org.leverageFunds }</MoneyCell>
-			<MoneyCell>{ fundedTotal(org.allocatedFunds, org.leverageFunds) + consolationValue }</MoneyCell>
+			<MoneyCell>{ overviewAllocatedTotal(org, theme, isTopOrg) }</MoneyCell>
 		</TableRow>
 	)
 }
@@ -56,6 +59,14 @@ export const Overview = () => {
 	if(themeLoading || orgsLoading || settingsLoading || !theme) return <Loading />
 
 	const topOrgIds = new Set(topOrgs.map(org => org._id))
+	const totalAllocated = sumOverviewAllocatedTotal(orgs, theme, topOrgIds)
+	const footerTotals = {
+		chitVotes: sumOverviewChitVotes(orgs),
+		votedTotal: sumOverviewVotedTotal(orgs),
+		consolation: sumOverviewConsolationTotal(orgs, theme, topOrgIds),
+		topOff: sumTopOff(orgs),
+		pledges: sumRawPledgeTotal(orgs),
+	}
 	const remainingOrgs = orgs.filter(org => !topOrgIds.has(org._id))
 
 	const sortedTopOrgs = [...topOrgs].sort((a, b) => b.votes - a.votes)
@@ -131,32 +142,19 @@ export const Overview = () => {
 							<TableCell>Totals:</TableCell>
 
 							{ /* Chit Votes */ }
-							<TableCell>{
-								roundFloat(orgs.reduce((sum, org) => sum + org.votes, 0), 1)
-							}</TableCell>
+							<TableCell>{ footerTotals.chitVotes }</TableCell>
 
 							{ /* $ Votes */ }
-							<MoneyCell>{
-								orgs.reduce((sum, org) => sum + org.votedTotal, 0)
-							// numeral(totals.get('votedTotal')).format('$0,0')
-							}</MoneyCell>
+							<MoneyCell>{ footerTotals.votedTotal }</MoneyCell>
 
 							{ /* Consolation */ }
-							<MoneyCell>{
-								theme.consolationActive ? (sortedRemainingOrgs.length * (theme.consolationAmount || 0)) : 0
-							}</MoneyCell>
+							<MoneyCell>{ footerTotals.consolation }</MoneyCell>
 
 							{ /* Crowd favorite full-funding */ }
-							<MoneyCell>{
-								orgs.reduce((sum, org) => sum + org.topOff, 0)
-							}</MoneyCell>
+							<MoneyCell>{ footerTotals.topOff }</MoneyCell>
 
 							{ /* Pledges */ }
-							<MoneyCell>{
-								orgs.reduce((finalSum, org) => {
-									return finalSum + (org.pledges?.reduce((sum, pledge) => sum + pledge.amount, 0) || 0)
-								}, 0)
-							}</MoneyCell>
+							<MoneyCell>{ footerTotals.pledges }</MoneyCell>
 
 							<MoneyCell>{ theme.pledgeMatchTotal }</MoneyCell>
 
@@ -164,31 +162,13 @@ export const Overview = () => {
 							<MoneyCell>{ Number(theme.leverageRemaining || 0) }</MoneyCell>
 
 							{ /* Total Allocated */ }
-							<MoneyCell>{
-								orgs.reduce((sum, org) => {
-									const isTopOrg = topOrgIds.has(org._id)
-									const consolationValue = isTopOrg
-										? 0
-										: (theme.consolationActive ? (theme.consolationAmount || 0) : 0)
-									return sum + fundedTotal(org.allocatedFunds, org.leverageFunds) + consolationValue
-								}, 0)
-							// numeral(totals.get('allocatedFunds')).format('$0,0')
-							}</MoneyCell>
+							<MoneyCell>{ totalAllocated }</MoneyCell>
 
 						</TableRow>
 						<TableRow>
 							<TableCell colSpan={ 7 }></TableCell>
 							<TableCell align="right">Total Given:</TableCell>
-							<MoneyCell>{
-								orgs.reduce(
-									(sum, org) => sum + (org.pledgeTotal / 2),
-									Number(
-										(theme.leverageTotal || 0) +
-										(theme.saves?.reduce((sum, save) => {return sum + (save.amount || 0)}, 0) || 0) +
-										(settings?.resultsOffset || 0)
-									)
-								)
-							}</MoneyCell>
+							<MoneyCell>{ totalAllocated }</MoneyCell>
 						</TableRow>
 					</TableFooter>
 				</StyledTable>

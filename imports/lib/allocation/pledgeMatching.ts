@@ -4,6 +4,7 @@ import { type MatchPledge, type MemberTheme } from "/imports/types/schema"
 
 import { aggregateVotesByOrganization } from "./memberVotes"
 import { prePledgeAllocatedBeforePledges, remainingGapToAskDuringPledgeWalk } from "./orgFunding"
+import { sumTopOff } from "./orgPledges"
 import { consolationTotal as themeConsolationTotal, startingFundsTotal as themeStartingFundsTotal } from "./themeTotals"
 
 export interface PledgeMatchingResult {
@@ -219,7 +220,7 @@ export const calculatePledgeMatches = (
 ): PledgeMatchingResult => {
 	const matchedAmounts = new Map<string, number>()
 
-	const crowdFavoriteTotal = orgs.reduce((sum, org) => sum + (org.topOff || 0), 0)
+	const crowdFavoriteTotal = sumTopOff(orgs)
 	let available = (theme.leverageTotal || 0)
 		- context.consolationTotal
 		- context.startingFundsTotal
