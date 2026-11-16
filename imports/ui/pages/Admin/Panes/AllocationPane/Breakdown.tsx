@@ -1,3 +1,4 @@
+import { sumTopOff } from "/imports/lib/allocation/orgPledges"
 import { useTheme, useOrgs } from "/imports/api/hooks"
 
 import styled from "@emotion/styled"
@@ -15,7 +16,7 @@ export const Breakdown = () => {
 	if(themeLoading || orgsLoading || !theme) return <Loading />
 
 	const saves = theme.saves?.reduce((sum, save) => {return sum + (save.amount || 0)}, 0) || 0
-	const crowdFavoriteTotal = topOrgs.reduce((sum, org) => { return sum + org.topOff }, 0)
+	const crowdFavoriteTotal = sumTopOff(topOrgs)
 
 	// Values in order of appearance
 	const totalPot = (theme.leverageTotal || 0) + saves
