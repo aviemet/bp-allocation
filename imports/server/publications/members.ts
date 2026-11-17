@@ -6,11 +6,21 @@ import { LogModels } from "/imports/api/db/Logs"
 import { publicationLog } from "/imports/lib/logging"
 import { MemberTransformer } from "/imports/server/transformers"
 import { registerObserver, type PublishSelf } from "../methods"
+import {
+	findMemberThemeForMember,
+	memberThemeContentSignature,
+} from "/imports/server/publications/memberThemeChange"
 import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"
 import {
 	applyMembersPublicationRefreshPlan,
 	planMembersPublicationRefresh,
 } from "/imports/server/publications/membersPublicationSync"
+import { createCoalescedRefresh } from "/imports/server/publications/publicationRefreshCoalesce"
+import {
+	recordPublicationChangedEmissions,
+	recordPublicationRefreshTrigger,
+	trackPublicationRefresh,
+} from "/imports/server/publications/publicationRefreshMetrics"
 import { buildMemberThemeLookupMap } from "/imports/server/themeDataLoaders/memberThemeLookup"
 import { type MemberTheme } from "/imports/types/schema"
 
@@ -52,51 +62,61 @@ const publishMembers = async (themeId: string, limit: number | false, publisher:
 	})
 
 	const membersObserver = Members.find({ _id: { $in: memberIds } }, subOptions).observe(membersTransformerCallbacks)
+	const coalescedRefresh = createCoalescedRefresh()
+	let pendingMemberThemes = memberThemes
 
-	const refreshMembersFromMemberThemes = async (freshMemberThemes: MemberTheme[]) => {
-		try {
-			memberThemes = freshMemberThemes
-			membersParams.memberThemeByMemberId = buildMemberThemeLookupMap(memberThemes, themeId)
-			const updatedMemberIds = memberThemes
-				.map(memberTheme => memberTheme.member)
-				.filter((memberId): memberId is string => typeof memberId === "string")
+	const refreshMembersFromMemberThemes = async () => {
+		recordPublicationRefreshTrigger("members.refresh")
+		await trackPublicationRefresh("members.refresh", async () => {
+			try {
+				memberThemes = pendingMemberThemes
+				membersParams.memberThemeByMemberId = buildMemberThemeLookupMap(memberThemes, themeId)
+				const updatedMemberIds = memberThemes
+					.map(memberTheme => memberTheme.member)
+					.filter((memberId): memberId is string => typeof memberId === "string")
 
-			const membersList = await Members.find({ _id: { $in: updatedMemberIds } }, subOptions).fetchAsync()
-			const refreshPlan = planMembersPublicationRefresh(
-				publishedMemberIds,
-				membersList.map(member => member._id),
-			)
+				const membersList = await Members.find({ _id: { $in: updatedMemberIds } }, subOptions).fetchAsync()
+				const refreshPlan = planMembersPublicationRefresh(
+					publishedMemberIds,
+					membersList.map(member => member._id),
+				)
 
-			for(const memberId of refreshPlan.removed) {
-				publisher.removed("members", memberId)
+				for(const memberId of refreshPlan.removed) {
+					publisher.removed("members", memberId)
+				}
+				applyMembersPublicationRefreshPlan(publishedMemberIds, refreshPlan)
+
+				const membersById = new Map(membersList.map(member => [member._id, member]))
+				let changedEmissions = 0
+				for(const memberId of refreshPlan.changed) {
+					const member = membersById.get(memberId)
+					if(!member) continue
+					const transformed = MemberTransformer(member, membersParams.memberThemeByMemberId.get(member._id))
+					publisher.changed("members", member._id, transformed)
+					changedEmissions += 1
+				}
+				for(const memberId of refreshPlan.added) {
+					const member = membersById.get(memberId)
+					if(!member) continue
+					const transformed = MemberTransformer(member, membersParams.memberThemeByMemberId.get(member._id))
+					publisher.added("members", member._id, transformed)
+					changedEmissions += 1
+				}
+				recordPublicationChangedEmissions("members.refresh", changedEmissions)
+			} catch (error) {
+				publicationLog.error(
+					"members.refresh",
+					"Failed to refresh members publication after memberThemes coordinator update",
+					error,
+					{ themeId, model: LogModels.Member, mirrorToConsole: true },
+				)
 			}
-			applyMembersPublicationRefreshPlan(publishedMemberIds, refreshPlan)
-
-			const membersById = new Map(membersList.map(member => [member._id, member]))
-			for(const memberId of refreshPlan.changed) {
-				const member = membersById.get(memberId)
-				if(!member) continue
-				const transformed = MemberTransformer(member, membersParams.memberThemeByMemberId.get(member._id))
-				publisher.changed("members", member._id, transformed)
-			}
-			for(const memberId of refreshPlan.added) {
-				const member = membersById.get(memberId)
-				if(!member) continue
-				const transformed = MemberTransformer(member, membersParams.memberThemeByMemberId.get(member._id))
-				publisher.added("members", member._id, transformed)
-			}
-		} catch (error) {
-			publicationLog.error(
-				"members.refresh",
-				"Failed to refresh members publication after memberThemes coordinator update",
-				error,
-				{ themeId, model: LogModels.Member, mirrorToConsole: true },
-			)
-		}
+		})
 	}
 
 	const unsubscribeMemberThemes = registerMemberThemesRefreshListener(themeId, freshRows => {
-		void refreshMembersFromMemberThemes(freshRows)
+		pendingMemberThemes = freshRows
+		coalescedRefresh.schedule(() => refreshMembersFromMemberThemes())
 	})
 
 	publisher.onStop(() => {
@@ -119,11 +139,9 @@ Meteor.publish("members", async function({ themeId, limit }: { themeId: string, 
 })
 
 Meteor.publish("member", async function({ memberId, themeId }: { memberId: string, themeId: string }) {
+	const initialMemberThemes = await MemberThemes.find({ member: memberId, theme: themeId }).fetchAsync()
 	const membersParams: MembersTransformerParams = {
-		memberThemeByMemberId: buildMemberThemeLookupMap(
-			await MemberThemes.find({ member: memberId, theme: themeId }).fetchAsync(),
-			themeId,
-		),
+		memberThemeByMemberId: buildMemberThemeLookupMap(initialMemberThemes, themeId),
 	}
 	const membersTransformerCallbacks = membersTransformer("members", this, membersParams)
 
@@ -133,26 +151,51 @@ Meteor.publish("member", async function({ memberId, themeId }: { memberId: strin
 	}
 
 	const memberObserver = Members.find({ _id: memberId }).observe(membersTransformerCallbacks)
+	const coalescedRefresh = createCoalescedRefresh()
+	let pendingMemberThemes = initialMemberThemes
+	let lastPublishedSignature = memberThemeContentSignature(
+		findMemberThemeForMember(initialMemberThemes, memberId, themeId),
+	)
 
-	const refreshMemberFromMemberThemes = async (freshMemberThemes: MemberTheme[]) => {
-		try {
-			membersParams.memberThemeByMemberId = buildMemberThemeLookupMap(freshMemberThemes, themeId)
-			const memberDoc = await Members.findOneAsync({ _id: memberId })
-			if(!memberDoc) return
-			const transformed = MemberTransformer(memberDoc, membersParams.memberThemeByMemberId.get(memberDoc._id))
-			this.changed("members", memberDoc._id, transformed)
-		} catch (error) {
-			publicationLog.error(
-				"member.refresh",
-				"Failed to refresh single-member publication after memberThemes coordinator update",
-				error,
-				{ themeId, model: LogModels.Member, mirrorToConsole: true, meta: { memberId } },
-			)
-		}
+	const refreshMemberFromMemberThemes = async () => {
+		recordPublicationRefreshTrigger("member.refresh")
+		await trackPublicationRefresh("member.refresh", async () => {
+			try {
+				const memberTheme = findMemberThemeForMember(pendingMemberThemes, memberId, themeId)
+				const nextSignature = memberThemeContentSignature(memberTheme)
+				if(nextSignature === lastPublishedSignature) {
+					return
+				}
+				membersParams.memberThemeByMemberId = buildMemberThemeLookupMap(
+					memberTheme ? [memberTheme] : [],
+					themeId,
+				)
+				const memberDoc = await Members.findOneAsync({ _id: memberId })
+				if(!memberDoc) return
+				const transformed = MemberTransformer(memberDoc, membersParams.memberThemeByMemberId.get(memberDoc._id))
+				this.changed("members", memberDoc._id, transformed)
+				lastPublishedSignature = nextSignature
+				recordPublicationChangedEmissions("member.refresh", 1)
+			} catch (error) {
+				publicationLog.error(
+					"member.refresh",
+					"Failed to refresh single-member publication after memberThemes coordinator update",
+					error,
+					{ themeId, model: LogModels.Member, mirrorToConsole: true, meta: { memberId } },
+				)
+			}
+		})
 	}
 
 	const unsubscribeMemberThemes = registerMemberThemesRefreshListener(themeId, freshRows => {
-		void refreshMemberFromMemberThemes(freshRows)
+		pendingMemberThemes = freshRows
+		const nextSignature = memberThemeContentSignature(
+			findMemberThemeForMember(freshRows, memberId, themeId),
+		)
+		if(nextSignature === lastPublishedSignature) {
+			return
+		}
+		coalescedRefresh.schedule(() => refreshMemberFromMemberThemes())
 	})
 
 	this.onStop(() => {
