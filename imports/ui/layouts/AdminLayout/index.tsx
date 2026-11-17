@@ -12,6 +12,7 @@ import {
 	Grid,
 	Menu,
 	Button,
+	Tooltip,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useNavigate, useLocation, useParams, Link, Outlet } from "@tanstack/react-router"
@@ -19,6 +20,10 @@ import { Meteor } from "meteor/meteor"
 import { useState, useEffect, useMemo, type MouseEvent } from "react"
 
 import { AdminLinks } from "./AdminLinks"
+import {
+	deriveActiveMenuItem,
+	isAdminShellPath,
+} from "/imports/lib/admin/adminNavContext"
 import { useData } from "/imports/api/providers"
 import { useTheme } from "/imports/api/hooks"
 
@@ -26,7 +31,7 @@ const drawerWidth = 175
 
 export const AdminLayout = () => {
 	const data = useData()
-	const [ anchorEl, setAnchorEl ] = useState<HTMLElement | null>(null)
+	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
 	const navigate = useNavigate()
 	const location = useLocation()
@@ -34,14 +39,15 @@ export const AdminLayout = () => {
 
 	const { theme, themeLoading } = useTheme()
 
-	const drawerOpen = useMemo(() => !["/themes", "/admin"].includes(location.pathname), [location.pathname])
+	const drawerOpen = useMemo(() => isAdminShellPath(location.pathname), [location.pathname])
+	const activeMenuItem = useMemo(() => deriveActiveMenuItem(location.pathname), [location.pathname])
+	const themeId = typeof params.id === "string" ? params.id : null
 
-	// Set the theme ID in the store based on the route parameters
 	useEffect(() => {
 		if(data) {
-			data.setThemeId(params.id ?? null)
+			data.setThemeId(themeId)
 		}
-	}, [params.id, data])
+	}, [themeId, data])
 
 	const handleMenu = (event: MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
@@ -51,9 +57,6 @@ export const AdminLayout = () => {
 		setAnchorEl(null)
 	}
 
-	/**
-	 * Update the main page heading when the theme changes
-	 */
 	useEffect(() => {
 		if(data) {
 			const heading = typeof theme?.title === "string" && theme.title ? theme.title : data.defaultMenuHeading
@@ -62,6 +65,34 @@ export const AdminLayout = () => {
 	}, [theme, data])
 
 	if(!data) return null
+
+	const presentationPath = themeId && !themeLoading && theme
+		? `/admin/${themeId}/presentation`
+		: "#"
+
+	let drawerHeaderButton = (
+		<Tooltip title="Pick a theme to open presentation controls">
+			<span style={ { width: "100%" } }>
+				<Button color="warning" disabled fullWidth sx={ { p: 2 } }>
+					<BarChartIcon />Presentation
+				</Button>
+			</span>
+		</Tooltip>
+	)
+
+	if(themeId) {
+		drawerHeaderButton = (
+			<Button
+				component={ Link }
+				color="warning"
+				to={ presentationPath }
+				fullWidth
+				sx={ { p: 2 } }
+			>
+				<BarChartIcon />Presentation
+			</Button>
+		)
+	}
 
 	return (
 		<AdminContainer className="AdminContainer">
@@ -120,12 +151,12 @@ export const AdminLayout = () => {
 				open={ drawerOpen }
 			>
 				<DrawerHeader>
-					<Button component={ Link } color="warning" to={ themeLoading || !theme ? "#" : `/admin/${theme._id}/presentation` } fullWidth sx={ { p: 2 } }><BarChartIcon />Presentation</Button>
+					{ drawerHeaderButton }
 				</DrawerHeader>
 
 				<Divider />
 
-				<AdminLinks activeMenuItem="" />
+				<AdminLinks activeMenuItem={ activeMenuItem } />
 			</Drawer>
 
 			<Main open={ drawerOpen }>
@@ -194,7 +225,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 	display: "flex",
 	alignItems: "center",
 	padding: theme.spacing(0, 1),
-	// necessary for content to be below app bar
 	...theme.mixins.toolbar,
 	justifyContent: "flex-end",
 }))

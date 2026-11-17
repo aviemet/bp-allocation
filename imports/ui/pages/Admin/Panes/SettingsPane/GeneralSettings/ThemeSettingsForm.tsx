@@ -1,3 +1,4 @@
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
 import {
 	FormControl,
 	FormControlLabel,
@@ -5,7 +6,9 @@ import {
 	Grid,
 	InputAdornment,
 	Paper,
+	Tooltip,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 import { useState } from "react"
 
 import { ThemeMethods } from "/imports/api/methods"
@@ -15,6 +18,67 @@ import { consoleLog } from "/imports/lib/logging"
 import { formatters, roundFloat } from "/imports/lib/utils"
 
 import { Form, Loading, NumberInput, STATUS, SubmitButton, Switch, TextInput, type Status } from "/imports/ui/components"
+
+const SETTING_HELP = {
+	consolation:
+		"Each organization that does not finish as a top finalist receives the consolation amount from the total pot.",
+	minLeverageAmount:
+		"Each top organization can be topped up from the pot so it has at least the minimum leverage amount funded before the remaining leverage is spread.",
+	minStartingFunds:
+		"Each top finalist starts with the minimum starting funds amount already allocated from the pot before members vote their funds.",
+} as const
+
+const SettingLabelWithHelp = ({ label, help }: { label: string, help: string }) => (
+	<LabelWithHelp>
+		{ label }
+		<Tooltip
+			title={ help }
+			placement="top"
+			arrow
+			slotProps={ {
+				tooltip: {
+					sx: {
+						maxWidth: 320,
+						fontSize: "0.8125rem",
+						lineHeight: 1.4,
+						padding: "8px 12px",
+					},
+				},
+			} }
+		>
+			<HelpIcon
+				fontSize="small"
+				aria-label={ `About ${label}` }
+				onClick={ event => event.preventDefault() }
+			/>
+		</Tooltip>
+	</LabelWithHelp>
+)
+
+const LabelWithHelp = styled("span")({
+	display: "inline-flex",
+	alignItems: "center",
+	gap: 6,
+	width: "100%",
+})
+
+const HelpIcon = styled(InfoOutlinedIcon)(({ theme }) => ({
+	cursor: "help",
+	color: theme.palette.action.active,
+	fontSize: "1rem",
+	marginLeft: "auto",
+	flexShrink: 0,
+}))
+
+const SettingToggle = styled(FormControlLabel)({
+	width: "100%",
+	marginLeft: 0,
+	marginRight: 0,
+	"& .MuiFormControlLabel-label": {
+		flex: 1,
+		minWidth: 0,
+	},
+})
 
 export const ThemeSettingsForm = () => {
 	const { theme } = useTheme()
@@ -185,10 +249,10 @@ export const ThemeSettingsForm = () => {
 					/>
 				</Grid>
 
-				<Grid size={ { xs: 12, md: 6 } }>
+				<Grid size={ { xs: 12, md: 6 } } sx={ { display: "flex", alignItems: "center" } }>
 					{ /* Consolation Active */ }
-					<FormControlLabel
-						label="Use Consolation?"
+					<SettingToggle
+						label={ <SettingLabelWithHelp label="Use Consolation?" help={ SETTING_HELP.consolation } /> }
 						control={ <Switch name="consolationActive" /> }
 					/>
 				</Grid>
@@ -206,10 +270,10 @@ export const ThemeSettingsForm = () => {
 					/>
 				</Grid>
 
-				<Grid size={ { xs: 12, md: 6 } }>
+				<Grid size={ { xs: 12, md: 6 } } sx={ { display: "flex", alignItems: "center" } }>
 					{ /* Minimum Leverage Amount Active */ }
-					<FormControlLabel
-						label="Use Minimum Leverage Amount"
+					<SettingToggle
+						label={ <SettingLabelWithHelp label="Use Minimum Leverage Amount" help={ SETTING_HELP.minLeverageAmount } /> }
 						control={ <Switch name="minLeverageAmountActive" /> }
 					/>
 				</Grid>
@@ -227,10 +291,10 @@ export const ThemeSettingsForm = () => {
 					/>
 				</Grid>
 
-				<Grid size={ { xs: 12, md: 6 } }>
+				<Grid size={ { xs: 12, md: 6 } } sx={ { display: "flex", alignItems: "center" } }>
 					{ /* Minimum Starting Funds Active */ }
-					<FormControlLabel
-						label="Pre-allocate Starting Funds"
+					<SettingToggle
+						label={ <SettingLabelWithHelp label="Pre-allocate Starting Funds" help={ SETTING_HELP.minStartingFunds } /> }
 						control={ <Switch name="minStartingFundsActive" /> }
 					/>
 				</Grid>

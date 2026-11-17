@@ -11,6 +11,12 @@ import { LogModels } from "/imports/api/db/Logs"
 import { ThemeTransformer, OrgTransformer, aggregateVotesByOrganization, calculateVotesFromRawOrg } from "/imports/server/transformers"
 import { type ThemeTransformerParams } from "/imports/server/transformers/themeTransformer"
 import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"
+import { createCoalescedRefresh } from "/imports/server/publications/publicationRefreshCoalesce"
+import {
+	recordPublicationChangedEmissions,
+	recordPublicationRefreshTrigger,
+	trackPublicationRefresh,
+} from "/imports/server/publications/publicationRefreshMetrics"
 import { type MemberTheme } from "/imports/types/schema"
 
 const themeObserver = registerObserver((doc: ThemeData, params: ThemeTransformerParams) => {
@@ -60,55 +66,71 @@ const publishTheme = async (theme: ThemeData | null, publisher: PublishSelf) => 
 	const themeObserverCallbacks = themeObserver("themes", publisher, { topOrgs, allOrgs: transformedOrgs, memberThemes, settings, pledgeMatching })
 	themeObserverCallbacks.added(theme)
 
-	const refreshThemeFromMemberThemes = async (memberThemesOverride?: MemberTheme[]) => {
-		try {
-			const updatedTheme = await Themes.findOneAsync({ _id: theme._id })
-			if(!updatedTheme) return
+	const coalescedRefresh = createCoalescedRefresh()
+	let pendingMemberThemesOverride: MemberTheme[] | undefined
 
-			memberThemes = memberThemesOverride ?? await MemberThemes.find({ theme: theme._id }).fetchAsync()
-			const { fundsVotesByOrg, chitVotesByOrg } = aggregateVotesByOrganization(
-				memberThemes,
-				settings.useKioskFundsVoting || false,
-				settings.useKioskChitVoting || false
-			)
-			const updatedOrgs = await Organizations.find({ theme: theme._id }).fetchAsync()
+	const refreshThemeFromMemberThemes = async () => {
+		recordPublicationRefreshTrigger("themes.refresh")
+		await trackPublicationRefresh("themes.refresh", async () => {
+			try {
+				const updatedTheme = await Themes.findOneAsync({ _id: theme._id })
+				if(!updatedTheme) return
 
-			const updatedOrgsWithVotes = updatedOrgs.map(org => ({
-				...org,
-				votes: calculateVotesFromRawOrg(org, settings, updatedTheme, chitVotesByOrg),
-			}))
-			const updatedPreliminaryTopOrgs = filterTopOrgs(updatedOrgsWithVotes, updatedTheme)
-			const updatedTopOrgIds = new Set(updatedPreliminaryTopOrgs.map(org => org._id))
+				const memberThemesOverride = pendingMemberThemesOverride
+				pendingMemberThemesOverride = undefined
+				memberThemes = memberThemesOverride ?? await MemberThemes.find({ theme: theme._id }).fetchAsync()
+				const { fundsVotesByOrg, chitVotesByOrg } = aggregateVotesByOrganization(
+					memberThemes,
+					settings.useKioskFundsVoting || false,
+					settings.useKioskChitVoting || false
+				)
+				const updatedOrgs = await Organizations.find({ theme: theme._id }).fetchAsync()
 
-			const updatedPledgeMatching = computePledgeMatchingForPublication(
-				updatedOrgs,
-				updatedTopOrgIds,
-				updatedTheme,
-				settings.useKioskFundsVoting || false,
-				memberThemes,
-				settings,
-			)
+				const updatedOrgsWithVotes = updatedOrgs.map(org => ({
+					...org,
+					votes: calculateVotesFromRawOrg(org, settings, updatedTheme, chitVotesByOrg),
+				}))
+				const updatedPreliminaryTopOrgs = filterTopOrgs(updatedOrgsWithVotes, updatedTheme)
+				const updatedTopOrgIds = new Set(updatedPreliminaryTopOrgs.map(org => org._id))
 
-			const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme: updatedTheme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg, topOrgIds: updatedTopOrgIds, matchedAmounts: updatedPledgeMatching.matchedAmounts }))
-			const updatedTopOrgs = filterTopOrgs(updatedTransformedOrgs, updatedTheme)
-			const transformed = ThemeTransformer(updatedTheme, { topOrgs: updatedTopOrgs, allOrgs: updatedTransformedOrgs, memberThemes, settings, pledgeMatching: updatedPledgeMatching })
-			publisher.changed("themes", theme._id, transformed)
-		} catch (error) {
-			publicationLog.error(
-				"themes.refresh",
-				"Failed to refresh theme publication after memberThemes or organizations change",
-				error,
-				{ themeId: theme._id, model: LogModels.Theme, mirrorToConsole: true },
-			)
+				const updatedPledgeMatching = computePledgeMatchingForPublication(
+					updatedOrgs,
+					updatedTopOrgIds,
+					updatedTheme,
+					settings.useKioskFundsVoting || false,
+					memberThemes,
+					settings,
+				)
+
+				const updatedTransformedOrgs = updatedOrgs.map(org => OrgTransformer(org, { theme: updatedTheme, settings, memberThemes, fundsVotesByOrg, chitVotesByOrg, topOrgIds: updatedTopOrgIds, matchedAmounts: updatedPledgeMatching.matchedAmounts }))
+				const updatedTopOrgs = filterTopOrgs(updatedTransformedOrgs, updatedTheme)
+				const transformed = ThemeTransformer(updatedTheme, { topOrgs: updatedTopOrgs, allOrgs: updatedTransformedOrgs, memberThemes, settings, pledgeMatching: updatedPledgeMatching })
+				publisher.changed("themes", theme._id, transformed)
+				recordPublicationChangedEmissions("themes.refresh", 1)
+			} catch (error) {
+				publicationLog.error(
+					"themes.refresh",
+					"Failed to refresh theme publication after memberThemes or organizations change",
+					error,
+					{ themeId: theme._id, model: LogModels.Theme, mirrorToConsole: true },
+				)
+			}
+		})
+	}
+
+	const scheduleThemeRefresh = (memberThemesOverride?: MemberTheme[]) => {
+		if(memberThemesOverride) {
+			pendingMemberThemesOverride = memberThemesOverride
 		}
+		coalescedRefresh.schedule(() => refreshThemeFromMemberThemes())
 	}
 
 	const debouncedRefresh = createDebouncedFunction(() => {
-		void refreshThemeFromMemberThemes()
+		scheduleThemeRefresh()
 	}, 100)
 
 	const unsubscribeMemberThemesCoordinator = registerMemberThemesRefreshListener(theme._id, freshRows => {
-		void refreshThemeFromMemberThemes(freshRows)
+		scheduleThemeRefresh(freshRows)
 	})
 
 	const themeObserverHandle = Themes.find({ _id: theme._id }).observe({
