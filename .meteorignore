@@ -4,3 +4,4 @@ node_modules/jiti
 node_modules/eslint-plugin-import
 eslint.config.cjs
 .uploads/
+scripts/
