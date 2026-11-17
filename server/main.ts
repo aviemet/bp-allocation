@@ -5,18 +5,14 @@ import { Meteor } from "meteor/meteor"
 import { ServiceConfiguration } from "meteor/service-configuration"
 import "meteor/accounts-google"
 
-import { textVotingLinkToMembers } from "/imports/server/sms"
-import { emailVotingLinkToMembers } from "/imports/server/email"
-
 import "/imports/api/methods"
 import "/imports/api/db"
 import "./api/methods/staticSnapshotMethods"
+import "./api/methods/messagingMethods"
 
-// Meteor publication definitions
 import "/imports/server/publications"
 
 Meteor.startup(async () => {
-	// Save API info to DB once (upsert)
 	await ServiceConfiguration.configurations.upsertAsync(
 		{ service: "google" },
 		{
@@ -37,11 +33,6 @@ Meteor.startup(async () => {
 	process.env.MAIL_URL = Meteor.settings.MAIL_URL
 	process.env.HOST_URL = Meteor.settings.HOST_URL
 	process.env.SENDGRID_API_KEY = Meteor.settings.SENDGRID_API_KEY
-})
-
-Meteor.methods({
-	textVotingLinkToMembers,
-	emailVotingLinkToMembers,
 })
 
 /***************************

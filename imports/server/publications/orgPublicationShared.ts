@@ -2,6 +2,12 @@ import { publicationLog } from "/imports/lib/logging"
 import { registerObserver, type PublishSelf } from "../methods"
 import { OrgTransformer, type OrgTransformerParams } from "/imports/server/transformers/orgTransformer"
 import { registerMemberThemesRefreshListener } from "/imports/server/publications/memberThemesRefreshCoordinator"
+import { createCoalescedRefresh } from "/imports/server/publications/publicationRefreshCoalesce"
+import {
+	recordPublicationChangedEmissions,
+	recordPublicationRefreshTrigger,
+	trackPublicationRefresh,
+} from "/imports/server/publications/publicationRefreshMetrics"
 import { createDebouncedFunction } from "/imports/lib/utils"
 import {
 	getOrgPublicationFrame,
@@ -13,7 +19,16 @@ import {
 	type OrgData,
 } from "/imports/api/db"
 import { LogModels } from "/imports/api/db/Logs"
-import { type MemberTheme } from "/imports/types/schema"
+
+const refreshMetricNameForCollection = (collectionName: string): string => {
+	if(collectionName === "organizations") {
+		return "organizations.refresh"
+	}
+	if(collectionName === "orgPledgeFunding") {
+		return "orgPledgeFunding.refresh"
+	}
+	return `${collectionName}.refresh`
+}
 
 export const runThemeOrgPublication = async (
 	themeId: string,
@@ -29,6 +44,7 @@ export const runThemeOrgPublication = async (
 
 	const { orgObserverParams, initialOrgs, theme, settings } = frame
 	let memberThemes = orgObserverParams.memberThemes
+	const coalescedRefresh = createCoalescedRefresh()
 
 	const orgObserver = registerObserver((doc: OrgData, params: OrgTransformerParams) => {
 		if(!doc.theme) return { ...doc }
@@ -42,24 +58,37 @@ export const runThemeOrgPublication = async (
 		observerCallbacks.added(org)
 	})
 
+	const refreshMetricName = refreshMetricNameForCollection(collectionName)
+
 	const refreshAllOrgs = async () => {
-		try {
-			const allOrgs = await Organizations.find({ theme: themeId }).fetchAsync()
-			refreshOrgObserverParamsInPlace(orgObserverParams, allOrgs, theme, settings, memberThemes)
-			allOrgs.forEach(org => {
-				const transformed = OrgTransformer(org, orgObserverParams)
-				publisher.changed(collectionName, org._id, mapPublished(transformed))
-			})
-		} catch (error) {
-			publicationLog.error(
-				`${collectionName}.refresh`,
-				"Failed to refresh organization-derived publication after org or pledge change",
-				error,
-				{ themeId, model: LogModels.Organization, mirrorToConsole: true },
-			)
-		}
+		recordPublicationRefreshTrigger(refreshMetricName)
+		await trackPublicationRefresh(refreshMetricName, async () => {
+			try {
+				const allOrgs = await Organizations.find({ theme: themeId }).fetchAsync()
+				refreshOrgObserverParamsInPlace(orgObserverParams, allOrgs, theme, settings, memberThemes)
+				allOrgs.forEach(org => {
+					const transformed = OrgTransformer(org, orgObserverParams)
+					publisher.changed(collectionName, org._id, mapPublished(transformed))
+				})
+				recordPublicationChangedEmissions(refreshMetricName, allOrgs.length)
+			} catch (error) {
+				publicationLog.error(
+					`${collectionName}.refresh`,
+					"Failed to refresh organization-derived publication after org or pledge change",
+					error,
+					{ themeId, model: LogModels.Organization, mirrorToConsole: true },
+				)
+			}
+		})
 	}
-	const debouncedRefresh = createDebouncedFunction(() => { void refreshAllOrgs() }, 100)
+
+	const scheduleRefreshAllOrgs = () => {
+		coalescedRefresh.schedule(() => refreshAllOrgs())
+	}
+
+	const debouncedRefresh = createDebouncedFunction(() => {
+		scheduleRefreshAllOrgs()
+	}, 100)
 
 	const wrappedObserverCallbacks = {
 		added: observerCallbacks.added,
@@ -74,23 +103,10 @@ export const runThemeOrgPublication = async (
 	}
 	const orgsCursor = Organizations.find({ theme: themeId }).observe(wrappedObserverCallbacks)
 
-	const refreshOrgsFromMemberThemes = async (freshMemberThemes: MemberTheme[]) => {
-		try {
-			memberThemes = freshMemberThemes
-			orgObserverParams.memberThemes = freshMemberThemes
-			await refreshAllOrgs()
-		} catch (error) {
-			publicationLog.error(
-				`${collectionName}.refreshFromMemberThemes`,
-				"Failed to refresh organization-derived publication after memberThemes coordinator update",
-				error,
-				{ themeId, model: LogModels.MemberTheme, mirrorToConsole: true },
-			)
-		}
-	}
-
 	const unsubscribeMemberThemes = registerMemberThemesRefreshListener(themeId, freshRows => {
-		void refreshOrgsFromMemberThemes(freshRows)
+		memberThemes = freshRows
+		orgObserverParams.memberThemes = freshRows
+		scheduleRefreshAllOrgs()
 	})
 
 	publisher.onStop(() => {

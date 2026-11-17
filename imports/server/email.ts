@@ -10,8 +10,32 @@ import { emailVotingLink } from "/imports/lib/utils"
 import { coerceArray } from "/imports/lib/utils"
 import { type Message, type Rounds } from "/imports/types/schema"
 
-
 sgMail.setApiKey(Meteor.settings.SENDGRID_API_KEY)
+
+export interface EmailSendResponse {
+	statusCode?: number
+}
+
+export type EmailBatchSender = (
+	messages: MailDataRequired[],
+) => Promise<[EmailSendResponse, Record<string, unknown>]>
+
+const defaultEmailBatchSender: EmailBatchSender = async messages => {
+	const [clientResponse, responseBody] = await sgMail.send(messages)
+	return [clientResponse, responseBody]
+}
+
+let sendEmailBatch: EmailBatchSender = defaultEmailBatchSender
+
+export const getEmailBatchSender = (): EmailBatchSender => sendEmailBatch
+
+export const setEmailBatchSender = (sender: EmailBatchSender): void => {
+	sendEmailBatch = sender
+}
+
+export const resetEmailBatchSender = (): void => {
+	sendEmailBatch = defaultEmailBatchSender
+}
 
 const htmlEmailWrapper = (emailBody: string) => `<html><head><style> 
 	img { 
@@ -101,7 +125,7 @@ export const emailVotingLinkToMembers = async ({ themeId, message, members }: Em
 	const theme = await Themes.findOneAsync({ _id: themeId })
 	const invalidEmailMembers: MemberEmailLookupResult[] = []
 
-	setMessageSendingFlag(theme, message)
+	await setMessageSendingFlag(theme, message)
 
 	const memberEmails = await memberEmailsQuery(themeId, members, message.optOutRounds)
 
@@ -119,36 +143,38 @@ export const emailVotingLinkToMembers = async ({ themeId, message, members }: Em
 		return [mail]
 	})
 
-	const sentMail = sgMail.send(messages)
-
-	sentMail.then(([clientResponse, _responseBody]) => {
-		setMessageSentFlag(theme, message)
+	try {
+		const [clientResponse] = await sendEmailBatch(messages)
+		await setMessageSentFlag(theme, message)
 		log.info("batch.sent", "Email batch sent", {
 			themeId,
 			meta: {
 				messageId: message._id,
-				sent: messages.map(m => m.to),
+				sent: messages.map(mail => mail.to),
 				totalSent: messages.length,
 				statusCode: clientResponse?.statusCode,
 			},
 		})
-	}, error => {
+	} catch (error) {
 		log.error("send.failure", "Email send failed", error, { themeId, meta: { messageId: message._id } })
 
-		if(error.response) {
-			setMessageErrorFlag(theme, message)
+		if(isRecord(error) && "response" in error) {
+			await setMessageErrorFlag(theme, message)
 			log.error("send.failure", "SendGrid response body for failed email", undefined, {
 				themeId,
-				meta: { messageId: message._id, responseBody: error.response.body },
+				meta: { messageId: message._id, responseBody: Reflect.get(error, "response") },
 			})
 		}
-	})
+	}
 
-	// Log invalid emails
 	if(invalidEmailMembers.length > 0) {
 		log.warn("invalid-recipients", "Some members had invalid emails", {
 			themeId,
 			meta: { messageId: message._id, invalidEmailMembers },
 		})
 	}
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+	return typeof value === "object" && value !== null
 }
