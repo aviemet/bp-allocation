@@ -7,6 +7,7 @@ import "./staticSnapshotMethods"
 
 import { OrganizationMethods, ThemeMethods } from "/imports/api/methods"
 import { Organizations, Themes } from "/imports/api/db"
+import { resetPledgeDedupeStateForTests } from "/imports/lib/allocation/pledgeDedupe"
 import { fetchOrgsSnapshot } from "/imports/server/snapshots/organizations"
 import {
 	applyTestThemePreset,
@@ -23,6 +24,7 @@ describe("Organization Methods", function() {
 
 	beforeEach(async function() {
 		await resetDatabase()
+		resetPledgeDedupeStateForTests()
 		const newThemeId = await ThemeMethods.create.callAsync({
 			title: faker.company.buzzNoun() + "-" + faker.string.alpha(4),
 		})
@@ -214,6 +216,77 @@ describe("Organization Methods", function() {
 			expect(org?.pledges).to.have.length(1)
 			expect(org?.pledges?.[0].pledgeType).to.equal("inPerson")
 			expect(org?.pledges?.[0].amount).to.equal(200)
+		})
+
+		it("Should reject a duplicate pledge from the same member/org/amount within the debounce window", async function() {
+			const { response: orgId } = await OrganizationMethods.create.callAsync(OrgTestData(themeId))
+			if(!orgId) throw new Error("Failed to create org")
+
+			const memberId = Random.id()
+			await OrganizationMethods.pledge.callAsync({
+				id: orgId,
+				amount: 100,
+				member: memberId,
+			})
+
+			let threw = false
+			let errorReason: string | undefined
+			try {
+				await OrganizationMethods.pledge.callAsync({
+					id: orgId,
+					amount: 100,
+					member: memberId,
+				})
+			} catch (e) {
+				threw = true
+				if(e instanceof Error) errorReason = e.message
+			}
+
+			expect(threw, "Expected duplicate pledge to throw").to.be.true
+			expect(errorReason).to.match(/duplicate/i)
+
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.pledges).to.have.length(1)
+		})
+
+		it("Should allow a second pledge when amount differs", async function() {
+			const { response: orgId } = await OrganizationMethods.create.callAsync(OrgTestData(themeId))
+			if(!orgId) throw new Error("Failed to create org")
+
+			const memberId = Random.id()
+			await OrganizationMethods.pledge.callAsync({
+				id: orgId,
+				amount: 100,
+				member: memberId,
+			})
+			await OrganizationMethods.pledge.callAsync({
+				id: orgId,
+				amount: 150,
+				member: memberId,
+			})
+
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.pledges).to.have.length(2)
+		})
+
+		it("Should accept only one of two concurrent identical pledges", async function() {
+			const { response: orgId } = await OrganizationMethods.create.callAsync(OrgTestData(themeId))
+			if(!orgId) throw new Error("Failed to create org")
+
+			const memberId = Random.id()
+			const payload = { id: orgId, amount: 250, member: memberId }
+			const results = await Promise.allSettled([
+				OrganizationMethods.pledge.callAsync(payload),
+				OrganizationMethods.pledge.callAsync(payload),
+			])
+
+			const fulfilled = results.filter(result => result.status === "fulfilled")
+			const rejected = results.filter(result => result.status === "rejected")
+			expect(fulfilled).to.have.length(1)
+			expect(rejected).to.have.length(1)
+
+			const org = await Organizations.findOneAsync({ _id: orgId })
+			expect(org?.pledges).to.have.length(1)
 		})
 	})
 

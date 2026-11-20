@@ -36,6 +36,7 @@ export const Pledges = ({ user }: PledgesProps) => {
 	const topOrgIds = useMemo(() => new Set(topOrgs.map(org => org._id)), [topOrgs])
 
 	const handleSubmit = async (data: Record<string, unknown>, { reset }: { reset: () => void }) => {
+		setFormStatus(STATUS.SUBMITTING)
 		try {
 			const res = await OrganizationMethods.pledge.callAsync({
 				id: String(data.id || ""),
@@ -46,9 +47,13 @@ export const Pledges = ({ user }: PledgesProps) => {
 			if(res) {
 				reset()
 				setPledgeFeedbackData(data)
+				setFormStatus(STATUS.SUCCESS)
+			} else {
+				setFormStatus(STATUS.ERROR)
 			}
 		} catch (err) {
 			consoleLog.error(err)
+			setFormStatus(STATUS.ERROR)
 		}
 	}
 
@@ -67,7 +72,10 @@ export const Pledges = ({ user }: PledgesProps) => {
 					org,
 					matchEligible: isOrgEligibleForLeverage(org._id, theme, topOrgIds),
 				} }
-				resetData={ () => setPledgeFeedbackData({}) }
+				resetData={ () => {
+					setPledgeFeedbackData({})
+					setFormStatus(STATUS.READY)
+				} }
 				matchKind="standard"
 			/>
 		)

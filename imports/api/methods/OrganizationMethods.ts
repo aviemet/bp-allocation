@@ -2,6 +2,12 @@ import { ValidatedMethod } from "meteor/mdg:validated-method"
 import { Meteor } from "meteor/meteor"
 
 import { crowdFavoriteTopOff } from "/imports/lib/allocation/crowdFavorite"
+import {
+	hasRecentMatchingPledge,
+	pledgeDedupeKey,
+	releasePledgeAttempt,
+	tryClaimPledgeAttempt,
+} from "/imports/lib/allocation/pledgeDedupe"
 import { roundFloat } from "/imports/lib/utils"
 
 import { Themes, Organizations, PresentationSettings, MemberThemes, type OrgData } from "/imports/api/db"
@@ -152,31 +158,55 @@ export const OrganizationMethods = {
 
 		async run({ id, amount, member, anonymous, pledgeType = "standard" }: PledgeData) {
 			amount = roundFloat(String(amount))
+			const claimedAt = Date.now()
+			const dedupeKey = pledgeDedupeKey(member, id, amount, pledgeType)
 
-			if(Meteor.isServer) {
-				const org = await Organizations.findOneAsync({ _id: id })
-				if(!org || !org.theme) {
-					throw new Meteor.Error("organizations.pledge.notFound", "Organization not found")
-				}
+			if(!tryClaimPledgeAttempt(dedupeKey, claimedAt)) {
+				throw new Meteor.Error(
+					"organizations.pledge.duplicate",
+					"Duplicate pledge rejected",
+				)
+			}
 
-				if(pledgeType === "inPerson") {
-					const theme = await Themes.findOneAsync({ _id: org.theme })
-					if(!theme?.inPersonPledgeActive) {
+			try {
+				if(Meteor.isServer) {
+					const org = await Organizations.findOneAsync({ _id: id })
+					if(!org || !org.theme) {
+						throw new Meteor.Error("organizations.pledge.notFound", "Organization not found")
+					}
+
+					if(pledgeType === "inPerson") {
+						const theme = await Themes.findOneAsync({ _id: org.theme })
+						if(!theme?.inPersonPledgeActive) {
+							throw new Meteor.Error(
+								"organizations.pledge.inPersonNotEnabled",
+								"In-person pledges are not enabled for this theme",
+							)
+						}
+					}
+
+					if(hasRecentMatchingPledge(org.pledges, member, amount, pledgeType, claimedAt)) {
 						throw new Meteor.Error(
-							"organizations.pledge.inPersonNotEnabled",
-							"In-person pledges are not enabled for this theme",
+							"organizations.pledge.duplicate",
+							"Duplicate pledge rejected",
 						)
 					}
 				}
+
+				const saveData: MatchPledge = { _id: "", amount, member, anonymous, pledgeType }
+
+				return await Organizations.updateAsync({ _id: id }, {
+					$push: {
+						pledges: saveData,
+					},
+				})
+			} catch (error) {
+				const isDuplicate = error instanceof Meteor.Error && error.error === "organizations.pledge.duplicate"
+				if(!isDuplicate) {
+					releasePledgeAttempt(dedupeKey, claimedAt)
+				}
+				throw error
 			}
-
-			const saveData: MatchPledge = { _id: "", amount, member, anonymous, pledgeType }
-
-			return await Organizations.updateAsync({ _id: id }, {
-				$push: {
-					pledges: saveData,
-				},
-			})
 		},
 	}),
 

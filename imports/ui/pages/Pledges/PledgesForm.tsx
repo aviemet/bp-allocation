@@ -3,7 +3,9 @@ import { Box, Grid } from "@mui/material"
 import { useMemo, useState, useEffect } from "react"
 import { useTheme } from "/imports/api/hooks"
 import { type OrgDataWithComputed } from "/imports/api/hooks/useOrgs"
-import { STATUS, SubmitButton, type Status } from "/imports/ui/components"
+import { OrganizationMethods } from "/imports/api/methods"
+import { consoleLog } from "/imports/lib/logging"
+import { Form, STATUS, SubmitButton, type Status } from "/imports/ui/components"
 import { useFormContext, useWatch } from "react-hook-form"
 
 import { MemberSearchInput } from "./MemberSearchInput"
@@ -15,26 +17,79 @@ interface PledgesFormProps {
 }
 
 export const PledgesForm = ({ topOrgs, remainingOrgs }: PledgesFormProps) => {
+	const [formStatus, setFormStatus] = useState<Status>(STATUS.DISABLED)
+
+	const handleSubmit = async (data: Record<string, unknown>, { reset }: { reset: () => void }) => {
+		setFormStatus(STATUS.SUBMITTING)
+		try {
+			const res = await OrganizationMethods.pledge.callAsync({
+				id: String(data.id || ""),
+				amount: Number(data.amount || 0),
+				member: String(data.member || ""),
+				anonymous: Boolean(data.anonymous),
+			})
+			if(res) {
+				reset()
+				setFormStatus(STATUS.DISABLED)
+			} else {
+				setFormStatus(STATUS.ERROR)
+			}
+		} catch (err) {
+			consoleLog.error(err)
+			setFormStatus(STATUS.ERROR)
+		}
+	}
+
+	return (
+		<Form
+			defaultValues={ {
+				id: "",
+				amount: "",
+				member: "",
+				anonymous: false,
+			} }
+			onValidSubmit={ handleSubmit }
+		>
+			<PledgesFormFields
+				topOrgs={ topOrgs }
+				remainingOrgs={ remainingOrgs }
+				formStatus={ formStatus }
+				setFormStatus={ setFormStatus }
+			/>
+		</Form>
+	)
+}
+
+interface PledgesFormFieldsProps {
+	topOrgs: OrgDataWithComputed[]
+	remainingOrgs: OrgDataWithComputed[]
+	formStatus: Status
+	setFormStatus: (status: Status) => void
+}
+
+const PledgesFormFields = ({
+	topOrgs,
+	remainingOrgs,
+	formStatus,
+	setFormStatus,
+}: PledgesFormFieldsProps) => {
 	const { reset } = useFormContext()
 	const watch = useWatch()
-
 	const { theme } = useTheme()
 
 	const topOrgIds = useMemo(() => new Set(topOrgs.map(org => org._id)), [topOrgs])
 
-	const [formStatus, setFormStatus] = useState<Status>(STATUS.DISABLED)
-
 	useEffect(() => {
-		if(formStatus === STATUS.DISABLED && watch.member !== "" && watch.amount !== "" && watch.id !== "") {
-			setTimeout(() => {
-				setFormStatus(STATUS.READY)
-			}, 0)
-		} else if(formStatus === STATUS.READY && (watch.member === "" || watch.amount === "" || watch.id === "")) {
-			setTimeout(() => {
-				setFormStatus(STATUS.DISABLED)
-			}, 0)
+		if(formStatus === STATUS.SUBMITTING || formStatus === STATUS.SUCCESS || formStatus === STATUS.ERROR) {
+			return
 		}
-	}, [watch, formStatus])
+
+		const fieldsComplete = watch.member !== "" && watch.amount !== "" && watch.id !== ""
+		const nextStatus = fieldsComplete ? STATUS.READY : STATUS.DISABLED
+		if(formStatus !== nextStatus) {
+			setFormStatus(nextStatus)
+		}
+	}, [watch, formStatus, setFormStatus])
 
 	if(!theme) return null
 

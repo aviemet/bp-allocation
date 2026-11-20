@@ -45,12 +45,14 @@ export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps)
 
 	const handleSubmit = async (data: Record<string, unknown>, { reset }: { reset: () => void }) => {
 		setSubmitError(null)
+		setFormStatus(STATUS.SUBMITTING)
 		try {
 			const orgId = String(data.id || "")
 			const amount = Number(data.amount || 0)
 			const org = topOrgs.find(row => row._id === orgId)
 			if(!org) {
 				setSubmitError("Please select an organization.")
+				setFormStatus(STATUS.READY)
 				return
 			}
 			const res = await OrganizationMethods.pledge.callAsync({
@@ -67,10 +69,14 @@ export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps)
 					org,
 					matchEligible: isOrgEligibleForLeverage(orgId, theme, topOrgIds),
 				})
+				setFormStatus(STATUS.SUCCESS)
+			} else {
+				setFormStatus(STATUS.ERROR)
 			}
 		} catch (err) {
 			const message = err instanceof Error ? err.message : "Could not submit pledge"
 			setSubmitError(message)
+			setFormStatus(STATUS.ERROR)
 		}
 	}
 
@@ -79,7 +85,10 @@ export const InPersonPledgeForm = ({ user, onSignOut }: InPersonPledgeFormProps)
 			<InPersonPledgeCompleteViewport>
 				<PledgeComplete
 					data={ completed }
-					resetData={ () => setCompleted(null) }
+					resetData={ () => {
+						setCompleted(null)
+						setFormStatus(STATUS.READY)
+					} }
 					matchKind="inPerson"
 				/>
 			</InPersonPledgeCompleteViewport>

@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useCallback } from "react"
+import { type ReactNode, useEffect, useCallback, useRef } from "react"
 import {
 	useForm,
 	FormProvider,
@@ -14,7 +14,7 @@ interface FormProps<TValues extends FieldValues> {
 	children: ReactNode
 	schema?: SimpleSchema
 	defaultValues?: DefaultValues<TValues>
-	onValidSubmit?: (data: TValues, methods: UseFormReturn<TValues>) => void
+	onValidSubmit?: (data: TValues, methods: UseFormReturn<TValues>) => void | Promise<void>
 	onSanitize?: (data: TValues | Partial<TValues>) => TValues | Partial<TValues>
 	onValidationError?: (errors: UseFormReturn<TValues>["formState"]["errors"], data: TValues) => void
 	onUpdate?: (data: Partial<TValues>) => void
@@ -38,6 +38,7 @@ export const Form = <TValues extends FieldValues = FieldValues>({
 	...props
 }: FormProps<TValues>) => {
 	const formValidationContext = schema ? schema.newContext() : null
+	const submittingRef = useRef(false)
 
 	const formMethods = useForm<TValues>({ defaultValues })
 
@@ -49,22 +50,29 @@ export const Form = <TValues extends FieldValues = FieldValues>({
 		return onSanitize ? (onSanitize(data) as Partial<TValues>) : data
 	}, [onSanitize])
 
-	const onSubmit = (data: TValues) => {
-		const sanitizedData = sanitizeSubmit(data)
+	const onSubmit = async (data: TValues) => {
+		if(submittingRef.current) return
+		submittingRef.current = true
 
-		if(!formValidationContext || formValidationContext.validate(sanitizedData, { keys: Object.keys(sanitizedData) })) {
-			if(onValidSubmit) {
-				onValidSubmit(sanitizedData, formMethods)
-			}
-		} else {
-			formValidationContext.validationErrors().forEach((error: SchemaValidationError) => {
-				const fieldName = error.name as FieldPath<TValues>
-				formMethods.setError(fieldName, {
-					type: error.type,
-					message: formValidationContext.keyErrorMessage(error.name),
+		try {
+			const sanitizedData = sanitizeSubmit(data)
+
+			if(!formValidationContext || formValidationContext.validate(sanitizedData, { keys: Object.keys(sanitizedData) })) {
+				if(onValidSubmit) {
+					await onValidSubmit(sanitizedData, formMethods)
+				}
+			} else {
+				formValidationContext.validationErrors().forEach((error: SchemaValidationError) => {
+					const fieldName = error.name as FieldPath<TValues>
+					formMethods.setError(fieldName, {
+						type: error.type,
+						message: formValidationContext.keyErrorMessage(error.name),
+					})
 				})
-			})
-			if(onValidationError) onValidationError(formMethods.formState.errors, sanitizedData)
+				if(onValidationError) onValidationError(formMethods.formState.errors, sanitizedData)
+			}
+		} finally {
+			submittingRef.current = false
 		}
 	}
 

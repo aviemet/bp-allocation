@@ -62,16 +62,16 @@ export const SubmitButton = ({ children, status, setStatus, icon = SaveIcon, ...
 
 	return (
 		<Button
+			{ ...props }
 			variant="contained"
 			endIcon={ buttonIcon }
 			loading={ loading }
-			disabled={ status === STATUS.DISABLED || status === STATUS.SUBMITTING }
+			disabled={ status === STATUS.DISABLED || status === STATUS.SUBMITTING || props.disabled }
 			color={ status === STATUS.SUCCESS ? "success" : "primary" }
 			sx={ {
 				...(backgroundColor && { backgroundColor }),
 				...props.sx,
 			} }
-			{ ...props }
 		>
 			{ children }
 		</Button>
